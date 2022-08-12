@@ -20,9 +20,10 @@ class TakeGuiderExposure(TranslatorModuleFunction):
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
         outdir = kpfguide['OUTDIR'].read()
-        lastfile = kpfguide['LASTFILE'].read()
-        found_new_file = ktl.waitFor(f'($kpfguide.LASTFILE != {lastfile})', timeout=25)
-        new_file = Path(outdir) / Path(kpfguide['LASTFILE'].read())
+        lastfile = kpfguide['LASTFILE']
+        lastfile.monitor()
+        lastfile.wait(timeout=20)
+        new_file = Path(outdir) / Path(lastfile)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
