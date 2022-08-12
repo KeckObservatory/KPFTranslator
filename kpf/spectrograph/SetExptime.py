@@ -4,7 +4,7 @@ import ktl
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 from ddoitranslatormodule.DDOIExceptions import *
 
-from . import log, KPFError
+from .. import log, KPFError
 
 
 class SetExptime(TranslatorModuleFunction):
