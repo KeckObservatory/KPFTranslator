@@ -23,10 +23,12 @@ class TakeGuiderExposure(TranslatorModuleFunction):
         lastfile = kpfguide['LASTFILE']
         lastfile.monitor()
         lastfile.wait(timeout=20)
-        new_file = Path(outdir) / Path(lastfile)
+        new_file = Path(outdir) / Path(f"{lastfile}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        new_file = Path(outdir) / Path(kpfguide['LASTFILE'].read())
+        lastfile = kpfguide['LASTFILE']
+        lastfile.monitor()
+        new_file = Path(outdir) / Path(f"{lastfile}")
         print(f"New file: {new_file}")
         return new_file.exists()
