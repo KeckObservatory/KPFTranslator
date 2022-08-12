@@ -8,6 +8,23 @@ from . import log, KPFError
 ##-------------------------------------------------------------------------
 ## Pre- or Post- Conditions
 ##-------------------------------------------------------------------------
+def check_guider_is_active():
+    '''Checks that the guide camera is taking exposures.
+    '''
+    kpfguide = ktl.cache('kpfguide')
+    continuous = kpfguide['CONTINUOUS'].read()
+    return continuous.lower() == 'active'
+
+
+def check_guider_is_saving():
+    '''Checks that the guide camera is taking exposures and outputting stacked
+    images as fits files.
+    '''
+    kpfguide = ktl.cache('kpfguide')
+    save = kpfguide['SAVE'].read()
+    return check_guider_is_active() and (save.lower() == 'yes')
+
+
 def check_green_detector_power():
     kpfgreen = ktl.cache('kpfgreen')
     ccdpower = kpfgreen['CCDPOWER'].read()
