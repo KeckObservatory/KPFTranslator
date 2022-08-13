@@ -8,7 +8,9 @@ from .. import log, KPFError
 
 
 class SetExptime(TranslatorModuleFunction):
-
+    '''Sets the exposure time for the science detectors in the kpfexpose
+    keyword service.
+    '''
     def __init__(self):
         super().__init__()
 

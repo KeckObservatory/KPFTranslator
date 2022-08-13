@@ -26,6 +26,8 @@ def check_guider_is_saving():
 
 
 def check_green_detector_power():
+    '''Checks that the camera power is on
+    '''
     kpfgreen = ktl.cache('kpfgreen')
     ccdpower = kpfgreen['CCDPOWER'].read()
     powersupply = kpfgreen['POWERSUPPLY'].read()
@@ -40,6 +42,8 @@ def check_green_detector_power():
 
 
 def check_red_detector_power():
+    '''Checks that the camera power is on
+    '''
     kpfred = ktl.cache('kpfgreen')
     ccdpower = kpfred['CCDPOWER'].read()
     powersupply = kpfred['POWERSUPPLY'].read()
@@ -54,6 +58,8 @@ def check_red_detector_power():
 
 
 def check_green_detector_temperature(temperature_tolerance=1):
+    '''Checks that the camera temperature is near setpoint
+    '''
     kpfgreen = ktl.cache('kpfgreen')
     current = kpfgreen['CURRTEMP'].read(binary=True)
     setpoint = kpfgreen['TEMPSET'].read(binary=True)
@@ -69,6 +75,8 @@ def check_green_detector_temperature(temperature_tolerance=1):
 
 
 def check_red_detector_temperature(temperature_tolerance=1):
+    '''Checks that the camera temperature is near setpoint
+    '''
     kpfred = ktl.cache('kpfred')
     current = kpfred['CURRTEMP'].read(binary=True)
     setpoint = kpfred['TEMPSET'].read(binary=True)
@@ -84,6 +92,8 @@ def check_red_detector_temperature(temperature_tolerance=1):
 
 
 def check_cahk_detector_temperature(temperature_tolerance=1):
+    '''Checks that the camera temperature is near setpoint
+    '''
     kpfhk = ktl.cache('kpf_hk')
     current = kpfhk['CURRTEMP'].read(binary=True)
     setpoint = kpfhk['COOLTARG'].read(binary=True)
