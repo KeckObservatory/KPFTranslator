@@ -4,8 +4,6 @@ import ktl
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 from ddoitranslatormodule.DDOIExceptions import *
 
-from .. import log, KPFError
-
 
 class SetExptime(TranslatorModuleFunction):
     '''Sets the exposure time for the science detectors in the kpfexpose
@@ -28,9 +26,9 @@ class SetExptime(TranslatorModuleFunction):
             if abs(exptime_value - exptime) > 0.1:
                 msg = (f"Final exposure time mismatch: "
                        f"{exptime_value:.1f} != {exptime:.1f}")
-                log.error(msg)
+                print(msg)
                 raise KPFError(msg)
-        log.info('    Done')
+        print('    Done')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
