@@ -7,14 +7,15 @@ from ddoitranslatormodule.DDOIExceptions import *
 from ..utils import *
 
 
-class WaitForReadout(TranslatorModuleFunction):
-    '''Waits for the `kpfexpose.EXPOSE` keyword to be "Readout".  This will
-    block until the camera enters the readout state.  Times out after waiting
-    the current exposure time plus 10 seconds.
+class WaitForReady(TranslatorModuleFunction):
+    '''Waits for the `kpfexpose.EXPOSE` keyword to be "Ready".  This will
+    block until the camera is ready for another exposure.  Times out after
+    waiting for exposure time plus a set buffer time.
     '''
     def __init__(self):
         super().__init__()
-        self.buffer_time = 10 # Small buffer
+        self.buffer_time = 120 # should be the readout time for the slowest
+                               # detector plus a margin.
 
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -33,20 +34,20 @@ class WaitForReadout(TranslatorModuleFunction):
 
         wait_logic = ''
         if 'Green' in detector_list:
-            wait_logic += '(($kpfgreen.EXPSTATE == 4) or ($kpfgreen.EXPSTATE == 1))'
+            wait_logic += '(($kpfgreen.EXPSTATE == 0) or ($kpfgreen.EXPSTATE == 1))'
         if 'Red' in detector_list:
             if len(wait_logic) > 0: 
                 wait_logic +=' and '
-            wait_logic += '(($kpfred.EXPSTATE == 4) or ($kpfred.EXPSTATE == 1))'
+            wait_logic += '(($kpfred.EXPSTATE == 0) or ($kpfred.EXPSTATE == 1))'
         if 'Ca_HK' in detector_list:
             if len(wait_logic) > 0: 
                 wait_logic +=' and '
-            wait_logic += '(($kpf_hk.EXPSTATE == 4) or ($kpf_hk.EXPSTATE == 1))'
+            wait_logic += '(($kpf_hk.EXPSTATE == 0) or ($kpf_hk.EXPSTATE == 1))'
         if len(wait_logic) > 0: 
             wait_logic +=' and '
-        wait_logic += '($kpfexpose.EXPOSE == 4)'
+        wait_logic += '($kpfexpose.EXPOSE == 0)'
         print(f"  Wait Logic: {wait_logic}")
-        print(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
+        print(f"  Waiting ({wait_time:.0f}s max) for detectors to be ready")
         ktl.waitFor(wait_logic, timeout=wait_time)
 
     @classmethod
@@ -56,9 +57,9 @@ class WaitForReadout(TranslatorModuleFunction):
         detector_list = detectors.split(',')
         expose = kpfexpose['EXPOSE']
         status = expose.read()
-        
-        notok = [(status not in ['Readout', 'Ready'])]
-        msg = f"Final detector state mismatch: {status} != Readout ("
+
+        notok = [(status != 'Ready')]
+        msg = f"Final detector state mismatch: {status} != Ready ("
         if 'Green' in detector_list:
             greenexpstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
             notok.append(greenexpstate == 'Error')
