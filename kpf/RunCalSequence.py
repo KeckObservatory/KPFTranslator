@@ -5,6 +5,18 @@ from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 from ddoitranslatormodule.DDOIExceptions import *
 
 from ..utils import *
+from .calbench.PowerOnCalSource import PowerOnCalSource
+from .calbench.PowerOffCalSource import PowerOffCalSource
+from .calbench.SetCalSource import SetCalSource
+from .calbench.SetND1 import SetND1
+from .calbench.SetND2 import SetND2
+from .spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from .spectrograph.SetTimedShutters import SetTimedShutters
+from .spectrograph.SetExptime import SetExptime
+from .spectrograph.WaitForReady import WaitForReady
+from .spectrograph.WaitForReadout import WaitForReadout
+from .spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from .spectrograph.StartExposure import StartExposure
 
 
 class RunCalSequence(TranslatorModuleFunction):
@@ -38,8 +50,7 @@ class RunCalSequence(TranslatorModuleFunction):
         lamps = set([entry['OctagonSource'] for entry in sequences])
         for lamp in lamps:
             # Turn on lamps
-            action = PowerOnCalSource()
-            action.execute({'lamp': lamp})
+            PowerOnCalSource.execute({'lamp': lamp})
 
         warm_up_time = max([entry['WarmUp'] for entry in sequences])
 
@@ -52,62 +63,48 @@ class RunCalSequence(TranslatorModuleFunction):
                          f"{i+1}/{len(sequences)} ({args.files[i]})")
 
                 # Set Cal Source
-                action = SetCalSource()
-                action.execute(sequence)
+                SetCalSource.execute({})
 
                 # Set Source Select Shutters
-                action = SetSourceSelectShutters()
-                action.execute(sequence)
+                SetSourceSelectShutters.execute({})
 
                 # Set Timed Shutters
-                action = SetTimedShutters()
-                action.execute(sequence)
+                SetTimedShutters.execute({})
 
                 # Set ND1 Filter Wheel
-                action = SetND1()
-                action.execute(sequence)
+                SetND1.execute({})
 
                 # Set ND2 Filter Wheel
-                action = SetND2()
-                action.execute(sequence)
+                SetND2.execute({}})
 
                 # Set exposure time
-                action = SetExptime()
-                action.execute(sequence)
+                SetExptime.execute({}})
 
                 # Wait for Exposure to be Complete
-                action = WaitForReady()
-                action.execute(sequence)
+                WaitForReady.execute()
 
                 # Set Detector List
-                action = SetTriggeredDetectors()
-                action.execute(sequence)
+                SetTriggeredDetectors.execute({})
 
                 nexp = sequence.get('nExp', 1)
                 for j in range(nexp):
                     # Wait for Exposure to be Complete
-                    action = WaitForReady()
-                    action.execute(sequence)
+                    WaitForReady.execute()
 
-                    log.info(f"  Starting expoure {j+1}/{nexp}")
-                    # Start Exposure
-                    action = StartExposure()
-                    if args.noexp is False: action.execute(sequence)
+                    print(f"  Starting expoure {j+1}/{nexp}")
+                    if args.noexp is False: StartExposure.execute()
 
                     # Wait for Readout to Begin
-                    action = WaitForReadout()
-                    if args.noexp is False: action.execute(sequence)
+                    if args.noexp is False: WaitForReadout.execute()
 
 
         if args.lampsoff is True:
             for lamp in lamps:
                 # Turn off lamps
-                action = PowerOffCalSource()
-                action.execute({'lamp': lamp})
+                PowerOffCalSource.execute({'lamp': lamp})
 
         # Wait for Exposure to be Complete
-        action = WaitForReady()
-        action.execute(sequence)
+        WaitForReady.execute()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
