@@ -4,6 +4,8 @@ import ktl
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 from ddoitranslatormodule.DDOIExceptions import *
 
+from ..utils import *
+
 
 class SetTriggeredDetectors(TranslatorModuleFunction):
     '''Selects which cameras will be triggered by setting the

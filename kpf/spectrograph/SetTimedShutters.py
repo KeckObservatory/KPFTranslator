@@ -4,6 +4,8 @@ import ktl
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 from ddoitranslatormodule.DDOIExceptions import *
 
+from ..utils import *
+
 
 class SetTimedShutters(TranslatorModuleFunction):
     '''Selects which timed shutters will be triggered by setting the

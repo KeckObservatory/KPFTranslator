@@ -4,6 +4,8 @@ import ktl
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 from ddoitranslatormodule.DDOIExceptions import *
 
+from ..utils import *
+
 
 class SetSourceSelectShutters(TranslatorModuleFunction):
     '''Opens and closes the source select shutters via the 

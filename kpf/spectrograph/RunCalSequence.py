@@ -4,6 +4,8 @@ import ktl
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 from ddoitranslatormodule.DDOIExceptions import *
 
+from ..utils import *
+
 
 class RunCalSequence(TranslatorModuleFunction):
     '''Loops over all input files (args.files). Each file is parsed as YAML
