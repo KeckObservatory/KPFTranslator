@@ -24,17 +24,16 @@ class SetCalSource(TranslatorModuleFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        target = args.get('OctagonSource', None)
-        if target is not None:
-            print(f"  Setting Cal Source (Octagon) to {target}")
-            kpfmot = ktl.cache('kpfmot')
-            kpfmot['OCTAGON'].write(target)
+        target = args.get('cal_source', 'home')
+        kpfmot = ktl.cache('kpfmot')
+        print(f"  Setting Cal Source (Octagon) to {target}")
+        kpfmot['OCTAGON'].write(target)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         '''Verifies that the final OCTAGON keyword value matches the input.
         '''
-        target = args.get('OctagonSource', None)
+        target = args.get('cal_source', 'home')
         kpfmot = ktl.cache('kpfmot')
         final_pos = kpfmot['OCTAGON'].read()
         if final_pos != target:

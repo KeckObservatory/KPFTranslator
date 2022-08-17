@@ -20,7 +20,7 @@ class SetND1(TranslatorModuleFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        ND1_target = args.get('ND1', None)
+        ND1_target = args.get('nd1_filter', None)
         if ND1_target is not None:
             print(f"  Setting ND1 to {ND1_target}")
             kpfmot = ktl.cache('kpfmot')
@@ -28,7 +28,7 @@ class SetND1(TranslatorModuleFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        ND1_target = args.get('ND1', None)
+        ND1_target = args.get('nd1_filter', None)
         if ND1_target is not None:
             kpfmot = ktl.cache('kpfmot')
             final_pos = kpfmot['ND1POS'].read()

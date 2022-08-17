@@ -42,10 +42,11 @@ class PowerOffCalSource(TranslatorModuleFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfpower = ktl.cache('kpfpower')
-        port = self.ports.get(args.get('lamp', None))
+        cal_source = args.get('cal_source', None)
+        port = self.ports.get(cal_source, None)
         if port is not None:
             port_name = kpfpower[f"{port}_NAME"].read()
-            print(f"  Powering off {args.lamp}")
+            print(f"  Powering off {cal_source}")
             print(f"    Unlocking {port}: {port_name}")
             kpfpower[f"{port}_LOCK"].write('Unlocked')
             print(f"    Turning on {port}: {port_name}")
@@ -58,7 +59,8 @@ class PowerOffCalSource(TranslatorModuleFunction):
         '''Verifies that the relevant power port is actually off.
         '''
         kpfpower = ktl.cache('kpfpower')
-        port = self.ports.get(args.get('lamp', None))
+        cal_source = args.get('cal_source', None)
+        port = self.ports.get(cal_source, None)
         if port is not None:
             port_name = kpfpower[f"{port}_NAME"].read()
             print(f"    Reading {port}: {port_name}")

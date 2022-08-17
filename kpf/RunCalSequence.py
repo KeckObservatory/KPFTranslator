@@ -4,7 +4,7 @@ import ktl
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 from ddoitranslatormodule.DDOIExceptions import *
 
-from ..utils import *
+from .utils import *
 from .calbench.PowerOnCalSource import PowerOnCalSource
 from .calbench.PowerOffCalSource import PowerOffCalSource
 from .calbench.SetCalSource import SetCalSource
@@ -23,7 +23,7 @@ class RunCalSequence(TranslatorModuleFunction):
     '''Loops over all input files (args.files). Each file is parsed as YAML
     and the keyword-value pairs in the resulting dictionary control the
     subsequent actions.
-    
+
     The loop is repeated a number of times equal to the args.count value (which
     is the -n argument on the command line).
 
@@ -96,7 +96,6 @@ class RunCalSequence(TranslatorModuleFunction):
 
                     # Wait for Readout to Begin
                     if args.noexp is False: WaitForReadout.execute()
-
 
         if args.lampsoff is True:
             for lamp in lamps:

@@ -42,7 +42,8 @@ class PowerOnCalSource(TranslatorModuleFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfpower = ktl.cache('kpfpower')
-        port = self.ports.get(args.get('lamp', None))
+        cal_source = args.get('cal_source', None)
+        port = self.ports.get(cal_source, None)
         if port is not None:
             port_name = kpfpower[f"{port}_NAME"].read()
             if kpfpower[port].read() == 'On':
@@ -60,7 +61,8 @@ class PowerOnCalSource(TranslatorModuleFunction):
         '''Verifies that the relevant power port is actually on.
         '''
         kpfpower = ktl.cache('kpfpower')
-        port = self.ports.get(args.get('lamp', None))
+        cal_source = args.get('cal_source', None)
+        port = self.ports.get(cal_source, None)
         if port is not None:
             port_name = kpfpower[f"{port}_NAME"].read()
             print(f"    Reading {port} ({port_name})")
