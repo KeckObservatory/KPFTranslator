@@ -24,4 +24,4 @@ class OpenHatch(TranslatorModuleFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return check_fiu_hatch_is_open()
+        return ktl.waitFor('($kpffiu.hatch == Open)', timeout=1)
