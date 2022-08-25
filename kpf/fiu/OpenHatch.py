@@ -1,13 +1,13 @@
 
 
 import ktl
-from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
+from ddoitranslatormodule.BaseInstrument import InstrumentBase
 from ddoitranslatormodule.DDOIExceptions import *
 
 from ..utils import *
 
 
-class OpenHatch(TranslatorModuleFunction):
+class OpenHatch(InstrumentBase):
     '''Open the FIU hatch
     '''
     def __init__(self):

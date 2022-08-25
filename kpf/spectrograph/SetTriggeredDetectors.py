@@ -1,13 +1,13 @@
 
 
 import ktl
-from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
+from ddoitranslatormodule.BaseInstrument import InstrumentBase
 from ddoitranslatormodule.DDOIExceptions import *
 
 from ..utils import *
 
 
-class SetTriggeredDetectors(TranslatorModuleFunction):
+class SetTriggeredDetectors(InstrumentBase):
     '''Selects which cameras will be triggered by setting the
     `kpfexpose.TRIG_TARG` keyword value.
     '''

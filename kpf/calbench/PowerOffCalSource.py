@@ -1,13 +1,13 @@
 import numpy as np
 
 import ktl
-from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
+from ddoitranslatormodule.BaseInstrument import InstrumentBase
 from ddoitranslatormodule.DDOIExceptions import *
 
 from ..utils import *
 
 
-class PowerOffCalSource(TranslatorModuleFunction):
+class PowerOffCalSource(InstrumentBase):
     '''Powers off one of the cal lamps via the `kpfpower` keyword service.
     
     The mapping between lamp name and power outlet is hard coded for now.

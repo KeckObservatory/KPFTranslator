@@ -1,12 +1,12 @@
 from pathlib import Path
 
 import ktl
-from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
+from ddoitranslatormodule.BaseInstrument import InstrumentBase
 from ddoitranslatormodule.DDOIExceptions import *
 
 from ..utils import *
 
-class TakeGuiderExposure(TranslatorModuleFunction):
+class TakeGuiderExposure(InstrumentBase):
     '''Check for a new file to be written, then returns. The new file can be
     found by looking at the kpfguide.OUTDIR and kpfguide.LASTFILE keywords.
     '''

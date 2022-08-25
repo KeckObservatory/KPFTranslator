@@ -1,13 +1,13 @@
 import numpy as np
 
 import ktl
-from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
+from ddoitranslatormodule.BaseInstrument import InstrumentBase
 from ddoitranslatormodule.DDOIExceptions import *
 
 from ..utils import *
 
 
-class StartExposure(TranslatorModuleFunction):
+class StartExposure(InstrumentBase):
     '''Begins an triggered exposure by setting the `kpfexpose.EXPOSE` keyword
     to Start.  This will return immediately after.  Use commands like
     WaitForReadout or WaitForReady to determine when an exposure is done.

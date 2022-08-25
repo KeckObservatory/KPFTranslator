@@ -1,13 +1,13 @@
 
 
 import ktl
-from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
+from ddoitranslatormodule.BaseInstrument import InstrumentBase
 from ddoitranslatormodule.DDOIExceptions import *
 
 from ..utils import *
 
 
-class SetSourceSelectShutters(TranslatorModuleFunction):
+class SetSourceSelectShutters(InstrumentBase):
     '''Opens and closes the source select shutters via the 
     `kpfexpose.SRC_SHUTTERS` keyword.
     '''

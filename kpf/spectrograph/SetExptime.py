@@ -1,13 +1,13 @@
 
 
 import ktl
-from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
+from ddoitranslatormodule.BaseInstrument import InstrumentBase
 from ddoitranslatormodule.DDOIExceptions import *
 
 from ..utils import *
 
 
-class SetExptime(TranslatorModuleFunction):
+class SetExptime(InstrumentBase):
     '''Sets the exposure time for the science detectors in the kpfexpose
     keyword service.
     '''
