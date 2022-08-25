@@ -10,9 +10,6 @@ from ..utils import *
 class OpenHatch(InstrumentBase):
     '''Open the FIU hatch
     '''
-    def __init__(self):
-        super().__init__()
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

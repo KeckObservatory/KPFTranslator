@@ -11,7 +11,6 @@ class SetExptime(InstrumentBase):
     '''Sets the exposure time for the science detectors in the kpfexpose
     keyword service.
     '''
-
     @classmethod
     def add_cmdline_args(cls, parser, cfg):
         """

@@ -12,9 +12,6 @@ class StartExposure(InstrumentBase):
     to Start.  This will return immediately after.  Use commands like
     WaitForReadout or WaitForReady to determine when an exposure is done.
     '''
-    def __init__(self):
-        super().__init__()
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         conditions = []

@@ -15,9 +15,6 @@ class SetCalSource(InstrumentBase):
     Valid names: Home, EtalonFiber, BrdbandFiber, U_gold, U_daily,
     Th_daily, Th_gold, SoCal-CalFib, LFCFiber
     '''
-    def __init__(self):
-        super().__init__()
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

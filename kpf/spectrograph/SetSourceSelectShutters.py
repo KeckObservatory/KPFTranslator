@@ -11,9 +11,6 @@ class SetSourceSelectShutters(InstrumentBase):
     '''Opens and closes the source select shutters via the 
     `kpfexpose.SRC_SHUTTERS` keyword.
     '''
-    def __init__(self):
-        super().__init__()
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         print("Pre condition")

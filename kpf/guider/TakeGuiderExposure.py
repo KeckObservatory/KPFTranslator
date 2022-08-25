@@ -10,9 +10,6 @@ class TakeGuiderExposure(InstrumentBase):
     '''Check for a new file to be written, then returns. The new file can be
     found by looking at the kpfguide.OUTDIR and kpfguide.LASTFILE keywords.
     '''
-    def __init__(self):
-        super().__init__()
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return check_guider_is_saving()

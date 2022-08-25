@@ -11,9 +11,6 @@ class SetTriggeredDetectors(InstrumentBase):
     '''Selects which cameras will be triggered by setting the
     `kpfexpose.TRIG_TARG` keyword value.
     '''
-    def __init__(self):
-        super().__init__()
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         print("Pre condition")

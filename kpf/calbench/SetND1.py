@@ -11,9 +11,6 @@ class SetND1(InstrumentBase):
     '''Set the filter in the ND1 filter wheel (the one at the output of the 
     octagon) via the `kpfmot.ND1POS` keyword.
     '''
-    def __init__(self):
-        super().__init__()
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

@@ -30,9 +30,6 @@ class RunCalSequence(InstrumentBase):
     This function still needs work to adapt it from the original KPFtools format
     to the proper DSI Translator format.
     '''
-    def __init__(self):
-        super().__init__()
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         for file in args.files:
