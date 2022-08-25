@@ -15,12 +15,6 @@ class SetExptime(InstrumentBase):
     def add_cmdline_args(cls, parser, cfg):
         """
         The arguments to add to the command line interface.
-
-        :param parser: <ArgumentParser>
-            the instance of the parser to add the arguments to .
-        :param cfg: <class 'configparser.ConfigParser'> the config file parser.
-
-        :return: <ArgumentParser>
         """
         args_to_add = OrderedDict()
         args_to_add['exptime'] = {'type': float,

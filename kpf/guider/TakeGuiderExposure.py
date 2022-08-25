@@ -27,5 +27,5 @@ class TakeGuiderExposure(InstrumentBase):
         lastfile = kpfguide['LASTFILE']
         lastfile.monitor()
         new_file = Path(outdir) / Path(f"{lastfile}")
-        print(f"New file: {new_file}")
+        print(f"{new_file}")
         return new_file.exists()
