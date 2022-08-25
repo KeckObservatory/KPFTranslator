@@ -11,8 +11,24 @@ class SetExptime(InstrumentBase):
     '''Sets the exposure time for the science detectors in the kpfexpose
     keyword service.
     '''
-    def __init__(self):
-        super().__init__()
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg):
+        """
+        The arguments to add to the command line interface.
+
+        :param parser: <ArgumentParser>
+            the instance of the parser to add the arguments to .
+        :param cfg: <class 'configparser.ConfigParser'> the config file parser.
+
+        :return: <ArgumentParser>
+        """
+        args_to_add = OrderedDict()
+        args_to_add['exptime'] = {'type': float,
+                                  'help': 'The exposure time in seconds.'}
+
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)
 
     @classmethod
     def pre_condition(cls, args, logger, cfg):
