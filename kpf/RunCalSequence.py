@@ -2,7 +2,7 @@ from time import sleep
 
 import ktl
 
-from . import KPFTranslatorFunction
+from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .calbench.PowerOnCalSource import PowerOnCalSource
 from .calbench.PowerOffCalSource import PowerOffCalSource
 from .calbench.SetCalSource import SetCalSource

@@ -2,7 +2,7 @@ import numpy as np
 
 import ktl
 
-from .. import KPFTranslatorFunction
+from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class PowerOnCalSource(KPFTranslatorFunction):
