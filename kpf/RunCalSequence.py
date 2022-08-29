@@ -1,10 +1,8 @@
 from time import sleep
 
 import ktl
-from ddoitranslatormodule.BaseInstrument import InstrumentBase
-from ddoitranslatormodule.DDOIExceptions import *
 
-from .utils import *
+from . import KPFTranslatorFunction
 from .calbench.PowerOnCalSource import PowerOnCalSource
 from .calbench.PowerOffCalSource import PowerOffCalSource
 from .calbench.SetCalSource import SetCalSource
@@ -19,7 +17,7 @@ from .spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from .spectrograph.StartExposure import StartExposure
 
 
-class RunCalSequence(InstrumentBase):
+class RunCalSequence(KPFTranslatorFunction):
     '''Loops over all input files (args.files). Each file is parsed as YAML
     and the keyword-value pairs in the resulting dictionary control the
     subsequent actions.

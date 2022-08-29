@@ -1,13 +1,11 @@
 
 
 import ktl
-from ddoitranslatormodule.BaseInstrument import InstrumentBase
-from ddoitranslatormodule.DDOIExceptions import *
 
-from ..utils import *
+from .. import KPFTranslatorFunction
 
 
-class ControlHatch(InstrumentBase):
+class ControlHatch(KPFTranslatorFunction):
     '''Open or close the FIU hatch
     '''
     @classmethod

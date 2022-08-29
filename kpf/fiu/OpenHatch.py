@@ -1,13 +1,11 @@
 
 
 import ktl
-from ddoitranslatormodule.BaseInstrument import InstrumentBase
-from ddoitranslatormodule.DDOIExceptions import *
 
-from ..utils import *
+from .. import KPFTranslatorFunction
 
 
-class OpenHatch(InstrumentBase):
+class OpenHatch(KPFTranslatorFunction):
     '''Open the FIU hatch
     '''
     @classmethod

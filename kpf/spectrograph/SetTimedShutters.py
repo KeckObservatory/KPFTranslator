@@ -1,13 +1,11 @@
 
 
 import ktl
-from ddoitranslatormodule.BaseInstrument import InstrumentBase
-from ddoitranslatormodule.DDOIExceptions import *
 
-from ..utils import *
+from .. import KPFTranslatorFunction
 
 
-class SetTimedShutters(InstrumentBase):
+class SetTimedShutters(KPFTranslatorFunction):
     '''Selects which timed shutters will be triggered by setting the
     `kpfexpose.TIMED_SHUTTERS` keyword value.
     '''

@@ -1,13 +1,11 @@
 import numpy as np
 
 import ktl
-from ddoitranslatormodule.BaseInstrument import InstrumentBase
-from ddoitranslatormodule.DDOIExceptions import *
 
-from ..utils import *
+from .. import KPFTranslatorFunction
 
 
-class WaitForReadout(InstrumentBase):
+class WaitForReadout(KPFTranslatorFunction):
     '''Waits for the `kpfexpose.EXPOSE` keyword to be "Readout".  This will
     block until the camera enters the readout state.  Times out after waiting
     the current exposure time plus 10 seconds.

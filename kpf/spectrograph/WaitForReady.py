@@ -1,13 +1,11 @@
 import numpy as np
 
 import ktl
-from ddoitranslatormodule.BaseInstrument import InstrumentBase
-from ddoitranslatormodule.DDOIExceptions import *
 
-from ..utils import *
+from .. import KPFTranslatorFunction
 
 
-class WaitForReady(InstrumentBase):
+class WaitForReady(KPFTranslatorFunction):
     '''Waits for the `kpfexpose.EXPOSE` keyword to be "Ready".  This will
     block until the camera is ready for another exposure.  Times out after
     waiting for exposure time plus a set buffer time.

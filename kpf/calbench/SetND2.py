@@ -1,13 +1,11 @@
 import numpy as np
 
 import ktl
-from ddoitranslatormodule.BaseInstrument import InstrumentBase
-from ddoitranslatormodule.DDOIExceptions import *
 
-from ..utils import *
+from .. import KPFTranslatorFunction
 
 
-class SetND2(InstrumentBase):
+class SetND2(KPFTranslatorFunction):
     '''Set the filter in the ND2 filter wheel (the one at the output of the 
     octagon) via the `kpfmot.ND2POS` keyword.
     '''

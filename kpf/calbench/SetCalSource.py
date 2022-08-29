@@ -1,13 +1,11 @@
 import numpy as np
 
 import ktl
-from ddoitranslatormodule.BaseInstrument import InstrumentBase
-from ddoitranslatormodule.DDOIExceptions import *
 
-from ..utils import *
+from .. import KPFTranslatorFunction
 
 
-class SetCalSource(InstrumentBase):
+class SetCalSource(KPFTranslatorFunction):
     '''
     Selects which source is fed from the octagon in to the cal bench via the
     kpfmot.OCTAGON keyword.
