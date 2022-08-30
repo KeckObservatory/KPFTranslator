@@ -5,7 +5,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class SetGuiderExpTime(KPFTranslatorFunction):
+class GuiderOutdir(KPFTranslatorFunction):
     '''
     '''
     @classmethod

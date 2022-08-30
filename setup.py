@@ -13,7 +13,7 @@ scripts = []
 # Define entry points for command-line scripts
 entry_points = {
     'console_scripts': [
-        "translator = ddoitranslatormodule.cli_interface:main",
+        "kpftranslator = ddoitranslatormodule.cli_interface:main",
     ]
     }
 
@@ -26,7 +26,7 @@ setup(name=NAME,
       author_email=AUTHOR_EMAIL,
       packages=find_packages(),
       package_dir={"": "."},
-      package_data={'kpf': ['*.ini']},
+      package_data={'kpf': ['*']},
       scripts=scripts,
       entry_points=entry_points,
       install_requires=[],

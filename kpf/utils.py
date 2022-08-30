@@ -13,13 +13,13 @@ def check_fiu_hatch_is_open():
     '''Verifies that FIU hatch is open
     '''
     kpffiu = ktl.cache('kpffiu')
-    return kpffiu['HATCH'].read() == 'Open':
+    return kpffiu['HATCH'].read() == 'Open'
 
 def check_fiu_hatch_is_closed():
     '''Verifies that FIU hatch is closed
     '''
     kpffiu = ktl.cache('kpffiu')
-    return kpffiu['HATCH'].read() == 'Closed':
+    return kpffiu['HATCH'].read() == 'Closed'
 
 def check_guider_is_active():
     '''Checks that the guide camera is taking exposures.
