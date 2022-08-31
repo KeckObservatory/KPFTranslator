@@ -66,11 +66,13 @@ class SetGuiderExpTime(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        cfg = cls._load_config(cls, cfg)
+        exptol = cfg['tolerances'].get('guider_exptime_tolerance', 0.01)
+        timeshim = cfg['time_shims'].get('guider_set_exptime_shim', 0)
+
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
         exptime = args.get('exptime', None)
 
-        exptol = 0.01
-        timeshim = 0.25
         if exptime is not None:
             exptime_check = exptimekw.read(binary=True)
             # First try sleeping briefly
