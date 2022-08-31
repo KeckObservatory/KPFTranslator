@@ -6,7 +6,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class GuiderLastfile(KPFTranslatorFunction):
-    '''
+    '''Print the value of the kpfguide.LASTFILE keyword to STDOUT
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
