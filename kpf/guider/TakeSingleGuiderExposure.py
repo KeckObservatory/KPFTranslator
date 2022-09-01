@@ -28,6 +28,6 @@ class TakeSingleGuiderExposure(KPFTranslatorFunction):
         kpfguide = ktl.cache('kpfguide')
         lastfile = kpfguide['LASTFILE']
         lastfile.monitor()
-        new_file = Path(outdir) / Path(f"{lastfile}")
+        new_file = Path(f"{lastfile}")
         print(f"{new_file}")
         return new_file.exists()
