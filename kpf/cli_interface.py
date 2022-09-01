@@ -76,7 +76,7 @@ def get_linked_function(linking_tbl, key):
         # If those conditions are met, we found our module, and return it and
         # its path
         for property in [i for i in dir(mod) if not i.startswith("__")]:
-            if "ModuleFunction" not in property:
+            if "Function" not in property:
                 if "perform" in dir(getattr(mod, property)):
                     return getattr(mod, property), f"{module_str}.{property}"
 
