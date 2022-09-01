@@ -90,6 +90,10 @@ def get_linked_function(linking_tbl, key):
 def main():
 
     table_loc = Path(__file__).parent / "linking_table.ini"
+    if not table_loc.exists():
+        print(f"Failed to find a linking table at {str(table_loc)}")
+        print("Exiting...")
+        return
     linking_tbl = LinkingTable(table_loc)
 
     #
@@ -105,14 +109,15 @@ def main():
             try:
                 function, mod_str = get_linked_function(linking_tbl, args[1])
                 print(function.__doc__)
-                parser = ArgumentParser()
-                parser = function.add_cmdline_args(parser)
-                parser.print_help()
-                # figure out how to access the argparse from outside, and print the -h
+                # parser = ArgumentParser()
+                # parser = function.add_cmdline_args(parser)
+                # parser.print_help()
+                return
             except DDOITranslatorModuleNotFoundException as e:
                 print(e)
                 print("Available options are:")
                 linking_tbl.print_entry_points("   ")
+                return
         # Print help for using this CLI script
         else:
             print(f"This is the CLI entry script for {__package__}")
@@ -124,7 +129,7 @@ Options are:
     -n, --dry-run:
         Print what command would be invoked without actually executing it
 """)
-        return
+            return
     # List:
     if '-l' in args or '--list' in args:
         linking_tbl.print_entry_points()
