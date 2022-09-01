@@ -89,8 +89,6 @@ def get_linked_function(linking_tbl, key):
 
 def main():
 
-    # Load the linking table from the filename specified in the config
-    # cfg = {'linking_table_name' : './kpf/linking_table.ini'}
     table_loc = Path(__file__).parent / "linking_table.ini"
     linking_tbl = LinkingTable(table_loc)
 
