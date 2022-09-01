@@ -26,7 +26,7 @@ class GrabGuiderExposure(KPFTranslatorFunction):
         if guider_is_active():
             if guider_is_saving():
                 GrabGuiderExposure.GrabGuiderExposure.execute({})
-            else
+            else:
                 # not sure what right action is here
                 print('WARNING: Guider is active, but not saving. No image saved.')
         else:
