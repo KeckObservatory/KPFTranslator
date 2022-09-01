@@ -25,6 +25,7 @@ class GrabGuiderExposure(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        kpfguide = ktl.cache('kpfguide')
         lastfile = kpfguide['LASTFILE']
         lastfile.monitor()
         new_file = Path(f"{lastfile}")
