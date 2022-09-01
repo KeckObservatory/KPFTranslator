@@ -4,7 +4,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from .. import check_guider_is_active, check_guider_is_saving
+from .. import guider_is_active, guider_is_saving
 
 class StopGuiderContinuous(KPFTranslatorFunction):
     '''Stop the guider's continuous exposure mode and stop saving images.
@@ -21,4 +21,4 @@ class StopGuiderContinuous(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return check_guider_is_active() and check_guider_is_saving()
+        return not guider_is_active() and not guider_is_saving()

@@ -9,21 +9,21 @@ KPFError = Exception
 ##-------------------------------------------------------------------------
 ## Pre- or Post- Conditions
 ##-------------------------------------------------------------------------
-def check_fiu_hatch_is_open():
+def fiu_hatch_is_open():
     '''Verifies that FIU hatch is open
     '''
     kpffiu = ktl.cache('kpffiu')
     return kpffiu['HATCH'].read() == 'Open'
 
 
-def check_fiu_hatch_is_closed():
+def fiu_hatch_is_closed():
     '''Verifies that FIU hatch is closed
     '''
     kpffiu = ktl.cache('kpffiu')
     return kpffiu['HATCH'].read() == 'Closed'
 
 
-def check_guider_is_active():
+def guider_is_active():
     '''Checks that the guide camera is taking exposures.
     '''
     kpfguide = ktl.cache('kpfguide')
@@ -31,7 +31,7 @@ def check_guider_is_active():
     return continuous.lower() == 'active'
 
 
-def check_guider_is_saving():
+def guider_is_saving():
     '''Checks that the guide camera is taking exposures and outputting stacked
     images as fits files.
     '''
@@ -40,7 +40,7 @@ def check_guider_is_saving():
     return check_guider_is_active() and (save.lower() == 'active')
 
 
-def check_green_detector_power():
+def green_detector_power_is_on():
     '''Checks that the camera power is on
     '''
     kpfgreen = ktl.cache('kpfgreen')
@@ -56,7 +56,7 @@ def check_green_detector_power():
     return True
 
 
-def check_red_detector_power():
+def red_detector_power_is_on():
     '''Checks that the camera power is on
     '''
     kpfred = ktl.cache('kpfgreen')
@@ -72,7 +72,7 @@ def check_red_detector_power():
     return True
 
 
-def check_green_detector_temperature(temperature_tolerance=1):
+def green_detector_temperature_is_ok(temperature_tolerance=1):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfgreen = ktl.cache('kpfgreen')
@@ -89,7 +89,7 @@ def check_green_detector_temperature(temperature_tolerance=1):
         return True
 
 
-def check_red_detector_temperature(temperature_tolerance=1):
+def red_detector_temperature_is_ok(temperature_tolerance=1):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfred = ktl.cache('kpfred')
@@ -106,7 +106,7 @@ def check_red_detector_temperature(temperature_tolerance=1):
         return True
 
 
-def check_cahk_detector_temperature(temperature_tolerance=1):
+def cahk_detector_temperature_is_ok(temperature_tolerance=1):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfhk = ktl.cache('kpf_hk')

@@ -4,15 +4,15 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from .. import check_guider_is_saving, check_guider_is_active
+from .. import guider_is_saving, guider_is_active
 
 
-class TakeSingleGuiderExposure(KPFTranslatorFunction):
-    '''Take 
+class TriggerSingleGuiderExposure(KPFTranslatorFunction):
+    '''Trigger a single guider exposure using the EXPOSE keyword.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return not check_guider_is_active() and not check_guider_is_saving()
+        return not guider_is_active() and not guider_is_saving()
 
     @classmethod
     def perform(cls, args, logger, cfg):
