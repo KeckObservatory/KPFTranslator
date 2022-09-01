@@ -1,4 +1,5 @@
 import ktl
+import numpy as np
 
 KPFError = Exception
 
@@ -21,6 +22,19 @@ def fiu_hatch_is_closed():
     '''
     kpffiu = ktl.cache('kpffiu')
     return kpffiu['HATCH'].read() == 'Closed'
+
+
+def guider_is_ready():
+    '''Checks that guider is powered on and some basic keywords are set.
+    '''
+    kpfguide = ktl.cache('kpfguide')
+    kpfpower = ktl.cache('kpfpower')
+    tests = [kpfpower['KPFGUIDE1'].read() == 'On',
+             kpfguide['FPS'].read(binary=True) > 0,
+             kpfguide['DISP1STA'].read() == 'Ready',
+             kpfguide['DISP2STA'].read() == 'Ready',
+             ]
+    return np.all(np.array(tests))
 
 
 def guider_is_active():
