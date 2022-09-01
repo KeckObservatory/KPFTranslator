@@ -1,12 +1,14 @@
-from argparse import ArgumentParser
 import importlib
 import traceback
 import sys
 import configparser
+from pathlib import Path
+from argparse import ArgumentParser
 from typing import Dict, List, Tuple
-from inspect import getsource
+
 from ddoitranslatormodule.ddoiexceptions.DDOIExceptions import DDOITranslatorModuleNotFoundException
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
+
 class LinkingTable():
     """Class storing the contents of a linking table
     """
@@ -88,8 +90,9 @@ def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str
 def main():
 
     # Load the linking table from the filename specified in the config
-    cfg = {'linking_table_name' : './kpf/linking_table.ini'}
-    linking_tbl = LinkingTable(cfg['linking_table_name'])
+    # cfg = {'linking_table_name' : './kpf/linking_table.ini'}
+    table_loc = Path(__file__).parent / "linking_table.ini"
+    linking_tbl = LinkingTable(table_loc)
 
     #
     ### Handle command line arguments
