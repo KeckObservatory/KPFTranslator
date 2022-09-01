@@ -88,7 +88,7 @@ def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str
 def main():
 
     # Load the linking table from the filename specified in the config
-    cfg = {'linking_table_name' : './test_translator/linking_tbl.ini'}
+    cfg = {'linking_table_name' : './kpf/linking_table.ini'}
     linking_tbl = LinkingTable(cfg['linking_table_name'])
 
     #
