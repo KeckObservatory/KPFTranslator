@@ -102,16 +102,20 @@ def main():
 
     args = sys.argv
     dry_run = False
+    verbose = False
+    if '-v' in args or '--verbose' in args:
+        verbose = True
     # Help:
     if '-h' in args or '--help' in args:
         # If this is help for a specific module:
         if len(args) > 2:
             try:
                 function, mod_str = get_linked_function(linking_tbl, args[1])
-                print(function.__doc__)
-                # parser = ArgumentParser()
-                # parser = function.add_cmdline_args(parser)
-                # parser.print_help()
+                parser = ArgumentParser()
+                parser = function.add_cmdline_args(parser)
+                parser.print_help()
+                if verbose:
+                    print(function.__doc__)
                 return
             except DDOITranslatorModuleNotFoundException as e:
                 print(e)
@@ -128,6 +132,8 @@ Options are:
         Print all entry points available for use
     -n, --dry-run:
         Print what command would be invoked without actually executing it
+    -v, --verbose:
+        Print extra information. For -h, prints full function docstring
 """)
             return
     # List:
@@ -139,7 +145,6 @@ Options are:
         dry_run = True
         if "-n" in args: args.remove("-n")
         if "--dry-run" in args: args.remove("--dry-run")
-
     #
     ### Handle Execution
     #
@@ -147,17 +152,16 @@ Options are:
     try:
         function, mod_str = get_linked_function(linking_tbl, args[1])
         
-        parser = ArgumentParser()
+        parser = ArgumentParser(add_help=False)
         # Call the add cmd line args
         parser = function.add_cmdline_args(parser)
-
-        # Parse the args
         parsed_args = parser.parse_args(args[2:])
         
         if dry_run:
             print(f"Function: {mod_str}\nArgs: [{' '.join(args[2:])}]")
         else:
-            print(f"Executing {mod_str} {' '.join(args[2:])}")
+            if verbose:
+                print(f"Executing {mod_str} {' '.join(args[2:])}")
             function.execute(parsed_args)
     except DDOITranslatorModuleNotFoundException as e:
         print(e)
