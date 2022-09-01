@@ -13,7 +13,7 @@ class LinkingTable():
     """Class storing the contents of a linking table
     """
 
-    def __init__(self, filename) -> None:
+    def __init__(self, filename):
         raw =  configparser.ConfigParser()
         raw.read(filename)
         self.cfg = raw
@@ -24,11 +24,11 @@ class LinkingTable():
         eps = [key for key in self.cfg['links']]
         return eps
     
-    def print_entry_points(self, prefix="") -> None:
+    def print_entry_points(self, prefix=""):
         for i in self.get_entry_points():
             print(prefix + i)
 
-    def get_link(self, entry_point) -> str:
+    def get_link(self, entry_point):
         output = ""
         if self.prefix:
             output += self.prefix + "."
@@ -37,7 +37,7 @@ class LinkingTable():
             output += "." + self.suffix
         return output
 
-def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str]:
+def get_linked_function(linking_tbl, key):
     """Searches a linking table for a given key, and attempts to fetch the
     associated python module
 
