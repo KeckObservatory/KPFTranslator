@@ -8,7 +8,7 @@ from .. import guider_is_saving, guider_is_active
 from . import TriggerSingleGuiderExposure, GrabGuiderExposure
 
 
-class GrabGuiderExposure(KPFTranslatorFunction):
+class TakeGuiderExposure(KPFTranslatorFunction):
     '''Depending on whether the guide camera is running in continuous mode or
     not, this will either grab the next exposure (if in continuous mode) or
     trigger a new exposure.
