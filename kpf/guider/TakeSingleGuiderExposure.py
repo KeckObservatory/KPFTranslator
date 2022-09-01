@@ -3,7 +3,8 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import check_guider_is_saving
+
+from .. import check_guider_is_saving, check_guider_is_active
 
 
 class TakeSingleGuiderExposure(KPFTranslatorFunction):
