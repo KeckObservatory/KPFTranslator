@@ -20,5 +20,5 @@ class OpenHatch(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         cfg = cls._load_config(cls, cfg)
-        timeout = cfg['expected_times'].get('fiu_hatch_move_time', 1)
+        timeout = cfg.get('expected_times', 'fiu_hatch_move_time', fallback=1)
         return ktl.waitFor('($kpffiu.hatch == Open)', timeout=timeout)

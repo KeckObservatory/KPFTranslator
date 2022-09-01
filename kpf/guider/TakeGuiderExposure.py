@@ -37,9 +37,4 @@ class TakeGuiderExposure(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfguide = ktl.cache('kpfguide')
-        lastfile = kpfguide['LASTFILE']
-        lastfile.monitor()
-        new_file = Path(f"{lastfile}")
-        print(f"{new_file}")
-        return new_file.exists()
+        return True

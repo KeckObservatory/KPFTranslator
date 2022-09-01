@@ -37,7 +37,7 @@ def guider_is_saving():
     '''
     kpfguide = ktl.cache('kpfguide')
     save = kpfguide['SAVE'].read()
-    return check_guider_is_active() and (save.lower() == 'active')
+    return guider_is_active() and (save.lower() == 'active')
 
 
 def green_detector_power_is_on():
