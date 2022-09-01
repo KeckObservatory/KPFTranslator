@@ -19,4 +19,6 @@ class CloseHatch(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return ktl.waitFor('($kpffiu.hatch == Closed)', timeout=1)
+        cfg = cls._load_config(cls, cfg)
+        timeout = cfg['expected_times'].get('fiu_hatch_move_time', 1)
+        return ktl.waitFor('($kpffiu.hatch == Closed)', timeout=timeout)
