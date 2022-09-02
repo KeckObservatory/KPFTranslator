@@ -1,6 +1,8 @@
-
-
 import ktl
+
+from collections import OrderedDict
+from CloseHatch import CloseHatch
+from OpenHatch import OpenHatch
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
@@ -9,12 +11,12 @@ class ControlHatch(KPFTranslatorFunction):
     '''Open or close the FIU hatch
     '''
     @classmethod
-    def add_cmdline_args(cls, parser, cfg):
+    def add_cmdline_args(cls, parser, cfg=None):
         """
         The arguments to add to the command line interface.
         """
         args_to_add = OrderedDict()
-        args_to_add['destination'] = {'type': string,
+        args_to_add['destination'] = {'type': str,
                                       'help': 'Desired hatch position: "open" or "closed"'}
 
         parser = cls._add_args(parser, args_to_add, print_only=False)
