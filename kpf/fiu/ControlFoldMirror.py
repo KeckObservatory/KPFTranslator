@@ -2,8 +2,8 @@ import ktl
 from collections import OrderedDict
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from FoldMirrorOut import FoldMirrorOut
-from FoldMirrorIn import FoldMirrorIn
+from .FoldMirrorOut import FoldMirrorOut
+from .FoldMirrorIn import FoldMirrorIn
 
 class ControlFoldMirror(KPFTranslatorFunction):
     '''Open or close the FIU hatch
