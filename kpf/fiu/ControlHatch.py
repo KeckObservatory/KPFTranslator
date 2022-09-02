@@ -16,7 +16,6 @@ class ControlHatch(KPFTranslatorFunction):
         The arguments to add to the command line interface.
         """
         args_to_add = OrderedDict()
-        print("Added args")
         args_to_add['destination'] = {'type': str,
                                 'help': 'Desired hatch position: "open" or "closed"'}
 
