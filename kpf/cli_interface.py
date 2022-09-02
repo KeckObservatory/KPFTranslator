@@ -156,7 +156,7 @@ def main():
         if len(args) > 2:
             try:
                 function, mod_str = get_linked_function(linking_tbl, args[1])
-                parser = ArgumentParser()
+                parser = ArgumentParser(add_help=False)
                 parser = function.add_cmdline_args(parser)
                 parser.print_help()
                 if verbose:
