@@ -14,6 +14,13 @@ class LinkingTable():
     """
 
     def __init__(self, filename):
+        """Create the LinkingTable
+
+        Parameters
+        ----------
+        filename : str
+            Filepath to the linking table
+        """
         raw =  configparser.ConfigParser()
         raw.read(filename)
         self.cfg = raw
@@ -21,14 +28,46 @@ class LinkingTable():
         self.suffix = raw['common']['suffix']
     
     def get_entry_points(self) -> List[str]:
+        """Gets a list of all the entry points listed in the linking table
+
+        Returns
+        -------
+        List[str]
+            List of all entry points (keys) in the linking table
+        """
         eps = [key for key in self.cfg['links']]
         return eps
     
-    def print_entry_points(self, prefix=""):
+    def print_entry_points(self, prefix="") -> None:
+        """Prints out all the entry points listed in the linking table
+
+        Parameters
+        ----------
+        prefix : str, optional
+            String to be prepended to each line, by default ""
+        """
         for i in self.get_entry_points():
             print(prefix + i)
 
-    def get_link(self, entry_point):
+    def get_link(self, entry_point) -> str:
+        """Gets the full import string from the linking table for a given entry
+        point (key)
+
+        Parameters
+        ----------
+        entry_point : str
+            Entry point (key) to get
+
+        Returns
+        -------
+        str
+            Python import string for the requested function
+
+        Raises
+        ------
+        KeyError
+            Raised if the linking table does not have an entry matching entry_point
+        """
         output = ""
         if self.prefix:
             output += self.prefix + "."
@@ -37,7 +76,7 @@ class LinkingTable():
             output += "." + self.suffix
         return output
 
-def get_linked_function(linking_tbl, key):
+def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str]:
     """Searches a linking table for a given key, and attempts to fetch the
     associated python module
 
@@ -52,7 +91,7 @@ def get_linked_function(linking_tbl, key):
     -------
     Tuple[class, str]
         The class matching the given key, and the module path string needed to
-        import it
+        import it. If no such module is found, returns (None, None)
 
     Raises
     ------
@@ -76,18 +115,23 @@ def get_linked_function(linking_tbl, key):
         # If those conditions are met, we found our module, and return it and
         # its path
         for property in [i for i in dir(mod) if not i.startswith("__")]:
-            if "Function" not in property:
+            if "Function" not in property: # This check may need updating
                 if "perform" in dir(getattr(mod, property)):
                     return getattr(mod, property), f"{module_str}.{property}"
 
         print("Failed to find a class with a perform method")
         return None, None
+
     except ImportError as e:
         print(f"Failed to import {module_str}")
         print(traceback.format_exc())
         return None, None
 
 def main():
+
+    #
+    ### Build the linking table
+    #
 
     table_loc = Path(__file__).parent / "linking_table.ini"
     if not table_loc.exists():
@@ -103,6 +147,7 @@ def main():
     args = sys.argv
     dry_run = False
     verbose = False
+    # Verbose
     if '-v' in args or '--verbose' in args:
         verbose = True
     # Help:
@@ -150,24 +195,28 @@ Options are:
     #
     
     try:
+
+        # Get the function
         function, mod_str = get_linked_function(linking_tbl, args[1])
         
+        # Build an ArgumentParser and attach the function's arguments
         parser = ArgumentParser(add_help=False)
-        # Call the add cmd line args
         parser = function.add_cmdline_args(parser)
         parsed_args = parser.parse_args(args[2:])
         
         if dry_run:
-            print(f"Function: {mod_str}\nArgs: [{' '.join(args[2:])}]")
+            print(f"Function: {mod_str}\nArgs: {' '.join(args[2:])}")
         else:
             if verbose:
                 print(f"Executing {mod_str} {' '.join(args[2:])}")
             function.execute(parsed_args)
+
     except DDOITranslatorModuleNotFoundException as e:
         print(e)
     except ImportError as e:
         print(e)
     except TypeError as e:
         print(traceback.format_exc())
+
 if __name__ == "__main__":
     main()
