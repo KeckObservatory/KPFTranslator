@@ -1,5 +1,5 @@
-from pathlib import Path
 from collections import OrderedDict
+from time import sleep
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
