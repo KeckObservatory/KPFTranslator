@@ -114,13 +114,16 @@ def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str
         #     method called perform, which may be an unsafe assumption
         # If those conditions are met, we found our module, and return it and
         # its path
-        for property in [i for i in dir(mod) if not i.startswith("__")]:
-            if "Function" not in property: # This check may need updating
-                if "perform" in dir(getattr(mod, property)):
-                    return getattr(mod, property), f"{module_str}.{property}"
-
-        print("Failed to find a class with a perform method")
-        return None, None
+        file_name = mod.__name__.split(".")[-1]
+        # for property in [i for i in dir(mod) if not i.startswith("__")]:
+        #     if "Function" not in property: # This check may need updating
+        #         if "perform" in dir(getattr(mod, property)):
+        #             return getattr(mod, property), f"{module_str}.{property}"
+        try:
+            return getattr(mod, file_name), file_name
+        except:
+            print("Failed to find a class with a perform method")
+            return None, None
 
     except ImportError as e:
         print(f"Failed to import {module_str}")
