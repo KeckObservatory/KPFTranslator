@@ -102,25 +102,21 @@ def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str
     # Check to see if there is an entry matching the given key
     if key not in linking_tbl.get_entry_points():
         raise DDOITranslatorModuleNotFoundException(f"Unable to find an import for {key}")
-    module_str = linking_tbl.get_link(key)
+    link = linking_tbl.get_link(key)
+
+    # Get only the module path
+    link_elements = link.split(".")
+    # Get only the module import string
+    module_str = ".".join(link_elements[:-1])
+    # Get only the class name
+    class_str = link_elements[-1]
     
     try:
         # Try to import the package from the string in the linking table
         mod = importlib.import_module(module_str)
-        
-        # For each non-builtin property in the module, check if:
-        #   - It is an Inherited function (e.g. base function)
-        #   - There is a perform method. This assumes nothing else will have a
-        #     method called perform, which may be an unsafe assumption
-        # If those conditions are met, we found our module, and return it and
-        # its path
-        file_name = mod.__name__.split(".")[-1]
-        # for property in [i for i in dir(mod) if not i.startswith("__")]:
-        #     if "Function" not in property: # This check may need updating
-        #         if "perform" in dir(getattr(mod, property)):
-        #             return getattr(mod, property), f"{module_str}.{property}"
+       
         try:
-            return getattr(mod, file_name), file_name
+            return getattr(mod, class_str), link
         except:
             print("Failed to find a class with a perform method")
             return None, None
