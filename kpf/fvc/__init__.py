@@ -4,9 +4,7 @@ import ktl
 def fvc_is_ready(camera='SCI'):
     '''Checks that science FVC is powered up and in a standard configuration.
     '''
-    outlet = {'SCI': 'K5',
-              'CAHK': 'K6',
-              'CAL': 'F6'}
+    outlet = {'SCI': 'K5', 'CAHK': 'K6', 'CAL': 'F6'}[camera]
     kpffvc = ktl.cache('kpffvc')
     kpfpower = ktl.cache('kpfpower')
     tests = [kpfpower[f'OUTLET_{outlet}'].read() == 'On',
