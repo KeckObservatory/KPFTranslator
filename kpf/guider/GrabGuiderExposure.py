@@ -4,7 +4,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from .. import guider_is_saving, guider_is_active
+from . import guider_is_saving, guider_is_active
 
 
 class GrabGuiderExposure(KPFTranslatorFunction):

@@ -4,7 +4,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from .. import guider_is_active, guider_is_saving
+from . import guider_is_active, guider_is_saving
 
 class StartGuiderContinuous(KPFTranslatorFunction):
     '''Put the guider in to continuous exposure mode and set images to be saved.
