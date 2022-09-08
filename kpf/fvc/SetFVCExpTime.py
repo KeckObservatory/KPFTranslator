@@ -40,21 +40,9 @@ class SetFVCExpTime(KPFTranslatorFunction):
         """
         The arguments to add to the command line interface.
         """
-        args_to_add = OrderedDict({'camera': {'type': str,
-                                   'help': 'The camera to use (SCI, CAHK, CAL).'},
-                                   'exptime': {'type': float,
-                                   'help': 'The exposure time in seconds.'},
-                                  })
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-        return super().add_cmdline_args(parser, cfg)
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
         args_to_add = OrderedDict()
+        args_to_add['camera'] = {'type': str,
+                                 'help': 'The camera to use (SCI, CAHK, CAL).'}
         args_to_add['exptime'] = {'type': float,
                                   'help': 'The exposure time in seconds.'}
 
