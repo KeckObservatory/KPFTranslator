@@ -1,3 +1,5 @@
+import ktl
+
 def guider_is_ready():
     '''Checks that guider is powered on and some basic keywords are set.
     '''
