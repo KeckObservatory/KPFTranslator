@@ -8,7 +8,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from . import fvc_is_ready
 
 
-class SetFVCExptime(KPFTranslatorFunction):
+class SetFVCExpTime(KPFTranslatorFunction):
     '''Take an exposure with the specified fiber viewing camera
     '''
     @classmethod
