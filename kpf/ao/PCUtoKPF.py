@@ -1,4 +1,5 @@
 import ktl
+
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
@@ -22,17 +23,14 @@ class PcuToKpf(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-    
         ao = ktl.cache('ao')
-
         print('Move PCU in LZ direction')
-        ao[PCSFLZ].write('0')
+        ao['PCSFLZ'].write('0')
         print('Move PCU in X direction')
-        ao[PCSFX].write('80')
+        ao['PCSFX'].write('80')
         print('Move PCU in Y direction')
-        ao[PCSFY].write('45')
+        ao['PCSFY'].write('45')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        
         return True

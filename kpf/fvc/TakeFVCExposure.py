@@ -9,7 +9,7 @@ from . import fvc_is_ready
 
 
 class TakeFVCExposure(KPFTranslatorFunction):
-    '''
+    '''Take an exposure with the specified fiber viewing camera
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

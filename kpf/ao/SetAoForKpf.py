@@ -1,5 +1,10 @@
 import ktl
+
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+
+from . import SetAoRotatorManual, ParkAoRotator, HepaOff, AoDcsSim, AoHatchOpen
+
+
 class SetAoForKpf(KPFTranslatorFunction):
     """
     SetAoForKpf  
@@ -23,14 +28,10 @@ class SetAoForKpf(KPFTranslatorFunction):
 
     @classmethod
     def pre_condition(args, logger, cfg):
-
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        
-        ao = ktl.cache('ao')
-
         print('Set AO rotator to Manual')
         SetAoRotatorManual.execute({})
 
@@ -48,8 +49,6 @@ class SetAoForKpf(KPFTranslatorFunction):
         print('Open AO hatch')
         AoHatchOpen.execute({})
 
-
     @classmethod
     def post_condition(cls, args, logger, cfg):
-
         return True

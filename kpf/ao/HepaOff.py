@@ -1,4 +1,5 @@
 import ktl
+
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
@@ -24,13 +25,10 @@ class HepaOff(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-    
         ao = ktl.cache('ao')
-        ao[OBHPASTA].write('0')
+        ao['OBHPASTA'].write('0')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        
         ao = ktl.cache('ao')
-        
         return ktl.waitfor('($ao.OBHPASTA == off)', timeout=3)

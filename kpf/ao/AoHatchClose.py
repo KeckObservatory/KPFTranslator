@@ -24,13 +24,10 @@ class AoHatchClose(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-    
         ao = ktl.cache('ao')
-        ao[aohatchcmd].write('close')
+        ao['aohatchcmd'].write('close')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        
         ao = ktl.cache('ao')
-        
         return ktl.waitfor('($ao.AOHATCHSTS == closed)', timeout=30)
