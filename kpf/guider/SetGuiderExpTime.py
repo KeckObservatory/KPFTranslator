@@ -68,24 +68,18 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         cfg = cls._load_config(cls, cfg)
         exptol = cfg.get('tolerances', 'guider_exptime_tolerance', fallback=0.01)
-        timeshim = cfg.get('time_shims', 'guider_set_exptime_shim', fallback=0)
 
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
         exptime = args.get('exptime', None)
 
         if exptime is not None:
-            exptime_check = exptimekw.read(binary=True)
-            # First try sleeping briefly
-            if abs(exptime_check - exptime) > exptol:
-                sleep(timeshim)
-            # Now check again
-            exptime_check = exptimekw.read(binary=True)
-            if abs(exptime_check - exptime) > exptol:
+            expr = (f'(kpfguide.EXPTIME > {exptime}-{exptol}) and '\
+                    f'(kpfguide.EXPTIME < {exptime}+{exptol})')
+            success = klt.waitFor(expr, timeout=1)
+            if not success:
                 print(f"Failed to set exposure time.")
-                print(f"Requested {exptime:.3f} s, found {exptime_check:.3f} s")
-                return False
-
-        return True
+                print(f"Requested {exptime:.3f} s, found {exptimekw.read():.3f} s")
+            return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
