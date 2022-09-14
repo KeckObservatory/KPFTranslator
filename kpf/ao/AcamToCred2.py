@@ -31,6 +31,7 @@ class AcamToCred2(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         ao = ktl.cache('ao')
+        raise NotImplementedError()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
