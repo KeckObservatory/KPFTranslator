@@ -17,6 +17,7 @@ class GuiderLastfile(KPFTranslatorFunction):
         kpfguide = ktl.cache('kpfguide')
         lastfile = kpfguide['LASTFILE'].read()
         print(lastfile)
+        return lastfile
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
