@@ -10,8 +10,7 @@ class FVCLastfile(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        camera = args.get('camera', 'SCI')
-        return fvc_is_ready(camera=camera)
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
