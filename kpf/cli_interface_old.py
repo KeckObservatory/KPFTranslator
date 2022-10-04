@@ -1,8 +1,6 @@
-from email.policy import default
 import importlib
 import traceback
 import sys
-import yaml
 import configparser
 from pathlib import Path
 from argparse import ArgumentParser
@@ -23,16 +21,11 @@ class LinkingTable():
         filename : str
             Filepath to the linking table
         """
-        try:
-            with open(filename) as f:
-                self.cfg = yaml.load(f, Loader=yaml.FullLoader)
-        except:
-            print(f"Unable to load {filename}")
-            return
-
-        self.prefix = self.cfg['common']['prefix']
-        self.suffix = self.cfg['common']['suffix']
-        self.links = self.cfg['links']
+        raw =  configparser.ConfigParser()
+        raw.read(filename)
+        self.cfg = raw
+        self.prefix = raw['common']['prefix']
+        self.suffix = raw['common']['suffix']
     
     def get_entry_points(self) -> List[str]:
         """Gets a list of all the entry points listed in the linking table
@@ -42,7 +35,7 @@ class LinkingTable():
         List[str]
             List of all entry points (keys) in the linking table
         """
-        eps = [key for key in self.links]
+        eps = [key for key in self.cfg['links']]
         return eps
     
     def print_entry_points(self, prefix="") -> None:
@@ -75,44 +68,13 @@ class LinkingTable():
         KeyError
             Raised if the linking table does not have an entry matching entry_point
         """
-        if entry_point not in self.links:
-            raise KeyError(f"Failed to find {entry_point} in table")
         output = ""
         if self.prefix:
             output += self.prefix + "."
-        output += self.links[entry_point]["cmd"]
+        output += self.cfg['links'][entry_point]
         if self.suffix:
             output += "." + self.suffix
         return output
-
-    def get_link_and_args(self, entry_point) -> Tuple[str, list]:
-        """Gets both an import string for an entry point, and a list of Tuples 
-        containing information about default arguments needed
-
-        Parameters
-        ----------
-        entry_point : str
-            Key in the links section in the linking table being searched for
-
-        Returns
-        -------
-        Tuple[str, list]
-            Import string for the entry point, and a list of tuples where the first
-            item is the argument that must be inserted, and the second is the index
-            where it should go
-        """
-        link = self.get_link(entry_point)
-        args = None
-        # Load the config file, and create an array with [None, SADSASD, None, etc...]
-        # maybe return a function that takes in a partial arguments array and outputs a full array?
-        args = []
-        if 'args' in self.links[entry_point].keys():
-            for arg in self.links[entry_point]['args']:
-                arg_index = arg.split("_")[1]
-                args.append((int(arg_index), self.links[entry_point]['args'][arg]))
-                # Loop over these tuples and insert them into the execution args
-                # i.e. args.insert(idx = tup[0], arg=tup[1])
-        return link, args
 
 def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str]:
     """Searches a linking table for a given key, and attempts to fetch the
@@ -140,7 +102,7 @@ def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str
     # Check to see if there is an entry matching the given key
     if key not in linking_tbl.get_entry_points():
         raise DDOITranslatorModuleNotFoundException(f"Unable to find an import for {key}")
-    link, default_args = linking_tbl.get_link_and_args(key)
+    link = linking_tbl.get_link(key)
 
     # Get only the module path
     link_elements = link.split(".")
@@ -154,15 +116,15 @@ def get_linked_function(linking_tbl, key) -> Tuple[TranslatorModuleFunction, str
         mod = importlib.import_module(module_str)
        
         try:
-            return getattr(mod, class_str), default_args, link
+            return getattr(mod, class_str), link
         except:
             print("Failed to find a class with a perform method")
-            return None, None, None
+            return None, None
 
     except ImportError as e:
         print(f"Failed to import {module_str}")
         print(traceback.format_exc())
-        return None, None, None
+        return None, None
 
 def main():
 
@@ -170,7 +132,7 @@ def main():
     ### Build the linking table
     #
 
-    table_loc = Path(__file__).parent / "linking_table.yml"
+    table_loc = Path(__file__).parent / "linking_table.ini"
     if not table_loc.exists():
         print(f"Failed to find a linking table at {str(table_loc)}")
         print("Exiting...")
@@ -180,42 +142,53 @@ def main():
     #
     ### Handle command line arguments
     #
-    
-    parser = ArgumentParser(add_help=False)
-    parser.add_argument("-l", "--list", dest="list", action="store_true", help="List functions in this module")
-    parser.add_argument("-n", "--dry-run", dest="dry_run", action="store_true", help="Print what function would be called with what arguments, with no actual invocation")
-    parser.add_argument("-h", "--help", dest="help", action="store_true")
-    parser.add_argument("-v", "--verbose", dest="verbose", action="store_true", help="Print extra information")
-    parser.add_argument("function_args", nargs="*", help="Function to be executed, and any needed arguments")
-    parsed_args = parser.parse_args()
-    
+
+    args = sys.argv
+    dry_run = False
+    verbose = False
+    # Verbose
+    if '-v' in args or '--verbose' in args:
+        verbose = True
     # Help:
-    if parsed_args.help:
+    if '-h' in args or '--help' in args:
         # If this is help for a specific module:
-        if len(parsed_args.function_args):
+        if len(args) > 2:
             try:
-                function, preset_args, mod_str = get_linked_function(linking_tbl, parsed_args.function_args[0])
-                func_parser = ArgumentParser()
-                func_parser = function.add_cmdline_args(func_parser)
-                func_parser.print_help()
-                if parsed_args.verbose:
+                function, mod_str = get_linked_function(linking_tbl, args[1])
+                parser = ArgumentParser(add_help=False)
+                parser = function.add_cmdline_args(parser)
+                parser.print_help()
+                if verbose:
                     print(function.__doc__)
-                print(preset_args)
-                # figure out how to access the argparse from outside, and print the -h
+                return
             except DDOITranslatorModuleNotFoundException as e:
                 print(e)
                 print("Available options are:")
                 linking_tbl.print_entry_points("   ")
+                return
         # Print help for using this CLI script
         else:
-            parser.print_help()
-        return
+            print(f"This is the CLI entry script for {__package__}")
+            print(
+"""
+Options are:
+    -l, --list:
+        Print all entry points available for use
+    -n, --dry-run:
+        Print what command would be invoked without actually executing it
+    -v, --verbose:
+        Print extra information. For -h, prints full function docstring
+""")
+            return
     # List:
-    if parsed_args.list:
+    if '-l' in args or '--list' in args:
         linking_tbl.print_entry_points()
         return
-
-
+    # Dry run:
+    if '-n' in args or '--dry-run' in args:
+        dry_run = True
+        if "-n" in args: args.remove("-n")
+        if "--dry-run" in args: args.remove("--dry-run")
     #
     ### Handle Execution
     #
@@ -223,26 +196,19 @@ def main():
     try:
 
         # Get the function
-        function, args, mod_str = get_linked_function(linking_tbl, parsed_args.function_args[0])
-        
-        # Insert required default arguments
-        final_args = parsed_args.function_args[1:]
-        for arg_tup in args:
-            final_args.insert(arg_tup[0], str(arg_tup[1]))
+        function, mod_str = get_linked_function(linking_tbl, args[1])
         
         # Build an ArgumentParser and attach the function's arguments
         parser = ArgumentParser(add_help=False)
         parser = function.add_cmdline_args(parser)
-        parsed_func_args = parser.parse_args(final_args)
+        parsed_args = parser.parse_args(args[2:])
         
-        
-        
-        if parsed_args.dry_run:
-            print(f"Function: {mod_str}\nArgs: {' '.join(final_args)}")
+        if dry_run:
+            print(f"Function: {mod_str}\nArgs: {' '.join(args[2:])}")
         else:
-            if parsed_args.verbose:
-                print(f"Executing {mod_str} {' '.join(final_args)}")
-            function.execute(parsed_func_args)
+            if verbose:
+                print(f"Executing {mod_str} {' '.join(args[2:])}")
+            function.execute(parsed_args)
 
     except DDOITranslatorModuleNotFoundException as e:
         print(e)
