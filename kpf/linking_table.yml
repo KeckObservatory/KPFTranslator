@@ -4,14 +4,9 @@ common:
 
 links:
 
-  set_guider_exposure_time: &gexpt
+  set_guider_exposure_time:
     cmd: guider.SetGuiderExpTime.SetGuiderExpTime
   
-  g_ttime:
-    cmd: guider.SetGuiderExpTime.SetGuiderExpTime
-    args:
-      arg_0: 0
-
   take_guider_image:
     cmd: guider.TakeGuiderExposure.TakeGuiderExposure
   
