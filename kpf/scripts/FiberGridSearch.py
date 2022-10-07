@@ -12,6 +12,10 @@ import keygrabber
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
+from ddoi_telescope_translator.azel import OffsetAzEl
+from ddoi_telescope_translator.wftel import WaitForTel
+from ddoi_telescope_translator.gotobase import GoToBase
+
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.SetTipTilt import SetTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
@@ -97,8 +101,15 @@ class FiberGridSearch(KPFTranslatorFunction):
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
-                log.info(f"Offsetting to position ({xs[i]}, {ys[j]})")
-                SetTipTilt.execute({'x': xs[i], 'y': ys[j]})
+                log.info(f"Offsetting telescope to position ({xs[i]}, {ys[j]})")
+#                 SetTipTilt.execute({'x': xs[i], 'y': ys[j]})
+                GoToBase.execute({})
+                WaitForTel.execute({})
+                time.sleep(2)
+                OffsetAzEl.execute({'tcs_offset_az': xs[i], 'tcs_offset_el': ys[j]})
+                WaitForTel.execute({})
+                time.sleep(2)
+
 
                 # Start Exposure Meter
                 if 'ExpMeter' in args.get('cameras', ''):
@@ -191,7 +202,9 @@ class FiberGridSearch(KPFTranslatorFunction):
             expmeter_flux.write(fluxes_file, format='ascii.csv')
 
         # Send tip tilt back to 0,0
-        InitializeTipTilt.execute({})
+#         InitializeTipTilt.execute({})
+        GoToBase.execute({})
+        WaitForTel.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
