@@ -14,7 +14,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.SetTipTilt import SetTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
-
+from ..guider.TakeGuiderExposure import TakeGuiderExposure
 
 
 ##-------------------------------------------------------------------------
@@ -26,7 +26,7 @@ log = logging.getLogger(f'{this_file_name}')
 log.setLevel(logging.DEBUG)
 ## Set up console output
 LogConsoleHandler = logging.StreamHandler()
-LogConsoleHandler.setLevel(logging.INFO)
+LogConsoleHandler.setLevel(logging.DEBUG)
 LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s',
                               datefmt='%Y-%m-%d %H:%M:%S')
 LogConsoleHandler.setFormatter(LogFormat)
@@ -34,7 +34,7 @@ log.addHandler(LogConsoleHandler)
 ## Set up file output
 now = datetime.utcnow()
 now_str = now.strftime('%Y%m%dat%H%M%S')
-LogFileName = Path(f'~/joshw/logs/{this_file_name}_{now_str}.log').expanduser()
+LogFileName = Path(f'~/logs/{this_file_name}_{now_str}.log').expanduser()
 LogFileHandler = logging.FileHandler(LogFileName)
 LogFileHandler.setLevel(logging.DEBUG)
 LogFileHandler.setFormatter(LogFormat)
@@ -55,7 +55,7 @@ class FiberGridSearch(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         log.info("###########")
         if args.get('comment', '') != '': log.info(args.get('comment', ''))
-        log.info("args = {args}")
+        log.info(f"args = {args}")
         log.info("###########")
 
         images_file = Path(f'~/logs/{this_file_name}_images_{now_str}.txt').expanduser()
@@ -79,13 +79,19 @@ class FiberGridSearch(KPFTranslatorFunction):
         InitializeTipTilt.execute({})
 
         # Set up Exposure Meter
-        if args.get('ExpMeter', False) is True:
+        if 'ExpMeter' in args.get('cameras', ''):
             kpf_expmeter = ktl.cache('kpf_expmeter')
             kpfexpose = ktl.cache('kpfexpose')
             kpf_expmeter['record'].write('Yes')
             kpfexpose['SRC_SHUTTERS'].write('SciSelect,SkySelect')
             kpfexpose['SCRAMBLER_SHTR'].write('open')
 
+        # Set up FVCs
+        kpffvc = ktl.cache('kpffvc')
+
+        # Set up guider
+        if 'CRED2' in args.get('cameras', ''):
+            kpfguide = ktl.cache('kpfguide')
 
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
@@ -94,7 +100,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                 SetTipTilt.execute({'x': xs[i], 'y': ys[j]})
 
                 # Start Exposure Meter
-                if args.get('ExpMeter', False) is True:
+                if 'ExpMeter' in args.get('cameras', ''):
                     log.info(f"  Starting exposure meter")
                     kpf_expmeter['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
                     exptime = kpf_expmeter['EXPOSURE'].read(binary=True)
@@ -106,7 +112,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                 # Start FVC Exposures
                 initial_lastfile = {}
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-                    if args.get(camera, False) is True:
+                    if camera in args.get('cameras', '').split(','):
                         initial_lastfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
                         log.debug(f"  Initial lastfile for {camera} = {initial_lastfile[camera]}")
                         log.info(f"  Starting {camera} FVC exposure")
@@ -114,7 +120,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                         TakeFVCExposure.execute({'camera': camera, 'wait': False})
 
                 # Expose using CRED2
-                if args.get('CRED2', False) is True:
+                if 'CRED2' in args.get('cameras', '').split(','):
                     log.info(f"  Taking CRED2 exposure")
                     TakeGuiderExposure.execute({})
                     lastfile = kpfguide[f"LASTFILE"].read()
@@ -124,17 +130,19 @@ class FiberGridSearch(KPFTranslatorFunction):
 
                 # Collect files for FVC exposures
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-                    if args.get(camera, False) is True:
+                    if camera in args.get('cameras', '').split(','):
+                        log.debug(f"Looking for output file for {camera}")
                         expr = f'($kpffvc.{camera}LASTFILE != "{initial_lastfile[camera]}")'
                         log.debug(f"  Waiting for: {expr}")
                         ktl.waitFor(expr, timeout=20)
                         lastfile = kpffvc[f'{camera}LASTFILE'].read()
+                        log.debug(f"Found {lastfile}")
                         row = {'file': lastfile, 'camera': camera,
                                'dx': xs[i], 'dy': ys[j]}
                         images.add_row(row)
 
                 # Stop Exposure Meter
-                if args.get('ExpMeter', False) is True:
+                if 'ExpMeter' in args.get('cameras', '').split(','):
                     log.info(f"  Stopping exposure meter")
                     kpf_expmeter['EXPOSE'].write('end')
                     ktl.waitFor('$kpf_expmeter.EXPSTATE == Ready')
@@ -160,17 +168,21 @@ class FiberGridSearch(KPFTranslatorFunction):
             if images_file.exists():
                 images_file.unlink()
             images.write(images_file, format='ascii.csv')
-            if fluxes_file.exists():
-                fluxes_file.unlink()
-            expmeter_flux.write(images_file, format='ascii.csv')
+            if 'ExpMeter' in args.get('cameras', '').split(','):
+                if fluxes_file.exists():
+                    fluxes_file.unlink()
+                expmeter_flux.write(images_file, format='ascii.csv')
 
         if images_file.exists():
             images_file.unlink()
         images.write(images_file, format='ascii.csv')
-        if fluxes_file.exists():
-            fluxes_file.unlink()
-        expmeter_flux.write(images_file, format='ascii.csv')
+        if 'ExpMeter' in args.get('cameras', '').split(','):
+            if fluxes_file.exists():
+                fluxes_file.unlink()
+            expmeter_flux.write(images_file, format='ascii.csv')
 
+        # Send tip tilt back to 0,0
+        InitializeTipTilt.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -190,16 +202,8 @@ class FiberGridSearch(KPFTranslatorFunction):
                     'help': 'Distance (arcsec) between grid points in X'}
         args_to_add['dy'] = {'type': float,
                     'help': 'Distance (arcsec) between grid points in Y'}
-        args_to_add['CRED2'] = {'type': bool,
-                    'help': 'Use the CRED2/guide camera'}
-        args_to_add['SCI'] = {'type': bool,
-                    'help': 'Use the SCI FVC camera'}
-        args_to_add['CAHK'] = {'type': bool,
-                    'help': 'Use the CAHK FVC camera'}
-        args_to_add['EXT'] = {'type': bool,
-                    'help': 'Use the EXT FVC camera'}
-        args_to_add['ExpMeter'] = {'type': bool,
-                    'help': 'Use the ExpMeter'}
+        args_to_add['cameras'] = {'type': str,
+                    'help': 'List of cameras'}
         args_to_add['comment'] = {'type': str,
                     'help': 'Comment for log'}
 

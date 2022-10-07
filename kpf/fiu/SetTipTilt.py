@@ -30,15 +30,15 @@ class SetTipTilt(KPFTranslatorFunction):
         xdest = args.get('x', None)
         ydest = args.get('y', None)
         if xdest is not None:
-            expr = (f'(kpffiu.TTXVAX > {xdest}-{tol}) and '\
-                    f'(kpffiu.TTXVAX < {xdest}+{tol})')
+            expr = (f'($kpffiu.TTXVAX > {xdest-tol}) and '\
+                    f'($kpffiu.TTXVAX < {xdest+tol})')
             successx = ktl.waitFor(expr, timeout=timeout)
         else:
             successx = True
         if ydest is not None:
-            expr = (f'(kpffiu.TTYVAX > {ydest}-{tol}) and '\
-                    f'(kpffiu.TTYVAX < {ydest}+{tol})')
-            successy = klt.waitFor(expr, timeout=timeout)
+            expr = (f'($kpffiu.TTYVAX > {ydest-tol}) and '\
+                    f'($kpffiu.TTYVAX < {ydest+tol})')
+            successy = ktl.waitFor(expr, timeout=timeout)
         else:
             successy = True
         return successx and successy
