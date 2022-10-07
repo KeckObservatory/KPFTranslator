@@ -4,6 +4,7 @@ from datetime import datetime
 import time
 from collections import OrderedDict
 
+import numpy as np
 from astropy.table import Table, Row
 
 import ktl
@@ -63,8 +64,8 @@ class FiberGridSearch(KPFTranslatorFunction):
 
         images = Table(names=('file', 'camera', 'dx', 'dy'),
                        dtype=('a90',  'a10',    'f4', 'f4'))
-        expmeter_flux = Table(names=('dx', 'dy', 'f1', 'f2', 'f3', 'f4'),
-                              dtype=('f4', 'f4', 'f4', 'f4', 'f4', 'f4'))
+        expmeter_flux = Table(names=('i', 'j', 'dx', 'dy', 'f1', 'f2', 'f3', 'f4', 'nimages'),
+                              dtype=('i4', 'i4', 'f4', 'f4', 'f4', 'f4', 'f4', 'f4', 'i4'))
 
         nx = args.get('nx', 3)
         ny = args.get('ny', 3)
@@ -157,16 +158,21 @@ class FiberGridSearch(KPFTranslatorFunction):
                     kws = {'kpf_expmeter': ['CUR_COUNTS']}
                     counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
                     # Extract counts and save to table
-                    for entry in counts_history:
+                    fluxes = np.zeros((len(counts_history), 4))
+                    for k,entry in enumerate(counts_history):
                         value_floats = [float(v) for v in entry['ascvalue'].split()]
                         ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
                         log.debug(f"  {ts}: {value_floats}")
-                        expmeter_flux.add_row({'dx': xi, 'dy': yi,
-                                               'f1': value_floats[0],
-                                               'f2': value_floats[1],
-                                               'f3': value_floats[2],
-                                               'f4': value_floats[3],
-                                               })
+                        fluxes[k] = value_floats
+                    avg_fluxes = np.mean(fluxes, axis=0)
+                    expmeter_flux.add_row({'dx': xs[i], 'dy': ys[j],
+                                           'i': i, 'j': j,
+                                           'f1': avg_fluxes[0],
+                                           'f2': avg_fluxes[1],
+                                           'f3': avg_fluxes[2],
+                                           'f4': avg_fluxes[3],
+                                           'nimages': len(counts_history),
+                                           })
 
             if images_file.exists():
                 images_file.unlink()

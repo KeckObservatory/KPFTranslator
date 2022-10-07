@@ -6,6 +6,7 @@ import ktl
 def fvc_is_ready(camera='SCI'):
     '''Checks that science FVC is powered up and in a standard configuration.
     '''
+    if camera == 'EXT': return True  # Hack for external camera
     outlet = {'SCI': 'K5', 'CAHK': 'K6', 'CAL': 'F6'}[camera]
     kpffvc = ktl.cache('kpffvc')
     kpfpower = ktl.cache('kpfpower')
