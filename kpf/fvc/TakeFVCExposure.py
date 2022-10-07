@@ -20,13 +20,14 @@ class TakeFVCExposure(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         camera = args.get('camera', 'SCI')
         kpffvc = ktl.cache('kpffvc')
-
         exptime = kpffvc[f'{camera}EXPTIME'].read(binary=True)
         kpffvc[f'{camera}EXPOSE'].write('yes')
-        lastfile = kpffvc[f'{camera}LASTFILE']
-        lastfile.monitor()
-        timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
-        lastfile.wait(timeout=exptime+timeout) # Wait for update which signals a new file
+
+        if args.get('wait', True) is True:
+            lastfile = kpffvc[f'{camera}LASTFILE']
+            lastfile.monitor()
+            timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
+            lastfile.wait(timeout=exptime+timeout) # Wait for update which signals a new file
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -45,7 +46,9 @@ class TakeFVCExposure(KPFTranslatorFunction):
         """
         args_to_add = OrderedDict()
         args_to_add['camera'] = {'type': str,
-                                 'help': 'The camera to use (SCI, CAHK, CAL).'}
+                                 'help': 'The camera to use (SCI, CAHK, CAL, EXT).'}
+        args_to_add['wait'] = {'type': bool,
+                               'help': 'Return only after exposure is finished?'}
 
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)
