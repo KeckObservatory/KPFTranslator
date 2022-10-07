@@ -32,7 +32,7 @@ class SetTipTilt(KPFTranslatorFunction):
         if xdest is not None:
             expr = (f'(kpffiu.TTXVAX > {xdest}-{tol}) and '\
                     f'(kpffiu.TTXVAX < {xdest}+{tol})')
-            successx = klt.waitFor(expr, timeout=timeout)
+            successx = ktl.waitFor(expr, timeout=timeout)
         else:
             successx = True
         if ydest is not None:
