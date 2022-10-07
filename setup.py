@@ -13,7 +13,7 @@ scripts = []
 # Define entry points for command-line scripts
 entry_points = {
     'console_scripts': [
-        "kpftranslator = kpf.cli_interface:main",
+        "kpftranslator = kpf.cli_interface_old:main",
     ]
     }
 
