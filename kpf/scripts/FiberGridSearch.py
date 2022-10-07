@@ -10,9 +10,9 @@ import keygrabber
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from .fiu.InitializeTipTilt import InitializeTipTilt
-from .fiu.SetTipTilt import SetTipTilt
-from .fvc.TakeFVCExposure import TakeFVCExposure
+from ..fiu.InitializeTipTilt import InitializeTipTilt
+from ..fiu.SetTipTilt import SetTipTilt
+from ..fvc.TakeFVCExposure import TakeFVCExposure
 
 
 
