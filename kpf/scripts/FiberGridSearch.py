@@ -26,7 +26,7 @@ log = logging.getLogger(f'{this_file_name}')
 log.setLevel(logging.DEBUG)
 ## Set up console output
 LogConsoleHandler = logging.StreamHandler()
-LogConsoleHandler.setLevel(logging.DEBUG)
+LogConsoleHandler.setLevel(logging.INFO)
 LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s',
                               datefmt='%Y-%m-%d %H:%M:%S')
 LogConsoleHandler.setFormatter(LogFormat)
@@ -131,7 +131,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                 # Collect files for FVC exposures
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
                     if camera in args.get('cameras', '').split(','):
-                        log.debug(f"Looking for output file for {camera}")
+                        log.info(f"  Looking for output file for {camera}")
                         expr = f'($kpffvc.{camera}LASTFILE != "{initial_lastfile[camera]}")'
                         log.debug(f"  Waiting for: {expr}")
                         ktl.waitFor(expr, timeout=20)
@@ -153,11 +153,14 @@ class FiberGridSearch(KPFTranslatorFunction):
                     images.add_row(row)
                     # Retrieve keyword history
                     end = time.time()
+                    log.info(f"  Retrieving keyword history")
                     kws = {'kpf_expmeter': ['CUR_COUNTS']}
                     counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
                     # Extract counts and save to table
                     for entry in counts_history:
                         value_floats = [float(v) for v in entry['ascvalue'].split()]
+                        ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
+                        log.debug(f"  {ts}: {value_floats}")
                         expmeter_flux.add_row({'dx': xi, 'dy': yi,
                                                'f1': value_floats[0],
                                                'f2': value_floats[1],
@@ -171,7 +174,7 @@ class FiberGridSearch(KPFTranslatorFunction):
             if 'ExpMeter' in args.get('cameras', '').split(','):
                 if fluxes_file.exists():
                     fluxes_file.unlink()
-                expmeter_flux.write(images_file, format='ascii.csv')
+                expmeter_flux.write(fluxes_file, format='ascii.csv')
 
         if images_file.exists():
             images_file.unlink()
@@ -179,7 +182,7 @@ class FiberGridSearch(KPFTranslatorFunction):
         if 'ExpMeter' in args.get('cameras', '').split(','):
             if fluxes_file.exists():
                 fluxes_file.unlink()
-            expmeter_flux.write(images_file, format='ascii.csv')
+            expmeter_flux.write(fluxes_file, format='ascii.csv')
 
         # Send tip tilt back to 0,0
         InitializeTipTilt.execute({})

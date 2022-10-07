@@ -21,7 +21,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
         camera = args.get('camera', 'SCI')
         kpffvc = ktl.cache('kpffvc')
         exptime = kpffvc[f'{camera}EXPTIME'].read(binary=True)
-        kpffvc[f'{camera}EXPOSE'].write('yes')
+        kpffvc[f'{camera}EXPOSE'].write('yes', wait=args.get('wait', True))
 
         if args.get('wait', True) is True:
             lastfile = kpffvc[f'{camera}LASTFILE']
