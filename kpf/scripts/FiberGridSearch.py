@@ -68,8 +68,16 @@ class FiberGridSearch(KPFTranslatorFunction):
 
         images = Table(names=('file', 'camera', 'dx', 'dy'),
                        dtype=('a90',  'a10',    'f4', 'f4'))
-        expmeter_flux = Table(names=('i', 'j', 'dx', 'dy', 'f1', 'f2', 'f3', 'f4', 'nimages'),
-                              dtype=('i4', 'i4', 'f4', 'f4', 'f4', 'f4', 'f4', 'f4', 'i4'))
+        expmeter_flux = Table(names=('i', 'j', 'dx', 'dy',
+                                     'bck1', 'bck2', 'bck3', 'bck4',
+                                     'cur1', 'cur2', 'cur3', 'cur4',
+                                     'raw1', 'raw2', 'raw3', 'raw4',
+                                     'nimages'),
+                              dtype=('i4', 'i4', 'f4', 'f4',
+                                     'f4', 'f4', 'f4', 'f4',
+                                     'f4', 'f4', 'f4', 'f4',
+                                     'f4', 'f4', 'f4', 'f4',
+                                     'i4'))
 
         nx = args.get('nx', 3)
         ny = args.get('ny', 3)
@@ -166,24 +174,27 @@ class FiberGridSearch(KPFTranslatorFunction):
                     # Retrieve keyword history
                     end = time.time()
                     log.info(f"  Retrieving keyword history")
-                    kws = {'kpf_expmeter': ['CUR_COUNTS']}
+                    kws = {'kpf_expmeter': ['CUR_COUNTS', 'BCK_COUNTS', 'RAW_COUNTS']}
                     counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
+                    expmeter_data = {'dx': xs[i], 'dy': ys[j],
+                                     'i': i, 'j': j,
+                                     'nimages': len(counts_history[0]),
+                                     }
                     # Extract counts and save to table
-                    fluxes = np.zeros((len(counts_history), 4))
-                    for k,entry in enumerate(counts_history):
-                        value_floats = [float(v) for v in entry['ascvalue'].split()]
-                        ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
-                        log.debug(f"  {ts}: {value_floats}")
-                        fluxes[k] = value_floats
-                    avg_fluxes = np.mean(fluxes, axis=0)
-                    expmeter_flux.add_row({'dx': xs[i], 'dy': ys[j],
-                                           'i': i, 'j': j,
-                                           'f1': avg_fluxes[0],
-                                           'f2': avg_fluxes[1],
-                                           'f3': avg_fluxes[2],
-                                           'f4': avg_fluxes[3],
-                                           'nimages': len(counts_history),
-                                           })
+                    for kw_history in counts_history:
+                        kw = kw_history['keyword']
+                        fluxes = np.zeros((len(kw_history), 4))
+                        for k,entry in enumerate(kw_history):
+                            value_floats = [float(v) for v in entry['ascvalue'].split()]
+                            ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
+                            log.debug(f"  {ts}: {value_floats}")
+                            fluxes[k] = value_floats
+                        avg_fluxes = np.mean(fluxes, axis=0)
+                        expmeter_data[f"{kw[:3].lower()}1"] = avg_fluxes[0]
+                        expmeter_data[f"{kw[:3].lower()}2"] = avg_fluxes[1]
+                        expmeter_data[f"{kw[:3].lower()}3"] = avg_fluxes[2]
+                        expmeter_data[f"{kw[:3].lower()}4"] = avg_fluxes[3]
+                    expmeter_flux.add_row(expmeter_data)
 
             if images_file.exists():
                 images_file.unlink()
