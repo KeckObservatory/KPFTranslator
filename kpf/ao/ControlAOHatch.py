@@ -2,7 +2,9 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from . import AoHatchClose, AoHatchOpen
+from .CloseAOHatch import CloseAOHatch
+from .OpenAOHatch import OpenAOHatch
+
 
 class AoHatchOpen(KPFTranslatorFunction):
     """
@@ -40,9 +42,9 @@ class AoHatchOpen(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
         if destination.lower() in ['close', 'closed']:
-            AoHatchClose.AoHatchClose.execute({})
+            CloseAOHatch.execute({})
         elif destination.lower() in ['open']:
-            AoHatchOpen.AoHatchOpen.execute({})
+            OpenAOHatch.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
