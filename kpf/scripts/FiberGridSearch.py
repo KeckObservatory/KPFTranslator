@@ -172,27 +172,26 @@ class FiberGridSearch(KPFTranslatorFunction):
                     images.add_row(row)
                     # Retrieve keyword history
                     end = time.time()
-                    log.info(f"  Retrieving keyword history")
-                    kws = {'kpf_expmeter': ['CUR_COUNTS', 'BCK_COUNTS', 'RAW_COUNTS']}
-                    counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
                     expmeter_data = {'dx': xs[i], 'dy': ys[j],
                                      'i': i, 'j': j,
-                                     'nimages': len(counts_history[0]),
                                      }
-                    # Extract counts and save to table
-                    for kw_history in counts_history:
-                        kw = kw_history['keyword']
-                        fluxes = np.zeros((len(kw_history), 4))
-                        for k,entry in enumerate(kw_history):
+                    for counts_kw in ['CUR_COUNTS', 'RAW_COUNTS', 'BCK_COUNTS']:
+                        log.info(f"  Retrieving keyword history for {counts_kw}")
+                        kws = {'kpf_expmeter': [counts_kw]}
+                        counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
+                        # Extract counts and save to table
+                        fluxes = np.zeros((len(counts_history), 4))
+                        for k,entry in enumerate(counts_history):
                             value_floats = [float(v) for v in entry['ascvalue'].split()]
                             ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
                             log.debug(f"  {ts}: {value_floats}")
                             fluxes[k] = value_floats
                         avg_fluxes = np.mean(fluxes, axis=0)
-                        expmeter_data[f"{kw[:3].lower()}1"] = avg_fluxes[0]
-                        expmeter_data[f"{kw[:3].lower()}2"] = avg_fluxes[1]
-                        expmeter_data[f"{kw[:3].lower()}3"] = avg_fluxes[2]
-                        expmeter_data[f"{kw[:3].lower()}4"] = avg_fluxes[3]
+                        expmeter_data[f"{counts_kw[:3].lower()}1"] = avg_fluxes[0]
+                        expmeter_data[f"{counts_kw[:3].lower()}2"] = avg_fluxes[1]
+                        expmeter_data[f"{counts_kw[:3].lower()}3"] = avg_fluxes[2]
+                        expmeter_data[f"{counts_kw[:3].lower()}4"] = avg_fluxes[3]
+                    expmeter_data['nimages'] = len(counts_history)
                     expmeter_flux.add_row(expmeter_data)
 
             if images_file.exists():
