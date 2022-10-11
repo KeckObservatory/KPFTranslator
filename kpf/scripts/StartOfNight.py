@@ -25,7 +25,7 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # Guider
-        log.info('Setting guider set point to -40 C')
+        print('Setting guider set point to -40 C')
         kpfguide = ktl.cache('kpfguide')
         kpfguide['SENSORSETP'].write(-40)
         # Open AO Hatch

@@ -27,11 +27,11 @@ class EndOfNight(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # FIU
-        log.info('Setting FIU mode to Stowed')
+        print('Setting FIU mode to Stowed')
         kpffiu = ktl.cache('kpffiu')
         kpffiu['MODE'].write('Stowed')
         # Guider
-        log.info('Setting guider set point to 0C')
+        print('Setting guider set point to 0C')
         kpfguide = ktl.cache('kpfguide')
         kpfguide['SENSORSETP'].write(0)
         # Power off Back Illuminators, FVCs, Lamps
@@ -42,9 +42,9 @@ class EndOfNight(KPFTranslatorFunction):
             name = kpfpower[f'OUTLET_{outlet}_NAME'].read()
             locked = (kpfpower[f'OUTLET_{outlet}_LOCK'].read() == 'Locked')
             if locked is True:
-                log.info(f'{outlet} ({name}) is Locked')
+                print(f'{outlet} ({name}) is Locked')
             else:
-                log.info(f'Powering off {outlet}: {name}')
+                print(f'Powering off {outlet}: {name}')
                 kpfpower[f'OUTLET_{outlet}'].write('Off')
         # Close AO Hatch
         CloseAOHatch.execute({})
