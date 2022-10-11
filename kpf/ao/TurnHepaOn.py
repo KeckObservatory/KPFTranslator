@@ -3,7 +3,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class TurnHepaOff(KPFTranslatorFunction):
+class TurnHepaOn(KPFTranslatorFunction):
     """
     """
 
