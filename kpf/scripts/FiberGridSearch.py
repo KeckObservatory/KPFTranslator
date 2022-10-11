@@ -111,10 +111,9 @@ class FiberGridSearch(KPFTranslatorFunction):
                 # Offset to position
                 log.info(f"Offsetting telescope to position ({xs[i]}, {ys[j]})")
 #                 SetTipTilt.execute({'x': xs[i], 'y': ys[j]})
-                GoToBase.execute({})
-                WaitForTel.execute({})
-                time.sleep(2)
-                OffsetAzEl.execute({'tcs_offset_az': xs[i], 'tcs_offset_el': ys[j]})
+                OffsetAzEl.execute({'tcs_offset_az': xs[i],
+                                    'tcs_offset_el': ys[j],
+                                    'relative': False})
                 WaitForTel.execute({})
                 time.sleep(2)
 
