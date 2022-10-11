@@ -3,18 +3,8 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class PcuToKpf(KPFTranslatorFunction):
+class SetPCUtoKPF(KPFTranslatorFunction):
     """
-    PcuToKpf -- send PCU to the KPF location
-    SYNOPSIS
-        PcuToKpf.execute({})
-    DESCRIPTION
-        Home PCU first, then move PCU to KPF at (80, 45, 0) 
-
-    ARGUMENTS
-    OPTIONS
-    EXAMPLES
-    
     """
 
     @classmethod

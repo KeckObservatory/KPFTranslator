@@ -3,20 +3,8 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class AoHatchOpen(KPFTranslatorFunction):
+class OpenAOHatch(KPFTranslatorFunction):
     """
-    AoHatchOpen -- turn off the HEPA filter in AO before observing
-    SYNOPSIS
-        AoHatchOpen.execute()
-    DESCRIPTION
-        Check if the HEPA filter inside the AO enclosure is turned off
-        before observing. If not, turn it off.
-        set ao.OBHPAON=0
-
-    ARGUMENTS
-    OPTIONS
-    EXAMPLES
-    
     """
 
     @classmethod
