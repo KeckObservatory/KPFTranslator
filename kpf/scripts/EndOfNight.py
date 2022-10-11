@@ -6,12 +6,14 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from ..ao.CloseAOHatch import CloseAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
+from ..fiu.ShutdownTipTilt import ShutdownTipTilt
 
 
 class EndOfNight(KPFTranslatorFunction):
     '''Send KPF in to an end of night configuration.
 
     - kpffiu.MODE = Stowed
+    - Tip tilt mirror in open loop mode
     - kpfguide.SENSORSETP = 0
     - Power off LED back illuminators
     - Power off FVCs
@@ -30,6 +32,7 @@ class EndOfNight(KPFTranslatorFunction):
         print('Setting FIU mode to Stowed')
         kpffiu = ktl.cache('kpffiu')
         kpffiu['MODE'].write('Stowed')
+        ShutdownTipTilt.execute({})
         # Guider
         print('Setting guider set point to 0C')
         kpfguide = ktl.cache('kpfguide')
