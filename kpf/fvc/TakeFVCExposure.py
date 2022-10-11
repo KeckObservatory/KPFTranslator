@@ -47,8 +47,9 @@ class TakeFVCExposure(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['camera'] = {'type': str,
                                  'help': 'The camera to use (SCI, CAHK, CAL, EXT).'}
-        args_to_add['wait'] = {'type': bool,
-                               'help': 'Return only after exposure is finished?'}
-
         parser = cls._add_args(parser, args_to_add, print_only=False)
+
+        parser = cls._add_bool_arg(parser, 'wait',
+            'Return only after exposure is finished?', default=True)
+
         return super().add_cmdline_args(parser, cfg)
