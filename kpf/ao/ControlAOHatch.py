@@ -34,7 +34,7 @@ class AoHatchOpen(KPFTranslatorFunction):
         return super().add_cmdline_args(parser, cfg)
 
     @classmethod
-    def pre_condition(args, logger, cfg):
+    def pre_condition(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
         return destination.lower() in ['close', 'closed', 'open']
 

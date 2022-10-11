@@ -25,7 +25,7 @@ class Cred2ToAcam(KPFTranslatorFunction):
     """
 
     @classmethod
-    def pre_condition(args, logger, cfg):
+    def pre_condition(cls, args, logger, cfg):
         return True
 
     @classmethod
