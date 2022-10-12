@@ -10,7 +10,10 @@ try:
     Vizier.ROW_LIMIT=100
 except:
     Vizier = None
-    
+
+import warnings
+from astropy.io.fits.verify import VerifyWarning
+warnings.simplefilter('ignore', category=VerifyWarning)
 
 import ktl
 
