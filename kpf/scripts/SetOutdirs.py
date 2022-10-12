@@ -8,7 +8,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class StartOfNight(KPFTranslatorFunction):
+class SetOutdirs(KPFTranslatorFunction):
     '''
     '''
     @classmethod
