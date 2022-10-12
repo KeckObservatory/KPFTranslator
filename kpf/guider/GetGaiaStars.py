@@ -41,7 +41,7 @@ class GetGaiaStars(KPFTranslatorFunction):
         for star in gaia:
             sc = SkyCoord(star['RA_ICRS'], star['DE_ICRS'], unit=(u.deg, u.deg), frame='icrs')
             coord_string = sc.to_string('hmsdms', sep=':', precision=2).replace(' ', ',')
-            newline = f"circle({coord_string},1.0\")"# \# text=\{"#\}"
+            newline = f"circle({coord_string},0.5\")"# \# text=\{"#\}"
             newline += " # text={"
             newline += f"{star['RPmag']:.1f}"
             newline += "}"
