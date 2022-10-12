@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from pathlib import Path
 
 from astropy.io import fits
