@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from astropy.io import fits
 from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS
 from astropy import units as u
@@ -28,15 +29,24 @@ class GetGaiaStars(KPFTranslatorFunction):
         hdul = fits.open(file)
         w = WCS(hdul[0].header)
         cntr = w.pixel_to_world(hdul[0].data.shape[0]/2, hdul[0].data.shape[1]/2)
-        sc = SkyCoord(cntr[0], cntr[1], unit=(u.deg, u.deg), frame='icrs')
-
-#         sc = SkyCoord('05 35 16.5 -05 23 22.9', unit=(u.hourangle, u.deg),
-#                       frame='icrs')
-        gaia = Vizier.query_region(sc, radius=30*u.arcsec,
+        gaia = Vizier.query_region(cntr, radius=30*u.arcsec,
                                    catalog='I/345/gaia2')[0]
-
-
-
+        regions = ['# Region file format: DS9 version 4.1',
+                   'global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman"',
+                  ]
+        for star in gaia:
+            sc = SkyCoord(star['RA_ICRS'], star['DE_ICRS'], unit=(u.deg, u.deg), frame='icrs')
+            coord_string = sc.to_string('hmsdms', sep=':', precision=2).replace(' ', ',')
+            newline = f"circle({coord_string},1.0\")"# \# text=\{"#\}"
+            newline += " # text={"
+            newline += f"{star['RPmag']:.1f}"
+            newline += "}"
+            regions.append(newline)
+        region_file = Path('~/.CRED2_auto_regions.reg').expanduser()
+        if region_file.exists(): region_file.unlink()
+        with open(region_file, 'w') as FO:
+            for line in regions:
+                FO.write(line+'\n')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
