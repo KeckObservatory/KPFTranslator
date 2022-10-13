@@ -11,6 +11,9 @@ try:
 except:
     Vizier = None
 
+# Suppress astropy log messages
+from astropy import log as astropylog
+astropylog.setLevel('ERROR')
 import warnings
 from astropy.io.fits.verify import VerifyWarning
 warnings.simplefilter('ignore', category=VerifyWarning)
