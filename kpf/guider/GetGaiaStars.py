@@ -20,23 +20,34 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 class GetGaiaStars(KPFTranslatorFunction):
-    '''
+    '''Build a ds9 region file of Gaia catalog stars which ought to be present
+    in the specified guider image.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        file = Path(args.get('file', './junk.fits')).expanduser().absolute()
+        file = Path(args.get('file', '/tmp/CRED2.fits')).expanduser().absolute()
         return (Vizier is not None) and (file.exists() is True)
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        cfg = cls._load_config(cls, cfg)
+        catalog_id = cfg.get('stellar_catalog', 'catalog_id',
+                             fallback='I/345/gaia2')
+        search_radius = cfg.getfloat('stellar_catalog', 'search_radius',
+                                     fallback=28)
+        ds9_color = cfg.get('stellar_catalog', 'ds9_color',
+                            fallback='cyan')
+        ds9_font = cfg.get('stellar_catalog', 'ds9_font',
+                           fallback='helvetica 10 normal roman')
+
         file = Path(args.get('file', './junk.fits')).expanduser().absolute()
         hdul = fits.open(file)
         w = WCS(hdul[0].header)
         cntr = w.pixel_to_world(hdul[0].data.shape[0]/2, hdul[0].data.shape[1]/2)
-        gaia = Vizier.query_region(cntr, radius=30*u.arcsec,
-                                   catalog='I/345/gaia2')[0]
-        regions = ['# Region file format: DS9 version 4.1',
-                   'global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman"',
+        gaia = Vizier.query_region(cntr, radius=search_radius*u.arcsec,
+                                   catalog=catalog_id)[0]
+        regions = [f'# Region file format: DS9 version 4.1',
+                   f'global color={ds9_color} dashlist=8 3 width=1 font="{ds9_font}"',
                   ]
         for star in gaia:
             sc = SkyCoord(star['RA_ICRS'], star['DE_ICRS'], unit=(u.deg, u.deg), frame='icrs')
