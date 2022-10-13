@@ -12,15 +12,16 @@ except:
     Vizier = None
 
 # Suppress astropy log messages
-from astropy import log as astropylog
-astropylog.setLevel('ERROR')
-import warnings
-from astropy.io.fits.verify import VerifyWarning
-warnings.simplefilter('ignore', category=VerifyWarning)
+# from astropy import log as astropylog
+# astropylog.setLevel('ERROR')
+# import warnings
+# from astropy.io.fits.verify import VerifyWarning
+# warnings.simplefilter('ignore', category=VerifyWarning)
 
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+
 
 class GetGaiaStars(KPFTranslatorFunction):
     '''Build a ds9 region file of Gaia catalog stars which ought to be present
