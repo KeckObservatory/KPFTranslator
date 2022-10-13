@@ -49,12 +49,24 @@ class EndOfNight(KPFTranslatorFunction):
             else:
                 print(f'Powering off {outlet}: {name}')
                 kpfpower[f'OUTLET_{outlet}'].write('Off')
-        # Close AO Hatch
-        CloseAOHatch.execute({})
-        # Turn HELP Filter On
-        TurnHepaOn.execute({})
+
+        if args.get('AO', False) is True:
+            # Close AO Hatch
+            CloseAOHatch.execute({})
+            # Turn HEPA Filter On
+            TurnHepaOn.execute({})
 
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        """
+        The arguments to add to the command line interface.
+        """
+        parser = cls._add_bool_arg(parser, 'AO',
+            'Close AO hatch and turn on HEPA filter?', default=False)
+
+        return super().add_cmdline_args(parser, cfg)

@@ -37,13 +37,25 @@ class StartOfNight(KPFTranslatorFunction):
         InitializeTipTilt.execute({})
         # Set Outdirs
         SetOutdirs.execute({})
-        # Open AO Hatch
-        OpenAOHatch.execute({})
-        # Turn HEPA Filter On
-        TurnHepaOff.execute({})
-        # Set PCU Stage to KPF Position
-        SetPCUtoKPF.execute({})
+
+        if args.get('AO', False) is True:
+            # Open AO Hatch
+            OpenAOHatch.execute({})
+            # Turn HEPA Filter On
+            TurnHepaOff.execute({})
+            # Set PCU Stage to KPF Position
+            SetPCUtoKPF.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        """
+        The arguments to add to the command line interface.
+        """
+        parser = cls._add_bool_arg(parser, 'AO',
+            'Configure AO?', default=False)
+
+        return super().add_cmdline_args(parser, cfg)
