@@ -3,15 +3,13 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class ParkAoRotator(KPFTranslatorFunction):
+class MoveAoRotatorZero(KPFTranslatorFunction):
     """
-    parkAoRotator -- park AO rotator at 45 deg before observing
+    MoveAoRotatorZero -- drive AO rotator to 0 deg before observing
     SYNOPSIS
-        parkAoRotator.execute()
+        MoveAoRotatorToZero.execute()
     DESCRIPTION
-        Check if the HEPA filter inside the AO enclosure is turned off
-        before observing. If not, turn it off.
-        set ao.OBHPAON=0
+        Move AO rotator to 0 deg, because TCS listenes to the LNAS rotator values
 
     ARGUMENTS
     OPTIONS
@@ -26,7 +24,7 @@ class ParkAoRotator(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         ao = ktl.cache('ao')
-        ao['OBRT'].write('45')
+        ao['OBRT'].write('0')
         ao['OBRTMOVE'].write('1')
 
     @classmethod

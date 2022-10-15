@@ -11,12 +11,12 @@ class Cred2ToAcam(KPFTranslatorFunction):
     SYNOPSIS
         Cred2ToAcam.execute({})
     DESCRIPTION
-        1. Set AO roator in Manual mode
-        2. Park AO rotator to 45 deg
-        3. Turn off HEPA
-        4. Set AO in DCS sim mode
-        5. Move PCU to the KPF position <-- to be implemented
-        6. Open AO hatch 
+        1. Set AO roator in Tracking mode
+        2. Set AO rotator to 45 deg
+        3. Set AFM to Mirror
+        4. Set AFM to ngs
+        5. Move PCU to Home <-- to be implemented and tested
+        
 
     ARGUMENTS
     OPTIONS
@@ -25,13 +25,26 @@ class Cred2ToAcam(KPFTranslatorFunction):
     """
 
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(args, logger, cfg):
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
-        raise NotImplementedError()
+        
+        print('Set AO rotator in Tracking and stationary')
+        SetAoRotatorTracking.execute({})
+
+        print('Set AO rotator to 45 deg')
+        ParkAoRotator.execute({})
+
+        print('Set AFM to Mirror')
+        SetAfmMirror.execute({})
+
+        print('Set AFS to NGS')
+        SetAfsNgs.execute({})
+
+        #print('Move PCU to Home')
+        #HomePcu.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
