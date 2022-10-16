@@ -50,7 +50,7 @@ class EndOfNight(KPFTranslatorFunction):
                 print(f'Powering off {outlet}: {name}')
                 kpfpower[f'OUTLET_{outlet}'].write('Off')
 
-        if args.get('AO', False) is True:
+        if args.get('AO', True) is True:
             CloseAOHatch.execute({})
             TurnHepaOn.execute({})
 

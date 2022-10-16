@@ -32,7 +32,7 @@ class StartOfNight(KPFTranslatorFunction):
         # Set Outdirs
         SetOutdirs.execute({})
 
-        if args.get('AO', False) is True:
+        if args.get('AO', True) is True:
             SetupAOforKPF.execute({})
 
     @classmethod
@@ -45,6 +45,6 @@ class StartOfNight(KPFTranslatorFunction):
         The arguments to add to the command line interface.
         """
         parser = cls._add_bool_arg(parser, 'AO',
-            'Configure AO?', default=False)
+            'Configure AO?', default=True)
 
         return super().add_cmdline_args(parser, cfg)
