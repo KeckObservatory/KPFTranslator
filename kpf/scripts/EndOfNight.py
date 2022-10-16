@@ -51,9 +51,7 @@ class EndOfNight(KPFTranslatorFunction):
                 kpfpower[f'OUTLET_{outlet}'].write('Off')
 
         if args.get('AO', False) is True:
-            # Close AO Hatch
             CloseAOHatch.execute({})
-            # Turn HEPA Filter On
             TurnHepaOn.execute({})
 
 

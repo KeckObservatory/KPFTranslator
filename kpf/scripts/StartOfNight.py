@@ -4,9 +4,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from ..ao.OpenAOHatch import OpenAOHatch
-from ..ao.TurnHepaOff import TurnHepaOff
-from ..ao.SetPCUtoKPF import SetPCUtoKPF
+from ..ao.SetupAOforKPF import SetupAOforKPF
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from .SetOutdirs import SetOutdirs
 
@@ -39,12 +37,7 @@ class StartOfNight(KPFTranslatorFunction):
         SetOutdirs.execute({})
 
         if args.get('AO', False) is True:
-            # Open AO Hatch
-            OpenAOHatch.execute({})
-            # Turn HEPA Filter On
-            TurnHepaOff.execute({})
-            # Set PCU Stage to KPF Position
-            SetPCUtoKPF.execute({})
+            SetupAOforKPF.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
