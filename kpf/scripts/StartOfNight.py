@@ -14,11 +14,7 @@ class StartOfNight(KPFTranslatorFunction):
     
     - kpfguide.SENSORSETP = -40
     - initialize tip tilt (set closed loop mode and 0, 0)
-    
-    - PCU stage to KPF position
-    - open AO hatch
-    - HEPA Off
-    
+    - Seup AO
     - Set OUTDIRS
     '''
     @classmethod
