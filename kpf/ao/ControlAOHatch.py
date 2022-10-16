@@ -8,7 +8,7 @@ from .CloseAOHatch import CloseAOHatch
 from .OpenAOHatch import OpenAOHatch
 
 
-class AoHatchOpen(KPFTranslatorFunction):
+class ControlAOHatch(KPFTranslatorFunction):
     '''Control the AO Hatch
     '''
     @classmethod
