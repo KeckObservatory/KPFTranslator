@@ -65,6 +65,6 @@ class EndOfNight(KPFTranslatorFunction):
         The arguments to add to the command line interface.
         """
         parser = cls._add_bool_arg(parser, 'AO',
-            'Close AO hatch and turn on HEPA filter?', default=False)
+            'Close AO hatch and turn on HEPA filter?', default=True)
 
         return super().add_cmdline_args(parser, cfg)
