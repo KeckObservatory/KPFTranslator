@@ -9,7 +9,7 @@ class SetAORotator(KPFTranslatorFunction):
     '''
     '''
     @classmethod
-    def pre_condition(args, logger, cfg):
+    def pre_condition(cls, args, logger, cfg):
         return 'dest' in args.keys()
 
     @classmethod
