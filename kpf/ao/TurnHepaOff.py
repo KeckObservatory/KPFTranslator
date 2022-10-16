@@ -13,7 +13,7 @@ class TurnHepaOff(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         ao = ktl.cache('ao')
-        ao['OBHPASTA'].write('0')
+        ao['OBHPAON'].write('0')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

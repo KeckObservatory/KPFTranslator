@@ -8,6 +8,8 @@ from .TurnHepaOff import TurnHepaOff
 from .SetAODCStoSIM import SetAODCStoSIM
 from .OpenAOHatch import OpenAOHatch
 from .SetAFMtoMirror import SetAFMtoMirror
+from .SetPCUtoKPF import SetPCUtoKPF
+from .SetAFStoNGS import SetAFStoNGS
 
 
 class SetupAOforKPF(KPFTranslatorFunction):
@@ -41,13 +43,13 @@ class SetupAOforKPF(KPFTranslatorFunction):
         SetAODCStoSIM.execute({})
 
         print('Set AFM to Mirror')
-        SetAfmMirror.execute({})
+        SetAFMtoMirror.execute({})
 
         print('Set AFS to NGS')
         SetAFStoNGS.execute({})
 
         print('Move PCU to KPF')
-        PcuToKpf.PcuToKpf.execute({})
+        SetPCUtoKPF.execute({})
 
         print('Open AO hatch')
         OpenAOHatch.execute({})

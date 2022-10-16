@@ -2,6 +2,7 @@ from collections import OrderedDict
 import os
 from pathlib import Path
 from datetime import datetime, timedelta
+import numpy as np
 
 import ktl
 
@@ -58,27 +59,28 @@ class SetOutdirs(KPFTranslatorFunction):
         outdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
         tests = []
         if args.get('CRED2', True) is True:
-            success = ktl.waitFor(f"$kpfguide.OUTDIR == {outdir / 'CRED2'}")
+            expr = f"$kpfguide.OUTDIR == '{outdir}/CRED2'"
+            success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-
         if args.get('FVC1', True) is True:
-            success = ktl.waitFor(f"$kpffvc.SCIOUTDIR == {outdir / 'FVC1'}")
+            expr = f"$kpffvc.SCIOUTDIR == '{outdir}/FVC1'"
+            success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-
         if args.get('FVC2', True) is True:
-            success = ktl.waitFor(f"$kpffvc.CAHKOUTDIR == {outdir / 'FVC2'}")
+            expr = f"$kpffvc.CAHKOUTDIR == '{outdir}/FVC2'"
+            success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-
         if args.get('FVC3', True) is True:
-            success = ktl.waitFor(f"$kpffvc.CALOUTDIR == {outdir / 'FVC3'}")
+            expr = f"$kpffvc.CALOUTDIR == '{outdir}/FVC3'"
+            success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-
         if args.get('FVC4', False) is True:
-            success = ktl.waitFor(f"$kpffvc.EXTOUTDIR == {outdir / 'FVC4'}")
+            expr = f"$kpffvc.EXTOUTDIR == '{outdir}/FVC4'"
+            success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-
         if args.get('ExpMeter', True) is True:
-            success = ktl.waitFor(f"$kpf_expmeter.DATADIR == {outdir / 'ExpMeter'}")
+            expr = f"$kpf_expmeter.DATADIR == '{outdir}/ExpMeter'"
+            success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
 
         return np.all(np.array(tests))
