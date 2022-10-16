@@ -7,6 +7,7 @@ from .SetAORotator import SetAORotator
 from .TurnHepaOff import TurnHepaOff
 from .SetAODCStoSIM import SetAODCStoSIM
 from .OpenAOHatch import OpenAOHatch
+from .SetAFMtoMirror import SetAFMtoMirror
 
 
 class SetupAOforKPF(KPFTranslatorFunction):
