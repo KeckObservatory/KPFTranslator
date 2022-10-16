@@ -40,8 +40,8 @@ class SetupAOforKPF(KPFTranslatorFunction):
         print('Set AO in DCS sim mode')
         SetAODCStoSIM.execute({})
 
-#         print('Set AFM to Mirror')
-#         SetAfmMirror.execute({})
+        print('Set AFM to Mirror')
+        SetAfmMirror.execute({})
 
         print('Set AFS to NGS')
         SetAFStoNGS.execute({})
