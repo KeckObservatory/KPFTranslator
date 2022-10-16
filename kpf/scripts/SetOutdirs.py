@@ -40,7 +40,7 @@ class SetOutdirs(KPFTranslatorFunction):
             print(f"Setting FVC3 OUTDIR to {outdir / 'FVC3'}")
             kpffvc['CALOUTDIR'].write(f"{outdir / 'FVC3'}")
 
-        if args.get('FVC4', True) is True:
+        if args.get('FVC4', False) is True:
             print(f"Setting FVC4 OUTDIR to {outdir / 'FVC4'}")
             kpffvc['EXTOUTDIR'].write(f"{outdir / 'FVC4'}")
 
@@ -73,7 +73,7 @@ class SetOutdirs(KPFTranslatorFunction):
             success = ktl.waitFor(f"$kpffvc.CALOUTDIR == {outdir / 'FVC3'}")
             tests.append(success)
 
-        if args.get('FVC4', True) is True:
+        if args.get('FVC4', False) is True:
             success = ktl.waitFor(f"$kpffvc.EXTOUTDIR == {outdir / 'FVC4'}")
             tests.append(success)
 
