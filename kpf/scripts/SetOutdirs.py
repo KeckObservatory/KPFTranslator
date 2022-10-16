@@ -95,9 +95,9 @@ class SetOutdirs(KPFTranslatorFunction):
         parser = cls._add_bool_arg(parser, 'FVC2',
             'Set FVC2 OUTDIR (kpffvc.CAHKOUTDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'FVC3',
-            'Set FVC3 OUTDIR (kpffvc.CALOUTDIR)?', default=False)
+            'Set FVC3 OUTDIR (kpffvc.CALOUTDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'FVC4',
-            'Set FVC4 OUTDIR (kpffvc.EXTOUTDIR)?', default=True)
+            'Set FVC4 OUTDIR (kpffvc.EXTOUTDIR)?', default=False)
         parser = cls._add_bool_arg(parser, 'ExpMeter',
             'Set ExpMeter OUTDIR (kpf_expmeter.DATADIR)?', default=True)
 
