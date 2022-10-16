@@ -8,18 +8,6 @@ from .OpenAOHatch import OpenAOHatch
 
 class AoHatchOpen(KPFTranslatorFunction):
     """
-    AoHatchOpen -- turn off the HEPA filter in AO before observing
-    SYNOPSIS
-        AoHatchOpen.execute()
-    DESCRIPTION
-        Check if the HEPA filter inside the AO enclosure is turned off
-        before observing. If not, turn it off.
-        set ao.OBHPAON=0
-
-    ARGUMENTS
-    OPTIONS
-    EXAMPLES
-    
     """
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

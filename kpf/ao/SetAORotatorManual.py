@@ -3,18 +3,9 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class SetAoRotatorManual(KPFTranslatorFunction):
+class SetAORotatorManual(KPFTranslatorFunction):
     """
-    SetAoRotatorManual -- set AO to Manual mode
-    SYNOPSIS
-        SetAoRotatorManual.execute()
-    DESCRIPTION
-        AO rotator needs to be in the Manual mode before observing.
-
-    ARGUMENTS
-    OPTIONS
-    EXAMPLES
-    
+    AO rotator needs to be in the Manual mode before observing.
     """
 
     @classmethod

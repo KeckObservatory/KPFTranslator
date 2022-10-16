@@ -3,18 +3,9 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class AoDcsSim(KPFTranslatorFunction):
+class SetAODCStoSIM(KPFTranslatorFunction):
     """
-    AoDcsSim -- set AO in AO DCS sim mode, so AO doesn't communicate with telescope 
-    SYNOPSIS
-        AoDcsSim.execute()
-    DESCRIPTION
-        
-
-    ARGUMENTS
-    OPTIONS
-    EXAMPLES
-    
+    Set AO in AO DCS sim mode, so AO doesn't communicate with telescope 
     """
 
     @classmethod
