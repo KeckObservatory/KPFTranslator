@@ -10,8 +10,7 @@ from .OpenAOHatch import OpenAOHatch
 
 
 class SetupAOforKPF(KPFTranslatorFunction):
-    """
-    Set up AO in the safe mode for KPF operation
+    '''Set up AO in the safe mode for KPF operation
         1. Set AO roator in Manual mode
         2. Set AO rotator to 0 deg
         3. Turn off HEPA
@@ -21,8 +20,7 @@ class SetupAOforKPF(KPFTranslatorFunction):
         7. Home PCU <-- to be implemented and tested
         8. Move PCU to the KPF position <-- to be implemented and tested
         9. Open AO hatch 
-    """
-
+    '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

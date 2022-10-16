@@ -4,8 +4,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class SetAFStoNGS(KPFTranslatorFunction):
-    """ACAM should be set to NGS focus. LGS focus will not work for KPF.
-    """
+    '''ACAM should be set to NGS focus. LGS focus will not work for KPF.
+    '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

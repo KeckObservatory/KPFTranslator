@@ -4,10 +4,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class SetAODCStoSIM(KPFTranslatorFunction):
-    """
-    Set AO in AO DCS sim mode, so AO doesn't communicate with telescope 
-    """
-
+    '''Set AO in AO DCS sim mode, so AO doesn't communicate with telescope
+    '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

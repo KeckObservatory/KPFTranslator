@@ -3,8 +3,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class CloseAOHatch(KPFTranslatorFunction):
-    """Close the AO Hatch
-    """
+    '''Close the AO Hatch
+    '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

@@ -4,9 +4,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class TurnHepaOn(KPFTranslatorFunction):
-    """
-    """
-
+    '''Turn HEPA Filter system on
+    '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

@@ -4,10 +4,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class SetAORotatorManual(KPFTranslatorFunction):
-    """
-    AO rotator needs to be in the Manual mode before observing.
-    """
-
+    '''AO rotator needs to be in the Manual mode before observing.
+    '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

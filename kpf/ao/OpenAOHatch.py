@@ -4,9 +4,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class OpenAOHatch(KPFTranslatorFunction):
-    """Open AO Hatch
-    """
-
+    '''Open AO Hatch
+    '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

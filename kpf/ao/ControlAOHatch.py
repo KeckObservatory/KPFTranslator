@@ -7,13 +7,10 @@ from .OpenAOHatch import OpenAOHatch
 
 
 class AoHatchOpen(KPFTranslatorFunction):
-    """
-    """
+    '''Control the AO Hatch
+    '''
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
         args_to_add = OrderedDict()
         args_to_add['destination'] = {'type': str,
                                 'help': 'Desired hatch position: "open" or "closed"'}

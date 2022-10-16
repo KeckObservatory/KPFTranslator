@@ -4,8 +4,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class SetPCUtoKPF(KPFTranslatorFunction):
-    """
-    """
+    '''
+    '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True

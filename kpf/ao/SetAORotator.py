@@ -4,8 +4,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class SetAORotator(KPFTranslatorFunction):
-    """
-    """
+    '''
+    '''
     @classmethod
     def pre_condition(args, logger, cfg):
         return 'dest' in args.keys()
