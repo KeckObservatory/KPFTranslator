@@ -206,11 +206,14 @@ class FiberGridSearch(KPFTranslatorFunction):
                 if 'ExpMeter' in args.get('cameras', '').split(','):
                     log.info(f"  Stopping exposure meter")
                     kpf_expmeter['EXPOSE'].write('end')
-                    ktl.waitFor('$kpf_expmeter.EXPSTATE == Ready')
+                    FVCsuccess = ktl.waitFor('$kpf_expmeter.EXPSTATE == Ready')
                     kpf_expmeter['CUR_COUNTS'].wait()
-                    lastfile = kpf_expmeter['FITSFILE'].read()
-                    row = {'file': lastfile, 'camera': 'ExpMeter',
-                           'dx': xs[i], 'dy': ys[j]}
+                    if FVCsuccess is True:
+                        lastfile = kpf_expmeter['FITSFILE'].read()
+                    else:
+                        lastfile = 'failed'
+                        row = {'file': lastfile, 'camera': 'ExpMeter',
+                               'dx': xs[i], 'dy': ys[j]}
                     images.add_row(row)
                     # Retrieve keyword history
                     end = time.time()
