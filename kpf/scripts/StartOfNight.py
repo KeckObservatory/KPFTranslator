@@ -6,6 +6,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from ..ao.SetupAOforKPF import SetupAOforKPF
 from ..fiu.InitializeTipTilt import InitializeTipTilt
+from ..fiu.ConfigureFIU import ConfigureFIU
 from .SetOutdirs import SetOutdirs
 
 
@@ -14,6 +15,7 @@ class StartOfNight(KPFTranslatorFunction):
     
     - kpfguide.SENSORSETP = -40
     - initialize tip tilt (set closed loop mode and 0, 0)
+    - set FIU mode to observing
     - Seup AO
     - Set OUTDIRS
     '''
@@ -27,6 +29,8 @@ class StartOfNight(KPFTranslatorFunction):
         print('Setting guider set point to -40 C')
         kpfguide = ktl.cache('kpfguide')
         kpfguide['SENSORSETP'].write(-40)
+        print('Configure FIU for "Observing"')
+        ConfigureFIU({'mode': 'Observing'})
         print('Initialize tip tilt mirror')
         InitializeTipTilt.execute({})
         # Set Outdirs
