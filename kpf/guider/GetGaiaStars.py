@@ -59,7 +59,7 @@ class GetGaiaStars(KPFTranslatorFunction):
             # If we're in a new position, query for a new catalog of stars and
             # write a new region file
             if sep[0].to(u.arcsec).value > requery_threshold:
-                print('Querying for catalog')
+                print(f'Querying for catalog: {cntr.to_string("hmsdms", precision=2)}')
                 gaia = Vizier.query_region(cntr, radius=search_radius*u.arcsec,
                                            catalog=catalog_id)[0]
                 regions = [f'# Region file format: DS9 version 4.1',

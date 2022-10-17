@@ -13,6 +13,7 @@ import keygrabber
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from ddoi_telescope_translator.azel import OffsetAzEl
+# from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
 from ddoi_telescope_translator.wftel import WaitForTel
 from ddoi_telescope_translator.gotobase import GoToBase
 
@@ -106,14 +107,47 @@ class FiberGridSearch(KPFTranslatorFunction):
         if 'CRED2' in args.get('cameras', ''):
             kpfguide = ktl.cache('kpfguide')
 
+        # Set up DCS
+        dcs = ktl.cache('dcs')
+
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
-                log.info(f"Offsetting telescope to position ({xs[i]}, {ys[j]})")
+                log.info(f"Offsetting telescope to position ({xs[i]:.2f}, {ys[j]:.2f})")
 #                 SetTipTilt.execute({'x': xs[i], 'y': ys[j]})
-                OffsetAzEl.execute({'tcs_offset_az': xs[i],
-                                    'tcs_offset_el': ys[j],
-                                    'relative': False})
+#
+#                OffsetAzEl.execute({'tcs_offset_az': xs[i],
+#                                    'tcs_offset_el': ys[j],
+#                                    'relative': False})
+#
+                try:
+                    dcs['azoff'].write(xs[i])
+                except Exception as e:
+                    log.warning(f"Retrying dcs['azoff'].write(xs[i])")
+                    log.warning(e)
+                    time.sleep(0.1)
+                    dcs['azoff'].write(xs[i])
+                time.sleep(0.1)
+                try:
+                    dcs['eloff'].write(ys[j])
+                except Exception as e:
+                    log.warning(f"Retrying dcs['eloff'].write(ys[j])")
+                    log.warning(e)
+                    time.sleep(0.1)
+                    dcs['eloff'].write(ys[j])
+                time.sleep(0.1)
+                try:
+                    dcs['rel2base'].write(True)
+                except Exception as e:
+                    log.warning(f"Retrying dcs['rel2base'].write(True)")
+                    log.warning(e)
+                    time.sleep(0.1)
+                    dcs['rel2base'].write(True)
+#
+#                 OffsetGuiderCoordXY({'guider_x_offset': xs[i],
+#                                      'guider_y_offset': ys[j],
+#                                      'instrument': 'KPF',
+#                                      'relative': False})
                 WaitForTel.execute({})
                 time.sleep(2)
 
@@ -146,6 +180,14 @@ class FiberGridSearch(KPFTranslatorFunction):
                     row = {'file': lastfile, 'camera': 'CRED2',
                            'dx': xs[i], 'dy': ys[j]}
                     images.add_row(row)
+
+                    log.info(f"  Taking Second CRED2 exposure")
+                    TakeGuiderExposure.execute({})
+                    lastfile = kpfguide[f"LASTFILE"].read()
+                    row = {'file': lastfile, 'camera': 'CRED2',
+                           'dx': xs[i], 'dy': ys[j]}
+                    images.add_row(row)
+
 
                 # Collect files for FVC exposures
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
