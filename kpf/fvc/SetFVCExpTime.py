@@ -9,7 +9,7 @@ from . import fvc_is_ready
 
 
 class SetFVCExpTime(KPFTranslatorFunction):
-    '''Take an exposure with the specified fiber viewing camera
+    '''Set the exposure time of the specified fiber viewing camera
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
