@@ -26,30 +26,54 @@ class SetOutdirs(KPFTranslatorFunction):
         if args.get('CRED2', True) is True:
             print(f"Setting guider OUTDIR to {outdir / 'CRED2'}")
             guide_outdir = ktl.cache('kpfguide', 'OUTDIR')
-            guide_outdir.write(f"{outdir / 'CRED2'}")
+            try:
+                guide_outdir.write(f"{outdir / 'CRED2'}")
+            except Exception as e:
+                print(f"ERROR setting guider outdir")
+                print(e)
 
         kpffvc = ktl.cache('kpffvc')
         if args.get('FVC1', True) is True:
             print(f"Setting FVC1 OUTDIR to {outdir / 'FVC1'}")
-            kpffvc['SCIOUTDIR'].write(f"{outdir / 'FVC1'}")
+            try:
+                kpffvc['SCIOUTDIR'].write(f"{outdir / 'FVC1'}")
+            except Exception as e:
+                print(f"ERROR setting SCI FVC outdir")
+                print(e)
 
         if args.get('FVC2', True) is True:
             print(f"Setting FVC2 OUTDIR to {outdir / 'FVC2'}")
-            kpffvc['CAHKOUTDIR'].write(f"{outdir / 'FVC2'}")
+            try:
+                kpffvc['CAHKOUTDIR'].write(f"{outdir / 'FVC2'}")
+            except Exception as e:
+                print(f"ERROR setting CAHK FVC outdir")
+                print(e)
 
         if args.get('FVC3', True) is True:
             print(f"Setting FVC3 OUTDIR to {outdir / 'FVC3'}")
-            kpffvc['CALOUTDIR'].write(f"{outdir / 'FVC3'}")
+            try:
+                kpffvc['CALOUTDIR'].write(f"{outdir / 'FVC3'}")
+            except Exception as e:
+                print(f"ERROR setting CAL FVC outdir")
+                print(e)
 
         if args.get('FVC4', False) is True:
             print(f"Setting FVC4 OUTDIR to {outdir / 'FVC4'}")
-            kpffvc['EXTOUTDIR'].write(f"{outdir / 'FVC4'}")
+            try:
+                kpffvc['EXTOUTDIR'].write(f"{outdir / 'FVC4'}")
+            except Exception as e:
+                print(f"ERROR setting EXT FVC outdir")
+                print(e)
 
         if args.get('ExpMeter', True) is True:
             expmeter_outdir = outdir / 'ExpMeter'
             print(f"Setting exposure meter DATADIR to {expmeter_outdir}")
             kpf_expmeter = ktl.cache('kpf_expmeter')
-            kpf_expmeter['DATADIR'].write(f"{expmeter_outdir}")
+            try:
+                kpf_expmeter['DATADIR'].write(f"{expmeter_outdir}")
+            except Exception as e:
+                print(f"ERROR setting ExpMeter outdir")
+                print(e)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
