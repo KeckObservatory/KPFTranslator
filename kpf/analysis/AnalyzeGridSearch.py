@@ -200,7 +200,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
             ouput_sci_image_file.unlink()
         plt.savefig(ouput_sci_image_file, bbox_inches='tight', pad_inches=0.10)
     if 'EXT' in FVCs:
-        log.info(f"Saving: {ouput_sci_image_file}")
+        log.info(f"Saving: {ouput_ext_image_file}")
         plt.figure(num=ext_FVC_images_fig.number)
         if ouput_ext_image_file.exists() is True:
             ouput_ext_image_file.unlink()
@@ -319,6 +319,19 @@ def show_CRED2_image(x, y, images, fluxes,
         x2 = x1
         y2 = y1
 
+    # Third iteration
+    if iterate is True:
+        dx = 25
+        dy = 25
+        subframe = image_data[int(y2)-dy:int(y2)+dy,int(x2)-dx:int(x2)+dx]
+        dx3, dy3 = centroid_com(subframe)
+    #     dx1, dy1 = centroid_2dg(subframe)
+        x3 = int(x2) - dx + dx3
+        y3 = int(y2) - dy + dy3
+    else:
+        x3 = x1
+        y3 = y1
+
     if fig is not None:
         plt.figure(num=fig.number)
         plt.subplot(ny+1,nx,imno)
@@ -329,7 +342,7 @@ def show_CRED2_image(x, y, images, fluxes,
                                   stretch=viz.LogStretch())
         plt.imshow(subframe, cmap='gray', origin='lower', norm=norm)
 #         plt.plot(dx1, dy1, 'rx', alpha=0.3)
-        plt.plot(dx2, dy2, 'r+')
+        plt.plot(dx3, dy3, 'r+')
         plt.gca().set_yticks([])
         plt.gca().set_xticks([])
 
@@ -363,7 +376,7 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
         plt.subplot(ny+1,nx,imno)
         title_string = f"{fvc_file}"
         plt.title(title_string, size=8)
-        norm = viz.ImageNormalize(hdul[0].data, interval=viz.AsymmetricPercentileInterval(0.1,99.9),
+        norm = viz.ImageNormalize(hdul[0].data, interval=viz.AsymmetricPercentileInterval(0.2,99.9),
                                   stretch=viz.LogStretch())
         plt.imshow(subframe, cmap='gray', origin='lower', norm=norm)
         plt.gca().set_yticks([])
@@ -379,26 +392,24 @@ if __name__ == '__main__':
 #     analyze_grid_search('20221007at133243', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
 #     analyze_grid_search('20221007at134116', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
 #     analyze_grid_search('20221007at134957', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at143218', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at144431', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-
-##     analyze_grid_search('20221007at122115', flux_prefix='f', x0=160, y0=256, FVCs=['SCI', 'EXT']) # Failed grid
+    analyze_grid_search('20221007at143218', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at144431', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    # analyze_grid_search('20221007at122115', flux_prefix='f', x0=160, y0=256, FVCs=['SCI', 'EXT']) # Failed grid
 
     # Oct 16
-    analyze_grid_search('20221017at054732', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at055940', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at060401', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at061708', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at073300', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at080015', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at082551', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at084907', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at085828', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at091540', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at093334', fiber='EMSky', FVCs=[])
-    analyze_grid_search('20221017at094948', fiber='EMSky', FVCs=[])
-
-##     analyze_grid_search('20221017at062242', x0=160, y0=256) # Failed grid
-##     analyze_grid_search('20221017at063907', x0=160, y0=256) # Failed grid
-##     analyze_grid_search('20221017at065709', x0=160, y0=256) # Failed grid
-##     analyze_grid_search('20221017at082305', x0=160, y0=256) # Failed grid
+#     analyze_grid_search('20221017at054732', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at055940', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at060401', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at061708', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at073300', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at080015', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at082551', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at084907', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at085828', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at091540', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at093334', fiber='EMSky', FVCs=[])
+#     analyze_grid_search('20221017at094948', fiber='EMSky', FVCs=[])
+    # analyze_grid_search('20221017at062242', x0=160, y0=256) # Failed grid
+    # analyze_grid_search('20221017at063907', x0=160, y0=256) # Failed grid
+    # analyze_grid_search('20221017at065709', x0=160, y0=256) # Failed grid
+    # analyze_grid_search('20221017at082305', x0=160, y0=256) # Failed grid
