@@ -13,9 +13,8 @@ import keygrabber
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from ddoi_telescope_translator.azel import OffsetAzEl
-# from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
+from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
 from ddoi_telescope_translator.wftel import WaitForTel
-from ddoi_telescope_translator.gotobase import GoToBase
 
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.SetTipTilt import SetTipTilt
@@ -55,6 +54,15 @@ class FiberGridSearch(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        offset_system = args.get('offset', 'gxy')
+        if offset_system not in ['azel', 'gxy', 'ttm']:
+            print(f"Offset mode {offset_system} not supported")
+            return False
+        cameras = args.get('cameras', '').split(',')
+        for camera in cameras:
+            if camera not in ['CRED2', 'SCI', 'CAHK', 'EXT', 'ExpMeter']:
+                print(f"Camera {camera} not supported")
+            return False
         return True
 
     @classmethod
@@ -110,46 +118,53 @@ class FiberGridSearch(KPFTranslatorFunction):
         # Set up DCS
         dcs = ktl.cache('dcs')
 
+        offset_system = args.get('offset', 'gxy')
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
-                log.info(f"Offsetting telescope to position ({xs[i]:.2f}, {ys[j]:.2f})")
-#                 SetTipTilt.execute({'x': xs[i], 'y': ys[j]})
-#
-#                OffsetAzEl.execute({'tcs_offset_az': xs[i],
-#                                    'tcs_offset_el': ys[j],
-#                                    'relative': False})
-#
-                try:
-                    dcs['azoff'].write(xs[i])
-                except Exception as e:
-                    log.warning(f"Retrying dcs['azoff'].write(xs[i])")
-                    log.warning(e)
+                log.info(f"Offsetting: {offset_system} to ({xs[i]:.2f}, {ys[j]:.2f})")
+                if offset_system == 'ttm':
+                    SetTipTilt.execute({'x': xs[i], 'y': ys[j]})
+                    # If the tip/tilt system is active, and you're offloading,
+                    # what you want is to set the kpfguide.CURRENT_BASE keyword
+                    #to a new value (in pixels)
+                elif offset_system == 'azel':
+                   OffsetAzEl.execute({'tcs_offset_az': xs[i],
+                                       'tcs_offset_el': ys[j],
+                                       'relative': False})
+                    WaitForTel.execute({})
+                    time.sleep(2)
+                elif offset_system == 'gxy':
+                    OffsetGuiderCoordXY({'guider_x_offset': xs[i],
+                                         'guider_y_offset': ys[j],
+                                         'instrument': 'KPF',
+                                         'relative': False})
+                    WaitForTel.execute({})
+                    time.sleep(2)
+                elif offset_system == 'custom':
+                    try:
+                        dcs['azoff'].write(xs[i])
+                    except Exception as e:
+                        log.warning(f"Retrying dcs['azoff'].write(xs[i])")
+                        log.warning(e)
+                        time.sleep(0.1)
+                        dcs['azoff'].write(xs[i])
                     time.sleep(0.1)
-                    dcs['azoff'].write(xs[i])
-                time.sleep(0.1)
-                try:
-                    dcs['eloff'].write(ys[j])
-                except Exception as e:
-                    log.warning(f"Retrying dcs['eloff'].write(ys[j])")
-                    log.warning(e)
+                    try:
+                        dcs['eloff'].write(ys[j])
+                    except Exception as e:
+                        log.warning(f"Retrying dcs['eloff'].write(ys[j])")
+                        log.warning(e)
+                        time.sleep(0.1)
+                        dcs['eloff'].write(ys[j])
                     time.sleep(0.1)
-                    dcs['eloff'].write(ys[j])
-                time.sleep(0.1)
-                try:
-                    dcs['rel2base'].write(True)
-                except Exception as e:
-                    log.warning(f"Retrying dcs['rel2base'].write(True)")
-                    log.warning(e)
-                    time.sleep(0.1)
-                    dcs['rel2base'].write(True)
-#
-#                 OffsetGuiderCoordXY({'guider_x_offset': xs[i],
-#                                      'guider_y_offset': ys[j],
-#                                      'instrument': 'KPF',
-#                                      'relative': False})
-                WaitForTel.execute({})
-                time.sleep(2)
+                    try:
+                        dcs['rel2base'].write(True)
+                    except Exception as e:
+                        log.warning(f"Retrying dcs['rel2base'].write(True)")
+                        log.warning(e)
+                        time.sleep(0.1)
+                        dcs['rel2base'].write(True)
 
 
                 # Start Exposure Meter
@@ -280,6 +295,8 @@ class FiberGridSearch(KPFTranslatorFunction):
                     'help': 'Distance (arcsec) between grid points in Y'}
         args_to_add['cameras'] = {'type': str,
                     'help': 'List of cameras'}
+        args_to_add['offset'] = {'type': str,
+                    'help': 'Offset method to use: azel, gxy, ttm'}
         args_to_add['comment'] = {'type': str,
                     'help': 'Comment for log'}
 
