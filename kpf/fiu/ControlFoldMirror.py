@@ -28,11 +28,12 @@ class ControlFoldMirror(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
-        if destination.lower() in ['out']:
-            FoldMirrorOut.execute({})
-        elif destination.lower() in ['in']:
-            FoldMirrorIn.execute({})
+        kpffiu = ktl.cache('kpffiu')
+        kpffiu['FOLDNAM'].write(destination)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        destination = args.get('destination', '').strip()
+        cfg = cls._load_config(cls, cfg)
+        timeout = cfg.get('times', 'fiu_fold_mirror_move_time', fallback=5)
+        return ktl.waitFor(f'($kpffiu.foldnam == {destination})', timeout=timeout)
