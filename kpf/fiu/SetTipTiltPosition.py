@@ -5,7 +5,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class SetTipTilt(KPFTranslatorFunction):
+class SetTipTiltPosition(KPFTranslatorFunction):
     '''
     '''
     @classmethod
