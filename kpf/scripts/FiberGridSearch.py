@@ -178,10 +178,10 @@ class FiberGridSearch(KPFTranslatorFunction):
                     begin = time.time()
 
                 # Start FVC Exposures
-                initial_lastfile = {}
+                nextfile = {}
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
                     if camera in args.get('cameras', '').split(','):
-                        initial_lastfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
+                        nextfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
                         log.debug(f"  Initial lastfile for {camera} = {initial_lastfile[camera]}")
                         log.info(f"  Starting {camera} FVC exposure")
 #                         kpffvc[f"{camera}EXPOSE"].write('yes', wait=False)
@@ -208,14 +208,19 @@ class FiberGridSearch(KPFTranslatorFunction):
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
                     if camera in args.get('cameras', '').split(','):
                         log.info(f"  Looking for output file for {camera}")
-                        expr = f'($kpffvc.{camera}LASTFILE != "{initial_lastfile[camera]}")'
+                        expr = f'($kpffvc.{camera}LASTFILE == "{nextfile[camera]}")'
                         log.debug(f"  Waiting for: {expr}")
-                        ktl.waitFor(expr, timeout=20)
-                        lastfile = kpffvc[f'{camera}LASTFILE'].read()
-                        log.debug(f"Found {lastfile}")
-                        row = {'file': lastfile, 'camera': camera,
-                               'dx': xs[i], 'dy': ys[j]}
-                        images.add_row(row)
+                        if ktl.waitFor(expr, timeout=20) is False:
+                            lastfile = kpffvc[f'{camera}LASTFILE'].read()
+                            log.error('No new FVC file found')
+                            log.error(f"  expecting: {nextfile[camera]}")
+                            log.error(f"  kpffvc.{camera}LASTFILE = {lastfile}")
+                        else:
+                            lastfile = kpffvc[f'{camera}LASTFILE'].read()
+                            log.debug(f"Found {lastfile}")
+                            row = {'file': lastfile, 'camera': camera,
+                                   'dx': xs[i], 'dy': ys[j]}
+                            images.add_row(row)
 
                 # Stop Exposure Meter
                 if 'ExpMeter' in args.get('cameras', '').split(','):
