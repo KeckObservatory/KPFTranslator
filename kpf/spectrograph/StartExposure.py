@@ -4,6 +4,10 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
+from . import check_green_detector_power, check_green_detector_temperature,
+              check_red_detector_power, check_red_detector_temperature,
+              check_cahk_detector_temperature
+
 
 class StartExposure(KPFTranslatorFunction):
     '''Begins an triggered exposure by setting the `kpfexpose.EXPOSE` keyword
