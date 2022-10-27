@@ -37,13 +37,66 @@ LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s',
 LogConsoleHandler.setFormatter(LogFormat)
 log.addHandler(LogConsoleHandler)
 ## Set up file output
-now = datetime.utcnow()
-now_str = now.strftime('%Y%m%dat%H%M%S')
-LogFileName = Path(f'~/logs/{this_file_name}_{now_str}.log').expanduser()
+utnow = datetime.utcnow()
+now_str = utnow.strftime('%Y%m%dat%H%M%S')
+date = utnow-timedelta(days=1)
+date_str = date.strftime('%Y%b%d').lower()
+log_dir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}/script_logs/")
+if log_dir.exists() is False:
+    log_dir.mkdir(parents=True)
+LogFileName = log_dir / f"{this_file_name}_{now_str}.log"
 LogFileHandler = logging.FileHandler(LogFileName)
 LogFileHandler.setLevel(logging.DEBUG)
 LogFileHandler.setFormatter(LogFormat)
 log.addHandler(LogFileHandler)
+
+
+##-------------------------------------------------------------------------
+## offset
+##-------------------------------------------------------------------------
+def offset(x, y, offset_system='gxy'):
+    if offset_system == 'ttm':
+        SetTipTilt.execute({'x': x, 'y': y)
+        # If the tip/tilt system is active, and you're offloading,
+        # what you want is to set the kpfguide.CURRENT_BASE keyword
+        #to a new value (in pixels)
+    elif offset_system == 'azel':
+       OffsetAzEl.execute({'tcs_offset_az': x,
+                           'tcs_offset_el': y,
+                           'relative': False})
+        WaitForTel.execute({})
+        time.sleep(2)
+    elif offset_system == 'gxy':
+        OffsetGuiderCoordXY({'guider_x_offset': x,
+                             'guider_y_offset': y,
+                             'instrument': 'KPF',
+                             'relative': False})
+        WaitForTel.execute({})
+        time.sleep(2)
+    elif offset_system == 'custom':
+        try:
+            dcs['azoff'].write(x)
+        except Exception as e:
+            log.warning(f"Retrying dcs['azoff'].write({x})")
+            log.warning(e)
+            time.sleep(0.1)
+            dcs['azoff'].write(x)
+        time.sleep(0.1)
+        try:
+            dcs['eloff'].write(y)
+        except Exception as e:
+            log.warning(f"Retrying dcs['eloff'].write({y})")
+            log.warning(e)
+            time.sleep(0.1)
+            dcs['eloff'].write(y)
+        time.sleep(0.1)
+        try:
+            dcs['rel2base'].write(True)
+        except Exception as e:
+            log.warning(f"Retrying dcs['rel2base'].write(True)")
+            log.warning(e)
+            time.sleep(0.1)
+            dcs['rel2base'].write(True)
 
 
 ##-------------------------------------------------------------------------
@@ -118,64 +171,22 @@ class FiberGridSearch(KPFTranslatorFunction):
         # Set up DCS
         dcs = ktl.cache('dcs')
 
-        offset_system = args.get('offset', 'gxy')
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
                 log.info(f"Offsetting: {offset_system} to ({xs[i]:.2f}, {ys[j]:.2f})")
-                if offset_system == 'ttm':
-                    SetTipTilt.execute({'x': xs[i], 'y': ys[j]})
-                    # If the tip/tilt system is active, and you're offloading,
-                    # what you want is to set the kpfguide.CURRENT_BASE keyword
-                    #to a new value (in pixels)
-                elif offset_system == 'azel':
-                   OffsetAzEl.execute({'tcs_offset_az': xs[i],
-                                       'tcs_offset_el': ys[j],
-                                       'relative': False})
-                    WaitForTel.execute({})
-                    time.sleep(2)
-                elif offset_system == 'gxy':
-                    OffsetGuiderCoordXY({'guider_x_offset': xs[i],
-                                         'guider_y_offset': ys[j],
-                                         'instrument': 'KPF',
-                                         'relative': False})
-                    WaitForTel.execute({})
-                    time.sleep(2)
-                elif offset_system == 'custom':
-                    try:
-                        dcs['azoff'].write(xs[i])
-                    except Exception as e:
-                        log.warning(f"Retrying dcs['azoff'].write(xs[i])")
-                        log.warning(e)
-                        time.sleep(0.1)
-                        dcs['azoff'].write(xs[i])
-                    time.sleep(0.1)
-                    try:
-                        dcs['eloff'].write(ys[j])
-                    except Exception as e:
-                        log.warning(f"Retrying dcs['eloff'].write(ys[j])")
-                        log.warning(e)
-                        time.sleep(0.1)
-                        dcs['eloff'].write(ys[j])
-                    time.sleep(0.1)
-                    try:
-                        dcs['rel2base'].write(True)
-                    except Exception as e:
-                        log.warning(f"Retrying dcs['rel2base'].write(True)")
-                        log.warning(e)
-                        time.sleep(0.1)
-                        dcs['rel2base'].write(True)
+                offset(xs[i], ys[j], offset_system=args.get('offset', 'gxy'))
 
-
-                # Start Exposure Meter
-                if 'ExpMeter' in args.get('cameras', ''):
-                    log.info(f"  Starting exposure meter")
-                    kpf_expmeter['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
-                    exptime = kpf_expmeter['EXPOSURE'].read(binary=True)
-                    ktl.waitFor('($kpf_expmeter.EXPOSE == Ready)', timeout=exptime+2)
-                    kpf_expmeter['EXPOSE'].write('Start')
-                    # Begin timestamp for history retrieval
-                    begin = time.time()
+                # Start Exposure Meter and Science Cameras
+                
+#                 if 'ExpMeter' in args.get('cameras', ''):
+#                     log.info(f"  Starting exposure meter")
+#                     kpf_expmeter['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
+#                     exptime = kpf_expmeter['EXPOSURE'].read(binary=True)
+#                     ktl.waitFor('($kpf_expmeter.EXPOSE == Ready)', timeout=exptime+2)
+#                     kpf_expmeter['EXPOSE'].write('Start')
+#                     # Begin timestamp for history retrieval
+#                     begin = time.time()
 
                 # Start FVC Exposures
                 nextfile = {}
