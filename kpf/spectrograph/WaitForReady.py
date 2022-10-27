@@ -10,11 +10,6 @@ class WaitForReady(KPFTranslatorFunction):
     block until the camera is ready for another exposure.  Times out after
     waiting for exposure time plus a set buffer time.
     '''
-    def __init__(self):
-        super().__init__()
-        self.buffer_time = 120 # should be the readout time for the slowest
-                               # detector plus a margin.
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True
@@ -28,7 +23,12 @@ class WaitForReady(KPFTranslatorFunction):
         detector_list = detectors.split(',')
 
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
-        wait_time = exptime+self.buffer_time if starting_status < 3 else self.buffer_time
+
+        cfg = cls._load_config(cls, cfg)
+        buffer_time = cfg.get('times', 'readout_buffer_time', fallback=10)
+        slowest_read = cfg.get('times', 'slowest_readout_time', fallback=120)
+
+        wait_time = exptime+slowest_read+buffer_time if starting_status < 3 else slowest_read+buffer_time
 
         wait_logic = ''
         if 'Green' in detector_list:

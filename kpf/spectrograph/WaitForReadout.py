@@ -7,13 +7,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 class WaitForReadout(KPFTranslatorFunction):
     '''Waits for the `kpfexpose.EXPOSE` keyword to be "Readout".  This will
-    block until the camera enters the readout state.  Times out after waiting
-    the current exposure time plus 10 seconds.
+    block until the camera enters the readout state.
     '''
-    def __init__(self):
-        super().__init__()
-        self.buffer_time = 10 # Small buffer
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True
@@ -27,7 +22,9 @@ class WaitForReadout(KPFTranslatorFunction):
         detector_list = detectors.split(',')
 
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
-        wait_time = exptime+self.buffer_time if starting_status < 3 else self.buffer_time
+        cfg = cls._load_config(cls, cfg)
+        buffer_time = cfg.get('times', 'readout_buffer_time', fallback=10)
+        wait_time = exptime+buffer_time if starting_status < 3 else buffer_time
 
         wait_logic = ''
         if 'Green' in detector_list:
@@ -45,7 +42,7 @@ class WaitForReadout(KPFTranslatorFunction):
         wait_logic += '($kpfexpose.EXPOSE == 4)'
         print(f"  Wait Logic: {wait_logic}")
         print(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
-        ktl.waitFor(wait_logic, timeout=wait_time)
+        success = ktl.waitFor(wait_logic, timeout=wait_time)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
