@@ -97,7 +97,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                      'Science': (800, 600),
                      'Sky': None}[fiber]
     fvcext_pixels = {'EMSky': None,
-                     'Science': (650, 600),
+                     'Science': (620, 579),
                      'Sky': None}[fiber]
     if flux_prefix is None:
         flux_prefix = {'EMSky': 'bck',
@@ -379,21 +379,26 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
         norm = viz.ImageNormalize(hdul[0].data, interval=viz.AsymmetricPercentileInterval(0.2,99.9),
                                   stretch=viz.LogStretch())
         plt.imshow(subframe, cmap='gray', origin='lower', norm=norm)
+        radius = {'EXT': 27, 'SCI': 40, 'CAHK': 40}[camera]
+        circ = plt.Circle((dx, dy), radius=radius, alpha=0.5,
+                          edgecolor='red', fill=False)
+        plt.plot(dx, dy, 'r+', alpha=0.25)
+        plt.gca().add_patch(circ)
         plt.gca().set_yticks([])
         plt.gca().set_xticks([])
 
 
 if __name__ == '__main__':
     # Oct 6
-#     analyze_grid_search('20221007at122438', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at123043', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at123800', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at125522', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at133243', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at134116', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at134957', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at122438', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at123043', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at123800', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at125522', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at133243', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at134116', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at134957', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
     analyze_grid_search('20221007at143218', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at144431', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+    analyze_grid_search('20221007at144431', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT']) # Bad?  only 1 EXT image file?
     # analyze_grid_search('20221007at122115', flux_prefix='f', x0=160, y0=256, FVCs=['SCI', 'EXT']) # Failed grid
 
     # Oct 16
