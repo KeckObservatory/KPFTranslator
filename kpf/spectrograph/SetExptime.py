@@ -14,20 +14,13 @@ class SetExptime(KPFTranslatorFunction):
         exptime = args.get('exptime', None)
         if exptime is None:
             return False
-        return True
+        return (exptime >= 0)
 
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         exptime = args.get('exptime')
         kpfexpose['EXPOSURE'].write(exptime)
-
-        exptime_value = kpfexpose['EXPOSURE'].read()
-        if abs(exptime_value - exptime) > 0.1:
-            msg = (f"Final exposure time mismatch: "
-                   f"{exptime_value:.1f} != {exptime:.1f}")
-            print(msg)
-            raise KPFError(msg)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
