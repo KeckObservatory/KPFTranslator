@@ -35,9 +35,6 @@ class SetExptime(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg):
-        """
-        The arguments to add to the command line interface.
-        """
         args_to_add = OrderedDict()
         args_to_add['exptime'] = {'type': float,
                                   'help': 'The exposure time in seconds.'}
