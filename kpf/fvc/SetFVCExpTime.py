@@ -29,6 +29,7 @@ class SetFVCExpTime(KPFTranslatorFunction):
         camera = args.get('camera', 'SCI')
         exptime = args.get('exptime', None)
         if exptime is not None:
+            cfg = cls._load_config(cls, cfg)
             timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
             tol = cfg.get('tolerances', 'guider_exptime_tolerance', fallback=0.01)
             expr = (f'($kpffvc.{camera}EXPTIME > {exptime}-{tol}) '\
