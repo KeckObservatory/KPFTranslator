@@ -9,18 +9,6 @@ class ControlFoldMirror(KPFTranslatorFunction):
     '''Open or close the FIU hatch
     '''
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
-        args_to_add = OrderedDict()
-        args_to_add['destination'] = {'type': str,
-                    'help': 'Desired fold mirror position: "in" or "out"'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-        return super().add_cmdline_args(parser, cfg)
-
-    @classmethod
     def pre_condition(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
         return destination.lower() in ['in', 'out']
@@ -37,3 +25,16 @@ class ControlFoldMirror(KPFTranslatorFunction):
         cfg = cls._load_config(cls, cfg)
         timeout = cfg.get('times', 'fiu_fold_mirror_move_time', fallback=5)
         return ktl.waitFor(f'($kpffiu.foldnam == {destination})', timeout=timeout)
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        """
+        The arguments to add to the command line interface.
+        """
+        args_to_add = OrderedDict()
+        args_to_add['destination'] = {'type': str,
+                    'help': 'Desired fold mirror position: "in" or "out"'}
+
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)
+
