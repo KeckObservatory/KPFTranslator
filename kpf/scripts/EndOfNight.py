@@ -7,6 +7,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from ..ao.CloseAOHatch import CloseAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
 from ..fiu.ShutdownTipTilt import ShutdownTipTilt
+from ..fiu.ConfigureFIU import ConfigureFIU
 
 
 class EndOfNight(KPFTranslatorFunction):
@@ -30,8 +31,7 @@ class EndOfNight(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         # FIU
         print('Setting FIU mode to Stowed')
-        kpffiu = ktl.cache('kpffiu')
-        kpffiu['MODE'].write('Stowed')
+        ConfigureFIU.execute({'mode': 'Stowed'})
         ShutdownTipTilt.execute({})
         # Guider
         print('Setting guider set point to 0C')
