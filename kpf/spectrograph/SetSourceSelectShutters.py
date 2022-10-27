@@ -1,4 +1,4 @@
-
+import numpy as np
 
 import ktl
 
@@ -11,8 +11,11 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        print("Pre condition")
-        return True
+        allowed_values = ['', 'SciSelect', 'SkySelect', 'SoCalSci', 'SoCalCal',
+                          'Cal_SciSky']
+        shutters = 
+        valid = np.array([(s in allowed_values) for s in shutters])
+        return np.all(valid)
 
     @classmethod
     def perform(cls, args, logger, cfg):
