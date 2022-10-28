@@ -100,6 +100,9 @@ def offset(x, y, offset_system='gxy'):
             log.warning(e)
             time.sleep(0.1)
             dcs['rel2base'].write(True)
+    elif offset_system in [None, '']:
+        log.warning(f"  No offset system selected")
+        pass
 
 
 ##-------------------------------------------------------------------------
