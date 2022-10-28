@@ -20,6 +20,9 @@ from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.SetTipTilt import SetTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..guider.TakeGuiderExposure import TakeGuiderExposure
+from ..spectrograph.StartExposure import StartExposure
+from ..spectrograph.WaitForReady import WaitForReady
+from ..spectrograph.WaitForReadout import WaitForReadout
 
 
 ##-------------------------------------------------------------------------
@@ -153,13 +156,15 @@ class FiberGridSearch(KPFTranslatorFunction):
         # Set up tip tilt system
         InitializeTipTilt.execute({})
 
-        # Set up Exposure Meter
-        if 'ExpMeter' in args.get('cameras', ''):
-            kpf_expmeter = ktl.cache('kpf_expmeter')
-            kpfexpose = ktl.cache('kpfexpose')
-            kpf_expmeter['record'].write('Yes')
-            kpfexpose['SRC_SHUTTERS'].write('SciSelect,SkySelect')
-            kpfexpose['SCRAMBLER_SHTR'].write('open')
+        # Set up kpfexpose
+        kpf_expmeter = ktl.cache('kpf_expmeter')
+        kpfexpose = ktl.cache('kpfexpose')
+        kpfexpose['SRC_SHUTTERS'].write('SciSelect,SkySelect')
+        kpfexpose['TIMED_SHUTTERS'].write('Scrambler')
+        kpfexpose['TRIG_TARG'].write('Red,Green,ExpMeter')
+        log.info(f"SRC_SHUTTERS: {kpfexpose['SRC_SHUTTERS'].read()}")
+        log.info(f"TIMED_SHUTTERS: {kpfexpose['TIMED_SHUTTERS'].read()}")
+        log.info(f"TRIG_TARG: {kpfexpose['TRIG_TARG'].read()}")
 
         # Set up FVCs
         kpffvc = ktl.cache('kpffvc')
@@ -178,24 +183,20 @@ class FiberGridSearch(KPFTranslatorFunction):
                 offset(xs[i], ys[j], offset_system=args.get('offset', 'gxy'))
 
                 # Start Exposure Meter and Science Cameras
-                
-#                 if 'ExpMeter' in args.get('cameras', ''):
-#                     log.info(f"  Starting exposure meter")
-#                     kpf_expmeter['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
-#                     exptime = kpf_expmeter['EXPOSURE'].read(binary=True)
-#                     ktl.waitFor('($kpf_expmeter.EXPOSE == Ready)', timeout=exptime+2)
-#                     kpf_expmeter['EXPOSE'].write('Start')
-#                     # Begin timestamp for history retrieval
-#                     begin = time.time()
+                WaitForReady.execute({})
+                kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
+                log.info(f"  Starting kpfexpose cameras")
+                StartExposure.execute({})
+                # Begin timestamp for history retrieval
+                begin = time.time()
 
                 # Start FVC Exposures
                 nextfile = {}
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
                     if camera in args.get('cameras', '').split(','):
                         nextfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
-                        log.debug(f"  Initial lastfile for {camera} = {initial_lastfile[camera]}")
+                        log.debug(f"  Nextfile for {camera} = {nextfile[camera]}")
                         log.info(f"  Starting {camera} FVC exposure")
-#                         kpffvc[f"{camera}EXPOSE"].write('yes', wait=False)
                         TakeFVCExposure.execute({'camera': camera, 'wait': False})
 
                 # Expose using CRED2
@@ -234,41 +235,42 @@ class FiberGridSearch(KPFTranslatorFunction):
                             images.add_row(row)
 
                 # Stop Exposure Meter
-                if 'ExpMeter' in args.get('cameras', '').split(','):
-                    log.info(f"  Stopping exposure meter")
-                    kpf_expmeter['EXPOSE'].write('end')
-                    FVCsuccess = ktl.waitFor('$kpf_expmeter.EXPSTATE == Ready')
-                    kpf_expmeter['CUR_COUNTS'].wait()
-                    if FVCsuccess is True:
-                        lastfile = kpf_expmeter['FITSFILE'].read()
-                    else:
-                        lastfile = 'failed'
-                        row = {'file': lastfile, 'camera': 'ExpMeter',
-                               'dx': xs[i], 'dy': ys[j]}
-                    images.add_row(row)
-                    # Retrieve keyword history
-                    end = time.time()
-                    expmeter_data = {'dx': xs[i], 'dy': ys[j],
-                                     'i': i, 'j': j,
-                                     }
-                    for counts_kw in ['CUR_COUNTS', 'RAW_COUNTS', 'BCK_COUNTS']:
-                        log.info(f"  Retrieving keyword history for {counts_kw}")
-                        kws = {'kpf_expmeter': [counts_kw]}
-                        counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
-                        # Extract counts and save to table
-                        fluxes = np.zeros((len(counts_history), 4))
-                        for k,entry in enumerate(counts_history):
-                            value_floats = [float(v) for v in entry['ascvalue'].split()]
-                            ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
-                            log.debug(f"  {ts}: {value_floats}")
-                            fluxes[k] = value_floats
-                        avg_fluxes = np.mean(fluxes, axis=0)
-                        expmeter_data[f"{counts_kw[:3].lower()}1"] = avg_fluxes[0]
-                        expmeter_data[f"{counts_kw[:3].lower()}2"] = avg_fluxes[1]
-                        expmeter_data[f"{counts_kw[:3].lower()}3"] = avg_fluxes[2]
-                        expmeter_data[f"{counts_kw[:3].lower()}4"] = avg_fluxes[3]
-                    expmeter_data['nimages'] = len(counts_history)
-                    expmeter_flux.add_row(expmeter_data)
+                log.info(f"  Waiting for kpfexpose readout to start")
+                WaitForReadout.execute({})
+                log.info(f"  Waiting for ExpMeter DRP")
+                kpf_expmeter['CUR_COUNTS'].wait()
+                log.info(f"  Waiting for ExpMeter to be Ready")
+                EMsuccess = ktl.waitFor('$kpf_expmeter.EXPSTATE == Ready')
+                if EMsuccess is True:
+                    lastfile = kpf_expmeter['FITSFILE'].read()
+                else:
+                    lastfile = 'failed'
+                    row = {'file': lastfile, 'camera': 'ExpMeter',
+                           'dx': xs[i], 'dy': ys[j]}
+                images.add_row(row)
+                # Retrieve keyword history
+                end = time.time()
+                expmeter_data = {'dx': xs[i], 'dy': ys[j],
+                                 'i': i, 'j': j,
+                                 }
+                for counts_kw in ['CUR_COUNTS', 'RAW_COUNTS', 'BCK_COUNTS']:
+                    log.info(f"  Retrieving keyword history for {counts_kw}")
+                    kws = {'kpf_expmeter': [counts_kw]}
+                    counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
+                    # Extract counts and save to table
+                    fluxes = np.zeros((len(counts_history), 4))
+                    for k,entry in enumerate(counts_history):
+                        value_floats = [float(v) for v in entry['ascvalue'].split()]
+                        ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
+                        log.debug(f"  {ts}: {value_floats}")
+                        fluxes[k] = value_floats
+                    avg_fluxes = np.mean(fluxes, axis=0)
+                    expmeter_data[f"{counts_kw[:3].lower()}1"] = avg_fluxes[0]
+                    expmeter_data[f"{counts_kw[:3].lower()}2"] = avg_fluxes[1]
+                    expmeter_data[f"{counts_kw[:3].lower()}3"] = avg_fluxes[2]
+                    expmeter_data[f"{counts_kw[:3].lower()}4"] = avg_fluxes[3]
+                expmeter_data['nimages'] = len(counts_history)
+                expmeter_flux.add_row(expmeter_data)
 
             if images_file.exists():
                 images_file.unlink()
