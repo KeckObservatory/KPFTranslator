@@ -13,7 +13,7 @@ class SetND2(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        target = args.get('position', None)
+        target = args.get('CalND2', None)
         if target is None:
             return False
         allowed_values = ["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0",
@@ -22,13 +22,13 @@ class SetND2(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        target = args.get('position')
+        target = args.get('CalND2')
         kpfcal = ktl.cache('kpfcal')
         kpfcal['ND2POS'].write(target)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        target = args.get('position')
+        target = args.get('CalND2')
         cfg = cls._load_config(cls, cfg)
         timeout = cfg.get('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.ND2POS == {target})"

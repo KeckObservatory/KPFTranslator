@@ -15,7 +15,7 @@ class SetCalSource(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        target = args.get('position', None)
+        target = args.get('CalSource', None)
         if target is None:
             return False
         allowed_values = ['Home', 'EtalonFiber', 'BrdbandFiber', 'U_gold',
@@ -25,7 +25,7 @@ class SetCalSource(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        target = args.get('cal_source')
+        target = args.get('CalSource')
         kpfcal = ktl.cache('kpfcal')
         print(f"  Setting Cal Source (Octagon) to {target}")
         kpfcal['OCTAGON'].write(target)
@@ -34,7 +34,7 @@ class SetCalSource(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         '''Verifies that the final OCTAGON keyword value matches the input.
         '''
-        target = args.get('cal_source')
+        target = args.get('CalSource')
         cfg = cls._load_config(cls, cfg)
         timeout = cfg.get('times', 'octagon_move_time', fallback=60)
         expr = f"($kpfcal.OCTAGON == {target})"
@@ -44,8 +44,8 @@ class SetCalSource(KPFTranslatorFunction):
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         args_to_add = OrderedDict()
-        args_to_add['position'] = {'type': str,
-                                   'help': 'Octagon position to choose?'}
+        args_to_add['CalSource'] = {'type': str,
+                                    'help': 'Octagon position to choose?'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)
 

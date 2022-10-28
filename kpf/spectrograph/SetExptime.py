@@ -11,7 +11,7 @@ class SetExptime(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        exptime = args.get('exptime', None)
+        exptime = args.get('Exptime', None)
         if exptime is None:
             return False
         return (exptime >= 0)
@@ -19,13 +19,13 @@ class SetExptime(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
-        exptime = args.get('exptime')
+        exptime = args.get('Exptime')
         kpfexpose['EXPOSURE'].write(exptime)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
-        exptime = args.get('exptime')
+        exptime = args.get('Exptime')
         tol = cfg.get('tolerances', 'kpfexpose_exptime_tolerance', fallback=0.01)
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = (f"($kpfexpose.EXPOSURE >= {exptime-tol}) and "
@@ -36,7 +36,7 @@ class SetExptime(KPFTranslatorFunction):
     @classmethod
     def add_cmdline_args(cls, parser, cfg):
         args_to_add = OrderedDict()
-        args_to_add['exptime'] = {'type': float,
+        args_to_add['Exptime'] = {'type': float,
                                   'help': 'The exposure time in seconds.'}
 
         parser = cls._add_args(parser, args_to_add, print_only=False)

@@ -11,11 +11,7 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        allowed_values = ['', 'SciSelect', 'SkySelect', 'SoCalSci', 'SoCalCal',
-                          'Cal_SciSky']
-        shutters = 
-        valid = np.array([(s in allowed_values) for s in shutters])
-        return np.all(valid)
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
