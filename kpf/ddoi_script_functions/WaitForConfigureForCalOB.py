@@ -8,7 +8,7 @@ from ..calbench import lamp_has_warmed_up
 from ..calbench.CalLampPower import CalLampPower
 
 
-class WaitForConfigureForCalSequence(KPFTranslatorFunction):
+class WaitForConfigureForCalOB(KPFTranslatorFunction):
     '''
     '''
     @classmethod
@@ -42,3 +42,15 @@ class WaitForConfigureForCalSequence(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         return True
 
+
+if __name__ == '__main__':
+    description = '''Runs script bypassing the translator command line tools. 
+    Uses a YAML input file to get OB contents.
+    '''
+    p = argparse.ArgumentParser(description=description)
+    p.add_argument('OBfile', type=int,
+                   help="A yaml file describing the cal OB")
+    args = p.parse_args()
+    
+    calOB = yaml.safe_load(open(args.OBfile, 'r'))
+    WaitForConfigureForCalOB.execute(OB)

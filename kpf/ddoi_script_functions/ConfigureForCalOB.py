@@ -9,7 +9,7 @@ from ..calbench import lamp_has_warmed_up
 from ..calbench.CalLampPower import CalLampPower
 
 
-class ConfigureForCalSequence(KPFTranslatorFunction):
+class ConfigureForCalOB(KPFTranslatorFunction):
     '''Script which configures the instrument for Cal OBs.
     
     Can be called by `ddoi_script_functions.configure_for_science`.
@@ -52,3 +52,15 @@ class ConfigureForCalSequence(KPFTranslatorFunction):
             successes.append(success)
         return np.all(np.array(successes))
 
+
+if __name__ == '__main__':
+    description = '''Runs script bypassing the translator command line tools. 
+    Uses a YAML input file to get OB contents.
+    '''
+    p = argparse.ArgumentParser(description=description)
+    p.add_argument('OBfile', type=int,
+                   help="A yaml file describing the cal OB")
+    args = p.parse_args()
+    
+    calOB = yaml.safe_load(open(args.OBfile, 'r'))
+    ConfigureForCalSequence.execute(OB)
