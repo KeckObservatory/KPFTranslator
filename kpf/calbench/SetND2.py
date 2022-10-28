@@ -1,4 +1,4 @@
-import numpy as np
+
 
 import ktl
 
@@ -7,29 +7,30 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 class SetND2(KPFTranslatorFunction):
     '''Set the filter in the ND2 filter wheel (the one at the output of the 
-    octagon) via the `kpfmot.ND2POS` keyword.
+    octagon) via the `kpfcal.ND2POS` keyword.
+    
+    {OD 0.1} 2 {OD 0.3} 3 {OD 0.5} 4 {OD 0.8} 5 {OD 1.0} 6 {OD 4.0}
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        target = args.get('position', None)
+        if target is None:
+            return False
+        allowed_values = ["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0",
+                          "OD 4.0"]
+        return target in allowed_values
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        ND2_target = args.get('nd2_filter', None)
-        if ND2_target is not None:
-            print(f"  Setting ND2 to {ND2_target}")
-            kpfmot = ktl.cache('kpfmot')
-            kpfmot['ND2POS'].write(ND2_target)
+        target = args.get('position')
+        kpfcal = ktl.cache('kpfcal')
+        kpfcal['ND2POS'].write(target)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        ND2_target = args.get('nd2_filter', None)
-        if ND2_target is not None:
-            kpfmot = ktl.cache('kpfmot')
-            final_pos = kpfmot['ND2POS'].read()
-            if final_pos != ND2_target:
-                msg = f"Final ND2 position mismatch: {final_pos} != {ND2_target}"
-                print(msg)
-                return False
-            print('    Done')
-            return True
+        target = args.get('position')
+        cfg = cls._load_config(cls, cfg)
+        timeout = cfg.get('times', 'nd_move_time', fallback=20)
+        expr = f"($kpfcal.ND2POS == {target})"
+        success = ktl.waitFor(expr, timeout=timeout)
+        return success
