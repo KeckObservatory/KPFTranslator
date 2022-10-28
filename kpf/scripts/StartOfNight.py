@@ -45,9 +45,6 @@ class StartOfNight(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
         parser = cls._add_bool_arg(parser, 'AO',
             'Configure AO?', default=True)
 
