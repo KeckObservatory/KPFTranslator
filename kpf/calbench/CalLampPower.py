@@ -4,8 +4,6 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from . import lamp_has_warmed_up
-
 
 class CalLampPower(KPFTranslatorFunction):
     '''Powers off one of the cal lamps via the `kpflamps` keyword service.

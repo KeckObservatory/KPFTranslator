@@ -6,7 +6,7 @@ from .FoldMirrorOut import FoldMirrorOut
 from .FoldMirrorIn import FoldMirrorIn
 
 class ControlFoldMirror(KPFTranslatorFunction):
-    '''Open or close the FIU hatch
+    '''Insert or remove the FIU Cal Fold Mirror from the beam.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

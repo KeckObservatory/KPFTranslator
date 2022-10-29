@@ -7,11 +7,11 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 class ConfigureFIU(KPFTranslatorFunction):
     '''Set the FIU mode (kpffiu.MODE)
+    
+    Values: 0 None 1 Stowed 2 Alignment 3 Acquisition 4 Observing 5 Calibration
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        '''Values: 0 None 1 Stowed 2 Alignment 3 Acquisition 4 Observing 5 Calibration
-        '''
         dest = args.get('mode', None)
         if dest is None:
             return False
