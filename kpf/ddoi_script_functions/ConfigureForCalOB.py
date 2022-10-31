@@ -5,7 +5,6 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from ..calbench import lamp_has_warmed_up
 from ..calbench.CalLampPower import CalLampPower
 
 
