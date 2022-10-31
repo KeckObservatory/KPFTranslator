@@ -40,8 +40,8 @@ class WaitForReadout(KPFTranslatorFunction):
         if len(wait_logic) > 0: 
             wait_logic +=' and '
         wait_logic += '($kpfexpose.EXPOSE == 4)'
-        print(f"  Wait Logic: {wait_logic}")
-        print(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
+#         print(f"  Wait Logic: {wait_logic}")
+#         print(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
 
     @classmethod
@@ -67,11 +67,11 @@ class WaitForReadout(KPFTranslatorFunction):
             notok.append(cahkexpstate == 'Error')
             msg += f"kpf_hk.EXPSTATE = {cahkexpstate} "
         msg += ')'
-        print(f"    notok: {notok}")
+#         print(f"    notok: {notok}")
         notok = np.array(notok)
 
         if np.any(notok):
             print(msg)
             return False
-        print('    Done')
+#         print('    Done')
         return True
