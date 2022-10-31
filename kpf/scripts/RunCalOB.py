@@ -17,6 +17,7 @@ from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
 
+
 class RunCalOB(KPFTranslatorFunction):
     '''Script which executes a single calibration OB.
     

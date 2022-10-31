@@ -51,15 +51,15 @@ class ConfigureForCalOB(KPFTranslatorFunction):
             successes.append(success)
         return np.all(np.array(successes))
 
-
-if __name__ == '__main__':
-    description = '''Runs script bypassing the translator command line tools. 
-    Uses a YAML input file to get OB contents.
-    '''
-    p = argparse.ArgumentParser(description=description)
-    p.add_argument('OBfile', type=int,
-                   help="A yaml file describing the cal OB")
-    args = p.parse_args()
-    
-    calOB = yaml.safe_load(open(args.OBfile, 'r'))
-    ConfigureForCalSequence.execute(OB)
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        """
+        The arguments to add to the command line interface.
+        """
+        args_to_add = OrderedDict()
+        args_to_add['OBfile'] = {'type': str,
+                                 'help': ('A YAML fortmatted file with the OB '
+                                          'to be executed. Will override OB '
+                                          'delivered as args.')}
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)

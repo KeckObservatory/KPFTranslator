@@ -8,7 +8,7 @@ from ..calbench import lamp_has_warmed_up
 from ..calbench.CalLampPower import CalLampPower
 
 
-class WaitForConfigureForCalOB(KPFTranslatorFunction):
+class WaitForConfigureCalOB(KPFTranslatorFunction):
     '''
     '''
     @classmethod
