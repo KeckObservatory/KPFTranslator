@@ -16,7 +16,7 @@ from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
-
+from ..fiu.ConfigureFIU import ConfigureFIU
 
 class RunCalOB(KPFTranslatorFunction):
     '''Script which executes a single calibration OB.
@@ -43,6 +43,9 @@ class RunCalOB(KPFTranslatorFunction):
         # Assumes lamp is on and has warmed up
         print(f"Wait for any existing exposures to be complete")
         WaitForReady.execute({})
+
+        print(f"Configuring FIU")
+        ConfigureFIU.execute({'mode': 'Calibration'})
 
         print(f"Setting source select shutters")
         SetSourceSelectShutters.execute(args)
