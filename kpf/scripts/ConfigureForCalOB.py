@@ -37,8 +37,6 @@ class ConfigureForCalOB(KPFTranslatorFunction):
             return False
         OB_version = version.parse(f"{OB_version}")
         cfg = cls._load_config(cls, cfg)
-        print(cfg.sections())
-        print(cfg['ob_keys'].sections())
         print(cfg.get('templates', OB_name))
         compatible_version = version.parse(cfg.get('templates', OB_name))
         if compatible_version != OB_version:
