@@ -76,13 +76,13 @@ class SetTimedShutters(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         parser = cls._add_bool_arg(parser, 'TimedShutter_Scrambler',
                                    'Open the TimedShutter_Scrambler shutter?',
-                                    default=True)
+                                   default=False)
         parser = cls._add_bool_arg(parser, 'TimedShutter_SimulCal',
                                    'Open the TimedShutter_SimulCal shutter?',
-                                    default=True)
+                                   default=False)
         parser = cls._add_bool_arg(parser, 'TimedShutter_CaHK',
                                    'Open the TimedShutter_CaHK shutter?',
-                                    default=True)
+                                   default=False)
         parser = cls._add_bool_arg(parser, 'TimedShutter_FlatField',
                                    'Open the TimedShutter_FlatField shutter?',
                                     default=False)
