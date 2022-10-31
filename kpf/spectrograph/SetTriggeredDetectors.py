@@ -63,7 +63,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         return True
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg):
+    def add_cmdline_args(cls, parser, cfg=None):
         parser = cls._add_bool_arg(parser, 'TriggerRed',
                                    'Trigger the Red detector?',
                                     default=True)
