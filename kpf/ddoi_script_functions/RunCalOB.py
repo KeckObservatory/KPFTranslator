@@ -4,7 +4,6 @@ from packaging import version
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from ..calbench import lamp_has_warmed_up
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetND1 import SetND1
@@ -36,7 +35,7 @@ class RunCalOB(KPFTranslatorFunction):
         compatible_version = version.parse(cfg.get('templates', OB_name))
         if compatible_version != OB_version:
             return False
-        return lamp_has_warmed_up(args.get('CalSource'))
+        return True #lamp_has_warmed_up(args.get('CalSource'))
 
     @classmethod
     def perform(cls, args, logger, cfg):
