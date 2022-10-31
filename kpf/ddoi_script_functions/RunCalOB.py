@@ -29,7 +29,7 @@ class RunCalOB(KPFTranslatorFunction):
         OB_version = args.get('Template_Version', None)
         if OB_name is None:
             return False
-        if OB_version is None
+        if OB_version is None:
             return False
         OB_version = version.parse(OB_version)
         cfg = cls._load_config(cls, cfg)
