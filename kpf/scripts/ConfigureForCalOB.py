@@ -1,5 +1,8 @@
 from time import sleep
 from packaging import version
+from pathlib import Path
+from collections import OrderedDict
+import yaml
 import numpy as np
 
 import ktl
@@ -15,6 +18,13 @@ class ConfigureForCalOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        if args.get('OBfile', None) is not None:
+            OBfile = Path(args.get('OBfile')).expanduser()
+            if OBfile.exists() is True:
+                OB = yaml.safe_load(open(OBfile, 'r'))
+                print(f"WARNING: Using OB information from file {OBfile}")
+                args = OB
+
         # Check template name
         OB_name = args.get('Template_Name', None)
         if OB_name is None:
@@ -25,8 +35,11 @@ class ConfigureForCalOB(KPFTranslatorFunction):
         OB_version = args.get('Template_Version', None)
         if OB_version is None:
             return False
-        OB_version = version.parse(OB_version)
+        OB_version = version.parse(f"{OB_version}")
         cfg = cls._load_config(cls, cfg)
+        print(cfg.sections())
+        print(cfg['ob_keys'].sections())
+        print(cfg.get('templates', OB_name))
         compatible_version = version.parse(cfg.get('templates', OB_name))
         if compatible_version != OB_version:
             return False
@@ -60,6 +73,6 @@ class ConfigureForCalOB(KPFTranslatorFunction):
         args_to_add['OBfile'] = {'type': str,
                                  'help': ('A YAML fortmatted file with the OB '
                                           'to be executed. Will override OB '
-                                          'delivered as args.')}
+                                          'data delivered as args.')}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)
