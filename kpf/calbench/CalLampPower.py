@@ -41,7 +41,7 @@ class CalLampPower(KPFTranslatorFunction):
         lamp = args.get('lamp')
         pwr = args.get('power')
         kpflamps = ktl.cache('kpflamps')
-        kpflamps["{lamp}"].write(pwr)
+        kpflamps[lamp].write(pwr)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
