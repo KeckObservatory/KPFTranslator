@@ -82,19 +82,19 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        parser = cls._add_bool_arg(parser, 'SciSelect',
+        parser = cls._add_bool_arg(parser, 'SSS_Science',
                                    'Open the SciSelect shutter?',
                                    default=False)
-        parser = cls._add_bool_arg(parser, 'SkySelect',
+        parser = cls._add_bool_arg(parser, 'SSS_Sky',
                                    'Open the SkySelect shutter?',
                                    default=False)
-        parser = cls._add_bool_arg(parser, 'Cal_SciSky',
+        parser = cls._add_bool_arg(parser, 'SSS_CalSciSky',
                                    'Open the Cal_SciSky shutter?',
                                    default=False)
-        parser = cls._add_bool_arg(parser, 'SoCalSci',
+        parser = cls._add_bool_arg(parser, 'SSS_SoCalSci',
                                    'Open the SoCalSci shutter?',
                                    default=False)
-        parser = cls._add_bool_arg(parser, 'SoCalCal',
+        parser = cls._add_bool_arg(parser, 'SSS_SoCalCal',
                                    'Open the SoCalCal shutter?',
                                    default=False)
 
