@@ -9,7 +9,8 @@ class SetND1(KPFTranslatorFunction):
     '''Set the filter in the ND1 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND1POS` keyword.
     
-    {OD 0.1} 2 {OD 1.0} 3 {OD 1.3} 4 {OD 2.0} 5 {OD 3.0} 6 {OD 4.0}
+    Allowed Values:
+    "OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -34,3 +35,12 @@ class SetND1(KPFTranslatorFunction):
         expr = f"($kpfcal.ND1POS == {target})"
         success = ktl.waitFor(expr, timeout=timeout)
         return success
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        args_to_add = OrderedDict()
+        args_to_add['CalND1'] = {'type': str,
+                                 'help': 'Filter to use'}
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)
+
