@@ -34,7 +34,7 @@ class SetExptime(KPFTranslatorFunction):
         return success
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg):
+    def add_cmdline_args(cls, parser, cfg=None):
         args_to_add = OrderedDict()
         args_to_add['Exptime'] = {'type': float,
                                   'help': 'The exposure time in seconds.'}
