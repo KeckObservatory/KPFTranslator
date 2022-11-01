@@ -48,15 +48,15 @@ class WaitForReady(KPFTranslatorFunction):
         wait_logic += '($kpfexpose.EXPOSE == 0)'
         log.debug(f"  Waiting ({wait_time:.0f}s max) for detectors to be ready")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
-        if success is True:
-            if 'Green' in detector_list:
-                lastfile = ktl.cache('kpfgreen', 'FITSFILE').read()
-                if Path(lastfile).exists():
-                    log.debug(f"  Found Green FITSFILE: {lastfile}")
-            if 'Red' in detector_list:
-                lastfile = ktl.cache('kpfred', 'FITSFILE').read()
-                if Path(lastfile).exists():
-                    log.debug(f"  Found Red FITSFILE:   {lastfile}")
+#         if success is True:
+#             if 'Green' in detector_list:
+#                 lastfile = ktl.cache('kpfgreen', 'FITSFILE').read()
+#                 if Path(lastfile).exists():
+#                     log.debug(f"  Found Green FITSFILE: {lastfile}")
+#             if 'Red' in detector_list:
+#                 lastfile = ktl.cache('kpfred', 'FITSFILE').read()
+#                 if Path(lastfile).exists():
+#                     log.debug(f"  Found Red FITSFILE:   {lastfile}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
