@@ -76,12 +76,6 @@ class RunCalOB(KPFTranslatorFunction):
         log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration'})
 
-        log.info(f"Setting source select shutters")
-        SetSourceSelectShutters.execute(OB)
-
-        log.info(f"Setting timed shutters")
-        SetTimedShutters.execute(OB)
-
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(OB)
 
@@ -107,6 +101,12 @@ class RunCalOB(KPFTranslatorFunction):
             WaitForND2(calibration)
             log.info(f"Waiting for Octagon (CalSource)")
             WaitForCalSource(calibration)
+
+            log.info(f"Setting source select shutters")
+            SetSourceSelectShutters.execute(calibration)
+
+            log.info(f"Setting timed shutters")
+            SetTimedShutters.execute(calibration)
 
             nexp = calibration.get('nExp', 1)
             for j in range(nexp):
