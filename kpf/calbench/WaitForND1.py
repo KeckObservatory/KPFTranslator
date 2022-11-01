@@ -6,8 +6,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 
 
-class SetND1(KPFTranslatorFunction):
-    '''Set the filter in the ND1 filter wheel (the one at the output of the 
+class WaitForND1(KPFTranslatorFunction):
+    '''Wait for the ND1 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND1POS` keyword.
     
     Allowed Values:
@@ -25,17 +25,19 @@ class SetND1(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         target = args.get('CalND1')
-        log.debug(f"Setting ND1POS to {target}")
-        kpfcal = ktl.cache('kpfcal')
-        kpfcal['ND1POS'].write(target, wait=args.get('wait', True))
+        cfg = cls._load_config(cls, cfg)
+        timeout = cfg.get('times', 'nd_move_time', fallback=20)
+        expr = f"($kpfcal.ND1POS == '{target}')"
+        success = ktl.waitFor(expr, timeout=timeout)
+        if success is False:
+            log.error(f"Timed out waiting for ND1 filter wheel")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         target = args.get('CalND1')
         cfg = cls._load_config(cls, cfg)
-        timeout = cfg.get('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.ND1POS == '{target}')"
-        success = ktl.waitFor(expr, timeout=timeout)
+        success = ktl.waitFor(expr, timeout=0.1)
         return success
 
     @classmethod
@@ -44,9 +46,5 @@ class SetND1(KPFTranslatorFunction):
         args_to_add['CalND1'] = {'type': str,
                                  'help': 'Filter to use'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
-
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after move is finished?', default=True)
-
         return super().add_cmdline_args(parser, cfg)
 

@@ -12,6 +12,9 @@ from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetND1 import SetND1
 from ..calbench.SetND2 import SetND2
+from ..calbench.WaitForCalSource import WaitForCalSource
+from ..calbench.WaitForND1 import WaitForND1
+from ..calbench.WaitForND2 import WaitForND2
 from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
@@ -84,16 +87,26 @@ class RunCalOB(KPFTranslatorFunction):
 
         for calibration in OB.get('SEQ_Calibrations'):
             log.info(f"Setting cal source: {calibration.get('CalSource')}")
-            SetCalSource.execute(calibration)
+            SetCalSource.execute({'CalSource': calibration.get('CalSource'),
+                                  'wait': False})
 
-            log.info(f"Set ND1 Filter Wheel")
-            SetND1.execute(calibration)
+            log.info(f"Set ND1 Filter Wheel: {calibration.get('CalND1')}")
+            SetND1.execute({'CalND1': calibration.get('CalND1'),
+                            'wait': False})
 
-            log.info(f"Set ND2 Filter Wheel")
-            SetND2.execute(calibration)
+            log.info(f"Set ND2 Filter Wheel: {calibration.get('CalND2')}")
+            SetND2.execute({'CalND2': calibration.get('CalND2'),
+                            'wait': False})
 
-            log.info(f"Set exposure time")
+            log.info(f"Set exposure time: {calibration.get('ExpTime'):.3f}")
             SetExptime.execute(calibration)
+
+            log.info(f"Waiting for ND1")
+            WaitForND1(calibration)
+            log.info(f"Waiting for ND2")
+            WaitForND2(calibration)
+            log.info(f"Waiting for Octagon (CalSource)")
+            WaitForCalSource(calibration)
 
             nexp = calibration.get('nExp', 1)
             for j in range(nexp):

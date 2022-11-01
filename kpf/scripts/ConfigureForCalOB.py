@@ -65,7 +65,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
         sequence = OB.get('SEQ_Calibrations')
         lamps = [x['CalSource'] for x in sequence]
         for lamp in lamps:
-            log.info(f'Starting warm up for {lamp}')
+            log.info(f'Turning on {lamp}')
             CalLampPower.execute({'lamp': lamp, 'power': 'on'})
 
     @classmethod

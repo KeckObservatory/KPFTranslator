@@ -7,10 +7,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 
 
-class SetCalSource(KPFTranslatorFunction):
-    '''
-    Selects which source is fed from the octagon in to the cal bench via the
-    kpfcal.OCTAGON keyword.
+class WaitForCalSource(KPFTranslatorFunction):
+    '''Wait for the move to a cal source is complete (kpfcal.OCTAGON keyword).
     
     Valid names: Home, EtalonFiber, BrdbandFiber, U_gold, U_daily,
     Th_daily, Th_gold, SoCal-CalFib, LFCFiber
@@ -28,9 +26,12 @@ class SetCalSource(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         target = args.get('CalSource')
-        kpfcal = ktl.cache('kpfcal')
-        log.debug(f"  Setting Cal Source (Octagon) to {target}")
-        kpfcal['OCTAGON'].write(target, wait=args.get('wait', True))
+        cfg = cls._load_config(cls, cfg)
+        timeout = cfg.get('times', 'octagon_move_time', fallback=60)
+        expr = f"($kpfcal.OCTAGON == {target})"
+        success = ktl.waitFor(expr, timeout=timeout)
+        if success is False:
+            log.error(f"Timed out waiting for octagon")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -38,9 +39,8 @@ class SetCalSource(KPFTranslatorFunction):
         '''
         target = args.get('CalSource')
         cfg = cls._load_config(cls, cfg)
-        timeout = cfg.get('times', 'octagon_move_time', fallback=60)
         expr = f"($kpfcal.OCTAGON == {target})"
-        success = ktl.waitFor(expr, timeout=timeout)
+        success = ktl.waitFor(expr, timeout=0.1)
         return success
 
     @classmethod
@@ -49,9 +49,5 @@ class SetCalSource(KPFTranslatorFunction):
         args_to_add['CalSource'] = {'type': str,
                                     'help': 'Octagon position to choose?'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
-
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after move is finished?', default=True)
-
         return super().add_cmdline_args(parser, cfg)
 
