@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from pathlib import Path
 
 from astropy.io import fits
@@ -85,9 +84,9 @@ class GetGaiaStars(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['file'] = {'type': str,
                                'help': 'The CRED2 file to retrieve stars for.'}

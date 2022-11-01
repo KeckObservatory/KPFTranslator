@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import os
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -112,9 +111,8 @@ class SetOutdirs(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
+        '''The arguments to add to the command line interface.
+        '''
         parser = cls._add_bool_arg(parser, 'CRED2',
             'Set CRED2 OUTDIR (kpfguide.OUTDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'FVC1',

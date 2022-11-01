@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -35,9 +33,9 @@ class SetTipTiltGain(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['gain'] = {'type': float,
                                'help': 'Tip tilt control loop gain'}

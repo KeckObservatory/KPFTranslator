@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import numpy as np
 
 import ktl
@@ -45,6 +44,9 @@ class WaitForCalSource(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['CalSource'] = {'type': str,
                                     'help': 'Octagon position to choose?'}

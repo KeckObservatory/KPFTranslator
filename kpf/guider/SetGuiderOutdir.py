@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from pathlib import Path
 
 import ktl
@@ -27,9 +26,9 @@ class GuiderOutdir(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['outdir'] = {'type': str,
                                  'help': 'The desired output path.'}

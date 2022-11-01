@@ -2,7 +2,6 @@ from pathlib import Path
 import logging
 from datetime import datetime
 import time
-from collections import OrderedDict
 
 import numpy as np
 from astropy.table import Table, Row
@@ -302,9 +301,9 @@ class FiberGridSearch(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['nx'] = {'type': int,
                     'help': 'Number of grid points in the X direction'}

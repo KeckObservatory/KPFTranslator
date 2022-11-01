@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction

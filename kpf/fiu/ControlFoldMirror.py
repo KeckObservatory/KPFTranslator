@@ -1,5 +1,4 @@
 import ktl
-from collections import OrderedDict
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .FoldMirrorOut import FoldMirrorOut
@@ -28,9 +27,9 @@ class ControlFoldMirror(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['destination'] = {'type': str,
                     'help': 'Desired fold mirror position: "in" or "out"'}

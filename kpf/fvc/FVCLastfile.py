@@ -26,9 +26,8 @@ class FVCLastfile(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        """
-        The arguments to add to the command line interface.
-        """
+        '''The arguments to add to the command line interface.
+        '''
         args_to_add = OrderedDict()
         args_to_add['camera'] = {'type': str,
                                  'help': 'The camera to use (SCI, CAHK, CAL).'}
