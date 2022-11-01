@@ -8,6 +8,12 @@ from .. import log
 
 class ResetDetectors(KPFTranslatorFunction):
     '''Resets the kpfexpose service by setting kpfexpose.EXPOSE = Reset
+
+    Description from Will Deich:
+    This sets EXPOSE=Reset for the appropriate service.  For the 
+    ktlcamerad services, that just means, “even though you’ve not received
+    (from camerad) the normal sequence of messages for a completed exposure,
+    pretend everything is fine for starting a new exposure.”
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
