@@ -28,7 +28,7 @@ class SetProgram(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         progname = args.get('progname')
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
-        expr = (f"($kpfexpose.PROGNAME == '{progname}')"
+        expr = f"($kpfexpose.PROGNAME == '{progname}')"
         success = ktl.waitFor(expr, timeout=timeout)
         return success
 

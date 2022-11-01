@@ -28,7 +28,7 @@ class SetObject(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         obj = args.get('Object')
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
-        expr = (f"($kpfexpose.OBJECT == '{obj}')"
+        expr = f"($kpfexpose.OBJECT == '{obj}')"
         success = ktl.waitFor(expr, timeout=timeout)
         return success
 
