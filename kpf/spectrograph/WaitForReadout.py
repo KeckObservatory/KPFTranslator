@@ -41,8 +41,15 @@ class WaitForReadout(KPFTranslatorFunction):
             wait_logic +=' and '
         wait_logic += '($kpfexpose.EXPOSE == 4)'
 #         print(f"  Wait Logic: {wait_logic}")
-#         print(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
+        print(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
+        if success is True:
+            if 'Green' in detector_list:
+                lastfile = ktl.cache('kpfgreen', 'NEXTFILE')
+                print(f"  Green file: {lastfile.read()}")
+            if 'Red' in detector_list:
+                lastfile = ktl.cache('kpfred', 'NEXTFILE')
+                print(f"  Red file:   {lastfile.read()}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

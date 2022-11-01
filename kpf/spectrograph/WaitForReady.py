@@ -45,8 +45,15 @@ class WaitForReady(KPFTranslatorFunction):
             wait_logic +=' and '
         wait_logic += '($kpfexpose.EXPOSE == 0)'
 #         print(f"  Wait Logic: {wait_logic}")
-#         print(f"  Waiting ({wait_time:.0f}s max) for detectors to be ready")
-        ktl.waitFor(wait_logic, timeout=wait_time)
+        print(f"  Waiting ({wait_time:.0f}s max) for detectors to be ready")
+        success = ktl.waitFor(wait_logic, timeout=wait_time)
+        if success is True:
+            if 'Green' in detector_list:
+                lastfile = ktl.cache('kpfgreen', 'FITSFILE')
+                print(f"  Green file: {lastfile.read()}")
+            if 'Red' in detector_list:
+                lastfile = ktl.cache('kpfred', 'FITSFILE')
+                print(f"  Red file:   {lastfile.read()}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
