@@ -28,21 +28,43 @@ class RunCalOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        OB_name = args.get('Template_Name', None)
-        OB_version = args.get('Template_Version', None)
+
+        # Use file input for OB instead of args (temporary)
+        if args.get('OBfile', None) is not None:
+            OBfile = Path(args.get('OBfile')).expanduser()
+            if OBfile.exists() is True:
+                OB = yaml.safe_load(open(OBfile, 'r'))
+                print(f"WARNING: Using OB information from file {OBfile}")
+        else:
+            raise NotImplementedError('Passing OB as args not implemented')
+
+        # Check template name
+        OB_name = OB.get('Template_Name', None)
         if OB_name is None:
             return False
-        if OB_version is None:
+        if OB_name != 'kpf_cal':
             return False
-        OB_version = version.parse(OB_version)
-        cfg = cls._load_config(cls, cfg)
-        compatible_version = version.parse(cfg.get('templates', OB_name))
-        if compatible_version != OB_version:
-            return False
-        return True #lamp_has_warmed_up(args.get('CalSource'))
+        # Check template version
+#         OB_version = OB.get('Template_Version', None)
+#         if OB_version is None:
+#             return False
+#         OB_version = version.parse(f"{OB_version}")
+#         compatible_version = version.parse(cfg.get('templates', OB_name))
+#         if compatible_version != OB_version:
+#             return False
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Use file input for OB instead of args (temporary)
+        if args.get('OBfile', None) is not None:
+            OBfile = Path(args.get('OBfile')).expanduser()
+            if OBfile.exists() is True:
+                OB = yaml.safe_load(open(OBfile, 'r'))
+                print(f"WARNING: Using OB information from file {OBfile}")
+        else:
+            raise NotImplementedError('Passing OB as args not implemented')
+
         # Assumes lamp is on and has warmed up
         print(f"Wait for any existing exposures to be complete")
         WaitForReady.execute({})

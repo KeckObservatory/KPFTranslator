@@ -27,7 +27,7 @@ class CalLampPower(KPFTranslatorFunction):
             return False
         allowed_lamps = ['EXPMLED', 'FLATFIELD', 'HKLED', 'OCTFLAT', 'SCILED',
                          'SKYLED', 'TH_DAILY', 'TH_GOLD', 'U_DAILY', 'U_GOLD']
-        if lamp not in allowed_lamps:
+        if lamp.upper() not in allowed_lamps:
             return False
         pwr = args.get('power', None)
         if pwr is None:

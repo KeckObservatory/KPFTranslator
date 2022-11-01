@@ -18,41 +18,65 @@ class ConfigureForCalOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+
+        # Use file input for OB instead of args (temporary)
         if args.get('OBfile', None) is not None:
             OBfile = Path(args.get('OBfile')).expanduser()
             if OBfile.exists() is True:
                 OB = yaml.safe_load(open(OBfile, 'r'))
                 print(f"WARNING: Using OB information from file {OBfile}")
-                args = OB
+        else:
+            raise NotImplementedError('Passing OB as args not implemented')
 
         # Check template name
-        OB_name = args.get('Template_Name', None)
+        OB_name = OB.get('Template_Name', None)
         if OB_name is None:
             return False
         if OB_name != 'kpf_cal':
             return False
         # Check template version
-        OB_version = args.get('Template_Version', None)
-        if OB_version is None:
-            return False
-        OB_version = version.parse(f"{OB_version}")
-        cfg = cls._load_config(cls, cfg)
-        print(cfg.get('templates', OB_name))
-        compatible_version = version.parse(cfg.get('templates', OB_name))
-        if compatible_version != OB_version:
-            return False
+#         OB_version = OB.get('Template_Version', None)
+#         if OB_version is None:
+#             return False
+#         OB_version = version.parse(f"{OB_version}")
+#         compatible_version = version.parse(cfg.get('templates', OB_name))
+#         if compatible_version != OB_version:
+#             return False
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
+
+        # Use file input for OB instead of args (temporary)
+        if args.get('OBfile', None) is not None:
+            OBfile = Path(args.get('OBfile')).expanduser()
+            if OBfile.exists() is True:
+                OB = yaml.safe_load(open(OBfile, 'r'))
+                print(f"WARNING: Using OB information from file {OBfile}")
+        else:
+            raise NotImplementedError('Passing OB as args not implemented')
+
         # Power up needed lamps
-        lamps = [x['CalSource'] for x in args.get('SEQ_Calibrations')]
+        sequence = OB.get('SEQ_Calibrations')
+        lamps = [x['CalSource'] for x in sequence]
         for lamp in lamps:
+            print(f'Starting warm up for {lamp}')
             CalLampPower.execute({'lamp': lamp, 'power': 'on'})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        lamps = [x['CalSource'] for x in args.get('SEQ_Calibrations')]
+
+        # Use file input for OB instead of args (temporary)
+        if args.get('OBfile', None) is not None:
+            OBfile = Path(args.get('OBfile')).expanduser()
+            if OBfile.exists() is True:
+                OB = yaml.safe_load(open(OBfile, 'r'))
+                print(f"WARNING: Using OB information from file {OBfile}")
+        else:
+            raise NotImplementedError('Passing OB as args not implemented')
+
+        sequence = OB.get('SEQ_Calibrations')
+        lamps = [x['CalSource'] for x in sequence]
         successes = []
         for lamp in lamps:
             expr = f"($kpflamps.{lamp} == on)"
