@@ -73,15 +73,15 @@ class RunCalOB(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Calibration'})
 
         print(f"Setting source select shutters")
-        SetSourceSelectShutters.execute(args)
+        SetSourceSelectShutters.execute(OB)
 
         print(f"Setting timed shutters")
-        SetTimedShutters.execute(args)
+        SetTimedShutters.execute(OB)
 
         print(f"Set Detector List")
-        SetTriggeredDetectors.execute(args)
+        SetTriggeredDetectors.execute(OB)
 
-        for calibration in args.get('SEQ_Calibrations'):
+        for calibration in OB.get('SEQ_Calibrations'):
             print(f"Setting cal source: {calibration.get('CalSource')}")
             SetCalSource.execute(calibration)
 
@@ -114,16 +114,15 @@ class RunCalOB(KPFTranslatorFunction):
             return False
         return True
 
-
-if __name__ == '__main__':
-    description = '''Runs script bypassing the translator command line tools. 
-    Uses a YAML input file to get OB contents.
-    '''
-    p = argparse.ArgumentParser(description=description)
-    p.add_argument('OBfile', type=int,
-                   help="A yaml file describing the cal OB")
-    args = p.parse_args()
-    
-    calOB = yaml.safe_load(open(args.OBfile, 'r'))
-    RunCalOB.execute(OB)
-
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        """
+        The arguments to add to the command line interface.
+        """
+        args_to_add = OrderedDict()
+        args_to_add['OBfile'] = {'type': str,
+                                 'help': ('A YAML fortmatted file with the OB '
+                                          'to be executed. Will override OB '
+                                          'data delivered as args.')}
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)

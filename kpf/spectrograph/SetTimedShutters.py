@@ -1,4 +1,4 @@
-
+from time import sleep
 
 import ktl
 
@@ -34,6 +34,8 @@ class SetTimedShutters(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
+        timeshim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.01)
+        sleep(timeshim)
         shutters = kpfexpose['TIMED_SHUTTERS'].read()
         shutter_list = shutters.split(',')
 

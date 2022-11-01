@@ -1,4 +1,4 @@
-
+from time import sleep
 
 import ktl
 
@@ -32,6 +32,8 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
+        timeshim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.01)
+        sleep(timeshim)
         detectors = kpfexpose['TRIG_TARG'].read()
         detector_list = detectors.split(',')
 
