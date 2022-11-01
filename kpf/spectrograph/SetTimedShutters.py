@@ -30,14 +30,15 @@ class SetTimedShutters(KPFTranslatorFunction):
         timed_shutters_string = ','.join(timed_shutters_list)
         log.debug(f"  Setting timed shutters to '{timed_shutters_string}'")
         kpfexpose = ktl.cache('kpfexpose')
-        kpfexpose['TIMED_SHUTTERS'].write(timed_shutters_string)
+        kpfexpose['TIMED_TARG'].write(timed_shutters_string)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         timeshim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)
-        shutters = kpfexpose['TIMED_SHUTTERS'].read()
+        shutters = kpfexpose['TIMED_TARG'].read()
+        log.debug(f"TIMED_TARG: {shutters}")
         shutter_list = shutters.split(',')
 
         Scrambler_shutter_status = 'Scrambler' in shutter_list
