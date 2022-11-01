@@ -12,7 +12,7 @@ class SetObject(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        obj = args.get('object', None)
+        obj = args.get('Object', None)
         if obj is None:
             return False
         return True
@@ -20,13 +20,13 @@ class SetObject(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
-        obj = args.get('object')
+        obj = args.get('Object')
         log.debug(f"Setting OBJECT time to '{obj}'")
         kpfexpose['OBJECT'].write(obj)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        obj = args.get('object')
+        obj = args.get('Object')
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = (f"($kpfexpose.OBJECT == '{obj}')"
         success = ktl.waitFor(expr, timeout=timeout)
@@ -35,7 +35,7 @@ class SetObject(KPFTranslatorFunction):
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         args_to_add = OrderedDict()
-        args_to_add['object'] = {'type': str,
+        args_to_add['Object'] = {'type': str,
                                  'help': 'The OBJECT keyword.'}
 
         parser = cls._add_args(parser, args_to_add, print_only=False)

@@ -15,6 +15,7 @@ from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForCalSource import WaitForCalSource
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
+from ..spectrograph.SetObject import SetObject
 from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
@@ -107,6 +108,9 @@ class RunCalOB(KPFTranslatorFunction):
 
             log.info(f"Setting timed shutters")
             SetTimedShutters.execute(calibration)
+
+            log.info(f"Setting OBJECT: {calibration.get('Object')}")
+            SetObject.execute(calibration)
 
             nexp = calibration.get('nExp', 1)
             for j in range(nexp):
