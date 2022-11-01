@@ -50,10 +50,12 @@ class WaitForReady(KPFTranslatorFunction):
         if success is True:
             if 'Green' in detector_list:
                 lastfile = ktl.cache('kpfgreen', 'FITSFILE')
-                log.debug(f"  Green file: {lastfile.read()}")
+                if Path(lastfile).exists():
+                    log.debug(f"  Found Green FITSFILE: {lastfile.read()}")
             if 'Red' in detector_list:
                 lastfile = ktl.cache('kpfred', 'FITSFILE')
-                log.debug(f"  Red file:   {lastfile.read()}")
+                if Path(lastfile).exists():
+                    log.debug(f"  Found Red FITSFILE:   {lastfile.read()}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
