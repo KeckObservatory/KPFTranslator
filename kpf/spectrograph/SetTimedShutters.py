@@ -3,6 +3,7 @@ from time import sleep
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetTimedShutters(KPFTranslatorFunction):
@@ -27,7 +28,7 @@ class SetTimedShutters(KPFTranslatorFunction):
         if args.get('TimedShutter_CaHK', False) is True:
             timed_shutters_list.append('Ca_HK')
         timed_shutters_string = ','.join(timed_shutters_list)
-        print(f"  Setting timed shutters to '{timed_shutters_string}'")
+        log.debug(f"  Setting timed shutters to '{timed_shutters_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['TIMED_SHUTTERS'].write(timed_shutters_string)
 
@@ -44,7 +45,7 @@ class SetTimedShutters(KPFTranslatorFunction):
         if Scrambler_shutter_target != Scrambler_shutter_status:
             msg = (f"Final Scrambler timed shutter mismatch: "
                    f"{Scrambler_shutter_status} != {Scrambler_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         SimulCal_shutter_status = 'SimulCal' in shutter_list
@@ -52,7 +53,7 @@ class SetTimedShutters(KPFTranslatorFunction):
         if SimulCal_shutter_target != SimulCal_shutter_status:
             msg = (f"Final SimulCal timed shutter mismatch: "
                    f"{SimulCal_shutter_status} != {SimulCal_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         FF_Fiber_shutter_status = 'FF_Fiber' in shutter_list
@@ -60,7 +61,7 @@ class SetTimedShutters(KPFTranslatorFunction):
         if FF_Fiber_shutter_target != FF_Fiber_shutter_status:
             msg = (f"Final FF_Fiber timed shutter mismatch: "
                    f"{FF_Fiber_shutter_status} != {FF_Fiber_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         Ca_HK_shutter_status = 'Ca_HK' in shutter_list
@@ -68,10 +69,9 @@ class SetTimedShutters(KPFTranslatorFunction):
         if CA_HK_shutter_target != Ca_HK_shutter_status:
             msg = (f"Final Ca_HK timed shutter mismatch: "
                    f"{Ca_HK_shutter_status} != {CA_HK_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
-        print(f"    Done")
         return True
 
     @classmethod

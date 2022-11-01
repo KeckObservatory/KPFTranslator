@@ -3,6 +3,7 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetExptime(KPFTranslatorFunction):
@@ -20,6 +21,7 @@ class SetExptime(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         exptime = args.get('Exptime')
+        log.debug(f"Setting exposure time to {exptime:.3f}")
         kpfexpose['EXPOSURE'].write(exptime)
 
     @classmethod

@@ -3,6 +3,7 @@ from collections import OrderedDict
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetAORotator(KPFTranslatorFunction):
@@ -15,6 +16,7 @@ class SetAORotator(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         ao = ktl.cache('ao')
+        log.debug(f"Setting AO Rotator to {args['dest']:.1f}")
         ao['OBRT'].write(args['dest'])
         ao['OBRTMOVE'].write('1')
 

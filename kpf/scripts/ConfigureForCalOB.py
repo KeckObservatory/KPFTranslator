@@ -8,6 +8,7 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 from ..calbench.CalLampPower import CalLampPower
 
 
@@ -24,9 +25,11 @@ class ConfigureForCalOB(KPFTranslatorFunction):
             OBfile = Path(args.get('OBfile')).expanduser()
             if OBfile.exists() is True:
                 OB = yaml.safe_load(open(OBfile, 'r'))
-                print(f"WARNING: Using OB information from file {OBfile}")
+                log.warning(f"Using OB information from file {OBfile}")
         else:
-            raise NotImplementedError('Passing OB as args not implemented')
+            msg = 'Passing OB as args not implemented'
+            log.error(msg)
+            raise NotImplementedError(msg)
 
         # Check template name
         OB_name = OB.get('Template_Name', None)
@@ -52,15 +55,17 @@ class ConfigureForCalOB(KPFTranslatorFunction):
             OBfile = Path(args.get('OBfile')).expanduser()
             if OBfile.exists() is True:
                 OB = yaml.safe_load(open(OBfile, 'r'))
-                print(f"WARNING: Using OB information from file {OBfile}")
+                log.warning(f"Using OB information from file {OBfile}")
         else:
-            raise NotImplementedError('Passing OB as args not implemented')
+            msg = 'Passing OB as args not implemented'
+            log.error(msg)
+            raise NotImplementedError(msg)
 
         # Power up needed lamps
         sequence = OB.get('SEQ_Calibrations')
         lamps = [x['CalSource'] for x in sequence]
         for lamp in lamps:
-            print(f'Starting warm up for {lamp}')
+            log.info(f'Starting warm up for {lamp}')
             CalLampPower.execute({'lamp': lamp, 'power': 'on'})
 
     @classmethod
@@ -71,7 +76,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
             OBfile = Path(args.get('OBfile')).expanduser()
             if OBfile.exists() is True:
                 OB = yaml.safe_load(open(OBfile, 'r'))
-                print(f"WARNING: Using OB information from file {OBfile}")
+                log.info(f"WARNING: Using OB information from file {OBfile}")
         else:
             raise NotImplementedError('Passing OB as args not implemented')
 

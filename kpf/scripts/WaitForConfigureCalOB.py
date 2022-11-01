@@ -7,6 +7,7 @@ import yaml
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 from ..calbench import lamp_has_warmed_up
 from ..calbench.CalLampPower import CalLampPower
 

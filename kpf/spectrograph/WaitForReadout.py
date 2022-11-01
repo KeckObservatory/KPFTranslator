@@ -3,6 +3,7 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class WaitForReadout(KPFTranslatorFunction):
@@ -40,16 +41,15 @@ class WaitForReadout(KPFTranslatorFunction):
         if len(wait_logic) > 0: 
             wait_logic +=' and '
         wait_logic += '($kpfexpose.EXPOSE == 4)'
-#         print(f"  Wait Logic: {wait_logic}")
-        print(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
+        log.debug(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
         if success is True:
             if 'Green' in detector_list:
-                lastfile = ktl.cache('kpfgreen', 'NEXTFILE')
-                print(f"  Green file: {lastfile.read()}")
+                nextfile = ktl.cache('kpfgreen', 'NEXTFILE')
+                log.debug(f"  Green nextfile: {nextfile.read()}")
             if 'Red' in detector_list:
-                lastfile = ktl.cache('kpfred', 'NEXTFILE')
-                print(f"  Red file:   {lastfile.read()}")
+                nextfile = ktl.cache('kpfred', 'NEXTFILE')
+                log.debug(f"  Red nextfile:   {nextfile.read()}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -74,11 +74,9 @@ class WaitForReadout(KPFTranslatorFunction):
             notok.append(cahkexpstate == 'Error')
             msg += f"kpf_hk.EXPSTATE = {cahkexpstate} "
         msg += ')'
-#         print(f"    notok: {notok}")
         notok = np.array(notok)
 
         if np.any(notok):
-            print(msg)
+            log.error(msg)
             return False
-#         print('    Done')
         return True

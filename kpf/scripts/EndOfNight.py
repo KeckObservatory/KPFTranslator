@@ -4,6 +4,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
+from .. import log
 from ..ao.CloseAOHatch import CloseAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
 from ..fiu.ShutdownTipTilt import ShutdownTipTilt
@@ -30,11 +31,11 @@ class EndOfNight(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # FIU
-        print('Setting FIU mode to Stowed')
+        log.info('Setting FIU mode to Stowed')
         ConfigureFIU.execute({'mode': 'Stowed'})
         ShutdownTipTilt.execute({})
         # Guider
-        print('Setting guider set point to 0C')
+        log.info('Setting guider set point to 0C')
         kpfguide = ktl.cache('kpfguide')
         kpfguide['SENSORSETP'].write(0)
         # Power off Back Illuminators, FVCs, Lamps
@@ -45,13 +46,13 @@ class EndOfNight(KPFTranslatorFunction):
             name = kpfpower[f'OUTLET_{outlet}_NAME'].read()
             locked = (kpfpower[f'OUTLET_{outlet}_LOCK'].read() == 'Locked')
             if locked is True:
-                print(f'{outlet} ({name}) is Locked')
+                log.info(f'{outlet} ({name}) is Locked')
             else:
-                print(f'Powering off {outlet}: {name}')
+                log.info(f'Powering off {outlet}: {name}')
                 kpfpower[f'OUTLET_{outlet}'].write('Off')
 
         if args.get('AO', True) is True:
-            CloseAOHatch.execute({})
+            ControlAOHatch.execute({'destination': 'close'})
             TurnHepaOn.execute({})
 
 

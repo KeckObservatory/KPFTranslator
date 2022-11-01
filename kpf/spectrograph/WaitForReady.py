@@ -3,6 +3,7 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class WaitForReady(KPFTranslatorFunction):
@@ -44,16 +45,15 @@ class WaitForReady(KPFTranslatorFunction):
         if len(wait_logic) > 0: 
             wait_logic +=' and '
         wait_logic += '($kpfexpose.EXPOSE == 0)'
-#         print(f"  Wait Logic: {wait_logic}")
-        print(f"  Waiting ({wait_time:.0f}s max) for detectors to be ready")
+        log.debug(f"  Waiting ({wait_time:.0f}s max) for detectors to be ready")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
         if success is True:
             if 'Green' in detector_list:
                 lastfile = ktl.cache('kpfgreen', 'FITSFILE')
-                print(f"  Green file: {lastfile.read()}")
+                log.debug(f"  Green file: {lastfile.read()}")
             if 'Red' in detector_list:
                 lastfile = ktl.cache('kpfred', 'FITSFILE')
-                print(f"  Red file:   {lastfile.read()}")
+                log.debug(f"  Red file:   {lastfile.read()}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -78,11 +78,9 @@ class WaitForReady(KPFTranslatorFunction):
             notok.append(cahkexpstate == 'Error')
             msg += f"kpf_hk.EXPSTATE = {cahkexpstate} "
         msg += ')'
-#         print(f"    notok: {notok}")
         notok = np.array(notok)
 
         if np.any(notok):
-            print(msg)
+            log.error(msg)
             return False
-#         print('    Done')
         return True

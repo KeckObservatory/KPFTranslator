@@ -1,6 +1,7 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetAFStoNGS(KPFTranslatorFunction):
@@ -13,6 +14,7 @@ class SetAFStoNGS(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         ao = ktl.cache('ao')
+        log.debug(f"Setting AFS to NGS")
         ao['OBASNAME'].write('ngs')
         ao['OBASSLEW'].write('1')
 
@@ -22,5 +24,5 @@ class SetAFStoNGS(KPFTranslatorFunction):
         aoamstst_success = ktl.waitfor('($ao.OBASSTST == INPOS)'\
                            and '($ao.OBASNAME == ngs)', timeout=60)
         if not aoamstst_success:
-             print(f'Failed to set AFS to ngs')
+             log.error(f'Failed to set AFS to ngs')
         return aoamstst_success   

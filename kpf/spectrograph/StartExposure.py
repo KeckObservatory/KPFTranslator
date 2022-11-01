@@ -3,7 +3,7 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-
+from .. import log
 from . import (green_detector_power_is_on, green_detector_temperature_is_ok,
                red_detector_power_is_on, red_detector_temperature_is_ok,
                cahk_detector_temperature_is_ok)
@@ -36,9 +36,9 @@ class StartExposure(KPFTranslatorFunction):
         expose = kpfexpose['EXPOSE']
         expose.monitor()
         if expose > 0:
-            print(f"  Detector(s) are currently {expose} waiting for Ready")
+            log.debug(f"Detector(s) are currently {expose} waiting for Ready")
             expose.waitFor('== 0',timeout=300)
-        print(f"  Beginning Exposure")
+        log.debug(f"Beginning Exposure")
         expose.write('Start')
 
     @classmethod
@@ -46,12 +46,10 @@ class StartExposure(KPFTranslatorFunction):
         kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfexpose['EXPOSURE'].read(binary=True)
         expose = kpfexpose['EXPOSE'].read()
-        print(f"    exposure time = {exptime:.1f}")
-        print(f"    status = {expose}")
+        log.debug(f"    exposure time = {exptime:.1f}")
+        log.debug(f"    status = {expose}")
         if exptime > 0.1:
             if expose not in ['Start', 'InProgress', 'End', 'Readout']:
                 msg = f"Unexpected EXPOSE status = {expose}"
-                print(msg)
-                raise KPFError(msg)
-        print('    Done')
+                log.error(msg)
         return True

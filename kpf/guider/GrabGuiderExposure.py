@@ -3,7 +3,7 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-
+from .. import log
 from . import guider_is_saving, guider_is_active
 
 
@@ -29,5 +29,5 @@ class GrabGuiderExposure(KPFTranslatorFunction):
         lastfile = kpfguide['LASTFILE']
         lastfile.monitor()
         new_file = Path(f"{lastfile}")
-        print(f"{new_file}")
+        log.debug(f"CRED2 LASTFILE: {new_file}")
         return new_file.exists()

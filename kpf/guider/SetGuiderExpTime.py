@@ -3,6 +3,7 @@ from time import sleep
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetGuiderExpTime(KPFTranslatorFunction):
@@ -77,8 +78,8 @@ class SetGuiderExpTime(KPFTranslatorFunction):
                     f'(kpfguide.EXPTIME < {exptime}+{exptol})')
             success = klt.waitFor(expr, timeout=1)
             if not success:
-                print(f"Failed to set exposure time.")
-                print(f"Requested {exptime:.3f} s, found {exptimekw.read():.3f} s")
+                log.error(f"Failed to set exposure time.")
+                log.error(f"Requested {exptime:.3f} s, found {exptimekw.read():.3f} s")
             return success
 
     @classmethod

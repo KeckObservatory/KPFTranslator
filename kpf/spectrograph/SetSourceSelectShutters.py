@@ -4,6 +4,7 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetSourceSelectShutters(KPFTranslatorFunction):
@@ -28,7 +29,7 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         if args.get('SSS_CalSciSky', False) is True:
             shutter_list.append('Cal_SciSky')
         shutters_string = ','.join(shutter_list)
-        print(f"  Setting source select shutters to '{shutters_string}'")
+        log.debug(f"  Setting source select shutters to '{shutters_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['SRC_SHUTTERS'].write(shutters_string)
 
@@ -45,7 +46,7 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         if sci_shutter_target != sci_shutter_status:
             msg = (f"Final Science select shutter mismatch: "
                    f"{sci_shutter_status} != {sci_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         sky_shutter_status = 'SkySelect' in shutter_list
@@ -53,7 +54,7 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         if sky_shutter_target != sky_shutter_status:
             msg = (f"Final Sky select shutter mismatch: "
                    f"{sky_shutter_status} != {sky_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         socalsci_shutter_status = 'SoCalSci' in shutter_list
@@ -61,7 +62,7 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         if socalsci_shutter_target != socalsci_shutter_status:
             msg = (f"Final SoCalSci select shutter mismatch: "
                    f"{socalsci_shutter_status} != {socalsci_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         socalcal_shutter_status = 'SoCalCal' in shutter_list
@@ -69,7 +70,7 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         if socalcal_shutter_target != socalcal_shutter_status:
             msg = (f"Final SoCalCal select shutter mismatch: "
                    f"{socalcal_shutter_status} != {socalcal_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         calscisky_shutter_status = 'Cal_SciSky' in shutter_list
@@ -77,10 +78,9 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         if calscisky_shutter_target != calscisky_shutter_status:
             msg = (f"Final Cal_SciSky select shutter mismatch: "
                    f"{calscisky_shutter_status} != {calscisky_shutter_target}")
-            print(msg)
+            log.error(msg)
             return False
 
-        print(f"    Done")
         return True
 
     @classmethod

@@ -3,6 +3,7 @@ from time import sleep
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetTriggeredDetectors(KPFTranslatorFunction):
@@ -11,7 +12,6 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        print("Pre condition")
         return True
 
     @classmethod
@@ -25,7 +25,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
             detector_list.append('Ca_HK')
 
         detectors_string = ','.join(detector_list)
-        print(f"  Setting triggered detectors to '{detectors_string}'")
+        log.debug(f"  Setting triggered detectors to '{detectors_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['TRIG_TARG'].write(detectors_string)
 
@@ -42,7 +42,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         if red_target != red_status:
             msg = (f"Final Red detector trigger mismatch: "
                    f"{red_status} != {red_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         green_status = 'Green' in detector_list
@@ -50,7 +50,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         if green_target != green_status:
             msg = (f"Final Green detector trigger mismatch: "
                    f"{green_status} != {green_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         CaHK_status = 'Ca_HK' in detector_list
@@ -58,10 +58,9 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         if CaHK_target != CaHK_status:
             msg = (f"Final Ca HK detector trigger mismatch: "
                    f"{CaHK_status} != {CaHK_target}")
-            print(msg)
+            log.error(msg)
             return False
 
-        print(f"    Done")
         return True
 
     @classmethod

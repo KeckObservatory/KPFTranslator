@@ -1,5 +1,7 @@
 import ktl
 
+from .. import log
+
 ##-------------------------------------------------------------------------
 ## Pre- or Post- Conditions
 ##-------------------------------------------------------------------------
@@ -10,11 +12,11 @@ def green_detector_power_is_on():
     ccdpower = kpfgreen['CCDPOWER'].read()
     powersupply = kpfgreen['POWERSUPPLY'].read()
     if ccdpower in ['Intermediate', 'Standby']:
-        print(f"  Green detector: CCDPOWER = {ccdpower}")
+        log.error(f"  Green detector: CCDPOWER = {ccdpower}")
     if ccdpower in ['Unknown', 'Off'] or powersupply == 'NotOK':
         msg = (f"Green detector: CCDPOWER = {ccdpower}, "
                f"POWERSUPPLY = {powersupply}")
-        print(msg)
+        log.error(msg)
         return False
     return True
 
@@ -26,11 +28,11 @@ def red_detector_power_is_on():
     ccdpower = kpfred['CCDPOWER'].read()
     powersupply = kpfred['POWERSUPPLY'].read()
     if ccdpower in ['Intermediate', 'Standby']:
-        print(f"  Red detector: CCDPOWER = {ccdpower}")
+        log.error(f"  Red detector: CCDPOWER = {ccdpower}")
     if ccdpower in ['Unknown', 'Off'] or powersupply == 'NotOK':
         msg = (f"Red detector: CCDPOWER = {ccdpower}, "
                f"POWERSUPPLY = {powersupply}")
-        print(msg)
+        log.error(msg)
         return False
     return True
 
@@ -45,10 +47,10 @@ def green_detector_temperature_is_ok(temperature_tolerance=1):
     if diff > temperature_tolerance:
         msg = (f"Green detector temperature out of range: "
                f"{current:.1f} != {setpoint:.1f}")
-        print(msg)
+        log.error(msg)
         return False
     else:
-        print(f'Green detector temperature ok (diff={diff:.3f} C)')
+        log.debug(f'Green detector temperature ok (diff={diff:.3f} C)')
         return True
 
 
@@ -62,10 +64,10 @@ def red_detector_temperature_is_ok(temperature_tolerance=1):
     if diff > temperature_tolerance:
         msg = (f"Red detector temperature out of range: "
                f"{current:.1f} != {setpoint:.1f}")
-        print(msg)
+        log.error(msg)
         return False
     else:
-        print(f'Red detector temperature ok (diff={diff:.3f} C)')
+        log.debug(f'Red detector temperature ok (diff={diff:.3f} C)')
         return True
 
 
@@ -79,8 +81,8 @@ def cahk_detector_temperature_is_ok(temperature_tolerance=1):
     if diff > temperature_tolerance:
         msg = (f"Ca H&K detector temperature out of range: "
                f"{current:.1f} C != {setpoint:.1f} C")
-        print(msg)
+        log.error(msg)
         return False
     else:
-        print(f'Ca H&K detector temperature ok (diff={diff:.3f} C)')
+        log.debug(f'Ca H&K detector temperature ok (diff={diff:.3f} C)')
         return True

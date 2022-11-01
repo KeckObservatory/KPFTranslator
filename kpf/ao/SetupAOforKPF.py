@@ -1,7 +1,7 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-
+from .. import log
 from .SetAORotatorManual import SetAORotatorManual
 from .SetAORotator import SetAORotator
 from .TurnHepaOff import TurnHepaOff
@@ -30,29 +30,29 @@ class SetupAOforKPF(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        print('Set AO rotator to Manual')
+        log.info('Set AO rotator to Manual')
         SetAORotatorManual.execute({})
 
-        print('Set AO rotator to 0 deg')
+        log.info('Set AO rotator to 0 deg')
         SetAORotator.execute({'dest': 0})
 
-        print('Turn off HEPA')
+        log.info('Turn off HEPA')
         TurnHepaOff.execute({})
 
-        print('Set AO in DCS sim mode')
+        log.info('Set AO in DCS sim mode')
         SetAODCStoSIM.execute({})
 
-        print('Set AFM to Mirror')
+        log.info('Set AFM to Mirror')
         SetAFMtoMirror.execute({})
 
-        print('Set AFS to NGS')
+        log.info('Set AFS to NGS')
         SetAFStoNGS.execute({})
 
-        print('Move PCU to KPF')
+        log.info('Move PCU to KPF')
         SetPCUtoKPF.execute({})
 
-        print('Open AO hatch')
-        OpenAOHatch.execute({})
+        log.info('Open AO hatch')
+        ControlAOHatch.execute({'destination': 'open'})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

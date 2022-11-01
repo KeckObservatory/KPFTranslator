@@ -3,7 +3,7 @@ from collections import OrderedDict
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-
+from .. import log
 from ..ao.SetupAOforKPF import SetupAOforKPF
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
@@ -26,12 +26,12 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # Guider
-        print('Setting guider set point to -40 C')
+        log.info('Setting guider set point to -40 C')
         kpfguide = ktl.cache('kpfguide')
         kpfguide['SENSORSETP'].write(-40)
-        print('Configure FIU for "Observing"')
+        log.info('Configure FIU for "Observing"')
         ConfigureFIU({'mode': 'Observing'})
-        print('Initialize tip tilt mirror')
+        log.info('Initialize tip tilt mirror')
         InitializeTipTilt.execute({})
         # Set Outdirs
         SetOutdirs.execute({})

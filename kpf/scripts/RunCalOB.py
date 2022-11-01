@@ -7,6 +7,7 @@ import yaml
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetND1 import SetND1
@@ -34,7 +35,7 @@ class RunCalOB(KPFTranslatorFunction):
             OBfile = Path(args.get('OBfile')).expanduser()
             if OBfile.exists() is True:
                 OB = yaml.safe_load(open(OBfile, 'r'))
-                print(f"WARNING: Using OB information from file {OBfile}")
+                log.warning(f"Using OB information from file {OBfile}")
         else:
             raise NotImplementedError('Passing OB as args not implemented')
 
@@ -61,47 +62,47 @@ class RunCalOB(KPFTranslatorFunction):
             OBfile = Path(args.get('OBfile')).expanduser()
             if OBfile.exists() is True:
                 OB = yaml.safe_load(open(OBfile, 'r'))
-                print(f"WARNING: Using OB information from file {OBfile}")
+                log.warning(f"Using OB information from file {OBfile}")
         else:
             raise NotImplementedError('Passing OB as args not implemented')
 
         # Assumes lamp is on and has warmed up
-        print(f"Wait for any existing exposures to be complete")
+        log.info(f"Wait for any existing exposures to be complete")
         WaitForReady.execute({})
 
-        print(f"Configuring FIU")
+        log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration'})
 
-        print(f"Setting source select shutters")
+        log.info(f"Setting source select shutters")
         SetSourceSelectShutters.execute(OB)
 
-        print(f"Setting timed shutters")
+        log.info(f"Setting timed shutters")
         SetTimedShutters.execute(OB)
 
-        print(f"Set Detector List")
+        log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(OB)
 
         for calibration in OB.get('SEQ_Calibrations'):
-            print(f"Setting cal source: {calibration.get('CalSource')}")
+            log.info(f"Setting cal source: {calibration.get('CalSource')}")
             SetCalSource.execute(calibration)
 
-            print(f"Set ND1 Filter Wheel")
+            log.info(f"Set ND1 Filter Wheel")
             SetND1.execute(calibration)
 
-            print(f"Set ND2 Filter Wheel")
+            log.info(f"Set ND2 Filter Wheel")
             SetND2.execute(calibration)
 
-            print(f"Set exposure time")
+            log.info(f"Set exposure time")
             SetExptime.execute(calibration)
 
             nexp = calibration.get('nExp', 1)
             for j in range(nexp):
-                print(f"  Starting expoure {j+1}/{nexp}")
+                log.info(f"  Starting expoure {j+1}/{nexp}")
                 StartExposure.execute({})
                 WaitForReadout.execute({})
-                print(f"  Readout has begun")
+                log.info(f"  Readout has begun")
                 WaitForReady.execute({})
-                print(f"  Readout complete")
+                log.info(f"  Readout complete")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -110,7 +111,7 @@ class RunCalOB(KPFTranslatorFunction):
         status = expose.read()
         if status != 'Ready':
             msg = f"Final detector state mismatch: {status} != Ready"
-            print(msg)
+            log.error(msg)
             return False
         return True
 

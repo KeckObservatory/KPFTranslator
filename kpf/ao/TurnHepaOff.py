@@ -1,6 +1,7 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class TurnHepaOff(KPFTranslatorFunction):
@@ -13,6 +14,7 @@ class TurnHepaOff(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         ao = ktl.cache('ao')
+        log.debug('Setting AO HEPA filter to off')
         ao['OBHPAON'].write('0')
 
     @classmethod

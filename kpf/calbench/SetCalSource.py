@@ -4,6 +4,7 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetCalSource(KPFTranslatorFunction):
@@ -28,7 +29,7 @@ class SetCalSource(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         target = args.get('CalSource')
         kpfcal = ktl.cache('kpfcal')
-        print(f"  Setting Cal Source (Octagon) to {target}")
+        log.debug(f"  Setting Cal Source (Octagon) to {target}")
         kpfcal['OCTAGON'].write(target)
 
     @classmethod

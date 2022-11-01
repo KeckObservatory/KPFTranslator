@@ -4,7 +4,7 @@ from collections import OrderedDict
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-
+from .. import log
 from . import fvc_is_ready
 
 
@@ -36,7 +36,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
         lastfile = kpffvc[f'{camera}LASTFILE']
         lastfile.monitor()
         new_file = Path(f"{lastfile}")
-        print(f"{new_file}")
+        log.debug(f"{camera}FVC LASTFILE: {new_file}")
         return new_file.exists()
 
     @classmethod

@@ -3,7 +3,7 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-
+from .. import log
 from . import guider_is_saving, guider_is_active
 from . import TriggerSingleGuiderExposure, GrabGuiderExposure
 
@@ -28,7 +28,7 @@ class TakeGuiderExposure(KPFTranslatorFunction):
                 GrabGuiderExposure.GrabGuiderExposure.execute({})
             else:
                 # not sure what right action is here
-                print('WARNING: Guider is active, but not saving. No image saved.')
+                log.warning('Guider is active, but not saving. No image saved.')
         else:
             TriggerSingleGuiderExposure.TriggerSingleGuiderExposure.execute({})
 
