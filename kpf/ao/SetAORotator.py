@@ -22,7 +22,6 @@ class SetAORotator(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
         return ktl.waitfor('($ao.OBRTSTST == INPOS)', timeout=180)
 
     @classmethod

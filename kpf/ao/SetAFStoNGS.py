@@ -20,7 +20,6 @@ class SetAFStoNGS(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
         aoamstst_success = ktl.waitfor('($ao.OBASSTST == INPOS)'\
                            and '($ao.OBASNAME == ngs)', timeout=60)
         if not aoamstst_success:

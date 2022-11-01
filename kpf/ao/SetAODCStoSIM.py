@@ -21,7 +21,6 @@ class SetAODCStoSIM(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
         aodcssim_success = ktl.waitfor('($ao.AODCSSIM == enabled)', timeout=3)
         if not aodcssim_success:
             log.error(f'AODCSSIM failed to become enabled')

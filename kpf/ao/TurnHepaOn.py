@@ -19,5 +19,4 @@ class TurnHepaOn(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
         return ktl.waitfor('($ao.OBHPASTA == on)', timeout=3)
