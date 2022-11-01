@@ -11,7 +11,7 @@ log = logging.getLogger('KPFTranslator')
 log.setLevel(logging.DEBUG)
 ## Set up console output
 LogConsoleHandler = logging.StreamHandler()
-LogConsoleHandler.setLevel(logging.INFO)
+LogConsoleHandler.setLevel(logging.DEBUG)
 LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s',
                               datefmt='%Y-%m-%d %H:%M:%S')
 LogConsoleHandler.setFormatter(LogFormat)
