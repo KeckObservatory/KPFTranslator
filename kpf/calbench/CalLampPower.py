@@ -3,6 +3,7 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 def standardize_lamp_name(input_name):
@@ -69,6 +70,7 @@ class CalLampPower(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         lamp = standardize_lamp_name(args.get('lamp'))
         pwr = args.get('power')
+        log.info(f"Turning {pwr} {lamp}")
         kpflamps = ktl.cache('kpflamps')
         kpflamps[lamp].write(pwr)
 

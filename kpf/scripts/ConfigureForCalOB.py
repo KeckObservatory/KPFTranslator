@@ -62,9 +62,8 @@ class ConfigureForCalOB(KPFTranslatorFunction):
 
         # Power up needed lamps
         sequence = OB.get('SEQ_Calibrations')
-        lamps = [x['CalSource'] for x in sequence]
+        lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
         for lamp in lamps:
-            log.info(f'Turning on {lamp}')
             CalLampPower.execute({'lamp': lamp, 'power': 'on'})
 
     @classmethod
