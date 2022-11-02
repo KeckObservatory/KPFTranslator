@@ -55,30 +55,29 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        exptime = args.get('exptime', None)
+        return (exptime is not None) and (float(exptime) > 0)
 
     @classmethod
     def perform(cls, args, logger, cfg):
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
-        exptime = args.get('exptime', None)
-        if exptime is not None:
-            exptimekw.write(exptime)
+        exptime = args.get('exptime')
+        exptimekw.write(exptime)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         exptol = cfg.get('tolerances', 'guider_exptime_tolerance', fallback=0.01)
 
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
-        exptime = args.get('exptime', None)
+        exptime = args.get('exptime')
 
-        if exptime is not None:
-            expr = (f'(kpfguide.EXPTIME > {exptime-exptol}) and '\
-                    f'(kpfguide.EXPTIME < {exptime+exptol})')
-            success = ktl.waitFor(expr, timeout=1)
-            if not success:
-                log.error(f"Failed to set exposure time.")
-                log.error(f"Requested {exptime:.3f} s, found {exptimekw.read():.3f} s")
-            return success
+        expr = (f'($kpfguide.EXPTIME >= {exptime-exptol}) and '\
+                f'($kpfguide.EXPTIME <= {exptime+exptol})')
+        success = ktl.waitFor(expr, timeout=1)
+        if not success:
+            log.error(f"Failed to set exposure time.")
+            log.error(f"Requested {exptime:.3f} s, found {exptimekw.read():.3f} s")
+        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
