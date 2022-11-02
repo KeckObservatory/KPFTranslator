@@ -68,12 +68,44 @@ class SetOutdirs(KPFTranslatorFunction):
         if args.get('ExpMeter', True) is True:
             expmeter_outdir = outdir / 'ExpMeter'
             log.info(f"Setting exposure meter DATADIR to {expmeter_outdir}")
-            kpf_expmeter = ktl.cache('kpf_expmeter')
+            kpf_expmeter_outdir = ktl.cache('kpf_expmeter', 'DATADIR')
             try:
-                kpf_expmeter['DATADIR'].write(f"{expmeter_outdir}")
+                kpf_expmeter_outdir.write(f"{expmeter_outdir}")
             except Exception as e:
                 log.error(f"ERROR setting ExpMeter outdir")
                 log.error(e)
+
+        if args.get('CaHK', True) is True:
+            cahk_outdir = outdir / 'CaHK'
+            log.info(f"Setting CaHK RECORDDIR to {cahk_outdir}")
+            kpf_hk_outdir = ktl.cache('kpf_hk', 'RECORDDIR')
+            try:
+                kpf_hk_outdir.write(f"{cahk_outdir}")
+            except Exception as e:
+                log.error(f"ERROR setting CaHK outdir")
+                log.error(e)
+
+        if args.get('Green', True) is True:
+            green_outdir = outdir / 'Green'
+            log.info(f"Setting Green FITSDIR to {green_outdir}")
+            kpfgreen_outdir = ktl.cache('kpfgreen', 'FITSDIR')
+            try:
+                kpfgreen_outdir.write(f"{green_outdir}")
+            except Exception as e:
+                log.error(f"ERROR setting Green outdir")
+                log.error(e)
+
+        if args.get('Red', True) is True:
+            red_outdir = outdir / 'Red'
+            log.info(f"Setting Red FITSDIR to {red_outdir}")
+            kpfred_outdir = ktl.cache('kpfred', 'FITSDIR')
+            try:
+                kpfred_outdir.write(f"{red_outdir}")
+            except Exception as e:
+                log.error(f"ERROR setting Red outdir")
+                log.error(e)
+
+
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -106,6 +138,18 @@ class SetOutdirs(KPFTranslatorFunction):
             expr = f"$kpf_expmeter.DATADIR == '{outdir}/ExpMeter'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
+        if args.get('CaHK', True) is True:
+            expr = f"$kpf_hk.RECORDDIR == '{outdir}/CaHK'"
+            success = ktl.waitFor(expr, timeout=5)
+            tests.append(success)
+        if args.get('Green', True) is True:
+            expr = f"$kpfgreen.FITSDIR == '{outdir}/Green'"
+            success = ktl.waitFor(expr, timeout=5)
+            tests.append(success)
+        if args.get('Red', True) is True:
+            expr = f"$kpfred.FITSDIR == '{outdir}/Red'"
+            success = ktl.waitFor(expr, timeout=5)
+            tests.append(success)
 
         return np.all(np.array(tests))
 
@@ -125,5 +169,11 @@ class SetOutdirs(KPFTranslatorFunction):
             'Set FVC4 OUTDIR (kpffvc.EXTOUTDIR)?', default=False)
         parser = cls._add_bool_arg(parser, 'ExpMeter',
             'Set ExpMeter OUTDIR (kpf_expmeter.DATADIR)?', default=True)
+        parser = cls._add_bool_arg(parser, 'CaHK',
+            'Set CaHK OUTDIR (kpf_hk.RECORDDIR)?', default=True)
+        parser = cls._add_bool_arg(parser, 'Green',
+            'Set Green OUTDIR (kpfgreen.FITSDIR)?', default=True)
+        parser = cls._add_bool_arg(parser, 'Red',
+            'Set Red OUTDIR (kpfred.FITSDIR)?', default=True)
 
         return super().add_cmdline_args(parser, cfg)
