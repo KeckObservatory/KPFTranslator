@@ -72,8 +72,8 @@ class SetGuiderExpTime(KPFTranslatorFunction):
         exptime = args.get('exptime', None)
 
         if exptime is not None:
-            expr = (f'(kpfguide.EXPTIME > {exptime}-{exptol}) and '\
-                    f'(kpfguide.EXPTIME < {exptime}+{exptol})')
+            expr = (f'(kpfguide.EXPTIME > {exptime-exptol}) and '\
+                    f'(kpfguide.EXPTIME < {exptime+exptol})')
             success = ktl.waitFor(expr, timeout=1)
             if not success:
                 log.error(f"Failed to set exposure time.")
