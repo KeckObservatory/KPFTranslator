@@ -26,7 +26,6 @@ class GetGaiaStars(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        cfg = cls._load_config(cls, cfg)
         catalog_id = cfg.get('stellar_catalog', 'catalog_id',
                              fallback='I/345/gaia2')
         search_radius = cfg.getfloat('stellar_catalog', 'search_radius',

@@ -26,7 +26,6 @@ class WaitForReady(KPFTranslatorFunction):
 
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
 
-        cfg = cls._load_config(cls, cfg)
         buffer_time = cfg.get('times', 'readout_buffer_time', fallback=10)
         slowest_read = cfg.get('times', 'slowest_readout_time', fallback=120)
 

@@ -19,7 +19,6 @@ class ControlHatch(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        cfg = cls._load_config(cls, cfg)
         destination = args.get('destination', '').strip()
         timeout = cfg.get('times', 'fiu_hatch_move_time', fallback=1)
         return ktl.waitFor(f'($kpffiu.hatch == {destination})', timeout=timeout)

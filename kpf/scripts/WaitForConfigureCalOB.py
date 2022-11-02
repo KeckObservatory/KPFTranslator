@@ -27,7 +27,6 @@ class WaitForConfigureCalOB(KPFTranslatorFunction):
         if OB_version is None:
             return False
         OB_version = version.parse(OB_version)
-        cfg = cls._load_config(cls, cfg)
         compatible_version = version.parse(cfg.get('templates', OB_name))
         if compatible_version != OB_version:
             return False

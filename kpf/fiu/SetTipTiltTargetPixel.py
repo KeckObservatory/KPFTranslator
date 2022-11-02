@@ -12,7 +12,6 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
         y = args.get('y', None)
         if x is None or y is None:
             return False
-        cfg = cls._load_config(cls, cfg)
         min_x_pixel = cfg.get('guider', 'min_x_pixel', fallback=0)
         max_x_pixel = cfg.get('guider', 'max_x_pixel', fallback=640)
         min_y_pixel = cfg.get('guider', 'min_y_pixel', fallback=0)
@@ -30,7 +29,6 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
 #         x = args.get('x')
 #         y = args.get('y')
-#         cfg = cls._load_config(cls, cfg)
 #         timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
 #         expr = (f"($kpfguide.PIX_TARGET == {}) "
 #         success = ktl.waitFor(expr, timeout=timeout)

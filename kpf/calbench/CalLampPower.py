@@ -78,7 +78,6 @@ class CalLampPower(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         lamp = standardize_lamp_name(args.get('lamp'))
         pwr = args.get('power')
-        cfg = cls._load_config(cls, cfg)
         timeout = cfg.get('times', 'lamp_timeout', fallback=1)
         success = ktl.waitFor(f"($kpflamps.{lamp} == {pwr})", timeout=timeout)
         return success

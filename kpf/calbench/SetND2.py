@@ -30,7 +30,6 @@ class SetND2(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         target = args.get('CalND2')
-        cfg = cls._load_config(cls, cfg)
         timeout = cfg.get('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.ND2POS == '{target}')"
         success = ktl.waitFor(expr, timeout=timeout)

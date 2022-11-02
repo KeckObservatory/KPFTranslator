@@ -23,7 +23,6 @@ class ShutdownTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        cfg = cls._load_config(cls, cfg)
         timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
         success1 = ktl.waitFor('($kpffiu.TTXSRV == open)', timeout=timeout)
         success2 = ktl.waitFor('($kpffiu.TTYSRV == open)', timeout=timeout)

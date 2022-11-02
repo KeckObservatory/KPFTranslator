@@ -28,7 +28,6 @@ class ConfigureFIU(KPFTranslatorFunction):
         if args.get('wait', True) is True:
             dest = args.get('mode')
             expr = f"($kpffiu.mode == {dest})"
-            cfg = cls._load_config(cls, cfg)
             timeout = cfg.get('times', 'fiu_fold_mirror_move_time', fallback=60)
             success = ktl.waitFor(expr, timeout=timeout)
             return success

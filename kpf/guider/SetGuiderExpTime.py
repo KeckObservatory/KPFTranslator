@@ -66,7 +66,6 @@ class SetGuiderExpTime(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        cfg = cls._load_config(cls, cfg)
         exptol = cfg.get('tolerances', 'guider_exptime_tolerance', fallback=0.01)
 
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
