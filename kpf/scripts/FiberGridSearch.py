@@ -130,8 +130,8 @@ class FiberGridSearch(KPFTranslatorFunction):
         log.info(f"args = {args}")
         log.info("###########")
 
-        images_file = Path(f'~/logs/{this_file_name}_images_{now_str}.txt').expanduser()
-        fluxes_file = Path(f'~/logs/{this_file_name}_fluxes_{now_str}.txt').expanduser()
+        images_file = log_dir / Path(f'{this_file_name}_images_{now_str}.txt')
+        fluxes_file = log_dir / Path(f'{this_file_name}_fluxes_{now_str}.txt')
 
         images = Table(names=('file', 'camera', 'dx', 'dy'),
                        dtype=('a90',  'a10',    'f4', 'f4'))
@@ -290,10 +290,8 @@ class FiberGridSearch(KPFTranslatorFunction):
                 fluxes_file.unlink()
             expmeter_flux.write(fluxes_file, format='ascii.csv')
 
-        # Send tip tilt back to 0,0
-#         InitializeTipTilt.execute({})
-        GoToBase.execute({})
-        WaitForTel.execute({})
+        # Send offsets back to 0,0
+        offset(0, 0, offset_system=args.get('offset', 'gxy'))
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
