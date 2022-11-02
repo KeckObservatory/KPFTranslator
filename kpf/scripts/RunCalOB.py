@@ -92,7 +92,7 @@ class RunCalOB(KPFTranslatorFunction):
             SetND2.execute({'CalND2': calibration.get('CalND2'),
                             'wait': False})
 
-            log.info(f"Set exposure time: {calibration.get('ExpTime'):.3f}")
+            log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
             SetExptime.execute(calibration)
 
             log.info(f"Waiting for ND1")
