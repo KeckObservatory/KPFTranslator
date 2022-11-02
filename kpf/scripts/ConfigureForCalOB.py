@@ -69,26 +69,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-
-        # Use file input for OB instead of args (temporary)
-        if args.get('OBfile', None) is not None:
-            OBfile = Path(args.get('OBfile')).expanduser()
-            if OBfile.exists() is True:
-                OB = yaml.safe_load(open(OBfile, 'r'))
-                log.info(f"WARNING: Using OB information from file {OBfile}")
-        else:
-            raise NotImplementedError('Passing OB as args not implemented')
-
-        sequence = OB.get('SEQ_Calibrations')
-        lamps = [x['CalSource'] for x in sequence]
-        successes = []
-        for lamp in lamps:
-            expr = f"($kpflamps.{lamp} == on)"
-            cfg = cls._load_config(cls, cfg)
-            timeout = cfg.get('times', 'lamp_response_time', fallback=1)
-            success = ktl.waitFor(expr, timeout=timeout)
-            successes.append(success)
-        return np.all(np.array(successes))
+        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
