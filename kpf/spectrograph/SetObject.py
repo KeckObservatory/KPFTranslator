@@ -19,7 +19,7 @@ class SetObject(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         obj = args.get('Object')
-        log.debug(f"Setting OBJECT time to '{obj}'")
+        log.debug(f"Setting OBJECT to '{obj}'")
         kpfexpose['OBJECT'].write(obj)
 
     @classmethod

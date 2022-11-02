@@ -95,13 +95,6 @@ class RunCalOB(KPFTranslatorFunction):
             log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
             SetExptime.execute(calibration)
 
-            log.info(f"Waiting for ND1")
-            WaitForND1(calibration)
-            log.info(f"Waiting for ND2")
-            WaitForND2(calibration)
-            log.info(f"Waiting for Octagon (CalSource)")
-            WaitForCalSource(calibration)
-
             log.info(f"Setting source select shutters")
             SetSourceSelectShutters.execute(calibration)
 
@@ -110,6 +103,13 @@ class RunCalOB(KPFTranslatorFunction):
 
             log.info(f"Setting OBJECT: {calibration.get('Object')}")
             SetObject.execute(calibration)
+
+            log.info(f"Waiting for ND1")
+            WaitForND1.execute(calibration)
+            log.info(f"Waiting for ND2")
+            WaitForND2.execute(calibration)
+            log.info(f"Waiting for Octagon (CalSource)")
+            WaitForCalSource.execute(calibration)
 
             nexp = calibration.get('nExp', 1)
             for j in range(nexp):
