@@ -15,6 +15,9 @@ class ShutdownTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        kpfguide = ktl.cache('kpfguide')
+        kpfguide['TIPTILT_CONTROL'].write('Inactive')
+        kpfguide['TIPTILT'].write('Inactive')
         kpffiu = ktl.cache('kpffiu')
         kpffiu['TTXVAX'].write(0)
         kpffiu['TTYVAX'].write(0)
