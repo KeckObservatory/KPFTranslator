@@ -9,6 +9,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
+from ..calbench.ConfigureFlatFieldFiber import ConfigureFlatFieldFiber
 from ..calbench.SetND1 import SetND1
 from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForCalSource import WaitForCalSource
@@ -80,48 +81,68 @@ class RunCalOB(KPFTranslatorFunction):
         SetTriggeredDetectors.execute(OB)
 
         for calibration in OB.get('SEQ_Calibrations'):
-            log.info(f"Setting cal source: {calibration.get('CalSource')}")
-            SetCalSource.execute({'CalSource': calibration.get('CalSource'),
-                                  'wait': False})
-
-            log.info(f"Set ND1 Filter Wheel: {calibration.get('CalND1')}")
-            SetND1.execute({'CalND1': calibration.get('CalND1'),
-                            'wait': False})
-
-            log.info(f"Set ND2 Filter Wheel: {calibration.get('CalND2')}")
-            SetND2.execute({'CalND2': calibration.get('CalND2'),
-                            'wait': False})
-
-            log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
-            SetExptime.execute(calibration)
-
-            log.info(f"Setting source select shutters")
-            SetSourceSelectShutters.execute(calibration)
-
-            log.info(f"Setting timed shutters")
-            SetTimedShutters.execute(calibration)
-
-            log.info(f"Setting OBJECT: {calibration.get('Object')}")
-            SetObject.execute(calibration)
-
-            log.info(f"Waiting for ND1")
-            WaitForND1.execute(calibration)
-            log.info(f"Waiting for ND2")
-            WaitForND2.execute(calibration)
-            log.info(f"Waiting for Octagon (CalSource)")
-            WaitForCalSource.execute(calibration)
-
-            nexp = calibration.get('nExp', 1)
-            for j in range(nexp):
-                log.info(f"  Starting expoure {j+1}/{nexp}")
-                StartExposure.execute({})
-                WaitForReadout.execute({})
-                log.info(f"  Readout has begun")
-                WaitForReady.execute({})
-                log.info(f"  Readout complete")
-
-        SetObject.execute({'Object': ''})
-
+            calsource = calibration.get('CalSource')
+            if calsource == 'WideFlat':
+                log.info('Configuring for WideFlat')
+                ConfigureFlatFieldFiber.execute(calibration)
+                log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
+                SetExptime.execute(calibration)
+                log.info(f"Setting source select shutters")
+                SetSourceSelectShutters.execute(calibration)
+                log.info(f"Setting timed shutters")
+                SetTimedShutters.execute(calibration)
+                log.info(f"Setting OBJECT: {calibration.get('Object')}")
+                SetObject.execute(calibration)
+                nexp = calibration.get('nExp', 1)
+                for j in range(nexp):
+                    log.info(f"  Starting expoure {j+1}/{nexp}")
+                    StartExposure.execute({})
+                    WaitForReadout.execute({})
+                    log.info(f"  Readout has begun")
+                    WaitForReady.execute({})
+                    log.info(f"  Readout complete")
+                SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
+            elif calsource in ['EtalonFiber', 'LFCFiber']:
+                raise NotImplementedError()
+            elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
+                               'Th_gold']:
+                log.info(f"Setting cal source: {calsource}")
+                SetCalSource.execute({'CalSource': calsource,
+                                      'wait': False})
+                log.info(f"Set ND1 Filter Wheel: {calibration.get('CalND1')}")
+                SetND1.execute({'CalND1': calibration.get('CalND1'),
+                                'wait': False})
+                log.info(f"Set ND2 Filter Wheel: {calibration.get('CalND2')}")
+                SetND2.execute({'CalND2': calibration.get('CalND2'),
+                                'wait': False})
+                log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
+                SetExptime.execute(calibration)
+                log.info(f"Setting source select shutters")
+                SetSourceSelectShutters.execute(calibration)
+                log.info(f"Setting timed shutters")
+                SetTimedShutters.execute(calibration)
+                log.info(f"Setting OBJECT: {calibration.get('Object')}")
+                SetObject.execute(calibration)
+                log.info(f"Waiting for ND1")
+                WaitForND1.execute(calibration)
+                log.info(f"Waiting for ND2")
+                WaitForND2.execute(calibration)
+                log.info(f"Waiting for Octagon (CalSource)")
+                WaitForCalSource.execute(calibration)
+                nexp = calibration.get('nExp', 1)
+                for j in range(nexp):
+                    log.info(f"  Starting expoure {j+1}/{nexp}")
+                    StartExposure.execute({})
+                    WaitForReadout.execute({})
+                    log.info(f"  Readout has begun")
+                    WaitForReady.execute({})
+                    log.info(f"  Readout complete")
+            elif calsource in ['SoCal-CalFib']:
+                raise NotImplementedError()
+            else:
+                msg = f"CalSource {calsource} not recognized"
+                log.error(msg)
+                raise Exception(msg)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

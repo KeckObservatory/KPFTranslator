@@ -11,8 +11,8 @@ from .. import log
 from ..calbench.CalLampPower import CalLampPower
 
 
-class ConfigureForCalOB(KPFTranslatorFunction):
-    '''Script which configures the instrument for Cal OBs.
+class CleanupAfterCalOB(KPFTranslatorFunction):
+    '''Script which cleans up after Cal OBs.
     
     Can be called by `ddoi_script_functions.configure_for_science`.
     '''
@@ -60,12 +60,15 @@ class ConfigureForCalOB(KPFTranslatorFunction):
             log.error(msg)
             raise NotImplementedError(msg)
 
-        # Power up needed lamps
+        # Set OBJECT back to empty string
+        SetObject.execute({'Object': ''})
+
+        # Power off lamps
         sequence = OB.get('SEQ_Calibrations')
         lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
         for lamp in lamps:
             if lamp != 'WideFlat':
-                CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+                CalLampPower.execute({'lamp': lamp, 'power': 'off'})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
