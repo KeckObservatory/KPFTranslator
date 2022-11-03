@@ -58,6 +58,7 @@ log.addHandler(LogFileHandler)
 ##-------------------------------------------------------------------------
 def offset(x, y, offset_system='gxy'):
     if offset_system == 'ttm':
+        InitializeTipTilt.execute({})
         SetTipTilt.execute({'x': x, 'y': y)
         # If the tip/tilt system is active, and you're offloading,
         # what you want is to set the kpfguide.CURRENT_BASE keyword
@@ -76,6 +77,7 @@ def offset(x, y, offset_system='gxy'):
         WaitForTel.execute({})
         time.sleep(2)
     elif offset_system == 'custom':
+        dcs = ktl.cache('dcs')
         try:
             dcs['azoff'].write(x)
         except Exception as e:
@@ -155,9 +157,6 @@ class FiberGridSearch(KPFTranslatorFunction):
         xs = [xi*dx for xi in xis]
         ys = [yi*dy for yi in yis]
 
-        # Set up tip tilt system
-        InitializeTipTilt.execute({})
-
         # Set up kpfexpose
         kpf_expmeter = ktl.cache('kpf_expmeter')
         kpfexpose = ktl.cache('kpfexpose')
@@ -174,9 +173,6 @@ class FiberGridSearch(KPFTranslatorFunction):
         # Set up guider
         if 'CRED2' in args.get('cameras', ''):
             kpfguide = ktl.cache('kpfguide')
-
-        # Set up DCS
-        dcs = ktl.cache('dcs')
 
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
