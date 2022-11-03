@@ -120,6 +120,9 @@ class RunCalOB(KPFTranslatorFunction):
                 WaitForReady.execute({})
                 log.info(f"  Readout complete")
 
+        SetObject.execute({'Object': ''})
+
+
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
