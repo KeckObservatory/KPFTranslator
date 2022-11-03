@@ -12,7 +12,9 @@ from ..calbench.CalLampPower import CalLampPower
 
 
 class WaitForConfigureCalOB(KPFTranslatorFunction):
-    '''
+    '''Script which waits for Cal OBs to be configured.
+    
+    Can be called by `ddoi_script_functions.waitfor_configure_science`.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

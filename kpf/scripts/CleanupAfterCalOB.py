@@ -14,7 +14,7 @@ from ..calbench.CalLampPower import CalLampPower
 class CleanupAfterCalOB(KPFTranslatorFunction):
     '''Script which cleans up after Cal OBs.
     
-    Can be called by `ddoi_script_functions.configure_for_science`.
+    Can be called by `ddoi_script_functions.post_observation_cleanup`.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
