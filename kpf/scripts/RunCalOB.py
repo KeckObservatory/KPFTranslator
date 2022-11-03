@@ -76,34 +76,26 @@ class RunCalOB(KPFTranslatorFunction):
 
         log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration'})
-
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(OB)
 
         for calibration in OB.get('SEQ_Calibrations'):
             calsource = calibration.get('CalSource')
+            log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
+            SetExptime.execute(calibration)
+            log.info(f"Setting source select shutters")
+            SetSourceSelectShutters.execute(calibration)
+            log.info(f"Setting timed shutters")
+            SetTimedShutters.execute(calibration)
+            log.info(f"Setting OBJECT: {calibration.get('Object')}")
+            SetObject.execute(calibration)
+            nexp = calibration.get('nExp', 1)
+
+            ## Setup WideFlat
             if calsource == 'WideFlat':
                 log.info('Configuring for WideFlat')
                 ConfigureFlatFieldFiber.execute(calibration)
-                log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
-                SetExptime.execute(calibration)
-                log.info(f"Setting source select shutters")
-                SetSourceSelectShutters.execute(calibration)
-                log.info(f"Setting timed shutters")
-                SetTimedShutters.execute(calibration)
-                log.info(f"Setting OBJECT: {calibration.get('Object')}")
-                SetObject.execute(calibration)
-                nexp = calibration.get('nExp', 1)
-                for j in range(nexp):
-                    log.info(f"  Starting expoure {j+1}/{nexp}")
-                    StartExposure.execute({})
-                    WaitForReadout.execute({})
-                    log.info(f"  Readout has begun")
-                    WaitForReady.execute({})
-                    log.info(f"  Readout complete")
-                SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
-            elif calsource in ['EtalonFiber', 'LFCFiber']:
-                raise NotImplementedError()
+            ## Setup Octagon Lamps
             elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
                                'Th_gold']:
                 log.info(f"Setting cal source: {calsource}")
@@ -115,34 +107,38 @@ class RunCalOB(KPFTranslatorFunction):
                 log.info(f"Set ND2 Filter Wheel: {calibration.get('CalND2')}")
                 SetND2.execute({'CalND2': calibration.get('CalND2'),
                                 'wait': False})
-                log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
-                SetExptime.execute(calibration)
-                log.info(f"Setting source select shutters")
-                SetSourceSelectShutters.execute(calibration)
-                log.info(f"Setting timed shutters")
-                SetTimedShutters.execute(calibration)
-                log.info(f"Setting OBJECT: {calibration.get('Object')}")
-                SetObject.execute(calibration)
                 log.info(f"Waiting for ND1")
                 WaitForND1.execute(calibration)
                 log.info(f"Waiting for ND2")
                 WaitForND2.execute(calibration)
                 log.info(f"Waiting for Octagon (CalSource)")
                 WaitForCalSource.execute(calibration)
-                nexp = calibration.get('nExp', 1)
-                for j in range(nexp):
-                    log.info(f"  Starting expoure {j+1}/{nexp}")
-                    StartExposure.execute({})
-                    WaitForReadout.execute({})
-                    log.info(f"  Readout has begun")
-                    WaitForReady.execute({})
-                    log.info(f"  Readout complete")
+            ## Setup Etalon
+            elif calsource in ['EtalonFiber']:
+                raise NotImplementedError()
+            ## Setup LFC
+            elif calsource in ['LFCFiber']:
+                raise NotImplementedError()
+            ## Setup SoCal
             elif calsource in ['SoCal-CalFib']:
                 raise NotImplementedError()
+            # WTF!?
             else:
                 msg = f"CalSource {calsource} not recognized"
                 log.error(msg)
                 raise Exception(msg)
+
+            ## Take Actual Exposures
+            for j in range(nexp):
+                log.info(f"  Starting expoure {j+1}/{nexp}")
+                StartExposure.execute({})
+                WaitForReadout.execute({})
+                log.info(f"  Readout has begun")
+                WaitForReady.execute({})
+                log.info(f"  Readout complete")
+            if calsource == 'WideFlat':
+                SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
+
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
