@@ -1,0 +1,331 @@
+Template_Name: kpf_cal
+Template_Version: 0.3
+
+TriggerCaHK: True
+TriggerGreen: True
+TriggerRed: True
+SEQ_Darks:
+- CalSource: Home
+  Object: Bias
+  nExp: 11
+  Exptime: 0
+- CalSource: Home
+  Object: Dark
+  nExp: 5
+  Exptime: 300
+SEQ_Calibrations:
+# Octagon BrdbandFiber Set
+- CalSource: BrdbandFiber
+  Object: BrdbandFiber Sci
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 0.2
+  SSS_Science: True
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: BrdbandFiber
+  Object: BrdbandFiber Sky
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 0.2
+  SSS_Science: False
+  SSS_Sky: True
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: BrdbandFiber
+  Object: BrdbandFiber Cal
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 0.2
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: BrdbandFiber
+  Object: BrdbandFiber All
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 0.2
+  SSS_Science: True
+  SSS_Sky: True
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+# WideFlat
+- CalSource: WideFlat
+  Object: WideFlat 6 mm f/5
+  FF_FiberPos: 6 mm f/5
+  nExp: 5
+  Exptime: 0.1
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: False
+  TimedShutter_FlatField: True
+- CalSource: WideFlat
+  Object: WideFlat 7.5 mm f/4
+  FF_FiberPos: 7.5 mm f/4
+  nExp: 5
+  Exptime: 0.1
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: False
+  TimedShutter_FlatField: True
+- CalSource: WideFlat
+  Object: WideFlat 10 mm f/3
+  FF_FiberPos: 10 mm f/3
+  nExp: 5
+  Exptime: 0.1
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: False
+  TimedShutter_FlatField: True
+- CalSource: WideFlat
+  Object: WideFlat 13.2 mm f/2.3
+  FF_FiberPos: 13.2 mm f/2.3
+  nExp: 5
+  Exptime: 0.1
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: False
+  TimedShutter_FlatField: True
+# LFCFiber Set
+- CalSource: LFCFiber
+  Object: LFCFiber Sci
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: True
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: LFCFiber
+  Object: LFCFiber Sky
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: False
+  SSS_Sky: True
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: LFCFiber
+  Object: LFCFiber Cal
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: LFCFiber
+  Object: LFCFiber All
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: True
+  SSS_Sky: True
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+# EtalonFiber Set
+- CalSource: EtalonFiber
+  Object: EtalonFiber Sci
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: True
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: EtalonFiber
+  Object: EtalonFiber Sky
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: False
+  SSS_Sky: True
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: EtalonFiber
+  Object: EtalonFiber Cal
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: EtalonFiber
+  Object: EtalonFiber All
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: True
+  SSS_Sky: True
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+# Th_daily set
+- CalSource: Th_daily
+  Object: Th_daily Sci
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: True
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: Th_daily
+  Object: Th_daily Sky
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: False
+  SSS_Sky: True
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: Th_daily
+  Object: Th_daily Cal
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: Th_daily
+  Object: Th_daily All
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: True
+  SSS_Sky: True
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+# U_daily set
+- CalSource: U_daily
+  Object: U_daily Sci
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: True
+  SSS_Sky: False
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: U_daily
+  Object: U_daily Sky
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: False
+  SSS_Sky: True
+  SSS_CalSciSky: False
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: False
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: U_daily
+  Object: U_daily Cal
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: False
+  SSS_Sky: False
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: False
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+- CalSource: U_daily
+  Object: U_daily All
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 5
+  Exptime: 60
+  SSS_Science: True
+  SSS_Sky: True
+  SSS_CalSciSky: True
+  TimedShutter_Scrambler: True
+  TimedShutter_SimulCal: True
+  TimedShutter_CaHK: True
+  TimedShutter_FlatField: False
+
