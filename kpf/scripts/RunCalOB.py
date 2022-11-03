@@ -24,6 +24,7 @@ from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
+from .WaitForLampsWarm import WaitForLampsWarm
 
 
 class RunCalOB(KPFTranslatorFunction):
@@ -70,15 +71,39 @@ class RunCalOB(KPFTranslatorFunction):
         else:
             raise NotImplementedError('Passing OB as args not implemented')
 
-        # Assumes lamp is on and has warmed up
+        # Setup
         log.info(f"Wait for any existing exposures to be complete")
         WaitForReady.execute({})
-
         log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration'})
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(OB)
 
+        # First Do the darks and biases
+        log.info(f"Setting source select shutters")
+        SetSourceSelectShutters.execute({}) # No args defaults all to false
+        log.info(f"Setting timed shutters")
+        SetTimedShutters.execute({}) # No args defaults all to false
+        log.info(f"Setting OCTAGON to Home position")
+        SetCalSource.execute({'CalSource': 'Home'})
+        for dark in OB.get('SEQ_Darks'):
+            log.info(f"Setting OBJECT: {dark.get('Object')}")
+            SetObject.execute(dark)
+            log.info(f"Set exposure time: {dark.get('Exptime'):.3f}")
+            SetExptime.execute(dark)
+            nexp = dark.get('nExp', 1)
+            for j in range(nexp):
+                log.info(f"  Starting expoure {j+1}/{nexp}")
+                StartExposure.execute({})
+                WaitForReadout.execute({})
+                log.info(f"  Readout has begun")
+                WaitForReady.execute({})
+                log.info(f"  Readout complete")
+
+        # Wait for lamps to finish warming up
+        WaitForLampsWarm.execute(OB)
+
+        # Run lamp calibrations
         for calibration in OB.get('SEQ_Calibrations'):
             calsource = calibration.get('CalSource')
             log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
@@ -94,7 +119,12 @@ class RunCalOB(KPFTranslatorFunction):
             ## Setup WideFlat
             if calsource == 'WideFlat':
                 log.info('Configuring for WideFlat')
-                ConfigureFlatFieldFiber.execute(calibration)
+                SetCalSource.execute({'CalSource': 'Home', 'wait': False})
+                SetFlatFieldFiberPos.execute({'FF_FiberPos': target, 'wait': False})
+                log.info(f"Waiting for Octagon (CalSource)")
+                WaitForCalSource.execute({'CalSource': 'Home'})
+                log.info(f"Waiting for Flat Field Fiber Position")
+                WaitForFlatFieldFiberPos.execute(args)
             ## Setup Octagon Lamps
             elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
                                'Th_gold']:

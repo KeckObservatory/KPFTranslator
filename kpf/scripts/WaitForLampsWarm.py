@@ -7,39 +7,45 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
-from ..calbench import lamp_has_warmed_up
-from ..calbench.CalLampPower import CalLampPower
 
 
-class WaitForConfigureCalOB(KPFTranslatorFunction):
-    '''Script which waits for Cal OBs to be configured.
-    
-    Can be called by `ddoi_script_functions.waitfor_configure_science`.
+class WaitForLampsWarm(KPFTranslatorFunction):
+    '''Script which waits all the lamps to be warmed up.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+
+        # Use file input for OB instead of args (temporary)
+        if args.get('OBfile', None) is not None:
+            OBfile = Path(args.get('OBfile')).expanduser()
+            if OBfile.exists() is True:
+                OB = yaml.safe_load(open(OBfile, 'r'))
+                log.warning(f"Using OB information from file {OBfile}")
+        else:
+            raise NotImplementedError('Passing OB as args not implemented')
+
         # Check template name
-        OB_name = args.get('Template_Name', None)
+        OB_name = OB.get('Template_Name', None)
         if OB_name is None:
             return False
         if OB_name != 'kpf_cal':
             return False
         # Check template version
-        OB_version = args.get('Template_Version', None)
-        if OB_version is None:
-            return False
-        OB_version = version.parse(OB_version)
-        compatible_version = version.parse(cfg.get('templates', OB_name))
-        if compatible_version != OB_version:
-            return False
+#         OB_version = OB.get('Template_Version', None)
+#         if OB_version is None:
+#             return False
+#         OB_version = version.parse(f"{OB_version}")
+#         compatible_version = version.parse(cfg.get('templates', OB_name))
+#         if compatible_version != OB_version:
+#             return False
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        # Power up needed lamps
         lamps = [x['CalSource'] for x in args.get('SEQ_Calibrations')]
         for lamp in lamps:
-            pass
+            warmup_time = cfg.get('warmup_times', f'{lamp}_warmup_time',
+                                  fallback=30*60)
             # add appropriate waitfors here to ensure lamps are warm
 
     @classmethod
