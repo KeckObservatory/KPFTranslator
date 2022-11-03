@@ -86,6 +86,8 @@ class RunCalOB(KPFTranslatorFunction):
         SetTimedShutters.execute({}) # No args defaults all to false
         log.info(f"Setting OCTAGON to Home position")
         SetCalSource.execute({'CalSource': 'Home'})
+        log.info(f"Ensuring FlatField Fiber position is 'Blank'")
+        SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
         for dark in OB.get('SEQ_Darks'):
             log.info(f"Setting OBJECT: {dark.get('Object')}")
             SetObject.execute(dark)
@@ -169,17 +171,12 @@ class RunCalOB(KPFTranslatorFunction):
             if calsource == 'WideFlat':
                 SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
 
-
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
-        expose = kpfexpose['EXPOSE']
-        status = expose.read()
-        if status != 'Ready':
-            msg = f"Final detector state mismatch: {status} != Ready"
-            log.error(msg)
-            return False
-        return True
+        timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
+        expr = f"($kpfexpose.EXPOSE == Ready)"
+        success = ktl.WaitFor(expr, timeout=timeout)
+        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

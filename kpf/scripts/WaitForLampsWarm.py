@@ -7,6 +7,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
+from calbench.WaitForLampWarm import WaitForLampWarm
 
 
 class WaitForLampsWarm(KPFTranslatorFunction):
@@ -42,11 +43,10 @@ class WaitForLampsWarm(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        lamps = [x['CalSource'] for x in args.get('SEQ_Calibrations')]
+        lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
         for lamp in lamps:
-            warmup_time = cfg.get('warmup_times', f'{lamp}_warmup_time',
-                                  fallback=30*60)
-            # add appropriate waitfors here to ensure lamps are warm
+            log.info(f"Waiting for {lamp} lamp to be warm")
+            WaitForLampWarm.execute({'lamp': lamp})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
