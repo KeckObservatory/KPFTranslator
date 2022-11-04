@@ -24,7 +24,7 @@ class FVCPower(KPFTranslatorFunction):
         outlet = get_fvc_outlet(camera=camera)
         pwr = args.get('power')
         kpfpower = ktl.cache('kpfpower')
-        log.info(f"Turning {pwr} {camera}")
+        log.info(f"Turning {pwr} {camera} FVC")
         kpfpower[outlet].write(pwr)
 
     @classmethod
