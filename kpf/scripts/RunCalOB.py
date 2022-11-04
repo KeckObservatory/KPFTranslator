@@ -16,6 +16,7 @@ from ..calbench.WaitForCalSource import WaitForCalSource
 from ..calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
+from ..fvc.FVCPower import FVCPower
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
@@ -79,6 +80,13 @@ class RunCalOB(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Calibration'})
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(OB)
+        log.info(f"Ensuring back illumination LEDs are off")
+        CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'CaHKLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'SciLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'SkyLED', 'power': 'off'})
+        log.info(f"Ensuring Cal FVC is off")
+        FVCPower.execute({'camera': 'CAL', 'power': 'off'})
 
         # First Do the darks and biases
         log.info(f"Setting source select shutters")
