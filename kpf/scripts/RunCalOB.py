@@ -178,7 +178,7 @@ class RunCalOB(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = f"($kpfexpose.EXPOSE == Ready)"
-        success = ktl.WaitFor(expr, timeout=timeout)
+        success = ktl.waitFor(expr, timeout=timeout)
         return success
 
     @classmethod
