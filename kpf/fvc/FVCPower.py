@@ -4,7 +4,6 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
-from . import get_fvc_outlet
 
 
 class FVCPower(KPFTranslatorFunction):
@@ -15,24 +14,30 @@ class FVCPower(KPFTranslatorFunction):
         camera = args.get('camera')
         if camera not in ['SCI', 'CAHK', 'CAL']:
             return False
-        outlet = get_fvc_outlet(camera=camera)
+        camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3}[camera]
+
         kpfpower = ktl.cache('kpfpower')
+        outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
         locked = kpfpower[f"{outlet}_LOCK"].read() == 'Locked'
+
         return locked is False
 
     @classmethod
     def perform(cls, args, logger, cfg):
         camera = args.get('camera')
-        outlet = get_fvc_outlet(camera=camera)
+        camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3}[camera]
         pwr = args.get('power')
         kpfpower = ktl.cache('kpfpower')
-        log.info(f"Turning {pwr} {camera} FVC")
-        kpfpower[outlet].write(pwr)
+        outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
+        name = kpfpower[f"{outlet}_NAME"].read()
+        log.info(f"Turning {pwr} {camera} FVC (outlet {outlet}: {name})")
+        kpfpower[f"KPFFVC{camnum}"].write(pwr)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         camera = args.get('camera')
-        outlet = get_fvc_outlet(camera=camera)
+        kpfpower = ktl.cache('kpfpower')
+        outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
         pwr = args.get('power')
         timeout = cfg.get('times', 'lamp_response_time', fallback=1)
         success = ktl.waitFor(f"($kpfpower.{outlet} == {pwr})", timeout=timeout)
