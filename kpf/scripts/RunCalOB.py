@@ -9,6 +9,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
+from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
 from ..calbench.SetND1 import SetND1
 from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForCalSource import WaitForCalSource
