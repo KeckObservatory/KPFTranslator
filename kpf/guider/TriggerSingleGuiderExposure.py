@@ -18,16 +18,21 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
         exptime = kpfguide['EXPTIME'].read(binary=True)
-        kpfguide['EXPOSE'].write('yes')
         lastfile = kpfguide['LASTFILE']
-        lastfile.monitor()
-        lastfile.wait(timeout=exptime+1) # Wait for update which signals a new file
+        initial_lastfile = lastfile.read()
+        kpfguide['EXPOSE'].write('yes')
+        if args.get('wait', True) is True:
+            expr = f"($kpfguide.LASTFILE != {initial_lastfile})"
+            kt.waitFor(expr, timeout=exptime+1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfguide = ktl.cache('kpfguide')
-        lastfile = kpfguide['LASTFILE']
-        lastfile.monitor()
-        new_file = Path(f"{lastfile}")
-        log.debug(f"CRED2 LASTFILE: {new_file}")
-        return new_file.exists()
+        return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser = cls._add_bool_arg(parser, 'wait',
+            'Return only after exposure is finished?', default=True)
+        return super().add_cmdline_args(parser, cfg)

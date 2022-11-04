@@ -20,13 +20,13 @@ class TakeFVCExposure(KPFTranslatorFunction):
         camera = args.get('camera', 'SCI')
         kpffvc = ktl.cache('kpffvc')
         exptime = kpffvc[f'{camera}EXPTIME'].read(binary=True)
+        lastfile = kpffvc[f'{camera}LASTFILE']
+        initial_lastfile = lastfile.read()
         kpffvc[f'{camera}EXPOSE'].write('yes', wait=args.get('wait', True))
-
         if args.get('wait', True) is True:
-            lastfile = kpffvc[f'{camera}LASTFILE']
-            lastfile.monitor()
             timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
-            lastfile.wait(timeout=exptime+timeout) # Wait for update which signals a new file
+            expr = f"($kpffvc.{camera}LASTFILE != {initial_lastfile})"
+            kt.waitFor(expr, timeout=exptime+timeout)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

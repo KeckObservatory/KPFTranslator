@@ -20,14 +20,14 @@ class GrabGuiderExposure(KPFTranslatorFunction):
         kpfguide = ktl.cache('kpfguide')
         exptime = kpfguide['EXPTIME'].read(binary=True)
         lastfile = kpfguide['LASTFILE']
-        lastfile.monitor()
-        lastfile.wait(timeout=exptime+1) # Wait for update which signals a new file
+        initial_lastfile = lastfile.read()
+        expr = f"($kpfguide.LASTFILE != {initial_lastfile})"
+        kt.waitFor(expr, timeout=exptime+1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
         lastfile = kpfguide['LASTFILE']
-        lastfile.monitor()
-        new_file = Path(f"{lastfile}")
+        new_file = Path(f"{lastfile.read()}")
         log.debug(f"CRED2 LASTFILE: {new_file}")
         return new_file.exists()
