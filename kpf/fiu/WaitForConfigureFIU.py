@@ -1,11 +1,11 @@
 import ktl
+from datetime import datetime, timedelta
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .WaitForConfigureFIU import WaitForConfigureFIU
 
 
-class ConfigureFIU(KPFTranslatorFunction):
-    '''Set the FIU mode (kpffiu.MODE)
+class WaitForConfigureFIU(KPFTranslatorFunction):
+    '''Wait for the FIU to reach specified mode (kpffiu.MODE)
     
     Values: 0 None 1 Stowed 2 Alignment 3 Acquisition 4 Observing 5 Calibration
     '''
@@ -22,18 +22,18 @@ class ConfigureFIU(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         dest = args.get('mode')
         kpffiu = ktl.cache('kpffiu')
-        kpffiu['MODE'].write(dest, wait=args.get('wait', True))
+        modes = kpffiu['MODE'].read().split(',')
+        start = datetime.utcnow()
+        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=5),
+                      cfg.get('times', 'fiu_hatch_move_time', fallback=5)]
+        end = start + timedelta(seconds=max(move_times))
+        while dest not in modes and datetime.utcnow() <= end:
+            sleep(1)
+            modes = kpffiu['MODE'].read().split(',')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        if args.get('wait', True) is True:
-            WaitForConfigureFIU.execute(args)
-            dest = args.get('mode')
-            kpffiu = ktl.cache('kpffiu')
-            modes = kpffiu['MODE'].read().split(',')
-            return dest in modes
-        else:
-            return True
+        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
