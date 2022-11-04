@@ -122,7 +122,9 @@ class RunCalOB(KPFTranslatorFunction):
             if calsource == 'WideFlat':
                 log.info('Configuring for WideFlat')
                 SetCalSource.execute({'CalSource': 'Home', 'wait': False})
-                SetFlatFieldFiberPos.execute({'FF_FiberPos': target, 'wait': False})
+                FF_FiberPos = calibration.get('FF_FiberPos', None)
+                SetFlatFieldFiberPos.execute({'FF_FiberPos': FF_FiberPos,
+                                              'wait': False})
                 log.info(f"Waiting for Octagon (CalSource)")
                 WaitForCalSource.execute({'CalSource': 'Home'})
                 log.info(f"Waiting for Flat Field Fiber Position")
