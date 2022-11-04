@@ -6,8 +6,13 @@ import ktl
 def get_fvc_outlet(camera='SCI'):
     '''Determines the outlet to control the specified FVC
     '''
-    kpffvc = ktl.cache('kpffvc')
-    return kpffvc[f"{camera}OUTLET"].read()
+    if camera not in ['SCI', 'CAHK', 'CAL']:
+        return None
+    camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3}[camera]
+#     kpffvc = ktl.cache('kpffvc')
+#     return kpffvc[f"{camera}OUTLET"].read()
+    kpfpower = ktl.cache('kpfpower')
+    return kpfpower[f"KPFFVC{camnum}_OUTLETS"].read()
 
 
 def fvc_is_ready(camera='SCI'):

@@ -13,6 +13,8 @@ class FVCPower(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         camera = args.get('camera')
+        if camera not in ['SCI', 'CAHK', 'CAL']:
+            return False
         outlet = get_fvc_outlet(camera=camera)
         kpfpower = ktl.cache('kpfpower')
         locked = kpfpower[f"{outlet}_LOCK"].read() == 'Locked'
