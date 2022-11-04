@@ -6,7 +6,7 @@ from .SetAORotatorManual import SetAORotatorManual
 from .SetAORotator import SetAORotator
 from .TurnHepaOff import TurnHepaOff
 from .SetAODCStoSIM import SetAODCStoSIM
-from .OpenAOHatch import OpenAOHatch
+from .ControlAOHatch import ControlAOHatch
 from .SetAFMtoMirror import SetAFMtoMirror
 from .SetPCUtoKPF import SetPCUtoKPF
 from .SetAFStoNGS import SetAFStoNGS

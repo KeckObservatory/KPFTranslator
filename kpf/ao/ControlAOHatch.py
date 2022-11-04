@@ -2,8 +2,6 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
-from .CloseAOHatch import CloseAOHatch
-from .OpenAOHatch import OpenAOHatch
 
 
 class ControlAOHatch(KPFTranslatorFunction):
