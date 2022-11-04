@@ -165,7 +165,7 @@ class RunCalOB(KPFTranslatorFunction):
 
             ## Take Actual Exposures
             for j in range(nexp):
-                log.info(f"  Starting expoure {j+1}/{nexp}")
+                log.info(f"Starting expoure {j+1}/{nexp}")
                 StartExposure.execute({})
                 WaitForReadout.execute({})
                 log.info(f"  Readout has begun")
