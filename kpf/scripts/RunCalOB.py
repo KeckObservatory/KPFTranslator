@@ -26,6 +26,7 @@ from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
+from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from .WaitForLampsWarm import WaitForLampsWarm
 
 
@@ -79,7 +80,7 @@ class RunCalOB(KPFTranslatorFunction):
         log.info(f"Set OUTDIRs")
         SetOutdirs.execute({})
         log.info(f"Configuring FIU")
-        ConfigureFIU.execute({'mode': 'Calibration'})
+        ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(OB)
         log.info(f"Ensuring back illumination LEDs are off")
@@ -90,16 +91,21 @@ class RunCalOB(KPFTranslatorFunction):
         log.info(f"Ensuring Cal FVC is off")
         FVCPower.execute({'camera': 'CAL', 'power': 'off'})
 
-        # First Do the darks and biases
         log.info(f"Setting source select shutters")
         SetSourceSelectShutters.execute({}) # No args defaults all to false
         log.info(f"Setting timed shutters")
         SetTimedShutters.execute({}) # No args defaults all to false
-        log.info(f"Setting OCTAGON to Home position")
-        SetCalSource.execute({'CalSource': 'Home'})
-        log.info(f"Ensuring FlatField Fiber position is 'Blank'")
-        SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
-        for dark in OB.get('SEQ_Darks', []):
+
+        WaitForConfigureFIU.execute({'mode': 'Calibration'})
+
+        # First Do the darks and biases
+        darks = OB.get('SEQ_Darks', [])
+        if len(darks) > 0:
+            log.info(f"Setting OCTAGON to Home position")
+            SetCalSource.execute({'CalSource': 'Home'})
+            log.info(f"Ensuring FlatField Fiber position is 'Blank'")
+            SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
+        for dark in farks:
             log.info(f"Setting OBJECT: {dark.get('Object')}")
             SetObject.execute(dark)
             log.info(f"Set exposure time: {dark.get('Exptime'):.3f}")
@@ -114,7 +120,7 @@ class RunCalOB(KPFTranslatorFunction):
                 log.info(f"  Readout complete")
 
         # Wait for lamps to finish warming up
-        WaitForLampsWarm.execute(OB)
+#         WaitForLampsWarm.execute(OB)
 
         # Run lamp calibrations
         for calibration in OB.get('SEQ_Calibrations'):
