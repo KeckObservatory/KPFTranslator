@@ -38,9 +38,9 @@ class EndOfNight(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Stowed'})
         ShutdownTipTilt.execute({})
         # Guider
-        log.info('Setting guider set point to 0C')
-        kpfguide = ktl.cache('kpfguide')
-        kpfguide['SENSORSETP'].write(5)
+#         log.info('Setting guider set point to 0C')
+#         kpfguide = ktl.cache('kpfguide')
+#         kpfguide['SENSORSETP'].write(0)
         # Power off cal lamps and LEDs
         lamps = ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
                  'WideFlat', 'ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']
