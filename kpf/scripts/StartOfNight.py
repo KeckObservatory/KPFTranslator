@@ -26,9 +26,9 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # Guider
-        log.info('Setting guider set point to -40 C')
-        kpfguide = ktl.cache('kpfguide')
-        kpfguide['SENSORSETP'].write(-40)
+#         log.info('Setting guider set point to -40 C')
+#         kpfguide = ktl.cache('kpfguide')
+#         kpfguide['SENSORSETP'].write(-40)
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
         log.info('Initialize tip tilt mirror')
