@@ -24,8 +24,8 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         modes = kpffiu['MODE'].read().split(',')
         start = datetime.utcnow()
-        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=5),
-                      cfg.get('times', 'fiu_hatch_move_time', fallback=5)]
+        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=30),
+                      cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
         end = start + timedelta(seconds=max(move_times))
         while dest not in modes and datetime.utcnow() <= end:
             sleep(1)
@@ -33,7 +33,10 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        dest = args.get('mode')
+        kpffiu = ktl.cache('kpffiu')
+        modes = kpffiu['MODE'].read().split(',')
+        return dest in modes
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
