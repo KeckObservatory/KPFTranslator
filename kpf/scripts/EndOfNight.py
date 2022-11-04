@@ -3,10 +3,15 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from .. import log
-from ..ao.CloseAOHatch import CloseAOHatch
+from ..ao.ControlAOHatch import ControlAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
 from ..fiu.ShutdownTipTilt import ShutdownTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
+from ..spectrograph.SetProgram import SetProgram
+from ..spectrograph.SetObserver import SetObserver
+from ..spectrograph.SetObject import SetObject
+from ..calbench.CalLampPower import CalLampPower
+from ..fvc.FVCPower import FVCPower
 
 
 class EndOfNight(KPFTranslatorFunction):
@@ -35,19 +40,19 @@ class EndOfNight(KPFTranslatorFunction):
         # Guider
         log.info('Setting guider set point to 0C')
         kpfguide = ktl.cache('kpfguide')
-        kpfguide['SENSORSETP'].write(0)
-        # Power off Back Illuminators, FVCs, Lamps
-        kpfpower = ktl.cache('kpfpower')
-        outlets = ['E7', 'E8', 'H1', 'J7', 'K5', 'K6', 'F6', 'L1', 'L2', 'G5',
-                   'G6', 'G7', 'G8']
-        for outlet in outlets:
-            name = kpfpower[f'OUTLET_{outlet}_NAME'].read()
-            locked = (kpfpower[f'OUTLET_{outlet}_LOCK'].read() == 'Locked')
-            if locked is True:
-                log.info(f'{outlet} ({name}) is Locked')
-            else:
-                log.info(f'Powering off {outlet}: {name}')
-                kpfpower[f'OUTLET_{outlet}'].write('Off')
+        kpfguide['SENSORSETP'].write(5)
+        # Power off cal lamps and LEDs
+        lamps = ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
+                 'WideFlat', 'ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']
+        for lamp in lamps:
+            CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+        # Power off FVCs
+        for camera in ['SCI', 'CAHK', 'EXT', 'CAL']:
+            CalLampPower.execute({'camera': camera, 'power': 'off'})
+        # Set PROGNAME
+        SetProgram.execute({'progname': ''})
+        SetObserver.execute({'observer': ''})
+        SetObject.execute({'Object': ''})
 
         if args.get('AO', True) is True:
             ControlAOHatch.execute({'destination': 'close'})
