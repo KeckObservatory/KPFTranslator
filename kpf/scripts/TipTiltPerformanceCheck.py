@@ -68,6 +68,7 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
+        duration = args.get('duration', 10)
         log.info("###########")
         if args.get('comment', '') != '': log.info(args.get('comment', ''))
         log.info(f"args = {args}")
@@ -75,7 +76,6 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
         log.info(f"kpfguide.ITIME = {kpfguide['ITIME'].read()}")
         log.info("###########")
 
-        duration = args.get('duration', 10)
 #         gains = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
         gains = [0.1, 0.3, 0.5]
 
@@ -86,38 +86,38 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
         log.info('Setting TIPTILT calculations to active')
         SetTipTiltCalculations.execute({'calculations': 'Active'})
 
-        log.info(f"Take data with open loop tracking")
-        gshow_file = log_dir / Path(f'{this_file_name}_{now_str}_openloop.txt')
+        gshow_file = log_dir / Path(f'{this_file_name}_{now_str}.txt')
         gshow_cmd = ['gshow', '-s', 'kpfguide', 'OBJECT%RAW', '-c',
                      '-timestamp', '-binary', '>', f"{gshow_file}"]
         log.info(f"Starting: {' '.join(gshow_cmd)}")
         process = subprocess.Popen(' '.join(gshow_cmd), shell=True,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
+
+        log.info(f"Take data with open loop tracking")
+        kpfguide['TRIGGER'].write('Active')
         sleep(duration)
-        log.info('Killing gshow')
-        process.kill()
+        kpfguide['TRIGGER'].write('Inactive')
+        lastcube = kpfguide['LASTTRIGFILE'].read()
+        log.info(f"LASTTRIGFILE Open Loop: {lastcube}")
 
         kpfguide['TIPTILT_CONTROL'].write('Active')
-        
+
         for i,gain in enumerate(gains):
-            log.info(f"Take data with tip tilt active, gain={gain:.1f}")
             kpfguide['TIPTILT_GAIN'].write(gain)
             log.info(f"Waiting for TIPTILT_PHASE to be Tracking")
             ktl.waitFor('($kpfguide.TIPTILT_PHASE == Tracking)', timeout=5)
             log.info('Sleeping for 2 seconds')
             sleep(2)
-
-            gshow_file = log_dir / Path(f'{this_file_name}_{now_str}_gain{gain:.2f}.txt')
-            gshow_cmd = ['gshow', '-s', 'kpfguide', 'OBJECT%RAW', '-c',
-                         '-timestamp', '-binary', '>', f"{gshow_file}"]
-            log.info(f"Starting: {' '.join(gshow_cmd)}")
-            process = subprocess.Popen(' '.join(gshow_cmd), shell=True,
-                                       stdout=subprocess.PIPE,
-                                       stderr=subprocess.PIPE)
+            log.info(f"Take data with tip tilt active, gain={gain:.1f}")
+            kpfguide['TRIGGER'].write('Active')
             sleep(duration)
-            log.info('Killing gshow')
-            process.kill()
+            kpfguide['TRIGGER'].write('Inactive')
+            lastcube = kpfguide['LASTTRIGFILE'].read()
+            log.info(f"LASTTRIGFILE gain={gain:.1f}: {lastcube}")
+
+        log.info('Killing gshow')
+        process.kill()
 
         log.info('Setting TIPTILT_CONTROL to inactive')
         kpfguide['TIPTILT_CONTROL'].write('Inactive')
