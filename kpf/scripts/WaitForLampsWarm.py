@@ -23,7 +23,7 @@ class WaitForLampsWarm(KPFTranslatorFunction):
                 OB = yaml.safe_load(open(OBfile, 'r'))
                 log.warning(f"Using OB information from file {OBfile}")
         else:
-            raise NotImplementedError('Passing OB as args not implemented')
+            OB = args
 
         # Check template name
         OB_name = OB.get('Template_Name', None)
@@ -43,6 +43,16 @@ class WaitForLampsWarm(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Use file input for OB instead of args (temporary)
+        if args.get('OBfile', None) is not None:
+            OBfile = Path(args.get('OBfile')).expanduser()
+            if OBfile.exists() is True:
+                OB = yaml.safe_load(open(OBfile, 'r'))
+                log.warning(f"Using OB information from file {OBfile}")
+        else:
+            OB = args
+
+        sequence = args.get('SEQ_Calibrations', [])
         lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
         for lamp in lamps:
             log.info(f"Waiting for {lamp} lamp to be warm")

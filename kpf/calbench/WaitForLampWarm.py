@@ -27,9 +27,11 @@ class WaitForLampWarm(KPFTranslatorFunction):
                               fallback=0)
         kpflamps = ktl.cache('kpflamps')
         expr = f"($kpflamps.{lamp.upper()}_TIMEON > {warmup_time:.0f})"
-        success = ktl.waitFor(expr, timeout=warmup_time*1.2)
+        success = ktl.waitFor(expr, timeout=warmup_time*1.1+1)
         if success is not True:
-            msg = f"The {lamp} lamp failed to reach warmup time ({warmup_time:.0f} s)"
+            timeon = kpflamps[f"{lamp.upper()}_TIMEON"].read()
+            msg = (f"{lamp} lamp failed to reach warmup time ({warmup_time:.0f} s)"
+                   f" (kpflamps.{lamp.upper()}_TIMEON = {timeon})")
             log.error(msg)
             raise Exception(msg)
 

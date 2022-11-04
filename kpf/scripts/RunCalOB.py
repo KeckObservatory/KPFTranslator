@@ -88,7 +88,7 @@ class RunCalOB(KPFTranslatorFunction):
         SetCalSource.execute({'CalSource': 'Home'})
         log.info(f"Ensuring FlatField Fiber position is 'Blank'")
         SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
-        for dark in OB.get('SEQ_Darks'):
+        for dark in OB.get('SEQ_Darks', []):
             log.info(f"Setting OBJECT: {dark.get('Object')}")
             SetObject.execute(dark)
             log.info(f"Set exposure time: {dark.get('Exptime'):.3f}")
