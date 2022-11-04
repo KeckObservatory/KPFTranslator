@@ -1,4 +1,5 @@
 import numpy as np
+import re
 
 import ktl
 
@@ -18,6 +19,13 @@ class FVCPower(KPFTranslatorFunction):
 
         kpfpower = ktl.cache('kpfpower')
         outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
+        outletname = kpfpower[f"{outlet}_NAME"].read()
+        if re.search(f"fvc{camnum}", outletname) is None:
+            msg = f"Outlet name error: expected 'fvc{camnum}' in '{outletname}'"
+            log.error(msg)
+            raise Exception(msg)
+            return False
+        
         locked = kpfpower[f"{outlet}_LOCK"].read() == 'Locked'
 
         return locked is False
@@ -29,8 +37,8 @@ class FVCPower(KPFTranslatorFunction):
         pwr = args.get('power')
         kpfpower = ktl.cache('kpfpower')
         outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
-        name = kpfpower[f"{outlet}_NAME"].read()
-        log.info(f"Turning {pwr} {camera} FVC (outlet {outlet}: {name})")
+        outletname = kpfpower[f"{outlet}_NAME"].read()
+        log.info(f"Turning {pwr} {camera} FVC (outlet {outlet}: {outletname})")
         kpfpower[f"KPFFVC{camnum}"].write(pwr)
 
     @classmethod
