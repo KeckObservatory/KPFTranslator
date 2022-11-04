@@ -13,6 +13,7 @@ from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
 from ..calbench.SetND1 import SetND1
 from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForCalSource import WaitForCalSource
+from ..calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
 from ..spectrograph.SetObject import SetObject
