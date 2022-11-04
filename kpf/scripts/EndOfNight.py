@@ -50,11 +50,13 @@ class EndOfNight(KPFTranslatorFunction):
         for camera in ['SCI', 'CAHK', 'EXT', 'CAL']:
             CalLampPower.execute({'camera': camera, 'power': 'off'})
         # Set PROGNAME
+        log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
         SetProgram.execute({'progname': ''})
         SetObserver.execute({'observer': ''})
         SetObject.execute({'Object': ''})
 
         if args.get('AO', True) is True:
+            log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'close'})
             TurnHepaOn.execute({})
 
