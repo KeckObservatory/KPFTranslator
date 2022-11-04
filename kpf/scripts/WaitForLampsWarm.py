@@ -7,7 +7,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
-from calbench.WaitForLampWarm import WaitForLampWarm
+from ..calbench.WaitForLampWarm import WaitForLampWarm
 
 
 class WaitForLampsWarm(KPFTranslatorFunction):
