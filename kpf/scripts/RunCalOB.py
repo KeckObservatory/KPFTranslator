@@ -146,9 +146,9 @@ class RunCalOB(KPFTranslatorFunction):
                 WaitForCalSource.execute({'CalSource': 'Home'})
                 log.info(f"Waiting for Flat Field Fiber Position")
                 WaitForFlatFieldFiberPos.execute(args)
-            ## Setup Octagon Lamps
+            ## Setup Octagon Lamps and LFCFiber
             elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
-                               'Th_gold']:
+                               'Th_gold', 'LFCFiber']:
                 log.info(f"Setting cal source: {calsource}")
                 SetCalSource.execute({'CalSource': calsource,
                                       'wait': False})
@@ -166,9 +166,6 @@ class RunCalOB(KPFTranslatorFunction):
                 WaitForCalSource.execute(calibration)
             ## Setup Etalon
             elif calsource in ['EtalonFiber']:
-                raise NotImplementedError()
-            ## Setup LFC
-            elif calsource in ['LFCFiber']:
                 raise NotImplementedError()
             ## Setup SoCal
             elif calsource in ['SoCal-CalFib']:
