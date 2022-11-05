@@ -27,7 +27,6 @@ from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
-from ..scripts.SetOutdirs import SetOutdirs
 from .WaitForLampsWarm import WaitForLampsWarm
 
 
@@ -78,8 +77,6 @@ class RunCalOB(KPFTranslatorFunction):
         # Setup
         log.info(f"Wait for any existing exposures to be complete")
         WaitForReady.execute({})
-        log.info(f"Set OUTDIRs")
-        SetOutdirs.execute({})
         log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
         log.info(f"Set Detector List")
@@ -106,7 +103,7 @@ class RunCalOB(KPFTranslatorFunction):
             SetCalSource.execute({'CalSource': 'Home'})
             log.info(f"Ensuring FlatField Fiber position is 'Blank'")
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
-        for dark in farks:
+        for dark in darks:
             log.info(f"Setting OBJECT: {dark.get('Object')}")
             SetObject.execute(dark)
             log.info(f"Set exposure time: {dark.get('Exptime'):.3f}")
