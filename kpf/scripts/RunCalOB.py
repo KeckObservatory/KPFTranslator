@@ -27,6 +27,7 @@ from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from ..scripts.SetOutdirs import SetOutdirs
 from .WaitForLampsWarm import WaitForLampsWarm
 
 
