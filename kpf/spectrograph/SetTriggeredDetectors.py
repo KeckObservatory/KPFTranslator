@@ -23,6 +23,8 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
             detector_list.append('Green')
         if args.get('TriggerCaHK', False) is True:
             detector_list.append('Ca_HK')
+        if args.get('TriggerExpMeter', False) is True:
+            detector_list.append('ExpMeter')
 
         detectors_string = ','.join(detector_list)
         log.debug(f"  Setting triggered detectors to '{detectors_string}'")
@@ -75,6 +77,9 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
                                    default=False)
         parser = cls._add_bool_arg(parser, 'TriggerCaHK',
                                    'Trigger the CaH&K detector?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'TriggerExpMeter',
+                                   'Trigger the ExpMeter detector?',
                                    default=False)
 
         return super().add_cmdline_args(parser, cfg)
