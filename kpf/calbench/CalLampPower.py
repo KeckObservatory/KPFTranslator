@@ -20,6 +20,7 @@ class CalLampPower(KPFTranslatorFunction):
             raise FailedPreCondition(msg)
         # Check power
         check_input(args, 'power', allowed_values=['on', 'off'])
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
