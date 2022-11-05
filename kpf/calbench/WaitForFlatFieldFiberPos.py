@@ -13,12 +13,11 @@ class WaitForFlatFieldFiberPos(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        target = args.get('FF_FiberPos', None)
-        if target is None:
-            return False
-        allowed_values = ["Blank", "6 mm f/5", "7.5 mm f/4", "10 mm f/3",
-                          "13.2 mm f/2.3", "Open"]
-        return target in allowed_values
+        keyword = ktl.cache('kpfcal', 'FF_FiberPos')
+        allowed_values = list(keyword._getEnumerators())
+        if 'Unknown' in allowed_values:
+            allowed_values.pop(allowed_values.index('Unknown'))
+        check_input(args, 'FF_FiberPos', allowed_values=allowed_values)
 
     @classmethod
     def perform(cls, args, logger, cfg):

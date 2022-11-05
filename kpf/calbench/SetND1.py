@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetND1(KPFTranslatorFunction):
@@ -13,12 +14,11 @@ class SetND1(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        target = args.get('CalND1', None)
-        if target is None:
-            return False
-        allowed_values = ["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0",
-                          "OD 4.0"]
-        return target in allowed_values
+        keyword = ktl.cache('kpfcal', 'ND1POS')
+        allowed_values = list(keyword._getEnumerators())
+        if 'Unknown' in allowed_values:
+            allowed_values.pop(allowed_values.index('Unknown'))
+        check_input(args, 'CalND1', allowed_values=allowed_values)
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -33,7 +33,9 @@ class SetND1(KPFTranslatorFunction):
         timeout = cfg.get('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.ND1POS == '{target}')"
         success = ktl.waitFor(expr, timeout=timeout)
-        return success
+        if success is not True:
+            kpfcal = ktl.cache('kpfcal')
+            raise FailedToReachDestination(kpfcal['ND1POS'].read(), target)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

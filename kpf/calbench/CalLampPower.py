@@ -3,7 +3,8 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 from . import standardize_lamp_name
 
 
@@ -15,14 +16,10 @@ class CalLampPower(KPFTranslatorFunction):
         # Check lamp name
         lamp = standardize_lamp_name(args.get('lamp', None))
         if lamp is None:
-            return False
+            msg = f"Could not standardize lamp name {args.get('lamp')}"
+            raise FailedPreCondition(msg)
         # Check power
-        pwr = args.get('power', None)
-        if pwr is None:
-            return False
-        if pwr.lower() not in ['on', 'off']:
-            return False
-        return True
+        check_input(args, 'power', allowed_values=['on', 'off'])
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -38,6 +35,9 @@ class CalLampPower(KPFTranslatorFunction):
         pwr = args.get('power')
         timeout = cfg.get('times', 'lamp_timeout', fallback=1)
         success = ktl.waitFor(f"($kpflamps.{lamp} == {pwr})", timeout=timeout)
+        if success is not True:
+            kpflamps = ktl.cache('kpflamps')
+            raise FailedPostCondition(kpflamps[lamp], pwr)
         return success
 
     @classmethod

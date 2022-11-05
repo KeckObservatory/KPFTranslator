@@ -13,12 +13,11 @@ class WaitForND2(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        target = args.get('CalND2', None)
-        if target is None:
-            return False
-        allowed_values = ["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0",
-                          "OD 4.0"]
-        return target in allowed_values
+        keyword = ktl.cache('kpfcal', 'ND2POS')
+        allowed_values = list(keyword._getEnumerators())
+        if 'Unknown' in allowed_values:
+            allowed_values.pop(allowed_values.index('Unknown'))
+        check_input(args, 'CalND2', allowed_values=allowed_values)
 
     @classmethod
     def perform(cls, args, logger, cfg):

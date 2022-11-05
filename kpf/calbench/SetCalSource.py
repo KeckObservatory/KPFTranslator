@@ -3,7 +3,8 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetCalSource(KPFTranslatorFunction):
@@ -16,13 +17,11 @@ class SetCalSource(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        target = args.get('CalSource', None)
-        if target is None:
-            return False
-        allowed_values = ['Home', 'EtalonFiber', 'BrdbandFiber', 'U_gold',
-                          'U_daily', 'Th_daily', 'Th_gold', 'SoCal-CalFib',
-                          'LFCFiber']
-        return target in allowed_values
+        keyword = ktl.cache('kpfcal', 'OCTAGON')
+        allowed_values = list(keyword._getEnumerators())
+        if 'Unknown' in allowed_values:
+            allowed_values.pop(allowed_values.index('Unknown'))
+        check_input(args, 'CalSource', allowed_values=allowed_values)
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -39,6 +38,9 @@ class SetCalSource(KPFTranslatorFunction):
         timeout = cfg.get('times', 'octagon_move_time', fallback=60)
         expr = f"($kpfcal.OCTAGON == {target})"
         success = ktl.waitFor(expr, timeout=timeout)
+        if success is not True:
+            kpfcal = ktl.cache('kpfcal')
+            raise FailedToReachDestination(kpfcal['OCTAGON'].read(), target)
         return success
 
     @classmethod
