@@ -1,6 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class ControlHatch(KPFTranslatorFunction):
@@ -9,7 +11,9 @@ class ControlHatch(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
-        return destination.lower() in ['close', 'closed', 'open']
+        if destination.lower() not in ['close', 'closed', 'open']:
+            raise FailedPreCondition(f"Requested state {destination} is invalid")
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -21,7 +25,10 @@ class ControlHatch(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
         timeout = cfg.get('times', 'fiu_hatch_move_time', fallback=1)
-        return ktl.waitFor(f'($kpffiu.hatch == {destination})', timeout=timeout)
+        success = ktl.waitFor(f'($kpffiu.hatch == {destination})', timeout=timeout)
+        if success is not True:
+            hatch = ktl.cache('kpffiu', 'HATCH')
+            raise FailedToReachDestination(hatch.read(), destination)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

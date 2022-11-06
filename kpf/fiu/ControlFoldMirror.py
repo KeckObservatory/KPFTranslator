@@ -1,8 +1,9 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .FoldMirrorOut import FoldMirrorOut
-from .FoldMirrorIn import FoldMirrorIn
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
+
 
 class ControlFoldMirror(KPFTranslatorFunction):
     '''Insert or remove the FIU Cal Fold Mirror from the beam.
@@ -10,7 +11,9 @@ class ControlFoldMirror(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
-        return destination.lower() in ['in', 'out']
+        if destination.lower() not in ['in', 'out']:
+            raise FailedPreCondition(f"Requested state {destination} is invalid")
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -22,7 +25,10 @@ class ControlFoldMirror(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
         timeout = cfg.get('times', 'fiu_fold_mirror_move_time', fallback=5)
-        return ktl.waitFor(f'($kpffiu.foldnam == {destination})', timeout=timeout)
+        success = ktl.waitFor(f'($kpffiu.foldnam == {destination})', timeout=timeout)
+        if success is not True:
+            foldnam = ktl.cache('kpffiu', 'FOLDNAM')
+            raise FailedToReachDestination(foldnam.read(), destination)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

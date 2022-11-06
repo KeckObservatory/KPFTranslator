@@ -3,6 +3,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class InitializeTipTilt(KPFTranslatorFunction):
@@ -29,4 +31,15 @@ class InitializeTipTilt(KPFTranslatorFunction):
         success2 = ktl.waitFor('($kpffiu.TTYSRV == closed)', timeout=timeout)
         success3 = ktl.waitFor(f'($kpffiu.TTXVAX <= {tol})', timeout=timeout)
         success4 = ktl.waitFor(f'($kpffiu.TTYVAX <= {tol})', timeout=timeout)
-        return success1 and success2 and success3 and success4
+        if not success1:
+            kpffiu = ktl.cache('kpffiu')
+            raise FailedToReachDestination(kpffiu['TTXSRV'].read(), 'closed')
+        if not success2:
+            kpffiu = ktl.cache('kpffiu')
+            raise FailedToReachDestination(kpffiu['TTYSRV'].read(), 'closed')
+        if not success3:
+            kpffiu = ktl.cache('kpffiu')
+            raise FailedToReachDestination(kpffiu['TTXVAX'].read(), f"<= {tol}")
+        if not success4:
+            kpffiu = ktl.cache('kpffiu')
+            raise FailedToReachDestination(kpffiu['TTXVAX'].read(), f"<= {tol}")
