@@ -1,6 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetTipTiltGain(KPFTranslatorFunction):
@@ -8,11 +10,11 @@ class SetTipTiltGain(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        gain = args.get('gain', None)
-        if gain is None:
-            return False
-        gain = float(gain)
-        return (gain > 0) and (gain <= 1)
+        check_input(args, 'gain')
+        gain = float(args.get('gain'))
+        if (gain < 0) or (gain > 1):
+            raise FailedPreCondition(f"Gain {gain:.2f} must be netween 0 and 1")
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -28,6 +30,9 @@ class SetTipTiltGain(KPFTranslatorFunction):
         expr = (f"($kpfguide.TIPTILT_GAIN >= {gain-tol}) and "
                 f"($kpfguide.TIPTILT_GAIN <= {gain+tol})")
         success = ktl.waitFor(expr, timeout=timeout)
+        if success is not True:
+            tiptiltgain = ktl.cache('kpfguide', 'TIPTILT_GAIN')
+            raise FailedToReachDestination(tiptiltgain.read(), gain)
         return success
 
     @classmethod

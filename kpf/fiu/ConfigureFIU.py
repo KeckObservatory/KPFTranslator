@@ -35,8 +35,6 @@ class ConfigureFIU(KPFTranslatorFunction):
             modes = kpffiu['MODE'].read()
             if dest not in modes.split(','):
                 raise FailedToReachDestination(dest, modes)
-        else:
-            return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

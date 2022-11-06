@@ -1,6 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetTipTiltCalculations(KPFTranslatorFunction):
@@ -8,10 +10,9 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        gain = args.get('calculations', None)
-        if gain is None:
-            return False
-        return gain in ['Active', 'Inactive', '1', '0', 1, 0]
+        allowed_values = ['Active', 'Inactive', '1', '0', 1, 0]
+        check_input(args, 'calculations', allowed_values=allowed_values)
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -25,6 +26,9 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
         timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
         expr = f"($kpfguide.TIPTILT == {calculations}) "
         success = ktl.waitFor(expr, timeout=timeout)
+        if success is not True:
+            tiptilt = ktl.cache('kpfguide', 'TIPTILT')
+            raise FailedToReachDestination(tiptilt.read(), calculations)
         return success
 
     @classmethod
