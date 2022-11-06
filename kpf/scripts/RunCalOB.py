@@ -89,16 +89,13 @@ class RunCalOB(KPFTranslatorFunction):
         log.info(f"Ensuring Cal FVC is off")
         FVCPower.execute({'camera': 'CAL', 'power': 'off'})
 
-        log.info(f"Setting source select shutters")
-        SetSourceSelectShutters.execute({}) # No args defaults all to false
-        log.info(f"Setting timed shutters")
-        SetTimedShutters.execute({}) # No args defaults all to false
-
-        WaitForConfigureFIU.execute({'mode': 'Calibration'})
-
         # First Do the darks and biases
         darks = OB.get('SEQ_Darks', [])
         if len(darks) > 0:
+            log.info(f"Setting source select shutters")
+            SetSourceSelectShutters.execute({}) # No args defaults all to false
+            log.info(f"Setting timed shutters")
+            SetTimedShutters.execute({}) # No args defaults all to false
             log.info(f"Setting OCTAGON to Home position")
             SetCalSource.execute({'CalSource': 'Home'})
             log.info(f"Ensuring FlatField Fiber position is 'Blank'")
@@ -110,7 +107,7 @@ class RunCalOB(KPFTranslatorFunction):
             SetExptime.execute(dark)
             nexp = dark.get('nExp', 1)
             for j in range(nexp):
-                log.info(f"  Starting expoure {j+1}/{nexp}")
+                log.info(f"  Starting exposure {j+1}/{nexp}")
                 StartExposure.execute({})
                 WaitForReadout.execute({})
                 log.info(f"  Readout has begun")
@@ -144,6 +141,7 @@ class RunCalOB(KPFTranslatorFunction):
                 WaitForCalSource.execute({'CalSource': 'Home'})
                 log.info(f"Waiting for Flat Field Fiber Position")
                 WaitForFlatFieldFiberPos.execute(args)
+                WaitForConfigureFIU.execute({'mode': 'Calibration'})
             ## Setup Octagon Lamps and LFCFiber
             elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
                                'Th_gold', 'LFCFiber']:
@@ -162,6 +160,7 @@ class RunCalOB(KPFTranslatorFunction):
                 WaitForND2.execute(calibration)
                 log.info(f"Waiting for Octagon (CalSource)")
                 WaitForCalSource.execute(calibration)
+                WaitForConfigureFIU.execute({'mode': 'Calibration'})
             ## Setup Etalon
             elif calsource in ['EtalonFiber']:
                 raise NotImplementedError()
