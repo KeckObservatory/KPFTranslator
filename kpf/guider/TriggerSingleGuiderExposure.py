@@ -1,0 +1,38 @@
+from pathlib import Path
+
+import ktl
+
+from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
+from . import guider_is_saving, guider_is_active
+
+
+class TriggerSingleGuiderExposure(KPFTranslatorFunction):
+    '''Trigger a single guider exposure using the EXPOSE keyword.
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        return not guider_is_active() and not guider_is_saving()
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        kpfguide = ktl.cache('kpfguide')
+        exptime = kpfguide['EXPTIME'].read(binary=True)
+        lastfile = kpfguide['LASTFILE']
+        initial_lastfile = lastfile.read()
+        kpfguide['EXPOSE'].write('yes')
+        if args.get('wait', True) is True:
+            expr = f"($kpfguide.LASTFILE != {initial_lastfile})"
+            ktl.waitFor(expr, timeout=exptime+1)
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser = cls._add_bool_arg(parser, 'wait',
+            'Return only after exposure is finished?', default=True)
+        return super().add_cmdline_args(parser, cfg)

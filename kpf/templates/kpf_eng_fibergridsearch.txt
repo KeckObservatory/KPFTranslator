@@ -1,0 +1,285 @@
+{
+"metadata" : {
+    "name" : "kpf_eng_fibergridsearch",
+    "ui_name" : "KPF Engineering Fiber Grid Search",
+    "instrument" : "KPF",
+    "template_type" : "engineering",
+    "version" : "0.2",
+    "script" : "kpf_sci_script"
+},
+"parameters" : {
+    "INST_CFG_OffsetType" : {
+        "ui_name" : "Type of offset (e.g. coordinate frame)",
+        "option" : "set",
+        "allowed" : [
+            "azel",
+            "en",
+            "gxy",
+            "ttm",
+        ],
+        "default" : "ttm",
+        "optionality" : "required",
+        "type" : "string",
+        "units" : null
+    },
+    "INST_CFG_nX" : {
+        "ui_name" : "Number of positions to measure in the X direction.",
+        "option" : "range",
+        "allowed" : [1, 100],
+        "default" : 5,
+        "optionality" : "required",
+        "type" : "int",
+        "units" : null
+    },
+    "INST_CFG_nY" : {
+        "ui_name" : "Number of positions to measure in the Y direction.",
+        "option" : "range",
+        "allowed" : [1, 100],
+        "default" : 5,
+        "optionality" : "required",
+        "type" : "int",
+        "units" : null
+    },
+    "INST_CFG_dX" : {
+        "ui_name" : "Distance between positions in the X direction.",
+        "option" : "range",
+        "allowed" : [1, 100],
+        "default" : 0.2,
+        "optionality" : "required",
+        "type" : "int",
+        "units" : null # depends on selection of INST_CFG_OffsetType
+    },
+    "INST_CFG_dY" : {
+        "ui_name" : "Distance between positions in the Y direction.",
+        "option" : "range",
+        "allowed" : [1, 100],
+        "default" : 0.2,
+        "optionality" : "required",
+        "type" : "int",
+        "units" : null # depends on selection of INST_CFG_OffsetType
+    },
+    "INST_CFG_TriggerSciFVC" : {
+        "ui_name" : "Trigger the science FVC at each position?",
+        "option" : "bool",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TriggerCaHKFVC" : {
+        "ui_name" : "Trigger the Ca H&K FVC at each position?",
+        "option" : "bool",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TriggerExtFVC" : {
+        "ui_name" : "Trigger the external FVC at each position?",
+        "option" : "bool",
+        "allowed" : [True, False],
+        "default" : False,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_nExp" : {
+        "ui_name" : "Number of exposures to take.",
+        "option" : "range",
+        "allowed" : [1, 100],
+        "default" : 1,
+        "optionality" : "required",
+        "type" : "int",
+        "units" : null
+    },
+    "INST_CFG_Exptime" : {
+        "ui_name" : "Exposure time of an individual science exposure.",
+        "option" : "range",
+        "allowed" : [1, 3600],
+        "default" : 1,
+        "optionality" : "required",
+        "type" : "float",
+        "units" : "seconds"
+    },
+    "INST_CFG_TriggerCaHK" : {
+        "ui_name" : "Trigger the Ca H&K detector?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TriggerGreen" : {
+        "ui_name" : "Trigger the green detector?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TriggerRed" : {
+        "ui_name" : "Trigger the red detector?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TimedShutter_Scrambler" : {
+        "ui_name" : "Trigger the timed shutter for the scrambler?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TimedShutter_SimulCal" : {
+        "ui_name" : "Trigger the timed shutter for the simultaneous calibration fiber?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TimedShutter_FlatField" : {
+        "ui_name" : "Trigger the timed shutter for the flat field fiber?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TimedShutter_CaHK" : {
+        "ui_name" : "Trigger the timed shutter for the Ca H&K spectrograph?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_ExpMeter_Active" : {
+        "ui_name" : "Use the exposure meter to end the exposure?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_ExpMeter_Flux" : {
+        "ui_name" : "Flux level on exposure meter at which to end exposure.",
+        "option" : "range",
+        "allowed" : [1, 1e8],
+        "default" : 1e6,
+        "optionality" : "optional",
+        "type" : "float",
+        "units" : null
+    },
+    "INST_CFG_Guide_Mode" : {
+        "ui_name" : "Mode for the guide camera",
+        "option" : "set",
+        "allowed" : [
+            "auto",
+            "manual",
+            "off"
+        ],
+        "default" : "auto",
+        "optionality" : "required",
+        "type" : "string",
+        "units" : null
+    },
+    "INST_CFG_Guide_FrameRate" : {
+        "ui_name" : "If INST_CFG_Guide_Mode is manual, frame rate for camera",
+        "option" : "range",
+        "allowed" : [
+            1,
+            400
+        ],
+        "default" : 100,
+        "optionality" : "optional",
+        "type" : "float",
+        "units" : "Hz"
+    },
+    "INST_CFG_Guide_CamGain" : {
+        "ui_name" : "If INST_CFG_Guide_Mode is manual, gain for camera",
+        "option" : "set",
+        "allowed" : [
+            "high",
+            "medium",
+            "low"
+        ],
+        "default" : "high",
+        "optionality" : "optional",
+        "type" : "string",
+        "units" : null
+    },
+    "INST_CFG_Guide_LoopGain" : {
+        "ui_name" : "If INST_CFG_Guide_Mode is manual, tip tilt loop gain",
+        "option" : "range",
+        "allowed" : [
+            0,
+            1
+        ],
+        "default" : null,
+        "optionality" : "optional",
+        "type" : "float",
+        "units" : null,
+    },
+    "INST_CFG_Guide_WindowX" : {
+        "ui_name" : "Size of the guide window in X pixels",
+        "option" : "range",
+        "allowed" : [
+            0,
+            640
+        ],
+        "default" : 64,
+        "optionality" : "required",
+        "type" : "int",
+        "units" : null,
+    },
+    "INST_CFG_Guide_WindowY" : {
+        "ui_name" : "Size of the guide window in Y pixels",
+        "option" : "range",
+        "allowed" : [
+            0,
+            640
+        ],
+        "default" : 64,
+        "optionality" : "required",
+        "type" : "int",
+        "units" : null,
+    },
+    "INST_CFG_Guide_RAOffset" : {
+        "ui_name" : "Offset distance in RA from the guide star to science target",
+        "option" : "range",
+        "allowed" : [
+            0,
+            20
+        ],
+        "default" : 0,
+        "optionality" : "required",
+        "type" : "float",
+        "units" : "arcsec",
+    },
+    "INST_CFG_Guide_DecOffset" : {
+        "ui_name" : "Offset distance in Dec from the guide star to science target",
+        "option" : "range",
+        "allowed" : [
+            0,
+            20
+        ],
+        "default" : 0,
+        "optionality" : "required",
+        "type" : "float",
+        "units" : "arcsec",
+    },
+}

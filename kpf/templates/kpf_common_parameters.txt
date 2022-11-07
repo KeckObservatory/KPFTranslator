@@ -1,0 +1,11 @@
+{
+"metadata" : {
+    "name" : "kpf_common_parameters",
+    "ui_name" : "KPF Common Parameters",
+    "instrument" : "KPF",
+    "template_type" : "common",
+    "version" : "0.3"
+    },
+"parameters" : {
+}
+

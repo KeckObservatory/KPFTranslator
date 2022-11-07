@@ -1,12 +1,10 @@
-
-
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class CloseHatch(KPFTranslatorFunction):
-    '''Close the FIU hatch
+class WaitForConfigureScience(KPFTranslatorFunction):
+    '''
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -14,9 +12,8 @@ class CloseHatch(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        kpffiu = ktl.cache('kpffiu')
-        kpffiu['HATCH'].write('Closed')
+        raise NotImplementedError()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return ktl.waitFor('($kpffiu.hatch == Closed)', timeout=1)
+        return True

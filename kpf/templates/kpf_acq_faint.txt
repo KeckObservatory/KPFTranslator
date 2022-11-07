@@ -1,0 +1,10 @@
+{
+    "metadata" : {
+        "name" : "kpf_acq_faint",
+        "ui_name" : "KPF Faint Acquisition",
+        "instrument" : "KPF",
+        "template_type" : "acquisition",
+        "version" : "0.1",
+        "script" : "kpf_sci_script",
+    },
+}

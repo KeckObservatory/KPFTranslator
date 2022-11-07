@@ -1,8 +1,10 @@
+from pathlib import Path
 import numpy as np
 
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class WaitForReady(KPFTranslatorFunction):
@@ -10,11 +12,6 @@ class WaitForReady(KPFTranslatorFunction):
     block until the camera is ready for another exposure.  Times out after
     waiting for exposure time plus a set buffer time.
     '''
-    def __init__(self):
-        super().__init__()
-        self.buffer_time = 120 # should be the readout time for the slowest
-                               # detector plus a margin.
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         return True
@@ -28,7 +25,11 @@ class WaitForReady(KPFTranslatorFunction):
         detector_list = detectors.split(',')
 
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
-        wait_time = exptime+self.buffer_time if starting_status < 3 else self.buffer_time
+
+        buffer_time = cfg.get('times', 'readout_buffer_time', fallback=10)
+        slowest_read = cfg.get('times', 'slowest_readout_time', fallback=120)
+
+        wait_time = exptime+slowest_read+buffer_time if starting_status < 3 else slowest_read+buffer_time
 
         wait_logic = ''
         if 'Green' in detector_list:
@@ -44,9 +45,17 @@ class WaitForReady(KPFTranslatorFunction):
         if len(wait_logic) > 0: 
             wait_logic +=' and '
         wait_logic += '($kpfexpose.EXPOSE == 0)'
-        print(f"  Wait Logic: {wait_logic}")
-        print(f"  Waiting ({wait_time:.0f}s max) for detectors to be ready")
-        ktl.waitFor(wait_logic, timeout=wait_time)
+        log.debug(f"  Waiting ({wait_time:.0f}s max) for detectors to be ready")
+        success = ktl.waitFor(wait_logic, timeout=wait_time)
+#         if success is True:
+#             if 'Green' in detector_list:
+#                 lastfile = ktl.cache('kpfgreen', 'FITSFILE').read()
+#                 if Path(lastfile).exists():
+#                     log.debug(f"  Found Green FITSFILE: {lastfile}")
+#             if 'Red' in detector_list:
+#                 lastfile = ktl.cache('kpfred', 'FITSFILE').read()
+#                 if Path(lastfile).exists():
+#                     log.debug(f"  Found Red FITSFILE:   {lastfile}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -71,11 +80,9 @@ class WaitForReady(KPFTranslatorFunction):
             notok.append(cahkexpstate == 'Error')
             msg += f"kpf_hk.EXPSTATE = {cahkexpstate} "
         msg += ')'
-        print(f"    notok: {notok}")
         notok = np.array(notok)
 
         if np.any(notok):
-            print(msg)
+            log.error(msg)
             return False
-        print('    Done')
         return True

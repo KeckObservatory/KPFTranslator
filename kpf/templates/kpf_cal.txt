@@ -1,0 +1,265 @@
+{
+"metadata" : {
+    "name" : "kpf_cal",
+    "ui_name" : "KPF Calibration",
+    "instrument" : "KPF",
+    "template_type" : "calibration",
+    "version" : "0.3",
+    "script" : "kpf_cal_script"
+},
+"parameters" : {
+    "INST_CFG_TriggerCaHK" : {
+        "ui_name" : "Trigger the Ca H&K detector?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TriggerGreen" : {
+        "ui_name" : "Trigger the green detector?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+    "INST_CFG_TriggerRed" : {
+        "ui_name" : "Trigger the red detector?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
+        "units" : null
+    },
+
+    "SEQ_Darks" : {
+        "ui_name" : "Dark and bias exposures",
+        "option" : "set",
+        "default" : null,
+        "optionality" : "required",
+        "type" : "array",
+        "allowed" : [
+            {
+            "INST_CFG_Object" : {
+                "ui_name" : "Value for the OBJECT keyword",
+                "option" : "open",
+                "default" : null,
+                "optionality" : "required",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_nExp" : {
+                "ui_name" : "Number of exposures to take.",
+                "option" : "range",
+                "allowed" : [1, 100],
+                "default" : 1,
+                "optionality" : "required",
+                "type" : "int",
+                "units" : null
+            },
+            "INST_CFG_Exptime" : {
+                "ui_name" : "Exposure time of an individual science exposure.",
+                "option" : "range",
+                "allowed" : [1, 3600],
+                "default" : 1,
+                "optionality" : "required",
+                "type" : "float",
+                "units" : "seconds"
+            },
+        },
+        ],
+    }
+
+    "SEQ_Calibrations" : {
+        "ui_name" : "Calibration sources and exposures",
+        "option" : "set",
+        "default" : null,
+        "optionality" : "required",
+        "type" : "array",
+        "allowed" : [
+            {
+            "INST_CFG_Object" : {
+                "ui_name" : "Value for the OBJECT keyword",
+                "option" : "open",
+                "default" : null,
+                "optionality" : "required",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_CalSource" : {
+                "ui_name" : "Source to illuminate the simultaneous cal fiber (i.e. octagon position)",
+                "option" : "set",
+                "allowed" : [
+                ],
+                "default" : null,
+                "optionality" : "required",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_CalAutoFilter" : {
+                "ui_name" : "System should automatically set ND filters for cal source?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : False,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_CalND1" : {
+                "ui_name" : "ND filter in first filter wheel if INST_CFG_CalAutoFilter is not True",
+                "option" : "set",
+                "allowed" : [
+                    # To be pulled from keywords
+                ],
+                "default" : "ND0.1",
+                "optionality" : "optional",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_CalND2" : {
+                "ui_name" : "ND filter in second filter wheel if INST_CFG_CalAutoFilter is not True",
+                "option" : "set",
+                "allowed" : [
+                    # To be pulled from keywords
+                ],
+                "default" : "ND0.1",
+                "optionality" : "optional",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_FF_FiberPos" : {
+                "ui_name" : "ND filter in second filter wheel if INST_CFG_CalAutoFilter is not True",
+                "option" : "set",
+                "allowed" : [
+                    # To be pulled from keywords
+                ],
+                "default" : "ND0.1",
+                "optionality" : "optional",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_nExp" : {
+                "ui_name" : "Number of exposures to take.",
+                "option" : "range",
+                "allowed" : [1, 100],
+                "default" : 1,
+                "optionality" : "required",
+                "type" : "int",
+                "units" : null
+            },
+            "INST_CFG_Exptime" : {
+                "ui_name" : "Exposure time of an individual science exposure.",
+                "option" : "range",
+                "allowed" : [1, 3600],
+                "default" : 1,
+                "optionality" : "required",
+                "type" : "float",
+                "units" : "seconds"
+            },
+            "INST_CFG_SSS_Science" : {
+                "ui_name" : "Should the source select shutter for science be open?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_SSS_Sky" : {
+                "ui_name" : "Should the source select shutter for sky be open?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_SSS_CalSciSky" : {
+                "ui_name" : "Should the source select shutter for CalSciSky be open?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_SSS_SoCalSci" : {
+                "ui_name" : "Should the source select shutter for SoCal science be open?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : False,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_SSS_SoCalCal" : {
+                "ui_name" : "Should the source select shutter for SoCal cal be open?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : False,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_TimedShutter_Scrambler" : {
+                "ui_name" : "Trigger the timed shutter for the scrambler?",
+                "option" : "set",
+                "allowed" : [True, False],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_TimedShutter_SimulCal" : {
+                "ui_name" : "Trigger the timed shutter for the simultaneous calibration fiber?",
+                "option" : "set",
+                "allowed" : [True, False],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_TimedShutter_FlatField" : {
+                "ui_name" : "Trigger the timed shutter for the flat field fiber?",
+                "option" : "set",
+                "allowed" : [True, False],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_TimedShutter_CaHK" : {
+                "ui_name" : "Trigger the timed shutter for the Ca H&K spectrograph?",
+                "option" : "set",
+                "allowed" : [True, False],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+        },
+        ],
+    }
+}

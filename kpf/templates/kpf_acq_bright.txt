@@ -1,0 +1,10 @@
+{
+    "metadata" : {
+        "name" : "kpf_acq_bright",
+        "ui_name" : "KPF Bright Acquisition",
+        "instrument" : "KPF",
+        "template_type" : "acquisition",
+        "version" : "0.1",
+        "script" : "kpf_sci_script",
+    },
+}

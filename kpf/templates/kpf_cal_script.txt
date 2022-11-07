@@ -1,0 +1,3 @@
+CONFIGURE_SCIENCE          # Powers on lamps
+EXECUTE_OBSERVATION        # Executes all specified lamps in loop in translator
+POST_OBSERVATION_CLEANUP   # Turns off lamps

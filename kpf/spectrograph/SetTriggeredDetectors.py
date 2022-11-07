@@ -1,8 +1,9 @@
-
+from time import sleep
 
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import log
 
 
 class SetTriggeredDetectors(KPFTranslatorFunction):
@@ -11,7 +12,6 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        print("Pre condition")
         return True
 
     @classmethod
@@ -23,15 +23,19 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
             detector_list.append('Green')
         if args.get('TriggerCaHK', False) is True:
             detector_list.append('Ca_HK')
+        if args.get('TriggerExpMeter', False) is True:
+            detector_list.append('ExpMeter')
 
         detectors_string = ','.join(detector_list)
-        print(f"  Setting triggered detectors to '{detectors_string}'")
+        log.debug(f"  Setting triggered detectors to '{detectors_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['TRIG_TARG'].write(detectors_string)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
+        timeshim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.01)
+        sleep(timeshim)
         detectors = kpfexpose['TRIG_TARG'].read()
         detector_list = detectors.split(',')
 
@@ -40,7 +44,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         if red_target != red_status:
             msg = (f"Final Red detector trigger mismatch: "
                    f"{red_status} != {red_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         green_status = 'Green' in detector_list
@@ -48,7 +52,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         if green_target != green_status:
             msg = (f"Final Green detector trigger mismatch: "
                    f"{green_status} != {green_target}")
-            print(msg)
+            log.error(msg)
             return False
 
         CaHK_status = 'Ca_HK' in detector_list
@@ -56,8 +60,26 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         if CaHK_target != CaHK_status:
             msg = (f"Final Ca HK detector trigger mismatch: "
                    f"{CaHK_status} != {CaHK_target}")
-            print(msg)
+            log.error(msg)
             return False
 
-        print(f"    Done")
         return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser = cls._add_bool_arg(parser, 'TriggerRed',
+                                   'Trigger the Red detector?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'TriggerGreen',
+                                   'Trigger the Green detector?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'TriggerCaHK',
+                                   'Trigger the CaH&K detector?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'TriggerExpMeter',
+                                   'Trigger the ExpMeter detector?',
+                                   default=False)
+
+        return super().add_cmdline_args(parser, cfg)
