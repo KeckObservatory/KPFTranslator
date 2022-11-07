@@ -172,14 +172,17 @@ class FiberGridSearch(KPFTranslatorFunction):
         kpffvc = ktl.cache('kpffvc')
 
         # Set up guider
-        if 'CRED2' in args.get('cameras', ''):
-            kpfguide = ktl.cache('kpfguide')
+        kpfguide = ktl.cache('kpfguide')
 
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
                 log.info(f"Offsetting: {offset_system} to ({xs[i]:.2f}, {ys[j]:.2f})")
                 offset(xs[i], ys[j], offset_system=args.get('offset', 'gxy'))
+
+                # Take Exposure to make sure we wait at least one cycle
+                log.info(f"Taking extr guider exposure to wait one cycle")
+                TakeGuiderExposure.execute({})
 
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
