@@ -97,7 +97,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                      'Science': (800, 600),
                      'Sky': None}[fiber]
     fvcext_pixels = {'EMSky': None,
-                     'Science': (620, 579),
+                     'Science': (620, 700),
                      'Sky': None}[fiber]
     if flux_prefix is None:
         flux_prefix = {'EMSky': 'bck',
@@ -120,6 +120,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     ouput_ext_image_file = Path(f"{date_time_string}_EXT_images.png")
     ouput_analysis_image_file = Path(f"{date_time_string}_fiber_location.png")
 
+    print(fluxes_file)
     flux_table = Table.read(fluxes_file, format='ascii.csv')
     log.info(f"Read in {fluxes_file.name} with {len(flux_table)} lines")
 
@@ -281,7 +282,7 @@ def show_CRED2_image(x, y, images, fluxes,
     ny = len(set(set(images['dy'])))
     tol = 0.001
     original_cred2_files = images[(abs(images['dx'] - x) < tol) & (abs(images['dy'] - y) < tol) & (images['camera'] == 'CRED2')]['file']
-    original_cred2_file = Path(original_cred2_files[0])
+    original_cred2_file = Path(original_cred2_files[-1])
     cred2_file = original_cred2_file.name
     log.debug(f"  Found {len(original_cred2_files)} CRED2 files.  Using {cred2_file}")
 
@@ -380,7 +381,7 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
                                   stretch=viz.LogStretch())
         plt.imshow(subframe, cmap='gray', origin='lower', norm=norm)
         radius = {'EXT': 27, 'SCI': 40, 'CAHK': 40}[camera]
-        circ = plt.Circle((dx, dy), radius=radius, alpha=0.5,
+        circ = plt.Circle((dx, dy), radius=radius, alpha=0.25,
                           edgecolor='red', fill=False)
         plt.plot(dx, dy, 'r+', alpha=0.25)
         plt.gca().add_patch(circ)
@@ -390,15 +391,15 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
 
 if __name__ == '__main__':
     # Oct 6
-    analyze_grid_search('20221007at122438', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at123043', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at123800', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at125522', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at133243', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at134116', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at134957', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at143218', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-    analyze_grid_search('20221007at144431', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT']) # Bad?  only 1 EXT image file?
+#     analyze_grid_search('20221007at122438', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+#     analyze_grid_search('20221007at123043', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+#     analyze_grid_search('20221007at123800', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+#     analyze_grid_search('20221007at125522', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+#     analyze_grid_search('20221007at133243', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+#     analyze_grid_search('20221007at134116', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+#     analyze_grid_search('20221007at134957', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+#     analyze_grid_search('20221007at143218', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
+#     analyze_grid_search('20221007at144431', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT']) # Bad?  only 1 EXT image file?
     # analyze_grid_search('20221007at122115', flux_prefix='f', x0=160, y0=256, FVCs=['SCI', 'EXT']) # Failed grid
 
     # Oct 16
@@ -418,3 +419,27 @@ if __name__ == '__main__':
     # analyze_grid_search('20221017at063907', x0=160, y0=256) # Failed grid
     # analyze_grid_search('20221017at065709', x0=160, y0=256) # Failed grid
     # analyze_grid_search('20221017at082305', x0=160, y0=256) # Failed grid
+
+    # Nov 6
+#     analyze_grid_search('20221107at060754', flux_prefix='cur',
+#                         fiber='Science', FVCs=['SCI', 'EXT'],
+#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
+#     analyze_grid_search('20221107at063924', flux_prefix='cur',
+#                         fiber='Science', FVCs=['SCI', 'EXT'],
+#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
+#     analyze_grid_search('20221107at065037', flux_prefix='cur',
+#                         fiber='Science', FVCs=['SCI', 'EXT'],
+#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
+#    analyze_grid_search('20221107at071306', flux_prefix='cur',
+#                        fiber='Science', FVCs=['SCI', 'EXT'],
+#                        log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
+#     analyze_grid_search('20221107at074322', flux_prefix='cur',
+#                         fiber='Science', FVCs=['SCI', 'EXT'],
+#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
+#     analyze_grid_search('20221107at083230', flux_prefix='cur',
+#                         fiber='Science', FVCs=['SCI', 'EXT'],
+#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
+    analyze_grid_search('20221107at090316', flux_prefix='cur',
+                        fiber='Science', FVCs=['SCI', 'EXT'],
+                        log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
+
