@@ -15,7 +15,7 @@ def n_15760(wav):
     n_15760 = foo/10**6 + 1
     return n_15760
 
-def n(wav, T=TF0, P=PF0, f=fF0):
+def n(wav, T=7, P=600, f=8):
     '''T air temperature in deg C
     P air pressure in mm Hg
     f is water vapor pressure in mm Hg
@@ -25,7 +25,7 @@ def n(wav, T=TF0, P=PF0, f=fF0):
     n = ( (n0-1)*10**6 - reduction ) / 10**6 + 1
     return n
 
-def dR(wav, z, T=TF0, P=PF0, f=fF0, wav0=0.5):
+def dR(wav, z, T=7, P=600, f=8, wav0=0.5):
     '''z is zenith angle in degrees
     '''
     z *= np.pi/180 # convert to radians
@@ -55,8 +55,10 @@ class CalculateDAR(KPFTranslatorFunction):
         P0 = args.get('P0', 465)
         f0 = args.get('f0', 4.5)
         CRED2wav = args.get('CRED2wav', 1.075)
-        sciencewav = args.get('sciencewav', 0.55)_
-        return dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
+        sciencewav = args.get('sciencewav', 0.55)
+        DAR_arcsec = dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
+        print(f"{DAR_arcsec:.3f}")
+        return DAR_arcsec
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -70,15 +72,15 @@ class CalculateDAR(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['EL'] = {'type': float,
                     'help': 'Elevation in degrees (90-ZA)'}
-        args_to_add['CRED2wav'] = {'type': float,
-                    'help': 'Wavelength (in microns) for the CRED2'}
-        args_to_add['sciencewav'] = {'type': float,
-                    'help': 'Wavelength (in microns) for the science arm'}
-        args_to_add['T0'] = {'type': float,
-                    'help': 'Air temperature in deg C'}
-        args_to_add['P0'] = {'type': float,
-                    'help': 'Air pressure in mm Hg'}
-        args_to_add['f0'] = {'type': float,
-                    'help': 'Water vapor pressure in mm Hg'}
+#         args_to_add['CRED2wav'] = {'type': float,
+#                     'help': 'Wavelength (in microns) for the CRED2'}
+#         args_to_add['sciencewav'] = {'type': float,
+#                     'help': 'Wavelength (in microns) for the science arm'}
+#         args_to_add['T0'] = {'type': float,
+#                     'help': 'Air temperature in deg C'}
+#         args_to_add['P0'] = {'type': float,
+#                     'help': 'Air pressure in mm Hg'}
+#         args_to_add['f0'] = {'type': float,
+#                     'help': 'Water vapor pressure in mm Hg'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)
