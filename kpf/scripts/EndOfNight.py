@@ -47,7 +47,7 @@ class EndOfNight(KPFTranslatorFunction):
         for lamp in lamps:
             CalLampPower.execute({'lamp': lamp, 'power': 'off'})
         # Power off FVCs
-        for camera in ['SCI', 'CAHK', 'EXT', 'CAL']:
+        for camera in ['SCI', 'CAHK', 'CAL']:
             FVCPower.execute({'camera': camera, 'power': 'off'})
         # Set PROGNAME
         log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
