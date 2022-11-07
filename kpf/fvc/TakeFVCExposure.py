@@ -30,7 +30,6 @@ class TakeFVCExposure(KPFTranslatorFunction):
         if args.get('wait', True) is True:
             timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
             expr = f"($kpffvc.{camera}LASTFILE != '{initial_lastfile}')"
-#             print(expr)
             ktl.waitFor(expr, timeout=exptime+timeout)
 
     @classmethod
