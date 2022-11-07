@@ -21,8 +21,8 @@ class GrabGuiderExposure(KPFTranslatorFunction):
         exptime = kpfguide['EXPTIME'].read(binary=True)
         lastfile = kpfguide['LASTFILE']
         initial_lastfile = lastfile.read()
-        expr = f"($kpfguide.LASTFILE != {initial_lastfile})"
-        kt.waitFor(expr, timeout=exptime+1)
+        expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
+        ktl.waitFor(expr, timeout=exptime+1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

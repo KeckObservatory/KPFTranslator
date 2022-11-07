@@ -23,7 +23,7 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
         kpfguide['EXPOSE'].write('yes')
         if args.get('wait', True) is True:
             expr = f"($kpfguide.LASTFILE != {initial_lastfile})"
-            kt.waitFor(expr, timeout=exptime+1)
+            ktl.waitFor(expr, timeout=exptime+1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

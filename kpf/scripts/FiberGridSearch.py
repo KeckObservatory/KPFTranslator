@@ -1,6 +1,7 @@
+import os
 from pathlib import Path
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 
 import numpy as np
@@ -16,7 +17,7 @@ from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
 from ddoi_telescope_translator.wftel import WaitForTel
 
 from ..fiu.InitializeTipTilt import InitializeTipTilt
-from ..fiu.SetTipTilt import SetTipTilt
+# from ..fiu.SetTipTilt import SetTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..guider.TakeGuiderExposure import TakeGuiderExposure
 from ..spectrograph.StartExposure import StartExposure
@@ -59,14 +60,14 @@ log.addHandler(LogFileHandler)
 def offset(x, y, offset_system='gxy'):
     if offset_system == 'ttm':
         InitializeTipTilt.execute({})
-        SetTipTilt.execute({'x': x, 'y': y)
+#         SetTipTilt.execute({'x': x, 'y': y)
         # If the tip/tilt system is active, and you're offloading,
         # what you want is to set the kpfguide.CURRENT_BASE keyword
         #to a new value (in pixels)
     elif offset_system == 'azel':
-       OffsetAzEl.execute({'tcs_offset_az': x,
-                           'tcs_offset_el': y,
-                           'relative': False})
+        OffsetAzEl.execute({'tcs_offset_az': x,
+                            'tcs_offset_el': y,
+                            'relative': False})
         WaitForTel.execute({})
         time.sleep(2)
     elif offset_system == 'gxy':
@@ -114,15 +115,14 @@ class FiberGridSearch(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        offset_system = args.get('offset', 'gxy')
-        if offset_system not in ['azel', 'gxy', 'ttm']:
+        offset_system = args.get('offset')
+        if offset_system not in ['azel', 'gxy', 'ttm', 'custom']:
             print(f"Offset mode {offset_system} not supported")
             return False
         cameras = args.get('cameras', '').split(',')
         for camera in cameras:
             if camera not in ['CRED2', 'SCI', 'CAHK', 'EXT', 'ExpMeter']:
                 print(f"Camera {camera} not supported")
-            return False
         return True
 
     @classmethod
@@ -148,6 +148,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                                      'f4', 'f4', 'f4', 'f4',
                                      'i4'))
 
+        offset_system = args.get('offset')
         nx = args.get('nx', 3)
         ny = args.get('ny', 3)
         dx = args.get('dx', 0.25)
@@ -162,7 +163,7 @@ class FiberGridSearch(KPFTranslatorFunction):
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['SRC_SHUTTERS'].write('SciSelect,SkySelect')
         kpfexpose['TIMED_SHUTTERS'].write('Scrambler')
-        kpfexpose['TRIG_TARG'].write('Red,Green,ExpMeter')
+        kpfexpose['TRIG_TARG'].write('ExpMeter')
         log.info(f"SRC_SHUTTERS: {kpfexpose['SRC_SHUTTERS'].read()}")
         log.info(f"TIMED_SHUTTERS: {kpfexpose['TIMED_SHUTTERS'].read()}")
         log.info(f"TRIG_TARG: {kpfexpose['TRIG_TARG'].read()}")
@@ -189,11 +190,11 @@ class FiberGridSearch(KPFTranslatorFunction):
                 begin = time.time()
 
                 # Start FVC Exposures
-                nextfile = {}
+                initial_lastfile = {}
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
                     if camera in args.get('cameras', '').split(','):
-                        nextfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
-                        log.debug(f"  Nextfile for {camera} = {nextfile[camera]}")
+                        initial_lastfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
+                        log.debug(f"  Initial lastfile for {camera} = {initial_lastfile[camera]}")
                         log.info(f"  Starting {camera} FVC exposure")
                         TakeFVCExposure.execute({'camera': camera, 'wait': False})
 
@@ -218,7 +219,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
                     if camera in args.get('cameras', '').split(','):
                         log.info(f"  Looking for output file for {camera}")
-                        expr = f'($kpffvc.{camera}LASTFILE == "{nextfile[camera]}")'
+                        expr = f'($kpffvc.{camera}LASTFILE != "{initial_lastfile[camera]}")'
                         log.debug(f"  Waiting for: {expr}")
                         if ktl.waitFor(expr, timeout=20) is False:
                             lastfile = kpffvc[f'{camera}LASTFILE'].read()

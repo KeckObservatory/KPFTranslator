@@ -4,7 +4,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination)
+                FailedToReachDestination, check_input)
 from . import fvc_is_ready
 
 
@@ -14,6 +14,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
+        camera = args.get('camera')
         if fvc_is_ready(camera=camera) is not True:
             raise FailedPreCondition(f"Camera {camera} is not ready")
         return True
@@ -28,8 +29,9 @@ class TakeFVCExposure(KPFTranslatorFunction):
         kpffvc[f'{camera}EXPOSE'].write('yes', wait=args.get('wait', True))
         if args.get('wait', True) is True:
             timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
-            expr = f"($kpffvc.{camera}LASTFILE != {initial_lastfile})"
-            kt.waitFor(expr, timeout=exptime+timeout)
+            expr = f"($kpffvc.{camera}LASTFILE != '{initial_lastfile}')"
+#             print(expr)
+            ktl.waitFor(expr, timeout=exptime+timeout)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
