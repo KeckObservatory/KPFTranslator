@@ -1,4 +1,5 @@
 import ktl
+from time import sleep
 from datetime import datetime, timedelta
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
