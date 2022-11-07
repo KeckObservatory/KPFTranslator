@@ -1,6 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetTipTiltPosition(KPFTranslatorFunction):
@@ -8,36 +10,33 @@ class SetTipTiltPosition(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'x')
+        check_input(args, 'y')
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         kpffiu = ktl.cache('kpffiu')
-        xdest = args.get('x', None)
-        ydest = args.get('y', None)
-        if xdest is not None:
-            kpffiu['TTXVAX'].write(args.get('x'))
-        if ydest is not None:
-            kpffiu['TTYVAX'].write(args.get('y'))
+        kpffiu['TTXVAX'].write(args.get('x'))
+        kpffiu['TTYVAX'].write(args.get('y'))
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        kpffiu = ktl.cache('kpffiu')
         timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
         tol = cfg.get('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
-        xdest = args.get('x', None)
-        ydest = args.get('y', None)
-        if xdest is not None:
-            expr = (f'($kpffiu.TTXVAX > {xdest-tol}) and '\
-                    f'($kpffiu.TTXVAX < {xdest+tol})')
-            successx = ktl.waitFor(expr, timeout=timeout)
-        else:
-            successx = True
-        if ydest is not None:
-            expr = (f'($kpffiu.TTYVAX > {ydest-tol}) and '\
-                    f'($kpffiu.TTYVAX < {ydest+tol})')
-            successy = ktl.waitFor(expr, timeout=timeout)
-        else:
-            successy = True
+        xdest = args.get('x')
+        ydest = args.get('y')
+        expr = (f'($kpffiu.TTXVAX > {xdest-tol}) and '\
+                f'($kpffiu.TTXVAX < {xdest+tol})')
+        successx = ktl.waitFor(expr, timeout=timeout)
+        if successx is not True:
+            raise FailedToReachDestination(kpffiu['TTXVAX'].read(), xdest)
+        expr = (f'($kpffiu.TTYVAX > {ydest-tol}) and '\
+                f'($kpffiu.TTYVAX < {ydest+tol})')
+        successy = ktl.waitFor(expr, timeout=timeout)
+        if successy is not True:
+            raise FailedToReachDestination(kpffiu['TTYVAX'].read(), ydest)
         return successx and successy
 
     @classmethod

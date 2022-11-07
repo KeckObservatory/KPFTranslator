@@ -10,10 +10,7 @@ class SetTipTiltGain(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'gain')
-        gain = float(args.get('gain'))
-        if (gain < 0) or (gain > 1):
-            raise FailedPreCondition(f"Gain {gain:.2f} must be netween 0 and 1")
+        check_input(args, 'gain', value_min=0, value_max=1)
         return True
 
     @classmethod

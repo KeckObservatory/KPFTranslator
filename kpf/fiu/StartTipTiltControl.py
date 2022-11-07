@@ -1,10 +1,10 @@
-
-
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from . import StartTipTiltCalculations.StartTipTiltCalculations
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class StartTipTiltControl(KPFTranslatorFunction):
@@ -12,9 +12,12 @@ class StartTipTiltControl(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        success1 = ktl.waitFor('($kpfguide.CONTINUOUS == Active)', timeout=0.01)
-        success2 = ktl.waitFor('($kpfguide.TIPTILT == Active)', timeout=0.01)
-        return success1
+        kpfguide = ktl.cache('kpfguide')
+        if kpfguide['CONTINUOUS'].read() is not 'Active':
+            raise FailedPreCondition("kpfguide.CONTINUOUS must be Active")
+        if kpfguide['TIPTILT'].read() is not 'Active':
+            raise FailedPreCondition("kpfguide.TIPTILT must be Active")
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -24,5 +27,8 @@ class StartTipTiltControl(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        success1 = ktl.waitFor('($kpfguide.TIPTILT_CONTROL == Active)', timeout=0.01)
-        return success1
+        timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
+        success = ktl.waitFor(f'($kpfguide.TIPTILT_CONTROL == Active)', timeout=timeout)
+        if success is not True:
+            tiptiltcontrol = ktl.cache('kpfguide', 'TIPTILT_CONTROL')
+            raise FailedToReachDestination(tiptiltcontrol.read(), 'Active')

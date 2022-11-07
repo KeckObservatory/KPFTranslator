@@ -1,6 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetTipTiltTargetPixel(KPFTranslatorFunction):
@@ -8,15 +10,13 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        x = args.get('x', None)
-        y = args.get('y', None)
-        if x is None or y is None:
-            return False
         min_x_pixel = cfg.get('guider', 'min_x_pixel', fallback=0)
         max_x_pixel = cfg.get('guider', 'max_x_pixel', fallback=640)
         min_y_pixel = cfg.get('guider', 'min_y_pixel', fallback=0)
         max_y_pixel = cfg.get('guider', 'max_y_pixel', fallback=512)
-        return (x >= min_x_pixel) and (y >= min_y_pixel) and (x <= max_x_pixel) and (y <= max_y_pixel)
+        check_input(args, 'x', value_min=min_x_pixel, value_max=max_x_pixel)
+        check_input(args, 'y', value_min=min_y_pixel, value_max=max_y_pixel)
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):

@@ -1,5 +1,3 @@
-
-
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction

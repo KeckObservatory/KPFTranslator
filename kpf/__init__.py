@@ -67,11 +67,20 @@ class FailedToReachDestination(FailedPostCondition):
 ##-------------------------------------------------------------------------
 ## Utility functions
 ##-------------------------------------------------------------------------
-def check_input(args, input_name, allowed_values=None):
+def check_input(args, input_name, allowed_values=None,
+                value_min=None, value_max=None):
         target = args.get(input_name, None)
         if target is None:
             raise FailedPreCondition(f"Input {input_name} is None")
+        if value_min is not None:
+            if target < value_min:
+                raise FailedPreCondition(f"Input {input_name} value {target} "
+                                         f"below minimum allowed ({value_min})")
+        if value_max is not None:
+            if target > value_max:
+                raise FailedPreCondition(f"Input {input_name} value {target} "
+                                         f"above maximum allowed ({value_max})")
         if allowed_values is not None:
             if target not in allowed_values:
-                raise FailedPreCondition(f"Input {input_name} value {target} not "
-                                         f"in allowed values")
+                raise FailedPreCondition(f"Input {input_name} value {target} "
+                                         f"not in allowed values")

@@ -2,6 +2,8 @@ import ktl
 from datetime import datetime, timedelta
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class WaitForConfigureFIU(KPFTranslatorFunction):
@@ -11,12 +13,12 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        dest = args.get('mode', None)
-        if dest is None:
-            return False
-        allowed_modes = ['Stowed', 'Alignment', 'Acquisition', 'Observing',
-                         'Calibration']
-        return dest.lower() in [m.lower() for m in allowed_modes]
+        keyword = ktl.cache('kpffiu', 'MODE')
+        allowed_values = list(keyword._getEnumerators())
+        if 'None' in allowed_values:
+            allowed_values.pop(allowed_values.index('None'))
+        check_input(args, 'mode', allowed_values=allowed_values)
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -35,8 +37,9 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         dest = args.get('mode')
         kpffiu = ktl.cache('kpffiu')
-        modes = kpffiu['MODE'].read().split(',')
-        return dest in modes
+        modes = kpffiu['MODE'].read()
+        if dest not in modes.split(','):
+            raise FailedToReachDestination(dest, modes)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
