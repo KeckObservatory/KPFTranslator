@@ -1,6 +1,8 @@
 import numpy as np
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 ##-------------------------------------------------------------------------
@@ -42,11 +44,13 @@ class CalculateDAR(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'EL', value_min=1, value_max=90)
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         # Maunakea atmospheric values
+        za = 90-float(args.get('EL'))
         T0 = args.get('T0', 0)
         P0 = args.get('P0', 465)
         f0 = args.get('f0', 4.5)
@@ -64,6 +68,8 @@ class CalculateDAR(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
+        args_to_add['EL'] = {'type': float,
+                    'help': 'Elevation in degrees (90-ZA)'}
         args_to_add['CRED2wav'] = {'type': float,
                     'help': 'Wavelength (in microns) for the CRED2'}
         args_to_add['sciencewav'] = {'type': float,
