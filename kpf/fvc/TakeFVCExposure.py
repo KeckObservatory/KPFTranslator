@@ -3,7 +3,8 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination)
 from . import fvc_is_ready
 
 
@@ -12,12 +13,14 @@ class TakeFVCExposure(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        camera = args.get('camera', 'SCI')
-        return fvc_is_ready(camera=camera)
+        check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
+        if fvc_is_ready(camera=camera) is not True:
+            raise FailedPreCondition(f"Camera {camera} is not ready")
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        camera = args.get('camera', 'SCI')
+        camera = args.get('camera')
         kpffvc = ktl.cache('kpffvc')
         exptime = kpffvc[f'{camera}EXPTIME'].read(binary=True)
         lastfile = kpffvc[f'{camera}LASTFILE']
