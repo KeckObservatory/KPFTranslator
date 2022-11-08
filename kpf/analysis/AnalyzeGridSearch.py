@@ -25,18 +25,26 @@ from matplotlib import pyplot as plt
 ## create a parser object for understanding command-line arguments
 p = argparse.ArgumentParser(description='''
 ''')
+## add arguments
+p.add_argument('datetimestr', type=str,
+               help="The date and time string of the grid search (e.g. 20221107at090316).")
 ## add flags
 p.add_argument("-v", "--verbose", dest="verbose",
     default=False, action="store_true",
     help="Be verbose! (default = False)")
 ## add options
-# p.add_argument("--input", dest="input", type=str,
-#     help="The input.")
-## add arguments
-# p.add_argument('argument', type=int,
-#                help="A single argument")
-# p.add_argument('allothers', nargs='*',
-#                help="All other arguments")
+p.add_argument("--flux_prefix", dest="flux_prefix", type=str,
+    default='cur',
+    help="The flux prefix to use ('cur', 'raw', or 'bck').")
+p.add_argument("--fiber", dest="fiber", type=str,
+    default='Science',
+    help="The fiber being examined (Science, Sky, or EMSky).")
+p.add_argument("--FVCs", dest="FVCs", type=str,
+    default='SCI,CAHK',
+    help="A comma separated list of FVC cameras to trigger (SCI, CAHK, EXT).")
+p.add_argument("--log_path", dest="log_path", type=str,
+    default='/s/sdata1701/kpfeng/2022nov06/script_logs',
+    help="The path to the directory containing the logs")
 args = p.parse_args()
 
 
@@ -96,6 +104,9 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     fvcsci_pixels = {'EMSky': None,
                      'Science': (800, 600),
                      'Sky': None}[fiber]
+    fvccahk_pixels = {'EMSky': None,
+                     'Science': (800, 600),
+                     'Sky': None}[fiber]
     fvcext_pixels = {'EMSky': None,
                      'Science': (620, 700),
                      'Sky': None}[fiber]
@@ -117,6 +128,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     log_file = log_path / Path(f'FiberGridSearch_{date_time_string}.log')
     ouput_cred2_image_file = Path(f"{date_time_string}_CRED2_images.png")
     ouput_sci_image_file = Path(f"{date_time_string}_SCI_images.png")
+    ouput_cahk_image_file = Path(f"{date_time_string}_CAHK_images.png")
     ouput_ext_image_file = Path(f"{date_time_string}_EXT_images.png")
     ouput_analysis_image_file = Path(f"{date_time_string}_fiber_location.png")
 
@@ -145,6 +157,8 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     # Prep FVC Analysis
     if 'SCI' in FVCs:
         sci_FVC_images_fig = plt.figure(figsize=(12,12))
+    if 'CAHK' in FVCs:
+        sci_CAHK_images_fig = plt.figure(figsize=(12,12))
     if 'EXT' in FVCs:
         ext_FVC_images_fig = plt.figure(figsize=(12,12))
 
@@ -172,6 +186,13 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                            datadir=datadir/'FVC1',
                            x0=fvcsci_pixels[0], y0=fvcsci_pixels[1],
                            fig=sci_FVC_images_fig, imno=imno+1)
+        if 'CAHK' in FVCs and fvccahk_pixels is not None:
+            log.debug(f"  Generating SCI FVC image centered on {fvcsci_pixels}")
+            show_FVC_image(flux_entry['dx'], flux_entry['dy'],
+                           images, flux_table, camera='CAHK',
+                           datadir=datadir/'FVC2',
+                           x0=fvccahk_pixels[0], y0=fvccahk_pixels[1],
+                           fig=sci_CAHK_images_fig, imno=imno+1)
         if 'EXT' in FVCs and fvcext_pixels is not None:
             log.debug(f"  Generating EXT FVC image centered on {fvcext_pixels}")
             show_FVC_image(flux_entry['dx'], flux_entry['dy'],
@@ -200,6 +221,12 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         if ouput_sci_image_file.exists() is True:
             ouput_sci_image_file.unlink()
         plt.savefig(ouput_sci_image_file, bbox_inches='tight', pad_inches=0.10)
+    if 'CAHK' in FVCs:
+        log.info(f"Saving: {ouput_cahk_image_file}")
+        plt.figure(num=sci_CAHK_images_fig.number)
+        if ouput_cahk_image_file.exists() is True:
+            ouput_cahk_image_file.unlink()
+        plt.savefig(ouput_cahk_image_file, bbox_inches='tight', pad_inches=0.10)
     if 'EXT' in FVCs:
         log.info(f"Saving: {ouput_ext_image_file}")
         plt.figure(num=ext_FVC_images_fig.number)
@@ -439,7 +466,11 @@ if __name__ == '__main__':
 #     analyze_grid_search('20221107at083230', flux_prefix='cur',
 #                         fiber='Science', FVCs=['SCI', 'EXT'],
 #                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
-    analyze_grid_search('20221107at090316', flux_prefix='cur',
-                        fiber='Science', FVCs=['SCI', 'EXT'],
-                        log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
-
+#     analyze_grid_search('20221107at090316', flux_prefix='cur',
+#                         fiber='Science', FVCs=['SCI', 'EXT'],
+#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
+    analyze_grid_search(args.datetimestr,
+                        flux_prefix=args.flux_prefix,
+                        fiber=args.fiber,
+                        FVCs=args.FVCs.split(','),
+                        log_path=args.log_path)
