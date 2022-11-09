@@ -1,4 +1,5 @@
 from pathlib import Path
+import subprocess
 
 import ktl
 
@@ -26,11 +27,23 @@ class TakeFVCExposure(KPFTranslatorFunction):
         exptime = kpffvc[f'{camera}EXPTIME'].read(binary=True)
         lastfile = kpffvc[f'{camera}LASTFILE']
         initial_lastfile = lastfile.read()
-        kpffvc[f'{camera}EXPOSE'].write('yes', wait=args.get('wait', True))
-        if args.get('wait', True) is True:
+        wait = args.get('wait', True)
+        kpffvc[f'{camera}EXPOSE'].write('yes', wait=wait)
+        if wait is True:
             timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
             expr = f"($kpffvc.{camera}LASTFILE != '{initial_lastfile}')"
             ktl.waitFor(expr, timeout=exptime+timeout)
+        if wait is True and args.get('display', False) is True:
+            ds9cmd = ['xpaset', 'DS9:KPF', 'fits', f"{lastfile.read()}",
+                      '<', f"{lastfile.read()}"]
+            log.info(f"Running: {' '.join(ds9cmd)}")
+            subprocess.call(' '.join(ds9cmd), shell=True)
+            regfile = Path(f'/home/kpfeng/fibers_on_{camera.lower()}fvc.reg')
+            if regfile.exists() is True:
+                overlaycmd = ['xpaset', '-p', 'DS9:KPF', 'regions', 'file',
+                              f"{regfile}"]
+                log.info(f"Running: {' '.join(overlaycmd)}")
+                subprocess.call(' '.join(overlaycmd), shell=True)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -54,5 +67,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
 
         parser = cls._add_bool_arg(parser, 'wait',
             'Return only after exposure is finished?', default=True)
+        parser = cls._add_bool_arg(parser, 'display',
+            'Display image via engineering ds9?', default=True)
 
         return super().add_cmdline_args(parser, cfg)
