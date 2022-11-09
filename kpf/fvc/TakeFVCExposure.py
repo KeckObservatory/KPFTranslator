@@ -36,13 +36,13 @@ class TakeFVCExposure(KPFTranslatorFunction):
         if wait is True and args.get('display', False) is True:
             ds9cmd = ['xpaset', 'DS9:KPF', 'fits', f"{lastfile.read()}",
                       '<', f"{lastfile.read()}"]
-            log.info(f"Running: {' '.join(ds9cmd)}")
+            log.debug(f"Running: {' '.join(ds9cmd)}")
             subprocess.call(' '.join(ds9cmd), shell=True)
             regfile = Path(f'/home/kpfeng/fibers_on_{camera.lower()}fvc.reg')
             if regfile.exists() is True:
                 overlaycmd = ['xpaset', '-p', 'DS9:KPF', 'regions', 'file',
                               f"{regfile}"]
-                log.info(f"Running: {' '.join(overlaycmd)}")
+                log.debug(f"Running: {' '.join(overlaycmd)}")
                 subprocess.call(' '.join(overlaycmd), shell=True)
 
     @classmethod
