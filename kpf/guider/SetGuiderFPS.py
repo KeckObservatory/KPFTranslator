@@ -18,6 +18,7 @@ class SetGuiderFPS(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         fpskw = ktl.cache('kpfguide', 'FPS')
         fps = args.get('fps')
+        log.debug(f'Setting guider FPS to {fps}')
         fpskw.write(fps)
 
     @classmethod

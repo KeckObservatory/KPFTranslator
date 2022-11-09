@@ -5,6 +5,8 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
+from ..guider.SetGuiderGain import SetGuiderGain
+from ..guider.SetGuiderFPS import SetGuiderFPS
 
 
 class TakeGuiderSensitivityData(KPFTranslatorFunction):
@@ -24,8 +26,9 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
         
         for FPS in FPSvalues:
             for gain in gains:
-                kpfguide['GAIN'].write(gain)
-                kpfguide['FPS'].write(FPS)
+                log.info(f"Setting gain to {gain} and FPS to {fps}")
+                SetGuiderGain.execute({'gain': gain})
+                SetGuiderFPS.execute({'fps': FPS})
                 # Wait for the stacked file to increment
                 initial_lastfile = kpfguide['LASTFILE'].read()
                 initial_lasttrigfile = kpfguide['LASTTRIGFILE'].read()
@@ -40,8 +43,8 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
                 ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lasttrigfile}'")
                 stacked_file = kpfguide['LASTFILE'].read()
                 cube_file = kpfguide['LASTTRIGFILE'].read()
-                log.info(f"Last stacked file: {stacked_file}")
-                log.info(f"Last cube file: {cube_file}")
+                log.info(f"  stacked file: {stacked_file}")
+                log.info(f"  cube file: {cube_file}")
 
 
     @classmethod

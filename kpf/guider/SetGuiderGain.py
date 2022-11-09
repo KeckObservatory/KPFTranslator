@@ -17,6 +17,7 @@ class SetGuiderGain(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         gainkw = ktl.cache('kpfguide', 'GAIN')
         gain = args.get('gain')
+        log.debug(f'Setting guider gain to {gain}')
         gainkw.write(gain)
 
     @classmethod
