@@ -1,0 +1,42 @@
+import ktl
+
+from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
+
+
+class SetGuiderGain(KPFTranslatorFunction):
+    '''Set the guider gain via the kpfguide.GAIN keyword.
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'gain', allowed_values=['high', 'medium', 'low'])
+        return True
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        gainkw = ktl.cache('kpfguide', 'GAIN')
+        gain = args.get('gain')
+        gainkw.write(gain)
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        gainkw = ktl.cache('kpfguide', 'GAIN')
+        gain = args.get('gain')
+        expr = (f"($kpfguide.GAIN == '{gain}')")
+        success = ktl.waitFor(expr, timeout=1)
+        if not success:
+            raise FailedToReachDestination(gainkw.read(), gain)
+        return success
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
+        args_to_add = OrderedDict()
+        args_to_add['gain'] = {'type': float,
+                               'help': 'The requested gain.'}
+
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)
