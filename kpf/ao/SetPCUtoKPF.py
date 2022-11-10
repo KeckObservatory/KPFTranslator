@@ -34,13 +34,4 @@ class SetPCUtoKPF(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        z_success = ktl.waitfor('($ao.PCSFLZ == 0)', timeout=60)
-        if not z_success:
-            log.error(f'PCSFLZ failed to reach destination')
-        x_success = ktl.waitfor('($ao.PCSFX == 80)', timeout=60)
-        if not x_success:
-            log.error(f'PCSFX failed to reach destination')
-        y_success = ktl.waitfor('($ao.PCSFY == 45)', timeout=60)
-        if not y_success:
-            log.error(f'PCSFY failed to reach destination')
-        return z_success and x_success and y_success
+        return True
