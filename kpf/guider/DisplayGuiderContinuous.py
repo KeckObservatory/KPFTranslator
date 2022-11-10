@@ -38,6 +38,7 @@ class DisplayGuiderContinuous(KPFTranslatorFunction):
                                   f"{regfile}"]
                     log.debug(f"Running: {' '.join(overlaycmd)}")
                     subprocess.call(' '.join(overlaycmd), shell=True)
+        time.sleep(0.5)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
