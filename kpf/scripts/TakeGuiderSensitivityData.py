@@ -1,12 +1,43 @@
-from time import sleep
+from pathlib import Path
+import logging
+from datetime import datetime, timedelta
 
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from ..guider.SetGuiderGain import SetGuiderGain
 from ..guider.SetGuiderFPS import SetGuiderFPS
+
+
+##-------------------------------------------------------------------------
+## Create logger object
+##-------------------------------------------------------------------------
+this_file_name = Path(__file__).name.replace(".py", "")
+
+log = logging.getLogger(f'{this_file_name}')
+log.setLevel(logging.DEBUG)
+## Set up console output
+LogConsoleHandler = logging.StreamHandler()
+LogConsoleHandler.setLevel(logging.INFO)
+LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s',
+                              datefmt='%Y-%m-%d %H:%M:%S')
+LogConsoleHandler.setFormatter(LogFormat)
+log.addHandler(LogConsoleHandler)
+## Set up file output
+utnow = datetime.utcnow()
+now_str = utnow.strftime('%Y%m%dat%H%M%S')
+date = utnow-timedelta(days=1)
+date_str = date.strftime('%Y%b%d').lower()
+log_dir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}/script_logs/")
+if log_dir.exists() is False:
+    log_dir.mkdir(parents=True)
+LogFileName = log_dir / f"{this_file_name}_{now_str}.log"
+LogFileHandler = logging.FileHandler(LogFileName)
+LogFileHandler.setLevel(logging.DEBUG)
+LogFileHandler.setFormatter(LogFormat)
+log.addHandler(LogFileHandler)
 
 
 class TakeGuiderSensitivityData(KPFTranslatorFunction):
@@ -21,9 +52,15 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
+        exptime = args.get('exptime', 10)
         FPSvalues = [10, 20]
         gains = ['low']
-        
+
+        images_file = log_dir / Path(f'{this_file_name}_images_{now_str}.txt')
+        images = Table(names=('stacked file', 'cube file', 'gain', 'fps', 'exptime'),
+                       dtype=('a90',          'a90',       'a10',   'f4', 'f4'))
+
+
         for FPS in FPSvalues:
             for gain in gains:
                 log.info(f"Setting gain to {gain} and FPS to {FPS}")
@@ -42,9 +79,14 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
                 # Wait for cuber file to be updated
                 ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lasttrigfile}'")
                 stacked_file = kpfguide['LASTFILE'].read()
-                cube_file = kpfguide['LASTTRIGFILE'].read()
                 log.info(f"  stacked file: {stacked_file}")
+                cube_file = kpfguide['LASTTRIGFILE'].read()
                 log.info(f"  cube file: {cube_file}")
+                row = {'stacked file': stacked_file,
+                       'sube file': cube_file,
+                       'gain': gain,
+                       'fps': FPS, 'exptime': exptime}
+                images.add_row(row)
 
 
     @classmethod
