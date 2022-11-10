@@ -85,7 +85,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
                 cube_file = kpfguide['LASTTRIGFILE'].read()
                 log.info(f"  cube file: {cube_file}")
                 row = {'stacked file': stacked_file,
-                       'sube file': cube_file,
+                       'cube file': cube_file,
                        'gain': gain,
                        'fps': FPS, 'exptime': exptime}
                 images.add_row(row)
