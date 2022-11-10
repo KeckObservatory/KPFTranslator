@@ -103,16 +103,3 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
-
-#     @classmethod
-#     def add_cmdline_args(cls, parser, cfg=None):
-#         '''The arguments to add to the command line interface.
-#         '''
-#         from collections import OrderedDict
-#         args_to_add = OrderedDict()
-#         args_to_add['OBfile'] = {'type': str,
-#                                  'help': ('A YAML fortmatted file with the OB '
-#                                           'to be executed. Will override OB '
-#                                           'data delivered as args.')}
-#         parser = cls._add_args(parser, args_to_add, print_only=False)
-#         return super().add_cmdline_args(parser, cfg)
