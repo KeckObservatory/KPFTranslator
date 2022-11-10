@@ -1,6 +1,7 @@
+import os
 from pathlib import Path
 import logging
-from datetime import datetime
+from datetime import datetime,timedelta
 import time
 import numpy as np
 from astropy.table import Table, Row
@@ -9,7 +10,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from ..fvc.TakeFVCExposure import TakeFVCExposure
-from ...calbench.CalLampPower import CalLampPower
+from ..calbench.CalLampPower import CalLampPower
 
 
 ##-------------------------------------------------------------------------
@@ -50,7 +51,6 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
         for camera in cameras:
             if camera not in ['CRED2', 'SCI', 'CAHK', 'EXT', 'ExpMeter']:
                 print(f"Camera {camera} not supported")
-            return False
         return True
 
     @classmethod
@@ -60,15 +60,17 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
         log.info("###########")
 
         images_file = log_dir / Path(f'{this_file_name}_images_{now_str}.txt')
-        images = Table(names=('file', 'camera', 'dx', 'dy'),
-                       dtype=('a90',  'a10',    'f4', 'f4'))
+        images = Table(names=('file', 'camera', 'LED'),
+                       dtype=('a90',  'a10',    'a10'))
 
         # Set up FVCs
         kpffvc = ktl.cache('kpffvc')
 
         for LED in ['SciLED', 'SkyLED', 'CaHKLED', 'ExpMeterLED']:
-            log.info(f"Turning on {LED}")
-            CalLampPower({'lamp': LED, 'power': 'on'})
+            log.info(f"Imaging with {LED} on")
+            for LEDname in ['SciLED', 'SkyLED', 'CaHKLED', 'ExpMeterLED']:
+                pwr = {True: 'on', False: 'off'}[LED == LEDname]
+                print(LEDname, pwr)
 
             # Start FVC Exposures
             nextfile = {}
@@ -94,11 +96,8 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
                         lastfile = kpffvc[f'{camera}LASTFILE'].read()
                         log.debug(f"Found {lastfile}")
                         row = {'file': lastfile, 'camera': camera,
-                               'dx': xs[i], 'dy': ys[j]}
+                               'LED': LED}
                         images.add_row(row)
-
-            log.info(f"Turning off {LED}")
-            CalLampPower({'lamp': LED, 'power': 'off'})
 
             if images_file.exists():
                 images_file.unlink()
