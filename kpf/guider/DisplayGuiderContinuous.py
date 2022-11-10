@@ -21,11 +21,11 @@ class DisplayGuiderContinuous(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         display_name = cfg.get('display', 'guider_xpa_target', fallback='CRED2')
         while True:
-            expr = f"($kpfguide.CONTINUOUS != Active)"
+            expr = f"($kpfguide.CONTINUOUS == Active)"
             iscontinuous = ktl.waitFor(expr, timeout=10)
             if iscontinuous is not True:
                 log.error('kpfguide.CONTINUOUS not set')
-            expr = f"($kpfguide.SAVE != Active)"
+            expr = f"($kpfguide.SAVE == Active)"
             are_we_saving = ktl.waitFor(expr, timeout=10)
             if are_we_saving is not True:
                 log.error('kpfguide.SAVE not set')
