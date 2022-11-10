@@ -36,7 +36,7 @@ class SetGuiderGain(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
-        args_to_add['gain'] = {'type': float,
+        args_to_add['gain'] = {'type': str,
                                'help': 'The requested gain.'}
 
         parser = cls._add_args(parser, args_to_add, print_only=False)
