@@ -24,7 +24,7 @@ class DisplayGuiderContinuous(KPFTranslatorFunction):
         initial_lastfile = lastfile.read()
         while True:
             expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
-            is_there_a_newfile = ktl.waitFor(expr, timeout=300)
+            is_there_a_newfile = ktl.waitFor(expr, timeout=10)
             if is_there_a_newfile is True:
                 initial_lastfile = lastfile.read()
                 log.info(f"Displaying {initial_lastfile}")
