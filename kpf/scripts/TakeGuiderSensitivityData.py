@@ -73,6 +73,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
                 initial_lasttrigfile = kpfguide['LASTTRIGFILE'].read()
                 ktl.waitFor(f"$kpfguide.LASTFILE != '{initial_lastfile}'")
                 # Start cube collection simultaneous with stacked file
+                log.info(f'Starting data collection for {exptime} s')
                 kpfguide['TRIGGER'].write(1)
                 # End cube collection simultaneous with stacked file being written
                 initial_lastfile = kpfguide['LASTFILE'].read()
@@ -89,6 +90,14 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
                        'gain': gain,
                        'fps': FPS, 'exptime': exptime}
                 images.add_row(row)
+
+                if images_file.exists():
+                    images_file.unlink()
+                images.write(images_file, format='ascii.csv')
+
+            if images_file.exists():
+                images_file.unlink()
+            images.write(images_file, format='ascii.csv')
 
 
     @classmethod
