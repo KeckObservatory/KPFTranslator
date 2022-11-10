@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 from ..ao.SetupAOforKPF import SetupAOforKPF
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
@@ -21,27 +22,25 @@ class StartOfNight(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'progname')
+        check_input(args, 'observer')
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         # Guider
-#         log.info('Setting guider set point to -40 C')
-#         kpfguide = ktl.cache('kpfguide')
-#         kpfguide['SENSORSETP'].write(-40)
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
         log.info('Initialize tip tilt mirror')
         InitializeTipTilt.execute({})
         # Set Outdirs
         SetOutdirs.execute({})
-
+        # Setup AO
         if args.get('AO', True) is True:
             SetupAOforKPF.execute({})
-        if args.get('progname', None) is not None:
-            SetProgram.execute(args)
-        if args.get('observer', None) is not None:
-            SetObserver.execute(args)
+        # Set progname and observer
+        SetProgram.execute(args)
+        SetObserver.execute(args)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
