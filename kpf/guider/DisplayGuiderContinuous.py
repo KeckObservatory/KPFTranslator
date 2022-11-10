@@ -20,21 +20,15 @@ class DisplayGuiderContinuous(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         display_name = cfg.get('display', 'guider_xpa_target', fallback='CRED2')
+        lastfile = ktl.cache('kpfguide', 'LASTFILE')
+        initial_lastfile = lastfile.read()
         while True:
-            expr = f"($kpfguide.CONTINUOUS == Active)"
-            iscontinuous = ktl.waitFor(expr, timeout=10)
-            if iscontinuous is not True:
-                log.error('kpfguide.CONTINUOUS not set')
-            expr = f"($kpfguide.SAVE == Active)"
-            are_we_saving = ktl.waitFor(expr, timeout=10)
-            if are_we_saving is not True:
-                log.error('kpfguide.SAVE not set')
-
-            if iscontinuous is True and are_we_saving is True:
-                GuiderLastfile.execute({'wait': True})
-                lastfile = ktl.cache('kpfguide', 'LASTFILE')
-                ds9cmd = ['xpaset', display_name, 'fits', f"{lastfile.read()}",
-                          '<', f"{lastfile.read()}"]
+            expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
+            is_there_a_newfile = ktl.waitFor(expr, timeout=300)
+            if is_there_a_newfile is True:
+                initial_lastfile = lastfile.read()
+                ds9cmd = ['xpaset', display_name, 'fits', f"{initial_lastfile}",
+                          '<', f"{initial_lastfile}"]
                 log.debug(f"Running: {' '.join(ds9cmd)}")
                 subprocess.call(' '.join(ds9cmd), shell=True)
                 regfile = Path(f'/home/kpfeng/fibers_on_cred2.reg')
