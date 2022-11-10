@@ -34,7 +34,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
             expr = f"($kpffvc.{camera}LASTFILE != '{initial_lastfile}')"
             ktl.waitFor(expr, timeout=exptime+timeout)
         if wait is True and args.get('display', False) is True:
-            display_name = 'DS9:FVC'
+            display_name = cfg.get('display', 'fvc_xpa_target', fallback='FVC')
             ds9cmd = ['xpaset', display_name, 'fits', f"{lastfile.read()}",
                       '<', f"{lastfile.read()}"]
             log.debug(f"Running: {' '.join(ds9cmd)}")
