@@ -23,7 +23,7 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'progname')
-        check_input(args, 'observer')
+#         check_input(args, 'observer')
         return True
 
     @classmethod
@@ -40,7 +40,7 @@ class StartOfNight(KPFTranslatorFunction):
             SetupAOforKPF.execute({})
         # Set progname and observer
         SetProgram.execute(args)
-        SetObserver.execute(args)
+#         SetObserver.execute(args)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -54,8 +54,8 @@ class StartOfNight(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['progname'] = {'type': str,
                                    'help': 'The PROGNAME keyword.'}
-        args_to_add['observer'] = {'type': str,
-                                   'help': 'The OBSERVER keyword.'}
+#         args_to_add['observer'] = {'type': str,
+#                                    'help': 'The OBSERVER keyword.'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         parser = cls._add_bool_arg(parser, 'AO',
             'Configure AO?', default=True)
