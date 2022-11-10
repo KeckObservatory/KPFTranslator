@@ -26,7 +26,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
         
         for FPS in FPSvalues:
             for gain in gains:
-                log.info(f"Setting gain to {gain} and FPS to {fps}")
+                log.info(f"Setting gain to {gain} and FPS to {FPS}")
                 SetGuiderGain.execute({'gain': gain})
                 SetGuiderFPS.execute({'fps': FPS})
                 # Wait for the stacked file to increment
