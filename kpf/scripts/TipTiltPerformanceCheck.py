@@ -74,11 +74,9 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
         log.info(f"args = {args}")
         log.info(f"kpfguide.FPS = {kpfguide['FPS'].read()}")
         log.info(f"kpfguide.ITIME = {kpfguide['ITIME'].read()}")
+        log.info(f"kpfguide.TIPTILT_GAIN = {kpfguide['TIPTILT_GAIN'].read()}")
         log.info(f"kpfguide.TIPTILT_CONTROL = {kpfguide['TIPTILT_CONTROL'].read()}")
         log.info("###########")
-
-        log.info('Setting TIPTILT calculations to active')
-        SetTipTiltCalculations.execute({'calculations': 'Active'})
 
         gshow_file = log_dir / Path(f'{this_file_name}_{now_str}.txt')
         gshow_cmd = ['gshow', '-s', 'kpfguide', 'OBJECT%RAW', '-c',
