@@ -74,15 +74,9 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
         log.info(f"args = {args}")
         log.info(f"kpfguide.FPS = {kpfguide['FPS'].read()}")
         log.info(f"kpfguide.ITIME = {kpfguide['ITIME'].read()}")
+        log.info(f"kpfguide.TIPTILT_CONTROL = {kpfguide['TIPTILT_CONTROL'].read()}")
         log.info("###########")
 
-#         gains = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
-        gains = [0.1, 0.3, 0.5]
-
-        log.info('Initializing tip tilt mirror')
-        InitializeTipTilt.execute({})
-        log.info('Setting CONTINUOUS to active')
-        kpfguide['CONTINUOUS'].write('Active')
         log.info('Setting TIPTILT calculations to active')
         SetTipTiltCalculations.execute({'calculations': 'Active'})
 
@@ -94,38 +88,14 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
 
-        log.info(f"Take data with open loop tracking")
+        log.info(f"Start data cube collection")
         kpfguide['TRIGGER'].write('Active')
         sleep(duration)
         kpfguide['TRIGGER'].write('Inactive')
         lastcube = kpfguide['LASTTRIGFILE'].read()
-        log.info(f"LASTTRIGFILE Open Loop: {lastcube}")
-
-        kpfguide['TIPTILT_CONTROL'].write('Active')
-
-        for i,gain in enumerate(gains):
-            kpfguide['TIPTILT_GAIN'].write(gain)
-            log.info(f"Waiting for TIPTILT_PHASE to be Tracking")
-            ktl.waitFor('($kpfguide.TIPTILT_PHASE == Tracking)', timeout=5)
-            log.info('Sleeping for 2 seconds')
-            sleep(2)
-            log.info(f"Take data with tip tilt active, gain={gain:.1f}")
-            kpfguide['TRIGGER'].write('Active')
-            sleep(duration)
-            kpfguide['TRIGGER'].write('Inactive')
-            lastcube = kpfguide['LASTTRIGFILE'].read()
-            log.info(f"LASTTRIGFILE gain={gain:.1f}: {lastcube}")
-
+        log.info(f"LASTTRIGFILE: {lastcube}")
         log.info('Killing gshow')
         process.kill()
-
-        log.info('Setting TIPTILT_CONTROL to inactive')
-        kpfguide['TIPTILT_CONTROL'].write('Inactive')
-        log.info('Setting TIPTILT to inactive')
-        kpfguide['TIPTILT'].write('Inactive')
-        log.info('Setting CONTINUOUS to inactive')
-        kpfguide['CONTINUOUS'].write('Inactive')
-
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
