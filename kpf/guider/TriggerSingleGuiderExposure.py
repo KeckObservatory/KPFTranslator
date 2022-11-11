@@ -17,6 +17,7 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
+        kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfguide['EXPTIME'].read(binary=True)
         lastfile = kpfguide['LASTFILE']
         initial_lastfile = lastfile.read()
