@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import re
 
@@ -39,6 +40,7 @@ class FVCPower(KPFTranslatorFunction):
         outletname = kpfpower[f"{outlet}_NAME"].read()
         log.info(f"Turning {pwr} {camera} FVC (outlet {outlet}: {outletname})")
         kpfpower[f"KPFFVC{camnum}"].write(pwr)
+        time.sleep(1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
