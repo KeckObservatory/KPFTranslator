@@ -1,3 +1,4 @@
+import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -31,16 +32,19 @@ class SetPCUtoKPF(KPFTranslatorFunction):
         log.debug(f"Setting PCU to KPF Position")
         log.debug(f'  Move PCU in LZ direction')
         ao['PCSFLZ'].write('0')
+        time.sleep(1)
         success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=120)
         if success is False:
             raise FailedToReachDestination(ao['PCSFLZ'].read(), 0)
         log.debug(f'  Move PCU in X direction')
         ao['PCSFX'].write('80')
+        time.sleep(1)
         success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=120)
         if success is False:
             raise FailedToReachDestination(ao['PCSFX'].read(), 80)
         log.debug(f'  Move PCU in Y direction')
         ao['PCSFY'].write('45')
+        time.sleep(1)
         success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=120)
         if success is False:
             raise FailedToReachDestination(ao['PCSFY'].read(), 45)
