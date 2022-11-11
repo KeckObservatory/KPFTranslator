@@ -42,10 +42,10 @@ class EndOfNight(KPFTranslatorFunction):
 #         kpfguide = ktl.cache('kpfguide')
 #         kpfguide['SENSORSETP'].write(0)
         # Power off cal lamps and LEDs
-        lamps = ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
-                 'WideFlat', 'ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']
-        for lamp in lamps:
-            CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+#         lamps = ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
+#                  'WideFlat', 'ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']
+#         for lamp in lamps:
+#             CalLampPower.execute({'lamp': lamp, 'power': 'off'})
         # Power off FVCs
         for camera in ['SCI', 'CAHK', 'CAL']:
             FVCPower.execute({'camera': camera, 'power': 'off'})
