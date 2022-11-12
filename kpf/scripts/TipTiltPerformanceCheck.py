@@ -80,11 +80,11 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
 
         gshow_file = log_dir / Path(f'{this_file_name}_{now_str}.txt')
         gshow_cmd = ['gshow', '-s', 'kpfguide', 'OBJECT%RAW', '-c',
-                     '-timestamp', '-binary', '>', f"{gshow_file}"]
+                     '-timestamp', '-binary']
         log.info(f"Starting: {' '.join(gshow_cmd)}")
-        process = subprocess.Popen(' '.join(gshow_cmd), shell=True,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
+        with open(gshow_file, 'w') as FO:
+            process = subprocess.Popen(gshow_cmd, shell=False,
+                                       stdout=FO, stderr=FO)
 
         log.info(f"Start data cube collection")
         kpfguide['TRIGGER'].write('Active')
