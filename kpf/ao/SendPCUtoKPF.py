@@ -16,23 +16,24 @@ class SendPCUtoKPF(KPFTranslatorFunction):
         success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=120)
         if success is False:
             raise FailedPreCondition('PCU is in motion')
+
+        success = ktl.waitfor("($ao.PCSFNAME == home)", timeout=120)
+        if success is False:
+            raise FailedPreCondition('PCU must be at home before moving to KPF')
+
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        # First send it home
-        SendPCUtoHome.execute({})
-
-        # Second send it to KPF
         ao = ktl.cache('ao')
         log.info(f"Sending PCU to KPF")
-        ao['PCSFNAME'].write('KPF')
+        ao['PCSFNAME'].write('kpf')
         shim_time = cfg.get('times', 'ao_pcu_shim_time', fallback=5)
         time.sleep(shim_time)
         timeout = cfg.get('times', 'ao_pcu_move_time', fallback=150)
         success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=timeout)
         if success is False:
-            raise FailedToReachDestination(ao['PCSFNAME'].read(), 'KPF')
+            raise FailedToReachDestination(ao['PCSFNAME'].read(), 'kpf')
 
 #         log.debug(f"Setting PCU to KPF Position")
 #         log.debug(f'  Move PCU in LZ direction')
