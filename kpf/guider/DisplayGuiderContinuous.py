@@ -27,16 +27,16 @@ class DisplayGuiderContinuous(KPFTranslatorFunction):
             is_there_a_newfile = ktl.waitFor(expr, timeout=10)
             if is_there_a_newfile is True:
                 initial_lastfile = lastfile.read()
-                log.info(f"Displaying {initial_lastfile}")
+                print(f"Displaying {initial_lastfile}")
                 ds9cmd = ['xpaset', display_name, 'fits', f"{initial_lastfile}",
                           '<', f"{initial_lastfile}"]
-                log.debug(f"Running: {' '.join(ds9cmd)}")
+#                 log.debug(f"Running: {' '.join(ds9cmd)}")
                 subprocess.call(' '.join(ds9cmd), shell=True)
                 regfile = Path(f'/home/kpfeng/fibers_on_cred2.reg')
                 if regfile.exists() is True:
                     overlaycmd = ['xpaset', '-p', display_name, 'regions', 'file',
                                   f"{regfile}"]
-                    log.debug(f"Running: {' '.join(overlaycmd)}")
+#                     log.debug(f"Running: {' '.join(overlaycmd)}")
                     subprocess.call(' '.join(overlaycmd), shell=True)
         time.sleep(0.5)
 
