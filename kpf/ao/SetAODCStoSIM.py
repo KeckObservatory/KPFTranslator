@@ -6,6 +6,8 @@ from .. import log
 
 class SetAODCStoSIM(KPFTranslatorFunction):
     '''Set AO in AO DCS sim mode, so AO doesn't communicate with telescope
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

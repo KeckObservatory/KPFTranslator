@@ -7,7 +7,9 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SendPCUtoHome(KPFTranslatorFunction):
-    '''
+    '''Send the PCU stage to the "home" named position.
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

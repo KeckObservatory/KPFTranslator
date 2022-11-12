@@ -6,6 +6,8 @@ from .. import log
 
 class SetAFMtoMirror(KPFTranslatorFunction):
     '''Set AFM to Mirror so ACAM sees light
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

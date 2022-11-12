@@ -24,6 +24,8 @@ class SetupAOforKPF(KPFTranslatorFunction):
         7. Home PCU <-- to be implemented and tested
         8. Move PCU to the KPF position <-- to be implemented and tested
         9. Open AO hatch 
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

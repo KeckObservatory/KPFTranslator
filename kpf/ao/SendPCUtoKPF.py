@@ -8,7 +8,9 @@ from .SendPCUtoHome import SendPCUtoHome
 
 
 class SendPCUtoKPF(KPFTranslatorFunction):
-    '''
+    '''Send the PCU stage to the "kpf" named position.
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
