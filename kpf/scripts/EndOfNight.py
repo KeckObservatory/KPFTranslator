@@ -5,6 +5,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 from ..ao.ControlAOHatch import ControlAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
+from ..ao.SendPCUtoHome import SendPCUtoHome
 from ..fiu.ShutdownTipTilt import ShutdownTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetProgram import SetProgram
@@ -58,7 +59,11 @@ class EndOfNight(KPFTranslatorFunction):
         if args.get('AO', True) is True:
             log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'close'})
+            log.info('Turning on AO HEPA Filter System')
             TurnHepaOn.execute({})
+            log.info('Sending PCU stage to Home position')
+            SendPCUtoHome.execute({})
+
 
 
     @classmethod
