@@ -1,3 +1,4 @@
+import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -25,6 +26,8 @@ class ConfigureFIU(KPFTranslatorFunction):
         dest = args.get('mode')
         kpffiu = ktl.cache('kpffiu')
         kpffiu['MODE'].write(dest, wait=args.get('wait', True))
+        shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=0.5)
+        time.sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
