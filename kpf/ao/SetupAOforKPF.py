@@ -50,10 +50,10 @@ class SetupAOforKPF(KPFTranslatorFunction):
         SetAFStoNGS.execute({})
 
         log.info('Move PCU to Home')
-        SetPCUtoHome.execute({})
+        SendPCUtoHome.execute({})
 
         log.info('Move PCU to KPF')
-        SetPCUtoKPF.execute({})
+        SendPCUtoKPF.execute({})
 
         log.info('Open AO hatch')
         ControlAOHatch.execute({'destination': 'open'})
