@@ -8,7 +8,8 @@ from .TurnHepaOff import TurnHepaOff
 from .SetAODCStoSIM import SetAODCStoSIM
 from .ControlAOHatch import ControlAOHatch
 from .SetAFMtoMirror import SetAFMtoMirror
-from .SetPCUtoKPF import SetPCUtoKPF
+from .SendPCUtoHome import SendPCUtoHome
+from .SendPCUtoKPF import SendPCUtoKPF
 from .SetAFStoNGS import SetAFStoNGS
 
 
@@ -47,6 +48,9 @@ class SetupAOforKPF(KPFTranslatorFunction):
 
         log.info('Set AFS to NGS')
         SetAFStoNGS.execute({})
+
+        log.info('Move PCU to Home')
+        SetPCUtoHome.execute({})
 
         log.info('Move PCU to KPF')
         SetPCUtoKPF.execute({})
