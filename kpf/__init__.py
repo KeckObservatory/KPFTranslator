@@ -56,10 +56,10 @@ class FailedPostCondition(KPFException):
 
 
 class FailedToReachDestination(FailedPostCondition):
-    def __init__(self, destination="", value=""):
+    def __init__(self, value="", destination="", ):
         self.destination = destination
         self.value = value
-        msg = f"{value} != {destination}"
+        msg = f"Current value ({value}) != destination ({destination})"
         super().__init__(msg)
 
 
