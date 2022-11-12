@@ -38,6 +38,9 @@ class StartOfNight(KPFTranslatorFunction):
         # Setup AO
         if args.get('AO', True) is True:
             SetupAOforKPF.execute({})
+            dcs = ktl.cache('dcs')
+            dcs['SKYPA0'].write(0)
+            dcs['ROTMODE'].write('stationary')
         # Set progname and observer
         SetProgram.execute(args)
 #         SetObserver.execute(args)
