@@ -12,6 +12,9 @@ class WaitForCalSource(KPFTranslatorFunction):
     
     Valid names: Home, EtalonFiber, BrdbandFiber, U_gold, U_daily,
     Th_daily, Th_gold, SoCal-CalFib, LFCFiber
+    
+    ARGS:
+    CalSource - The octagon position that is the destination
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

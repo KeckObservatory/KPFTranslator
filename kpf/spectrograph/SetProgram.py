@@ -7,6 +7,9 @@ from .. import log
 class SetProgram(KPFTranslatorFunction):
     '''Sets the PROGNAME keyword for the science detectors in the kpfexpose
     keyword service.
+    
+    ARGS:
+    progname - The program ID to set.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

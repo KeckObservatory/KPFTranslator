@@ -8,6 +8,9 @@ from . import standardize_lamp_name
 
 class WaitForLampWarm(KPFTranslatorFunction):
     '''Wait for the specified lamp to be warm.
+    
+    ARGS:
+    lamp - The name of the lamp to wait for.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -47,6 +50,6 @@ class WaitForLampWarm(KPFTranslatorFunction):
         from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['lamp'] = {'type': str,
-                               'help': 'Which lamp to control?'}
+                               'help': 'Which lamp are we waiting for?'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

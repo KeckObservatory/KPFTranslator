@@ -19,6 +19,10 @@ class StartOfNight(KPFTranslatorFunction):
     - set FIU mode to observing
     - Seup AO
     - Set OUTDIRS
+    
+    ARGS:
+    progname - The program ID to set.
+    AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

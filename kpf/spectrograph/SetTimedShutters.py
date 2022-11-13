@@ -9,6 +9,12 @@ from .. import log
 class SetTimedShutters(KPFTranslatorFunction):
     '''Selects which timed shutters will be triggered by setting the
     `kpfexpose.TIMED_SHUTTERS` keyword value.
+    
+    ARGS:
+    TimedShutter_Scrambler (bool) - Open the TimedShutter_Scrambler shutter? (default=False)
+    TimedShutter_SimulCal (bool) - Open the TimedShutter_SimulCal shutter? (default=False)
+    TimedShutter_CaHK (bool) - Open the TimedShutter_CaHK shutter? (default=False)
+    TimedShutter_FlatField (bool) - Open the TimedShutter_FlatField shutter? (default=False)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -13,6 +13,8 @@ class StartExposure(KPFTranslatorFunction):
     '''Begins an triggered exposure by setting the `kpfexpose.EXPOSE` keyword
     to Start.  This will return immediately after.  Use commands like
     WaitForReadout or WaitForReady to determine when an exposure is done.
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

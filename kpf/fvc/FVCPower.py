@@ -10,7 +10,11 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class FVCPower(KPFTranslatorFunction):
-    '''
+    '''Turn on or off the power for the specified FVC camera.
+    
+    ARGS:
+    camera - Which FVC camera (SCI, CAHK, EXT, CAL)?
+    power - Desired state: on or off
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

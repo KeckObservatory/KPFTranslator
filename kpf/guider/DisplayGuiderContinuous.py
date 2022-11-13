@@ -12,6 +12,8 @@ from .GuiderLastfile import GuiderLastfile
 
 class DisplayGuiderContinuous(KPFTranslatorFunction):
     '''Continuously display latest guider images to ds9.
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

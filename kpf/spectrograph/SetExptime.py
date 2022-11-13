@@ -7,6 +7,9 @@ from .. import log
 class SetExptime(KPFTranslatorFunction):
     '''Sets the exposure time for the science detectors in the kpfexpose
     keyword service.
+    
+    Args:
+    Exptime - The exposure time in seconds
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

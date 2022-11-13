@@ -12,6 +12,8 @@ class ResetDetectors(KPFTranslatorFunction):
     ktlcamerad services, that just means, “even though you’ve not received
     (from camerad) the normal sequence of messages for a completed exposure,
     pretend everything is fine for starting a new exposure.”
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

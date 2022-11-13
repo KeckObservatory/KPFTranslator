@@ -27,6 +27,9 @@ class EndOfNight(KPFTranslatorFunction):
 
     - close AO hatch
     - HEPA on
+    
+    ARGS:
+    AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -75,6 +78,6 @@ class EndOfNight(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser = cls._add_bool_arg(parser, 'AO',
-            'Close AO hatch and turn on HEPA filter?', default=True)
+            'Close AO hatch, send PCU home, and turn on HEPA filter?', default=True)
 
         return super().add_cmdline_args(parser, cfg)

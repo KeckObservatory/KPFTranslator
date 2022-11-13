@@ -52,6 +52,9 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     Changing the frames per second is not recommended, because the tip/tilt
     system will be consuming this image stream, and it needs to retain full
     control of what an individual frame looks like.
+
+    ARGS:
+    exptime - The exposure time in seconds.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

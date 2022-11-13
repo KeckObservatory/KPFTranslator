@@ -11,6 +11,12 @@ from . import fvc_is_ready
 
 class TakeFVCExposure(KPFTranslatorFunction):
     '''Take an exposure with the specified fiber viewing camera
+    
+    ARGS:
+    camera - Which FVC camera (SCI, CAHK, EXT, CAL)?
+    wait (bool) - Wait for move to complete before returning? (default: True)
+    display (bool) - Display the resulting image to the engineering ds9
+                     instance for FVCs using XPA.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

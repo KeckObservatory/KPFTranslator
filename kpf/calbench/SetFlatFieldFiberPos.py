@@ -13,7 +13,7 @@ class SetFlatFieldFiberPos(KPFTranslatorFunction):
     
     ARGS:
     FF_FiberPos - The name of the flat field fiber position desired.
-    wait (boolean) - Wait for move to complete before returning? (default: True)
+    wait (bool) - Wait for move to complete before returning? (default: True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

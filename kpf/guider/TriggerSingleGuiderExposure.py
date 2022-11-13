@@ -9,6 +9,9 @@ from . import guider_is_saving, guider_is_active
 
 class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     '''Trigger a single guider exposure using the EXPOSE keyword.
+    
+    ARGS:
+    wait - Return only after lastfile is updated? (default = False)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

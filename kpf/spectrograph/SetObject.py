@@ -7,6 +7,9 @@ from .. import log
 class SetObject(KPFTranslatorFunction):
     '''Sets the OBJECT keyword for the science detectors in the kpfexpose
     keyword service.
+    
+    ARGS:
+    Object - The desired object keyword value.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

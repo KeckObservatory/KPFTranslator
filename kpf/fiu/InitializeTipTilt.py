@@ -8,6 +8,8 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class InitializeTipTilt(KPFTranslatorFunction):
     '''Initialize the tip tilt system by setting the control mode to closed loop
     and setting the target values in X and Y to 0.
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

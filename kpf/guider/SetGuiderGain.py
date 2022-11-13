@@ -7,6 +7,9 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetGuiderGain(KPFTranslatorFunction):
     '''Set the guider gain via the kpfguide.GAIN keyword.
+    
+    ARGS:
+    gain - The desired gain (high, medium, or low)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

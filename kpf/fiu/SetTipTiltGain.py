@@ -6,7 +6,10 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetTipTiltGain(KPFTranslatorFunction):
-    '''
+    '''Set the CRED2 camera gain
+    
+    ARGS:
+    gain - The desired gain value
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

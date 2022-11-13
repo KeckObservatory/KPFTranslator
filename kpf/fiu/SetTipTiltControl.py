@@ -6,32 +6,32 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetTipTiltCalculations(KPFTranslatorFunction):
-    '''Turn the tip tilt calculation software on or off.
+    '''Turn the tip tilt control software on or off.
     
     ARGS:
-    calculations - The desired state of the calculations (Active or Inactive)
+    control - The desired state of the calculations (Active or Inactive)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         allowed_values = ['Active', 'Inactive', '1', '0', 1, 0]
-        check_input(args, 'calculations', allowed_values=allowed_values)
+        check_input(args, 'control', allowed_values=allowed_values)
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        calculations = args.get('calculations')
-        tiptiltcalc = ktl.cache('kpfguide', 'TIPTILT')
-        tiptiltcalc.write(calculations)
+        control = args.get('control')
+        tiptiltcalc = ktl.cache('kpfguide', 'TIPTILT_CONTROL')
+        tiptiltcalc.write(control)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        calculations = args.get('calculations')
+        control = args.get('control')
         timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
-        expr = f"($kpfguide.TIPTILT == {calculations}) "
+        expr = f"($kpfguide.TIPTILT_CONTROL == {calculations}) "
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            tiptilt = ktl.cache('kpfguide', 'TIPTILT')
-            raise FailedToReachDestination(tiptilt.read(), calculations)
+            tiptiltcontrol = ktl.cache('kpfguide', 'TIPTILT_CONTROL')
+            raise FailedToReachDestination(tiptiltcontrol.read(), control)
         return success
 
     @classmethod
@@ -40,7 +40,7 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
-        args_to_add['calculations'] = {'type': str,
-                                       'help': 'Calulations "Active" or "Inactive"'}
+        args_to_add['control'] = {'type': str,
+                                  'help': 'Control "Active" or "Inactive"'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

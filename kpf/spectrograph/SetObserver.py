@@ -7,6 +7,9 @@ from .. import log
 class SetObserver(KPFTranslatorFunction):
     '''Sets the OBSERVER keyword for the science detectors in the kpfexpose
     keyword service.
+    
+    ARGS:
+    observer - The desired value of the OBSERVER keyword.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
