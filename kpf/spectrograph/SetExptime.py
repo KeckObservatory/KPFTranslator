@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetExptime(KPFTranslatorFunction):
@@ -13,10 +14,8 @@ class SetExptime(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        exptime = args.get('Exptime', None)
-        if exptime is None:
-            return False
-        return (exptime >= 0)
+        check_input(args, 'Exptime')
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -27,14 +26,15 @@ class SetExptime(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
         exptime = args.get('Exptime')
         tol = cfg.get('tolerances', 'kpfexpose_exptime_tolerance', fallback=0.01)
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = (f"($kpfexpose.EXPOSURE >= {exptime-tol}) and "
                 f"($kpfexpose.EXPOSURE <= {exptime+tol})")
         success = ktl.waitFor(expr, timeout=timeout)
-        return success
+        if success is not True:
+            exposure = ktl.cache('kpfexpose', 'EXPOSURE')
+            raise FailedToReachDestination(exposure.read(), exptime)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
@@ -44,6 +44,5 @@ class SetExptime(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['Exptime'] = {'type': float,
                                   'help': 'The exposure time in seconds.'}
-
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

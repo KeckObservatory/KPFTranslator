@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetObserver(KPFTranslatorFunction):
@@ -13,9 +14,7 @@ class SetObserver(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        observer = args.get('observer', None)
-        if observer is None:
-            return False
+        check_input(args, 'observer')
         return True
 
     @classmethod
@@ -31,7 +30,9 @@ class SetObserver(KPFTranslatorFunction):
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = f"($kpfexpose.OBSERVER == '{observer}')"
         success = ktl.waitFor(expr, timeout=timeout)
-        return success
+        if success is not True:
+            observerkw = ktl.cache('kpfexpose', 'OBSERVER')
+            raise FailedToReachDestination(observerkw.read(), observer)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
@@ -41,6 +42,5 @@ class SetObserver(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['observer'] = {'type': str,
                                    'help': 'The OBSERVER keyword.'}
-
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

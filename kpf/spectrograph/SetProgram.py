@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetProgram(KPFTranslatorFunction):
@@ -13,9 +14,7 @@ class SetProgram(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        progname = args.get('progname', None)
-        if progname is None:
-            return False
+        check_input(args, 'progname')
         return True
 
     @classmethod
@@ -31,7 +30,9 @@ class SetProgram(KPFTranslatorFunction):
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = f"($kpfexpose.PROGNAME == '{progname}')"
         success = ktl.waitFor(expr, timeout=timeout)
-        return success
+        if success is not True:
+            prognamekw = ktl.cache('kpfexpose', 'PROGNAME')
+            raise FailedToReachDestination(prognamekw.read(), progname)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
@@ -41,6 +42,5 @@ class SetProgram(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['progname'] = {'type': str,
                                    'help': 'The PROGNAME keyword.'}
-
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

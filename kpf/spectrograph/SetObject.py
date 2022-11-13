@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetObject(KPFTranslatorFunction):
@@ -13,9 +14,7 @@ class SetObject(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        obj = args.get('Object', None)
-        if obj is None:
-            return False
+        check_input(args, 'Object')
         return True
 
     @classmethod
@@ -31,7 +30,9 @@ class SetObject(KPFTranslatorFunction):
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = f"($kpfexpose.OBJECT == '{obj}')"
         success = ktl.waitFor(expr, timeout=timeout)
-        return success
+        if success is not True:
+            objectkw = ktl.cache('kpfexpose', 'OBJECT')
+            raise FailedToReachDestination(objectkw.read(), obj)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
@@ -41,6 +42,5 @@ class SetObject(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['Object'] = {'type': str,
                                  'help': 'The OBJECT keyword.'}
-
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

@@ -3,7 +3,8 @@ from time import sleep
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetTimedShutters(KPFTranslatorFunction):
@@ -46,40 +47,15 @@ class SetTimedShutters(KPFTranslatorFunction):
         shutters = kpfexpose['TIMED_TARG'].read()
         log.debug(f"TIMED_TARG: {shutters}")
         shutter_list = shutters.split(',')
-
-        Scrambler_shutter_status = 'Scrambler' in shutter_list
-        Scrambler_shutter_target = args.get('TimedShutter_Scrambler', False)
-        if Scrambler_shutter_target != Scrambler_shutter_status:
-            msg = (f"Final Scrambler timed shutter mismatch: "
-                   f"{Scrambler_shutter_status} != {Scrambler_shutter_target}")
-            log.error(msg)
-            return False
-
-        SimulCal_shutter_status = 'SimulCal' in shutter_list
-        SimulCal_shutter_target = args.get('TimedShutter_SimulCal', False)
-        if SimulCal_shutter_target != SimulCal_shutter_status:
-            msg = (f"Final SimulCal timed shutter mismatch: "
-                   f"{SimulCal_shutter_status} != {SimulCal_shutter_target}")
-            log.error(msg)
-            return False
-
-        FF_Fiber_shutter_status = 'FF_Fiber' in shutter_list
-        FF_Fiber_shutter_target = args.get('TimedShutter_FlatField', False)
-        if FF_Fiber_shutter_target != FF_Fiber_shutter_status:
-            msg = (f"Final FF_Fiber timed shutter mismatch: "
-                   f"{FF_Fiber_shutter_status} != {FF_Fiber_shutter_target}")
-            log.error(msg)
-            return False
-
-        Ca_HK_shutter_status = 'Ca_HK' in shutter_list
-        CA_HK_shutter_target = args.get('TimedShutter_CaHK', False)
-        if CA_HK_shutter_target != Ca_HK_shutter_status:
-            msg = (f"Final Ca_HK timed shutter mismatch: "
-                   f"{Ca_HK_shutter_status} != {CA_HK_shutter_target}")
-            log.error(msg)
-            return False
-
-        return True
+        shutter_names = [('Scrambler', 'TimedShutter_Scrambler'),
+                         ('SimulCal', 'TimedShutter_SimulCal'),
+                         ('FF_Fiber', 'TimedShutter_FlatField'),
+                         ('Ca_HK', 'TimedShutter_CaHK')]
+        for shutter in shutter_names:
+            shutter_status = shutter[0] in shutter_list
+            shutter_target = args.get(shutter[1], False)
+            if shutter_target != shutter_status:
+                raise FailedToReachDestination(shutter_status, shutter_target)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
@@ -97,5 +73,4 @@ class SetTimedShutters(KPFTranslatorFunction):
         parser = cls._add_bool_arg(parser, 'TimedShutter_FlatField',
                                    'Open the TimedShutter_FlatField shutter?',
                                     default=False)
-
         return super().add_cmdline_args(parser, cfg)

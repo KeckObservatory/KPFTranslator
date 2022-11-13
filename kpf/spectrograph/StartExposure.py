@@ -3,10 +3,12 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 from . import (green_detector_power_is_on, green_detector_temperature_is_ok,
                red_detector_power_is_on, red_detector_temperature_is_ok,
                cahk_detector_temperature_is_ok)
+from .WaitForReady import WaitForReady
 
 
 class StartExposure(KPFTranslatorFunction):
@@ -18,28 +20,22 @@ class StartExposure(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        conditions = []
-        kpfexpose = ktl.cache('kpfexpose')
         detectors = kpfexpose['TRIG_TARG'].read()
         detector_list = detectors.split(',')
         if 'Green' in detector_list:
-            conditions.append(green_detector_power_is_on())
-            conditions.append(green_detector_temperature_is_ok())
+            green_detector_power_is_on()
+            green_detector_temperature_is_ok()
         if 'Red' in detector_list:
-            conditions.append(green_detector_power_is_on())
-            conditions.append(red_detector_temperature_is_ok())
+            green_detector_power_is_on()
+            red_detector_temperature_is_ok()
         if 'Ca_HK' in detector_list:
-            conditions.append(cahk_detector_temperature_is_ok())
-        return np.all(conditions)
+            cahk_detector_temperature_is_ok()
 
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         expose = kpfexpose['EXPOSE']
-        expose.monitor()
-        if expose > 0:
-            log.debug(f"Detector(s) are currently {expose} waiting for Ready")
-            expose.waitFor('== 0',timeout=300)
+        WaitForReady.execute({})
         log.debug(f"Beginning Exposure")
         expose.write('Start')
 
@@ -47,11 +43,8 @@ class StartExposure(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfexpose['EXPOSURE'].read(binary=True)
-        expose = kpfexpose['EXPOSE'].read()
-        log.debug(f"    exposure time = {exptime:.1f}")
-        log.debug(f"    status = {expose}")
-        if exptime > 0.1:
-            if expose not in ['Start', 'InProgress', 'End', 'Readout']:
-                msg = f"Unexpected EXPOSE status = {expose}"
-                log.error(msg)
-        return True
+        shim_time = cfg.get('times', 'kpfexpose_shim_time', fallback=0.01)
+        success = ktl.waitFor(f"(kpfexpose.EXPOSE != Ready)", timeout=shim_time)
+        if success is not True:
+            raise FailedToReachDestination(kpfexpose['EXPOSE'].read(),
+                                     ['Start', 'InProgress', 'End', 'Readout'])
