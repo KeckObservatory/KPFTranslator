@@ -5,6 +5,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 from ..ao.ControlAOHatch import ControlAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
+from ..ao.SendPCUtoHome import SendPCUtoHome
 from ..fiu.ShutdownTipTilt import ShutdownTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetProgram import SetProgram
@@ -26,6 +27,9 @@ class EndOfNight(KPFTranslatorFunction):
 
     - close AO hatch
     - HEPA on
+    
+    ARGS:
+    AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -42,10 +46,10 @@ class EndOfNight(KPFTranslatorFunction):
 #         kpfguide = ktl.cache('kpfguide')
 #         kpfguide['SENSORSETP'].write(0)
         # Power off cal lamps and LEDs
-        lamps = ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
-                 'WideFlat', 'ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']
-        for lamp in lamps:
-            CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+#         lamps = ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
+#                  'WideFlat', 'ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']
+#         for lamp in lamps:
+#             CalLampPower.execute({'lamp': lamp, 'power': 'off'})
         # Power off FVCs
         for camera in ['SCI', 'CAHK', 'CAL']:
             FVCPower.execute({'camera': camera, 'power': 'off'})
@@ -58,7 +62,11 @@ class EndOfNight(KPFTranslatorFunction):
         if args.get('AO', True) is True:
             log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'close'})
+            log.info('Turning on AO HEPA Filter System')
             TurnHepaOn.execute({})
+            log.info('Sending PCU stage to Home position')
+            SendPCUtoHome.execute({})
+
 
 
     @classmethod
@@ -70,6 +78,6 @@ class EndOfNight(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser = cls._add_bool_arg(parser, 'AO',
-            'Close AO hatch and turn on HEPA filter?', default=True)
+            'Close AO hatch, send PCU home, and turn on HEPA filter?', default=True)
 
         return super().add_cmdline_args(parser, cfg)

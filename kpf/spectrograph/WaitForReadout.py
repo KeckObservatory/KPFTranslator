@@ -3,12 +3,15 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class WaitForReadout(KPFTranslatorFunction):
     '''Waits for the `kpfexpose.EXPOSE` keyword to be "Readout".  This will
     block until the camera enters the readout state.
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

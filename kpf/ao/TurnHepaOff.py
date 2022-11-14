@@ -6,6 +6,8 @@ from .. import log
 
 class TurnHepaOff(KPFTranslatorFunction):
     '''Turn HEPA Filter system off
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

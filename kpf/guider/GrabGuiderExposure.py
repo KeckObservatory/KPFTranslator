@@ -10,6 +10,8 @@ from . import guider_is_saving, guider_is_active
 class GrabGuiderExposure(KPFTranslatorFunction):
     '''If the guider is active and saving images, return the filename of the
     next image to be written.
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -18,9 +20,12 @@ class GrabGuiderExposure(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
+        kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfguide['EXPTIME'].read(binary=True)
         lastfile = kpfguide['LASTFILE']
         initial_lastfile = lastfile.read()
+        log.debug(f"Grabbing next guider exposure.")
+        log.debug(f"  kpfexpose.OBJECT = {kpfexpose['OBJECT'].read()}")
         expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
         ktl.waitFor(expr, timeout=exptime+1)
 

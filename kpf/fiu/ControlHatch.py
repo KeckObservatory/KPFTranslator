@@ -7,6 +7,9 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class ControlHatch(KPFTranslatorFunction):
     '''Open or close the FIU hatch
+    
+    ARGS:
+    destination - The desired FIU hatch position name
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

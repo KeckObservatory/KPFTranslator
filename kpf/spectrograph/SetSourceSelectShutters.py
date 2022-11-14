@@ -4,12 +4,20 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetSourceSelectShutters(KPFTranslatorFunction):
     '''Opens and closes the source select shutters via the 
     `kpfexpose.SRC_SHUTTERS` keyword.
+    
+    ARGS:
+    SSS_Science (bool) - Open the SciSelect shutter? (default=False)
+    SSS_Sky (bool) - Open the SkySelect shutter? (default=False)
+    SSS_CalSciSky (bool) - Open the Cal_SciSky shutter? (default=False)
+    SSS_SoCalSci (bool) - Open the SoCalSci shutter? (default=False)
+    SSS_SoCalCal (bool) - Open the SoCalCal shutter? (default=False)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -40,67 +48,29 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         sleep(timeshim)
         shutters = kpfexpose['SRC_SHUTTERS'].read()
         shutter_list = shutters.split(',')
-
-        sci_shutter_status = 'SciSelect' in shutter_list
-        sci_shutter_target = args.get('SSS_Science', False)
-        if sci_shutter_target != sci_shutter_status:
-            msg = (f"Final Science select shutter mismatch: "
-                   f"{sci_shutter_status} != {sci_shutter_target}")
-            log.error(msg)
-            return False
-
-        sky_shutter_status = 'SkySelect' in shutter_list
-        sky_shutter_target = args.get('SSS_Sky', False)
-        if sky_shutter_target != sky_shutter_status:
-            msg = (f"Final Sky select shutter mismatch: "
-                   f"{sky_shutter_status} != {sky_shutter_target}")
-            log.error(msg)
-            return False
-
-        socalsci_shutter_status = 'SoCalSci' in shutter_list
-        socalsci_shutter_target = args.get('SSS_SoCalSci', False)
-        if socalsci_shutter_target != socalsci_shutter_status:
-            msg = (f"Final SoCalSci select shutter mismatch: "
-                   f"{socalsci_shutter_status} != {socalsci_shutter_target}")
-            log.error(msg)
-            return False
-
-        socalcal_shutter_status = 'SoCalCal' in shutter_list
-        socalcal_shutter_target = args.get('SSS_SoCalCal', False)
-        if socalcal_shutter_target != socalcal_shutter_status:
-            msg = (f"Final SoCalCal select shutter mismatch: "
-                   f"{socalcal_shutter_status} != {socalcal_shutter_target}")
-            log.error(msg)
-            return False
-
-        calscisky_shutter_status = 'Cal_SciSky' in shutter_list
-        calscisky_shutter_target = args.get('SSS_CalSciSky', False)
-        if calscisky_shutter_target != calscisky_shutter_status:
-            msg = (f"Final Cal_SciSky select shutter mismatch: "
-                   f"{calscisky_shutter_status} != {calscisky_shutter_target}")
-            log.error(msg)
-            return False
-
-        return True
+        shutter_names = [('SciSelect', 'SSS_Science'),
+                         ('SkySelect', 'SSS_Sky'),
+                         ('SoCalSci', 'SSS_SoCalSci'),
+                         ('SoCalCal', 'SSS_SoCalCal'),
+                         ('Cal_SciSky', 'SSS_CalSciSky')]
+        for shutter in shutter_names:
+            shutter_status = shutter[0] in shutter_list
+            shutter_target = args.get(shutter[1], False)
+            if shutter_target != shutter_status:
+                raise FailedToReachDestination(shutter_status, shutter_target)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'SSS_Science',
-                                   'Open the SciSelect shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'SSS_Sky',
-                                   'Open the SkySelect shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'SSS_CalSciSky',
-                                   'Open the Cal_SciSky shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'SSS_SoCalSci',
-                                   'Open the SoCalSci shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'SSS_SoCalCal',
-                                   'Open the SoCalCal shutter?',
-                                   default=False)
-
+        parser = cls._add_bool_arg(parser, 'SSS_Science', default=False,
+                                   'Open the SciSelect shutter?')
+        parser = cls._add_bool_arg(parser, 'SSS_Sky', default=False,
+                                   'Open the SkySelect shutter?')
+        parser = cls._add_bool_arg(parser, 'SSS_CalSciSky', default=False,
+                                   'Open the Cal_SciSky shutter?')
+        parser = cls._add_bool_arg(parser, 'SSS_SoCalSci', default=False,
+                                   'Open the SoCalSci shutter?')
+        parser = cls._add_bool_arg(parser, 'SSS_SoCalCal', default=False,
+                                   'Open the SoCalCal shutter?')
         return super().add_cmdline_args(parser, cfg)

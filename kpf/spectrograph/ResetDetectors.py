@@ -1,7 +1,9 @@
+import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class ResetDetectors(KPFTranslatorFunction):
@@ -12,6 +14,8 @@ class ResetDetectors(KPFTranslatorFunction):
     ktlcamerad services, that just means, “even though you’ve not received
     (from camerad) the normal sequence of messages for a completed exposure,
     pretend everything is fine for starting a new exposure.”
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -22,11 +26,13 @@ class ResetDetectors(KPFTranslatorFunction):
         kpfexpose = ktl.cache('kpfexpose')
         log.debug(f"Resetting kpfexpose")
         kpfexpose['EXPOSE'].write('Reset')
+        time.sleep(1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
         timeout = cfg.get('times', 'kpfexpose_reset_time', fallback=10)
         expr = f"($kpfexpose.EXPOSE >= Ready)"
         success = ktl.waitFor(expr, timeout=timeout)
-        return success
+        if success is not True:
+            kpfexposeexpose = ktl.cache('kpfexpose', 'EXPOSE')
+            FailedToReachDestination(kpfexposeexpose.read(), 'Ready')

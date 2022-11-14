@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -7,26 +5,33 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 
 
-class SetGuiderOutdir(KPFTranslatorFunction):
-    '''Set the value of the kpfguide.OUTDIR keyword
+class SetGuiderGain(KPFTranslatorFunction):
+    '''Set the guider gain via the kpfguide.GAIN keyword.
     
     ARGS:
-    outdir - The desired output path
+    gain - The desired gain (high, medium, or low)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'outdir')
+        check_input(args, 'gain', allowed_values=['high', 'medium', 'low'])
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        newoutdir = Path(args.get('outdir')).expanduser().absolute()
-        kpfguide = ktl.cache('kpfguide')
-        kpfguide['OUTDIR'].write(f"{newoutdir}")
+        gainkw = ktl.cache('kpfguide', 'GAIN')
+        gain = args.get('gain')
+        log.debug(f'Setting guider gain to {gain}')
+        gainkw.write(gain)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        gainkw = ktl.cache('kpfguide', 'GAIN')
+        gain = args.get('gain')
+        expr = (f"($kpfguide.GAIN == '{gain}')")
+        success = ktl.waitFor(expr, timeout=1)
+        if not success:
+            raise FailedToReachDestination(gainkw.read(), gain)
+        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
@@ -34,7 +39,8 @@ class SetGuiderOutdir(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
-        args_to_add['outdir'] = {'type': str,
-                                 'help': 'The desired output path.'}
+        args_to_add['gain'] = {'type': str,
+                               'help': 'The requested gain.'}
+
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

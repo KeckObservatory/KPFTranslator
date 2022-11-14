@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import re
 
@@ -9,7 +10,11 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class FVCPower(KPFTranslatorFunction):
-    '''
+    '''Turn on or off the power for the specified FVC camera.
+    
+    ARGS:
+    camera - Which FVC camera (SCI, CAHK, EXT, CAL)?
+    power - Desired state: on or off
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -39,6 +44,7 @@ class FVCPower(KPFTranslatorFunction):
         outletname = kpfpower[f"{outlet}_NAME"].read()
         log.info(f"Turning {pwr} {camera} FVC (outlet {outlet}: {outletname})")
         kpfpower[f"KPFFVC{camnum}"].write(pwr)
+        time.sleep(1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

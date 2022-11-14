@@ -11,6 +11,9 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     '''Wait for the FIU to reach specified mode (kpffiu.MODE)
     
     Values: 0 None 1 Stowed 2 Alignment 3 Acquisition 4 Observing 5 Calibration
+    
+    ARGS:
+    mode - The desired FIU mode
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

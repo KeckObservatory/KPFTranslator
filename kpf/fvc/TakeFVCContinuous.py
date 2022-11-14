@@ -1,4 +1,6 @@
+import time
 from pathlib import Path
+import subprocess
 
 import ktl
 
@@ -6,11 +8,13 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import fvc_is_ready
+from .TakeFVCExposure import TakeFVCExposure
+from .SetFVCExpTime import SetFVCExpTime
 
 
-class SetFVCExpTime(KPFTranslatorFunction):
-    '''Set the exposure time of the specified fiber viewing camera
-
+class TakeFVCContinuous(KPFTranslatorFunction):
+    '''Take exposures with the specified FVC continuously and display to ds9.
+    
     ARGS:
     camera - Which FVC camera (SCI, CAHK, EXT, CAL)?
     exptime - The exposure time in seconds.
@@ -21,29 +25,19 @@ class SetFVCExpTime(KPFTranslatorFunction):
         camera = args.get('camera')
         if fvc_is_ready(camera=camera) is not True:
             raise FailedPreCondition(f"Camera {camera} is not ready")
-        check_input(args, 'exptime', value_min=0.001, value_max=60)
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         camera = args.get('camera')
-        kpffvc = ktl.cache('kpffvc')
         exptime = args.get('exptime')
-        log.debug(f"Setting {camera} FVC exposure time to {exptime:.3f} s")
-        kpffvc[f'{camera}EXPTIME'].write(exptime)
+        SetFVCExpTime.execute(args)
+        while True:
+            TakeFVCExposure.execute({'camera': camera, 'display': True})
+            time.sleep(0.5)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        camera = args.get('camera')
-        exptime = args.get('exptime')
-        timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
-        tol = cfg.get('tolerances', 'guider_exptime_tolerance', fallback=0.01)
-        expr = (f'($kpffvc.{camera}EXPTIME > {exptime}-{tol}) '\
-                f'and ($kpffvc.{camera}EXPTIME < {exptime}+{tol})')
-        success = ktl.waitfor(expr, timeout=timeout)
-        if success is not True:
-            exptimekw = ktl.cache('kpffvc', f"{camera}EXPTIME")
-            raise FailedToReachDestination(exptimekw.read(), exptime)
         return True
 
     @classmethod
@@ -53,9 +47,8 @@ class SetFVCExpTime(KPFTranslatorFunction):
         from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['camera'] = {'type': str,
-                                 'help': 'The camera to use (SCI, CAHK, CAL).'}
+                                 'help': 'The camera to use (SCI, CAHK, CAL, EXT).'}
         args_to_add['exptime'] = {'type': float,
                                   'help': 'The exposure time in seconds.'}
-
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

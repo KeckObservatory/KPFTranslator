@@ -10,7 +10,7 @@ from . import standardize_lamp_name
 
 class CalLampPower(KPFTranslatorFunction):
     '''Powers off one of the cal lamps via the `kpflamps` keyword service.
-
+    
     Uses the lamp names from the OCTAGON when appropriate.
     
     Supported lamp names are:
@@ -24,6 +24,10 @@ class CalLampPower(KPFTranslatorFunction):
      - CaHKLED
      - SciLED
      - SkyLED
+    
+    ARGS:
+    lamp - name of the lamp to control
+    power - "on" or "off" destination state for lamp
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

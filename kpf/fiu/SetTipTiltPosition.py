@@ -6,7 +6,11 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetTipTiltPosition(KPFTranslatorFunction):
-    '''
+    '''Set the position of the tip tilt mirror.
+    
+    ARGS:
+    x - The desired X position (TTXVAX).
+    y - The desired Y position (TTYVAX).
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

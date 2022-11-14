@@ -56,10 +56,10 @@ class FailedPostCondition(KPFException):
 
 
 class FailedToReachDestination(FailedPostCondition):
-    def __init__(self, destination="", value=""):
+    def __init__(self, value="", destination="", ):
         self.destination = destination
         self.value = value
-        msg = f"{value} != {destination}"
+        msg = f"Current value ({value}) != destination ({destination})"
         super().__init__(msg)
 
 
@@ -71,15 +71,19 @@ def check_input(args, input_name, allowed_values=None,
         target = args.get(input_name, None)
         if target is None:
             raise FailedPreCondition(f"Input {input_name} is None")
-        if value_min is not None:
-            if target < value_min:
-                raise FailedPreCondition(f"Input {input_name} value {target} "
-                                         f"below minimum allowed ({value_min})")
-        if value_max is not None:
-            if target > value_max:
-                raise FailedPreCondition(f"Input {input_name} value {target} "
-                                         f"above maximum allowed ({value_max})")
+        if type(target) in [float, int]:
+            if value_min is not None:
+                if target < value_min:
+                    raise FailedPreCondition(f"Input {input_name} value {target} "
+                                             f"below minimum allowed ({value_min})")
+            if value_max is not None:
+                if target > value_max:
+                    raise FailedPreCondition(f"Input {input_name} value {target} "
+                                             f"above maximum allowed ({value_max})")
         if allowed_values is not None:
-            if target not in allowed_values:
+            allowed_values = [val.lower() if type(val) == str else str(val)\
+                              for val in allowed_values]
+            target = str(target)
+            if target.lower() not in allowed_values:
                 raise FailedPreCondition(f"Input {input_name} value {target} "
                                          f"not in allowed values")

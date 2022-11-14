@@ -7,6 +7,9 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 class GuiderLastfile(KPFTranslatorFunction):
     '''Print the value of the kpfguide.LASTFILE keyword to STDOUT
+    
+    ARGS:
+    wait - Return only after lastfile is updated? (default = False)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -34,5 +37,5 @@ class GuiderLastfile(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser = cls._add_bool_arg(parser, 'wait',
-            'Return only lastfile is updated?', default=False)
+            'Return only after lastfile is updated?', default=False)
         return super().add_cmdline_args(parser, cfg)

@@ -52,6 +52,9 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     Changing the frames per second is not recommended, because the tip/tilt
     system will be consuming this image stream, and it needs to retain full
     control of what an individual frame looks like.
+
+    ARGS:
+    exptime - The exposure time in seconds.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -69,14 +72,16 @@ class SetGuiderExpTime(KPFTranslatorFunction):
         exptol = cfg.get('tolerances', 'guider_exptime_tolerance', fallback=0.01)
 
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
+        exptimeread = exptimekw.read(binary=True)
         exptime = args.get('exptime')
 
         expr = (f'($kpfguide.EXPTIME >= {exptime-exptol}) and '\
                 f'($kpfguide.EXPTIME <= {exptime+exptol})')
-        success = ktl.waitFor(expr, timeout=1)
+        success = ktl.waitFor(expr, timeout=exptimeread+1)
         if not success:
+            exptimeread = exptimekw.read(binary=True)
             log.error(f"Failed to set exposure time.")
-            log.error(f"Requested {exptime:.3f} s, found {exptimekw.read():.3f} s")
+            log.error(f"Requested {exptime:.3f} s, found {exptimeread:.3f} s")
         return success
 
     @classmethod

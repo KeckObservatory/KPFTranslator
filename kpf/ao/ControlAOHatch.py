@@ -6,6 +6,9 @@ from .. import log
 
 class ControlAOHatch(KPFTranslatorFunction):
     '''Control the AO Hatch
+    
+    ARGS:
+    destination - 'open' or 'close'
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -11,6 +11,9 @@ class WaitForND1(KPFTranslatorFunction):
     
     Allowed Values:
     "OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"
+    
+    ARGS:
+    CalND1 - The neutral density filter to put in the first filter wheel.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

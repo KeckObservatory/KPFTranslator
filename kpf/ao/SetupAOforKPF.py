@@ -8,7 +8,8 @@ from .TurnHepaOff import TurnHepaOff
 from .SetAODCStoSIM import SetAODCStoSIM
 from .ControlAOHatch import ControlAOHatch
 from .SetAFMtoMirror import SetAFMtoMirror
-from .SetPCUtoKPF import SetPCUtoKPF
+from .SendPCUtoHome import SendPCUtoHome
+from .SendPCUtoKPF import SendPCUtoKPF
 from .SetAFStoNGS import SetAFStoNGS
 
 
@@ -23,6 +24,8 @@ class SetupAOforKPF(KPFTranslatorFunction):
         7. Home PCU <-- to be implemented and tested
         8. Move PCU to the KPF position <-- to be implemented and tested
         9. Open AO hatch 
+    
+    ARGS: None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -48,8 +51,11 @@ class SetupAOforKPF(KPFTranslatorFunction):
         log.info('Set AFS to NGS')
         SetAFStoNGS.execute({})
 
+        log.info('Move PCU to Home')
+        SendPCUtoHome.execute({})
+
         log.info('Move PCU to KPF')
-        SetPCUtoKPF.execute({})
+        SendPCUtoKPF.execute({})
 
         log.info('Open AO hatch')
         ControlAOHatch.execute({'destination': 'open'})

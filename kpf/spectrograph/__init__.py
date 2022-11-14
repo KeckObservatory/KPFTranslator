@@ -1,6 +1,7 @@
 import ktl
 
-from .. import log
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 ##-------------------------------------------------------------------------
 ## Pre- or Post- Conditions
@@ -12,13 +13,11 @@ def green_detector_power_is_on():
     ccdpower = kpfgreen['CCDPOWER'].read()
     powersupply = kpfgreen['POWERSUPPLY'].read()
     if ccdpower in ['Intermediate', 'Standby']:
-        log.error(f"  Green detector: CCDPOWER = {ccdpower}")
+        raise FailedPreCondition(f"Green detector: CCDPOWER = {ccdpower}")
     if ccdpower in ['Unknown', 'Off'] or powersupply == 'NotOK':
         msg = (f"Green detector: CCDPOWER = {ccdpower}, "
                f"POWERSUPPLY = {powersupply}")
-        log.error(msg)
-        return False
-    return True
+        raise FailedPreCondition(msg)
 
 
 def red_detector_power_is_on():
@@ -28,13 +27,11 @@ def red_detector_power_is_on():
     ccdpower = kpfred['CCDPOWER'].read()
     powersupply = kpfred['POWERSUPPLY'].read()
     if ccdpower in ['Intermediate', 'Standby']:
-        log.error(f"  Red detector: CCDPOWER = {ccdpower}")
+        raise FailedPreCondition(f"Red detector: CCDPOWER = {ccdpower}")
     if ccdpower in ['Unknown', 'Off'] or powersupply == 'NotOK':
         msg = (f"Red detector: CCDPOWER = {ccdpower}, "
                f"POWERSUPPLY = {powersupply}")
-        log.error(msg)
-        return False
-    return True
+        raise FailedPreCondition(msg)
 
 
 def green_detector_temperature_is_ok(temperature_tolerance=1):
@@ -47,11 +44,7 @@ def green_detector_temperature_is_ok(temperature_tolerance=1):
     if diff > temperature_tolerance:
         msg = (f"Green detector temperature out of range: "
                f"{current:.1f} != {setpoint:.1f}")
-        log.error(msg)
-        return False
-    else:
-        log.debug(f'Green detector temperature ok (diff={diff:.3f} C)')
-        return True
+        raise FailedPreCondition(msg)
 
 
 def red_detector_temperature_is_ok(temperature_tolerance=1):
@@ -64,11 +57,7 @@ def red_detector_temperature_is_ok(temperature_tolerance=1):
     if diff > temperature_tolerance:
         msg = (f"Red detector temperature out of range: "
                f"{current:.1f} != {setpoint:.1f}")
-        log.error(msg)
-        return False
-    else:
-        log.debug(f'Red detector temperature ok (diff={diff:.3f} C)')
-        return True
+        raise FailedPreCondition(msg)
 
 
 def cahk_detector_temperature_is_ok(temperature_tolerance=1):
@@ -81,8 +70,4 @@ def cahk_detector_temperature_is_ok(temperature_tolerance=1):
     if diff > temperature_tolerance:
         msg = (f"Ca H&K detector temperature out of range: "
                f"{current:.1f} C != {setpoint:.1f} C")
-        log.error(msg)
-        return False
-    else:
-        log.debug(f'Ca H&K detector temperature ok (diff={diff:.3f} C)')
-        return True
+        raise FailedPreCondition(msg)

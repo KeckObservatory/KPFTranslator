@@ -9,6 +9,9 @@ from . import guider_is_saving, guider_is_active
 
 class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     '''Trigger a single guider exposure using the EXPOSE keyword.
+    
+    ARGS:
+    wait - Return only after lastfile is updated? (default = False)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -17,12 +20,15 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
+        kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfguide['EXPTIME'].read(binary=True)
         lastfile = kpfguide['LASTFILE']
         initial_lastfile = lastfile.read()
+        log.debug(f"Triggering a new guider exposure.")
+        log.debug(f"  kpfexpose.OBJECT = {kpfexpose['OBJECT'].read()}")
         kpfguide['EXPOSE'].write('yes')
         if args.get('wait', True) is True:
-            expr = f"($kpfguide.LASTFILE != {initial_lastfile})"
+            expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
             ktl.waitFor(expr, timeout=exptime+1)
 
     @classmethod
