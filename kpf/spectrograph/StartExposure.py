@@ -3,7 +3,7 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import (green_detector_power_is_on, green_detector_temperature_is_ok,
                red_detector_power_is_on, red_detector_temperature_is_ok,

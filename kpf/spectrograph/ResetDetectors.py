@@ -2,7 +2,7 @@ import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 
 
