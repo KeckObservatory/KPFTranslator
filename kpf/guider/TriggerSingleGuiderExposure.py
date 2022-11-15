@@ -25,7 +25,7 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
         lastfile = kpfguide['LASTFILE']
         initial_lastfile = lastfile.read()
         log.debug(f"Triggering a new guider exposure.")
-        log.debug(f"  kpfexpose.OBJECT = {kpfexpose['OBJECT'].read()}")
+        log.debug(f"kpfexpose.OBJECT = {kpfexpose['OBJECT'].read()}")
         kpfguide['EXPOSE'].write('yes')
         if args.get('wait', True) is True:
             expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"

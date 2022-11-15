@@ -37,7 +37,7 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         if args.get('SSS_CalSciSky', False) is True:
             shutter_list.append('Cal_SciSky')
         shutters_string = ','.join(shutter_list)
-        log.debug(f"  Setting source select shutters to '{shutters_string}'")
+        log.debug(f"Setting source select shutters to '{shutters_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['SRC_SHUTTERS'].write(shutters_string)
 

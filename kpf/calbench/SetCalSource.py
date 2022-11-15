@@ -31,7 +31,7 @@ class SetCalSource(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         target = args.get('CalSource')
         kpfcal = ktl.cache('kpfcal')
-        log.debug(f"  Setting Cal Source (Octagon) to {target}")
+        log.debug(f"Setting Cal Source (Octagon) to {target}")
         kpfcal['OCTAGON'].write(target, wait=args.get('wait', True))
 
     @classmethod

@@ -35,7 +35,7 @@ class SetTimedShutters(KPFTranslatorFunction):
         if args.get('TimedShutter_CaHK', False) is True:
             timed_shutters_list.append('Ca_HK')
         timed_shutters_string = ','.join(timed_shutters_list)
-        log.debug(f"  Setting timed shutters to '{timed_shutters_string}'")
+        log.debug(f"Setting timed shutters to '{timed_shutters_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['TIMED_TARG'].write(timed_shutters_string)
 

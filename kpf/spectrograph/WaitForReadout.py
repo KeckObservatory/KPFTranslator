@@ -43,15 +43,15 @@ class WaitForReadout(KPFTranslatorFunction):
         if len(wait_logic) > 0: 
             wait_logic +=' and '
         wait_logic += '($kpfexpose.EXPOSE == 4)'
-        log.debug(f"  Waiting ({wait_time:.0f}s max) for readout to begin")
+        log.debug(f"Waiting ({wait_time:.0f}s max) for readout to begin")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
         if success is True:
             if 'Green' in detector_list:
                 nextfile = ktl.cache('kpfgreen', 'NEXTFILE')
-                log.debug(f"  Green nextfile: {nextfile.read()}")
+                log.debug(f"Green nextfile: {nextfile.read()}")
             if 'Red' in detector_list:
                 nextfile = ktl.cache('kpfred', 'NEXTFILE')
-                log.debug(f"  Red nextfile:   {nextfile.read()}")
+                log.debug(f"Red nextfile:   {nextfile.read()}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -60,7 +60,7 @@ class WaitForReadout(KPFTranslatorFunction):
         detector_list = detectors.split(',')
         expose = kpfexpose['EXPOSE']
         status = expose.read()
-        
+
         notok = [(status not in ['Readout', 'Ready'])]
         msg = f"Final detector state mismatch: {status} != Readout ("
         if 'Green' in detector_list:
