@@ -191,7 +191,7 @@ SEQ_Calibrations:
   SSS_Sky: True
   TimedShutter_SimulCal: False
 - CalSource: U_daily
-  Object: autocal-une-scal
+  Object: autocal-une-cal
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
