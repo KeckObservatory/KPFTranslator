@@ -74,6 +74,12 @@ class RunCalOB(KPFTranslatorFunction):
         else:
             raise NotImplementedError('Passing OB as args not implemented')
 
+        log.info('---------------------------------------------------------')
+        log.info(f"Running RunCalOB")
+        for key in OB:
+            log.info(f"  {key}: {OB[key]}")
+        log.info('---------------------------------------------------------')
+
         # Setup
         log.info(f"Wait for any existing exposures to be complete")
         WaitForReady.execute({})
