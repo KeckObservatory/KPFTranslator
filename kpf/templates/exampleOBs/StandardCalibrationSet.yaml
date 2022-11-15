@@ -1,7 +1,7 @@
 Template_Name: kpf_cal
 Template_Version: 0.3
 
-TriggerCaHK: True
+TriggerCaHK: False
 TriggerGreen: True
 TriggerRed: True
 SEQ_Darks:
