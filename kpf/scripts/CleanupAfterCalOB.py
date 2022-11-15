@@ -9,6 +9,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 from ..calbench.CalLampPower import CalLampPower
+from ..spectrograph.SetObject import SetObject
 
 
 class CleanupAfterCalOB(KPFTranslatorFunction):
