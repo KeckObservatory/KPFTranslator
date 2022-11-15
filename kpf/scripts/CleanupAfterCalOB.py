@@ -67,7 +67,8 @@ class CleanupAfterCalOB(KPFTranslatorFunction):
         sequence = OB.get('SEQ_Calibrations')
         lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
         for lamp in lamps:
-            if lamp != 'WideFlat':
+            if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
+                        'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'off'})
 
     @classmethod
