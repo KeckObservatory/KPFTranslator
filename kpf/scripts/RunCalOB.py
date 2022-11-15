@@ -123,6 +123,24 @@ class RunCalOB(KPFTranslatorFunction):
             log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
             SetExptime.execute(calibration)
             log.info(f"Setting source select shutters")
+
+            # No need to specify SSS_CalSciSky in OB/calibration
+            #   SSS_CalSciSky = SSS_Science or SSS_Sky
+            calibration['SSS_CalSciSky'] = calibration['SSS_Science'] or calibration['SSS_Sky']
+            log.debug(f"Setting SSS_CalSciSky: {calibration['SSS_CalSciSky']}")
+            # No need to specify TimedShutter_Scrambler in OB/calibration
+            #   TimedShutter_Scrambler = SSS_Science or SSS_Sky
+            calibration['TimedShutter_Scrambler'] = calibration['SSS_Science'] or calibration['SSS_Sky']
+            log.debug(f"Setting TimedShutter_Scrambler: {calibration['TimedShutter_Scrambler']}")
+            # No need to specify TimedShutter_CaHK in OB/calibration
+            #   TimedShutter_CaHK = TriggerCaHK
+            calibration['TimedShutter_CaHK'] = OB['TriggerCaHK']
+            log.debug(f"Setting TimedShutter_CaHK: {calibration['TimedShutter_CaHK']}")
+            # No need to specify TimedShutter_FlatField in OB/calibration
+            #   TimedShutter_FlatField = (CalSource == WideFlat)
+            calibration['TimedShutter_FlatField'] = (calibration['CalSource'] == 'WideFlat')
+            log.debug(f"Setting TimedShutter_FlatField: {calibration['TimedShutter_FlatField']}")
+
             SetSourceSelectShutters.execute(calibration)
             log.info(f"Setting timed shutters")
             SetTimedShutters.execute(calibration)
