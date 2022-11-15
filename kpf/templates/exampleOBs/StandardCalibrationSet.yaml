@@ -6,17 +6,17 @@ TriggerGreen: True
 TriggerRed: True
 SEQ_Darks:
 - CalSource: Home
-  Object: Bias
+  Object: autocal-bias
   nExp: 11
   Exptime: 0
 - CalSource: Home
-  Object: Dark
-  nExp: 5
-  Exptime: 300
+  Object: autocal-dark
+  nExp: 3
+  Exptime: 1200
 SEQ_Calibrations:
 # Octagon BrdbandFiber Set
 - CalSource: BrdbandFiber
-  Object: BrdbandFiber Sci
+  Object: autocal-flat-sci
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
@@ -25,7 +25,7 @@ SEQ_Calibrations:
   SSS_Sky: False
   TimedShutter_SimulCal: False
 - CalSource: BrdbandFiber
-  Object: BrdbandFiber Sky
+  Object: autocal-flat-sky
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
@@ -34,7 +34,7 @@ SEQ_Calibrations:
   SSS_Sky: True
   TimedShutter_SimulCal: False
 - CalSource: BrdbandFiber
-  Object: BrdbandFiber Cal
+  Object: autocal-flat-cal
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
@@ -43,7 +43,7 @@ SEQ_Calibrations:
   SSS_Sky: False
   TimedShutter_SimulCal: True
 - CalSource: BrdbandFiber
-  Object: BrdbandFiber All
+  Object: autocal-flat-all
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
@@ -53,182 +53,158 @@ SEQ_Calibrations:
   TimedShutter_SimulCal: True
 # WideFlat
 - CalSource: WideFlat
-  Object: WideFlat 6 mm f/5
-  FF_FiberPos: 6 mm f/5
-  nExp: 5
-  Exptime: 0.1
-  SSS_Science: False
-  SSS_Sky: False
-  TimedShutter_SimulCal: False
-- CalSource: WideFlat
-  Object: WideFlat 7.5 mm f/4
+  Object: autocal-wideflat
   FF_FiberPos: 7.5 mm f/4
   nExp: 5
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
   TimedShutter_SimulCal: False
-- CalSource: WideFlat
-  Object: WideFlat 10 mm f/3
-  FF_FiberPos: 10 mm f/3
-  nExp: 5
-  Exptime: 0.1
-  SSS_Science: False
-  SSS_Sky: False
-  TimedShutter_SimulCal: False
-- CalSource: WideFlat
-  Object: WideFlat 13.2 mm f/2.3
-  FF_FiberPos: 13.2 mm f/2.3
-  nExp: 5
-  Exptime: 0.1
-  SSS_Science: False
-  SSS_Sky: False
-  TimedShutter_SimulCal: False
 # LFCFiber Set
-- CalSource: LFCFiber
-  Object: LFCFiber Sci
-  CalND1: OD 0.1
-  CalND2: OD 0.1
-  nExp: 5
-  Exptime: 60
-  SSS_Science: True
-  SSS_Sky: False
-  TimedShutter_SimulCal: False
-- CalSource: LFCFiber
-  Object: LFCFiber Sky
-  CalND1: OD 0.1
-  CalND2: OD 0.1
-  nExp: 5
-  Exptime: 60
-  SSS_Science: False
-  SSS_Sky: True
-  TimedShutter_SimulCal: False
-- CalSource: LFCFiber
-  Object: LFCFiber Cal
-  CalND1: OD 0.1
-  CalND2: OD 0.1
-  nExp: 5
-  Exptime: 60
-  SSS_Science: False
-  SSS_Sky: False
-  TimedShutter_SimulCal: True
-- CalSource: LFCFiber
-  Object: LFCFiber All
-  CalND1: OD 0.1
-  CalND2: OD 0.1
-  nExp: 5
-  Exptime: 60
-  SSS_Science: True
-  SSS_Sky: True
-  TimedShutter_SimulCal: True
+# - CalSource: LFCFiber
+#   Object: autocal-lfc-sci
+#   CalND1: OD 0.1
+#   CalND2: OD 0.1
+#   nExp: 5
+#   Exptime: 0.5
+#   SSS_Science: True
+#   SSS_Sky: False
+#   TimedShutter_SimulCal: False
+# - CalSource: LFCFiber
+#   Object: autocal-lfc-sky
+#   CalND1: OD 0.1
+#   CalND2: OD 0.1
+#   nExp: 5
+#   Exptime: 0.5
+#   SSS_Science: False
+#   SSS_Sky: True
+#   TimedShutter_SimulCal: False
+# - CalSource: LFCFiber
+#   Object: autocal-lfc-cal
+#   CalND1: OD 0.1
+#   CalND2: OD 0.1
+#   nExp: 5
+#   Exptime: 0.5
+#   SSS_Science: False
+#   SSS_Sky: False
+#   TimedShutter_SimulCal: True
+# - CalSource: LFCFiber
+#   Object: autocal-lfc-all
+#   CalND1: OD 0.1
+#   CalND2: OD 0.1
+#   nExp: 5
+#   Exptime: 0.5
+#   SSS_Science: True
+#   SSS_Sky: True
+#   TimedShutter_SimulCal: True
 # EtalonFiber Set
-- CalSource: EtalonFiber
-  Object: EtalonFiber Sci
+# - CalSource: EtalonFiber
+#   Object: autocal-etalon-sci
+#   CalND1: OD 0.1
+#   CalND2: OD 0.1
+#   nExp: 5
+#   Exptime: 5
+#   SSS_Science: True
+#   SSS_Sky: False
+#   TimedShutter_SimulCal: False
+# - CalSource: EtalonFiber
+#   Object: autocal-etalon-sky
+#   CalND1: OD 0.1
+#   CalND2: OD 0.1
+#   nExp: 5
+#   Exptime: 5
+#   SSS_Science: False
+#   SSS_Sky: True
+#   TimedShutter_SimulCal: False
+# - CalSource: EtalonFiber
+#   Object: autocal-etalon-cal
+#   CalND1: OD 0.1
+#   CalND2: OD 0.1
+#   nExp: 5
+#   Exptime: 5
+#   SSS_Science: False
+#   SSS_Sky: False
+#   TimedShutter_SimulCal: True
+# - CalSource: EtalonFiber
+#   Object: autocal-etalon-all
+#   CalND1: OD 0.1
+#   CalND2: OD 0.1
+#   nExp: 5
+#   Exptime: 5
+#   SSS_Science: True
+#   SSS_Sky: True
+#   TimedShutter_SimulCal: True
+# Thorium set
+- CalSource: Th_gold
+  Object: autocal-thar-sci
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
-  Exptime: 60
+  Exptime: 2
   SSS_Science: True
   SSS_Sky: False
   TimedShutter_SimulCal: False
-- CalSource: EtalonFiber
-  Object: EtalonFiber Sky
+- CalSource: Th_gold
+  Object: autocal-thar-sky
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
-  Exptime: 60
+  Exptime: 2
   SSS_Science: False
   SSS_Sky: True
   TimedShutter_SimulCal: False
-- CalSource: EtalonFiber
-  Object: EtalonFiber Cal
+- CalSource: Th_gold
+  Object: autocal-thar-cal
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
-  Exptime: 60
+  Exptime: 2
   SSS_Science: False
   SSS_Sky: False
   TimedShutter_SimulCal: True
-- CalSource: EtalonFiber
-  Object: EtalonFiber All
+- CalSource: Th_gold
+  Object: autocal-thar-all
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
-  Exptime: 60
-  SSS_Science: True
-  SSS_Sky: True
-  TimedShutter_SimulCal: True
-# Th_daily set
-- CalSource: Th_daily
-  Object: Th_daily Sci
-  CalND1: OD 0.1
-  CalND2: OD 0.1
-  nExp: 5
-  Exptime: 60
-  SSS_Science: True
-  SSS_Sky: False
-  TimedShutter_SimulCal: False
-- CalSource: Th_daily
-  Object: Th_daily Sky
-  CalND1: OD 0.1
-  CalND2: OD 0.1
-  nExp: 5
-  Exptime: 60
-  SSS_Science: False
-  SSS_Sky: True
-  TimedShutter_SimulCal: False
-- CalSource: Th_daily
-  Object: Th_daily Cal
-  CalND1: OD 0.1
-  CalND2: OD 0.1
-  nExp: 5
-  Exptime: 60
-  SSS_Science: False
-  SSS_Sky: False
-  TimedShutter_SimulCal: True
-- CalSource: Th_daily
-  Object: Th_daily All
-  CalND1: OD 0.1
-  CalND2: OD 0.1
-  nExp: 5
-  Exptime: 60
+  Exptime: 2
   SSS_Science: True
   SSS_Sky: True
   TimedShutter_SimulCal: True
 # U_daily set
 - CalSource: U_daily
-  Object: U_daily Sci
+  Object: autocal-une-sci
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
-  Exptime: 60
+  Exptime: 5
   SSS_Science: True
   SSS_Sky: False
   TimedShutter_SimulCal: False
 - CalSource: U_daily
-  Object: U_daily Sky
+  Object: autocal-une-sky
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
-  Exptime: 60
+  Exptime: 5
   SSS_Science: False
   SSS_Sky: True
   TimedShutter_SimulCal: False
 - CalSource: U_daily
-  Object: U_daily Cal
+  Object: autocal-une-scal
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
-  Exptime: 60
+  Exptime: 5
   SSS_Science: False
   SSS_Sky: False
   TimedShutter_SimulCal: True
 - CalSource: U_daily
-  Object: U_daily All
+  Object: autocal-une-all
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 5
-  Exptime: 60
+  Exptime: 5
   SSS_Science: True
   SSS_Sky: True
   TimedShutter_SimulCal: True
