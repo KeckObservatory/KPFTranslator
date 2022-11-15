@@ -97,8 +97,8 @@ class RunCalOB(KPFTranslatorFunction):
         CalLampPower.execute({'lamp': 'CaHKLED', 'power': 'off'})
         CalLampPower.execute({'lamp': 'SciLED', 'power': 'off'})
         CalLampPower.execute({'lamp': 'SkyLED', 'power': 'off'})
-        log.info(f"Ensuring Cal FVC is off")
-        FVCPower.execute({'camera': 'CAL', 'power': 'off'})
+#         log.info(f"Ensuring Cal FVC is off")
+#         FVCPower.execute({'camera': 'CAL', 'power': 'off'})
 
         # First Do the darks and biases
         darks = OB.get('SEQ_Darks', [])
