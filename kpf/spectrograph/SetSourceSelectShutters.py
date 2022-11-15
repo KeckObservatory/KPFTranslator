@@ -40,6 +40,8 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         log.debug(f"Setting source select shutters to '{shutters_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['SRC_SHUTTERS'].write(shutters_string)
+        shim_time = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -63,14 +65,19 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'SSS_Science', default=False,
-                                   'Open the SciSelect shutter?')
-        parser = cls._add_bool_arg(parser, 'SSS_Sky', default=False,
-                                   'Open the SkySelect shutter?')
-        parser = cls._add_bool_arg(parser, 'SSS_CalSciSky', default=False,
-                                   'Open the Cal_SciSky shutter?')
-        parser = cls._add_bool_arg(parser, 'SSS_SoCalSci', default=False,
-                                   'Open the SoCalSci shutter?')
-        parser = cls._add_bool_arg(parser, 'SSS_SoCalCal', default=False,
-                                   'Open the SoCalCal shutter?')
+        parser = cls._add_bool_arg(parser, 'SSS_Science',
+                                   'Open the SciSelect shutter?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'SSS_Sky',
+                                   'Open the SkySelect shutter?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'SSS_CalSciSky',
+                                   'Open the Cal_SciSky shutter?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'SSS_SoCalSci',
+                                   'Open the SoCalSci shutter?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'SSS_SoCalCal',
+                                   'Open the SoCalCal shutter?',
+                                   default=False)
         return super().add_cmdline_args(parser, cfg)

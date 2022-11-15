@@ -20,6 +20,7 @@ class StartExposure(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        kpfexpose = ktl.cache('kpfexpose')
         detectors = kpfexpose['TRIG_TARG'].read()
         detector_list = detectors.split(',')
         if 'Green' in detector_list:
@@ -30,6 +31,7 @@ class StartExposure(KPFTranslatorFunction):
             red_detector_temperature_is_ok()
         if 'Ca_HK' in detector_list:
             cahk_detector_temperature_is_ok()
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):

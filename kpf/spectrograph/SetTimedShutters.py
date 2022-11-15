@@ -38,6 +38,8 @@ class SetTimedShutters(KPFTranslatorFunction):
         log.debug(f"Setting timed shutters to '{timed_shutters_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['TIMED_TARG'].write(timed_shutters_string)
+        shim_time = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
