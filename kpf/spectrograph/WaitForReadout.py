@@ -48,10 +48,10 @@ class WaitForReadout(KPFTranslatorFunction):
         if success is True:
             if 'Green' in detector_list:
                 nextfile = ktl.cache('kpfgreen', 'NEXTFILE')
-                log.debug(f"Green nextfile: {nextfile.read()}")
+                log.info(f"Green nextfile: {nextfile.read()}")
             if 'Red' in detector_list:
                 nextfile = ktl.cache('kpfred', 'NEXTFILE')
-                log.debug(f"Red nextfile:   {nextfile.read()}")
+                log.info(f"Red nextfile: {nextfile.read()}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
