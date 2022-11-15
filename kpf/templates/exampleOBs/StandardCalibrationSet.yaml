@@ -53,33 +53,41 @@ SEQ_Calibrations:
   TimedShutter_SimulCal: True
 # WideFlat
 - CalSource: WideFlat
-  Object: autocal-wideflat
+  Object: autocal-wideflat-f5
   FF_FiberPos: 6 mm f/5
-  nExp: 5
+  nExp: 1
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
   TimedShutter_SimulCal: False
 - CalSource: WideFlat
-  Object: autocal-wideflat
+  Object: autocal-wideflat-f4
   FF_FiberPos: 7.5 mm f/4
-  nExp: 5
+  nExp: 1
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
   TimedShutter_SimulCal: False
 - CalSource: WideFlat
-  Object: autocal-wideflat
+  Object: autocal-wideflat-f3
   FF_FiberPos: 10 mm f/3
-  nExp: 5
+  nExp: 1
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
   TimedShutter_SimulCal: False
 - CalSource: WideFlat
-  Object: autocal-wideflat
+  Object: autocal-wideflat-f2.3
   FF_FiberPos: 13.2 mm f/2.3
-  nExp: 5
+  nExp: 1
+  Exptime: 0.1
+  SSS_Science: False
+  SSS_Sky: False
+  TimedShutter_SimulCal: False
+- CalSource: WideFlat
+  Object: autocal-wideflat-open
+  FF_FiberPos: Open
+  nExp: 1
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
