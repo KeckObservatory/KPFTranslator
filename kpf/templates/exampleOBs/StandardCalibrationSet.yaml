@@ -23,7 +23,7 @@ SEQ_Calibrations:
   Exptime: 0.2
   SSS_Science: True
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -36,7 +36,7 @@ SEQ_Calibrations:
   Exptime: 0.2
   SSS_Science: False
   SSS_Sky: True
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -75,7 +75,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: False
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: False
@@ -87,7 +87,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: False
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: False
@@ -99,7 +99,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: False
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: False
@@ -111,7 +111,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: False
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: False
@@ -125,7 +125,7 @@ SEQ_Calibrations:
   Exptime: 60
   SSS_Science: True
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -138,7 +138,7 @@ SEQ_Calibrations:
   Exptime: 60
   SSS_Science: False
   SSS_Sky: True
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -178,7 +178,7 @@ SEQ_Calibrations:
   Exptime: 60
   SSS_Science: True
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -191,7 +191,7 @@ SEQ_Calibrations:
   Exptime: 60
   SSS_Science: False
   SSS_Sky: True
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -231,7 +231,7 @@ SEQ_Calibrations:
   Exptime: 60
   SSS_Science: True
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -244,7 +244,7 @@ SEQ_Calibrations:
   Exptime: 60
   SSS_Science: False
   SSS_Sky: True
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -284,7 +284,7 @@ SEQ_Calibrations:
   Exptime: 60
   SSS_Science: True
   SSS_Sky: False
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
@@ -297,7 +297,7 @@ SEQ_Calibrations:
   Exptime: 60
   SSS_Science: False
   SSS_Sky: True
-  SSS_CalSciSky: False
+  SSS_CalSciSky: True
   TimedShutter_Scrambler: True
   TimedShutter_SimulCal: False
   TimedShutter_CaHK: True
