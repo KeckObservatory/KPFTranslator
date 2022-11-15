@@ -61,11 +61,16 @@ class CleanupAfterCalOB(KPFTranslatorFunction):
             log.error(msg)
             raise NotImplementedError(msg)
 
-        log.info('---------------------------------------------------------')
+        log.info('-------------------------')
         log.info(f"Running CleanupAfterCalOB")
         for key in OB:
-            log.info(f"  {key}: {OB[key]}")
-        log.info('---------------------------------------------------------')
+            if key not in ['SEQ_Darks', 'SEQ_Calibrations']:
+                log.debug(f"  {key}: {OB[key]}")
+            else:
+                log.debug(f"  {key}:")
+                for entry in OB[key]:
+                    log.debug(f"    {entry}")
+        log.info('-------------------------')
 
         # Set OBJECT back to empty string
         SetObject.execute({'Object': ''})
