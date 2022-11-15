@@ -4,7 +4,7 @@
     "ui_name" : "KPF Calibration",
     "instrument" : "KPF",
     "template_type" : "calibration",
-    "version" : "0.3",
+    "version" : "0.4",
     "script" : "kpf_cal_script"
 },
 "parameters" : {
@@ -187,18 +187,6 @@
                 "type" : "boolean",
                 "units" : null
             },
-            "INST_CFG_SSS_CalSciSky" : {
-                "ui_name" : "Should the source select shutter for CalSciSky be open?",
-                "option" : "set",
-                "allowed" : [
-                    True,
-                    False
-                ],
-                "default" : True,
-                "optionality" : "required",
-                "type" : "boolean",
-                "units" : null
-            },
             "INST_CFG_SSS_SoCalSci" : {
                 "ui_name" : "Should the source select shutter for SoCal science be open?",
                 "option" : "set",
@@ -223,35 +211,8 @@
                 "type" : "boolean",
                 "units" : null
             },
-            "INST_CFG_TimedShutter_Scrambler" : {
-                "ui_name" : "Trigger the timed shutter for the scrambler?",
-                "option" : "set",
-                "allowed" : [True, False],
-                "default" : True,
-                "optionality" : "required",
-                "type" : "boolean",
-                "units" : null
-            },
             "INST_CFG_TimedShutter_SimulCal" : {
                 "ui_name" : "Trigger the timed shutter for the simultaneous calibration fiber?",
-                "option" : "set",
-                "allowed" : [True, False],
-                "default" : True,
-                "optionality" : "required",
-                "type" : "boolean",
-                "units" : null
-            },
-            "INST_CFG_TimedShutter_FlatField" : {
-                "ui_name" : "Trigger the timed shutter for the flat field fiber?",
-                "option" : "set",
-                "allowed" : [True, False],
-                "default" : True,
-                "optionality" : "required",
-                "type" : "boolean",
-                "units" : null
-            },
-            "INST_CFG_TimedShutter_CaHK" : {
-                "ui_name" : "Trigger the timed shutter for the Ca H&K spectrograph?",
                 "option" : "set",
                 "allowed" : [True, False],
                 "default" : True,
