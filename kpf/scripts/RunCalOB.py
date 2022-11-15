@@ -140,7 +140,7 @@ class RunCalOB(KPFTranslatorFunction):
                 log.info(f"Waiting for Octagon (CalSource)")
                 WaitForCalSource.execute({'CalSource': 'Home'})
                 log.info(f"Waiting for Flat Field Fiber Position")
-                WaitForFlatFieldFiberPos.execute(args)
+                WaitForFlatFieldFiberPos.execute(calibration)
                 WaitForConfigureFIU.execute({'mode': 'Calibration'})
             ## Setup Octagon Lamps and LFCFiber
             elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
