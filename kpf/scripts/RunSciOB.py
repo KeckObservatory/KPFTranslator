@@ -86,10 +86,8 @@ class RunSciOB(KPFTranslatorFunction):
         log.info('-------------------------')
 
         observations = OB.get('SEQ_Observations', [])
-        if len(observations) > 0:
 
-        for obs in observations:
-
+        raise NotImplementedError("Science OBs not implemented yet")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

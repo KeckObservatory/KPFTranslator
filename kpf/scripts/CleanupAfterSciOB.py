@@ -72,6 +72,7 @@ class CleanupAfterSciOB(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        raise NotImplementedError("Science OBs not implemented yet")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
