@@ -131,34 +131,10 @@ class RunCalOB(KPFTranslatorFunction):
         # Run lamp calibrations
         for calibration in OB.get('SEQ_Calibrations'):
             calsource = calibration.get('CalSource')
-            log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
-            SetExptime.execute(calibration)
-            log.info(f"Setting source select shutters")
 
-            # No need to specify SSS_CalSciSky in OB/calibration
-            #   SSS_CalSciSky = SSS_Science or SSS_Sky
-            calibration['SSS_CalSciSky'] = calibration['SSS_Science'] or calibration['SSS_Sky']
-            log.debug(f"Automatically setting SSS_CalSciSky: {calibration['SSS_CalSciSky']}")
-            # No need to specify TimedShutter_Scrambler in OB/calibration
-            #   TimedShutter_Scrambler = SSS_Science or SSS_Sky
-            calibration['TimedShutter_Scrambler'] = calibration['SSS_Science'] or calibration['SSS_Sky']
-            log.debug(f"Automatically setting TimedShutter_Scrambler: {calibration['TimedShutter_Scrambler']}")
-            # No need to specify TimedShutter_CaHK in OB/calibration
-            #   TimedShutter_CaHK = TriggerCaHK
-            calibration['TimedShutter_CaHK'] = OB['TriggerCaHK']
-            log.debug(f"Automatically setting TimedShutter_CaHK: {calibration['TimedShutter_CaHK']}")
-            # No need to specify TimedShutter_FlatField in OB/calibration
-            #   TimedShutter_FlatField = (CalSource == WideFlat)
-            calibration['TimedShutter_FlatField'] = (calibration['CalSource'] == 'WideFlat')
-            log.debug(f"Automatically setting TimedShutter_FlatField: {calibration['TimedShutter_FlatField']}")
-
-            SetSourceSelectShutters.execute(calibration)
-            log.info(f"Setting timed shutters")
-            SetTimedShutters.execute(calibration)
-            log.info(f"Setting OBJECT: {calibration.get('Object')}")
-            SetObject.execute(calibration)
-            nexp = calibration.get('nExp', 1)
-
+            ## ----------------------------------------------------------------
+            ## First, configure lamps and cal bench (may happen during readout)
+            ## ----------------------------------------------------------------
             ## Setup WideFlat
             if calsource == 'WideFlat':
                 log.info('Configuring for WideFlat')
@@ -202,17 +178,54 @@ class RunCalOB(KPFTranslatorFunction):
                 log.error(msg)
                 raise Exception(msg)
 
-            ## Take Actual Exposures
-            for j in range(nexp):
-                log.info(f"Starting expoure {j+1}/{nexp}")
-                StartExposure.execute({})
-                WaitForReadout.execute({})
-                log.info(f"  Readout has begun")
+            ## ----------------------------------------------------------------
+            ## Second, configure kpfexpose (may not happen during readout)
+            ## ----------------------------------------------------------------
+            # Wait for current exposure to readout
+            if kpfexpose['EXPOSE'].read() != 'Ready':
                 WaitForReady.execute({})
                 log.info(f"  Readout complete")
                 time_shim = cfg.get('times', 'archon_temperature_time_shim',
                                     fallback=2)
                 sleep(time_shim)
+            log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
+            SetExptime.execute(calibration)
+            log.info(f"Setting source select shutters")
+            # No need to specify SSS_CalSciSky in OB/calibration
+            calibration['SSS_CalSciSky'] = calibration['SSS_Science'] or calibration['SSS_Sky']
+            log.debug(f"Automatically setting SSS_CalSciSky: {calibration['SSS_CalSciSky']}")
+            # No need to specify TimedShutter_Scrambler in OB/calibration
+            calibration['TimedShutter_Scrambler'] = calibration['SSS_Science'] or calibration['SSS_Sky']
+            log.debug(f"Automatically setting TimedShutter_Scrambler: {calibration['TimedShutter_Scrambler']}")
+            # No need to specify TimedShutter_CaHK in OB/calibration
+            calibration['TimedShutter_CaHK'] = OB['TriggerCaHK']
+            log.debug(f"Automatically setting TimedShutter_CaHK: {calibration['TimedShutter_CaHK']}")
+            # No need to specify TimedShutter_FlatField in OB/calibration
+            calibration['TimedShutter_FlatField'] = (calibration['CalSource'] == 'WideFlat')
+            log.debug(f"Automatically setting TimedShutter_FlatField: {calibration['TimedShutter_FlatField']}")
+            SetSourceSelectShutters.execute(calibration)
+            log.info(f"Setting timed shutters")
+            SetTimedShutters.execute(calibration)
+            log.info(f"Setting OBJECT: {calibration.get('Object')}")
+            SetObject.execute(calibration)
+            nexp = calibration.get('nExp', 1)
+
+            ## ----------------------------------------------------------------
+            ## Third, take actual exposures
+            ## ----------------------------------------------------------------
+            for j in range(nexp):
+                # Wait for current exposure to readout
+                if kpfexpose['EXPOSE'].read() != 'Ready':
+                    WaitForReady.execute({})
+                    log.info(f"  Readout complete")
+                    time_shim = cfg.get('times', 'archon_temperature_time_shim',
+                                        fallback=2)
+                    sleep(time_shim)
+                # Start next exposure
+                log.info(f"Starting expoure {j+1}/{nexp}")
+                StartExposure.execute({})
+                WaitForReadout.execute({})
+                log.info(f"  Readout has begun")
             if calsource == 'WideFlat':
                 SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
 
