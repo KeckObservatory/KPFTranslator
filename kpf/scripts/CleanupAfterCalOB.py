@@ -73,10 +73,6 @@ class CleanupAfterCalOB(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        # Set OBJECT back to empty string
-        WaitForReady.execute({})
-        SetObject.execute({'Object': ''})
-
         # Power off lamps
         sequence = OB.get('SEQ_Calibrations')
         lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
@@ -84,6 +80,10 @@ class CleanupAfterCalOB(KPFTranslatorFunction):
             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+
+        # Set OBJECT back to empty string
+        WaitForReady.execute({})
+        SetObject.execute({'Object': ''})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
