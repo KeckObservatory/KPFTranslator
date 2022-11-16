@@ -1,0 +1,40 @@
+Template_Name: kpf_sci_stare
+Template_Version: 0.3
+
+Teff: 5700
+ExpMeter_Active: True
+ExpMeter_Band: 1
+ExpMeter_Flux: 100000
+TriggerCaHK: False
+TriggerGreen: True
+TriggerRed: True
+Guide_Mode: manual
+Guide_FPS: 
+Guide_CamGain: high
+Guide_LoopGain: 0.3
+SEQ_Observations:
+- Object: Long Exposure of My Target, no SimulCal
+  nExp: 3
+  Exptime: 120
+  SSS_Science: True
+  SSS_Sky: True
+  CalSource: Th_gold
+  TimedShutter_SimulCal: False
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+- Object: Short Exposure of My Target with SimulCal
+  nExp: 3
+  Exptime: 10
+  SSS_Science: True
+  SSS_Sky: True
+  CalSource: Th_gold
+  TimedShutter_SimulCal: True
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+
+# TimedShutter_Scrambler is based on SSS_Science and SSS_Sky
+# TimedShutter_CaHK is based on TriggerCaHK
+# Cal_SciSky shutter is always False
+# SoCalSciSky shutter is always False
+# SoCalCal shutter is always False
+# TimedShutter_FFFiber is always False

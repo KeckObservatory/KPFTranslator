@@ -8,14 +8,6 @@
     "script" : "kpf_sci_script"
 },
 "parameters" : {
-    "INST_CFG_Object" : {
-        "ui_name" : "Value for the OBJECT keyword",
-        "option" : "open",
-        "default" : null,
-        "optionality" : "required",
-        "type" : "string",
-        "units" : null
-    },
     "TARGET_INFO_Teff" : {
         "ui_name" : "Effective temperature input to DRP",
         "option" : "range",
@@ -28,33 +20,33 @@
         "type" : "float",
         "units" : "Kelvin",
     },
-    "TARGET_INFO_Vsini" : {
-        "ui_name" : "Target V sin(i)",
-        "option" : "float",
-        "allowed" : [
-        ],
-        "default" :  null,
-        "optionality" : "optional",
-        "type" : "string",
+
+    "INST_CFG_ExpMeter_Active" : {
+        "ui_name" : "Use the exposure meter to end the exposure?",
+        "option" : "set",
+        "allowed" : [True, False],
+        "default" : True,
+        "optionality" : "required",
+        "type" : "boolean",
         "units" : null
     },
-    "INST_CFG_nExp" : {
-        "ui_name" : "Number of exposures to take.",
-        "option" : "range",
-        "allowed" : [1, 100],
+    "INST_CFG_ExpMeter_Band" : {
+        "ui_name" : "Which wavelength band to end exposure based on.",
+        "option" : "set",
+        "allowed" : [1, 2, 3, 4],
         "default" : 1,
-        "optionality" : "required",
+        "optionality" : "optional",
         "type" : "int",
         "units" : null
     },
-    "INST_CFG_Exptime" : {
-        "ui_name" : "Exposure time of an individual science exposure.",
+    "INST_CFG_ExpMeter_Flux" : {
+        "ui_name" : "Flux level on exposure meter at which to end exposure.",
         "option" : "range",
-        "allowed" : [1, 3600],
-        "default" : 1,
-        "optionality" : "required",
+        "allowed" : [1, 1e10],
+        "default" : 1e5,
+        "optionality" : "optional",
         "type" : "float",
-        "units" : "seconds"
+        "units" : null
     },
     "INST_CFG_TriggerCaHK" : {
         "ui_name" : "Trigger the Ca H&K detector?",
@@ -83,60 +75,120 @@
         "type" : "boolean",
         "units" : null
     },
-    "INST_CFG_TimedShutter_Scrambler" : {
-        "ui_name" : "Trigger the timed shutter for the scrambler?",
+    "SEQ_Observations" : {
+        "ui_name" : "Calibration sources and exposures",
         "option" : "set",
-        "allowed" : [True, False],
-        "default" : True,
+        "default" : null,
         "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_TimedShutter_SimulCal" : {
-        "ui_name" : "Trigger the timed shutter for the simultaneous calibration fiber?",
-        "option" : "set",
-        "allowed" : [True, False],
-        "default" : True,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_TimedShutter_FlatField" : {
-        "ui_name" : "Trigger the timed shutter for the flat field fiber?",
-        "option" : "set",
-        "allowed" : [True, False],
-        "default" : True,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_TimedShutter_CaHK" : {
-        "ui_name" : "Trigger the timed shutter for the Ca H&K spectrograph?",
-        "option" : "set",
-        "allowed" : [True, False],
-        "default" : True,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_ExpMeter_Active" : {
-        "ui_name" : "Use the exposure meter to end the exposure?",
-        "option" : "set",
-        "allowed" : [True, False],
-        "default" : True,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_ExpMeter_Flux" : {
-        "ui_name" : "Flux level on exposure meter at which to end exposure.",
-        "option" : "range",
-        "allowed" : [1, 1e8],
-        "default" : 1e6,
-        "optionality" : "optional",
-        "type" : "float",
-        "units" : null
-    },
+        "type" : "array",
+        "allowed" : [
+            {
+            "INST_CFG_Object" : {
+                "ui_name" : "Value for the OBJECT keyword",
+                "option" : "open",
+                "default" : null,
+                "optionality" : "required",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_nExp" : {
+                "ui_name" : "Number of exposures to take.",
+                "option" : "range",
+                "allowed" : [1, 100],
+                "default" : 1,
+                "optionality" : "required",
+                "type" : "int",
+                "units" : null
+            },
+            "INST_CFG_Exptime" : {
+                "ui_name" : "Exposure time of an individual science exposure.",
+                "option" : "range",
+                "allowed" : [1, 3600],
+                "default" : 1,
+                "optionality" : "required",
+                "type" : "float",
+                "units" : "seconds"
+            },
+            "INST_CFG_SSS_Science" : {
+                "ui_name" : "Should the source select shutter for science be open?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_SSS_Sky" : {
+                "ui_name" : "Should the source select shutter for sky be open?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_CalSource" : {
+                "ui_name" : "Source to illuminate the simultaneous cal fiber (i.e. octagon position)",
+                "option" : "set",
+                "allowed" : [
+                ],
+                "default" : null,
+                "optionality" : "required",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_TimedShutter_SimulCal" : {
+                "ui_name" : "Trigger the timed shutter for the simultaneous calibration fiber?",
+                "option" : "set",
+                "allowed" : [True, False],
+                "default" : True,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_CalAutoFilter" : {
+                "ui_name" : "System should automatically set ND filters for cal source?",
+                "option" : "set",
+                "allowed" : [
+                    True,
+                    False
+                ],
+                "default" : False,
+                "optionality" : "required",
+                "type" : "boolean",
+                "units" : null
+            },
+            "INST_CFG_SimulCalND1" : {
+                "ui_name" : "ND filter in first filter wheel if INST_CFG_SimulCalAutoFilter is not True",
+                "option" : "set",
+                "allowed" : [
+                    # To be pulled from keywords
+                ],
+                "default" : "ND0.1",
+                "optionality" : "optional",
+                "type" : "string",
+                "units" : null
+            },
+            "INST_CFG_SimulCalND2" : {
+                "ui_name" : "ND filter in second filter wheel if INST_CFG_SimulCalAutoFilter is not True",
+                "option" : "set",
+                "allowed" : [
+                    # To be pulled from keywords
+                ],
+                "default" : "ND0.1",
+                "optionality" : "optional",
+                "type" : "string",
+                "units" : null
+            },
+        },
+        ],
+    }
     "INST_CFG_Guide_Mode" : {
         "ui_name" : "Mode for the guide camera",
         "option" : "set",
@@ -150,11 +202,11 @@
         "type" : "string",
         "units" : null
     },
-    "INST_CFG_Guide_FrameRate" : {
+    "INST_CFG_Guide_FPS" : {
         "ui_name" : "If INST_CFG_Guide_Mode is manual, frame rate for camera",
         "option" : "range",
         "allowed" : [
-            1,
+            0.05,
             400
         ],
         "default" : 100,
@@ -215,7 +267,7 @@
         "ui_name" : "Offset distance in RA from the guide star to science target",
         "option" : "range",
         "allowed" : [
-            0,
+            -20,
             20
         ],
         "default" : 0,
@@ -227,116 +279,12 @@
         "ui_name" : "Offset distance in Dec from the guide star to science target",
         "option" : "range",
         "allowed" : [
-            0,
+            -20,
             20
         ],
         "default" : 0,
         "optionality" : "required",
         "type" : "float",
         "units" : "arcsec",
-    },
-    "INST_CFG_SSS_Science" : {
-        "ui_name" : "Should the source select shutter for science be open?",
-        "option" : "set",
-        "allowed" : [
-            True,
-            False
-        ],
-        "default" : True,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_SSS_Sky" : {
-        "ui_name" : "Should the source select shutter for sky be open?",
-        "option" : "set",
-        "allowed" : [
-            True,
-            False
-        ],
-        "default" : True,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_SSS_CalSciSky" : {
-        "ui_name" : "Should the source select shutter for CalSciSky be open?",
-        "option" : "set",
-        "allowed" : [
-            True,
-            False
-        ],
-        "default" : True,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_SSS_SoCalSci" : {
-        "ui_name" : "Should the source select shutter for SoCal science be open?",
-        "option" : "set",
-        "allowed" : [
-            True,
-            False
-        ],
-        "default" : False,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_SSS_SoCalCal" : {
-        "ui_name" : "Should the source select shutter for SoCal cal be open?",
-        "option" : "set",
-        "allowed" : [
-            True,
-            False
-        ],
-        "default" : False,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_CalSource" : {
-        "ui_name" : "Source to illuminate the simultaneous cal fiber (i.e. octagon position)",
-        "option" : "set",
-        "allowed" : [
-        ],
-        "default" : null,
-        "optionality" : "required",
-        "type" : "string",
-        "units" : null
-    },
-    "INST_CFG_CalAutoFilter" : {
-        "ui_name" : "System should automatically set ND filters for cal source?",
-        "option" : "set",
-        "allowed" : [
-            True,
-            False
-        ],
-        "default" : True,
-        "optionality" : "required",
-        "type" : "boolean",
-        "units" : null
-    },
-    "INST_CFG_SimulCalND1" : {
-        "ui_name" : "ND filter in first filter wheel if INST_CFG_SimulCalAutoFilter is not True",
-        "option" : "set",
-        "allowed" : [
-            # To be pulled from keywords
-        ],
-        "default" : "ND0.1",
-        "optionality" : "optional",
-        "type" : "string",
-        "units" : null
-    },
-    "INST_CFG_SimulCalND2" : {
-        "ui_name" : "ND filter in second filter wheel if INST_CFG_SimulCalAutoFilter is not True",
-        "option" : "set",
-        "allowed" : [
-            # To be pulled from keywords
-        ],
-        "default" : "ND0.1",
-        "optionality" : "optional",
-        "type" : "string",
-        "units" : null
     },
 }
