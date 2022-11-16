@@ -10,6 +10,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 from ..calbench.CalLampPower import CalLampPower
 from ..spectrograph.SetObject import SetObject
+from ..spectrograph.WaitForReady import WaitForReady
 
 
 class CleanupAfterCalOB(KPFTranslatorFunction):
@@ -73,6 +74,7 @@ class CleanupAfterCalOB(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Set OBJECT back to empty string
+        WaitForReady.execute({})
         SetObject.execute({'Object': ''})
 
         # Power off lamps
