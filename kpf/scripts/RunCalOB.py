@@ -146,6 +146,8 @@ class RunCalOB(KPFTranslatorFunction):
         # Run lamp calibrations
         for calibration in OB.get('SEQ_Calibrations'):
             calsource = calibration.get('CalSource')
+            nd1 = calibration.get('CalND1')
+            nd2 = calibration.get('CalND2')
 
             ## ----------------------------------------------------------------
             ## First, configure lamps and cal bench (may happen during readout)
@@ -157,28 +159,21 @@ class RunCalOB(KPFTranslatorFunction):
                 FF_FiberPos = calibration.get('FF_FiberPos', None)
                 SetFlatFieldFiberPos.execute({'FF_FiberPos': FF_FiberPos,
                                               'wait': False})
-                log.info(f"Waiting for Octagon (CalSource)")
+                log.info(f"Waiting for Octagon/CalSource, FF_FiberPos, FIU")
                 WaitForCalSource.execute({'CalSource': 'Home'})
-                log.info(f"Waiting for Flat Field Fiber Position")
                 WaitForFlatFieldFiberPos.execute(calibration)
                 WaitForConfigureFIU.execute({'mode': 'Calibration'})
             ## Setup Octagon Lamps and LFCFiber
             elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
                                'Th_gold', 'LFCFiber']:
                 log.info(f"Setting cal source: {calsource}")
-                SetCalSource.execute({'CalSource': calsource,
-                                      'wait': False})
-                log.info(f"Set ND1 Filter Wheel: {calibration.get('CalND1')}")
-                SetND1.execute({'CalND1': calibration.get('CalND1'),
-                                'wait': False})
-                log.info(f"Set ND2 Filter Wheel: {calibration.get('CalND2')}")
-                SetND2.execute({'CalND2': calibration.get('CalND2'),
-                                'wait': False})
-                log.info(f"Waiting for ND1")
+                SetCalSource.execute({'CalSource': calsource, 'wait': False})
+                log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
+                SetND1.execute({'CalND1': nd1, 'wait': False})
+                SetND2.execute({'CalND2': nd2, 'wait': False})
+                log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
                 WaitForND1.execute(calibration)
-                log.info(f"Waiting for ND2")
                 WaitForND2.execute(calibration)
-                log.info(f"Waiting for Octagon (CalSource)")
                 WaitForCalSource.execute(calibration)
                 WaitForConfigureFIU.execute({'mode': 'Calibration'})
             ## Setup Etalon
