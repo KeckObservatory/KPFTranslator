@@ -113,6 +113,13 @@ class RunCalOB(KPFTranslatorFunction):
             log.info(f"Ensuring FlatField Fiber position is 'Blank'")
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
         for dark in darks:
+            # Wait for current exposure to readout
+            if exposestatus.read() != 'Ready':
+                WaitForReady.execute({})
+                log.info(f"Readout complete")
+                time_shim = cfg.get('times', 'archon_temperature_time_shim',
+                                    fallback=2)
+                sleep(time_shim)
             log.info(f"Setting OBJECT: {dark.get('Object')}")
             SetObject.execute(dark)
             log.info(f"Set exposure time: {dark.get('Exptime'):.3f}")
