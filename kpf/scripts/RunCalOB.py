@@ -99,7 +99,7 @@ class RunCalOB(KPFTranslatorFunction):
         CalLampPower.execute({'lamp': 'SkyLED', 'power': 'off'})
 #         log.info(f"Ensuring Cal FVC is off")
 #         FVCPower.execute({'camera': 'CAL', 'power': 'off'})
-        exposekw = ktl.cache('kpfexpose', 'EXPOSE')
+        exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
 
         # First Do the darks and biases
         darks = OB.get('SEQ_Darks', [])
@@ -120,7 +120,7 @@ class RunCalOB(KPFTranslatorFunction):
             nexp = dark.get('nExp', 1)
             for j in range(nexp):
                 # Wait for current exposure to readout
-                if exposekw.read() != 'Ready':
+                if exposestatus.read() != 'Ready':
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
                     time_shim = cfg.get('times', 'archon_temperature_time_shim',
@@ -189,7 +189,7 @@ class RunCalOB(KPFTranslatorFunction):
             ## Second, configure kpfexpose (may not happen during readout)
             ## ----------------------------------------------------------------
             # Wait for current exposure to readout
-            if exposekw.read() != 'Ready':
+            if exposestatus.read() != 'Ready':
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
                 time_shim = cfg.get('times', 'archon_temperature_time_shim',
@@ -222,7 +222,7 @@ class RunCalOB(KPFTranslatorFunction):
             ## ----------------------------------------------------------------
             for j in range(nexp):
                 # Wait for current exposure to readout
-                if exposekw.read() != 'Ready':
+                if exposestatus.read() != 'Ready':
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
                     time_shim = cfg.get('times', 'archon_temperature_time_shim',
