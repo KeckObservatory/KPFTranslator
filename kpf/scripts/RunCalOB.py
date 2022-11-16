@@ -118,12 +118,18 @@ class RunCalOB(KPFTranslatorFunction):
             SetExptime.execute(dark)
             nexp = dark.get('nExp', 1)
             for j in range(nexp):
+                # Wait for current exposure to readout
+                if kpfexpose['EXPOSE'].read() != 'Ready':
+                    WaitForReady.execute({})
+                    log.info(f"Readout complete")
+                    time_shim = cfg.get('times', 'archon_temperature_time_shim',
+                                        fallback=2)
+                    sleep(time_shim)
+                # Start next exposure
                 log.info(f"Starting exposure {j+1}/{nexp}")
                 StartExposure.execute({})
                 WaitForReadout.execute({})
                 log.info(f"Readout has begun")
-                WaitForReady.execute({})
-                log.info(f"Readout complete")
 
         # Wait for lamps to finish warming up
 #         WaitForLampsWarm.execute(OB)
