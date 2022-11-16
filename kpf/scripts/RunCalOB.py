@@ -100,6 +100,11 @@ class RunCalOB(KPFTranslatorFunction):
 
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
 
+        # This is a time shim to insert a pause between exposures so that the
+        # temperature of the CCDs can be measured by the archons
+        archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
+                             fallback=2)
+
         # First Do the darks and biases
         darks = OB.get('SEQ_Darks', [])
         if len(darks) > 0:
@@ -117,9 +122,7 @@ class RunCalOB(KPFTranslatorFunction):
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
-                time_shim = cfg.get('times', 'archon_temperature_time_shim',
-                                    fallback=2)
-                sleep(time_shim)
+                sleep(archon_time_shim)
             log.info(f"Setting OBJECT: {dark.get('Object')}")
             SetObject.execute(dark)
             log.info(f"Set exposure time: {dark.get('Exptime'):.3f}")
@@ -131,9 +134,7 @@ class RunCalOB(KPFTranslatorFunction):
                     log.info(f"Waiting for kpfexpose to be Ready")
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
-                    time_shim = cfg.get('times', 'archon_temperature_time_shim',
-                                        fallback=2)
-                    sleep(time_shim)
+                    sleep(archon_time_shim)
                 # Start next exposure
                 log.info(f"Starting exposure {j+1}/{nexp}")
                 StartExposure.execute({})
@@ -196,9 +197,7 @@ class RunCalOB(KPFTranslatorFunction):
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
-                time_shim = cfg.get('times', 'archon_temperature_time_shim',
-                                    fallback=2)
-                sleep(time_shim)
+                sleep(archon_time_shim)
             log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
             SetExptime.execute(calibration)
             log.info(f"Setting source select shutters")
@@ -230,9 +229,7 @@ class RunCalOB(KPFTranslatorFunction):
                     log.info(f"Waiting for kpfexpose to be Ready")
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
-                    time_shim = cfg.get('times', 'archon_temperature_time_shim',
-                                        fallback=2)
-                    sleep(time_shim)
+                    sleep(archon_time_shim)
                 # Start next exposure
                 log.info(f"Starting expoure {j+1}/{nexp}")
                 StartExposure.execute({})
