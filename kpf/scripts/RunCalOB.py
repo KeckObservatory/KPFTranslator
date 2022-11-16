@@ -118,12 +118,12 @@ class RunCalOB(KPFTranslatorFunction):
             SetExptime.execute(dark)
             nexp = dark.get('nExp', 1)
             for j in range(nexp):
-                log.info(f"  Starting exposure {j+1}/{nexp}")
+                log.info(f"Starting exposure {j+1}/{nexp}")
                 StartExposure.execute({})
                 WaitForReadout.execute({})
-                log.info(f"  Readout has begun")
+                log.info(f"Readout has begun")
                 WaitForReady.execute({})
-                log.info(f"  Readout complete")
+                log.info(f"Readout complete")
 
         # Wait for lamps to finish warming up
 #         WaitForLampsWarm.execute(OB)
@@ -184,7 +184,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Wait for current exposure to readout
             if kpfexpose['EXPOSE'].read() != 'Ready':
                 WaitForReady.execute({})
-                log.info(f"  Readout complete")
+                log.info(f"Readout complete")
                 time_shim = cfg.get('times', 'archon_temperature_time_shim',
                                     fallback=2)
                 sleep(time_shim)
@@ -217,7 +217,7 @@ class RunCalOB(KPFTranslatorFunction):
                 # Wait for current exposure to readout
                 if kpfexpose['EXPOSE'].read() != 'Ready':
                     WaitForReady.execute({})
-                    log.info(f"  Readout complete")
+                    log.info(f"Readout complete")
                     time_shim = cfg.get('times', 'archon_temperature_time_shim',
                                         fallback=2)
                     sleep(time_shim)
@@ -225,7 +225,7 @@ class RunCalOB(KPFTranslatorFunction):
                 log.info(f"Starting expoure {j+1}/{nexp}")
                 StartExposure.execute({})
                 WaitForReadout.execute({})
-                log.info(f"  Readout has begun")
+                log.info(f"Readout has begun")
             if calsource == 'WideFlat':
                 SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
 
