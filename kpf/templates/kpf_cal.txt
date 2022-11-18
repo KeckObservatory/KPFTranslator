@@ -4,9 +4,8 @@
         "name": "kpf_cal",
         "script": "CONFIGURE_SCIENCE          # Powers on lamps\nEXECUTE_OBSERVATION        # Executes all specified lamps in loop in translator\nPOST_OBSERVATION_CLEANUP   # Turns off lamps",
         "script_version": "0.3.0",
-        "sequence_number": 1,
         "template_type": "calibration",
-        "ui_name": "kpf calibration",
+        "ui_name": "KPF calibration",
         "version": "0.3.0"
     },
     "parameters": {
@@ -89,6 +88,26 @@
                     "optionality": "required",
                     "type": "str",
                     "ui_name": "Filter to use in the ND2 filter wheel",
+                    "units": null
+                },
+                "calsource": {
+                    "allowed": [
+                        "Home",
+                        "EtalonFiber",
+                        "BrdbandFiber",
+                        "U_gold",
+                        "U_daily",
+                        "Th_daily",
+                        "Th_gold",
+                        "SoCal-CalFib",
+                        "LFCFiber"
+                    ],
+                    "default": "Home",
+                    "description": "Calibration source to use",
+                    "option": "set",
+                    "optionality": "required",
+                    "type": "str",
+                    "ui_name": "Calibration source to use",
                     "units": null
                 },
                 "exptime": {
