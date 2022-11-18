@@ -1,50 +1,147 @@
 common:
-  prefix: kpf
+  prefix: kpfdo
   suffix: null
 
 links:
-
-  set_guider_exposure_time:
-    cmd: guider.SetGuiderExpTime.SetGuiderExpTime
-  
-  take_guider_image:
-    cmd: guider.TakeGuiderExposure.TakeGuiderExposure
-  
-  last_guider_image:
-    cmd: guider.GuiderLastfile.GuiderLastfile
-  
-  guider_outdir:
-    cmd: guider.GuiderOutdir.GuiderOutdir
-  
-  setguider_outdir:
-    cmd: guider.SetGuiderOutdir.SetGuiderOutdir
-  
-  start_guider_continuous:
-    cmd: guider.StartGuiderContinuous.StartGuiderContinuous
-  
-  stop_guider_continuous:
-    cmd: guider.StopGuiderContinuous.StopGuiderContinuous
-  # FIU
-  
-  fiu_fold_mirror:
-    cmd: fiu.ControlFoldMirror.ControlFoldMirror
-  
-  fiu_hatch:
-    cmd: fiu.ControlHatch.ControlHatch
-  # FVCs
-  
-  take_fvc_image:
-    cmd: fvc.TakeFVCExposure.TakeFVCExposure
-  
-  set_fvc_exposure_time:
-    cmd: fvc.SetFVCExpTime.SetFVCExpTime
-  
-  # AO
-  AO_hatch:
+# Analysis
+# AO
+ControlAOHatch:
     cmd: ao.ControlAOHatch.ControlAOHatch
-  
-  PCU_to_KPF:
-    cmd: ao.PCUToKPF.PcuToKpf
-  
-  park_ao_rotator:
-    cmd: ao.ParkAoRotator.ParkAoRotator
+SendPCUtoHome:
+    cmd: ao.SendPCUtoHome.SendPCUtoHome
+SendPCUtoKPF:
+    cmd: ao.SendPCUtoKPF.SendPCUtoKPF
+SetAORotator:
+    cmd: ao.SetAORotator.SetAORotator
+SetupAOforKPF:
+    cmd: ao.SetupAOforKPF.SetupAOforKPF
+# CaHK
+# Cal Bench
+CalLampPower:
+    cmd: calbench.CalLampPower.CalLampPower
+SetCalSource:
+    cmd: calbench.SetCalSource.SetCalSource
+SetFlatFieldFiberPos:
+    cmd: calbench.SetFlatFieldFiberPos.SetFlatFieldFiberPos
+SetND1:
+    cmd: calbench.SetND1.SetND1
+SetND2:
+    cmd: calbench.SetND2.SetND2
+WaitForCalSource:
+    cmd: calbench.WaitForCalSource.WaitForCalSource
+WaitForFlatFieldFiberPos:
+    cmd: calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos
+WaitForLampWarm:
+    cmd: calbench.WaitForLampWarm.WaitForLampWarm
+WaitForND1:
+    cmd: calbench.WaitForND1.WaitForND1
+WaitForND2:
+    cmd: calbench.WaitForND2.WaitForND2
+# ExpoMeter
+# FIU
+ConfigureFIU:
+    cmd: fiu.ConfigureFIU.ConfigureFIU
+ControlFoldMirror:
+    cmd: fiu.ControlFoldMirror.ControlFoldMirror
+ControlHatch:
+    cmd: fiu.ControlHatch.ControlHatch
+InitializeTipTilt:
+    cmd: fiu.InitializeTipTilt.InitializeTipTilt
+SetTipTiltCalculations:
+    cmd: fiu.SetTipTiltCalculations.SetTipTiltCalculations
+SetTipTiltControl:
+    cmd: fiu.SetTipTiltControl.SetTipTiltControl
+SetTipTiltGain:
+    cmd: fiu.SetTipTiltGain.SetTipTiltGain
+SetTipTiltPosition:
+    cmd: fiu.SetTipTiltPosition.SetTipTiltPosition
+SetTipTiltTargetPixel:
+    cmd: fiu.SetTipTiltTargetPixel.SetTipTiltTargetPixel
+ShutdownTipTilt:
+    cmd: fiu.ShutdownTipTilt.ShutdownTipTilt
+WaitForConfigureFIU:
+    cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
+# FVCs
+FVCPower:
+    cmd: fvc.FVCPower.FVCPower
+TakeFVCContinuous:
+    cmd: fvc.TakeFVCContinuous.TakeFVCContinuous
+TakeFVCExposure:
+    cmd: fvc.TakeFVCExposure.TakeFVCExposure
+SetFVCExpTime:
+    cmd: fvc.SetFVCExpTime.SetFVCExpTime
+# Guider
+DisplayGuiderContinuous:
+    cmd: guider.DisplayGuiderContinuous.DisplayGuiderContinuous
+GetGaiaStars:
+    cmd: guider.GetGaiaStars.GetGaiaStars
+GuiderLastfile:
+    cmd: guider.GuiderLastfile.GuiderLastfile
+GuiderOutdir:
+    cmd: guider.GuiderOutdir.GuiderOutdir
+SetGuiderExpTime:
+    cmd: guider.SetGuiderExpTime.SetGuiderExpTime
+SetGuiderFPS:
+    cmd: guider.SetGuiderFPS.SetGuiderFPS
+SetGuiderGain:
+    cmd: guider.SetGuiderGain.SetGuiderGain
+SetGuiderOutdir:
+    cmd: guider.SetGuiderOutdir.SetGuiderOutdir
+StartGuiderContinuous:
+    cmd: guider.StartGuiderContinuous.StartGuiderContinuous
+StopGuiderContinuous:
+    cmd: guider.StopGuiderContinuous.StopGuiderContinuous
+TakeGuiderExposure:
+    cmd: guider.TakeGuiderExposure.TakeGuiderExposure
+# Scripts
+CalculateDAR:
+    cmd: scripts.CalculateDAR.CalculateDAR
+CleanupAfterCalOB:
+    cmd: scripts.CleanupAfterCalOB.CleanupAfterCalOB
+ConfigureForCalOB:
+    cmd: scripts.ConfigureForCalOB.ConfigureForCalOB
+EndOfNight:
+    cmd: scripts.EndOfNight.EndOfNight
+FiberGridSearch:
+    cmd: scripts.FiberGridSearch.FiberGridSearch
+ImageBackIlluminatedFibers:
+    cmd: scripts.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
+RunCalOB:
+    cmd: scripts.RunCalOB.RunCalOB
+SetObserverFromSchedule:
+    cmd: scripts.SetObserverFromSchedule.SetObserverFromSchedule
+SetOutdirs:
+    cmd: scripts.SetOutdirs.SetOutdirs
+StartOfNight:
+    cmd: scripts.StartOfNight.StartOfNight
+TakeGuiderSensitivityData:
+    cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
+TestScienceADC:
+    cmd: scripts.TestScienceADC.TestScienceADC
+TipTiltPerformanceCheck:
+    cmd: scripts.TipTiltPerformanceCheck.TipTiltPerformanceCheck
+WaitForConfigureCalOB:
+    cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
+# Spectrograph
+ResetDetectors:
+    cmd: spectrograph.ResetDetectors.ResetDetectors
+SetExptime:
+    cmd: spectrograph.SetExptime.SetExptime
+SetObject:
+    cmd: spectrograph.SetObject.SetObject
+SetObserver:
+    cmd: spectrograph.SetObserver.SetObserver
+SetProgram:
+    cmd: spectrograph.SetProgram.SetProgram
+SetSourceSelectShutters:
+    cmd: spectrograph.SetSourceSelectShutters.SetSourceSelectShutters
+SetTimedShutters:
+    cmd: spectrograph.SetTimedShutters.SetTimedShutters
+SetTriggeredDetectors:
+    cmd: spectrograph.SetTriggeredDetectors.SetTriggeredDetectors
+StartExposure:
+    cmd: spectrograph.StartExposure.StartExposure
+WaitForReadout:
+    cmd: spectrograph.WaitForReadout.WaitForReadout
+WaitForReady:
+    cmd: spectrograph.WaitForReady.WaitForReady
