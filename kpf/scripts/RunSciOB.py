@@ -6,7 +6,8 @@ import yaml
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
