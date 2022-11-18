@@ -5,12 +5,10 @@ TriggerCaHK: False
 TriggerGreen: True
 TriggerRed: True
 SEQ_Darks:
-- CalSource: Home
-  Object: autocal-bias
+- Object: autocal-bias
   nExp: 11
   Exptime: 0
-- CalSource: Home
-  Object: autocal-dark
+- Object: autocal-dark
   nExp: 3
   Exptime: 1200
 SEQ_Calibrations:

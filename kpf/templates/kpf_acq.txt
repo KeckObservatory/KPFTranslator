@@ -1,0 +1,10 @@
+{
+    "metadata": {
+        "instrument": "KPF",
+        "name": "kpf_acq",
+        "template_type": "acquisition",
+        "ui_name": "KPF acquisition",
+        "version": "0.3.0"
+    },
+    "parameters": {}
+}

@@ -3,6 +3,7 @@ Template_Version: 0.3
 
 Teff: 5700
 ExpMeter_Active: True
+ExpMeter_Terminate: True
 ExpMeter_Band: 1
 ExpMeter_Flux: 100000
 TriggerCaHK: False
