@@ -34,7 +34,7 @@ def standardize_lamp_name(input_name):
     if input_name not in lamp_name.keys():
         return None
     lamp = lamp_name.get(input_name)
-    allowed_lamps = ['EXPMLED', 'FLATFIELD', 'HKLED', 'OCTFLAT', 'SCILED',
+    allowed_lamps = ['EXPMLED', 'FF_FIBER', 'HKLED', 'BRDBANDFIBER', 'SCILED',
                      'SKYLED', 'TH_DAILY', 'TH_GOLD', 'U_DAILY', 'U_GOLD']
     if lamp not in allowed_lamps:
         return None
