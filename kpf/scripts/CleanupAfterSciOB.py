@@ -19,47 +19,21 @@ class CleanupAfterSciOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-
         # Use file input for OB instead of args (temporary)
-        if args.get('OBfile', None) is not None:
-            OBfile = Path(args.get('OBfile')).expanduser()
-            if OBfile.exists() is True:
-                OB = yaml.safe_load(open(OBfile, 'r'))
-                log.warning(f"Using OB information from file {OBfile}")
-        else:
-            msg = 'Passing OB as args not implemented'
-            log.error(msg)
-            raise NotImplementedError(msg)
-
-        # Check template name
-        OB_name = OB.get('Template_Name', None)
-        if OB_name is None:
-            return False
-        if OB_name != 'kpf_cal':
-            return False
-        # Check template version
-#         OB_version = OB.get('Template_Version', None)
-#         if OB_version is None:
-#             return False
-#         OB_version = version.parse(f"{OB_version}")
-#         compatible_version = version.parse(cfg.get('templates', OB_name))
-#         if compatible_version != OB_version:
-#             return False
+        check_input(args, 'OBfile')
+        OBfile = Path(args.get('OBfile')).expanduser()
+        if OBfile.exists() is True:
+            OB = yaml.safe_load(open(OBfile, 'r'))
+            log.warning(f"Using OB information from file {OBfile}")
+        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
+        check_input(OB, 'Template_Version', allowed_values=['0.3'])
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-
         # Use file input for OB instead of args (temporary)
-        if args.get('OBfile', None) is not None:
-            OBfile = Path(args.get('OBfile')).expanduser()
-            if OBfile.exists() is True:
-                OB = yaml.safe_load(open(OBfile, 'r'))
-                log.warning(f"Using OB information from file {OBfile}")
-        else:
-            msg = 'Passing OB as args not implemented'
-            log.error(msg)
-            raise NotImplementedError(msg)
+        OBfile = Path(args.get('OBfile')).expanduser()
+        OB = yaml.safe_load(open(OBfile, 'r'))
 
         log.info('-------------------------')
         log.info(f"Running CleanupAfterSciOB")
