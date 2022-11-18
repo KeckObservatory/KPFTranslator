@@ -11,6 +11,8 @@ import ktl
 import keygrabber
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 from ddoi_telescope_translator.azel import OffsetAzEl
 from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
@@ -115,22 +117,33 @@ class FiberGridSearch(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        offset_system = args.get('offset')
-        if offset_system not in ['azel', 'gxy', 'ttm', 'custom']:
-            print(f"Offset mode {offset_system} not supported")
-            return False
-        cameras = args.get('cameras', '').split(',')
+        # Use file input for OB instead of args (temporary)
+        check_input(args, 'OBfile')
+        OBfile = Path(args.get('OBfile')).expanduser()
+        if OBfile.exists() is True:
+            OB = yaml.safe_load(open(OBfile, 'r'))
+            log.warning(f"Using OB information from file {OBfile}")
+        check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
+        check_input(OB, 'Template_Version', allowed_values=['0.3'])
+        check_input(OB, 'offset_system', allowed_values=['azel', 'gxy', 'ttm', 'custom'])
+        check_input(OB, 'cameras')
+        cameras = OB.get('cameras', '').split(',')
         for camera in cameras:
             if camera not in ['CRED2', 'SCI', 'CAHK', 'EXT', 'ExpMeter']:
-                print(f"Camera {camera} not supported")
+                raise FailedPreCondition(f"Camera {camera} not supported")
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        log.info("###########")
-        if args.get('comment', '') != '': log.info(args.get('comment', ''))
-        log.info(f"args = {args}")
-        log.info("###########")
+        # Use file input for OB instead of args (temporary)
+        OBfile = Path(args.get('OBfile')).expanduser()
+        OB = yaml.safe_load(open(OBfile, 'r'))
+
+        log.info('-------------------------')
+        log.info(f"Running CleanupAfterCalOB")
+        for key in OB:
+            log.debug(f"  {key}: {OB[key]}")
+        log.info('-------------------------')
 
         images_file = log_dir / Path(f'{this_file_name}_images_{now_str}.txt')
         fluxes_file = log_dir / Path(f'{this_file_name}_fluxes_{now_str}.txt')
@@ -148,11 +161,12 @@ class FiberGridSearch(KPFTranslatorFunction):
                                      'f4', 'f4', 'f4', 'f4',
                                      'i4'))
 
-        offset_system = args.get('offset')
-        nx = args.get('nx', 3)
-        ny = args.get('ny', 3)
-        dx = args.get('dx', 0.25)
-        dy = args.get('dy', 0.25)
+        offset_system = OB.get('offset_system')
+        cameras = OB.get('cameras', '').split(',')
+        nx = OB.get('nx', 3)
+        ny = OB.get('ny', 3)
+        dx = OB.get('dx', 0.25)
+        dy = OB.get('dy', 0.25)
         xis = [xi for xi in range(int(-nx/2),int((nx+1)/2),1)]
         yis = [yi for yi in range(int(-ny/2),int((ny+1)/2),1)]
         xs = [xi*dx for xi in xis]
@@ -178,7 +192,7 @@ class FiberGridSearch(KPFTranslatorFunction):
             for j,yi in enumerate(yis):
                 # Offset to position
                 log.info(f"Offsetting: {offset_system} to ({xs[i]:.2f}, {ys[j]:.2f})")
-                offset(xs[i], ys[j], offset_system=args.get('offset', 'gxy'))
+                offset(xs[i], ys[j], offset_system=offset_system)
 
                 # Take Exposure to make sure we wait at least one cycle
                 log.info(f"Taking extr guider exposure to wait one cycle")
@@ -195,14 +209,14 @@ class FiberGridSearch(KPFTranslatorFunction):
                 # Start FVC Exposures
                 initial_lastfile = {}
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-                    if camera in args.get('cameras', '').split(','):
+                    if camera in cameras:
                         initial_lastfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
                         log.debug(f"  Initial lastfile for {camera} = {initial_lastfile[camera]}")
                         log.info(f"  Starting {camera} FVC exposure")
                         TakeFVCExposure.execute({'camera': camera, 'wait': False})
 
                 # Expose using CRED2
-                if 'CRED2' in args.get('cameras', '').split(','):
+                if 'CRED2' in cameras:
                     log.info(f"  Taking CRED2 exposure")
                     TakeGuiderExposure.execute({})
                     lastfile = kpfguide[f"LASTFILE"].read()
@@ -220,7 +234,7 @@ class FiberGridSearch(KPFTranslatorFunction):
 
                 # Collect files for FVC exposures
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-                    if camera in args.get('cameras', '').split(','):
+                    if camera in cameras:
                         log.info(f"  Looking for output file for {camera}")
                         expr = f'($kpffvc.{camera}LASTFILE != "{initial_lastfile[camera]}")'
                         log.debug(f"  Waiting for: {expr}")
@@ -277,7 +291,7 @@ class FiberGridSearch(KPFTranslatorFunction):
             if images_file.exists():
                 images_file.unlink()
             images.write(images_file, format='ascii.csv')
-            if 'ExpMeter' in args.get('cameras', '').split(','):
+            if 'ExpMeter' in cameras:
                 if fluxes_file.exists():
                     fluxes_file.unlink()
                 expmeter_flux.write(fluxes_file, format='ascii.csv')
@@ -285,13 +299,13 @@ class FiberGridSearch(KPFTranslatorFunction):
         if images_file.exists():
             images_file.unlink()
         images.write(images_file, format='ascii.csv')
-        if 'ExpMeter' in args.get('cameras', '').split(','):
+        if 'ExpMeter' in cameras:
             if fluxes_file.exists():
                 fluxes_file.unlink()
             expmeter_flux.write(fluxes_file, format='ascii.csv')
 
         # Send offsets back to 0,0
-        offset(0, 0, offset_system=args.get('offset', 'gxy'))
+        offset(0, 0, offset_system=offset_system)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -303,20 +317,9 @@ class FiberGridSearch(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
-        args_to_add['nx'] = {'type': int,
-                    'help': 'Number of grid points in the X direction'}
-        args_to_add['ny'] = {'type': int,
-                    'help': 'Number of grid points in the Y direction'}
-        args_to_add['dx'] = {'type': float,
-                    'help': 'Distance (arcsec) between grid points in X'}
-        args_to_add['dy'] = {'type': float,
-                    'help': 'Distance (arcsec) between grid points in Y'}
-        args_to_add['cameras'] = {'type': str,
-                    'help': 'List of cameras'}
-        args_to_add['offset'] = {'type': str,
-                    'help': 'Offset method to use: azel, gxy, ttm'}
-        args_to_add['comment'] = {'type': str,
-                    'help': 'Comment for log'}
-
+        args_to_add['OBfile'] = {'type': str,
+                                 'help': ('A YAML fortmatted file with the OB '
+                                          'to be executed. Will override OB '
+                                          'data delivered as args.')}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)
