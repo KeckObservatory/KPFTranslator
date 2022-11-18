@@ -20,12 +20,12 @@ def standardize_lamp_name(input_name):
     '''
     if input_name in [None, '']:
         return None
-    lamp_name = {'BrdbandFiber': 'OCTFLAT',
+    lamp_name = {'BrdbandFiber': 'BRDBANDFIBER',
                  'U_gold': 'U_GOLD',
                  'U_daily': 'U_DAILY',
                  'Th_daily': 'TH_DAILY',
                  'Th_gold': 'TH_GOLD',
-                 'WideFlat': 'FLATFIELD',
+                 'WideFlat': 'FF_FIBER',
                  'ExpMeterLED': 'EXPMLED',
                  'CaHKLED': 'HKLED',
                  'SciLED': 'SCILED',
