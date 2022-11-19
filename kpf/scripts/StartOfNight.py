@@ -8,7 +8,8 @@ from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
 from .SetOutdirs import SetOutdirs
 from ..spectrograph.SetProgram import SetProgram
-from ..spectrograph.SetObserver import SetObserver
+# from ..spectrograph.SetObserver import SetObserver
+from .SetObserverFromSchedule import SetObserverFromSchedule
 
 
 class StartOfNight(KPFTranslatorFunction):
@@ -39,11 +40,19 @@ class StartOfNight(KPFTranslatorFunction):
         InitializeTipTilt.execute({})
         # Set Outdirs
         SetOutdirs.execute({})
+        # Set progname and observer
+        SetProgram.execute(args)
+        SetObserverFromSchedule.execute(args)
         # Setup AO
         if args.get('AO', True) is True:
             SetupAOforKPF.execute({})
-        # Set progname and observer
-        SetProgram.execute(args)
+        # Set DCS rotator parameters
+        dcs = ktl.cache('dcs')
+        if dcs['INSTRUME'].read() == 'KPF':
+            log.info(f"Setting dcs.ROTDEST = 0")
+            dcs['ROTDEST'].write(0)
+            log.info(f"Setting dcs.ROTMODE = stationary")
+            dcs['ROTMODE'].write('stationary')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
