@@ -1,3 +1,4 @@
+import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -28,15 +29,11 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
         y = args.get('y')
         pixtarget = ktl.cache('kpfguide', 'CURRENT_BASE')
         pixtarget.write((x, y))
+        time_shim = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
+        time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-#         x = args.get('x')
-#         y = args.get('y')
-#         timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
-#         expr = (f"($kpfguide.PIX_TARGET == {}) "
-#         success = ktl.waitFor(expr, timeout=timeout)
-#         return success
         return True
 
     @classmethod
