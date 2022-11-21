@@ -69,10 +69,13 @@ class TestScienceADC(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        log.info("###########")
-        if args.get('comment', '') != '': log.info(args.get('comment', ''))
-        log.info(f"args = {args}")
-        log.info("###########")
+        OBfile = Path(args.get('OBfile')).expanduser()
+        OB = yaml.safe_load(open(OBfile, 'r'))
+        log.info('-------------------------')
+        log.info(f"Running TestScienceADC OB")
+        for key in OB:
+            log.debug(f"  {key}: {OB[key]}")
+        log.info('-------------------------')
 
         images_file = log_dir / Path(f'{this_file_name}_images_{now_str}.txt')
         fluxes_file = log_dir / Path(f'{this_file_name}_fluxes_{now_str}.txt')
@@ -90,10 +93,10 @@ class TestScienceADC(KPFTranslatorFunction):
                                      'f4', 'f4', 'f4', 'f4',
                                      'i4'))
 
-        nx = args.get('nx', 3)
-        ny = args.get('ny', 3)
-        dx = args.get('dx', 2)
-        dy = args.get('dy', 2)
+        nx = args.get('nx')
+        ny = args.get('ny')
+        dx = args.get('dx')
+        dy = args.get('dy')
         xis = [xi for xi in range(int(-nx/2),int((nx+1)/2),1)]
         yis = [yi for yi in range(int(-ny/2),int((ny+1)/2),1)]
         xs = [xi*dx for xi in xis]
@@ -105,11 +108,11 @@ class TestScienceADC(KPFTranslatorFunction):
 
         # Set up Exposure Meter
         if 'ExpMeter' in args.get('cameras', ''):
-            kpf_expmeter = ktl.cache('kpf_expmeter')
+            # Set up kpfexpose
             kpfexpose = ktl.cache('kpfexpose')
-            kpf_expmeter['record'].write('Yes')
-            kpfexpose['SRC_SHUTTERS'].write('SciSelect,SkySelect')
-            kpfexpose['SCRAMBLER_SHTR'].write('open')
+            SetSourceSelectShutters.execute({'SSS_Science': True, 'SSS_Sky': True})
+            SetTimedShutters.execute({'TimedShutter_Scrambler': True})
+            SetTriggeredDetectors.execute({'TriggerExpMeter': True})
 
         # Set up FVCs
         kpffvc = ktl.cache('kpffvc')
@@ -121,8 +124,7 @@ class TestScienceADC(KPFTranslatorFunction):
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
-                nominalx = float(kpffiu['ADCPRISMS'].read().strip().split('\t')[1])
-                nominaly = float(kpffiu['ADCPRISMS'].read().strip().split('\t')[3])
+                nominalx, nominaly = kpffiu['ADCPRISMS'].read(binary=True)
                 log.info(f"Offsetting to position ({xs[i]}, {ys[j]})")
                 kpffiu['ADC1VAL'].write(nominalx + xs[i])
                 kpffiu['ADC2VAL'].write(nominaly + ys[j])
@@ -151,7 +153,6 @@ class TestScienceADC(KPFTranslatorFunction):
                         initial_lastfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
                         log.debug(f"  Initial lastfile for {camera} = {initial_lastfile[camera]}")
                         log.info(f"  Starting {camera} FVC exposure")
-#                         kpffvc[f"{camera}EXPOSE"].write('yes', wait=False)
                         TakeFVCExposure.execute({'camera': camera, 'wait': False})
 
                 # Expose using CRED2

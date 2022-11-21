@@ -14,18 +14,16 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 
-from ddoi_telescope_translator.azel import OffsetAzEl
-from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
-from ddoi_telescope_translator.wftel import WaitForTel
-
 from ..fiu.SetTipTiltTargetPixel import SetTipTiltTargetPixel
-# from ..fiu.SetTipTilt import SetTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..fvc.SetFVCExpTime import SetFVCExpTime
 from ..guider.TakeGuiderExposure import TakeGuiderExposure
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
+from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from ..spectrograph.SetTimedShutters import SetTimedShutters
+from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 
 
 ##-------------------------------------------------------------------------
@@ -64,12 +62,16 @@ def offset(x, y, offset_system='gxy'):
     if offset_system == 'ttm':
         SetTipTiltTargetPixel.execute({'x': x, 'y': y)
     elif offset_system == 'azel':
+        from ddoi_telescope_translator.azel import OffsetAzEl
+        from ddoi_telescope_translator.wftel import WaitForTel
         OffsetAzEl.execute({'tcs_offset_az': x,
                             'tcs_offset_el': y,
                             'relative': False})
         WaitForTel.execute({})
         time.sleep(2)
     elif offset_system == 'gxy':
+        from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
+        from ddoi_telescope_translator.wftel import WaitForTel
         OffsetGuiderCoordXY({'guider_x_offset': x,
                              'guider_y_offset': y,
                              'instrument': 'KPF',
@@ -141,7 +143,7 @@ class FiberGridSearch(KPFTranslatorFunction):
         OB = yaml.safe_load(open(OBfile, 'r'))
 
         log.info('-------------------------')
-        log.info(f"Running CleanupAfterCalOB")
+        log.info(f"Running FiberGridSearch OB")
         for key in OB:
             log.debug(f"  {key}: {OB[key]}")
         log.info('-------------------------')
@@ -183,12 +185,9 @@ class FiberGridSearch(KPFTranslatorFunction):
 
         # Set up kpfexpose
         kpfexpose = ktl.cache('kpfexpose')
-        kpfexpose['SRC_SHUTTERS'].write('SciSelect,SkySelect')
-        kpfexpose['TIMED_SHUTTERS'].write('Scrambler')
-        kpfexpose['TRIG_TARG'].write('ExpMeter')
-        log.info(f"SRC_SHUTTERS: {kpfexpose['SRC_SHUTTERS'].read()}")
-        log.info(f"TIMED_SHUTTERS: {kpfexpose['TIMED_SHUTTERS'].read()}")
-        log.info(f"TRIG_TARG: {kpfexpose['TRIG_TARG'].read()}")
+        SetSourceSelectShutters.execute({'SSS_Science': True, 'SSS_Sky': True})
+        SetTimedShutters.execute({'TimedShutter_Scrambler': True})
+        SetTriggeredDetectors.execute({'TriggerExpMeter': True})
 
         # Configure Exposure Meter
         if 'ExpMeter' in cameras and OB.get('ExpMeter_exptime', None) != None:
