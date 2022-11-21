@@ -18,7 +18,7 @@ from ddoi_telescope_translator.azel import OffsetAzEl
 from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
 from ddoi_telescope_translator.wftel import WaitForTel
 
-from ..fiu.InitializeTipTilt import InitializeTipTilt
+from ..fiu.SetTipTiltTargetPixel import SetTipTiltTargetPixel
 # from ..fiu.SetTipTilt import SetTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..fvc.SetFVCExpTime import SetFVCExpTime
@@ -62,11 +62,7 @@ log.addHandler(LogFileHandler)
 ##-------------------------------------------------------------------------
 def offset(x, y, offset_system='gxy'):
     if offset_system == 'ttm':
-        InitializeTipTilt.execute({})
-#         SetTipTilt.execute({'x': x, 'y': y)
-        # If the tip/tilt system is active, and you're offloading,
-        # what you want is to set the kpfguide.CURRENT_BASE keyword
-        #to a new value (in pixels)
+        SetTipTiltTargetPixel.execute({'x': x, 'y': y)
     elif offset_system == 'azel':
         OffsetAzEl.execute({'tcs_offset_az': x,
                             'tcs_offset_el': y,
@@ -177,6 +173,14 @@ class FiberGridSearch(KPFTranslatorFunction):
         xs = [xi*dx for xi in xis]
         ys = [yi*dy for yi in yis]
 
+        # Set up guider (assume parameters set during acquisition of star)
+        kpfguide = ktl.cache('kpfguide')
+        if offset_system == 'ttm':
+            xpix0, ypix0 = kpfguide['CURRENT_BASE'].read(binary=True)
+            log.info(f"Center pixel is {xpix0:.2f}, {ypix0:.2f}")
+            xs = [xpix+xpix0 for xpix in xs]
+            ys = [ypix+ypix0 for ypix in ys]
+
         # Set up kpfexpose
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['SRC_SHUTTERS'].write('SciSelect,SkySelect')
@@ -199,9 +203,6 @@ class FiberGridSearch(KPFTranslatorFunction):
                 exptime = OB.get(f'{camera}FVC_exptime')
                 log.info(f"Setting {camera} FVC Exptime = {exptime:.2f} s")
                 SetFVCExpTime.execute({'camera': camera, 'exptime': exptime})
-
-        # Set up guider (assume parameters set during acquisition of star)
-        kpfguide = ktl.cache('kpfguide')
 
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
