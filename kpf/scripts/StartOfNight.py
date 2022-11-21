@@ -15,11 +15,13 @@ from .SetObserverFromSchedule import SetObserverFromSchedule
 class StartOfNight(KPFTranslatorFunction):
     '''Send KPF in to a reasonable starting configuration
     
-    - kpfguide.SENSORSETP = -40
-    - initialize tip tilt (set closed loop mode and 0, 0)
     - set FIU mode to observing
-    - Seup AO
+    - initialize tip tilt (set closed loop mode and 0, 0)
     - Set OUTDIRS
+    - Set PROGNAME
+    - Set OBSERVER value based on schedule
+    - Setup AO for KPF
+    - Configure DCS (ROTDEST and ROTMODE)
     
     ARGS:
     progname - The program ID to set.
