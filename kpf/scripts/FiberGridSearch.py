@@ -21,6 +21,7 @@ from ddoi_telescope_translator.wftel import WaitForTel
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 # from ..fiu.SetTipTilt import SetTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
+from ..fvc.SetFVCExpTime import SetFVCExpTime
 from ..guider.TakeGuiderExposure import TakeGuiderExposure
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
@@ -126,6 +127,10 @@ class FiberGridSearch(KPFTranslatorFunction):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
         check_input(OB, 'Template_Version', allowed_values=['0.3'])
         check_input(OB, 'offset_system', allowed_values=['azel', 'gxy', 'ttm', 'custom'])
+        check_input(OB, 'nx')
+        check_input(OB, 'ny')
+        check_input(OB, 'dx')
+        check_input(OB, 'dy')
         check_input(OB, 'cameras')
         cameras = OB.get('cameras', '').split(',')
         for camera in cameras:
@@ -163,17 +168,16 @@ class FiberGridSearch(KPFTranslatorFunction):
 
         offset_system = OB.get('offset_system')
         cameras = OB.get('cameras', '').split(',')
-        nx = OB.get('nx', 3)
-        ny = OB.get('ny', 3)
-        dx = OB.get('dx', 0.25)
-        dy = OB.get('dy', 0.25)
+        nx = OB.get('nx')
+        ny = OB.get('ny')
+        dx = OB.get('dx')
+        dy = OB.get('dy')
         xis = [xi for xi in range(int(-nx/2),int((nx+1)/2),1)]
         yis = [yi for yi in range(int(-ny/2),int((ny+1)/2),1)]
         xs = [xi*dx for xi in xis]
         ys = [yi*dy for yi in yis]
 
         # Set up kpfexpose
-        kpf_expmeter = ktl.cache('kpf_expmeter')
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['SRC_SHUTTERS'].write('SciSelect,SkySelect')
         kpfexpose['TIMED_SHUTTERS'].write('Scrambler')
@@ -182,10 +186,21 @@ class FiberGridSearch(KPFTranslatorFunction):
         log.info(f"TIMED_SHUTTERS: {kpfexpose['TIMED_SHUTTERS'].read()}")
         log.info(f"TRIG_TARG: {kpfexpose['TRIG_TARG'].read()}")
 
-        # Set up FVCs
-        kpffvc = ktl.cache('kpffvc')
+        # Configure Exposure Meter
+        if 'ExpMeter' in cameras and OB.get('ExpMeter_exptime', None) != None:
+            kpf_expmeter = ktl.cache('kpf_expmeter')
+            ExpMeter_exptime = OB.get('ExpMeter_exptime')
+            log.info(f"Setting kpf_expmeter.EXPOSURE = {ExpMeter_exptime:.2f} s")
+            kpf_expmeter['EXPOSURE'].write(ExpMeter_exptime)
 
-        # Set up guider
+        # Set up FVCs
+        for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
+            if camera in cameras and OB.get(f'{camera}FVC_exptime', None) != None:
+                exptime = OB.get(f'{camera}FVC_exptime')
+                log.info(f"Setting {camera} FVC Exptime = {exptime:.2f} s")
+                SetFVCExpTime.execute({'camera': camera, 'exptime': exptime})
+
+        # Set up guider (assume parameters set during acquisition of star)
         kpfguide = ktl.cache('kpfguide')
 
         for i,xi in enumerate(xis):
