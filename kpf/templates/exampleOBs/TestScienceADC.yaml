@@ -12,5 +12,5 @@ CAHKFVC_exptime: 10
 # Guide_LoopGain: 0.3
 nx: 5
 ny: 5
-dx: 0.2
-dy: 0.2
+dx: 5
+dy: 5

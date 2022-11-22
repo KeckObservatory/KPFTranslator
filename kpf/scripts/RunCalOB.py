@@ -198,11 +198,11 @@ class RunCalOB(KPFTranslatorFunction):
             SetTimedShutters.execute(calibration)
             log.info(f"Setting OBJECT: {calibration.get('Object')}")
             SetObject.execute(calibration)
-            nexp = calibration.get('nExp', 1)
 
             ## ----------------------------------------------------------------
             ## Third, take actual exposures
             ## ----------------------------------------------------------------
+            nexp = calibration.get('nExp', 1)
             for j in range(nexp):
                 # Wait for current exposure to readout
                 if exposestatus.read() != 'Ready':
