@@ -8,6 +8,7 @@ from ..ao.TurnHepaOn import TurnHepaOn
 from ..ao.SendPCUtoHome import SendPCUtoHome
 from ..fiu.ShutdownTipTilt import ShutdownTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
+from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.SetObserver import SetObserver
 from ..spectrograph.SetObject import SetObject
@@ -19,14 +20,11 @@ class EndOfNight(KPFTranslatorFunction):
     '''Send KPF in to an end of night configuration.
 
     - kpffiu.MODE = Stowed
-    - Tip tilt mirror in open loop mode
-    - kpfguide.SENSORSETP = 0
-    - Power off LED back illuminators
     - Power off FVCs
-    - Power off Calibration lamps
-
+    - Power off LED back illuminators
     - close AO hatch
     - HEPA on
+    - Send PCU to Home
     
     ARGS:
     AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
@@ -37,28 +35,9 @@ class EndOfNight(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        # FIU
+        # Start FIU stow
         log.info('Setting FIU mode to Stowed')
-        ConfigureFIU.execute({'mode': 'Stowed'})
-        ShutdownTipTilt.execute({})
-        # Guider
-#         log.info('Setting guider set point to 0C')
-#         kpfguide = ktl.cache('kpfguide')
-#         kpfguide['SENSORSETP'].write(0)
-        # Power off cal lamps and LEDs
-#         lamps = ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
-#                  'WideFlat', 'ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']
-#         for lamp in lamps:
-#             CalLampPower.execute({'lamp': lamp, 'power': 'off'})
-        # Power off FVCs
-        for camera in ['SCI', 'CAHK', 'CAL']:
-            FVCPower.execute({'camera': camera, 'power': 'off'})
-        # Set PROGNAME
-        log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
-        SetProgram.execute({'progname': ''})
-        SetObserver.execute({'observer': ''})
-        SetObject.execute({'Object': ''})
-
+        ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
         if args.get('AO', True) is True:
             log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'close'})
@@ -66,8 +45,20 @@ class EndOfNight(KPFTranslatorFunction):
             TurnHepaOn.execute({})
             log.info('Sending PCU stage to Home position')
             SendPCUtoHome.execute({})
-
-
+        # Finish FIU shutdown
+        WaitForConfigureFIU.execute({'mode': 'Stowed'})
+        ShutdownTipTilt.execute({})
+        # Power off FVCs
+        for camera in ['SCI', 'CAHK', 'CAL']:
+            FVCPower.execute({'camera': camera, 'power': 'off'})
+        # Power off FVCs
+        for LED in ['ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']:
+            CalLampPower.execute({'lamp': LED, 'power': 'off'})
+        # Set PROGNAME
+        log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
+        SetProgram.execute({'progname': ''})
+        SetObserver.execute({'observer': ''})
+        SetObject.execute({'Object': ''})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
