@@ -1,3 +1,4 @@
+import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -23,6 +24,8 @@ class SetProgram(KPFTranslatorFunction):
         progname = args.get('progname')
         log.debug(f"Setting PROGNAME to '{progname}'")
         kpfexpose['PROGNAME'].write(progname)
+        time_shim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

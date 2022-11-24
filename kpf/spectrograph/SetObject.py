@@ -1,3 +1,4 @@
+import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -25,6 +26,8 @@ class SetObject(KPFTranslatorFunction):
             obj = ''
         log.debug(f"Setting OBJECT to '{obj}'")
         kpfexpose['OBJECT'].write(obj)
+        time_shim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

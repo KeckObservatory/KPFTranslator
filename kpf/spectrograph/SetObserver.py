@@ -1,3 +1,4 @@
+import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -23,6 +24,8 @@ class SetObserver(KPFTranslatorFunction):
         observer = args.get('observer')
         log.debug(f"Setting OBSERVER to '{observer}'")
         kpfexpose['OBSERVER'].write(observer)
+        time_shim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
