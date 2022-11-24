@@ -50,11 +50,14 @@ class StartOfNight(KPFTranslatorFunction):
             SetupAOforKPF.execute({})
         # Set DCS rotator parameters
         dcs = ktl.cache('dcs')
-        if dcs['INSTRUME'].read() == 'KPF':
+        inst = dcs['INSTRUME'].read()
+        if inst == 'KPF':
             log.info(f"Setting dcs.ROTDEST = 0")
             dcs['ROTDEST'].write(0)
             log.info(f"Setting dcs.ROTMODE = stationary")
             dcs['ROTMODE'].write('stationary')
+        else:
+            log.warning(f"Instrument is {inst}, not configuring DCS")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
