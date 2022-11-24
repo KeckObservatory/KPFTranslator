@@ -35,7 +35,7 @@ class TakeGuiderExposure(KPFTranslatorFunction):
             TriggerSingleGuiderExposure.TriggerSingleGuiderExposure.execute({})
 
         lastfile.monitor()
-        lastfile.wait(timeout=exptime+1) # Wait for update which signals a new file
+        lastfile.wait(timeout=exptime*2+1) # Wait for update which signals a new file
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

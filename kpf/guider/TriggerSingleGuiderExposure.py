@@ -29,7 +29,9 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
         kpfguide['EXPOSE'].write('yes')
         if args.get('wait', True) is True:
             expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
-            ktl.waitFor(expr, timeout=exptime+1)
+            success = ktl.waitFor(expr, timeout=exptime*2+1)
+            if success is not True:
+                log.error(f'Failed to get new LASTFILE from guider')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

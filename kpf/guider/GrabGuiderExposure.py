@@ -27,7 +27,9 @@ class GrabGuiderExposure(KPFTranslatorFunction):
         log.debug(f"Grabbing next guider exposure.")
         log.debug(f"kpfexpose.OBJECT = {kpfexpose['OBJECT'].read()}")
         expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
-        ktl.waitFor(expr, timeout=exptime+1)
+        success = ktl.waitFor(expr, timeout=exptime*2+1)
+        if success is False:
+            log.error(f'Failed to get new lastfile from guider')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
