@@ -14,13 +14,15 @@ class SetObject(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'Object')
+#         check_input(args, 'Object')
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
-        obj = args.get('Object')
+        obj = args.get('Object', '')
+        if obj is None:
+            obj = ''
         log.debug(f"Setting OBJECT to '{obj}'")
         kpfexpose['OBJECT'].write(obj)
 
