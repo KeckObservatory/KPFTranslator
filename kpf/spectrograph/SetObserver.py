@@ -32,7 +32,9 @@ class SetObserver(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
             observerkw = ktl.cache('kpfexpose', 'OBSERVER')
-            raise FailedToReachDestination(observerkw.read(), observer)
+            raise FailedToReachDestination(observerkw.read().strip(),
+                                           observer.strip())
+        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

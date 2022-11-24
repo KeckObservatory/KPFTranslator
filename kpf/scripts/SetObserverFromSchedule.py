@@ -41,13 +41,6 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
-#         observer = args.get('observer')
-#         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
-#         expr = f"($kpfexpose.OBSERVER == '{observer}')"
-#         success = ktl.waitFor(expr, timeout=timeout)
-#         if success is not True:
-#             observerkw = ktl.cache('kpfexpose', 'OBSERVER')
-#             raise FailedToReachDestination(observerkw.read(), observer)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
