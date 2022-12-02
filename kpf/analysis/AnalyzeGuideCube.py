@@ -63,8 +63,10 @@ def plot_cube_stats(infile, plotfile=None):
     
     plt.figure(figsize=(16,6))
 
-    xdeltas = np.array([x-xvals[i-1] if i > 0 else 0 for i,x in enumerate(xvals)])
-    ydeltas = np.array([y-yvals[i-1] if i > 0 else 0 for i,y in enumerate(yvals)])
+    xdeltas = np.array([x-xvals[i-1] if i > 0 else 0\
+                        for i,x in enumerate(xvals.filled(fill_value=0))])
+    ydeltas = np.array([y-yvals[i-1] if i > 0 else 0\
+                        for i,y in enumerate(yvals.filled(fill_value=0))])
     plt.subplot(2,2,(1,3))
     plt.title(f"{filename} ({len(t)} frames)")
     plt.psd(xdeltas, Fs=fps, color='g', label='X')
