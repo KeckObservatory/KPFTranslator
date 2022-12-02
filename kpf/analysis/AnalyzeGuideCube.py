@@ -28,7 +28,7 @@ args = p.parse_args()
 ##-------------------------------------------------------------------------
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
-def plot_cube_stats(infile, ylim=2, plotfile=None):
+def plot_cube_stats(infile, plotfile=None):
     file = Path(infile).expanduser()
     if file.exists() is False:
         print(f"Could not find file {infile}")
@@ -46,6 +46,9 @@ def plot_cube_stats(infile, ylim=2, plotfile=None):
     xvals = np.ma.MaskedArray(t['object1_x'], mask=t['object1_x']<-998)
     yvals = np.ma.MaskedArray(t['object1_y'], mask=t['object1_y']<-998)
     times = t['timestamp']-t['timestamp'][0]
+
+    plotylim = (min([xvals.min(), yvals.min()])-0.5,
+                max([xvals.max(), yvals.max()])+0.5)
 
     mindiff = min(diff)*1000
     maxdiff = max([max(diff)*1000,abs(mindiff)])
@@ -76,13 +79,13 @@ def plot_cube_stats(infile, ylim=2, plotfile=None):
     plt.subplot(2,2,4)
     plt.plot(times, xvals-xvals.mean(), 'g-', label=f'X (rms={xrms:.2f})')
     for badt in times[xvals.mask]:
-        plt.plot([badt,badt], [-ylim,ylim], 'r-', alpha=0.3)
+        plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
     plt.plot(times, yvals-yvals.mean(), 'r-', label=f'Y (rms={yrms:.2f})')
     for badt in times[yvals.mask]:
-        plt.plot([badt,badt], [-ylim,ylim], 'r-', alpha=0.3)
+        plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
     plt.legend(loc='best')
     plt.ylabel('delta pix')
-    plt.ylim(-ylim,ylim)
+    plt.ylim(plotylim)
     plt.grid()
     plt.xlim(0,times[-1])
     plt.xlabel('Time (s)')
@@ -94,4 +97,4 @@ def plot_cube_stats(infile, ylim=2, plotfile=None):
 
 
 if __name__ == '__main__':
-    plot_cube_stats(args.file, ylim=2, plotfile=None)
+    plot_cube_stats(args.file, plotfile=None)
