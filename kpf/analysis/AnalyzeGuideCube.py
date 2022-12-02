@@ -28,7 +28,10 @@ args = p.parse_args()
 ##-------------------------------------------------------------------------
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
-def plot_cube_stats(file, ylim=2, plotfile=None):
+def plot_cube_stats(infile, ylim=2, plotfile=None):
+    file = Path(infile).expanduser()
+    if file.exists() is False:
+        print(f"Could not find file {infile}")
     filename = file.name
     hdul = fits.open(file)
     fps = hdul[0].header.get('FPS', 100)
