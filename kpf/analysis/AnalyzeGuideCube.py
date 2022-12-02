@@ -34,7 +34,10 @@ def plot_cube_stats(infile, plotfile=None):
         print(f"Could not find file {infile}")
     filename = file.name
     hdul = fits.open(file)
-    fps = hdul[0].header.get('FPS', 100)
+    fps = hdul[0].header.get('FPS', None)
+    if fps is None:
+        print(f"Warning could not read FPS value from header. Assuming 100.")
+        fps = 100
     t = Table(hdul[2].data)
 
     line0 = models.Linear1D()
@@ -63,7 +66,7 @@ def plot_cube_stats(infile, plotfile=None):
     xdeltas = np.array([x-xvals[i-1] if i > 0 else 0 for i,x in enumerate(xvals)])
     ydeltas = np.array([y-yvals[i-1] if i > 0 else 0 for i,y in enumerate(yvals)])
     plt.subplot(2,2,(1,3))
-    plt.title(f"{filename}: nframes={len(t)}")
+    plt.title(f"{filename} ({len(t)} frames)")
     plt.psd(xdeltas, Fs=fps, color='g', label='X')
     plt.psd(ydeltas, Fs=fps, color='r', label='Y')
     plt.legend(loc='best')
