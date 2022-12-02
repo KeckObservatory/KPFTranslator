@@ -47,15 +47,14 @@ def plot_cube_stats(infile, plotfile=None):
     yvals = np.ma.MaskedArray(t['object1_y'], mask=t['object1_y']<-998)
     times = t['timestamp']-t['timestamp'][0]
 
-    plotylim = (min([xvals.min(), yvals.min()])-0.5,
-                max([xvals.max(), yvals.max()])+0.5)
-
     mindiff = min(diff)*1000
     maxdiff = max([max(diff)*1000,abs(mindiff)])
     rmsdiff = np.std(diff)*1000
 
     xdelta = xvals-xvals.mean()
     ydelta = yvals-yvals.mean()
+    plotylim = (min([xdelta.min(), ydelta.min()])-0.5,
+                max([xdelta.max(), ydelta.max()])+0.5)
     xrms = xdelta.std()
     yrms = ydelta.std()
     
