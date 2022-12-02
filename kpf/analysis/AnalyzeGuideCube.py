@@ -76,10 +76,10 @@ def plot_cube_stats(infile, plotfile=None):
     plt.grid()
     
     plt.subplot(2,2,4)
-    plt.plot(times, xvals-xvals.mean(), 'g-', label=f'X (rms={xrms:.2f})')
+    plt.plot(times, xvals-xvals.mean(), 'g-', label=f'X (rms={xrms:.2f} pix)')
     for badt in times[xvals.mask]:
         plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
-    plt.plot(times, yvals-yvals.mean(), 'r-', label=f'Y (rms={yrms:.2f})')
+    plt.plot(times, yvals-yvals.mean(), 'r-', label=f'Y (rms={yrms:.2f} pix)')
     for badt in times[yvals.mask]:
         plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
     plt.legend(loc='best')
