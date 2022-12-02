@@ -47,8 +47,8 @@ def plot_cube_stats(infile, ylim=2, plotfile=None):
     yvals = np.ma.MaskedArray(t['object1_y'], mask=t['object1_y']<-998)
     times = t['timestamp']-t['timestamp'][0]
 
-    maxdiff = max(diff)*1000
     mindiff = min(diff)*1000
+    maxdiff = max([max(diff)*1000,abs(mindiff)])
     rmsdiff = np.std(diff)*1000
 
     xdelta = xvals-xvals.mean()
@@ -58,16 +58,16 @@ def plot_cube_stats(infile, ylim=2, plotfile=None):
     
     plt.figure(figsize=(16,6))
 
-    if fps is not None:
-        xdeltas = np.array([x-xvals[i-1] if i > 0 else 0 for i,x in enumerate(xvals)])
-        ydeltas = np.array([y-yvals[i-1] if i > 0 else 0 for i,y in enumerate(yvals)])
-        plt.subplot(2,2,(1,3))
-        plt.psd(xdeltas, Fs=fps, color='g', label='X')
-        plt.psd(ydeltas, Fs=fps, color='r', label='Y')
-        plt.legend(loc='best')
+    xdeltas = np.array([x-xvals[i-1] if i > 0 else 0 for i,x in enumerate(xvals)])
+    ydeltas = np.array([y-yvals[i-1] if i > 0 else 0 for i,y in enumerate(yvals)])
+    plt.subplot(2,2,(1,3))
+    plt.title(f"{filename}: nframes={len(t)}")
+    plt.psd(xdeltas, Fs=fps, color='g', label='X')
+    plt.psd(ydeltas, Fs=fps, color='r', label='Y')
+    plt.legend(loc='best')
 
     plt.subplot(2,2,2)
-    plt.title(f"{filename}: nframes={len(t)}, max={max([maxdiff, abs(mindiff)]):.1f} ms")
+    plt.title(f"Time deltas: rms={rmsdiff:.1f} ms, max={maxdiff:.1f} ms")
     plt.plot(times, diff*1000)
     plt.ylabel('delta time (ms)')
     plt.xlim(0,times[-1])
