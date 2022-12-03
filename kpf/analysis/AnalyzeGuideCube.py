@@ -11,6 +11,7 @@ from astropy import visualization as vis
 from astropy.modeling import models, fitting
 
 from matplotlib import pyplot as plt
+import imageio
 
 
 ##-------------------------------------------------------------------------
@@ -26,7 +27,7 @@ args = p.parse_args()
 
 
 ##-------------------------------------------------------------------------
-## analyze_grid_search
+## plot_cube_stats
 ##-------------------------------------------------------------------------
 def plot_cube_stats(infile, plotfile=None):
     file = Path(infile).expanduser()
@@ -100,5 +101,48 @@ def plot_cube_stats(infile, plotfile=None):
         plt.show()
 
 
+##-------------------------------------------------------------------------
+## 
+##-------------------------------------------------------------------------
+def generate_cube_gif(infile):
+    file = Path(infile).expanduser()
+    if file.exists() is False:
+        print(f"Could not find file {infile}")
+    filename = file.name
+    hdul = fits.open(file)
+    cube = hdul[1].data
+    t = Table(hdul[2].data)
+    nf, ny, nx = cube.shape
+    norm = vis.ImageNormalize(cube,
+                          interval=vis.AsymmetricPercentileInterval(0.5,99.99),
+                          stretch=vis.LogStretch())
+
+    plotdir = Path('~/tmp/cubefiles').expanduser()
+    if plotdir.exists() is False:
+        plotdir.mkdir(parents=True)
+    png_filenames = []
+    for j,im in enumerate(cube):
+        plotfile = plotdir / f"cubeslice_{j:04d}.png"
+        png_filenames.append(plotfile)
+        if plotfile.exists() is True: plotfile.unlink()
+
+        xpix = t[j]['object1_x'] - (t[j]['target_x'] - nx/2)
+        ypix = t[j]['object1_y'] - (t[j]['target_y'] - ny/2)
+
+        plt.figure(figsize=(8,8))
+        plt.title(f"{filename}: frame {j:04d}")
+        plt.imshow(im, origin='lower', cmap='gray', norm=norm)
+        plt.plot(xpix, ypix, 'r+')
+        plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.10)
+        plt.close()
+
+    gif_filename = filename.replace('.fits', '.gif')
+    with imageio.get_writer(gif_filename, mode='I') as writer:
+        for filename in png_filenames:
+            image = imageio.imread(filename)
+            writer.append_data(image)
+
+
 if __name__ == '__main__':
     plot_cube_stats(args.file, plotfile=None)
+    generate_cube_gif(args.file)
