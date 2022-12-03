@@ -3,6 +3,8 @@
 ## Import General Tools
 from pathlib import Path
 import argparse
+import logging
+import subprocess
 
 import numpy as np
 from astropy.io import fits
@@ -27,17 +29,27 @@ args = p.parse_args()
 
 
 ##-------------------------------------------------------------------------
+## Create logger object
+##-------------------------------------------------------------------------
+log = logging.getLogger('MyLogger')
+log.setLevel(logging.DEBUG)
+## Set up console output
+LogConsoleHandler = logging.StreamHandler()
+LogConsoleHandler.setLevel(logging.DEBUG)
+LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
+LogConsoleHandler.setFormatter(LogFormat)
+log.addHandler(LogConsoleHandler)
+
+
+##-------------------------------------------------------------------------
 ## plot_cube_stats
 ##-------------------------------------------------------------------------
-def plot_cube_stats(infile, plotfile=None):
-    file = Path(infile).expanduser()
-    if file.exists() is False:
-        print(f"Could not find file {infile}")
-    filename = file.name
+def plot_cube_stats(file, plotfile=None):
+    log.info('Generating summary plot')
     hdul = fits.open(file)
     fps = hdul[0].header.get('FPS', None)
     if fps is None:
-        print(f"Warning could not read FPS value from header. Assuming 100.")
+        log.warning(f"Could not read FPS from header. Assuming 100.")
         fps = 100
     t = Table(hdul[2].data)
 
@@ -61,15 +73,15 @@ def plot_cube_stats(infile, plotfile=None):
                 max([xdelta.max(), ydelta.max()])+0.5)
     xrms = xdelta.std()
     yrms = ydelta.std()
-    
-    plt.figure(figsize=(16,6))
-
     xdeltas = np.array([x-xvals[i-1] if i > 0 else 0\
                         for i,x in enumerate(xvals.filled(fill_value=0))])
     ydeltas = np.array([y-yvals[i-1] if i > 0 else 0\
                         for i,y in enumerate(yvals.filled(fill_value=0))])
+
+    plt.figure(figsize=(16,6))
+
     plt.subplot(2,2,(1,3))
-    plt.title(f"{filename} ({len(t)} frames)")
+    plt.title(f"{file.name} ({len(t)} frames)")
     plt.psd(xdeltas, Fs=fps, color='g', label='X')
     plt.psd(ydeltas, Fs=fps, color='r', label='Y')
     plt.legend(loc='best')
@@ -80,7 +92,7 @@ def plot_cube_stats(infile, plotfile=None):
     plt.ylabel('delta time (ms)')
     plt.xlim(0,times[-1])
     plt.grid()
-    
+
     plt.subplot(2,2,4)
     plt.plot(times, xvals-xvals.mean(), 'g-', label=f'X (rms={xrms:.2f} pix)')
     for badt in times[xvals.mask]:
@@ -99,50 +111,78 @@ def plot_cube_stats(infile, plotfile=None):
         plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.1)
     else:
         plt.show()
+    log.info('Done.')
 
 
 ##-------------------------------------------------------------------------
-## 
+## generate_cube_gif
 ##-------------------------------------------------------------------------
-def generate_cube_gif(infile):
-    file = Path(infile).expanduser()
-    if file.exists() is False:
-        print(f"Could not find file {infile}")
-    filename = file.name
+def generate_cube_gif(file, giffile):
+    log.info('Generating animated gif')
     hdul = fits.open(file)
     cube = hdul[1].data
     t = Table(hdul[2].data)
     nf, ny, nx = cube.shape
     norm = vis.ImageNormalize(cube,
-                          interval=vis.AsymmetricPercentileInterval(0.5,99.99),
+                          interval=vis.AsymmetricPercentileInterval(0.9,99.99),
                           stretch=vis.LogStretch())
 
     plotdir = Path('~/tmp/cubefiles').expanduser()
     if plotdir.exists() is False:
         plotdir.mkdir(parents=True)
     png_filenames = []
+
+    log.info("  Generating individual png file for each frame")
     for j,im in enumerate(cube):
         plotfile = plotdir / f"cubeslice_{j:04d}.png"
         png_filenames.append(plotfile)
         if plotfile.exists() is True: plotfile.unlink()
 
-        xpix = t[j]['object1_x'] - (t[j]['target_x'] - nx/2)
-        ypix = t[j]['object1_y'] - (t[j]['target_y'] - ny/2)
-
         plt.figure(figsize=(8,8))
-        plt.title(f"{filename}: frame {j:04d}")
+        plt.title(f"{file.name}: frame {j:04d}")
         plt.imshow(im, origin='lower', cmap='gray', norm=norm)
-        plt.plot(xpix, ypix, 'r+')
+
+        if t[j]['object1_x'] > 0 and t[j]['object1_y'] > 0:
+            xpix = t[j]['object1_x'] - (t[j]['target_x'] - nx/2)
+            ypix = t[j]['object1_y'] - (t[j]['target_y'] - ny/2)
+            plt.plot(xpix, ypix, 'r+')
+
         plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.10)
         plt.close()
 
-    gif_filename = filename.replace('.fits', '.gif')
-    with imageio.get_writer(gif_filename, mode='I') as writer:
+    log.info("  Assembling animated GIF")
+    with imageio.get_writer(giffile, mode='I') as writer:
         for filename in png_filenames:
             image = imageio.imread(filename)
             writer.append_data(image)
+    log.info('Done.')
 
 
+##-------------------------------------------------------------------------
+## if __name__ == '__main__':
+##-------------------------------------------------------------------------
 if __name__ == '__main__':
-    plot_cube_stats(args.file, plotfile=None)
-    generate_cube_gif(args.file)
+    file = Path(args.file).expanduser()
+    if file.exists() is False:
+        log.error(f"Could not find file {args.file}")
+
+    viewer_commands = ['eog', 'open']
+    viewer_command = None
+    for cmd in viewer_commands:
+        rtn = subprocess.call(['which', cmd])
+        if rtn == 0:
+            viewer_command = cmd
+
+    plotfile = Path(str(file.name).replace('.fits', '.png'))
+    plot_cube_stats(file, plotfile=plotfile)
+
+    log.info(f"Opening {plotfile} using {viewer_command}")
+    if viewer_command is not None:
+        proc = subprocess.Popen([viewer_command, f"{plotfile}"])
+
+    giffile = Path(str(file.name).replace('.fits', '.gif'))
+    generate_cube_gif(file, giffile)
+
+    log.info(f"Opening {giffile} using {viewer_command}")
+    if viewer_command is not None:
+        proc = subprocess.Popen([viewer_command, f"{giffile}"])
