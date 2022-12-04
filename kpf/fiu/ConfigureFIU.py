@@ -40,7 +40,7 @@ class ConfigureFIU(KPFTranslatorFunction):
             dest = args.get('mode')
             kpffiu = ktl.cache('kpffiu')
             modes = kpffiu['MODE'].read()
-            if dest not in modes.split(','):
+            if dest.lower() not in modes.lower().split(','):
                 raise FailedToReachDestination(dest, modes)
 
     @classmethod
