@@ -36,8 +36,14 @@ class EndOfNight(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # Start FIU stow
-        log.info('Setting FIU mode to Stowed')
-        ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
+
+        if args.get('cals', True) is True:
+            log.info('Setting FIU mode to Calibration')
+            ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
+        else:
+            log.info('Setting FIU mode to Stowed')
+            ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
+
         if args.get('AO', True) is True:
             log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'close'})
@@ -70,5 +76,7 @@ class EndOfNight(KPFTranslatorFunction):
         '''
         parser = cls._add_bool_arg(parser, 'AO',
             'Close AO hatch, send PCU home, and turn on HEPA filter?', default=True)
+        parser = cls._add_bool_arg(parser, 'cals',
+            'Set FIU to calibration mode instead of stowed?', default=True)
 
         return super().add_cmdline_args(parser, cfg)
