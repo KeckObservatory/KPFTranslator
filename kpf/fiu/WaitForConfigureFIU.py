@@ -28,7 +28,7 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         dest = args.get('mode')
         kpffiu = ktl.cache('kpffiu')
-        modes = kpffiu['MODE'].read().split(',')
+        modes = kpffiu['MODE'].read()
         start = datetime.utcnow()
         move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=30),
                       cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
