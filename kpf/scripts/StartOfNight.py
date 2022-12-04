@@ -8,7 +8,7 @@ from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
 from .SetOutdirs import SetOutdirs
 from ..spectrograph.SetProgram import SetProgram
-# from ..spectrograph.SetObserver import SetObserver
+from ..spectrograph.WaitForReady import WaitForReady
 from .SetObserverFromSchedule import SetObserverFromSchedule
 
 
@@ -41,6 +41,7 @@ class StartOfNight(KPFTranslatorFunction):
         log.info('Initialize tip tilt mirror')
         InitializeTipTilt.execute({})
         # Set Outdirs
+        WaitForReady.execute({})
         SetOutdirs.execute({})
         # Set progname and observer
         SetProgram.execute(args)
