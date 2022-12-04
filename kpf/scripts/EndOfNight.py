@@ -9,6 +9,7 @@ from ..ao.SendPCUtoHome import SendPCUtoHome
 from ..fiu.ShutdownTipTilt import ShutdownTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.SetObserver import SetObserver
 from ..spectrograph.SetObject import SetObject
@@ -65,6 +66,7 @@ class EndOfNight(KPFTranslatorFunction):
             CalLampPower.execute({'lamp': LED, 'power': 'off'})
         # Set PROGNAME
         log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
+        WaitForReady.execute({})
         SetProgram.execute({'progname': ''})
         SetObserver.execute({'observer': ''})
         SetObject.execute({'Object': ''})
