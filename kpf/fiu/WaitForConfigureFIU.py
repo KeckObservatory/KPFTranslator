@@ -33,9 +33,9 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
         move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=30),
                       cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
         end = start + timedelta(seconds=max(move_times))
-        while dest not in modes and datetime.utcnow() <= end:
+        while dest.lower() not in modes.lower().split(',') and datetime.utcnow() <= end:
             sleep(1)
-            modes = kpffiu['MODE'].read().split(',')
+            modes = kpffiu['MODE'].read()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
