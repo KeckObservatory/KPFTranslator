@@ -34,7 +34,7 @@ def red_detector_power_is_on():
         raise FailedPreCondition(msg)
 
 
-def green_detector_temperature_is_ok(temperature_tolerance=1):
+def green_detector_temperature_is_ok(temperature_tolerance=10):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfgreen = ktl.cache('kpfgreen')
@@ -47,7 +47,7 @@ def green_detector_temperature_is_ok(temperature_tolerance=1):
         raise FailedPreCondition(msg)
 
 
-def red_detector_temperature_is_ok(temperature_tolerance=1):
+def red_detector_temperature_is_ok(temperature_tolerance=10):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfred = ktl.cache('kpfred')
@@ -60,7 +60,7 @@ def red_detector_temperature_is_ok(temperature_tolerance=1):
         raise FailedPreCondition(msg)
 
 
-def cahk_detector_temperature_is_ok(temperature_tolerance=1):
+def cahk_detector_temperature_is_ok(temperature_tolerance=10):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfhk = ktl.cache('kpf_hk')
