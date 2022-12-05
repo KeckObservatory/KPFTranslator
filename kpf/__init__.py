@@ -66,11 +66,19 @@ class FailedToReachDestination(FailedPostCondition):
 ##-------------------------------------------------------------------------
 ## Utility functions
 ##-------------------------------------------------------------------------
-def check_input(args, input_name, allowed_values=None,
+def check_input(args, input_name, allowed_types=None, allowed_values=None,
                 value_min=None, value_max=None):
         target = args.get(input_name, None)
         if target is None:
             raise FailedPreCondition(f"Input {input_name} is None")
+        # Check against allowed types
+        if allowed_types is not None:
+            if type(allowed_types) != list:
+                allowed_types = [allowed_types]
+            if type(target) not in allowed_types:
+                raise FailedPreCondition(f"Input {input_name} value {target} "
+                                         f"is not an allowed type: {allowed_types}")
+        # Check against value_min and value_max
         if type(target) in [float, int]:
             if value_min is not None:
                 if target < value_min:
@@ -80,6 +88,7 @@ def check_input(args, input_name, allowed_values=None,
                 if target > value_max:
                     raise FailedPreCondition(f"Input {input_name} value {target} "
                                              f"above maximum allowed ({value_max})")
+        # Check against allowed_values
         if allowed_values is not None:
             allowed_values = [val.lower() if type(val) == str else str(val)\
                               for val in allowed_values]
