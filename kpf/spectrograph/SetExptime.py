@@ -15,7 +15,7 @@ class SetExptime(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'Exptime')
+        check_input(args, 'Exptime', allowed_types=[int, float])
         return True
 
     @classmethod
@@ -24,15 +24,13 @@ class SetExptime(KPFTranslatorFunction):
         exptime = args.get('Exptime')
         log.debug(f"Setting exposure time to {exptime:.3f}")
         kpfexpose['EXPOSURE'].write(exptime)
-        shim_time = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
-        time.sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         log.debug("Checking for success")
         exptime = args.get('Exptime')
         tol = cfg.get('tolerances', 'kpfexpose_exptime_tolerance', fallback=0.01)
-        timeout = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        timeout = cfg.get('times', 'kpfexpose_response_time', fallback=1)
         expr = (f"($kpfexpose.EXPOSURE >= {exptime-tol}) and "
                 f"($kpfexpose.EXPOSURE <= {exptime+tol})")
         log.debug(expr)
