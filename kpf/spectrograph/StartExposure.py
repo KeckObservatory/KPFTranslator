@@ -25,12 +25,18 @@ class StartExposure(KPFTranslatorFunction):
         detector_list = detectors.split(',')
         if 'Green' in detector_list:
             green_detector_power_is_on()
-            green_detector_temperature_is_ok()
+            tol = cfg.get('tolerances', 'green_detector_temperature_tolerance',
+                          fallback=10)
+            green_detector_temperature_is_ok(temperature_tolerance=tol)
         if 'Red' in detector_list:
-            green_detector_power_is_on()
-            red_detector_temperature_is_ok()
+            red_detector_power_is_on()
+            tol = cfg.get('tolerances', 'red_detector_temperature_tolerance',
+                          fallback=10)
+            red_detector_temperature_is_ok(temperature_tolerance=tol)
         if 'Ca_HK' in detector_list:
-            cahk_detector_temperature_is_ok()
+            tol = cfg.get('tolerances', 'cahk_detector_temperature_tolerance',
+                          fallback=10)
+            cahk_detector_temperature_is_ok(temperature_tolerance=tol)
         return True
 
     @classmethod
