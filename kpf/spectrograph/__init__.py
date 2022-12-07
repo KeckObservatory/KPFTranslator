@@ -34,12 +34,12 @@ def red_detector_power_is_on():
         raise FailedPreCondition(msg)
 
 
-def green_detector_temperature_is_ok(temperature_tolerance=10):
+def green_detector_temperature_is_ok(temperature_tolerance=1):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfgreen = ktl.cache('kpfgreen')
-    current = kpfgreen['CURRTEMP'].read(binary=True)
-    setpoint = kpfgreen['TEMPSET'].read(binary=True)
+    current = kpfgreen['STA_CCD_T'].read(binary=True)
+    setpoint = kpfgreen['STA_CCD_TRG'].read(binary=True)
     diff = abs(current - setpoint)
     if diff > temperature_tolerance:
         msg = (f"Green detector temperature out of range: "
@@ -47,12 +47,12 @@ def green_detector_temperature_is_ok(temperature_tolerance=10):
         raise FailedPreCondition(msg)
 
 
-def red_detector_temperature_is_ok(temperature_tolerance=10):
+def red_detector_temperature_is_ok(temperature_tolerance=1):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfred = ktl.cache('kpfred')
-    current = kpfred['CURRTEMP'].read(binary=True)
-    setpoint = kpfred['TEMPSET'].read(binary=True)
+    current = kpfred['STA_CCD_T'].read(binary=True)
+    setpoint = kpfred['STA_CCD_TRG'].read(binary=True)
     diff = abs(current - setpoint)
     if diff > temperature_tolerance:
         msg = (f"Red detector temperature out of range: "
@@ -60,7 +60,7 @@ def red_detector_temperature_is_ok(temperature_tolerance=10):
         raise FailedPreCondition(msg)
 
 
-def cahk_detector_temperature_is_ok(temperature_tolerance=10):
+def cahk_detector_temperature_is_ok(temperature_tolerance=1):
     '''Checks that the camera temperature is near setpoint
     '''
     kpfhk = ktl.cache('kpf_hk')
