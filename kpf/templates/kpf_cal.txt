@@ -6,7 +6,7 @@
         "script_version": "0.3.0",
         "template_type": "calibration",
         "ui_name": "KPF calibration",
-        "version": "0.3.0"
+        "version": "0.4.0"
     },
     "parameters": {
         "darksequence": {
@@ -195,6 +195,15 @@
             "optionality": "required",
             "type": "array",
             "ui_name": "Lamp exposures",
+            "units": null
+        },
+        "runagitator": {
+            "default": false,
+            "description": "Run the agitator during exposures?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Run the agitator during exposures?",
             "units": null
         },
         "triggercahk": {

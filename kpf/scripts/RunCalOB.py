@@ -23,7 +23,9 @@ from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from ..spectrograph.StartAgitator import StartAgitator
 from ..spectrograph.StartExposure import StartExposure
+from ..spectrograph.StopAgitator import StopAgitator
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
@@ -45,7 +47,7 @@ class RunCalOB(KPFTranslatorFunction):
             OB = yaml.safe_load(open(OBfile, 'r'))
             log.warning(f"Using OB information from file {OBfile}")
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
-        check_input(OB, 'Template_Version', allowed_values=['0.3'])
+        check_input(OB, 'Template_Version', allowed_values=['0.4'])
         return True
 
     @classmethod
@@ -125,6 +127,7 @@ class RunCalOB(KPFTranslatorFunction):
 #         WaitForLampsWarm.execute(OB)
 
         # Run lamp calibrations
+        runagitator = OB.get('RunAgitator', False)
         for calibration in OB.get('SEQ_Calibrations'):
             calsource = calibration.get('CalSource')
             nd1 = calibration.get('CalND1')
@@ -211,8 +214,12 @@ class RunCalOB(KPFTranslatorFunction):
                     log.info(f"Readout complete")
                     sleep(archon_time_shim)
                 # Start next exposure
+                if runagitator is True:
+                    StartAgitator.execute({})
                 log.info(f"Starting expoure {j+1}/{nexp}")
                 StartExposure.execute({})
+                if runagitator is True:
+                    StopAgitator.execute({})
                 WaitForReadout.execute({})
                 log.info(f"Readout has begun")
             if calsource == 'WideFlat':
