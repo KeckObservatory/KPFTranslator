@@ -28,7 +28,7 @@ class CleanupAfterCalOB(KPFTranslatorFunction):
             OB = yaml.safe_load(open(OBfile, 'r'))
             log.warning(f"Using OB information from file {OBfile}")
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
-        check_input(OB, 'Template_Version', allowed_values=['0.3'])
+        check_input(OB, 'Template_Version', allowed_values=['0.3', '0.4'])
         return True
 
     @classmethod
