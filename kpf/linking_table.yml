@@ -114,6 +114,8 @@ SetOutdirs:
     cmd: scripts.SetOutdirs.SetOutdirs
 StartOfNight:
     cmd: scripts.StartOfNight.StartOfNight
+StartUp:
+    cmd: scripts.StartUp.StartUp
 TakeGuiderSensitivityData:
     cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
 TestScienceADC:
