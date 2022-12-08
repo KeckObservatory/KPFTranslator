@@ -112,6 +112,8 @@ SetObserverFromSchedule:
     cmd: scripts.SetObserverFromSchedule.SetObserverFromSchedule
 SetOutdirs:
     cmd: scripts.SetOutdirs.SetOutdirs
+StartGUIs:
+    cmd: scripts.StartGUIs.StartGUIs
 StartOfNight:
     cmd: scripts.StartOfNight.StartOfNight
 StartUp:
