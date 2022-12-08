@@ -118,7 +118,7 @@ class RunCalOB(KPFTranslatorFunction):
                     log.info(f"Readout complete")
                     sleep(archon_time_shim)
                 # Start next exposure
-                log.info(f"Starting exposure {j+1}/{nexp}")
+                log.info(f"Starting exposure {j+1}/{nexp} ({dark.get('Object')})")
                 StartExposure.execute({})
                 WaitForReadout.execute({})
                 log.info(f"Readout has begun")
@@ -216,7 +216,7 @@ class RunCalOB(KPFTranslatorFunction):
                 # Start next exposure
                 if runagitator is True:
                     StartAgitator.execute({})
-                log.info(f"Starting expoure {j+1}/{nexp}")
+                log.info(f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})")
                 StartExposure.execute({})
                 if runagitator is True:
                     StopAgitator.execute({})
