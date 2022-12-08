@@ -17,20 +17,15 @@ class StartOfNight(KPFTranslatorFunction):
     
     - set FIU mode to observing
     - initialize tip tilt (set closed loop mode and 0, 0)
-    - Set OUTDIRS
-    - Set PROGNAME
-    - Set OBSERVER value based on schedule
     - Setup AO for KPF
     - Configure DCS (ROTDEST and ROTMODE)
     
     ARGS:
-    progname - The program ID to set.
     AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'progname')
-#         check_input(args, 'observer')
         return True
 
     @classmethod
@@ -40,12 +35,6 @@ class StartOfNight(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Observing'})
         log.info('Initialize tip tilt mirror')
         InitializeTipTilt.execute({})
-        # Set Outdirs
-        WaitForReady.execute({})
-        SetOutdirs.execute({})
-        # Set progname and observer
-        SetProgram.execute(args)
-        SetObserverFromSchedule.execute(args)
         # Setup AO
         if args.get('AO', True) is True:
             SetupAOforKPF.execute({})
@@ -69,10 +58,6 @@ class StartOfNight(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['progname'] = {'type': str,
-                                   'help': 'The PROGNAME keyword.'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
         parser = cls._add_bool_arg(parser, 'AO',
             'Configure AO?', default=True)
         return super().add_cmdline_args(parser, cfg)
