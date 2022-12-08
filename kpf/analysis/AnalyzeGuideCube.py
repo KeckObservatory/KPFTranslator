@@ -53,52 +53,58 @@ def plot_cube_stats(file, plotfile=None):
         fps = 100
     t = Table(hdul[2].data)
 
+    # Examine timestamps for consistency
     line0 = models.Linear1D()
     fitter = fitting.LinearLSQFitter()
     indicies = [i for i in range(len(t['timestamp']))]
     fit = fitter(line0, indicies, t['timestamp'])
-    diff = t['timestamp'] - fit(indicies)
+    timedeltas = t['timestamp'] - fit(indicies)
+    mintimedeltas = min(timedeltas)*1000
+    maxtimedeltas = max([max(timedeltas)*1000,abs(mintimedeltas)])
+    rmstimedeltas = np.std(timedeltas)*1000
 
-    xvals = np.ma.MaskedArray(t['object1_x'], mask=t['object1_x']<-998)
-    yvals = np.ma.MaskedArray(t['object1_y'], mask=t['object1_y']<-998)
+    # Examine position statistics
+    objectxvals = np.ma.MaskedArray(t['object1_x'], mask=t['object1_x']<-998)
+    objectyvals = np.ma.MaskedArray(t['object1_y'], mask=t['object1_y']<-998)
     times = t['timestamp']-t['timestamp'][0]
 
-    mindiff = min(diff)*1000
-    maxdiff = max([max(diff)*1000,abs(mindiff)])
-    rmsdiff = np.std(diff)*1000
+    objectxerr = np.ma.MaskedArray(t['object1_x']-t['target_x'], mask=t['object1_x']<-998)
+    objectyerr = np.ma.MaskedArray(t['object1_y']-t['target_y'], mask=t['object1_y']<-998)
+    plotylim = (min([objectxerr.min(), objectyerr.min()])-0.5,
+                max([objectxerr.max(), objectyerr.max()])+0.5)
+    xrms = objectxerr.std()
+    yrms = objectyerr.std()
+    xbias = objectxerr.mean()
+    ybias = objectyerr.mean()
 
-    xdelta = xvals-xvals.mean()
-    ydelta = yvals-yvals.mean()
-    plotylim = (min([xdelta.min(), ydelta.min()])-0.5,
-                max([xdelta.max(), ydelta.max()])+0.5)
-    xrms = xdelta.std()
-    yrms = ydelta.std()
-    xdeltas = np.array([x-xvals[i-1] if i > 0 else 0\
-                        for i,x in enumerate(xvals.filled(fill_value=0))])
-    ydeltas = np.array([y-yvals[i-1] if i > 0 else 0\
-                        for i,y in enumerate(yvals.filled(fill_value=0))])
+    # Examine stellar motion statistics
+    xdeltas = [val-objectxvals[i-1] for i,val in\
+               enumerate(objectxvals.filled(fill_value=np.nan)) if i > 0]
+    ydeltas = [val-objectxvals[i-1] for i,val in\
+               enumerate(objectxvals.filled(fill_value=np.nan)) if i > 0]
 
-    plt.figure(figsize=(16,6))
+    plt.figure(figsize=(16,8))
 
     plt.subplot(2,2,(1,3))
-    plt.title(f"{file.name} ({len(t)} frames)")
+    plt.title(f"PSD of Frame to Frame Motion\n{file.name} ({len(t)} frames)")
     plt.psd(xdeltas, Fs=fps, color='g', label='X')
     plt.psd(ydeltas, Fs=fps, color='r', label='Y')
     plt.legend(loc='best')
 
     plt.subplot(2,2,2)
-    plt.title(f"Time deltas: rms={rmsdiff:.1f} ms, max={maxdiff:.1f} ms")
-    plt.plot(times, diff*1000)
+    plt.title(f"Time deltas: rms={rmstimedeltas:.1f} ms, max={maxtimedeltas:.1f} ms")
+    plt.plot(times, timedeltas*1000, 'k-')
     plt.ylabel('delta time (ms)')
     plt.xlim(0,times[-1])
     plt.grid()
 
     plt.subplot(2,2,4)
-    plt.plot(times, xvals-xvals.mean(), 'g-', label=f'X (rms={xrms:.2f} pix)')
-    for badt in times[xvals.mask]:
+    plt.title(f"Positional Error")
+    plt.plot(times, objectxerr, 'g-', label=f'X (rms={xrms:.2f}, bias={xbias:.2f} pix)')
+    for badt in times[objectxerr.mask]:
         plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
-    plt.plot(times, yvals-yvals.mean(), 'r-', label=f'Y (rms={yrms:.2f} pix)')
-    for badt in times[yvals.mask]:
+    plt.plot(times, objectyerr, 'r-', label=f'Y (rms={yrms:.2f}, bias={ybias:.2f} pix)')
+    for badt in times[objectyerr.mask]:
         plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
     plt.legend(loc='best')
     plt.ylabel('delta pix')
@@ -180,9 +186,9 @@ if __name__ == '__main__':
     if viewer_command is not None:
         proc = subprocess.Popen([viewer_command, f"{plotfile}"])
 
-    giffile = Path(str(file.name).replace('.fits', '.gif'))
-    generate_cube_gif(file, giffile)
+#    giffile = Path(str(file.name).replace('.fits', '.gif'))
+#    generate_cube_gif(file, giffile)
 
-    log.info(f"Opening {giffile} using {viewer_command}")
-    if viewer_command is not None:
-        proc = subprocess.Popen([viewer_command, f"{giffile}"])
+#    log.info(f"Opening {giffile} using {viewer_command}")
+#    if viewer_command is not None:
+#        proc = subprocess.Popen([viewer_command, f"{giffile}"])
