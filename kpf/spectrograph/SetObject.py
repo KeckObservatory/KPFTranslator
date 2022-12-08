@@ -31,14 +31,14 @@ class SetObject(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-#         obj = args.get('Object')
-#         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
-#         expr = f"($kpfexpose.OBJECT == '{obj}')"
-#         success = ktl.waitFor(expr, timeout=timeout)
-#         if success is not True:
-#             objectkw = ktl.cache('kpfexpose', 'OBJECT')
-#             raise FailedToReachDestination(objectkw.read(), obj)
-        return True # string comparison is failing for some reason
+        obj = args.get('Object')
+        timeout = cfg.get('times', 'kpfexpose_response_time', fallback=1)
+        expr = f"($kpfexpose.OBJECT == '{obj}')"
+        success = ktl.waitFor(expr, timeout=timeout)
+        if success is not True:
+            objectkw = ktl.cache('kpfexpose', 'OBJECT')
+            raise FailedToReachDestination(objectkw.read(), obj)
+        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

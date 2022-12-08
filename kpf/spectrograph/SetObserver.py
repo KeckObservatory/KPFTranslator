@@ -30,7 +30,7 @@ class SetObserver(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         observer = args.get('observer')
-        timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
+        timeout = cfg.get('times', 'kpfexpose_response_time', fallback=1)
         expr = f"($kpfexpose.OBSERVER == '{observer}')"
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
