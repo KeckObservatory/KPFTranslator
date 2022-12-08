@@ -39,7 +39,9 @@ class StartUp(KPFTranslatorFunction):
         SetProgram.execute(args)
         SetObserverFromSchedule.execute(args)
         # Start GUIs
+        log.info("Starting FIU Status GUI")
         fiugui_proc = subprocess.Popen(['/kroot/rel/default/bin/fiu_gui'])
+        log.info("Starting Exposure Meter GUI")
         emgui_proc = subprocess.Popen(['/kroot/rel/default/bin/expmeter_gui'])
 
     @classmethod
