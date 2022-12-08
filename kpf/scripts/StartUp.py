@@ -40,7 +40,7 @@ class StartUp(KPFTranslatorFunction):
         SetProgram.execute(args)
         SetObserverFromSchedule.execute(args)
         # Start GUIs
-        
+        StartGUIs.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
