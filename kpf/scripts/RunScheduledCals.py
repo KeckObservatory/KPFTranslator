@@ -27,6 +27,10 @@ class RunScheduledCals(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         OBfile = Path(args.get('OBfile')).expanduser()
+        log.info('-------------------------')
+        log.info(f"Running RunScheduledCals")
+        log.info('-------------------------')
+
         scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
         if scriptallow.read() == 'No':
             log.warning("SCRIPTALLOW is No, skipping scheduled cals: {OBfile.name}")

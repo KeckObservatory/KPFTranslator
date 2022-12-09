@@ -38,7 +38,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # Register this script with kpfconfig
-        register_script(__file__, os.get_pid())
+        register_script(__file__, os.getpid())
         # Use file input for OB instead of args (temporary)
         OBfile = Path(args.get('OBfile')).expanduser()
         OB = yaml.safe_load(open(OBfile, 'r'))
