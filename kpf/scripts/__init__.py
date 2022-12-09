@@ -22,9 +22,11 @@ def clear_script():
 
 
 def check_script_running():
-    scriptname = ktl.cache('kpfconfig', 'SCRIPTNAME').read()
+    kpfconfig = ktl.cache('kpfconfig')
+    scriptname = kpfconfig['SCRIPTNAME'].read()
+    pid = kpfconfig['SCRIPTPID'].read()
     if scriptname != '':
-        raise FailedPreCondition(f"Existing script {scriptname} is running.")
+        raise FailedPreCondition(f"Existing script {scriptname} ({pid}) is running.")
 
 
 def check_script_stop():
