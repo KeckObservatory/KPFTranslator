@@ -108,6 +108,8 @@ ImageBackIlluminatedFibers:
     cmd: scripts.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
 RunCalOB:
     cmd: scripts.RunCalOB.RunCalOB
+RunScheduledCals:
+    cmd: scripts.RunScheduledCals.RunScheduledCals
 SetObserverFromSchedule:
     cmd: scripts.SetObserverFromSchedule.SetObserverFromSchedule
 SetOutdirs:
