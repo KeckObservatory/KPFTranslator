@@ -8,7 +8,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, clear_script
+from . import register_script, clear_script, check_script_stop
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
@@ -108,18 +108,21 @@ class RunCalOB(KPFTranslatorFunction):
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
                 sleep(archon_time_shim)
+            check_script_stop() # Stop here if requested
             log.info(f"Setting OBJECT: {dark.get('Object')}")
             SetObject.execute(dark)
             log.info(f"Set exposure time: {dark.get('Exptime'):.3f}")
             SetExptime.execute(dark)
             nexp = dark.get('nExp', 1)
             for j in range(nexp):
+                check_script_stop() # Stop here if requested
                 # Wait for current exposure to readout
                 if exposestatus.read() != 'Ready':
                     log.info(f"Waiting for kpfexpose to be Ready")
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
                     sleep(archon_time_shim)
+                    check_script_stop() # Stop here if requested
                 # Start next exposure
                 log.info(f"Starting exposure {j+1}/{nexp} ({dark.get('Object')})")
                 StartExposure.execute({})
@@ -135,10 +138,10 @@ class RunCalOB(KPFTranslatorFunction):
             calsource = calibration.get('CalSource')
             nd1 = calibration.get('CalND1')
             nd2 = calibration.get('CalND2')
-
             ## ----------------------------------------------------------------
             ## First, configure lamps and cal bench (may happen during readout)
             ## ----------------------------------------------------------------
+            check_script_stop() # Stop here if requested
             ## Setup WideFlat
             if calsource == 'WideFlat':
                 log.info('Configuring for WideFlat')
@@ -178,12 +181,14 @@ class RunCalOB(KPFTranslatorFunction):
             ## ----------------------------------------------------------------
             ## Second, configure kpfexpose (may not happen during readout)
             ## ----------------------------------------------------------------
+            check_script_stop() # Stop here if requested
             # Wait for current exposure to readout
             if exposestatus.read() != 'Ready':
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
                 sleep(archon_time_shim)
+                check_script_stop() # Stop here if requested
             log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
             SetExptime.execute(calibration)
             log.info(f"Setting source select shutters")
@@ -210,12 +215,14 @@ class RunCalOB(KPFTranslatorFunction):
             ## ----------------------------------------------------------------
             nexp = calibration.get('nExp', 1)
             for j in range(nexp):
+                check_script_stop() # Stop here if requested
                 # Wait for current exposure to readout
                 if exposestatus.read() != 'Ready':
                     log.info(f"Waiting for kpfexpose to be Ready")
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
                     sleep(archon_time_shim)
+                    check_script_stop() # Stop here if requested
                 # Start next exposure
                 if runagitator is True:
                     StartAgitator.execute({})

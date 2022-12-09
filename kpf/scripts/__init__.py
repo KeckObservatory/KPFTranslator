@@ -1,19 +1,33 @@
+import sys
 import requests
 import json
 
 import ktl
 
+from .. import log
+
 
 def register_script(scriptname, PID):
     kpfconfig = ktl.cache('kpfconfig')
+    log.debug(f"Registering script {scriptname} with PID {PID}")
     kpfconfig['SCRIPTNAME'].write(scriptname)
     kpfconfig['SCRIPTPID'].write(PID)
 
 
 def clear_script():
     kpfconfig = ktl.cache('kpfconfig')
+    log.debug("Clearing SCRIPTNAME and SCRIPTPID")
     kpfconfig['SCRIPTNAME'].write('')
     kpfconfig['SCRIPTPID'].write(-1)
+
+
+def check_script_stop():
+    scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
+    if scriptstop.read() == 'Yes':
+        log.warning("SCRIPTSTOP requested.  Resetting SCRIPTSTOP and exiting")
+        scriptstop.write('No')
+        clear_script()
+        sys.exit(0)
 
 
 def querydb(req):
