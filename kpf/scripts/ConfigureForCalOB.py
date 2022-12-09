@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from packaging import version
 from pathlib import Path
@@ -19,6 +20,10 @@ class ConfigureForCalOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        kpfconfig = ktl.cache('kpfconfig')
+        current_script = kpfconfig['SCRIPTNAME'].read()
+        if current_script != '':
+            raise FailedPreCondition(f"Another script is running: {current_script}")
         # Use file input for OB instead of args (temporary)
         check_input(args, 'OBfile')
         OBfile = Path(args.get('OBfile')).expanduser()
@@ -31,6 +36,10 @@ class ConfigureForCalOB(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Register this script with kpfconfig
+        kpfconfig = ktl.cache('kpfconfig')
+        kpfconfig['SCRIPTNAME'].write(__file__)
+        kpfconfig['SCRIPTPID'].write(os.get_pid())
         # Use file input for OB instead of args (temporary)
         OBfile = Path(args.get('OBfile')).expanduser()
         OB = yaml.safe_load(open(OBfile, 'r'))
@@ -53,6 +62,12 @@ class ConfigureForCalOB(KPFTranslatorFunction):
             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+
+        # Register end of this script with kpfconfig
+        kpfconfig = ktl.cache('kpfconfig')
+        kpfconfig['SCRIPTNAME'].write('')
+        kpfconfig['SCRIPTPID'].write(-1)
+
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
