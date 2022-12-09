@@ -8,6 +8,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
+from . import register_script, clear_script
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
@@ -52,6 +53,8 @@ class RunCalOB(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Register this script with kpfconfig
+        register_script(__file__, os.get_pid())
         # Use file input for OB instead of args (temporary)
         OBfile = Path(args.get('OBfile')).expanduser()
         OB = yaml.safe_load(open(OBfile, 'r'))
@@ -224,6 +227,9 @@ class RunCalOB(KPFTranslatorFunction):
                 log.info(f"Readout has begun")
             if calsource == 'WideFlat':
                 SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
+
+        # Register end of this script with kpfconfig
+        clear_script()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
