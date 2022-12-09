@@ -10,7 +10,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, clear_script
+from . import register_script, clear_script, check_script_running
 from ..calbench.CalLampPower import CalLampPower
 
 
@@ -21,10 +21,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        kpfconfig = ktl.cache('kpfconfig')
-        current_script = kpfconfig['SCRIPTNAME'].read()
-        if current_script != '':
-            raise FailedPreCondition(f"Another script is running: {current_script}")
+        check_script_running()
         # Use file input for OB instead of args (temporary)
         check_input(args, 'OBfile')
         OBfile = Path(args.get('OBfile')).expanduser()
@@ -38,7 +35,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # Register this script with kpfconfig
-        register_script(__file__, os.getpid())
+        register_script(Path(__file__).name, os.getpid())
         # Use file input for OB instead of args (temporary)
         OBfile = Path(args.get('OBfile')).expanduser()
         OB = yaml.safe_load(open(OBfile, 'r'))

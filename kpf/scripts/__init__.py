@@ -4,7 +4,7 @@ import json
 
 import ktl
 
-from .. import log
+from .. import log, FailedPreCondition
 
 
 def register_script(scriptname, PID):
@@ -19,6 +19,12 @@ def clear_script():
     log.debug("Clearing SCRIPTNAME and SCRIPTPID")
     kpfconfig['SCRIPTNAME'].write('')
     kpfconfig['SCRIPTPID'].write(-1)
+
+
+def check_script_running():
+    scriptname = ktl.cache('kpfconfig', 'SCRIPTNAME').read()
+    if scriptname != '':
+        raise FailedPreCondition(f"Existing script {scriptname} is running.")
 
 
 def check_script_stop():
