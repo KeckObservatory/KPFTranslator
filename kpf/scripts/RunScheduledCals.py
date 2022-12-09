@@ -9,6 +9,8 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from .ConfigureForCalOB import ConfigureForCalOB
 from .RunCalOB import RunCalOB
 from .CleanupAfterCalOB import CleanupAfterCalOB
+from ..spectrograph.SetProgram import SetProgram
+from ..spectrograph.SetObserver import SetObserver
 
 
 class RunScheduledCals(KPFTranslatorFunction):
@@ -29,9 +31,11 @@ class RunScheduledCals(KPFTranslatorFunction):
         if scriptallow.read() == 'No':
             log.warning("SCRIPTALLOW is No, skipping scheduled cals: {OBfile.name}")
         else:
-            ConfigureForCalOB({'OBfile': f"{OBfile}"})
-            RunCalOB({'OBfile': f"{OBfile}"})
-            CleanupAfterCalOB({'OBfile': f"{OBfile}"})
+            SetProgram.execute({'progname': ''})
+            SetObserver.execute({'observer': 'None'})
+            ConfigureForCalOB.execute({'OBfile': f"{OBfile}"})
+            RunCalOB.execute({'OBfile': f"{OBfile}"})
+            CleanupAfterCalOB.execute({'OBfile': f"{OBfile}"})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
