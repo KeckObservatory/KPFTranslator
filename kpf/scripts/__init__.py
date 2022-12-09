@@ -1,6 +1,20 @@
 import requests
 import json
 
+import ktl
+
+
+def register_script(scriptname, PID):
+    kpfconfig = ktl.cache('kpfconfig')
+    kpfconfig['SCRIPTNAME'].write(scriptname)
+    kpfconfig['SCRIPTPID'].write(PID)
+
+
+def clear_script():
+    kpfconfig = ktl.cache('kpfconfig')
+    kpfconfig['SCRIPTNAME'].write('')
+    kpfconfig['SCRIPTPID'].write(-1)
+
 
 def querydb(req):
     '''A simple wrapper to form a generic API level query to the telescope
