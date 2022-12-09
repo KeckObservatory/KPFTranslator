@@ -33,7 +33,7 @@ class RunScheduledCals(KPFTranslatorFunction):
 
         scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
         if scriptallow.read() == 'No':
-            log.warning("SCRIPTALLOW is No, skipping scheduled cals: {OBfile.name}")
+            log.warning(f"SCRIPTALLOW is No, skipping scheduled cals: {OBfile.name}")
         else:
             SetProgram.execute({'progname': ''})
             SetObserver.execute({'observer': 'None'})
