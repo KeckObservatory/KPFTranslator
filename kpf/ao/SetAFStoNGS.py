@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetAFStoNGS(KPFTranslatorFunction):
@@ -22,8 +23,9 @@ class SetAFStoNGS(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        aoamstst_success = ktl.waitfor('($ao.OBASSTST == INPOS)'\
-                           and '($ao.OBASNAME == ngs)', timeout=60)
+        expr = f'($ao.OBASSTST == INPOS) and ($ao.OBASNAME == ngs)'
+        aoamstst_success = ktl.waitfor(expr, timeout=60)
         if not aoamstst_success:
-             log.error(f'Failed to set AFS to ngs')
-        return aoamstst_success   
+            ao = ktl.cache('ao')
+            raise FailedToReachDestination(ao['OBASNAME'].read(), 'ngs')
+        return True

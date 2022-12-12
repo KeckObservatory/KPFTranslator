@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetAFMtoMirror(KPFTranslatorFunction):
@@ -22,8 +23,9 @@ class SetAFMtoMirror(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        condition = '($ao.OBAMSTST == INPOS) and ($ao.OBAMNAME == Mirror)'
-        aoamstst_success = ktl.waitfor(condition, timeout=60)
+        expr = '($ao.OBAMSTST == INPOS) and ($ao.OBAMNAME == Mirror)'
+        aoamstst_success = ktl.waitfor(expr, timeout=60)
         if not aoamstst_success:
-            log.error(f'Failed to set AFM to Mirror')
-        return aoamstst_success
+            ao = ktl.cache('ao')
+            FailedToReachDestination(ao['OBAMNAME'].read(), 'Mirror')
+        return True

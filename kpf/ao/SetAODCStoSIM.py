@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetAODCStoSIM(KPFTranslatorFunction):
@@ -23,13 +24,14 @@ class SetAODCStoSIM(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        ao = ktl.cache('ao')
         aodcssim_success = ktl.waitfor('($ao.AODCSSIM == enabled)', timeout=3)
         if not aodcssim_success:
-            log.error(f'AODCSSIM failed to become enabled')
+            raise FailedToReachDestination(ao['AODCSSIM'].read(), 'enabled')
         aocomsim_success = ktl.waitfor('($ao.AOCOMSIM == enabled)', timeout=3)
         if not aocomsim_success:
-            log.error(f'AOCOMSIM failed to become enabled')
+            raise FailedToReachDestination(ao['AOCOMSIM'].read(), 'enabled')
         aodcssfp_success = ktl.waitfor('($ao.AODCSSFP == disabled)', timeout=3)
         if not aodcssfp_success:
-            log.error(f'AODCSSFP failed to become disabled')
-        return aodcssim_success and aocomsim_success and aodcssfp_success
+            raise FailedToReachDestination(ao['AODCSSFP'].read(), 'disabled')
+        return True

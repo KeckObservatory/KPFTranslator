@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class SetAORotatorManual(KPFTranslatorFunction):
@@ -22,4 +23,7 @@ class SetAORotatorManual(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return ktl.waitfor('($ao.OBRTDSRC == manual)', timeout=3)
+        success = ktl.waitfor('($ao.OBRTDSRC == manual)', timeout=3)
+        if success is not True:
+            ao = ktl.cache('ao')
+            raise FailedToReachDestination(ao['OBRTDSRC'].read(), 'manual')

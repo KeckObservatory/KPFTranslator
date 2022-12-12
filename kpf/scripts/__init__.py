@@ -26,7 +26,13 @@ def check_script_running():
     scriptname = kpfconfig['SCRIPTNAME'].read()
     pid = kpfconfig['SCRIPTPID'].read()
     if scriptname != '':
-        raise FailedPreCondition(f"Existing script {scriptname} ({pid}) is running.")
+        msg = (f"Existing script {scriptname} ({pid}) is running.\n"
+               f"If the offending script is not running (PID not listed in ps)\n"
+               f"then the script keywords can be cleared by running:\n"
+               f"  reset_script_keywords\n"
+               f"or invoking it from the FVWM background menu:\n"
+               f"  KPF Trouble Recovery --> Reset script keywords")
+        raise FailedPreCondition(msg)
 
 
 def check_script_stop():

@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class TurnHepaOn(KPFTranslatorFunction):
@@ -21,4 +22,7 @@ class TurnHepaOn(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return ktl.waitfor('($ao.OBHPASTA == on)', timeout=3)
+        success = ktl.waitfor('($ao.OBHPASTA == on)', timeout=3)
+        if success is not True:
+            ao = ktl.cache('ao')
+            raise FailedToReachDestination(ao['OBHPASTA'].read(), 'on')

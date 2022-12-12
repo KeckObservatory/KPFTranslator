@@ -1,7 +1,8 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                FailedToReachDestination, check_input)
 
 
 class ControlAOHatch(KPFTranslatorFunction):
@@ -12,8 +13,8 @@ class ControlAOHatch(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        destination = args.get('destination', '').strip()
-        return destination.lower() in ['close', 'open']
+        check_input(args, 'destination', allowed_values=['close', 'open'])
+        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -24,8 +25,11 @@ class ControlAOHatch(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        destination = args.get('destination', '').strip()
-        return ktl.waitfor(f'($ao.AOHATCHSTS == {destination})', timeout=30)
+        destination = args.get('destination')
+        success = ktl.waitfor(f'($ao.AOHATCHSTS == {destination})', timeout=30)
+        if success is not True:
+            aohatchsts = ktl.cache('ao', 'AOHATCHSTS')
+            raise FailedPostCondition(aohatchsts.read(), destination)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
@@ -34,7 +38,7 @@ class ControlAOHatch(KPFTranslatorFunction):
         from collections import OrderedDict
         args_to_add = OrderedDict()
         args_to_add['destination'] = {'type': str,
-                                'help': 'Desired hatch position: "open" or "closed"'}
+                                'help': 'Desired hatch position: "open" or "close"'}
 
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)
