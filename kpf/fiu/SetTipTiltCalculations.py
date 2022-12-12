@@ -20,17 +20,17 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         calculations = args.get('calculations')
-        tiptiltcalc = ktl.cache('kpfguide', 'TIPTILT')
+        tiptiltcalc = ktl.cache('kpfguide', 'TIPTILT_CALC')
         tiptiltcalc.write(calculations)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         calculations = args.get('calculations')
         timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
-        expr = f"($kpfguide.TIPTILT == {calculations}) "
+        expr = f"($kpfguide.TIPTILT_CALC == {calculations}) "
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            tiptilt = ktl.cache('kpfguide', 'TIPTILT')
+            tiptilt = ktl.cache('kpfguide', 'TIPTILT_CALC')
             raise FailedToReachDestination(tiptilt.read(), calculations)
         return success
 

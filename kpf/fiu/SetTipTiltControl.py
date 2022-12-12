@@ -20,8 +20,8 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         control = args.get('control')
-        tiptiltcalc = ktl.cache('kpfguide', 'TIPTILT_CONTROL')
-        tiptiltcalc.write(control)
+        tiptiltcontrol = ktl.cache('kpfguide', 'TIPTILT_CONTROL')
+        tiptiltcontrol.write(control)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

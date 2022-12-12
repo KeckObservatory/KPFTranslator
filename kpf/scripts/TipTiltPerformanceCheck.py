@@ -49,7 +49,7 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
     exptime
     
     - Turn CONTINUOUS on
-    - Turn TIPTILT on
+    - Turn TIPTILT_CALC on
     - Take image sequence at [fps] for [exptime] with open loop tracking
         - Store cube of images
         - Record OBJECTnRAW values
