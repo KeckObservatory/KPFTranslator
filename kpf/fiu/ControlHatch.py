@@ -13,9 +13,10 @@ class ControlHatch(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        destination = args.get('destination', '').strip()
-        if destination.lower() not in ['close', 'closed', 'open']:
-            raise FailedPreCondition(f"Requested state {destination} is invalid")
+        check_input(args, 'destination', allowed_values=['closed', 'open'])
+#        destination = args.get('destination', '').strip()
+#        if destination.lower() not in ['closed', 'open']:
+#            raise FailedPreCondition(f"Requested state {destination} is invalid")
         return True
 
     @classmethod
