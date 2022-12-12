@@ -25,7 +25,6 @@ class StartOfNight(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'progname')
         return True
 
     @classmethod
