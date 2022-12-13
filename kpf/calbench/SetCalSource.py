@@ -39,7 +39,7 @@ class SetCalSource(KPFTranslatorFunction):
         '''Verifies that the final OCTAGON keyword value matches the input.
         '''
         target = args.get('CalSource')
-        timeout = cfg.get('times', 'octagon_move_time', fallback=60)
+        timeout = cfg.get('times', 'octagon_move_time', fallback=90)
         expr = f"($kpfcal.OCTAGON == {target})"
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
