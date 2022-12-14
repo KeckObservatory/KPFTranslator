@@ -86,9 +86,15 @@ def plot_cube_stats(file, plotfile=None):
     plt.figure(figsize=(16,8))
 
     plt.subplot(2,2,(1,3))
-    plt.title(f"PSD of Frame to Frame Motion\n{file.name} ({len(t)} frames)")
-    plt.psd(xdeltas, Fs=fps, color='g', label='X')
-    plt.psd(ydeltas, Fs=fps, color='r', label='Y')
+    plt.title(f"Power Spectral Distribution\n{file.name} ({len(t)} frames)")
+    plt.psd(xdeltas, Fs=fps,
+            color='g-', linestyle='dashed', label='X F2F')
+    plt.psd(ydeltas, Fs=fps,
+            color='g-', linestyle='dotted', label='Y F2F')
+    plt.psd(objectxerr.filled(fill_value=np.nan), Fs=fps,
+            color='r-', linestyle='dashed', label='X Err')
+    plt.psd(objectyerr.filled(fill_value=np.nan), Fs=fps,
+            color='r-', linestyle='dotted', label='Y Err')
     plt.legend(loc='best')
 
     plt.subplot(2,2,2)
