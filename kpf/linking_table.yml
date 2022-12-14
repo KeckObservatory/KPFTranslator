@@ -102,6 +102,8 @@ ConfigureForCalOB:
     cmd: scripts.ConfigureForCalOB.ConfigureForCalOB
 EndOfNight:
     cmd: scripts.EndOfNight.EndOfNight
+ExecuteCalSequence:
+    cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
 FiberGridSearch:
     cmd: scripts.FiberGridSearch.FiberGridSearch
 ImageBackIlluminatedFibers:
