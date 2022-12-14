@@ -63,7 +63,7 @@ class ExecuteCalSequence(KPFTranslatorFunction):
         OB = yaml.safe_load(open(OBfile, 'r'))
 
         log.info('-------------------------')
-        log.info(f"Running RunCalOB")
+        log.info(f"Running ExecuteCalSequence")
         for key in OB:
             if key not in ['SEQ_Darks', 'SEQ_Calibrations']:
                 log.debug(f"  {key}: {OB[key]}")
