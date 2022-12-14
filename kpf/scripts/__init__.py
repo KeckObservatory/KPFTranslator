@@ -4,7 +4,7 @@ import json
 
 import ktl
 
-from .. import log, FailedPreCondition
+from .. import log, KPFException, FailedPreCondition
 
 
 def register_script(scriptname, PID):
@@ -41,7 +41,7 @@ def check_script_stop():
         log.warning("SCRIPTSTOP requested.  Resetting SCRIPTSTOP and exiting")
         scriptstop.write('No')
         clear_script()
-        sys.exit(0)
+        raise KPFException("SCRIPTSTOP triggered")
 
 
 def querydb(req):
