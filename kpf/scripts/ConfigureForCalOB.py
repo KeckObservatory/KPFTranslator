@@ -12,6 +12,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, clear_script, check_script_running
 from ..calbench.CalLampPower import CalLampPower
+from ..fiu.ConfigureFIU import ConfigureFIU
 
 
 class ConfigureForCalOB(KPFTranslatorFunction):
@@ -58,6 +59,9 @@ class ConfigureForCalOB(KPFTranslatorFunction):
             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+
+        # Configure FIU
+        ConfigureFIU.execute({'mode': 'calibration'})
 
         # Register end of this script with kpfconfig
         clear_script()
