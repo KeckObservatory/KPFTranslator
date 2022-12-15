@@ -2,16 +2,12 @@ Template_Name: kpf_eng_fgs
 Template_Version: 0.3
 
 comment: test run
-cameras: SCI,CAHK,ExpMeter
+cameras: CRED2,SCI,CAHK,ExpMeter
 ExpMeter_exptime: 2
 SCIFVC_exptime: 10
 CAHKFVC_exptime: 10
-# Guide_Mode: manual
-# Guide_FPS: 100
-# Guide_CamGain: high
-# Guide_LoopGain: 0.3
 offset_system: ttm
 nx: 5
 ny: 5
-dx: 3
-dy: 3
+dx: 1
+dy: 1

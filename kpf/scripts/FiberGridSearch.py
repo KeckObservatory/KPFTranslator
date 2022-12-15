@@ -58,7 +58,7 @@ log.addHandler(LogFileHandler)
 ##-------------------------------------------------------------------------
 ## offset
 ##-------------------------------------------------------------------------
-def offset(x, y, offset_system='gxy'):
+def offset(x, y, offset_system='ttm'):
     if offset_system == 'ttm':
         SetTipTiltTargetPixel.execute({'x': x, 'y': y)
     elif offset_system == 'azel':
@@ -178,8 +178,9 @@ class FiberGridSearch(KPFTranslatorFunction):
         # Set up guider (assume parameters set during acquisition of star)
         kpfguide = ktl.cache('kpfguide')
         if offset_system == 'ttm':
-            xpix0, ypix0 = kpfguide['CURRENT_BASE'].read(binary=True)
+            xpix0, ypix0 = kpfguide['PIX_TARGET'].read(binary=True)
             log.info(f"Center pixel is {xpix0:.2f}, {ypix0:.2f}")
+            # Pixel targets must be in absolute coordinates
             xs = [xpix+xpix0 for xpix in xs]
             ys = [ypix+ypix0 for ypix in ys]
 
