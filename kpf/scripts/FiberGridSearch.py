@@ -322,7 +322,10 @@ class FiberGridSearch(KPFTranslatorFunction):
             expmeter_flux.write(fluxes_file, format='ascii.csv')
 
         # Send offsets back to 0,0
-        offset(0, 0, offset_system=offset_system)
+        if offset_system == 'ttm':
+            offset(xpix0, ypix0, offset_system=offset_system)
+        else:
+            offset(0, 0, offset_system=offset_system)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
