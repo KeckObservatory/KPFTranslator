@@ -2,12 +2,12 @@ Template_Name: kpf_eng_fgs
 Template_Version: 0.3
 
 comment: test run
-cameras: CRED2,SCI,CAHK,ExpMeter
+cameras: CRED2,ExpMeter
 ExpMeter_exptime: 2
 SCIFVC_exptime: 10
 CAHKFVC_exptime: 10
 offset_system: ttm
-nx: 5
-ny: 5
-dx: 1
-dy: 1
+nx: 3
+ny: 3
+dx: 2
+dy: 2
