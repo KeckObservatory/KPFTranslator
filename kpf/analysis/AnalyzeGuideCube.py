@@ -88,13 +88,13 @@ def plot_cube_stats(file, plotfile=None):
     plt.subplot(2,2,(1,3))
     plt.title(f"Power Spectral Distribution\n{file.name} ({len(t)} frames)")
     plt.psd(xdeltas, Fs=fps,
-            color='g-', linestyle='dashed', label='X F2F')
+            color='g', linestyle='dashed', label='X F2F')
     plt.psd(ydeltas, Fs=fps,
-            color='g-', linestyle='dotted', label='Y F2F')
+            color='r', linestyle='dashed', label='Y F2F')
     plt.psd(objectxerr.filled(fill_value=np.nan), Fs=fps,
-            color='r-', linestyle='dashed', label='X Err')
+            color='g', linestyle='dotted', label='X Err')
     plt.psd(objectyerr.filled(fill_value=np.nan), Fs=fps,
-            color='r-', linestyle='dotted', label='Y Err')
+            color='r', linestyle='dotted', label='Y Err')
     plt.legend(loc='best')
 
     plt.subplot(2,2,2)
