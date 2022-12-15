@@ -60,7 +60,7 @@ log.addHandler(LogFileHandler)
 ##-------------------------------------------------------------------------
 def offset(x, y, offset_system='ttm'):
     if offset_system == 'ttm':
-        SetTipTiltTargetPixel.execute({'x': x, 'y': y)
+        SetTipTiltTargetPixel.execute({'x': x, 'y': y})
     elif offset_system == 'azel':
         from ddoi_telescope_translator.azel import OffsetAzEl
         from ddoi_telescope_translator.wftel import WaitForTel
