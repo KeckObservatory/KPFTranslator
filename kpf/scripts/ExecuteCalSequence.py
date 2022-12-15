@@ -158,7 +158,7 @@ class ExecuteCalSequence(KPFTranslatorFunction):
                 WaitForConfigureFIU.execute({'mode': 'Calibration'})
             ## Setup Octagon Lamps and LFCFiber
             elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
-                               'Th_gold', 'LFCFiber']:
+                               'Th_gold', 'LFCFiber', 'EtalonFiber']:
                 log.info(f"Setting cal source: {calsource}")
                 SetCalSource.execute({'CalSource': calsource, 'wait': False})
                 log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
@@ -169,9 +169,6 @@ class ExecuteCalSequence(KPFTranslatorFunction):
                 WaitForND2.execute(calibration)
                 WaitForCalSource.execute(calibration)
                 WaitForConfigureFIU.execute({'mode': 'Calibration'})
-            ## Setup Etalon
-            elif calsource in ['EtalonFiber']:
-                raise NotImplementedError()
             ## Setup SoCal
             elif calsource in ['SoCal-CalFib']:
                 raise NotImplementedError()
