@@ -29,7 +29,7 @@ class ControlAOHatch(KPFTranslatorFunction):
         success = ktl.waitfor(f'($ao.AOHATCHSTS == {destination})', timeout=30)
         if success is not True:
             aohatchsts = ktl.cache('ao', 'AOHATCHSTS')
-            raise FailedPostCondition(aohatchsts.read(), destination)
+            raise FailedToReachDestination(aohatchsts.read(), destination)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
