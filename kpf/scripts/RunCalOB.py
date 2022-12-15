@@ -17,6 +17,13 @@ class RunCalOB(KPFTranslatorFunction):
     Not intended to be called by DDOI's execution engine. This script replaces
     the DDOI Script.
     '''
+    abortable = True
+    
+    def abort_execution(args, logger, cfg):
+        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
+        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
+        scriptstop.write('Yes')
+    
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         # Use file input for OB instead of args (temporary)
