@@ -3,6 +3,7 @@ from pathlib import Path
 import logging
 from datetime import datetime, timedelta
 import time
+import yaml
 
 import numpy as np
 from astropy.table import Table, Row
