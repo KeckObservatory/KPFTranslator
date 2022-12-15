@@ -27,7 +27,7 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         x = args.get('x')
         y = args.get('y')
-        pixtarget = ktl.cache('kpfguide', 'PIX_TARGET')
+        pixtarget = ktl.cache('kpfguide', 'CURRENT_BASE')
         pixtarget.write((x, y))
         time_shim = cfg.get('times', 'tip_tilt_move_time', fallback=0.01)
         time.sleep(time_shim)
