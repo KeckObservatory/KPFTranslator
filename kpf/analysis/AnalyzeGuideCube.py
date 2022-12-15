@@ -25,6 +25,9 @@ p = argparse.ArgumentParser(description='''
 ## add arguments
 p.add_argument('file', type=str,
                help="The cube file to analyze")
+p.add_argument("-g", "--gif", dest="gif",
+    default=False, action="store_true",
+    help="Generate the animated GIF of frames (computationally expensive)")
 args = p.parse_args()
 
 
@@ -88,28 +91,34 @@ def plot_cube_stats(file, plotfile=None):
     plt.subplot(2,2,(1,3))
     plt.title(f"Power Spectral Distribution\n{file.name} ({len(t)} frames)")
     plt.psd(xdeltas, Fs=fps,
-            color='g', linestyle='dashed', label='X F2F')
+            color='g', linestyle='dashed', drawstyle='steps-mid',
+            label='X F2F')
     plt.psd(ydeltas, Fs=fps,
-            color='r', linestyle='dashed', label='Y F2F')
+            color='r', linestyle='dashed', drawstyle='steps-mid',
+            label='Y F2F')
     plt.psd(objectxerr.filled(fill_value=np.nan), Fs=fps,
-            color='g', linestyle='dotted', label='X Err')
+            color='g', linestyle='dotted', drawstyle='steps-mid',
+            label='X Err')
     plt.psd(objectyerr.filled(fill_value=np.nan), Fs=fps,
-            color='r', linestyle='dotted', label='Y Err')
+            color='r', linestyle='dotted', drawstyle='steps-mid',
+            label='Y Err')
     plt.legend(loc='best')
 
     plt.subplot(2,2,2)
     plt.title(f"Time deltas: rms={rmstimedeltas:.1f} ms, max={maxtimedeltas:.1f} ms")
-    plt.plot(times, timedeltas*1000, 'k-')
+    plt.plot(times, timedeltas*1000, 'k-', drawstyle='steps-mid')
     plt.ylabel('delta time (ms)')
     plt.xlim(0,times[-1])
     plt.grid()
 
     plt.subplot(2,2,4)
     plt.title(f"Positional Error")
-    plt.plot(times, objectxerr, 'g-', label=f'X (rms={xrms:.2f}, bias={xbias:.2f} pix)')
+    plt.plot(times, objectxerr, 'g-', drawstyle='steps-mid', 
+             label=f'X (rms={xrms:.2f}, bias={xbias:.2f} pix)')
     for badt in times[objectxerr.mask]:
         plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
-    plt.plot(times, objectyerr, 'r-', label=f'Y (rms={yrms:.2f}, bias={ybias:.2f} pix)')
+    plt.plot(times, objectyerr, 'r-', drawstyle='steps-mid',
+             label=f'Y (rms={yrms:.2f}, bias={ybias:.2f} pix)')
     for badt in times[objectyerr.mask]:
         plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
     plt.legend(loc='best')
@@ -192,9 +201,10 @@ if __name__ == '__main__':
     if viewer_command is not None:
         proc = subprocess.Popen([viewer_command, f"{plotfile}"])
 
-#    giffile = Path(str(file.name).replace('.fits', '.gif'))
-#    generate_cube_gif(file, giffile)
+    if args.gif is True:
+        giffile = Path(str(file.name).replace('.fits', '.gif'))
+        generate_cube_gif(file, giffile)
 
-#    log.info(f"Opening {giffile} using {viewer_command}")
-#    if viewer_command is not None:
-#        proc = subprocess.Popen([viewer_command, f"{giffile}"])
+        log.info(f"Opening {giffile} using {viewer_command}")
+        if viewer_command is not None:
+            proc = subprocess.Popen([viewer_command, f"{giffile}"])
