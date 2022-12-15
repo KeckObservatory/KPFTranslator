@@ -21,7 +21,7 @@ class StartOfNight(KPFTranslatorFunction):
     - Configure DCS (ROTDEST and ROTMODE)
     
     ARGS:
-    AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
+    AO (bool) - Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
