@@ -2,13 +2,22 @@
     "metadata": {
         "instrument": "KPF",
         "name": "kpf_sci",
-        "script": "BEGIN_SLEW\nCONFIGURE_SCIENCE\nWAITFOR_SLEW\nACQUIRE\nWAITFOR_ACQUIRE\nSTART_GUIDING\nWAITFOR_GUIDING\nWAITFOR_CONFIGURE_SCIENCE\nEXECUTE_OBSERVATION\n",
+        "script": "BEGIN_SLEW\nCONFIGURE_SCIENCE # Executes Slew Cal\nWAITFOR_CONFIGURE_SCIENCE # Slew Cal is done, ready for science observation\nWAITFOR_SLEW\nACQUIRE # OA acquires to PO and starts tip tilt loop\nWAITFOR_ACQUIRE\nEXECUTE_OBSERVATION\n",
         "script_version": "0.3.0",
         "template_type": "science",
         "ui_name": "KPF science",
         "version": "0.3.0"
     },
     "parameters": {
+        "allow_slew_cal": {
+            "default": true,
+            "description": "Allow calibration during slew?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Allow calibration during slew?",
+            "units": null
+        },
         "em_active": {
             "default": true,
             "description": "Trigger exposure meter during exposures?",
