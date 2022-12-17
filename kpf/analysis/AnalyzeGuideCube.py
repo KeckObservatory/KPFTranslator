@@ -75,6 +75,7 @@ def plot_cube_stats(file, plotfile=None):
     mintimedeltas = min(timedeltas)*1000
     maxtimedeltas = max([max(timedeltas)*1000,abs(mintimedeltas)])
     rmstimedeltas = np.std(timedeltas)*1000
+    meantimedeltas = np.mean(timedeltas)*1000
 
     # Examine position statistics
     log.debug(f"  Generating objectvals")
@@ -85,13 +86,17 @@ def plot_cube_stats(file, plotfile=None):
     log.debug(f"  Generating objecterr")
     objectxerr = np.ma.MaskedArray(t['object1_x']-t['target_x'], mask=t['object1_x']<-998)
     objectyerr = np.ma.MaskedArray(t['object1_y']-t['target_y'], mask=t['object1_y']<-998)
+    r = ((t['object1_x']-t['target_x'])**2 + (t['object1_y']-t['target_y'])**2)**0.5
+    objectrerr = np.ma.MaskedArray(r, mask=t['object1_y']<-998)
     plotylim = (min([objectxerr.min(), objectyerr.min()])-0.5,
                 max([objectxerr.max(), objectyerr.max()])+0.5)
     log.debug(f"  Generating objecterr statistics")
     xrms = objectxerr.std()
     yrms = objectyerr.std()
+    rrms = objectrerr.std()
     xbias = objectxerr.mean()
     ybias = objectyerr.mean()
+    rbias = (xbias**2 + ybias**2)**0.5
 
     # Examine stellar motion statistics
     log.debug(f"  Generating deltas")
@@ -135,16 +140,22 @@ def plot_cube_stats(file, plotfile=None):
 
     log.debug(f"  Generating Time Deltas Plot")
     plt.subplot(2,2,2)
-    plt.title(f"Time deltas: rms={rmstimedeltas:.1f} ms, max={maxtimedeltas:.1f} ms")
-    plt.plot(times, timedeltas*1000, 'k-', drawstyle='steps-mid')
-    plt.ylabel('delta time (ms)')
-    plt.xlim(0,times[-1])
-    plt.grid()
+    plt.title(f"Time deltas: mean={meantimedeltas:.1f}, rms={rmstimedeltas:.1f}, max={maxtimedeltas:.1f} ms")
+    
+    n, bins, foo = plt.hist(timedeltas*1000, bins=100)
+#     plt.plot([meantimedeltas,meantimedeltas], [0,max(n)*1.1], 'r-', alpha=0.3)
+    plt.xlabel('Time Delta (ms)')
+    plt.ylabel('N frames')
+#     plt.plot(times, timedeltas*1000, 'k-', drawstyle='steps-mid')
+#     plt.ylabel('delta time (ms)')
+#     plt.xlim(0,times[-1])
+#     plt.grid()
 
     log.debug(f"  Generating Positional Error Plot")
     plt.subplot(2,2,4)
-#     if xrms.mask is True or yrms.mask is True:
-    plt.title(f"X: rms={xrms:.2f}, bias={xbias:.2f} pix / Y: rms={yrms:.2f}, bias={ybias:.2f} pix")
+#     plt.title(f"X: rms={xrms:.2f}, bias={xbias:.2f} pix / Y: rms={yrms:.2f}, bias={ybias:.2f} pix")
+    ps = 56 # mas/pix
+    plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f})")
     plt.plot(times[~objectxerr.mask], objectxerr[~objectxerr.mask], 'g-',
              drawstyle='steps-mid', label=f'Xpos-Xtarg')
 #     for badt in times[objectxerr.mask]:
