@@ -23,11 +23,17 @@ import imageio
 p = argparse.ArgumentParser(description='''
 ''')
 ## add arguments
-p.add_argument('file', type=str,
-               help="The cube file to analyze")
+p.add_argument('files', type=str, nargs='*',
+               help="The cube files to analyze")
 p.add_argument("-g", "--gif", dest="gif",
     default=False, action="store_true",
     help="Generate the animated GIF of frames (computationally expensive)")
+p.add_argument("--view", dest="view",
+    default=False, action="store_true",
+    help="Open a viewer once the file is generated")
+p.add_argument("-v", "--verbose", dest="verbose",
+    default=False, action="store_true",
+    help="Be verbose")
 args = p.parse_args()
 
 
@@ -38,7 +44,10 @@ log = logging.getLogger('MyLogger')
 log.setLevel(logging.DEBUG)
 ## Set up console output
 LogConsoleHandler = logging.StreamHandler()
-LogConsoleHandler.setLevel(logging.DEBUG)
+if args.verbose is True:
+    LogConsoleHandler.setLevel(logging.DEBUG)
+else:
+    LogConsoleHandler.setLevel(logging.INFO)
 LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
 LogConsoleHandler.setFormatter(LogFormat)
 log.addHandler(LogConsoleHandler)
@@ -48,7 +57,8 @@ log.addHandler(LogConsoleHandler)
 ## plot_cube_stats
 ##-------------------------------------------------------------------------
 def plot_cube_stats(file, plotfile=None):
-    log.info('Generating summary plot')
+    file = Path(file)
+    log.info(f'Generating summary plot for {file.name}')
     hdul = fits.open(file)
     fps = hdul[0].header.get('FPS', None)
     if fps is None:
@@ -67,43 +77,63 @@ def plot_cube_stats(file, plotfile=None):
     rmstimedeltas = np.std(timedeltas)*1000
 
     # Examine position statistics
+    log.debug(f"  Generating objectvals")
     objectxvals = np.ma.MaskedArray(t['object1_x'], mask=t['object1_x']<-998)
     objectyvals = np.ma.MaskedArray(t['object1_y'], mask=t['object1_y']<-998)
     times = t['timestamp']-t['timestamp'][0]
 
+    log.debug(f"  Generating objecterr")
     objectxerr = np.ma.MaskedArray(t['object1_x']-t['target_x'], mask=t['object1_x']<-998)
     objectyerr = np.ma.MaskedArray(t['object1_y']-t['target_y'], mask=t['object1_y']<-998)
     plotylim = (min([objectxerr.min(), objectyerr.min()])-0.5,
                 max([objectxerr.max(), objectyerr.max()])+0.5)
+    log.debug(f"  Generating objecterr statistics")
     xrms = objectxerr.std()
     yrms = objectyerr.std()
     xbias = objectxerr.mean()
     ybias = objectyerr.mean()
 
     # Examine stellar motion statistics
-    xdeltas = [val-objectxvals[i-1] for i,val in\
-               enumerate(objectxvals.filled(fill_value=np.nan)) if i > 0]
-    ydeltas = [val-objectxvals[i-1] for i,val in\
-               enumerate(objectxvals.filled(fill_value=np.nan)) if i > 0]
+    log.debug(f"  Generating deltas")
+    oxvf = objectxvals.filled(fill_value=np.nan)
+    xdeltas = [val-oxvf[i-1] for i,val in\
+               enumerate(oxvf)\
+               if i > 0 and not np.isnan(val) and not np.isnan(oxvf[i-1])]
+    oyvf = objectyvals.filled(fill_value=np.nan)
+    ydeltas = [val-oyvf[i-1] for i,val in\
+               enumerate(oyvf)\
+               if i > 0 and not np.isnan(val) and not np.isnan(oyvf[i-1])]
+    xerrs = [val\
+             for val in objectxvals.filled(fill_value=np.nan)\
+             if np.isnan(val) == False]
+    yerrs = [val\
+             for val in objectyvals.filled(fill_value=np.nan)\
+             if np.isnan(val) == False]
 
     plt.figure(figsize=(16,8))
 
-    plt.subplot(2,2,(1,3))
-    plt.title(f"Power Spectral Distribution\n{file.name} ({len(t)} frames)")
-    plt.psd(xdeltas, Fs=fps,
-            color='g', linestyle='dashed', drawstyle='steps-mid',
-            label='X F2F')
-    plt.psd(ydeltas, Fs=fps,
-            color='r', linestyle='dashed', drawstyle='steps-mid',
-            label='Y F2F')
-    plt.psd(objectxerr.filled(fill_value=np.nan), Fs=fps,
-            color='g', linestyle='dotted', drawstyle='steps-mid',
-            label='X Err')
-    plt.psd(objectyerr.filled(fill_value=np.nan), Fs=fps,
-            color='r', linestyle='dotted', drawstyle='steps-mid',
-            label='Y Err')
-    plt.legend(loc='best')
+    log.debug(f"  Generating PSD Plot")
+    plt.subplot(2,2,1)
+    plt.title(f"Power Spectral Distribution\n{file.name} ({len(xerrs)}/{len(t)} frames)")
+    if len(xerrs) > 0:
+        plt.psd(xdeltas, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
+                label='X F2F')
+        plt.psd(ydeltas, Fs=fps, color='b', drawstyle='steps-mid', alpha=0.6,
+                label='Y F2F')
+        plt.legend(loc='best')
+    plt.yticks([v for v in np.arange(-70,20,10)])
+    plt.ylim(-60,10)
 
+    plt.subplot(2,2,3)
+    if len(xerrs) > 0:
+        plt.psd(xerrs, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
+                label='X Err')
+        plt.psd(yerrs, Fs=fps, color='b', drawstyle='steps-mid', alpha=0.6,
+                label='Y Err')
+        plt.legend(loc='best')
+#     plt.ylim(-60,10)
+
+    log.debug(f"  Generating Time Deltas Plot")
     plt.subplot(2,2,2)
     plt.title(f"Time deltas: rms={rmstimedeltas:.1f} ms, max={maxtimedeltas:.1f} ms")
     plt.plot(times, timedeltas*1000, 'k-', drawstyle='steps-mid')
@@ -111,16 +141,18 @@ def plot_cube_stats(file, plotfile=None):
     plt.xlim(0,times[-1])
     plt.grid()
 
+    log.debug(f"  Generating Positional Error Plot")
     plt.subplot(2,2,4)
-    plt.title(f"Positional Error")
-    plt.plot(times, objectxerr, 'g-', drawstyle='steps-mid', 
-             label=f'X (rms={xrms:.2f}, bias={xbias:.2f} pix)')
-    for badt in times[objectxerr.mask]:
-        plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
-    plt.plot(times, objectyerr, 'r-', drawstyle='steps-mid',
-             label=f'Y (rms={yrms:.2f}, bias={ybias:.2f} pix)')
-    for badt in times[objectyerr.mask]:
-        plt.plot([badt,badt], plotylim, 'r-', alpha=0.3)
+#     if xrms.mask is True or yrms.mask is True:
+    plt.title(f"X: rms={xrms:.2f}, bias={xbias:.2f} pix / Y: rms={yrms:.2f}, bias={ybias:.2f} pix")
+    plt.plot(times[~objectxerr.mask], objectxerr[~objectxerr.mask], 'g-',
+             drawstyle='steps-mid', label=f'Xpos-Xtarg')
+#     for badt in times[objectxerr.mask]:
+#         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+    plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
+             drawstyle='steps-mid', label=f'Ypos-Ytarg')
+#     for badt in times[objectyerr.mask]:
+#         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
     plt.legend(loc='best')
     plt.ylabel('delta pix')
     plt.ylim(plotylim)
@@ -129,6 +161,7 @@ def plot_cube_stats(file, plotfile=None):
     plt.xlabel('Time (s)')
 
     if plotfile is not None:
+        log.debug(f"  Saving Plot File")
         plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.1)
     else:
         plt.show()
@@ -183,28 +216,30 @@ def generate_cube_gif(file, giffile):
 ## if __name__ == '__main__':
 ##-------------------------------------------------------------------------
 if __name__ == '__main__':
-    file = Path(args.file).expanduser()
-    if file.exists() is False:
-        log.error(f"Could not find file {args.file}")
+    for file in args.files:
+        file = Path(file).expanduser()
+        if file.exists() is False:
+            log.error(f"Could not find file {args.file}")
 
-    viewer_commands = ['eog', 'open']
-    viewer_command = None
-    for cmd in viewer_commands:
-        rtn = subprocess.call(['which', cmd])
-        if rtn == 0:
-            viewer_command = cmd
+        viewer_command = None
+        if args.view is True:
+            viewer_commands = ['eog', 'open']
+            for cmd in viewer_commands:
+                rtn = subprocess.call(['which', cmd])
+                if rtn == 0:
+                    viewer_command = cmd
 
-    plotfile = Path(str(file.name).replace('.fits', '.png'))
-    plot_cube_stats(file, plotfile=plotfile)
+        plotfile = Path(str(file.name).replace('.fits', '.png'))
+        plot_cube_stats(file, plotfile=plotfile)
 
-    log.info(f"Opening {plotfile} using {viewer_command}")
-    if viewer_command is not None:
-        proc = subprocess.Popen([viewer_command, f"{plotfile}"])
-
-    if args.gif is True:
-        giffile = Path(str(file.name).replace('.fits', '.gif'))
-        generate_cube_gif(file, giffile)
-
-        log.info(f"Opening {giffile} using {viewer_command}")
         if viewer_command is not None:
-            proc = subprocess.Popen([viewer_command, f"{giffile}"])
+            log.info(f"Opening {plotfile} using {viewer_command}")
+            proc = subprocess.Popen([viewer_command, f"{plotfile}"])
+
+        if args.gif is True:
+            giffile = Path(str(file.name).replace('.fits', '.gif'))
+            generate_cube_gif(file, giffile)
+
+            if viewer_command is not None:
+                log.info(f"Opening {giffile} using {viewer_command}")
+                proc = subprocess.Popen([viewer_command, f"{giffile}"])
