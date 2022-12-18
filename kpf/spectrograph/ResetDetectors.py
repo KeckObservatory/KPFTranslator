@@ -24,7 +24,7 @@ class ResetDetectors(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
-        log.debug(f"Resetting kpfexpose")
+        log.warning(f"Resetting: kpfexpose.EXPOSE = Reset")
         kpfexpose['EXPOSE'].write('Reset')
         time.sleep(1)
 

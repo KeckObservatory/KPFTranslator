@@ -51,6 +51,27 @@ class WaitForReady(KPFTranslatorFunction):
         log.debug(f"Waiting ({wait_time:.0f}s max) for detectors to be ready")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
 
+        if success is True:
+            log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
+        else:
+            log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
+            log.debug(f'kpfexpose EXPLAINR = {kpfexpose["EXPLAINR"].read()}')
+            errors = []
+            if 'Red' in detector_list:
+                kpfred = ktl.cache('kpfred')
+                redexpstate = kpfred['EXPSTATE'].read()
+                if redexpstate in ['Error', 'PowerOff']:
+                    log.error(f"kpfred.EXPSTATE = {redexpstate}")
+                    errors.append('Red')
+            if 'Green' in detector_list:
+                kpfgreen = ktl.cache('kpfgreen')
+                greenexpstate = kpfgreen['EXPSTATE'].read()
+                if greenexpstate in ['Error', 'PowerOff']:
+                    log.error(f"kpfgreen.EXPSTATE = {greenexpstate}")
+                    errors.append('Green')
+            if len(errors) > 0:
+                ResetDetectors.execute({})
+
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')

@@ -5,6 +5,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
+from .ResetDetectors import ResetDetectors
 
 
 class WaitForReadout(KPFTranslatorFunction):
@@ -46,12 +47,31 @@ class WaitForReadout(KPFTranslatorFunction):
         log.debug(f"Waiting ({wait_time:.0f}s max) for readout to begin")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
         if success is True:
+            log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
             if 'Green' in detector_list:
                 nextfile = ktl.cache('kpfgreen', 'NEXTFILE')
                 log.info(f"Green nextfile: {nextfile.read()}")
             if 'Red' in detector_list:
                 nextfile = ktl.cache('kpfred', 'NEXTFILE')
                 log.info(f"Red nextfile: {nextfile.read()}")
+        else:
+            log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
+            log.debug(f'kpfexpose EXPLAINR = {kpfexpose["EXPLAINR"].read()}')
+            errors = []
+            if 'Red' in detector_list:
+                kpfred = ktl.cache('kpfred')
+                redexpstate = kpfred['EXPSTATE'].read()
+                if redexpstate in ['Error', 'PowerOff']:
+                    log.error(f"kpfred.EXPSTATE = {redexpstate}")
+                    errors.append('Red')
+            if 'Green' in detector_list:
+                kpfgreen = ktl.cache('kpfgreen')
+                greenexpstate = kpfgreen['EXPSTATE'].read()
+                if greenexpstate in ['Error', 'PowerOff']:
+                    log.error(f"kpfgreen.EXPSTATE = {greenexpstate}")
+                    errors.append('Green')
+            if len(errors) > 0:
+                ResetDetectors.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
