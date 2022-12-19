@@ -41,6 +41,13 @@ class ExecuteCalSequence(KPFTranslatorFunction):
     
     Can be called by `ddoi_script_functions.execute_observation`.
     '''
+    abortable = True
+
+    def abort_execution(args, logger, cfg):
+        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
+        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
+        scriptstop.write('Yes')
+
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_script_running()

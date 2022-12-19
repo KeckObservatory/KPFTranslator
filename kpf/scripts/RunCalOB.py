@@ -22,13 +22,6 @@ class RunCalOB(KPFTranslatorFunction):
     various locations in the script.  As a result, the script will not stop
     immediately, but will stop when it reaches a breakpoint.
     '''
-    abortable = True
-
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
-
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         # Use file input for OB instead of args (temporary)
