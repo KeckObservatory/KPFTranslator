@@ -1,6 +1,7 @@
 import sys
 import requests
 import json
+import socket
 
 import ktl
 
@@ -12,6 +13,7 @@ def register_script(scriptname, PID):
     log.debug(f"Registering script {scriptname} with PID {PID}")
     kpfconfig['SCRIPTNAME'].write(scriptname)
     kpfconfig['SCRIPTPID'].write(PID)
+    kpfconfig['SCRIPTHOST'].write(socket.gethostname())
 
 
 def clear_script():
@@ -19,6 +21,7 @@ def clear_script():
     log.debug("Clearing SCRIPTNAME and SCRIPTPID")
     kpfconfig['SCRIPTNAME'].write('')
     kpfconfig['SCRIPTPID'].write(-1)
+    kpfconfig['SCRIPTHOST'].write('')
 
 
 def check_script_running():
