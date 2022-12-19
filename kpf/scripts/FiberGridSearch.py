@@ -25,6 +25,7 @@ from ..spectrograph.WaitForReadout import WaitForReadout
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from . import register_script, clear_script, check_script_running
 
 
 ##-------------------------------------------------------------------------
@@ -117,6 +118,7 @@ class FiberGridSearch(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        check_script_running()
         # Use file input for OB instead of args (temporary)
         check_input(args, 'OBfile')
         OBfile = Path(args.get('OBfile')).expanduser()
@@ -139,6 +141,8 @@ class FiberGridSearch(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Register this script with kpfconfig
+        register_script(Path(__file__).name, os.getpid())
         # Use file input for OB instead of args (temporary)
         OBfile = Path(args.get('OBfile')).expanduser()
         OB = yaml.safe_load(open(OBfile, 'r'))
@@ -326,6 +330,9 @@ class FiberGridSearch(KPFTranslatorFunction):
             offset(xpix0, ypix0, offset_system=offset_system)
         else:
             offset(0, 0, offset_system=offset_system)
+
+        # Register end of this script with kpfconfig
+        clear_script()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
