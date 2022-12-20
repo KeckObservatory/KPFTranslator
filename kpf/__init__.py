@@ -20,11 +20,12 @@ def create_KPF_log():
     utnow = datetime.utcnow()
     date = utnow-timedelta(days=1)
     date_str = date.strftime('%Y%b%d').lower()
-    logdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}/logs")
+    datedir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
+    if datedir.exists() is False:
+        datedir.mkdir(mode=0o777)
+    logdir = datedir / "logs"
     if logdir.exists() is False:
-        logdir.mkdir(parents=True, mode=0o777)
-#         for parent in reversed(logdir.parents):
-#             parent.mkdir(mode=0o777, exist_ok=True)
+        logdir.mkdir(mode=0o777)
     LogFileName = logdir / 'KPFTranslator.log'
     LogFileHandler = logging.FileHandler(LogFileName)
     LogFileHandler.setLevel(logging.DEBUG)
