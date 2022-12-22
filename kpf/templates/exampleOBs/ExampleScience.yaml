@@ -1,31 +1,41 @@
 Template_Name: kpf_sci
-Template_Version: 0.3
+Template_Version: 0.4
 
+# Target Info
+TargetName: mystar
+GaiaID: 12345
+2MASSID: 678910
+Parallax: 0
+RadialVelocity: 0
+Gmag: 10
+Jmag: 9
 Teff: 5700
-ExpMeter_Active: True
-ExpMeter_Terminate: True
-ExpMeter_Band: 1
-ExpMeter_Flux: 100000
+# Guider Setup
+GuideMode: manual
+GuideFPS: 100
+GuideCamGain: high
+GuideLoopGain: 0.6
+# Triggered Detectors
 TriggerCaHK: False
 TriggerGreen: True
 TriggerRed: True
-Guide_Mode: manual
-Guide_FPS: 100
-Guide_CamGain: high
-Guide_LoopGain: 0.3
+# Observations
 SEQ_Observations:
 - Object: Long Exposure of My Target, no SimulCal
   nExp: 3
   Exptime: 120
-  SSS_Science: True
-  SSS_Sky: True
-  TimedShutter_SimulCal: False
+  ExpMeterMode: monitor
+  ExpMeterBand: 1
+  ExpMeterFlux: 100000
+  TimedShutter_SimulCal: True
 - Object: Short Exposure of My Target with SimulCal
   nExp: 3
-  Exptime: 10
-  SSS_Science: True
-  SSS_Sky: True
+  Exptime: 120
   TimedShutter_SimulCal: True
-  CalSource: Th_gold
+  ExpMeterMode: monitor
+  ExpMeterBand: 1
+  ExpMeterFlux: 100000
+  TimedShutter_SimulCal: True
+  CalSource: Th_daily
   CalND1: OD 0.1
   CalND2: OD 0.1
