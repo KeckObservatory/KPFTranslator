@@ -32,7 +32,13 @@ class ResetDetectors(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         timeout = cfg.get('times', 'kpfexpose_reset_time', fallback=10)
         expr = f"($kpfexpose.EXPOSE >= Ready)"
+        log.warning(f"Waiting for kpfexpose to be Ready")
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
             kpfexposeexpose = ktl.cache('kpfexpose', 'EXPOSE')
-            FailedToReachDestination(kpfexposeexpose.read(), 'Ready')
+            raise FailedToReachDestination(kpfexposeexpose.read(), 'Ready')
+        else:
+            kpfexpose = ktl.cache('kpfexpose')
+            log.info(f"Reset detectors done")
+            log.info(f"kpfexpose.EXPOSE = {kpfexpose['EXPOSE'].read()}")
+            log.info(f"kpfexpose.EXPLAINR = {kpfexpose['EXPLAINR'].read()}")
