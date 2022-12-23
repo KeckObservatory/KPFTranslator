@@ -13,11 +13,12 @@ from astropy import units as u
 from astropy.table import Table
 from astropy import stats
 from astropy.nddata import CCDData
+import ccdproc
 import photutils
 from photutils.centroids import centroid_com, centroid_2dg
 
 from matplotlib import pyplot as plt
-
+from matplotlib.ticker import MultipleLocator
 
 ##-------------------------------------------------------------------------
 ## Parse Command Line Arguments
@@ -40,7 +41,7 @@ p.add_argument("--fiber", dest="fiber", type=str,
     default='Science',
     help="The fiber being examined (Science, Sky, or EMSky).")
 p.add_argument("--FVCs", dest="FVCs", type=str,
-    default='SCI,CAHK',
+    default='',
     help="A comma separated list of FVC cameras to trigger (SCI, CAHK, EXT).")
 p.add_argument("--log_path", dest="log_path", type=str,
     default='/s/sdata1701/kpfeng/2022nov06/script_logs',
@@ -132,7 +133,6 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     ouput_ext_image_file = Path(f"{date_time_string}_EXT_images.png")
     ouput_analysis_image_file = Path(f"{date_time_string}_fiber_location.png")
 
-    print(fluxes_file)
     flux_table = Table.read(fluxes_file, format='ascii.csv')
     log.info(f"Read in {fluxes_file.name} with {len(flux_table)} lines")
 
@@ -176,7 +176,10 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                                 images, flux_table,
                                 datadir=datadir/'CRED2',
                                 x0=cred2_pixels[0], y0=cred2_pixels[1],
-                                fig=cred2_images_fig, imno=imno+1)
+                                fig=cred2_images_fig, imno=imno+1,
+                                initial_x=flux_entry['dx'],
+                                initial_y=flux_entry['dy'],
+                                )
         xcred2[j, i] = x
         ycred2[j, i] = y
         if 'SCI' in FVCs and fvcsci_pixels is not None:
@@ -205,10 +208,23 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     plt.figure(num=cred2_images_fig.number)
     plt.subplot(ny+1,nx,nx*ny+2)
     plt.title('Grid positions in CRED2 pixel space', size=8)
-    plt.plot(xcred2, ycred2, 'k+')
+    plt.plot(xcred2, ycred2, 'r+', alpha=0.5)
+    plt.plot(flux_table['dx'], flux_table['dy'], 'bx', alpha=0.5)
+    for imno,flux_entry in enumerate(flux_table):
+        i = flux_entry['i']
+        j = flux_entry['j']
+#         print(i, j, flux_entry['dx'], flux_entry['dy'])
+        plt.arrow(flux_entry['dx'], flux_entry['dy'],
+                  xcred2[j, i]-flux_entry['dx'],
+                  ycred2[j, i]-flux_entry['dy'],
+                  color='g', alpha=0.5,
+                  head_width=0.1, length_includes_head=True)
+    plt.gca().xaxis.set_major_locator(MultipleLocator(base=1.0))
+    plt.gca().yaxis.set_major_locator(MultipleLocator(base=1.0))
     plt.grid()
-    plt.xlabel('CRED2 X')
-    plt.xlabel('CRED2 Y')
+    plt.xlabel('CRED2 X (pix)')
+    plt.ylabel('CRED2 Y (pix)')
+    plt.gca().axis('equal')
     log.info(f"Saving: {ouput_cred2_image_file}")
     if ouput_cred2_image_file.exists() is True:
         ouput_cred2_image_file.unlink()
@@ -283,11 +299,13 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                  markersize=10)
     plt.plot(avg_x, avg_y, 'ko', markersize=20, alpha=0.4,
              label=f'Avg. Position ({avg_x:.1f}, {avg_y:.1f})')
-#     plt.gca().set_aspect(1)
+    plt.gca().axis('equal')
     plt.legend(loc='best')
+    plt.gca().xaxis.set_major_locator(MultipleLocator(base=1.0))
+    plt.gca().yaxis.set_major_locator(MultipleLocator(base=1.0))
     plt.grid()
-    plt.xlabel('CRED2 X')
-    plt.xlabel('CRED2 Y')
+    plt.xlabel('CRED2 X (pix)')
+    plt.ylabel('CRED2 Y (pix)')
 
     if ouput_analysis_image_file.exists() is True:
         ouput_analysis_image_file.unlink()
@@ -303,7 +321,8 @@ def show_CRED2_image(x, y, images, fluxes,
                      datadir='/s/sdata1701/kpfeng/2022oct16/CRED2',
                      x0=320, y0=256,
                      iterate=True,
-                     fig=None, imno=1):
+                     fig=None, imno=1,
+                     initial_x=None, initial_y=None):
     datadir = Path(datadir)
     nx = len(set(set(images['dx'])))
     ny = len(set(set(images['dy'])))
@@ -326,55 +345,75 @@ def show_CRED2_image(x, y, images, fluxes,
 #     image_data = ccddata.data - np.percentile(ccddata.data, 48)
     log.debug(f"  CRED2 mode = {mode(ccddata.data)} ({mode(image_data)} after background sub)")
 
-    dx = 40
-    dy = 40
+    log.info("Running median CR reject to get rid of bad pixels")
+    image_data, mask = ccdproc.cosmicray_median(image_data, mbox=7, gbox=0, rbox=7)
+
+    dx = 60
+    dy = 50
     subframe = image_data[y0-dy:y0+dy,x0-dx:x0+dx]
     dx1, dy1 = centroid_com(subframe)
 #     dx1, dy1 = centroid_2dg(subframe)
     x1 = x0 - dx + dx1
     y1 = y0 - dy + dy1
 
+    log.debug(f"  Iteration 1: {x1:.1f} {y1:.1f} ({initial_x:.1f} {initial_y:.1f})")
+
     # Iterate on fit with smaller box
     if iterate is True:
-        dx = 25
-        dy = 25
+        dx = 35
+        dy = 30
         subframe = image_data[int(y1)-dy:int(y1)+dy,int(x1)-dx:int(x1)+dx]
         dx2, dy2 = centroid_com(subframe)
-    #     dx1, dy1 = centroid_2dg(subframe)
+    #     dx2, dy2 = centroid_2dg(subframe)
         x2 = int(x1) - dx + dx2
         y2 = int(y1) - dy + dy2
     else:
         x2 = x1
         y2 = y1
 
+    log.debug(f"  Iteration 2: {x2:.1f} {y2:.1f} ({initial_x:.1f} {initial_y:.1f})")
+
     # Third iteration
     if iterate is True:
-        dx = 25
-        dy = 25
+        dx = 35
+        dy = 30
         subframe = image_data[int(y2)-dy:int(y2)+dy,int(x2)-dx:int(x2)+dx]
         dx3, dy3 = centroid_com(subframe)
-    #     dx1, dy1 = centroid_2dg(subframe)
+    #     dx3, dy3 = centroid_2dg(subframe)
         x3 = int(x2) - dx + dx3
         y3 = int(y2) - dy + dy3
     else:
         x3 = x1
         y3 = y1
 
+    log.debug(f"  Iteration 3: {x3:.1f} {y3:.1f} ({initial_x:.1f} {initial_y:.1f})")
+
     if fig is not None:
         plt.figure(num=fig.number)
         plt.subplot(ny+1,nx,imno)
-        title_string = f"{cred2_file}:\nx,y = ({x1:.1f}, {y1:.1f})"
+        title_string = f"{cred2_file}:\nx,y = ({x3:.1f}, {y3:.1f}) ({initial_x:.1f}, {initial_y:.1f})"
 #         title_string = f"{cred2_file}"
         plt.title(title_string, size=8)
         norm = viz.ImageNormalize(hdul[0].data, interval=viz.AsymmetricPercentileInterval(1.5,100),
                                   stretch=viz.LogStretch())
-        plt.imshow(subframe, cmap='gray', origin='lower', norm=norm)
+        plt.imshow(subframe, interpolation='none', cmap='gray', origin='lower', norm=norm)
 #         plt.plot(dx1, dy1, 'rx', alpha=0.3)
+        if initial_x is not None and initial_y is not None:
+            plt.plot(initial_x - x2 + dx, initial_y - y2 + dy, 'bx')
+            plt.arrow(initial_x - x2 + dx, initial_y - y2 + dy,
+                      dx3-(initial_x - x2 + dx),
+                      dy3-(initial_y - y2 + dy),
+                      color='g', alpha=0.5,
+                      head_width=0.1, length_includes_head=True)
         plt.plot(dx3, dy3, 'r+')
-        plt.gca().set_yticks([])
-        plt.gca().set_xticks([])
+        plt.gca().set_aspect('equal', 'box')
+#         plt.gca().set_yticks([])
+#         plt.gca().set_xticks([])
+    print(initial_x, initial_y)
+    log.info(f"  X: {initial_x:.1f} --> {x3:.1f}")
+    log.info(f"  Y: {initial_y:.1f} --> {y3:.1f}")
 
-    return x2, y2
+    return x3, y3
 
 
 ##-------------------------------------------------------------------------
@@ -417,58 +456,6 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
 
 
 if __name__ == '__main__':
-    # Oct 6
-#     analyze_grid_search('20221007at122438', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at123043', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at123800', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at125522', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at133243', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at134116', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at134957', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at143218', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT'])
-#     analyze_grid_search('20221007at144431', flux_prefix='f', fiber='Science', FVCs=['SCI', 'EXT']) # Bad?  only 1 EXT image file?
-    # analyze_grid_search('20221007at122115', flux_prefix='f', x0=160, y0=256, FVCs=['SCI', 'EXT']) # Failed grid
-
-    # Oct 16
-#     analyze_grid_search('20221017at054732', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at055940', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at060401', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at061708', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at073300', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at080015', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at082551', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at084907', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at085828', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at091540', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at093334', fiber='EMSky', FVCs=[])
-#     analyze_grid_search('20221017at094948', fiber='EMSky', FVCs=[])
-    # analyze_grid_search('20221017at062242', x0=160, y0=256) # Failed grid
-    # analyze_grid_search('20221017at063907', x0=160, y0=256) # Failed grid
-    # analyze_grid_search('20221017at065709', x0=160, y0=256) # Failed grid
-    # analyze_grid_search('20221017at082305', x0=160, y0=256) # Failed grid
-
-    # Nov 6
-#     analyze_grid_search('20221107at060754', flux_prefix='cur',
-#                         fiber='Science', FVCs=['SCI', 'EXT'],
-#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
-#     analyze_grid_search('20221107at063924', flux_prefix='cur',
-#                         fiber='Science', FVCs=['SCI', 'EXT'],
-#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
-#     analyze_grid_search('20221107at065037', flux_prefix='cur',
-#                         fiber='Science', FVCs=['SCI', 'EXT'],
-#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
-#    analyze_grid_search('20221107at071306', flux_prefix='cur',
-#                        fiber='Science', FVCs=['SCI', 'EXT'],
-#                        log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
-#     analyze_grid_search('20221107at074322', flux_prefix='cur',
-#                         fiber='Science', FVCs=['SCI', 'EXT'],
-#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
-#     analyze_grid_search('20221107at083230', flux_prefix='cur',
-#                         fiber='Science', FVCs=['SCI', 'EXT'],
-#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
-#     analyze_grid_search('20221107at090316', flux_prefix='cur',
-#                         fiber='Science', FVCs=['SCI', 'EXT'],
-#                         log_path='/s/sdata1701/kpfeng/2022nov06/script_logs')
     analyze_grid_search(args.datetimestr,
                         flux_prefix=args.flux_prefix,
                         fiber=args.fiber,
