@@ -155,7 +155,7 @@ def plot_cube_stats(file, plotfile=None):
     plt.subplot(2,2,4)
 #     plt.title(f"X: rms={xrms:.2f}, bias={xbias:.2f} pix / Y: rms={yrms:.2f}, bias={ybias:.2f} pix")
     ps = 56 # mas/pix
-    plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f})")
+    plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
     plt.plot(times[~objectxerr.mask], objectxerr[~objectxerr.mask], 'g-',
              drawstyle='steps-mid', label=f'Xpos-Xtarg')
 #     for badt in times[objectxerr.mask]:
