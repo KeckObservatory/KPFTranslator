@@ -168,7 +168,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         log.debug(f"  Centering image on {cred2_pixels}")
         x, y = show_CRED2_image(flux_entry['dx'], flux_entry['dy'],
                                 images, flux_table,
-                                data_path=data_path/'CRED2',
+                                data_path=data_path/Path('CRED2'),
                                 x0=cred2_pixels[0], y0=cred2_pixels[1],
                                 fig=cred2_images_fig, imno=imno+1,
                                 initial_x=flux_entry['dx'],
@@ -180,21 +180,21 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
             log.debug(f"  Generating SCI FVC image centered on {fvcsci_pixels}")
             show_FVC_image(flux_entry['dx'], flux_entry['dy'],
                            images, flux_table, camera='SCI',
-                           data_path=data_path/'FVC1',
+                           data_path=data_path/Path('FVC1'),
                            x0=fvcsci_pixels[0], y0=fvcsci_pixels[1],
                            fig=sci_FVC_images_fig, imno=imno+1)
         if 'CAHK' in FVCs and fvccahk_pixels is not None:
             log.debug(f"  Generating SCI FVC image centered on {fvcsci_pixels}")
             show_FVC_image(flux_entry['dx'], flux_entry['dy'],
                            images, flux_table, camera='CAHK',
-                           data_path=data_path/'FVC2',
+                           data_path=data_path/Path('FVC2'),
                            x0=fvccahk_pixels[0], y0=fvccahk_pixels[1],
                            fig=sci_CAHK_images_fig, imno=imno+1)
         if 'EXT' in FVCs and fvcext_pixels is not None:
             log.debug(f"  Generating EXT FVC image centered on {fvcext_pixels}")
             show_FVC_image(flux_entry['dx'], flux_entry['dy'],
                            images, flux_table, camera='EXT',
-                           data_path=data_path/'FVC4',
+                           data_path=data_path/Path('FVC4'),
                            x0=fvcext_pixels[0], y0=fvcext_pixels[1],
                            fig=ext_FVC_images_fig, imno=imno+1)
 
