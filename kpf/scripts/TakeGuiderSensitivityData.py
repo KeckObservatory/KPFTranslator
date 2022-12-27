@@ -63,6 +63,9 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Register this script with kpfconfig
+        register_script(Path(__file__).name, os.getpid())
+
         log.info('-------------------------')
         log.info(f"Running TakeGuiderSensitivityData OB")
         for key in OB:
@@ -103,6 +106,9 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
             if images_file.exists():
                 images_file.unlink()
             images.write(images_file, format='ascii.csv')
+
+        # Register end of this script with kpfconfig
+        clear_script()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
