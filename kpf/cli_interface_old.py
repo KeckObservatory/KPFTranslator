@@ -22,6 +22,7 @@ class LinkingTable():
             Filepath to the linking table
         """
         raw =  configparser.ConfigParser()
+        raw.optionxform = str
         raw.read(filename)
         self.cfg = raw
         self.prefix = raw['common']['prefix']
