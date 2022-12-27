@@ -56,7 +56,7 @@ class TestScienceADC(KPFTranslatorFunction):
             OB = yaml.safe_load(open(OBfile, 'r'))
             log.warning(f"Using OB information from file {OBfile}")
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_testsciadc'])
-        check_input(OB, 'Template_Version', version_check=True, min_value='0.3')
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         check_input(OB, 'nx')
         check_input(OB, 'ny')
         check_input(OB, 'dx')

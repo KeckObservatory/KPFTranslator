@@ -56,7 +56,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
             OB = yaml.safe_load(open(OBfile, 'r'))
             log.warning(f"Using OB information from file {OBfile}")
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_tgsd'])
-        check_input(OB, 'Template_Version', version_check=True, min_value='0.3')
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         check_input(OB, 'gain', allowed_values=['high', 'medium', 'low'])
         check_input(OB, 'FPSvalues')
         return True

@@ -126,7 +126,7 @@ class FiberGridSearch(KPFTranslatorFunction):
             OB = yaml.safe_load(open(OBfile, 'r'))
             log.warning(f"Using OB information from file {OBfile}")
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
-        check_input(OB, 'Template_Version', allowed_values=['0.3'])
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         check_input(OB, 'offset_system', allowed_values=['azel', 'gxy', 'ttm', 'custom'])
         check_input(OB, 'min_time_on_grid_position', min_value=0)
         check_input(OB, 'nx')
