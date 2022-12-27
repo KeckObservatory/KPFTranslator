@@ -70,6 +70,9 @@ class EndOfNight(KPFTranslatorFunction):
         SetProgram.execute({'progname': ''})
         SetObserver.execute({'observer': ''})
         SetObject.execute({'Object': ''})
+        log.info('Set SCRIPTALLOW to Yes')
+        scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
+        scriptallow.write('Yes')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
