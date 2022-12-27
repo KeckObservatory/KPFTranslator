@@ -43,9 +43,12 @@ p.add_argument("--fiber", dest="fiber", type=str,
 p.add_argument("--FVCs", dest="FVCs", type=str,
     default='',
     help="A comma separated list of FVC cameras to trigger (SCI, CAHK, EXT).")
-p.add_argument("--log_path", dest="log_path", type=str,
-    default='/s/sdata1701/kpfeng/2022nov06/script_logs',
-    help="The path to the directory containing the logs")
+p.add_argument("--data_path", dest="data_path", type=str,
+    default='/s/sdata1701/kpfeng/2022dec14',
+    help="The path to the data directory with logs and CRED2 sub-directories")
+# p.add_argument("--log_path", dest="log_path", type=str,
+#     default='/s/sdata1701/kpfeng/2022nov06/script_logs',
+#     help="The path to the directory containing the logs")
 args = p.parse_args()
 
 
@@ -93,8 +96,7 @@ def mode(data):
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
 def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
-                        log_path=Path(f'~/KPF_Engineering/logs').expanduser(),
-                        datadir=None,
+                        data_path=Path('/s/sdata1701/kpfeng/2022dec14'),
                         FVCs=['SCI'],
                         ):
     ks = [0,1,2,3]
@@ -116,17 +118,9 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                        'Science': 'cur',
                        'Sky': None}[fiber]
 
-
-    if datadir is None:
-        # Try to munge up the crappy Keck date string
-        months = {1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr', 5: 'may', 6: 'jun',
-                  7: 'jul', 8: 'aug', 9: 'sep', 10: 'oct', 11: 'nov', 12: 'dec'}
-        date_str = f"{date_time_string[0:4]}{months[int(date_time_string[4:6])]}{int(date_time_string[6:8])-1:02d}"
-        datadir = Path('/s/sdata1701/kpfeng/') / date_str
-
-    fluxes_file = log_path / Path(f'FiberGridSearch_fluxes_{date_time_string}.txt')
-    images_file = log_path / Path(f'FiberGridSearch_images_{date_time_string}.txt')
-    log_file = log_path / Path(f'FiberGridSearch_{date_time_string}.log')
+    fluxes_file = data_path / 'script_logs' / Path(f'FiberGridSearch_fluxes_{date_time_string}.txt')
+    images_file = data_path / 'script_logs' / Path(f'FiberGridSearch_images_{date_time_string}.txt')
+    log_file = data_path / 'script_logs' / Path(f'FiberGridSearch_{date_time_string}.log')
     ouput_cred2_image_file = Path(f"{date_time_string}_CRED2_images.png")
     ouput_sci_image_file = Path(f"{date_time_string}_SCI_images.png")
     ouput_cahk_image_file = Path(f"{date_time_string}_CAHK_images.png")
@@ -174,7 +168,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         log.debug(f"  Centering image on {cred2_pixels}")
         x, y = show_CRED2_image(flux_entry['dx'], flux_entry['dy'],
                                 images, flux_table,
-                                datadir=datadir/'CRED2',
+                                data_path=data_path/'CRED2',
                                 x0=cred2_pixels[0], y0=cred2_pixels[1],
                                 fig=cred2_images_fig, imno=imno+1,
                                 initial_x=flux_entry['dx'],
@@ -186,21 +180,21 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
             log.debug(f"  Generating SCI FVC image centered on {fvcsci_pixels}")
             show_FVC_image(flux_entry['dx'], flux_entry['dy'],
                            images, flux_table, camera='SCI',
-                           datadir=datadir/'FVC1',
+                           data_path=data_path/'FVC1',
                            x0=fvcsci_pixels[0], y0=fvcsci_pixels[1],
                            fig=sci_FVC_images_fig, imno=imno+1)
         if 'CAHK' in FVCs and fvccahk_pixels is not None:
             log.debug(f"  Generating SCI FVC image centered on {fvcsci_pixels}")
             show_FVC_image(flux_entry['dx'], flux_entry['dy'],
                            images, flux_table, camera='CAHK',
-                           datadir=datadir/'FVC2',
+                           data_path=data_path/'FVC2',
                            x0=fvccahk_pixels[0], y0=fvccahk_pixels[1],
                            fig=sci_CAHK_images_fig, imno=imno+1)
         if 'EXT' in FVCs and fvcext_pixels is not None:
             log.debug(f"  Generating EXT FVC image centered on {fvcext_pixels}")
             show_FVC_image(flux_entry['dx'], flux_entry['dy'],
                            images, flux_table, camera='EXT',
-                           datadir=datadir/'FVC4',
+                           data_path=data_path/'FVC4',
                            x0=fvcext_pixels[0], y0=fvcext_pixels[1],
                            fig=ext_FVC_images_fig, imno=imno+1)
 
@@ -318,12 +312,12 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
 ## show_CRED2_image
 ##-------------------------------------------------------------------------
 def show_CRED2_image(x, y, images, fluxes,
-                     datadir='/s/sdata1701/kpfeng/2022oct16/CRED2',
+                     data_path='/s/sdata1701/kpfeng/2022oct16/CRED2',
                      x0=320, y0=256,
                      iterate=True,
                      fig=None, imno=1,
                      initial_x=None, initial_y=None):
-    datadir = Path(datadir)
+    data_path = Path(data_path)
     nx = len(set(set(images['dx'])))
     ny = len(set(set(images['dy'])))
     tol = 0.001
@@ -332,10 +326,10 @@ def show_CRED2_image(x, y, images, fluxes,
     cred2_file = original_cred2_file.name
     log.debug(f"  Found {len(original_cred2_files)} CRED2 files.  Using {cred2_file}")
 
-    hdul = fits.open(datadir / cred2_file)
+    hdul = fits.open(data_path / cred2_file)
 
     # Create and Subtract Background
-    ccddata = CCDData.read(datadir / cred2_file, unit="adu", memmap=False)
+    ccddata = CCDData.read(data_path / cred2_file, unit="adu", memmap=False)
     source_mask = photutils.make_source_mask(hdul[0].data, 10, 100)
     bkg = photutils.Background2D(ccddata,
                                  box_size=128,
@@ -420,10 +414,10 @@ def show_CRED2_image(x, y, images, fluxes,
 ## show_FVC_image
 ##-------------------------------------------------------------------------
 def show_FVC_image(x, y, images, fluxes, camera='SCI',
-                   datadir='/s/sdata1701/kpfeng/2022oct16/FVC1',
+                   data_path='/s/sdata1701/kpfeng/2022oct16/FVC1',
                    x0=800, y0=600,
                    fig=None, imno=1):
-    datadir = Path(datadir)
+    data_path = Path(data_path)
     nx = len(set(set(images['dx'])))
     ny = len(set(set(images['dy'])))
     tol = 0.001
@@ -432,7 +426,7 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
     fvc_file = original_fvc_file.name
     log.debug(f"  Found {len(original_fvc_files)} {camera} FVC files.  Using {fvc_file}")
 
-    hdul = fits.open(datadir / fvc_file)
+    hdul = fits.open(data_path / fvc_file)
     image_data = hdul[0].data
     dx = 200
     dy = 200
@@ -460,4 +454,4 @@ if __name__ == '__main__':
                         flux_prefix=args.flux_prefix,
                         fiber=args.fiber,
                         FVCs=args.FVCs.split(','),
-                        log_path=args.log_path)
+                        data_path=args.data_path)
