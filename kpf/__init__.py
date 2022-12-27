@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import logging
 from datetime import datetime, timedelta
+from packaging import version
 
 
 ##-------------------------------------------------------------------------
@@ -70,10 +71,18 @@ class FailedToReachDestination(FailedPostCondition):
 ## Utility functions
 ##-------------------------------------------------------------------------
 def check_input(args, input_name, allowed_types=None, allowed_values=None,
-                value_min=None, value_max=None):
+                value_min=None, value_max=None, version_check=False):
         target = args.get(input_name, None)
         if target is None:
             raise FailedPreCondition(f"Input {input_name} is None")
+
+        if version_check is True:
+            target = version.parse(target)
+            if value_min is not None:
+                value_min = version.parse(value_min)
+            if value_max is not None:
+                value_max = version.parse(value_max)
+
         # Check against allowed types
         if allowed_types is not None:
             if type(allowed_types) != list:
@@ -82,7 +91,7 @@ def check_input(args, input_name, allowed_types=None, allowed_values=None,
                 raise FailedPreCondition(f"Input {input_name} value {target} "
                                          f"is not an allowed type: {allowed_types}")
         # Check against value_min and value_max
-        if type(target) in [float, int]:
+        if type(target) in [float, int, version.Version]:
             if value_min is not None:
                 if target < value_min:
                     raise FailedPreCondition(f"Input {input_name} value {target} "
