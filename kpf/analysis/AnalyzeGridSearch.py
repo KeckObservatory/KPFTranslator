@@ -118,9 +118,9 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                        'Science': 'cur',
                        'Sky': None}[fiber]
 
-    fluxes_file = data_path / 'script_logs' / Path(f'FiberGridSearch_fluxes_{date_time_string}.txt')
-    images_file = data_path / 'script_logs' / Path(f'FiberGridSearch_images_{date_time_string}.txt')
-    log_file = data_path / 'script_logs' / Path(f'FiberGridSearch_{date_time_string}.log')
+    fluxes_file = data_path / Path('script_logs') / Path(f'FiberGridSearch_fluxes_{date_time_string}.txt')
+    images_file = data_path / Path('script_logs') / Path(f'FiberGridSearch_images_{date_time_string}.txt')
+    log_file = data_path / Path('script_logs') / Path(f'FiberGridSearch_{date_time_string}.log')
     ouput_cred2_image_file = Path(f"{date_time_string}_CRED2_images.png")
     ouput_sci_image_file = Path(f"{date_time_string}_SCI_images.png")
     ouput_cahk_image_file = Path(f"{date_time_string}_CAHK_images.png")
