@@ -77,11 +77,11 @@ def check_input(args, input_name, allowed_types=None, allowed_values=None,
             raise FailedPreCondition(f"Input {input_name} is None")
 
         if version_check is True:
-            target = version.parse(target)
+            target = version.parse(f"{target}")
             if value_min is not None:
-                value_min = version.parse(value_min)
+                value_min = version.parse(f"{value_min}")
             if value_max is not None:
-                value_max = version.parse(value_max)
+                value_max = version.parse(f"{value_max}")
 
         # Check against allowed types
         if allowed_types is not None:
