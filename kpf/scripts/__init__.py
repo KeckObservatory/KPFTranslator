@@ -1,4 +1,5 @@
 import sys
+import os
 import requests
 import json
 import socket
@@ -9,6 +10,8 @@ from .. import log, KPFException, FailedPreCondition
 
 
 def register_script(scriptname, PID):
+    '''Function to write name, PID, and host to kpfconfig.SCRIPT% keywords
+    '''
     kpfconfig = ktl.cache('kpfconfig')
     log.debug(f"Registering script {scriptname} with PID {PID}")
     kpfconfig['SCRIPTNAME'].write(scriptname)
@@ -17,6 +20,8 @@ def register_script(scriptname, PID):
 
 
 def clear_script():
+    '''Function to clear kpfconfig.SCRIPT% keywords
+    '''
     kpfconfig = ktl.cache('kpfconfig')
     log.debug("Clearing SCRIPTNAME and SCRIPTPID")
     kpfconfig['SCRIPTNAME'].write('')
@@ -25,6 +30,8 @@ def clear_script():
 
 
 def check_script_running():
+    '''Function to check if a script is running via kpfconfig.SCRIPT% keywords
+    '''
     kpfconfig = ktl.cache('kpfconfig')
     scriptname = kpfconfig['SCRIPTNAME'].read()
     pid = kpfconfig['SCRIPTPID'].read()
@@ -39,12 +46,41 @@ def check_script_running():
 
 
 def check_script_stop():
+    '''Function to check if a stop has been requested via kpfconfig.SCRIPTSTOP
+    '''
     scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
     if scriptstop.read() == 'Yes':
         log.warning("SCRIPTSTOP requested.  Resetting SCRIPTSTOP and exiting")
         scriptstop.write('No')
         clear_script()
         raise KPFException("SCRIPTSTOP triggered")
+
+
+# def add_script_registry(func):
+#     '''Decorator to add register_script and clear_script
+#     '''
+#     import functools
+#     @functools.wraps(func)
+#     def wrapper_decorator(*args, **kwargs):
+#         pid = os.getpid()
+#         log.debug(f'Decorator is registering script: {func.__file__}, {pid}')
+#         register_script(func.__file__, pid)
+#         value = func(*args, **kwargs)
+#         clear_script()
+#         return value
+#     return wrapper_decorator
+#
+#
+# from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+#
+# class KPFSscript(KPFTranslatorFunction):
+#     def execute(cls, args, logger=None, cfg=None)
+#         register_script(Path(__file__).name, os.getpid())
+#         print(args)
+#         print(logger)
+#         print(cfg)
+#         super().execute(args, logger=logger, cfg=cfg)
+#         clear_script()
 
 
 def querydb(req):
