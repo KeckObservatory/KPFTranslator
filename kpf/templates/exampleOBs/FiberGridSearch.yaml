@@ -6,6 +6,7 @@ cameras: CRED2,ExpMeter
 ExpMeter_exptime: 2
 SCIFVC_exptime: 10
 CAHKFVC_exptime: 10
+min_time_on_grid_position: 20
 offset_system: ttm
 nx: 3
 ny: 3

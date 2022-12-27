@@ -128,6 +128,7 @@ class FiberGridSearch(KPFTranslatorFunction):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
         check_input(OB, 'Template_Version', allowed_values=['0.3'])
         check_input(OB, 'offset_system', allowed_values=['azel', 'gxy', 'ttm', 'custom'])
+        check_input(OB, 'min_time_on_grid_position', min_value=0)
         check_input(OB, 'nx')
         check_input(OB, 'ny')
         check_input(OB, 'dx')
@@ -222,6 +223,10 @@ class FiberGridSearch(KPFTranslatorFunction):
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
                 kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
+                # Start CRED2 Cube Collection
+                last_cube_file = kpfguide['LASTTRIGFILE'].read()
+                log.info(f"  Starting CRED2 cube")
+                kpfguide['TRIGGER'].write('Active')
                 log.info(f"  Starting kpfexpose cameras")
                 StartExposure.execute({})
                 # Begin timestamp for history retrieval
@@ -245,14 +250,6 @@ class FiberGridSearch(KPFTranslatorFunction):
                            'dx': xs[i], 'dy': ys[j]}
                     images.add_row(row)
 
-                    log.info(f"  Taking Second CRED2 exposure")
-                    TakeGuiderExposure.execute({})
-                    lastfile = kpfguide[f"LASTFILE"].read()
-                    row = {'file': lastfile, 'camera': 'CRED2',
-                           'dx': xs[i], 'dy': ys[j]}
-                    images.add_row(row)
-
-
                 # Collect files for FVC exposures
                 for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
                     if camera in cameras:
@@ -271,9 +268,19 @@ class FiberGridSearch(KPFTranslatorFunction):
                                    'dx': xs[i], 'dy': ys[j]}
                             images.add_row(row)
 
+                # Ensure minimum time on position is enforced
+                duration = OB.get('min_time_on_grid_position')
+                end = datetime.fromtimestamp(begin) + timedelta(seconds=duration)
+                now = datetime.now()
+                while now < end:
+                    time.sleep(0.2)
+                    now = datetime.now()
+
                 # Stop Exposure Meter
                 log.info(f"  Waiting for kpfexpose readout to start")
                 WaitForReadout.execute({})
+                log.info(f"  Stopping CRED2 cube")
+                kpfguide['TRIGGER'].write('Inactive')
                 log.info(f"  Waiting for ExpMeter DRP")
                 kpf_expmeter['CUR_COUNTS'].wait()
                 log.info(f"  Waiting for ExpMeter to be Ready")
@@ -285,6 +292,22 @@ class FiberGridSearch(KPFTranslatorFunction):
                     row = {'file': lastfile, 'camera': 'ExpMeter',
                            'dx': xs[i], 'dy': ys[j]}
                 images.add_row(row)
+
+                # Collect CRED2 Cube
+                expr = f'($kpfguide.LASTTRIGFILE != "{last_cube_file}")'
+                log.debug(f"  Waiting for: {expr}")
+                if ktl.waitFor(expr, timeout=60) is False:
+                    log.error('No new CRED2 cube file found')
+                    log.error(f"  previous: {last_cube_file}")
+                    last_cube_file = kpfguide['LASTTRIGFILE'].read()
+                    log.error(f"  kpffvc.LASTTRIGFILE = {last_cube_file}")
+                else:
+                    last_cube_file = kpfguide['LASTTRIGFILE'].read()
+                    log.debug(f"Found {last_cube_file}")
+                    row = {'file': last_cube_file, 'camera': 'cube',
+                           'dx': xs[i], 'dy': ys[j]}
+                    images.add_row(row)
+
                 # Retrieve keyword history
                 end = time.time()
                 expmeter_data = {'dx': xs[i], 'dy': ys[j],
