@@ -1,3 +1,4 @@
+import time
 import os
 from pathlib import Path
 import logging
@@ -47,58 +48,61 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-#         check_input(args, 'FPS')
-#         check_input(args, 'gains')
+        check_script_running()
+        # Use file input for OB instead of args (temporary)
+        check_input(args, 'OBfile')
+        OBfile = Path(args.get('OBfile')).expanduser()
+        if OBfile.exists() is True:
+            OB = yaml.safe_load(open(OBfile, 'r'))
+            log.warning(f"Using OB information from file {OBfile}")
+        check_input(OB, 'Template_Name', allowed_values=['kpf_eng_tgsd'])
+        check_input(OB, 'Template_Version', version_check=True, min_value='0.3')
+        check_input(OB, 'gain', allowed_values=['high', 'medium', 'low'])
+        check_input(OB, 'FPSvalues')
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        kpfguide = ktl.cache('kpfguide')
-        exptime = args.get('exptime', 10)
-        FPSvalues = [10, 20]
-        gains = ['low']
+        log.info('-------------------------')
+        log.info(f"Running TakeGuiderSensitivityData OB")
+        for key in OB:
+            log.debug(f"  {key}: {OB[key]}")
+        log.info('-------------------------')
 
         images_file = log_dir / Path(f'{this_file_name}_images_{now_str}.txt')
-        images = Table(names=('stacked file', 'cube file', 'gain', 'fps', 'exptime'),
-                       dtype=('a90',          'a90',       'a10',   'f4', 'f4'))
+        images = Table(names=('cube file', 'gain', 'fps'),
+                       dtype=('a90',       'a10',  'f4'))
 
+        kpfguide = ktl.cache('kpfguide')
 
+        gain = args.get('gain')
+        log.info(f"Setting gain to {gain}")
+        SetGuiderGain.execute({'gain': gain})
+
+        cube_duration = args.get('cube_duration')
         for FPS in FPSvalues:
-            for gain in gains:
-                log.info(f"Setting gain to {gain} and FPS to {FPS}")
-                SetGuiderGain.execute({'gain': gain})
-                SetGuiderFPS.execute({'fps': FPS})
-                # Wait for the stacked file to increment
-                initial_lastfile = kpfguide['LASTFILE'].read()
-                initial_lasttrigfile = kpfguide['LASTTRIGFILE'].read()
-                ktl.waitFor(f"$kpfguide.LASTFILE != '{initial_lastfile}'")
-                # Start cube collection simultaneous with stacked file
-                log.info(f'Starting data collection for {exptime} s')
-                kpfguide['TRIGGER'].write(1)
-                # End cube collection simultaneous with stacked file being written
-                initial_lastfile = kpfguide['LASTFILE'].read()
-                ktl.waitFor(f"$kpfguide.LASTFILE != '{initial_lastfile}'")
-                kpfguide['TRIGGER'].write(0)
-                # Wait for cuber file to be updated
-                ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lasttrigfile}'")
-                stacked_file = kpfguide['LASTFILE'].read()
-                log.info(f"  stacked file: {stacked_file}")
-                cube_file = kpfguide['LASTTRIGFILE'].read()
-                log.info(f"  cube file: {cube_file}")
-                row = {'stacked file': stacked_file,
-                       'cube file': cube_file,
-                       'gain': gain,
-                       'fps': FPS, 'exptime': exptime}
-                images.add_row(row)
+            log.info(f"Setting FPS to {FPS}")
+            SetGuiderFPS.execute({'fps': FPS})
 
-                if images_file.exists():
-                    images_file.unlink()
-                images.write(images_file, format='ascii.csv')
-
+            # Start cube collection 
+            log.info(f'Starting data collection for {cube_duration} s')
+            initial_lastfile = kpfguide['LASTTRIGFILE'].read()
+            kpfguide['TRIGGER'].write('Active')
+            log.debug(f"Sleeping {cube_duration} s")
+            time.sleep(cube_duration)
+            # End cube collection
+            kpfguide['TRIGGER'].write('Inactive')
+            # Wait for cuber file to be updated
+            ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lasttrigfile}'")
+            cube_file = kpfguide['LASTTRIGFILE'].read()
+            log.info(f"  cube file: {cube_file}")
+            row = {'cube file': cube_file,
+                   'gain': gain,
+                   'fps': FPS}
+            images.add_row(row)
             if images_file.exists():
                 images_file.unlink()
             images.write(images_file, format='ascii.csv')
-
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

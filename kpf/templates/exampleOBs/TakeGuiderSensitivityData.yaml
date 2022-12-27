@@ -1,0 +1,7 @@
+Template_Name: kpf_eng_tgsd
+Template_Version: 0.3
+
+comment: test run
+cube_duration: 20
+FPSvalues: [10, 20, 50, 100, 200]
+gain: high
