@@ -13,20 +13,20 @@ class SetGuiderGain(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'gain', allowed_values=['high', 'medium', 'low'])
+        check_input(args, 'GuideCamGain', allowed_values=['high', 'medium', 'low'])
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         gainkw = ktl.cache('kpfguide', 'GAIN')
-        gain = args.get('gain')
+        gain = args.get('GuideCamGain')
         log.debug(f'Setting guider gain to {gain}')
         gainkw.write(gain)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         gainkw = ktl.cache('kpfguide', 'GAIN')
-        gain = args.get('gain')
+        gain = args.get('GuideCamGain')
         expr = (f"($kpfguide.GAIN == '{gain}')")
         success = ktl.waitFor(expr, timeout=1)
         if not success:
@@ -39,8 +39,8 @@ class SetGuiderGain(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
-        args_to_add['gain'] = {'type': str,
-                               'help': 'The requested gain.'}
+        args_to_add['GuideCamGain'] = {'type': str,
+                                       'help': 'The requested gain.'}
 
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

@@ -13,18 +13,18 @@ class SetTipTiltGain(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'gain', value_min=0, value_max=1)
+        check_input(args, 'GuideLoopGain', value_min=0, value_max=1)
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        gain = float(args.get('gain'))
+        gain = float(args.get('GuideLoopGain'))
         tiptiltgain = ktl.cache('kpfguide', 'TIPTILT_GAIN')
         tiptiltgain.write(gain)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        gain = float(args.get('gain'))
+        gain = float(args.get('GuideLoopGain'))
         timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
         tol = cfg.get('tolerances', 'tip_tilt_gain_tolerance', fallback=0.001)
         expr = (f"($kpfguide.TIPTILT_GAIN >= {gain-tol}) and "
@@ -41,7 +41,7 @@ class SetTipTiltGain(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
-        args_to_add['gain'] = {'type': float,
-                               'help': 'Tip tilt control loop gain'}
+        args_to_add['GuideLoopGain'] = {'type': float,
+                                        'help': 'Tip tilt control loop gain'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

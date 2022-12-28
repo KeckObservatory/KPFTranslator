@@ -14,13 +14,13 @@ class SetGuiderFPS(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'fps', value_min=0.0001, value_max=400)
+        check_input(args, 'GuideFPS', value_min=0.0001, value_max=400)
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         fpskw = ktl.cache('kpfguide', 'FPS')
-        fps = args.get('fps')
+        fps = args.get('GuideFPS')
         log.debug(f'Setting guider FPS to {fps}')
         fpskw.write(fps)
 
@@ -28,7 +28,7 @@ class SetGuiderFPS(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         fpstol = cfg.get('tolerances', 'guider_fps_tolerance', fallback=0.0001)
         fpskw = ktl.cache('kpfguide', 'FPS')
-        fps = args.get('fps')
+        fps = args.get('GuideFPS')
         expr = (f'($kpfguide.FPS >= {fps-fpstol}) and '\
                 f'($kpfguide.FPS <= {fps+fpstol})')
         success = ktl.waitFor(expr, timeout=1)
@@ -42,8 +42,8 @@ class SetGuiderFPS(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
-        args_to_add['fps'] = {'type': float,
-                              'help': 'The frames per second (FPS).'}
+        args_to_add['GuideFPS'] = {'type': float,
+                                   'help': 'The frames per second (FPS).'}
 
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)
