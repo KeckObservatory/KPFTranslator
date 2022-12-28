@@ -48,6 +48,7 @@ class TestScienceADC(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        check_script_running()
         # Use file input for OB instead of args (temporary)
         check_input(args, 'OBfile')
         OBfile = Path(args.get('OBfile')).expanduser()
@@ -55,7 +56,7 @@ class TestScienceADC(KPFTranslatorFunction):
             OB = yaml.safe_load(open(OBfile, 'r'))
             log.warning(f"Using OB information from file {OBfile}")
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_testsciadc'])
-        check_input(OB, 'Template_Version', allowed_values=['0.3'])
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         check_input(OB, 'nx')
         check_input(OB, 'ny')
         check_input(OB, 'dx')
@@ -69,6 +70,9 @@ class TestScienceADC(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Register this script with kpfconfig
+        register_script(Path(__file__).name, os.getpid())
+
         OBfile = Path(args.get('OBfile')).expanduser()
         OB = yaml.safe_load(open(OBfile, 'r'))
         log.info('-------------------------')
@@ -233,6 +237,9 @@ class TestScienceADC(KPFTranslatorFunction):
 
         # Send ADC back to nomimal
         kpffiu['ADCTRACK'].write('On')
+
+        # Register end of this script with kpfconfig
+        clear_script()
 
 
     @classmethod

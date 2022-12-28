@@ -1,14 +1,20 @@
 import sys
+import os
 import requests
 import json
 import socket
 
 import ktl
 
+from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log, KPFException, FailedPreCondition
 
-
+##-----------------------------------------------------------------------------
+## Functions to interact with kpfconfig.SCRIPT% keywords
+##-----------------------------------------------------------------------------
 def register_script(scriptname, PID):
+    '''Function to write name, PID, and host to kpfconfig.SCRIPT% keywords
+    '''
     kpfconfig = ktl.cache('kpfconfig')
     log.debug(f"Registering script {scriptname} with PID {PID}")
     kpfconfig['SCRIPTNAME'].write(scriptname)
@@ -17,6 +23,8 @@ def register_script(scriptname, PID):
 
 
 def clear_script():
+    '''Function to clear kpfconfig.SCRIPT% keywords
+    '''
     kpfconfig = ktl.cache('kpfconfig')
     log.debug("Clearing SCRIPTNAME and SCRIPTPID")
     kpfconfig['SCRIPTNAME'].write('')
@@ -25,6 +33,8 @@ def clear_script():
 
 
 def check_script_running():
+    '''Function to check if a script is running via kpfconfig.SCRIPT% keywords
+    '''
     kpfconfig = ktl.cache('kpfconfig')
     scriptname = kpfconfig['SCRIPTNAME'].read()
     pid = kpfconfig['SCRIPTPID'].read()
@@ -39,6 +49,8 @@ def check_script_running():
 
 
 def check_script_stop():
+    '''Function to check if a stop has been requested via kpfconfig.SCRIPTSTOP
+    '''
     scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
     if scriptstop.read() == 'Yes':
         log.warning("SCRIPTSTOP requested.  Resetting SCRIPTSTOP and exiting")
@@ -47,6 +59,27 @@ def check_script_stop():
         raise KPFException("SCRIPTSTOP triggered")
 
 
+##-----------------------------------------------------------------------------
+## KPFScript class
+##-----------------------------------------------------------------------------
+class KPFScript(KPFTranslatorFunction):
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        log.debug(f"KPFScript checking for running script")
+        check_script_running()
+        super().pre_condition(args, logger=logger, cfg=cfg)
+
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        log.debug(f"KPFScript registering {scriptname} with PID {PID}")
+        register_script(cls.__name__, os.getpid())
+        super().perform(args, logger=logger, cfg=cfg)
+        log.debug(f"KPFScript clearing SCRIPTNAME")
+        clear_script()
+
+##-----------------------------------------------------------------------------
+## Functions to interact with telescope DB
+##-----------------------------------------------------------------------------
 def querydb(req):
     '''A simple wrapper to form a generic API level query to the telescope
     schedule web API.  Returns a JSON object with the result of the query.

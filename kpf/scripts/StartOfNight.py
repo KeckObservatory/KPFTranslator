@@ -30,6 +30,9 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # Guider
+        log.info('Set SCRIPTALLOW to No')
+        scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
+        scriptallow.write('No')
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
         log.info('Initialize tip tilt mirror')

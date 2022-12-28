@@ -21,12 +21,9 @@ def create_KPF_log():
     utnow = datetime.utcnow()
     date = utnow-timedelta(days=1)
     date_str = date.strftime('%Y%b%d').lower()
-    datedir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
-    if datedir.exists() is False:
-        datedir.mkdir(mode=0o777)
-    logdir = datedir / "logs"
+    logdir = Path(f"~/kpflogs/{date_str}").expanduser()
     if logdir.exists() is False:
-        logdir.mkdir(mode=0o777)
+        logdir.mkdir(mode=0o777, parents=True)
     LogFileName = logdir / 'KPFTranslator.log'
     LogFileHandler = logging.FileHandler(LogFileName)
     LogFileHandler.setLevel(logging.DEBUG)
@@ -77,11 +74,11 @@ def check_input(args, input_name, allowed_types=None, allowed_values=None,
             raise FailedPreCondition(f"Input {input_name} is None")
 
         if version_check is True:
-            target = version.parse(target)
+            target = version.parse(f"{target}")
             if value_min is not None:
-                value_min = version.parse(value_min)
+                value_min = version.parse(f"{value_min}")
             if value_max is not None:
-                value_max = version.parse(value_max)
+                value_max = version.parse(f"{value_max}")
 
         # Check against allowed types
         if allowed_types is not None:

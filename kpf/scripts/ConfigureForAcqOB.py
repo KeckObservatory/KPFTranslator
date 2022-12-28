@@ -15,8 +15,12 @@ from ..calbench.CalLampPower import CalLampPower
 from ..fiu.ConfigureFIU import ConfigureFIU
 
 
-class ConfigureForCalOB(KPFTranslatorFunction):
-    '''Script which configures the instrument for Cal OBs.
+class ConfigureForAcqOB(KPFTranslatorFunction):
+    '''Script which configures the instrument for Acquisition step.
+    
+    - Sets guide camera parameters
+    - Sets FIU mode
+    - Executes Slew Cal????? (Not implemented yet)
     
     Can be called by `ddoi_script_functions.configure_for_science`.
     '''
@@ -29,7 +33,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
         if OBfile.exists() is True:
             OB = yaml.safe_load(open(OBfile, 'r'))
             log.warning(f"Using OB information from file {OBfile}")
-        check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
+        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         return True
 
@@ -52,16 +56,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        # Power up needed lamps
-        sequence = OB.get('SEQ_Calibrations')
-        lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
-        for lamp in lamps:
-            if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                        'BrdbandFiber', 'WideFlat']:
-                CalLampPower.execute({'lamp': lamp, 'power': 'on'})
 
-        # Configure FIU
-        ConfigureFIU.execute({'mode': 'calibration'})
 
         # Register end of this script with kpfconfig
         clear_script()

@@ -15,9 +15,16 @@ from ..calbench.CalLampPower import CalLampPower
 from ..fiu.ConfigureFIU import ConfigureFIU
 
 
-class ConfigureForCalOB(KPFTranslatorFunction):
-    '''Script which configures the instrument for Cal OBs.
+class ConfigureForSciOB(KPFTranslatorFunction):
+    '''Script which configures the instrument for Science observations.
     
+    - Sets octagon / simulcal source & ND filters for first sequence (skip if
+      slew cal is selected?)
+    - Turns on lamp power for all sequences
+    - Sets source select shutters
+    - Sets triggered detectors
+    - Sets target parameters
+
     Can be called by `ddoi_script_functions.configure_for_science`.
     '''
     @classmethod
@@ -52,16 +59,7 @@ class ConfigureForCalOB(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        # Power up needed lamps
-        sequence = OB.get('SEQ_Calibrations')
-        lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
-        for lamp in lamps:
-            if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                        'BrdbandFiber', 'WideFlat']:
-                CalLampPower.execute({'lamp': lamp, 'power': 'on'})
 
-        # Configure FIU
-        ConfigureFIU.execute({'mode': 'calibration'})
 
         # Register end of this script with kpfconfig
         clear_script()
