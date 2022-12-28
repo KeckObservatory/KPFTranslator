@@ -9,7 +9,9 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log, KPFException, FailedPreCondition
 
-
+##-----------------------------------------------------------------------------
+## Functions to interact with kpfconfig.SCRIPT% keywords
+##-----------------------------------------------------------------------------
 def register_script(scriptname, PID):
     '''Function to write name, PID, and host to kpfconfig.SCRIPT% keywords
     '''
@@ -57,6 +59,9 @@ def check_script_stop():
         raise KPFException("SCRIPTSTOP triggered")
 
 
+##-----------------------------------------------------------------------------
+## KPFScript class
+##-----------------------------------------------------------------------------
 class KPFScript(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -72,7 +77,9 @@ class KPFScript(KPFTranslatorFunction):
         log.debug(f"KPFScript clearing SCRIPTNAME")
         clear_script()
 
-
+##-----------------------------------------------------------------------------
+## Functions to interact with telescope DB
+##-----------------------------------------------------------------------------
 def querydb(req):
     '''A simple wrapper to form a generic API level query to the telescope
     schedule web API.  Returns a JSON object with the result of the query.
