@@ -58,6 +58,7 @@ def check_script_stop():
 
 
 class KPFScript(KPFTranslatorFunction):
+    @classmethod
     def pre_condition(cls, args, logger, cfg):
         log.debug(f"KPFScript checking for running script")
         check_script_running()
