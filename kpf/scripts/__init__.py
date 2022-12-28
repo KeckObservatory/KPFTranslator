@@ -6,6 +6,7 @@ import socket
 
 import ktl
 
+from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log, KPFException, FailedPreCondition
 
 
@@ -56,31 +57,19 @@ def check_script_stop():
         raise KPFException("SCRIPTSTOP triggered")
 
 
-# def add_script_registry(func):
-#     '''Decorator to add register_script and clear_script
-#     '''
-#     import functools
-#     @functools.wraps(func)
-#     def wrapper_decorator(*args, **kwargs):
-#         pid = os.getpid()
-#         log.debug(f'Decorator is registering script: {func.__file__}, {pid}')
-#         register_script(func.__file__, pid)
-#         value = func(*args, **kwargs)
-#         clear_script()
-#         return value
-#     return wrapper_decorator
-#
-#
-# from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-#
-# class KPFSscript(KPFTranslatorFunction):
-#     def execute(cls, args, logger=None, cfg=None)
-#         register_script(Path(__file__).name, os.getpid())
-#         print(args)
-#         print(logger)
-#         print(cfg)
-#         super().execute(args, logger=logger, cfg=cfg)
-#         clear_script()
+class KPFScript(KPFTranslatorFunction):
+    def pre_condition(cls, args, logger, cfg):
+        log.debug(f"KPFScript checking for running script")
+        check_script_running()
+        super().pre_condition(args, logger=logger, cfg=cfg)
+
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        log.debug(f"KPFScript registering {scriptname} with PID {PID}")
+        register_script(cls.__name__, os.getpid())
+        super().perform(args, logger=logger, cfg=cfg)
+        log.debug(f"KPFScript clearing SCRIPTNAME")
+        clear_script()
 
 
 def querydb(req):
