@@ -3,153 +3,153 @@ common:
   suffix: null
 
 links:
-# Analysis
-# AO
-ControlAOHatch:
-    cmd: ao.ControlAOHatch.ControlAOHatch
-SendPCUtoHome:
-    cmd: ao.SendPCUtoHome.SendPCUtoHome
-SendPCUtoKPF:
-    cmd: ao.SendPCUtoKPF.SendPCUtoKPF
-SetAORotator:
-    cmd: ao.SetAORotator.SetAORotator
-SetupAOforKPF:
-    cmd: ao.SetupAOforKPF.SetupAOforKPF
-# CaHK
-# Cal Bench
-CalLampPower:
-    cmd: calbench.CalLampPower.CalLampPower
-SetCalSource:
-    cmd: calbench.SetCalSource.SetCalSource
-SetFlatFieldFiberPos:
-    cmd: calbench.SetFlatFieldFiberPos.SetFlatFieldFiberPos
-SetND1:
-    cmd: calbench.SetND1.SetND1
-SetND2:
-    cmd: calbench.SetND2.SetND2
-WaitForCalSource:
-    cmd: calbench.WaitForCalSource.WaitForCalSource
-WaitForFlatFieldFiberPos:
-    cmd: calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos
-WaitForLampWarm:
-    cmd: calbench.WaitForLampWarm.WaitForLampWarm
-WaitForND1:
-    cmd: calbench.WaitForND1.WaitForND1
-WaitForND2:
-    cmd: calbench.WaitForND2.WaitForND2
-# ExpoMeter
-# FIU
-ConfigureFIU:
-    cmd: fiu.ConfigureFIU.ConfigureFIU
-ControlFoldMirror:
-    cmd: fiu.ControlFoldMirror.ControlFoldMirror
-ControlHatch:
-    cmd: fiu.ControlHatch.ControlHatch
-InitializeTipTilt:
-    cmd: fiu.InitializeTipTilt.InitializeTipTilt
-SetTipTiltCalculations:
-    cmd: fiu.SetTipTiltCalculations.SetTipTiltCalculations
-SetTipTiltControl:
-    cmd: fiu.SetTipTiltControl.SetTipTiltControl
-SetTipTiltGain:
-    cmd: fiu.SetTipTiltGain.SetTipTiltGain
-SetTipTiltPosition:
-    cmd: fiu.SetTipTiltPosition.SetTipTiltPosition
-SetTipTiltTargetPixel:
-    cmd: fiu.SetTipTiltTargetPixel.SetTipTiltTargetPixel
-ShutdownTipTilt:
-    cmd: fiu.ShutdownTipTilt.ShutdownTipTilt
-WaitForConfigureFIU:
-    cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
-# FVCs
-FVCPower:
-    cmd: fvc.FVCPower.FVCPower
-TakeFVCContinuous:
-    cmd: fvc.TakeFVCContinuous.TakeFVCContinuous
-TakeFVCExposure:
-    cmd: fvc.TakeFVCExposure.TakeFVCExposure
-SetFVCExpTime:
-    cmd: fvc.SetFVCExpTime.SetFVCExpTime
-# Guider
-DisplayGuiderContinuous:
-    cmd: guider.DisplayGuiderContinuous.DisplayGuiderContinuous
-GetGaiaStars:
-    cmd: guider.GetGaiaStars.GetGaiaStars
-GuiderLastfile:
-    cmd: guider.GuiderLastfile.GuiderLastfile
-GuiderOutdir:
-    cmd: guider.GuiderOutdir.GuiderOutdir
-SetGuiderExpTime:
-    cmd: guider.SetGuiderExpTime.SetGuiderExpTime
-SetGuiderFPS:
-    cmd: guider.SetGuiderFPS.SetGuiderFPS
-SetGuiderGain:
-    cmd: guider.SetGuiderGain.SetGuiderGain
-SetGuiderOutdir:
-    cmd: guider.SetGuiderOutdir.SetGuiderOutdir
-StartGuiderContinuous:
-    cmd: guider.StartGuiderContinuous.StartGuiderContinuous
-StopGuiderContinuous:
-    cmd: guider.StopGuiderContinuous.StopGuiderContinuous
-TakeGuiderExposure:
-    cmd: guider.TakeGuiderExposure.TakeGuiderExposure
-# Scripts
-CalculateDAR:
-    cmd: scripts.CalculateDAR.CalculateDAR
-CleanupAfterCalOB:
-    cmd: scripts.CleanupAfterCalOB.CleanupAfterCalOB
-ConfigureForCalOB:
-    cmd: scripts.ConfigureForCalOB.ConfigureForCalOB
-EndOfNight:
-    cmd: scripts.EndOfNight.EndOfNight
-ExecuteCalSequence:
-    cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
-FiberGridSearch:
-    cmd: scripts.FiberGridSearch.FiberGridSearch
-ImageBackIlluminatedFibers:
-    cmd: scripts.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
-RunCalOB:
-    cmd: scripts.RunCalOB.RunCalOB
-RunScheduledCals:
-    cmd: scripts.RunScheduledCals.RunScheduledCals
-SetObserverFromSchedule:
-    cmd: scripts.SetObserverFromSchedule.SetObserverFromSchedule
-SetOutdirs:
-    cmd: scripts.SetOutdirs.SetOutdirs
-StartGUIs:
-    cmd: scripts.StartGUIs.StartGUIs
-StartOfNight:
-    cmd: scripts.StartOfNight.StartOfNight
-StartUp:
-    cmd: scripts.StartUp.StartUp
-TakeGuiderSensitivityData:
-    cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
-TestScienceADC:
-    cmd: scripts.TestScienceADC.TestScienceADC
-TipTiltPerformanceCheck:
-    cmd: scripts.TipTiltPerformanceCheck.TipTiltPerformanceCheck
-WaitForConfigureCalOB:
-    cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
-# Spectrograph
-ResetDetectors:
-    cmd: spectrograph.ResetDetectors.ResetDetectors
-SetExptime:
-    cmd: spectrograph.SetExptime.SetExptime
-SetObject:
-    cmd: spectrograph.SetObject.SetObject
-SetObserver:
-    cmd: spectrograph.SetObserver.SetObserver
-SetProgram:
-    cmd: spectrograph.SetProgram.SetProgram
-SetSourceSelectShutters:
-    cmd: spectrograph.SetSourceSelectShutters.SetSourceSelectShutters
-SetTimedShutters:
-    cmd: spectrograph.SetTimedShutters.SetTimedShutters
-SetTriggeredDetectors:
-    cmd: spectrograph.SetTriggeredDetectors.SetTriggeredDetectors
-StartExposure:
-    cmd: spectrograph.StartExposure.StartExposure
-WaitForReadout:
-    cmd: spectrograph.WaitForReadout.WaitForReadout
-WaitForReady:
-    cmd: spectrograph.WaitForReady.WaitForReady
+    # Analysis
+    # AO
+    ControlAOHatch:
+        cmd: ao.ControlAOHatch.ControlAOHatch
+    SendPCUtoHome:
+        cmd: ao.SendPCUtoHome.SendPCUtoHome
+    SendPCUtoKPF:
+        cmd: ao.SendPCUtoKPF.SendPCUtoKPF
+    SetAORotator:
+        cmd: ao.SetAORotator.SetAORotator
+    SetupAOforKPF:
+        cmd: ao.SetupAOforKPF.SetupAOforKPF
+    # CaHK
+    # Cal Bench
+    CalLampPower:
+        cmd: calbench.CalLampPower.CalLampPower
+    SetCalSource:
+        cmd: calbench.SetCalSource.SetCalSource
+    SetFlatFieldFiberPos:
+        cmd: calbench.SetFlatFieldFiberPos.SetFlatFieldFiberPos
+    SetND1:
+        cmd: calbench.SetND1.SetND1
+    SetND2:
+        cmd: calbench.SetND2.SetND2
+    WaitForCalSource:
+        cmd: calbench.WaitForCalSource.WaitForCalSource
+    WaitForFlatFieldFiberPos:
+        cmd: calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos
+    WaitForLampWarm:
+        cmd: calbench.WaitForLampWarm.WaitForLampWarm
+    WaitForND1:
+        cmd: calbench.WaitForND1.WaitForND1
+    WaitForND2:
+        cmd: calbench.WaitForND2.WaitForND2
+    # ExpoMeter
+    # FIU
+    ConfigureFIU:
+        cmd: fiu.ConfigureFIU.ConfigureFIU
+    ControlFoldMirror:
+        cmd: fiu.ControlFoldMirror.ControlFoldMirror
+    ControlHatch:
+        cmd: fiu.ControlHatch.ControlHatch
+    InitializeTipTilt:
+        cmd: fiu.InitializeTipTilt.InitializeTipTilt
+    SetTipTiltCalculations:
+        cmd: fiu.SetTipTiltCalculations.SetTipTiltCalculations
+    SetTipTiltControl:
+        cmd: fiu.SetTipTiltControl.SetTipTiltControl
+    SetTipTiltGain:
+        cmd: fiu.SetTipTiltGain.SetTipTiltGain
+    SetTipTiltPosition:
+        cmd: fiu.SetTipTiltPosition.SetTipTiltPosition
+    SetTipTiltTargetPixel:
+        cmd: fiu.SetTipTiltTargetPixel.SetTipTiltTargetPixel
+    ShutdownTipTilt:
+        cmd: fiu.ShutdownTipTilt.ShutdownTipTilt
+    WaitForConfigureFIU:
+        cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
+    # FVCs
+    FVCPower:
+        cmd: fvc.FVCPower.FVCPower
+    TakeFVCContinuous:
+        cmd: fvc.TakeFVCContinuous.TakeFVCContinuous
+    TakeFVCExposure:
+        cmd: fvc.TakeFVCExposure.TakeFVCExposure
+    SetFVCExpTime:
+        cmd: fvc.SetFVCExpTime.SetFVCExpTime
+    # Guider
+    DisplayGuiderContinuous:
+        cmd: guider.DisplayGuiderContinuous.DisplayGuiderContinuous
+    GetGaiaStars:
+        cmd: guider.GetGaiaStars.GetGaiaStars
+    GuiderLastfile:
+        cmd: guider.GuiderLastfile.GuiderLastfile
+    GuiderOutdir:
+        cmd: guider.GuiderOutdir.GuiderOutdir
+    SetGuiderExpTime:
+        cmd: guider.SetGuiderExpTime.SetGuiderExpTime
+    SetGuiderFPS:
+        cmd: guider.SetGuiderFPS.SetGuiderFPS
+    SetGuiderGain:
+        cmd: guider.SetGuiderGain.SetGuiderGain
+    SetGuiderOutdir:
+        cmd: guider.SetGuiderOutdir.SetGuiderOutdir
+    StartGuiderContinuous:
+        cmd: guider.StartGuiderContinuous.StartGuiderContinuous
+    StopGuiderContinuous:
+        cmd: guider.StopGuiderContinuous.StopGuiderContinuous
+    TakeGuiderExposure:
+        cmd: guider.TakeGuiderExposure.TakeGuiderExposure
+    # Scripts
+    CalculateDAR:
+        cmd: scripts.CalculateDAR.CalculateDAR
+    CleanupAfterCalOB:
+        cmd: scripts.CleanupAfterCalOB.CleanupAfterCalOB
+    ConfigureForCalOB:
+        cmd: scripts.ConfigureForCalOB.ConfigureForCalOB
+    EndOfNight:
+        cmd: scripts.EndOfNight.EndOfNight
+    ExecuteCalSequence:
+        cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
+    FiberGridSearch:
+        cmd: scripts.FiberGridSearch.FiberGridSearch
+    ImageBackIlluminatedFibers:
+        cmd: scripts.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
+    RunCalOB:
+        cmd: scripts.RunCalOB.RunCalOB
+    RunScheduledCals:
+        cmd: scripts.RunScheduledCals.RunScheduledCals
+    SetObserverFromSchedule:
+        cmd: scripts.SetObserverFromSchedule.SetObserverFromSchedule
+    SetOutdirs:
+        cmd: scripts.SetOutdirs.SetOutdirs
+    StartGUIs:
+        cmd: scripts.StartGUIs.StartGUIs
+    StartOfNight:
+        cmd: scripts.StartOfNight.StartOfNight
+    StartUp:
+        cmd: scripts.StartUp.StartUp
+    TakeGuiderSensitivityData:
+        cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
+    TestScienceADC:
+        cmd: scripts.TestScienceADC.TestScienceADC
+    TipTiltPerformanceCheck:
+        cmd: scripts.TipTiltPerformanceCheck.TipTiltPerformanceCheck
+    WaitForConfigureCalOB:
+        cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
+    # Spectrograph
+    ResetDetectors:
+        cmd: spectrograph.ResetDetectors.ResetDetectors
+    SetExptime:
+        cmd: spectrograph.SetExptime.SetExptime
+    SetObject:
+        cmd: spectrograph.SetObject.SetObject
+    SetObserver:
+        cmd: spectrograph.SetObserver.SetObserver
+    SetProgram:
+        cmd: spectrograph.SetProgram.SetProgram
+    SetSourceSelectShutters:
+        cmd: spectrograph.SetSourceSelectShutters.SetSourceSelectShutters
+    SetTimedShutters:
+        cmd: spectrograph.SetTimedShutters.SetTimedShutters
+    SetTriggeredDetectors:
+        cmd: spectrograph.SetTriggeredDetectors.SetTriggeredDetectors
+    StartExposure:
+        cmd: spectrograph.StartExposure.StartExposure
+    WaitForReadout:
+        cmd: spectrograph.WaitForReadout.WaitForReadout
+    WaitForReady:
+        cmd: spectrograph.WaitForReady.WaitForReady
