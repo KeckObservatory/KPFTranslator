@@ -70,12 +70,13 @@ class KPFScript(KPFTranslatorFunction):
         super().pre_condition(args, logger=logger, cfg=cfg)
 
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
-        log.debug(f"KPFScript registering {scriptname} with PID {PID}")
+    def perform(cls, args, logger, cfg):
+        log.debug(f"KPFScript registering {cls.__name__} with PID {os.getpid()}")
         register_script(cls.__name__, os.getpid())
         super().perform(args, logger=logger, cfg=cfg)
         log.debug(f"KPFScript clearing SCRIPTNAME")
         clear_script()
+
 
 ##-----------------------------------------------------------------------------
 ## Functions to interact with telescope DB
