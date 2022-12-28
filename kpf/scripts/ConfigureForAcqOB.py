@@ -11,13 +11,17 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, clear_script, check_script_running
-from ..calbench.CalLampPower import CalLampPower
+from ..guider.SetGuiderFPS import SetGuiderFPS
+from ..guider.SetGuiderGain import SetGuiderGain
+from ..fiu.InitializeTipTilt import InitializeTipTilt
+from ..fiu.SetTipTiltGain import SetTipTiltGain
 from ..fiu.ConfigureFIU import ConfigureFIU
 
 
 class ConfigureForAcqOB(KPFTranslatorFunction):
     '''Script which configures the instrument for Acquisition step.
     
+    - Sets target parameters?
     - Sets guide camera parameters
     - Sets FIU mode
     - Executes Slew Cal????? (Not implemented yet)
@@ -56,7 +60,26 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        # Set Target Paramerts from OB
+        log.info(f"Setting target parameters")
+#         TargetName
+#         GaiaID
+#         2MASSID
+#         Parallax
+#         RadialVelocity
+#         Gmag
+#         Jmag
+#         Teff
 
+        # Set guide camera parameters (only manual supported for now)
+        InitializeTipTilt.execute({})
+#         GuideMode
+        SetGuiderFPS.execute(OB)
+        SetGuiderGain.execute(OB)
+        SetTipTiltGain.execute(OB)
+
+        # Set FIU Mode
+        ConfigureFIU.execute({'mode': 'observing'})
 
         # Register end of this script with kpfconfig
         clear_script()
