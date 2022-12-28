@@ -15,10 +15,11 @@ GuideMode: manual
 GuideFPS: 100
 GuideCamGain: high
 GuideLoopGain: 0.6
-# Triggered Detectors
+# Spectrograph Setup
 TriggerCaHK: False
 TriggerGreen: True
 TriggerRed: True
+RunAgitator: True
 # Observations
 SEQ_Observations:
 - Object: Long Exposure of My Target, no SimulCal

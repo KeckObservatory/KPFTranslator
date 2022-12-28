@@ -6,5 +6,61 @@
         "ui_name": "KPF acquisition",
         "version": "0.3.0"
     },
-    "parameters": {}
+    "parameters": {
+        "guide_camgain": {
+            "allowed": [
+                "high",
+                "medium",
+                "low"
+            ],
+            "default": "high",
+            "description": "Only used if guide mode is manual",
+            "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "Guider camera gain (high, medium, or low).",
+            "units": null
+        },
+        "guide_fps": {
+            "allowed": [
+                0.01,
+                400
+            ],
+            "default": 100,
+            "description": "Only used if guide mode is manual",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Guider frames per second.",
+            "units": null
+        },
+        "guide_loopgain": {
+            "allowed": [
+                0.01,
+                1
+            ],
+            "default": 0.2,
+            "description": "Tip tilt loop gain",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Tip tilt loop gain",
+            "units": null
+        },
+        "guide_mode": {
+            "allowed": [
+                "off",
+                "telescope",
+                "manual",
+                "auto"
+            ],
+            "default": "manual",
+            "description": "off = do not guide,\ntelescope = use slow telescope guiding only,\nmanual = use tip tilt with manually configured exposure parameters,\nauto = use tip tilt with automatically configured exposure parameters",
+            "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "Guide camera exposure mode.",
+            "units": null
+        }
+    }
 }
