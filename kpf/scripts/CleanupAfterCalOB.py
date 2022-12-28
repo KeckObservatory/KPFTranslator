@@ -10,20 +10,20 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, clear_script, check_script_running, KPFScript
+from . import register_as_script, check_scriptrun, check_script_stop
 from ..calbench.CalLampPower import CalLampPower
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.WaitForReady import WaitForReady
 
 
-class CleanupAfterCalOB(KPFScript):
+class CleanupAfterCalOB(KPFTranslatorFunction):
     '''Script which cleans up after Cal OBs.
     
     Can be called by `ddoi_script_functions.post_observation_cleanup`.
     '''
     @classmethod
+    @check_scriptrun
     def pre_condition(cls, args, logger, cfg):
-#         check_script_running()
         # Use file input for OB instead of args (temporary)
         check_input(args, 'OBfile')
         OBfile = Path(args.get('OBfile')).expanduser()
@@ -35,9 +35,8 @@ class CleanupAfterCalOB(KPFScript):
         return True
 
     @classmethod
+    @register_as_script(Path(__file__).name, os.getpid())
     def perform(cls, args, logger, cfg):
-        # Register this script with kpfconfig
-#         register_script(Path(__file__).name, os.getpid())
         # Use file input for OB instead of args (temporary)
         OBfile = Path(args.get('OBfile')).expanduser()
         OB = yaml.safe_load(open(OBfile, 'r'))
@@ -64,9 +63,6 @@ class CleanupAfterCalOB(KPFScript):
         # Set OBJECT back to empty string
         WaitForReady.execute({})
         SetObject.execute({'Object': ''})
-
-        # Register end of this script with kpfconfig
-#         clear_script()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

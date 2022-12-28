@@ -9,8 +9,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import (register_script, clear_script, check_script_running,
-               check_script_stop)
+from . import register_as_script, check_scriptrun, check_script_stop
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
@@ -44,6 +43,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
         scriptstop.write('Yes')
 
     @classmethod
+    @check_scriptrun
     def pre_condition(cls, args, logger, cfg):
         check_script_running()
         # Use file input for OB instead of args (temporary)
@@ -57,6 +57,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
         return True
 
     @classmethod
+    @register_as_script(Path(__file__).name, os.getpid())
     def perform(cls, args, logger, cfg):
         # Register this script with kpfconfig
         register_script(Path(__file__).name, os.getpid())

@@ -3,6 +3,7 @@ import os
 import requests
 import json
 import socket
+import functools
 
 import ktl
 
@@ -60,22 +61,27 @@ def check_script_stop():
 
 
 ##-----------------------------------------------------------------------------
-## KPFScript class
+## Decorators to interact with kpfconfig.SCRIPT% keywords
 ##-----------------------------------------------------------------------------
-class KPFScript(KPFTranslatorFunction):
-    @classmethod
-    def pre_condition(cls, args, logger, cfg):
-        log.debug(f"KPFScript checking for running script")
+def check_scriptrun(func):
+    @functools.wraps(func)
+    def wrapper_decorator(*args, **kwargs):
         check_script_running()
-        super().pre_condition(args, logger=logger, cfg=cfg)
+        value = func(*args, **kwargs)
+        return value
+    return wrapper_decorator
 
-    @classmethod
-    def perform(cls, args, logger, cfg):
-        log.debug(f"KPFScript registering {cls.__name__} with PID {os.getpid()}")
-        register_script(cls.__name__, os.getpid())
-        super().perform(args, logger=logger, cfg=cfg)
-        log.debug(f"KPFScript clearing SCRIPTNAME")
-        clear_script()
+
+def register_as_script(scriptname, pid):
+    def decorator_register_as_script(func):
+        @functools.wraps(func)
+        def wrapper_register_as_script(*args, **kwargs):
+            register_script(scriptname, pid)
+            value = func(*args, **kwargs)
+            clear_script()
+            return value
+        return wrapper_register_as_script
+    return decorator_register_as_script
 
 
 ##-----------------------------------------------------------------------------

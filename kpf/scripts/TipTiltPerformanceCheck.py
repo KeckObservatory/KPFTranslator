@@ -7,7 +7,7 @@ import subprocess
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-
+from . import register_as_script, check_scriptrun, check_script_stop
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.SetTipTiltCalculations import SetTipTiltCalculations
 from ..guider.SetGuiderExpTime import SetGuiderExpTime
@@ -62,10 +62,12 @@ class TipTiltPerformanceCheck(KPFTranslatorFunction):
             - Record DISP2REQ commands
     '''
     @classmethod
+    @check_scriptrun
     def pre_condition(cls, args, logger, cfg):
         return True
 
     @classmethod
+    @register_as_script(Path(__file__).name, os.getpid())
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
         duration = args.get('duration', 10)

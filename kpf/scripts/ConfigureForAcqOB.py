@@ -10,7 +10,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, clear_script, check_script_running
+from . import register_as_script, check_scriptrun, check_script_stop
 from ..guider.SetGuiderFPS import SetGuiderFPS
 from ..guider.SetGuiderGain import SetGuiderGain
 from ..fiu.InitializeTipTilt import InitializeTipTilt
@@ -21,7 +21,7 @@ from ..fiu.ConfigureFIU import ConfigureFIU
 class ConfigureForAcqOB(KPFTranslatorFunction):
     '''Script which configures the instrument for Acquisition step.
     
-    - Sets target parameters?
+    - Sets target parameters
     - Sets guide camera parameters
     - Sets FIU mode
     - Executes Slew Cal????? (Not implemented yet)
@@ -29,6 +29,7 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
     Can be called by `ddoi_script_functions.configure_for_science`.
     '''
     @classmethod
+    @check_scriptrun
     def pre_condition(cls, args, logger, cfg):
         check_script_running()
         # Use file input for OB instead of args (temporary)
@@ -42,6 +43,7 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
         return True
 
     @classmethod
+    @register_as_script(Path(__file__).name, os.getpid())
     def perform(cls, args, logger, cfg):
         # Register this script with kpfconfig
         register_script(Path(__file__).name, os.getpid())
@@ -72,8 +74,9 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
 #         Teff
 
         # Set guide camera parameters (only manual supported for now)
+        if OB.get('GuideMode', 'manual') != 'manual':
+            log.warning('GuideMode = "manual" is the only supported mode')
         InitializeTipTilt.execute({})
-#         GuideMode
         SetGuiderFPS.execute(OB)
         SetGuiderGain.execute(OB)
         SetTipTiltGain.execute(OB)
