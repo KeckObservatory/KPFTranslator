@@ -73,7 +73,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
 
         gain = OB.get('GuideCamGain')
         log.info(f"Setting gain to {gain}")
-        SetGuiderGain.execute({'gain': gain})
+        SetGuiderGain.execute(OB)
 
         cube_duration = OB.get('cube_duration')
         for FPS in FPSvalues:
