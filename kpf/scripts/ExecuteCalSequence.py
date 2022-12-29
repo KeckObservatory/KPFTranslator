@@ -9,7 +9,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_as_script, check_scriptrun, check_script_stop
+from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
@@ -48,14 +48,14 @@ class ExecuteCalSequence(KPFTranslatorFunction):
         scriptstop.write('Yes')
 
     @classmethod
-    @check_scriptrun
+    @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.4')
         return True
 
     @classmethod
-    @register_as_script(Path(__file__).name, os.getpid())
+    @register_script(Path(__file__).name, os.getpid())
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running ExecuteCalSequence")
@@ -106,21 +106,21 @@ class ExecuteCalSequence(KPFTranslatorFunction):
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
                 sleep(archon_time_shim)
-            check_script_stop() # Stop here if requested
+            check_scriptstop() # Stop here if requested
             log.info(f"Setting OBJECT: {dark.get('Object')}")
             SetObject.execute(dark)
             log.info(f"Set exposure time: {dark.get('Exptime'):.3f}")
             SetExptime.execute(dark)
             nexp = dark.get('nExp', 1)
             for j in range(nexp):
-                check_script_stop() # Stop here if requested
+                check_scriptstop() # Stop here if requested
                 # Wait for current exposure to readout
                 if exposestatus.read() != 'Ready':
                     log.info(f"Waiting for kpfexpose to be Ready")
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
                     sleep(archon_time_shim)
-                    check_script_stop() # Stop here if requested
+                    check_scriptstop() # Stop here if requested
                 # Start next exposure
                 log.info(f"Starting exposure {j+1}/{nexp} ({dark.get('Object')})")
                 StartExposure.execute({})
@@ -139,7 +139,7 @@ class ExecuteCalSequence(KPFTranslatorFunction):
             ## ----------------------------------------------------------------
             ## First, configure lamps and cal bench (may happen during readout)
             ## ----------------------------------------------------------------
-            check_script_stop() # Stop here if requested
+            check_scriptstop() # Stop here if requested
             ## Setup WideFlat
             if calsource == 'WideFlat':
                 log.info('Configuring for WideFlat')
@@ -176,14 +176,14 @@ class ExecuteCalSequence(KPFTranslatorFunction):
             ## ----------------------------------------------------------------
             ## Second, configure kpfexpose (may not happen during readout)
             ## ----------------------------------------------------------------
-            check_script_stop() # Stop here if requested
+            check_scriptstop() # Stop here if requested
             # Wait for current exposure to readout
             if exposestatus.read() != 'Ready':
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
                 sleep(archon_time_shim)
-                check_script_stop() # Stop here if requested
+                check_scriptstop() # Stop here if requested
             log.info(f"Set exposure time: {calibration.get('Exptime'):.3f}")
             SetExptime.execute(calibration)
             log.info(f"Setting source select shutters")
@@ -210,14 +210,14 @@ class ExecuteCalSequence(KPFTranslatorFunction):
             ## ----------------------------------------------------------------
             nexp = calibration.get('nExp', 1)
             for j in range(nexp):
-                check_script_stop() # Stop here if requested
+                check_scriptstop() # Stop here if requested
                 # Wait for current exposure to readout
                 if exposestatus.read() != 'Ready':
                     log.info(f"Waiting for kpfexpose to be Ready")
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
                     sleep(archon_time_shim)
-                    check_script_stop() # Stop here if requested
+                    check_scriptstop() # Stop here if requested
                 # Start next exposure
                 if runagitator is True:
                     StartAgitator.execute({})
@@ -231,6 +231,7 @@ class ExecuteCalSequence(KPFTranslatorFunction):
                 SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
 
     @classmethod
+    @verify_cleared
     def post_condition(cls, OB, logger, cfg):
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = f"($kpfexpose.EXPOSE == Ready)"

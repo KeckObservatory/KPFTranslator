@@ -5,7 +5,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_as_script, check_scriptrun, check_script_stop
+from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
 from ..utils.SetOutdirs import SetOutdirs
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.WaitForReady import WaitForReady
@@ -25,7 +25,7 @@ class StartUp(KPFTranslatorFunction):
     progname - The program ID to set.
     '''
     @classmethod
-    @check_scriptrun
+    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'progname')
         return True

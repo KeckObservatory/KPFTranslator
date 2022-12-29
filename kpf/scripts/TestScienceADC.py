@@ -12,7 +12,7 @@ import keygrabber
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_as_script, check_scriptrun, check_script_stop
+from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..guider.TakeGuiderExposure import TakeGuiderExposure
 
@@ -48,7 +48,7 @@ class TestScienceADC(KPFTranslatorFunction):
     '''
     '''
     @classmethod
-    @check_scriptrun
+    @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_testsciadc'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
@@ -64,7 +64,7 @@ class TestScienceADC(KPFTranslatorFunction):
         return True
 
     @classmethod
-    @register_as_script(Path(__file__).name, os.getpid())
+    @register_script(Path(__file__).name, os.getpid())
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running TestScienceADC OB")
@@ -231,5 +231,6 @@ class TestScienceADC(KPFTranslatorFunction):
 
 
     @classmethod
+    @verify_cleared
     def post_condition(cls, OB, logger, cfg):
         return True

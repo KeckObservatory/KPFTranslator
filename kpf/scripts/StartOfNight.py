@@ -3,7 +3,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_as_script, check_scriptrun, check_script_stop
+from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
 from ..ao.SetupAOforKPF import SetupAOforKPF
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
@@ -23,7 +23,7 @@ class StartOfNight(KPFTranslatorFunction):
     AO (bool) - Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
-    @check_scriptrun
+    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
         return True
 

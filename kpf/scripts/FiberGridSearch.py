@@ -14,7 +14,7 @@ import keygrabber
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_as_script, check_scriptrun, check_script_stop
+from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
 from ..fiu.SetTipTiltTargetPixel import SetTipTiltTargetPixel
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..fvc.SetFVCExpTime import SetFVCExpTime
@@ -116,7 +116,7 @@ class FiberGridSearch(KPFTranslatorFunction):
     '''
     '''
     @classmethod
-    @check_scriptrun
+    @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
@@ -134,7 +134,7 @@ class FiberGridSearch(KPFTranslatorFunction):
         return True
 
     @classmethod
-    @register_as_script(Path(__file__).name, os.getpid())
+    @register_script(Path(__file__).name, os.getpid())
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running FiberGridSearch OB")
@@ -343,5 +343,6 @@ class FiberGridSearch(KPFTranslatorFunction):
             offset(0, 0, offset_system=offset_system)
 
     @classmethod
+    @verify_cleared
     def post_condition(cls, args, logger, cfg):
         return True

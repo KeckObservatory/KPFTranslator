@@ -3,7 +3,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from .. import log
-from . import register_as_script, check_scriptrun, check_script_stop
+from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
 from ..ao.ControlAOHatch import ControlAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
 from ..ao.SendPCUtoHome import SendPCUtoHome
@@ -32,7 +32,7 @@ class EndOfNight(KPFTranslatorFunction):
     AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
     '''
     @classmethod
-    @check_scriptrun
+    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
         return True
 

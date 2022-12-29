@@ -13,7 +13,7 @@ from .. import log, KPFException, FailedPreCondition
 ##-----------------------------------------------------------------------------
 ## Functions to interact with kpfconfig.SCRIPT% keywords
 ##-----------------------------------------------------------------------------
-def register_script(scriptname, PID):
+def _register_script(scriptname, PID):
     '''Function to write name, PID, and host to kpfconfig.SCRIPT% keywords
     '''
     kpfconfig = ktl.cache('kpfconfig')
@@ -23,7 +23,7 @@ def register_script(scriptname, PID):
     kpfconfig['SCRIPTHOST'].write(socket.gethostname())
 
 
-def clear_script():
+def _clear_script():
     '''Function to clear kpfconfig.SCRIPT% keywords
     '''
     kpfconfig = ktl.cache('kpfconfig')
@@ -33,7 +33,7 @@ def clear_script():
     kpfconfig['SCRIPTHOST'].write('')
 
 
-def check_script_running():
+def _check_script_running():
     '''Function to check if a script is running via kpfconfig.SCRIPT% keywords
     '''
     kpfconfig = ktl.cache('kpfconfig')
@@ -49,7 +49,7 @@ def check_script_running():
         raise FailedPreCondition(msg)
 
 
-def check_script_stop():
+def check_scriptstop():
     '''Function to check if a stop has been requested via kpfconfig.SCRIPTSTOP
     '''
     scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
@@ -63,22 +63,41 @@ def check_script_stop():
 ##-----------------------------------------------------------------------------
 ## Decorators to interact with kpfconfig.SCRIPT% keywords
 ##-----------------------------------------------------------------------------
-def check_scriptrun(func):
+def obey_scriptrun(func):
     @functools.wraps(func)
     def wrapper_decorator(*args, **kwargs):
-        check_script_running()
+        _check_script_running()
         value = func(*args, **kwargs)
         return value
     return wrapper_decorator
 
 
-def register_as_script(scriptname, pid):
+def register_script(scriptname, pid):
     def decorator_register_as_script(func):
         @functools.wraps(func)
         def wrapper_register_as_script(*args, **kwargs):
-            register_script(scriptname, pid)
+            _register_script(scriptname, pid)
             value = func(*args, **kwargs)
-            clear_script()
+            _clear_script()
             return value
         return wrapper_register_as_script
     return decorator_register_as_script
+
+
+def verify_cleared(func):
+    @functools.wraps(func)
+    def wrapper_decorator(*args, **kwargs):
+        # Check if script is cleared
+        kpfconfig = ktl.cache('kpfconfig')
+        if kpfconfig['SCRIPTNAME'].read() != '':
+            log.warning("Clearing SCRIPTNAME")
+            kpfconfig['SCRIPTNAME'].write('')
+        if kpfconfig['SCRIPTPID'].read(binary=True) != -1:
+            log.warning("Clearing SCRIPTPID")
+            kpfconfig['SCRIPTPID'].write(-1)
+        if kpfconfig['SCRIPTHOST'].read() != '':
+            log.warning("Clearing SCRIPTHOST")
+            kpfconfig['SCRIPTHOST'].write('')
+        value = func(*args, **kwargs)
+        return value
+    return wrapper_decorator
