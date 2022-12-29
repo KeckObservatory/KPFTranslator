@@ -94,8 +94,6 @@ links:
     TakeGuiderExposure:
         cmd: guider.TakeGuiderExposure.TakeGuiderExposure
     # Scripts
-    CalculateDAR:
-        cmd: scripts.CalculateDAR.CalculateDAR
     CleanupAfterCalOB:
         cmd: scripts.CleanupAfterCalOB.CleanupAfterCalOB
     ConfigureForCalOB:
@@ -106,18 +104,10 @@ links:
         cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
     FiberGridSearch:
         cmd: scripts.FiberGridSearch.FiberGridSearch
-    ImageBackIlluminatedFibers:
-        cmd: scripts.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
     RunCalOB:
         cmd: scripts.RunCalOB.RunCalOB
     RunScheduledCals:
         cmd: scripts.RunScheduledCals.RunScheduledCals
-    SetObserverFromSchedule:
-        cmd: scripts.SetObserverFromSchedule.SetObserverFromSchedule
-    SetOutdirs:
-        cmd: scripts.SetOutdirs.SetOutdirs
-    StartGUIs:
-        cmd: scripts.StartGUIs.StartGUIs
     StartOfNight:
         cmd: scripts.StartOfNight.StartOfNight
     StartUp:
@@ -153,3 +143,14 @@ links:
         cmd: spectrograph.WaitForReadout.WaitForReadout
     WaitForReady:
         cmd: spectrograph.WaitForReady.WaitForReady
+    # Utils
+    CalculateDAR:
+        cmd: utils.CalculateDAR.CalculateDAR
+    ImageBackIlluminatedFibers:
+        cmd: utils.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
+    SetObserverFromSchedule:
+        cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
+    SetOutdirs:
+        cmd: utils.SetOutdirs.SetOutdirs
+    StartGUIs:
+        cmd: utils.StartGUIs.StartGUIs

@@ -15,7 +15,6 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_as_script, check_scriptrun, check_script_stop
-
 from ..fiu.SetTipTiltTargetPixel import SetTipTiltTargetPixel
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..fvc.SetFVCExpTime import SetFVCExpTime
@@ -26,7 +25,6 @@ from ..spectrograph.WaitForReadout import WaitForReadout
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
-from . import register_script, clear_script, check_script_running
 
 
 ##-------------------------------------------------------------------------
