@@ -7,10 +7,8 @@ from . import register_as_script, check_scriptrun, check_script_stop
 from ..ao.SetupAOforKPF import SetupAOforKPF
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
-from ..utils.SetOutdirs import SetOutdirs
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.WaitForReady import WaitForReady
-from ..utils.SetObserverFromSchedule import SetObserverFromSchedule
 
 
 class StartOfNight(KPFTranslatorFunction):
