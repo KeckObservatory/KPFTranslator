@@ -24,7 +24,7 @@ class RunCalOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
-        pass
+        return True
 
     @classmethod
     def perform(cls, OB, logger, cfg):
