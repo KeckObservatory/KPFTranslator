@@ -78,7 +78,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
         cube_duration = OB.get('cube_duration')
         for FPS in OB.get('FPSvalues'):
             log.info(f"Setting FPS to {FPS}")
-            SetGuiderFPS.execute({'fps': FPS})
+            SetGuiderFPS.execute({'GuideFPS': FPS})
 
             # Start cube collection 
             log.info(f'Starting data collection for {cube_duration} s')
