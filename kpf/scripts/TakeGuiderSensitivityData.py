@@ -52,7 +52,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_tgsd'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
-        check_input(OB, 'gain', allowed_values=['high', 'medium', 'low'])
+        check_input(OB, 'GuideCamGain', allowed_values=['high', 'medium', 'low'])
         check_input(OB, 'FPSvalues')
         return True
 
@@ -71,7 +71,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
 
         kpfguide = ktl.cache('kpfguide')
 
-        gain = OB.get('gain')
+        gain = OB.get('GuideCamGain')
         log.info(f"Setting gain to {gain}")
         SetGuiderGain.execute({'gain': gain})
 
