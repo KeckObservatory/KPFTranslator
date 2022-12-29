@@ -22,24 +22,14 @@ class ConfigureForCalOB(KPFTranslatorFunction):
     '''
     @classmethod
     @check_scriptrun
-    def pre_condition(cls, args, logger, cfg):
-        # Use file input for OB instead of args (temporary)
-        check_input(args, 'OBfile')
-        OBfile = Path(args.get('OBfile')).expanduser()
-        if OBfile.exists() is True:
-            OB = yaml.safe_load(open(OBfile, 'r'))
-            log.warning(f"Using OB information from file {OBfile}")
+    def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         return True
 
     @classmethod
     @register_as_script(Path(__file__).name, os.getpid())
-    def perform(cls, args, logger, cfg):
-        # Use file input for OB instead of args (temporary)
-        OBfile = Path(args.get('OBfile')).expanduser()
-        OB = yaml.safe_load(open(OBfile, 'r'))
-
+    def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running ConfigureForCalOB")
         for key in OB:
@@ -63,18 +53,5 @@ class ConfigureForCalOB(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'calibration'})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, OB, logger, cfg):
         return True
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['OBfile'] = {'type': str,
-                                 'help': ('A YAML fortmatted file with the OB '
-                                          'to be executed. Will override OB '
-                                          'data delivered as args.')}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-        return super().add_cmdline_args(parser, cfg)

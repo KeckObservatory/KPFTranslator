@@ -23,15 +23,11 @@ class RunCalOB(KPFTranslatorFunction):
     immediately, but will stop when it reaches a breakpoint.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
-        # Use file input for OB instead of args (temporary)
-        check_input(args, 'OBfile')
-        OBfile = Path(args.get('OBfile')).expanduser()
-        return OBfile.exists()
+    def pre_condition(cls, OB, logger, cfg):
+        pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        OBfile = Path(args.get('OBfile')).expanduser()
+    def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running RunCalOB")
         log.info('-------------------------')
@@ -43,33 +39,25 @@ class RunCalOB(KPFTranslatorFunction):
                 return False
 
         # Configure: Turn on Lamps
-        ConfigureForCalOB.execute({'OBfile': f"{OBfile}"})
+        ConfigureForCalOB.execute(OB)
         # Execute the Cal Sequence
         #   Wrap in try/except so that cleanup happens
         try:
-            ExecuteCalSequence.execute({'OBfile': f"{OBfile}"})
+            ExecuteCalSequence.execute(OB)
         except Exception as e:
             log.error("ExecuteCalSequence failed:")
             log.error(e)
         # Cleanup: Turn off lamps
-        CleanupAfterCalOB.execute({'OBfile': f"{OBfile}"})
+        CleanupAfterCalOB.execute(OB)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, OB, logger, cfg):
         return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['OBfile'] = {'type': str,
-                                 'help': ('A YAML fortmatted file with the OB '
-                                          'to be executed. Will override OB '
-                                          'data delivered as args.')}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-
         parser = cls._add_bool_arg(parser, 'SCRIPTALLOW',
                                    'Check the SCRIPTALLOW keyword before exeution?',
                                    default=False)

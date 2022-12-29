@@ -49,13 +49,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
     '''
     @classmethod
     @check_scriptrun
-    def pre_condition(cls, args, logger, cfg):
-        # Use file input for OB instead of args (temporary)
-        check_input(args, 'OBfile')
-        OBfile = Path(args.get('OBfile')).expanduser()
-        if OBfile.exists() is True:
-            OB = yaml.safe_load(open(OBfile, 'r'))
-            log.warning(f"Using OB information from file {OBfile}")
+    def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_tgsd'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         check_input(OB, 'gain', allowed_values=['high', 'medium', 'low'])
@@ -64,7 +58,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
 
     @classmethod
     @register_as_script(Path(__file__).name, os.getpid())
-    def perform(cls, args, logger, cfg):
+    def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running TakeGuiderSensitivityData OB")
         for key in OB:
@@ -107,5 +101,5 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
             images.write(images_file, format='ascii.csv')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, OB, logger, cfg):
         return True

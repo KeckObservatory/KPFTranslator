@@ -117,14 +117,7 @@ class FiberGridSearch(KPFTranslatorFunction):
     '''
     @classmethod
     @check_scriptrun
-    def pre_condition(cls, args, logger, cfg):
-        check_script_running()
-        # Use file input for OB instead of args (temporary)
-        check_input(args, 'OBfile')
-        OBfile = Path(args.get('OBfile')).expanduser()
-        if OBfile.exists() is True:
-            OB = yaml.safe_load(open(OBfile, 'r'))
-            log.warning(f"Using OB information from file {OBfile}")
+    def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         check_input(OB, 'offset_system', allowed_values=['azel', 'gxy', 'ttm', 'custom'])
@@ -142,13 +135,7 @@ class FiberGridSearch(KPFTranslatorFunction):
 
     @classmethod
     @register_as_script(Path(__file__).name, os.getpid())
-    def perform(cls, args, logger, cfg):
-        # Register this script with kpfconfig
-        register_script(Path(__file__).name, os.getpid())
-        # Use file input for OB instead of args (temporary)
-        OBfile = Path(args.get('OBfile')).expanduser()
-        OB = yaml.safe_load(open(OBfile, 'r'))
-
+    def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running FiberGridSearch OB")
         for key in OB:
@@ -355,22 +342,6 @@ class FiberGridSearch(KPFTranslatorFunction):
         else:
             offset(0, 0, offset_system=offset_system)
 
-        # Register end of this script with kpfconfig
-        clear_script()
-
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['OBfile'] = {'type': str,
-                                 'help': ('A YAML fortmatted file with the OB '
-                                          'to be executed. Will override OB '
-                                          'data delivered as args.')}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-        return super().add_cmdline_args(parser, cfg)
