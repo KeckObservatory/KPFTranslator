@@ -51,8 +51,8 @@ class StartExposure(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfexpose['EXPOSURE'].read(binary=True)
-        shim_time = cfg.get('times', 'kpfexpose_shim_time', fallback=0.01)
-        success = ktl.waitFor(f"(kpfexpose.EXPOSE != Ready)", timeout=shim_time)
+        shim_time = cfg.get('times', 'kpfexpose_response_time', fallback=1)
+        success = ktl.waitFor(f"(kpfexpose.EXPOSE != InProgress)", timeout=shim_time)
         if success is not True:
             raise FailedToReachDestination(kpfexpose['EXPOSE'].read(),
                                      ['Start', 'InProgress', 'End', 'Readout'])
