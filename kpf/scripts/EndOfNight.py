@@ -3,7 +3,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from .. import log
-from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop
 from ..ao.ControlAOHatch import ControlAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
 from ..ao.SendPCUtoHome import SendPCUtoHome

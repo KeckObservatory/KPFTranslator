@@ -10,7 +10,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop
 from ..calbench.CalLampPower import CalLampPower
 from ..fiu.ConfigureFIU import ConfigureFIU
 
@@ -53,6 +53,5 @@ class ConfigureForCalOB(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'calibration'})
 
     @classmethod
-    @verify_cleared
     def post_condition(cls, OB, logger, cfg):
         return True

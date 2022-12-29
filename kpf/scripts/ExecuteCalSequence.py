@@ -9,7 +9,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
@@ -231,7 +231,6 @@ class ExecuteCalSequence(KPFTranslatorFunction):
                 SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
 
     @classmethod
-    @verify_cleared
     def post_condition(cls, OB, logger, cfg):
         timeout = cfg.get('times', 'kpfexpose_timeout', fallback=0.01)
         expr = f"($kpfexpose.EXPOSE == Ready)"

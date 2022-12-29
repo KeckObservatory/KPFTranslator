@@ -12,7 +12,7 @@ import keygrabber
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..guider.TakeGuiderExposure import TakeGuiderExposure
 
@@ -231,6 +231,5 @@ class TestScienceADC(KPFTranslatorFunction):
 
 
     @classmethod
-    @verify_cleared
     def post_condition(cls, OB, logger, cfg):
         return True

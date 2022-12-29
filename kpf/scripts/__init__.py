@@ -82,22 +82,3 @@ def register_script(scriptname, pid):
             return value
         return wrapper_register_as_script
     return decorator_register_as_script
-
-
-def verify_cleared(func):
-    @functools.wraps(func)
-    def wrapper_decorator(*args, **kwargs):
-        # Check if script is cleared
-        kpfconfig = ktl.cache('kpfconfig')
-        if kpfconfig['SCRIPTNAME'].read() != '':
-            log.warning("Clearing SCRIPTNAME")
-            kpfconfig['SCRIPTNAME'].write('')
-        if kpfconfig['SCRIPTPID'].read(binary=True) != -1:
-            log.warning("Clearing SCRIPTPID")
-            kpfconfig['SCRIPTPID'].write(-1)
-        if kpfconfig['SCRIPTHOST'].read() != '':
-            log.warning("Clearing SCRIPTHOST")
-            kpfconfig['SCRIPTHOST'].write('')
-        value = func(*args, **kwargs)
-        return value
-    return wrapper_decorator

@@ -10,7 +10,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, verify_cleared, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop
 from ..guider.SetGuiderFPS import SetGuiderFPS
 from ..guider.SetGuiderGain import SetGuiderGain
 from ..fiu.InitializeTipTilt import InitializeTipTilt
@@ -72,6 +72,5 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'observing'})
 
     @classmethod
-    @verify_cleared
     def post_condition(cls, OB, logger, cfg):
         return True
