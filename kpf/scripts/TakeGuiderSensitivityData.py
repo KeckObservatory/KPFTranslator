@@ -71,11 +71,11 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
 
         kpfguide = ktl.cache('kpfguide')
 
-        gain = args.get('gain')
+        gain = OB.get('gain')
         log.info(f"Setting gain to {gain}")
         SetGuiderGain.execute({'gain': gain})
 
-        cube_duration = args.get('cube_duration')
+        cube_duration = OB.get('cube_duration')
         for FPS in FPSvalues:
             log.info(f"Setting FPS to {FPS}")
             SetGuiderFPS.execute({'fps': FPS})
