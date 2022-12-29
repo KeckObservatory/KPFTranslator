@@ -89,7 +89,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
             # End cube collection
             kpfguide['TRIGGER'].write('Inactive')
             # Wait for cuber file to be updated
-            ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lasttrigfile}'")
+            ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lastfile}'")
             cube_file = kpfguide['LASTTRIGFILE'].read()
             log.info(f"  cube file: {cube_file}")
             row = {'cube file': cube_file,
