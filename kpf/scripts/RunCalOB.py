@@ -32,11 +32,10 @@ class RunCalOB(KPFTranslatorFunction):
         log.info(f"Running RunCalOB")
         log.info('-------------------------')
 
-        if args.get('SCRIPTALLOW', False) is True:
-            scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
-            if scriptallow.read() == 'No':
-                log.warning(f"SCRIPTALLOW is No, skipping cals: {OBfile.name}")
-                return False
+        scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
+        if scriptallow.read() == 'No':
+            log.warning(f"SCRIPTALLOW is No, skipping RunCalOB")
+            return False
 
         # Configure: Turn on Lamps
         ConfigureForCalOB.execute(OB)
@@ -53,12 +52,3 @@ class RunCalOB(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, OB, logger, cfg):
         return True
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        parser = cls._add_bool_arg(parser, 'SCRIPTALLOW',
-                                   'Check the SCRIPTALLOW keyword before exeution?',
-                                   default=False)
-        return super().add_cmdline_args(parser, cfg)
