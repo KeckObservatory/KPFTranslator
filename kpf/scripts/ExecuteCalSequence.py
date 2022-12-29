@@ -223,10 +223,10 @@ class ExecuteCalSequence(KPFTranslatorFunction):
                     StartAgitator.execute({})
                 log.info(f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})")
                 StartExposure.execute({})
-                if runagitator is True:
-                    StopAgitator.execute({})
                 WaitForReadout.execute({})
                 log.info(f"Readout has begun")
+                if runagitator is True:
+                    StopAgitator.execute({})
             if calsource == 'WideFlat':
                 SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
 
