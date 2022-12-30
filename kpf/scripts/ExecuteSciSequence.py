@@ -99,7 +99,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
             SetExptime.execute(seq)
             seq['TimedShutter_Scrambler'] = True
             seq['TimedShutter_FlatField'] = False
-            log.debug(f"Automatically setting TimedShutter_CaHK: {OB['TimedShutter_CaHK']}")
+            log.debug(f"Automatically setting TimedShutter_CaHK: {OB['TriggerCaHK']}")
             seq['TimedShutter_CaHK'] = OB['TriggerCaHK']
             SetTimedShutters.execute(seq)
 
