@@ -19,6 +19,7 @@ from ..fiu.SetTipTiltTargetPixel import SetTipTiltTargetPixel
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..fvc.SetFVCExpTime import SetFVCExpTime
 from ..guider.TakeGuiderExposure import TakeGuiderExposure
+from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
@@ -57,59 +58,6 @@ log.addHandler(LogFileHandler)
 
 
 ##-------------------------------------------------------------------------
-## offset
-##-------------------------------------------------------------------------
-def offset(x, y, offset_system='ttm'):
-    if offset_system == 'ttm':
-        SetTipTiltTargetPixel.execute({'x': x, 'y': y})
-    elif offset_system == 'azel':
-        from ddoi_telescope_translator.azel import OffsetAzEl
-        from ddoi_telescope_translator.wftel import WaitForTel
-        OffsetAzEl.execute({'tcs_offset_az': x,
-                            'tcs_offset_el': y,
-                            'relative': False})
-        WaitForTel.execute({})
-        time.sleep(2)
-    elif offset_system == 'gxy':
-        from ddoi_telescope_translator.gxy import OffsetGuiderCoordXY
-        from ddoi_telescope_translator.wftel import WaitForTel
-        OffsetGuiderCoordXY({'guider_x_offset': x,
-                             'guider_y_offset': y,
-                             'instrument': 'KPF',
-                             'relative': False})
-        WaitForTel.execute({})
-        time.sleep(2)
-    elif offset_system == 'custom':
-        dcs = ktl.cache('dcs')
-        try:
-            dcs['azoff'].write(x)
-        except Exception as e:
-            log.warning(f"Retrying dcs['azoff'].write({x})")
-            log.warning(e)
-            time.sleep(0.1)
-            dcs['azoff'].write(x)
-        time.sleep(0.1)
-        try:
-            dcs['eloff'].write(y)
-        except Exception as e:
-            log.warning(f"Retrying dcs['eloff'].write({y})")
-            log.warning(e)
-            time.sleep(0.1)
-            dcs['eloff'].write(y)
-        time.sleep(0.1)
-        try:
-            dcs['rel2base'].write(True)
-        except Exception as e:
-            log.warning(f"Retrying dcs['rel2base'].write(True)")
-            log.warning(e)
-            time.sleep(0.1)
-            dcs['rel2base'].write(True)
-    elif offset_system in [None, '']:
-        log.warning(f"  No offset system selected")
-        pass
-
-
-##-------------------------------------------------------------------------
 ## fiber_grid_search
 ##-------------------------------------------------------------------------
 class FiberGridSearch(KPFTranslatorFunction):
@@ -119,18 +67,17 @@ class FiberGridSearch(KPFTranslatorFunction):
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
-        check_input(OB, 'offset_system', allowed_values=['azel', 'gxy', 'ttm', 'custom'])
-        check_input(OB, 'min_time_on_grid_position', value_min=0)
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.4')
         check_input(OB, 'nx')
         check_input(OB, 'ny')
         check_input(OB, 'dx')
         check_input(OB, 'dy')
-        check_input(OB, 'cameras')
-        cameras = OB.get('cameras', '').split(',')
-        for camera in cameras:
-            if camera not in ['CRED2', 'SCI', 'CAHK', 'EXT', 'ExpMeter']:
-                raise FailedPreCondition(f"Camera {camera} not supported")
+        check_input(OB, 'FVCs')
+        check_input(OB, 'ExpMeter_exptime')
+        FVCs = OB.get('FVCs', '').split(',')
+        for FVC in FVCs:
+            if FVC not in ['SCI', 'CAHK', 'EXT']:
+                raise FailedPreCondition(f"FVC {FVC} not supported")
         return True
 
     @classmethod
@@ -158,8 +105,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                                      'f4', 'f4', 'f4', 'f4',
                                      'i4'))
 
-        offset_system = OB.get('offset_system')
-        cameras = OB.get('cameras', '').split(',')
+        FVCs = OB.get('FVCs', '').split(',')
         nx = OB.get('nx')
         ny = OB.get('ny')
         dx = OB.get('dx')
@@ -171,119 +117,97 @@ class FiberGridSearch(KPFTranslatorFunction):
 
         # Set up guider (assume parameters set during acquisition of star)
         kpfguide = ktl.cache('kpfguide')
-        if offset_system == 'ttm':
-            xpix0, ypix0 = kpfguide['PIX_TARGET'].read(binary=True)
-            log.info(f"Center pixel is {xpix0:.2f}, {ypix0:.2f}")
-            # Pixel targets must be in absolute coordinates
-            xs = [xpix+xpix0 for xpix in xs]
-            ys = [ypix+ypix0 for ypix in ys]
+        xpix0, ypix0 = kpfguide['PIX_TARGET'].read(binary=True)
+        log.info(f"Center pixel is {xpix0:.2f}, {ypix0:.2f}")
+        # Pixel targets must be in absolute coordinates
+        xs = [xpix+xpix0 for xpix in xs]
+        ys = [ypix+ypix0 for ypix in ys]
 
         # Set up kpfexpose
         kpfexpose = ktl.cache('kpfexpose')
         SetSourceSelectShutters.execute({'SSS_Science': True, 'SSS_Sky': True})
         SetTimedShutters.execute({'TimedShutter_Scrambler': True})
         SetTriggeredDetectors.execute({'TriggerExpMeter': True})
+        total_exptime = ExpMeter_exptime = OB.get('TimeOnPosition')
+        SetExptime.execute({'exptime': total_exptime})
 
         # Configure Exposure Meter
-        if 'ExpMeter' in cameras and OB.get('ExpMeter_exptime', None) != None:
-            kpf_expmeter = ktl.cache('kpf_expmeter')
-            ExpMeter_exptime = OB.get('ExpMeter_exptime')
-            log.info(f"Setting kpf_expmeter.EXPOSURE = {ExpMeter_exptime:.2f} s")
-            kpf_expmeter['EXPOSURE'].write(ExpMeter_exptime)
+        kpf_expmeter = ktl.cache('kpf_expmeter')
+        ExpMeter_exptime = OB.get('ExpMeter_exptime')
+        log.info(f"Setting kpf_expmeter.EXPOSURE = {ExpMeter_exptime:.2f} s")
+        kpf_expmeter['EXPOSURE'].write(ExpMeter_exptime)
 
         # Set up FVCs
         kpffvc = ktl.cache('kpffvc')
-        for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-            if camera in cameras and OB.get(f'{camera}FVC_exptime', None) != None:
-                exptime = OB.get(f'{camera}FVC_exptime')
-                log.info(f"Setting {camera} FVC Exptime = {exptime:.2f} s")
-                SetFVCExpTime.execute({'camera': camera, 'exptime': exptime})
+        for FVC in ['SCI', 'CAHK', 'EXT']:
+            if FVC in FVCs and OB.get(f'{FVC}FVC_exptime', None) != None:
+                exptime = OB.get(f'{FVC}FVC_exptime')
+                log.info(f"Setting {FVC} FVC Exptime = {exptime:.2f} s")
+                SetFVCExpTime.execute({'camera': FVC, 'exptime': exptime})
 
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
-                row = None
                 # Offset to position
-                log.info(f"Offsetting: {offset_system} to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
-                offset(xs[i], ys[j], offset_system=offset_system)
+                log.info(f"Offsetting to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
+                SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
 
                 # Take Exposure to make sure we wait at least one cycle
-                log.info(f"Taking extr guider exposure to wait one cycle")
-                TakeGuiderExposure.execute({})
+                log.info(f"Taking extra guider exposure to wait one cycle")
+                TakeGuiderExposure.execute({}) # Blocks until done
 
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
                 kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
-                # Start CRED2 Cube Collection
-                if 'cube' in cameras:
-                    last_cube_file = kpfguide['LASTTRIGFILE'].read()
-                    log.debug(f"last_cube_file = {last_cube_file}")
-                    log.info(f"  Starting CRED2 cube")
-                    kpfguide['TRIGGER'].write('Active')
-                log.info(f"  Starting kpfexpose cameras")
+                log.info(f"Starting kpfexpose cameras")
                 StartExposure.execute({})
                 # Begin timestamp for history retrieval
                 begin = time.time()
 
                 # Start FVC Exposures
                 initial_lastfile = {}
-                for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-                    if camera in cameras:
-                        initial_lastfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
-                        log.debug(f"  Initial lastfile for {camera} = {initial_lastfile[camera]}")
-                        log.info(f"  Starting {camera} FVC exposure")
-                        TakeFVCExposure.execute({'camera': camera, 'wait': False})
+                for FVC in ['SCI', 'CAHK', 'EXT']:
+                    if FVC in FVCs:
+                        initial_lastfile[FVC] = kpffvc[f"{FVC}LASTFILE"].read()
+                        log.debug(f"  Initial lastfile for {FVC} = {initial_lastfile[FVC]}")
+                        log.info(f"  Starting {FVC} FVC exposure")
+                        TakeFVCExposure.execute({'camera': FVC, 'wait': False})
 
                 # Expose using CRED2
-                if 'CRED2' in cameras:
-                    log.info(f"  Taking CRED2 exposure")
-                    TakeGuiderExposure.execute({})
-                    lastfile = kpfguide[f"LASTFILE"].read()
-                    row = {'file': lastfile, 'camera': 'CRED2',
-                           'dx': xs[i], 'dy': ys[j]}
-                    images.add_row(row)
+                log.info(f"  Taking CRED2 exposure")
+                TakeGuiderExposure.execute({}) # Blocks until done
+                lastfile = kpfguide[f"LASTFILE"].read()
+                row = {'file': lastfile, 'camera': 'CRED2',
+                       'dx': xs[i], 'dy': ys[j]}
+                images.add_row(row)
+
+                # Here's where we wait for the duration of the FVC exposures
 
                 # Collect files for FVC exposures
-                for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-                    if camera in cameras:
-                        log.info(f"  Looking for output file for {camera}")
-                        expr = f'($kpffvc.{camera}LASTFILE != "{initial_lastfile[camera]}")'
+                for FVC in ['SCI', 'CAHK', 'EXT']:
+                    if FVC in FVCs:
+                        log.info(f"  Looking for output file for {FVC}")
+                        expr = f'($kpffvc.{FVC}LASTFILE != "{initial_lastfile[FVC]}")'
                         log.debug(f"  Waiting for: {expr}")
                         if ktl.waitFor(expr, timeout=20) is False:
-                            lastfile = kpffvc[f'{camera}LASTFILE'].read()
+                            lastfile = kpffvc[f'{FVC}LASTFILE'].read()
                             log.error('No new FVC file found')
-                            log.error(f"  expecting: {nextfile[camera]}")
-                            log.error(f"  kpffvc.{camera}LASTFILE = {lastfile}")
+                            log.error(f"  expecting: {nextfile[FVC]}")
+                            log.error(f"  kpffvc.{FVC}LASTFILE = {lastfile}")
                         else:
-                            lastfile = kpffvc[f'{camera}LASTFILE'].read()
+                            lastfile = kpffvc[f'{FVC}LASTFILE'].read()
                             log.debug(f"Found {lastfile}")
-                            row = {'file': lastfile, 'camera': camera,
+                            row = {'file': lastfile, 'camera': FVC,
                                    'dx': xs[i], 'dy': ys[j]}
                             images.add_row(row)
 
-                # Ensure minimum time on position is enforced
-#                 duration = OB.get('min_time_on_grid_position')
-#                 log.info(f'Ensuring minimum duration of {duration:.0f} s')
-#                 end = datetime.fromtimestamp(begin) + timedelta(seconds=duration)
-#                 now = datetime.now()
-#                 while now < end:
-#                     time.sleep(0.2)
-#                     now = datetime.now()
-#                 log.debug(f'Done')
+                # Here's where we wait for the remainder of the TimeOnPosition
+                log.info(f"  Waiting for kpfexpose to be ready")
+                WaitForReady.execute({})
 
                 # Stop Exposure Meter
-                if 'Green' in cameras or 'Red' in cameras:
-                    log.info(f"  Waiting for readout to start")
-                    WaitForReadout.execute({})
-                else:
-                    log.info(f"  Waiting for kpfexpose to be ready")
-                    WaitForReady.execute({})
-                if 'CRED2' in cameras:
-                    log.info(f"  Stopping CRED2 cube")
-                    kpfguide['TRIGGER'].write('Inactive', wait=False)
-                log.info(f"  Waiting for ExpMeter DRP")
-                kpf_expmeter['CUR_COUNTS'].wait()
                 log.info(f"  Waiting for ExpMeter to be Ready")
                 EMsuccess = ktl.waitFor('$kpf_expmeter.EXPSTATE == Ready', timeout=5)
+                time.sleep(0.5) # Time shim because paranoia
                 if EMsuccess is True:
                     lastfile = kpf_expmeter['FITSFILE'].read()
                 else:
@@ -292,22 +216,6 @@ class FiberGridSearch(KPFTranslatorFunction):
                 row = {'file': lastfile, 'camera': 'ExpMeter',
                        'dx': xs[i], 'dy': ys[j]}
                 images.add_row(row)
-
-                # Collect CRED2 Cube
-                if 'cube' in cameras:
-                    expr = f'($kpfguide.LASTTRIGFILE != "{last_cube_file}")'
-                    log.debug(f"  Waiting for: {expr}")
-                    if ktl.waitFor(expr, timeout=2*duration) is False:
-                        log.error('No new CRED2 cube file found')
-                        log.error(f"  previous: {last_cube_file}")
-                        last_cube_file = kpfguide['LASTTRIGFILE'].read()
-                        log.error(f"  kpffvc.LASTTRIGFILE = {last_cube_file}")
-                    else:
-                        last_cube_file = kpfguide['LASTTRIGFILE'].read()
-                        log.debug(f"Found {last_cube_file}")
-                        row = {'file': last_cube_file, 'camera': 'cube',
-                               'dx': xs[i], 'dy': ys[j]}
-                        images.add_row(row)
 
                 # Retrieve keyword history
                 end = time.time()
@@ -336,24 +244,18 @@ class FiberGridSearch(KPFTranslatorFunction):
             if images_file.exists():
                 images_file.unlink()
             images.write(images_file, format='ascii.csv')
-            if 'ExpMeter' in cameras:
-                if fluxes_file.exists():
-                    fluxes_file.unlink()
-                expmeter_flux.write(fluxes_file, format='ascii.csv')
-
-        if images_file.exists():
-            images_file.unlink()
-        images.write(images_file, format='ascii.csv')
-        if 'ExpMeter' in cameras:
             if fluxes_file.exists():
                 fluxes_file.unlink()
             expmeter_flux.write(fluxes_file, format='ascii.csv')
 
-        # Send offsets back to 0,0
-        if offset_system == 'ttm':
-            offset(xpix0, ypix0, offset_system=offset_system)
-        else:
-            offset(0, 0, offset_system=offset_system)
+        if images_file.exists():
+            images_file.unlink()
+        images.write(images_file, format='ascii.csv')
+        if fluxes_file.exists():
+            fluxes_file.unlink()
+        expmeter_flux.write(fluxes_file, format='ascii.csv')
+
+        SetTipTiltTargetPixel.execute({'x': xpix0, 'y': ypix0})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
