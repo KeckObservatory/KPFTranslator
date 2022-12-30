@@ -96,12 +96,18 @@ links:
     # Scripts
     CleanupAfterCalOB:
         cmd: scripts.CleanupAfterCalOB.CleanupAfterCalOB
+    ConfigureForAcqOB:
+        cmd: scripts.ConfigureForAcqOB.ConfigureForAcqOB
     ConfigureForCalOB:
         cmd: scripts.ConfigureForCalOB.ConfigureForCalOB
+    ConfigureForSciOB:
+        cmd: scripts.ConfigureForSciOB.ConfigureForSciOB
     EndOfNight:
         cmd: scripts.EndOfNight.EndOfNight
     ExecuteCalSequence:
         cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
+    ExecuteSciSequence:
+        cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
     FiberGridSearch:
         cmd: scripts.FiberGridSearch.FiberGridSearch
     RunCalOB:
