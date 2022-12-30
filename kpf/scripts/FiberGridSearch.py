@@ -201,8 +201,9 @@ class FiberGridSearch(KPFTranslatorFunction):
 
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
+                row = None
                 # Offset to position
-                log.info(f"Offsetting: {offset_system} to ({xs[i]:.2f}, {ys[j]:.2f})")
+                log.info(f"Offsetting: {offset_system} to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 offset(xs[i], ys[j], offset_system=offset_system)
 
                 # Take Exposure to make sure we wait at least one cycle
@@ -213,9 +214,11 @@ class FiberGridSearch(KPFTranslatorFunction):
                 WaitForReady.execute({})
                 kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
                 # Start CRED2 Cube Collection
-                last_cube_file = kpfguide['LASTTRIGFILE'].read()
-                log.info(f"  Starting CRED2 cube")
-                kpfguide['TRIGGER'].write('Active')
+                if 'cube' in cameras:
+                    last_cube_file = kpfguide['LASTTRIGFILE'].read()
+                    log.debug(f"last_cube_file = {last_cube_file}")
+                    log.info(f"  Starting CRED2 cube")
+                    kpfguide['TRIGGER'].write('Active')
                 log.info(f"  Starting kpfexpose cameras")
                 StartExposure.execute({})
                 # Begin timestamp for history retrieval
@@ -258,44 +261,53 @@ class FiberGridSearch(KPFTranslatorFunction):
                             images.add_row(row)
 
                 # Ensure minimum time on position is enforced
-                duration = OB.get('min_time_on_grid_position')
-                end = datetime.fromtimestamp(begin) + timedelta(seconds=duration)
-                now = datetime.now()
-                while now < end:
-                    time.sleep(0.2)
-                    now = datetime.now()
+#                 duration = OB.get('min_time_on_grid_position')
+#                 log.info(f'Ensuring minimum duration of {duration:.0f} s')
+#                 end = datetime.fromtimestamp(begin) + timedelta(seconds=duration)
+#                 now = datetime.now()
+#                 while now < end:
+#                     time.sleep(0.2)
+#                     now = datetime.now()
+#                 log.debug(f'Done')
 
                 # Stop Exposure Meter
-                log.info(f"  Waiting for kpfexpose readout to start")
-                WaitForReadout.execute({})
-                log.info(f"  Stopping CRED2 cube")
-                kpfguide['TRIGGER'].write('Inactive')
+                if 'Green' in cameras or 'Red' in cameras:
+                    log.info(f"  Waiting for readout to start")
+                    WaitForReadout.execute({})
+                else:
+                    log.info(f"  Waiting for kpfexpose to be ready")
+                    WaitForReady.execute({})
+                if 'CRED2' in cameras:
+                    log.info(f"  Stopping CRED2 cube")
+                    kpfguide['TRIGGER'].write('Inactive', wait=False)
                 log.info(f"  Waiting for ExpMeter DRP")
                 kpf_expmeter['CUR_COUNTS'].wait()
                 log.info(f"  Waiting for ExpMeter to be Ready")
-                EMsuccess = ktl.waitFor('$kpf_expmeter.EXPSTATE == Ready')
+                EMsuccess = ktl.waitFor('$kpf_expmeter.EXPSTATE == Ready', timeout=5)
                 if EMsuccess is True:
                     lastfile = kpf_expmeter['FITSFILE'].read()
                 else:
                     lastfile = 'failed'
-                    row = {'file': lastfile, 'camera': 'ExpMeter',
-                           'dx': xs[i], 'dy': ys[j]}
+                log.info(f'  Done.  Lastfile={lastfile}')
+                row = {'file': lastfile, 'camera': 'ExpMeter',
+                       'dx': xs[i], 'dy': ys[j]}
                 images.add_row(row)
 
                 # Collect CRED2 Cube
-                expr = f'($kpfguide.LASTTRIGFILE != "{last_cube_file}")'
-                log.debug(f"  Waiting for: {expr}")
-                if ktl.waitFor(expr, timeout=60) is False:
-                    log.error('No new CRED2 cube file found')
-                    log.error(f"  previous: {last_cube_file}")
-                    last_cube_file = kpfguide['LASTTRIGFILE'].read()
-                    log.error(f"  kpffvc.LASTTRIGFILE = {last_cube_file}")
-                else:
-                    last_cube_file = kpfguide['LASTTRIGFILE'].read()
-                    log.debug(f"Found {last_cube_file}")
-                    row = {'file': last_cube_file, 'camera': 'cube',
-                           'dx': xs[i], 'dy': ys[j]}
-                    images.add_row(row)
+                if 'cube' in cameras:
+                    expr = f'($kpfguide.LASTTRIGFILE != "{last_cube_file}")'
+                    log.debug(f"  Waiting for: {expr}")
+                    if ktl.waitFor(expr, timeout=2*duration) is False:
+                        log.error('No new CRED2 cube file found')
+                        log.error(f"  previous: {last_cube_file}")
+                        last_cube_file = kpfguide['LASTTRIGFILE'].read()
+                        log.error(f"  kpffvc.LASTTRIGFILE = {last_cube_file}")
+                    else:
+                        last_cube_file = kpfguide['LASTTRIGFILE'].read()
+                        log.debug(f"Found {last_cube_file}")
+                        row = {'file': last_cube_file, 'camera': 'cube',
+                               'dx': xs[i], 'dy': ys[j]}
+                        images.add_row(row)
 
                 # Retrieve keyword history
                 end = time.time()
