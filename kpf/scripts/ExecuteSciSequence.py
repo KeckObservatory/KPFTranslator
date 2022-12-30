@@ -122,7 +122,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                 # Start next exposure
                 if runagitator is True:
                     StartAgitator.execute({})
-                log.info(f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})")
+                log.info(f"Starting expoure {j+1}/{nexp} ({seq.get('Object')})")
                 StartExposure.execute({})
                 WaitForReadout.execute({})
                 log.info(f"Readout has begun")
