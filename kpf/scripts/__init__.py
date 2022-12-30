@@ -1,7 +1,5 @@
 import sys
 import os
-import requests
-import json
 import socket
 import functools
 
