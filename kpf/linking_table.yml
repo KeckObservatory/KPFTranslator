@@ -59,6 +59,10 @@ links:
         cmd: fiu.SetTipTiltTargetPixel.SetTipTiltTargetPixel
     ShutdownTipTilt:
         cmd: fiu.ShutdownTipTilt.ShutdownTipTilt
+    StartTipTilt:
+        cmd: fiu.StartTipTilt.StartTipTilt
+    StopTipTilt:
+        cmd: fiu.StopTipTilt.StopTipTilt
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
     # FVCs
