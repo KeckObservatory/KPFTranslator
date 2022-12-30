@@ -192,6 +192,7 @@ class FiberGridSearch(KPFTranslatorFunction):
             kpf_expmeter['EXPOSURE'].write(ExpMeter_exptime)
 
         # Set up FVCs
+        kpffvc = ktl.cache('kpffvc')
         for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
             if camera in cameras and OB.get(f'{camera}FVC_exptime', None) != None:
                 exptime = OB.get(f'{camera}FVC_exptime')
