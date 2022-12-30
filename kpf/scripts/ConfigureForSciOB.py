@@ -14,6 +14,8 @@ from . import register_script, obey_scriptrun, check_scriptstop
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..fiu.ConfigureFIU import ConfigureFIU
+from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 
 
 class ConfigureForSciOB(KPFTranslatorFunction):
@@ -66,10 +68,6 @@ class ConfigureForSciOB(KPFTranslatorFunction):
         SetSourceSelectShutters.execute({'SciSelect': True, 'SkySelect': True,
                                          'SoCalSci': False, 'SoCalCal': False,
                                          'Cal_SciSky': False})
-
-        # Set triggered detectors
-        log.info(f"Set Detector List")
-        SetTriggeredDetectors.execute(OB)
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

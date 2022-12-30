@@ -56,9 +56,9 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
 #         2MASSID
 #         Parallax
 #         RadialVelocity
-#         Gmag
+#         Gmag <-- There is a TARGET_VMAG in kpf_expmeter
 #         Jmag
-#         Teff
+#         Teff <-- There is a TARGET_TEFF in kpf_expmeter
 
         # Set guide camera parameters (only manual supported for now)
         if OB.get('GuideMode', 'manual') != 'manual':
