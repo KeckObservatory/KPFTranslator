@@ -121,7 +121,7 @@ class FiberGridSearch(KPFTranslatorFunction):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         check_input(OB, 'offset_system', allowed_values=['azel', 'gxy', 'ttm', 'custom'])
-        check_input(OB, 'min_time_on_grid_position', min_value=0)
+        check_input(OB, 'min_time_on_grid_position', value_min=0)
         check_input(OB, 'nx')
         check_input(OB, 'ny')
         check_input(OB, 'dx')
