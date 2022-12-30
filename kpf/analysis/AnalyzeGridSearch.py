@@ -135,6 +135,9 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     ny = len(set(set(images['dy'])))
     log.info(f"Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
 
+    cameras = set(images['camera'])
+    log.info(f"Found cameras: {cameras}")
+
     with open(log_file) as FO:
         lines = FO.readlines()
     comment = lines[1][30:].strip('\n')
@@ -145,9 +148,10 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     # Prep ExpMeter flux analysis
     fluxes = np.zeros((4, len(set(flux_table['i'])), len(set(flux_table['j']))))
     # Prep CRED2 Analysis
-    cred2_images_fig = plt.figure(figsize=(12,14))
-    xcred2 = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
-    ycred2 = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
+    if 'CRED2' in cameras:
+        cred2_images_fig = plt.figure(figsize=(12,14))
+        xcred2 = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
+        ycred2 = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
     # Prep FVC Analysis
     if 'SCI' in FVCs:
         sci_FVC_images_fig = plt.figure(figsize=(12,12))
@@ -164,18 +168,20 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         yoffset[j, i] = flux_entry['dy']
         for k in ks:
             fluxes[k, j, i] = flux_entry[f'{flux_prefix}{k+1}']
-        log.debug(f"  Determining CRED2 pixel for {flux_entry['dx']:.2f}, {flux_entry['dy']:.2f}")
-        log.debug(f"  Centering image on {cred2_pixels}")
-        x, y = show_CRED2_image(flux_entry['dx'], flux_entry['dy'],
-                                images, flux_table,
-                                data_path=data_path/Path('CRED2'),
-                                x0=cred2_pixels[0], y0=cred2_pixels[1],
-                                fig=cred2_images_fig, imno=imno+1,
-                                initial_x=flux_entry['dx'],
-                                initial_y=flux_entry['dy'],
-                                )
-        xcred2[j, i] = x
-        ycred2[j, i] = y
+
+        if 'CRED2' in cameras:
+            log.debug(f"  Determining CRED2 pixel for {flux_entry['dx']:.2f}, {flux_entry['dy']:.2f}")
+            log.debug(f"  Centering image on {cred2_pixels}")
+            x, y = show_CRED2_image(flux_entry['dx'], flux_entry['dy'],
+                                    images, flux_table,
+                                    data_path=data_path/Path('CRED2'),
+                                    x0=cred2_pixels[0], y0=cred2_pixels[1],
+                                    fig=cred2_images_fig, imno=imno+1,
+                                    initial_x=flux_entry['dx'],
+                                    initial_y=flux_entry['dy'],
+                                    )
+            xcred2[j, i] = x
+            ycred2[j, i] = y
         if 'SCI' in FVCs and fvcsci_pixels is not None:
             log.debug(f"  Generating SCI FVC image centered on {fvcsci_pixels}")
             show_FVC_image(flux_entry['dx'], flux_entry['dy'],
@@ -198,31 +204,32 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                            x0=fvcext_pixels[0], y0=fvcext_pixels[1],
                            fig=ext_FVC_images_fig, imno=imno+1)
 
-    # Plot CRED2 Positions of each offset
-    plt.figure(num=cred2_images_fig.number)
-    plt.subplot(ny+1,nx,nx*ny+2)
-    plt.title('Grid positions in CRED2 pixel space', size=8)
-    plt.plot(xcred2, ycred2, 'r+', alpha=0.5)
-    plt.plot(flux_table['dx'], flux_table['dy'], 'bx', alpha=0.5)
-    for imno,flux_entry in enumerate(flux_table):
-        i = flux_entry['i']
-        j = flux_entry['j']
-#         print(i, j, flux_entry['dx'], flux_entry['dy'])
-        plt.arrow(flux_entry['dx'], flux_entry['dy'],
-                  xcred2[j, i]-flux_entry['dx'],
-                  ycred2[j, i]-flux_entry['dy'],
-                  color='g', alpha=0.5,
-                  head_width=0.1, length_includes_head=True)
-    plt.gca().xaxis.set_major_locator(MultipleLocator(base=1.0))
-    plt.gca().yaxis.set_major_locator(MultipleLocator(base=1.0))
-    plt.grid()
-    plt.xlabel('CRED2 X (pix)')
-    plt.ylabel('CRED2 Y (pix)')
-    plt.gca().axis('equal')
-    log.info(f"Saving: {ouput_cred2_image_file}")
-    if ouput_cred2_image_file.exists() is True:
-        ouput_cred2_image_file.unlink()
-    plt.savefig(ouput_cred2_image_file, bbox_inches='tight', pad_inches=0.10)
+    if 'CRED2' in cameras:
+        # Plot CRED2 Positions of each offset
+        plt.figure(num=cred2_images_fig.number)
+        plt.subplot(ny+1,nx,nx*ny+2)
+        plt.title('Grid positions in CRED2 pixel space', size=8)
+        plt.plot(xcred2, ycred2, 'r+', alpha=0.5)
+        plt.plot(flux_table['dx'], flux_table['dy'], 'bx', alpha=0.5)
+        for imno,flux_entry in enumerate(flux_table):
+            i = flux_entry['i']
+            j = flux_entry['j']
+    #         print(i, j, flux_entry['dx'], flux_entry['dy'])
+            plt.arrow(flux_entry['dx'], flux_entry['dy'],
+                      xcred2[j, i]-flux_entry['dx'],
+                      ycred2[j, i]-flux_entry['dy'],
+                      color='g', alpha=0.5,
+                      head_width=0.1, length_includes_head=True)
+        plt.gca().xaxis.set_major_locator(MultipleLocator(base=1.0))
+        plt.gca().yaxis.set_major_locator(MultipleLocator(base=1.0))
+        plt.grid()
+        plt.xlabel('CRED2 X (pix)')
+        plt.ylabel('CRED2 Y (pix)')
+        plt.gca().axis('equal')
+        log.info(f"Saving: {ouput_cred2_image_file}")
+        if ouput_cred2_image_file.exists() is True:
+            ouput_cred2_image_file.unlink()
+        plt.savefig(ouput_cred2_image_file, bbox_inches='tight', pad_inches=0.10)
 
     # Save FVC Images Figure
     if 'SCI' in FVCs:
@@ -254,9 +261,14 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         peak_pos_j, peak_pos_i = np.unravel_index(flux_map.argmax(), flux_map.shape)
         peak_xoffset = xoffset[peak_pos_j, peak_pos_i]
         peak_yoffset = yoffset[peak_pos_j, peak_pos_i]
-        peak_xcred2 = xcred2[peak_pos_j, peak_pos_i]
-        peak_ycred2 = ycred2[peak_pos_j, peak_pos_i]
+        if 'CRED2' in cameras:
+            peak_xcred2 = xcred2[peak_pos_j, peak_pos_i]
+            peak_ycred2 = ycred2[peak_pos_j, peak_pos_i]
+        else:
+            peak_xcred2 = 0
+            peak_ycred2 = 0
         cred2_pixel_of_fiber.append((peak_xcred2, peak_ycred2))
+
         # Show image of exposure meter flux grid
         if k == 0:
             plot_title = f"{date_time_string}: {comment}\n"
@@ -265,7 +277,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         plot_title += (f"ExpMeter band {k+1}\n"
                        f"Grid Pos = ({peak_xoffset:.2f}, {peak_yoffset:.2f}), "
                        f"CRED2 Pixel = ({peak_xcred2:5.1f}, {peak_ycred2:5.1f})\n"
-                       f'Flux: (min, max) = ({min(flux_map.ravel()):.1e}, {max(flux_map.ravel()):.1e})'
+                       f'FluxRatio: max/min = {max(flux_map.ravel())/min(flux_map.ravel()):.1e} (FluxMax = {max(flux_map.ravel()):.1e})'
                        )
         plt.title(plot_title, size=9)
         plt.imshow(flux_map, cmap='gray')
