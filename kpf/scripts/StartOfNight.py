@@ -35,8 +35,8 @@ class StartOfNight(KPFTranslatorFunction):
         scriptallow.write('No')
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
-        log.info('Initialize tip tilt mirror')
-        InitializeTipTilt.execute({})
+#         log.info('Initialize tip tilt mirror')
+#         InitializeTipTilt.execute({})
         # Setup AO
         if args.get('AO', True) is True:
             SetupAOforKPF.execute({})
