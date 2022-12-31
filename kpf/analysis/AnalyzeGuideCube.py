@@ -64,7 +64,16 @@ def plot_cube_stats(file, plotfile=None):
     if fps is None:
         log.warning(f"Could not read FPS from header. Assuming 100.")
         fps = 100
-    t = Table(hdul[2].data)
+
+    cube_ext = None
+    table_ext = None
+    for i,ext in enumerate(hdul):
+        if ext.name == 'guider_cube_origins':
+            table_ext = i
+        if ext.name == 'guider_cube':
+            cube_ext = i
+
+    t = Table(hdul[table_ext].data)
 
     # Examine timestamps for consistency
     line0 = models.Linear1D()
@@ -196,8 +205,20 @@ def plot_cube_stats(file, plotfile=None):
 def generate_cube_gif(file, giffile):
     log.info('Generating animation')
     hdul = fits.open(file)
-    cube = hdul[1].data
-    t = Table(hdul[2].data)
+
+    cube_ext = None
+    table_ext = None
+    for i,ext in enumerate(hdul):
+        if ext.name == 'guider_cube_origins':
+            table_ext = i
+        if ext.name == 'guider_cube':
+            cube_ext = i
+
+    if cube_ext is None:
+        return
+
+    cube = hdul[cube_ext].data
+    t = Table(hdul[table_ext].data)
     nf, ny, nx = cube.shape
     norm = vis.ImageNormalize(cube,
                           interval=vis.AsymmetricPercentileInterval(1.5,99.99),
