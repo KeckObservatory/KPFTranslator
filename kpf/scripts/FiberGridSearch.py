@@ -129,7 +129,7 @@ class FiberGridSearch(KPFTranslatorFunction):
         SetTimedShutters.execute({'TimedShutter_Scrambler': True})
         SetTriggeredDetectors.execute({'TriggerExpMeter': True})
         total_exptime = ExpMeter_exptime = OB.get('TimeOnPosition')
-        SetExptime.execute({'exptime': total_exptime})
+        SetExptime.execute({'Exptime': total_exptime})
 
         # Configure Exposure Meter
         kpf_expmeter = ktl.cache('kpf_expmeter')
