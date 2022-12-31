@@ -12,8 +12,8 @@ from astropy.table import Table
 from astropy import visualization as vis
 from astropy.modeling import models, fitting
 
+from matplotlib import animation
 from matplotlib import pyplot as plt
-import imageio
 
 
 ##-------------------------------------------------------------------------
@@ -129,39 +129,31 @@ def plot_cube_stats(file, plotfile=None):
     plt.yticks([v for v in np.arange(-70,20,10)])
     plt.ylim(-60,10)
 
-    plt.subplot(2,2,3)
-    if len(xerrs) > 0:
-        plt.psd(xerrs, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
-                label='X Err')
-        plt.psd(yerrs, Fs=fps, color='b', drawstyle='steps-mid', alpha=0.6,
-                label='Y Err')
-        plt.legend(loc='best')
-#     plt.ylim(-60,10)
+#     plt.subplot(2,2,3)
+#     if len(xerrs) > 0:
+#         plt.psd(xerrs, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
+#                 label='X Err')
+#         plt.psd(yerrs, Fs=fps, color='b', drawstyle='steps-mid', alpha=0.6,
+#                 label='Y Err')
+#         plt.legend(loc='best')
 
     log.debug(f"  Generating Time Deltas Plot")
     plt.subplot(2,2,2)
     plt.title(f"Time deltas: mean={meantimedeltas:.1f}, rms={rmstimedeltas:.1f}, max={maxtimedeltas:.1f} ms")
-    
     n, bins, foo = plt.hist(timedeltas*1000, bins=100)
-#     plt.plot([meantimedeltas,meantimedeltas], [0,max(n)*1.1], 'r-', alpha=0.3)
     plt.xlabel('Time Delta (ms)')
     plt.ylabel('N frames')
-#     plt.plot(times, timedeltas*1000, 'k-', drawstyle='steps-mid')
-#     plt.ylabel('delta time (ms)')
-#     plt.xlim(0,times[-1])
-#     plt.grid()
 
     log.debug(f"  Generating Positional Error Plot")
-    plt.subplot(2,2,4)
-#     plt.title(f"X: rms={xrms:.2f}, bias={xbias:.2f} pix / Y: rms={yrms:.2f}, bias={ybias:.2f} pix")
+    plt.subplot(2,2,3)
     ps = 56 # mas/pix
     plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
     plt.plot(times[~objectxerr.mask], objectxerr[~objectxerr.mask], 'g-',
-             drawstyle='steps-mid', label=f'Xpos-Xtarg')
+             alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
 #     for badt in times[objectxerr.mask]:
 #         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
     plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
-             drawstyle='steps-mid', label=f'Ypos-Ytarg')
+             alpha=0.5, drawstyle='steps-mid', label=f'Ypos-Ytarg')
 #     for badt in times[objectyerr.mask]:
 #         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
     plt.legend(loc='best')
@@ -170,6 +162,17 @@ def plot_cube_stats(file, plotfile=None):
     plt.grid()
     plt.xlim(0,times[-1])
     plt.xlabel('Time (s)')
+
+    log.debug(f"  Generating Positional Error Histogram")
+    plt.subplot(2,2,4)
+    plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
+    n, bins, foo = plt.hist(objectxerr[~objectxerr.mask], bins=100, label='X',
+                            color='g', alpha=0.3)
+    n, bins, foo = plt.hist(objectxerr[~objectyerr.mask], bins=100, label='Y',
+                            color='b', alpha=0.3)
+    plt.xlabel('Position Error')
+    plt.ylabel('N frames')
+
 
     if plotfile is not None:
         log.debug(f"  Saving Plot File")
@@ -183,13 +186,57 @@ def plot_cube_stats(file, plotfile=None):
 ## generate_cube_gif
 ##-------------------------------------------------------------------------
 def generate_cube_gif(file, giffile):
+    log.info('Generating animation')
+    hdul = fits.open(file)
+    cube = hdul[1].data
+    t = Table(hdul[2].data)
+    nf, ny, nx = cube.shape
+    norm = vis.ImageNormalize(cube,
+                          interval=vis.AsymmetricPercentileInterval(1.5,99.99),
+                          stretch=vis.LogStretch())
+
+    # ims is a list of lists, each row is a list of artists to draw in the
+    # current frame; here we are just animating one artist, the image, in
+    # each frame
+    
+    fig = plt.figure(figsize=(8,8))
+
+    fps = 10
+    writer = animation.ImageMagickWriter(fps=fps)
+#     writer = animation.ImageMagickFileWriter(fps=fps)
+#     writer = animation.FFMpegWriter(fps=fps)
+#     writer = animation.PillowWriter(fps=fps)
+
+
+    log.info('Building individual frames')
+    ims = []
+    for j,im in enumerate(cube):
+        plt.title(f"{file.name}: frame {j:04d}")
+        im = plt.imshow(im, origin='lower', cmap='gray', norm=norm, animated=True)
+        if t[j]['object1_x'] > 0 and t[j]['object1_y'] > 0:
+            xpix = t[j]['object1_x'] - (t[j]['target_x'] - nx/2)
+            ypix = t[j]['object1_y'] - (t[j]['target_y'] - ny/2)
+            lines = plt.plot(xpix, ypix, 'r+')
+        ims.append([im] + lines)
+
+    log.info('Building animation')
+    ani = animation.ArtistAnimation(fig, ims, interval=1000/fps, blit=True,
+                                    repeat_delay=1000)
+    log.info(f'Writing {giffile} using {writer}')
+    ani.save(f"{giffile}", writer)
+    log.info('Done')
+
+
+def generate_cube_gif_old(file, giffile):
+    import imageio
+
     log.info('Generating animated gif')
     hdul = fits.open(file)
     cube = hdul[1].data
     t = Table(hdul[2].data)
     nf, ny, nx = cube.shape
     norm = vis.ImageNormalize(cube,
-                          interval=vis.AsymmetricPercentileInterval(0.9,99.99),
+                          interval=vis.AsymmetricPercentileInterval(1.5,99.99),
                           stretch=vis.LogStretch())
 
     plotdir = Path('~/tmp/cubefiles').expanduser()
