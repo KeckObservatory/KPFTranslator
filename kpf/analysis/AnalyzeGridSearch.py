@@ -4,6 +4,7 @@
 from pathlib import Path
 import argparse
 import logging
+import re
 
 from pathlib import Path
 import numpy as np
@@ -138,10 +139,28 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     cameras = set(images['camera'])
     log.info(f"Found cameras: {cameras}")
 
-    with open(log_file) as FO:
-        lines = FO.readlines()
-    comment = lines[1][30:].strip('\n')
-    log.info(f"Log Comment: {comment}")
+    dxs = set(flux_table['dx'])
+    if len(dxs) > 1:
+        deltax = (max(dxs) - min(dxs))/(len(dxs)-1)
+    else:
+        deltax = 0
+    dys = set(flux_table['dy'])
+    if len(dys) > 1:
+        deltay = (max(dys) - min(dys))/(len(dys)-1)
+    else:
+        deltay = 0
+
+    try:
+        with open(log_file) as FO:
+            lines = FO.readlines()
+        for line in lines[:20]:
+            m = re.search("comment: (.*)", line)
+            if m is not None:
+                comment = m.groups()[0].strip('\n')
+        log.info(f"Log Comment: {comment}")
+    except:
+        comment = ''
+        log.error('Could not find comment in log file')
 
     xoffset = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
     yoffset = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
@@ -255,6 +274,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     # Generate figure of Flux values on offset grid and estimated fiber position
     cred2_pixel_of_fiber = []
     plt.figure(figsize=(10,14))
+    symbols = ['b^', 'gx', 'yo', 'r^']
     for k in [0,1,2,3]:
         plt.subplot(3,2,k+1)
         # Find offset position of peak flux
@@ -281,8 +301,8 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                        f'FluxRatio: max/min = {max(flux_map.ravel())/min(flux_map.ravel()):.1e} (FluxMax = {max(flux_map.ravel()):.1e})'
                        )
         plt.title(plot_title, size=9)
-        plt.imshow(flux_map, cmap='gray')
-        plt.plot(peak_pos_i, peak_pos_j, 'r+')
+        plt.imshow(flux_map.transpose(), cmap='gray', origin='lower')
+        plt.plot(peak_pos_j, peak_pos_i, symbols[k])
         plt.gca().set_yticks([])
         plt.gca().set_xticks([])
 
@@ -293,23 +313,27 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     pixel_scale = 58 #mas/pix
     xrms = np.std(cred2_pixel_of_fiber[:,0])*pixel_scale
     yrms = np.std(cred2_pixel_of_fiber[:,1])*pixel_scale
-    log.info(f"CRED2 X Deviations {xrms:.0f} mas RMS: {cred2_deltas_pix[:,0]*pixel_scale}")
-    log.info(f"CRED2 X Deviations {yrms:.0f} mas RMS: {cred2_deltas_pix[:,1]*pixel_scale}")
+    log.debug(f"CRED2 X Deviations {xrms:.0f} mas RMS: {cred2_deltas_pix[:,0]*pixel_scale}")
+    log.debug(f"CRED2 X Deviations {yrms:.0f} mas RMS: {cred2_deltas_pix[:,1]*pixel_scale}")
     log.info(f"Saving: {ouput_analysis_image_file}")
 
     plt.subplot(3,2,(5,6))
     plt.title(f"CRED2 Positions in ExpMeter Bands: RMS=({xrms:.0f}, {yrms:.0f} mas)")
-    symbols = ['b+', 'gx', 'yo', 'r^']
+
+    plt.plot(flux_table['dx'], flux_table['dy'], 'k+')
+
     for k in [0,1,2,3]:
-        plt.plot(cred2_pixel_of_fiber[k,0], cred2_pixel_of_fiber[k,1], symbols[k],
-                 label=f"ExpMeter Band {k+1}",
+        xpix = cred2_pixel_of_fiber[k,0]
+        ypix = cred2_pixel_of_fiber[k,1]
+        plt.plot(xpix, ypix, symbols[k],
+                 label=f"Band {k+1} ({xpix:.1f}, {ypix:.1f})",
                  markersize=10)
-    plt.plot(avg_x, avg_y, 'ko', markersize=20, alpha=0.4,
-             label=f'Avg. Position ({avg_x:.1f}, {avg_y:.1f})')
+#     plt.plot(avg_x, avg_y, 'ko', markersize=20, alpha=0.4,
+#              label=f'Avg. Position ({avg_x:.1f}, {avg_y:.1f})')
     plt.gca().axis('equal')
     plt.legend(loc='best')
-    plt.gca().xaxis.set_major_locator(MultipleLocator(base=1.0))
-    plt.gca().yaxis.set_major_locator(MultipleLocator(base=1.0))
+    plt.gca().xaxis.set_major_locator(MultipleLocator(base=max([deltax, deltay])))
+    plt.gca().yaxis.set_major_locator(MultipleLocator(base=max([deltax, deltay])))
     plt.grid()
     plt.xlabel('CRED2 X (pix)')
     plt.ylabel('CRED2 Y (pix)')
@@ -352,7 +376,7 @@ def show_CRED2_image(x, y, images, fluxes,
 #     image_data = ccddata.data - np.percentile(ccddata.data, 48)
     log.debug(f"  CRED2 mode = {mode(ccddata.data)} ({mode(image_data)} after background sub)")
 
-    log.info("Running median CR reject to get rid of bad pixels")
+    log.debug("Running median CR reject to get rid of bad pixels")
     image_data, mask = ccdproc.cosmicray_median(image_data, mbox=7, gbox=0, rbox=7)
 
     dx = 60
@@ -416,8 +440,8 @@ def show_CRED2_image(x, y, images, fluxes,
         plt.gca().set_aspect('equal', 'box')
 #         plt.gca().set_yticks([])
 #         plt.gca().set_xticks([])
-    log.info(f"  X: {initial_x:.1f} --> {x3:.1f}")
-    log.info(f"  Y: {initial_y:.1f} --> {y3:.1f}")
+    log.debug(f"  X: {initial_x:.1f} --> {x3:.1f}")
+    log.debug(f"  Y: {initial_y:.1f} --> {y3:.1f}")
 
     return x3, y3
 
