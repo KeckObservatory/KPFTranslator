@@ -79,15 +79,18 @@ def plot_cube_stats(file, plotfile=None):
 
     # Examine position statistics
     log.debug(f"  Generating objectvals")
-    objectxvals = np.ma.MaskedArray(t['object1_x'], mask=t['object1_x']<-998)
-    objectyvals = np.ma.MaskedArray(t['object1_y'], mask=t['object1_y']<-998)
+    maskx = t['object1_x']<-998
+    masky = t['object1_y']<-998
+    maskall = maskx | masky
+    objectxvals = np.ma.MaskedArray(t['object1_x'], mask=maskx)
+    objectyvals = np.ma.MaskedArray(t['object1_y'], mask=masky)
     times = t['timestamp']-t['timestamp'][0]
 
     log.debug(f"  Generating objecterr")
-    objectxerr = np.ma.MaskedArray(t['object1_x']-t['target_x'], mask=t['object1_x']<-998)
-    objectyerr = np.ma.MaskedArray(t['object1_y']-t['target_y'], mask=t['object1_y']<-998)
+    objectxerr = np.ma.MaskedArray(t['object1_x']-t['target_x'], mask=maskx)
+    objectyerr = np.ma.MaskedArray(t['object1_y']-t['target_y'], mask=masky)
     r = ((t['object1_x']-t['target_x'])**2 + (t['object1_y']-t['target_y'])**2)**0.5
-    objectrerr = np.ma.MaskedArray(r, mask=t['object1_y']<-998)
+    objectrerr = np.ma.MaskedArray(r, mask=maskall)
     plotylim = (min([objectxerr.min(), objectyerr.min()])-0.5,
                 max([objectxerr.max(), objectyerr.max()])+0.5)
     log.debug(f"  Generating objecterr statistics")
@@ -127,7 +130,8 @@ def plot_cube_stats(file, plotfile=None):
                 label='Y F2F')
         plt.legend(loc='best')
     plt.yticks([v for v in np.arange(-70,20,10)])
-    plt.ylim(-60,10)
+    plt.ylim(-70,10)
+    plt.xlim(0,fps/2)
 
 #     plt.subplot(2,2,3)
 #     if len(xerrs) > 0:
@@ -166,10 +170,14 @@ def plot_cube_stats(file, plotfile=None):
     log.debug(f"  Generating Positional Error Histogram")
     plt.subplot(2,2,4)
     plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
-    n, bins, foo = plt.hist(objectxerr[~objectxerr.mask], bins=100, label='X',
-                            color='g', alpha=0.3)
-    n, bins, foo = plt.hist(objectxerr[~objectyerr.mask], bins=100, label='Y',
-                            color='b', alpha=0.3)
+    nx, binsx, foox = plt.hist(objectxerr[~objectxerr.mask], bins=100, label='X',
+                               color='g', alpha=0.6)
+    ny, binsy, fooy = plt.hist(objectyerr[~objectyerr.mask], bins=100, label='Y',
+                               color='b', alpha=0.3)
+    maxhist = 1.1*max([max(nx), max(ny)])
+    plt.plot([0,0], [0, maxhist], 'r-', alpha=0.3)
+    plt.ylim(0, maxhist)
+    plt.legend(loc='best')
     plt.xlabel('Position Error')
     plt.ylabel('N frames')
 
