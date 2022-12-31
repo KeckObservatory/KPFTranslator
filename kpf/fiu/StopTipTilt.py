@@ -17,9 +17,10 @@ class StopTipTilt(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
-        kpfguide['TIPTILT_CALC'].write('Inactive')
-        kpfguide['TIPTILT_CONTROL'].write('Inactive')
-        kpfguide['OFFLOAD'].write('Inactive')
+#         kpfguide['TIPTILT_CALC'].write('Inactive')
+#         kpfguide['TIPTILT_CONTROL'].write('Inactive')
+#         kpfguide['OFFLOAD'].write('Inactive')
+        kpfguide['ALL_LOOPS'].write('Inactive')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

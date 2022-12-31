@@ -17,9 +17,11 @@ class StartTipTilt(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
-        kpfguide['TIPTILT_CALC'].write('Active')
-        kpfguide['TIPTILT_CONTROL'].write('Active')
-        kpfguide['OFFLOAD'].write('Active')
+#         kpfguide['TIPTILT_CALC'].write('Active')
+#         kpfguide['TIPTILT_CONTROL'].write('Active')
+#         kpfguide['OFFLOAD_DCS'].write('Yes')
+#         kpfguide['OFFLOAD'].write('Active')
+        kpfguide['ALL_LOOPS'].write('Active')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
