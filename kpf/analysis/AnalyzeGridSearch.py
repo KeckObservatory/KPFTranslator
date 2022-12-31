@@ -145,6 +145,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
 
     xoffset = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
     yoffset = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
+    
     # Prep ExpMeter flux analysis
     fluxes = np.zeros((4, len(set(flux_table['i'])), len(set(flux_table['j']))))
     # Prep CRED2 Analysis
@@ -162,8 +163,8 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
 
     # Loop over positions
     for imno,flux_entry in enumerate(flux_table):
-        i = flux_entry['i']
-        j = flux_entry['j']
+        j = flux_entry['i']
+        i = flux_entry['j']
         xoffset[j, i] = flux_entry['dx']
         yoffset[j, i] = flux_entry['dy']
         for k in ks:
@@ -207,13 +208,13 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     if 'CRED2' in cameras:
         # Plot CRED2 Positions of each offset
         plt.figure(num=cred2_images_fig.number)
-        plt.subplot(ny+1,nx,nx*ny+2)
+        plt.subplot(nx+2,ny,nx*ny+2)
         plt.title('Grid positions in CRED2 pixel space', size=8)
         plt.plot(xcred2, ycred2, 'r+', alpha=0.5)
         plt.plot(flux_table['dx'], flux_table['dy'], 'bx', alpha=0.5)
         for imno,flux_entry in enumerate(flux_table):
-            i = flux_entry['i']
-            j = flux_entry['j']
+            j = flux_entry['i']
+            i = flux_entry['j']
     #         print(i, j, flux_entry['dx'], flux_entry['dy'])
             plt.arrow(flux_entry['dx'], flux_entry['dy'],
                       xcred2[j, i]-flux_entry['dx'],
@@ -415,7 +416,6 @@ def show_CRED2_image(x, y, images, fluxes,
         plt.gca().set_aspect('equal', 'box')
 #         plt.gca().set_yticks([])
 #         plt.gca().set_xticks([])
-    print(initial_x, initial_y)
     log.info(f"  X: {initial_x:.1f} --> {x3:.1f}")
     log.info(f"  Y: {initial_y:.1f} --> {y3:.1f}")
 
