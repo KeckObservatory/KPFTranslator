@@ -153,6 +153,7 @@ class TestScienceADC(KPFTranslatorFunction):
                 log.info(f"Offsetting to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 kpffiu['ADC1VAL'].write(nominalx + xs[i])
                 kpffiu['ADC2VAL'].write(nominaly + ys[j])
+                log.info(f"Absolute position: {nominalx + xs[i]:.1f} {nominaly + ys[j]:.1f}")
                 expr = '($kpffiu.ADC1STA == Ready) and ($kpffiu.ADC2STA == Ready)'
                 success = ktl.waitFor(expr, timeout=2*max([dx*nx, dy*ny])/5)
                 if success is not True:
