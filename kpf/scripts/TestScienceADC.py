@@ -163,10 +163,6 @@ class TestScienceADC(KPFTranslatorFunction):
                 log.info(f"Taking extra guider exposure to wait one cycle")
                 TakeGuiderExposure.execute({}) # Blocks until done
 
-                sleep_time = 5
-                log.info(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
-                time.sleep(sleep_time)
-
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
                 kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')

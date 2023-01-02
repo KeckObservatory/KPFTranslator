@@ -65,13 +65,15 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
         log.info('-------------------------')
 
         images_file = log_dir / Path(f'{this_file_name}_images_{now_str}.txt')
-        images = Table(names=('cube file', 'gain', 'fps'),
-                       dtype=('a90',       'a10',  'f4'))
+        images = Table(names=('cube file', 'fps'),
+                       dtype=('a90',       'f4'))
 
         kpfguide = ktl.cache('kpfguide')
         log.info(f"Guider gain is {kpfguide['GAIN'].read()}")
         log.info(f"Ensuring TRIGCUBE is Active")
         kpfguide['TRIGCUBE'].write('Active')
+
+        all_loops = kpfguide['ALL_LOOPS'].read(binary=True)
 
         cube_duration = OB.get('cube_duration')
         for FPS in OB.get('FPSvalues'):
@@ -85,13 +87,15 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
             log.debug(f"Sleeping {cube_duration} s")
             time.sleep(cube_duration)
             # End cube collection
-            kpfguide['TRIGGER'].write('Inactive')
+            kpfguide['TRIGGER'].write('Inactive', wait=False)
+            kpfguide['ALL_LOOPS'].write('Inactive')
             # Wait for cube file to be updated
             ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lastfile}'")
             cube_file = kpfguide['LASTTRIGFILE'].read()
             log.info(f"  cube file: {cube_file}")
+            if all_loops == 1:
+                kpfguide['ALL_LOOPS'].write(1)
             row = {'cube file': cube_file,
-                   'gain': gain,
                    'fps': FPS}
             images.add_row(row)
             if images_file.exists():

@@ -127,7 +127,7 @@ def analyze_test_science_ADC(date_time_string, flux_prefix=None, fiber='Science'
         dx = flux_entry['dx']
         dy = flux_entry['dy']
         f = [flux_entry[f'{flux_prefix}{k+1}'] for k in [0,1,2,3]]
-        norm = f/max(f)
+        norm = f/sum(f)
         flux_plots.append(norm)
         flux_plot_labels.append(f"{dx:.1f}, {dy:.1f}")
 

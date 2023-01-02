@@ -31,6 +31,10 @@ def calculate_DAR_pix(EL):
     modified_azel = np.array([[azel[0],azel[1] + DAR_arcsec/60/60]], dtype=np.float)
     log.debug(f"Modified Az, EL = {modified_azel[0]}")
     final_pix = w.all_world2pix(modified_azel, 0)[0]
+    
+    delta_pix = ((final_pix[0]-reference_pix[0])**2 + (final_pix[1]-reference_pix[1])**2)**0.5
+    log.info(f"Pixel shift is {delta_pix:.1f}")
+    
     return final_pix
 
 
@@ -52,6 +56,7 @@ class CorrectDAR(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        kpfguide = ktl.cache('kpfguide')
         base_names = {'KPF': 'SCIENCE_BASE',
                       'SKY': 'SKY_BASE'}
         POname = ktl.cache('dcs', 'PONAME').read()
