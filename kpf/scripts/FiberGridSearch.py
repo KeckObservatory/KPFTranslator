@@ -150,28 +150,48 @@ class FiberGridSearch(KPFTranslatorFunction):
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
-                log.info(f"Stopping tip tilt")
+                log.debug(f"Stopping tip tilt")
                 StopTipTilt.execute({})
                 log.info(f"Adjusting target to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
-                log.info(f"Starting tip tilt")
+                log.debug(f"Starting tip tilt")
                 StartTipTilt.execute({})
 
                 # Take Exposure to make sure we wait at least one cycle
-                log.info(f"Taking extra guider exposure to wait one cycle")
+                log.debug(f"Taking extra guider exposure to wait one cycle")
                 TakeGuiderExposure.execute({}) # Blocks until done
 
                 sleep_time = 5
-                log.info(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
+                log.debug(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
                 time.sleep(sleep_time)
 
                 obj_choice = kpfguide['OBJECT_CHOICE'].read()
-                obj_pos = kpfguide[obj_choice].read(binary=True)
-                log.debug(f'{obj_choice} is at {obj_pos[0]:.1f} {obj_pos[1]:.1f}')
-                if obj_pos[0] < -1 or obj_pos[1] < -1:
+                if obj_choice in [None, 'None']:
                     log.error(f"  --> Lost star <--")
-                    log.error(f"You have 30 seconds to recover")
-                    time.sleep(30)
+                    log.info(f"Stopping tip tilt")
+                    StopTipTilt.execute({})
+                    time.sleep(1)
+                    log.info(f"Starting tip tilt")
+                    StartTipTilt.execute({})
+                    time.sleep(5)
+
+                    obj_choice = kpfguide['OBJECT_CHOICE'].read()
+                    if obj_choice in [None, 'None']:
+                        log.error(f"  --> Lost star <--")
+                        log.info(f"Stopping tip tilt")
+                        StopTipTilt.execute({})
+                        time.sleep(1)
+                        log.info(f"Starting tip tilt")
+                        StartTipTilt.execute({})
+                        time.sleep(5)
+
+                        obj_choice = kpfguide['OBJECT_CHOICE'].read()
+                        if obj_choice in [None, 'None']:
+                            log.error(f"  --> Lost star <--")
+                            sys.exit(1)
+
+#                     log.error(f"You have 30 seconds to recover")
+#                     time.sleep(30)
 
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
@@ -240,8 +260,9 @@ class FiberGridSearch(KPFTranslatorFunction):
                 expmeter_data = {'dx': xs[i], 'dy': ys[j],
                                  'i': i, 'j': j,
                                  }
+                log.info(f"  Retrieving keyword history")
                 for counts_kw in ['CUR_COUNTS', 'RAW_COUNTS', 'BCK_COUNTS']:
-                    log.info(f"  Retrieving keyword history for {counts_kw}")
+                    log.debug(f"  Retrieving keyword history for {counts_kw}")
                     kws = {'kpf_expmeter': [counts_kw]}
                     counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
                     # Extract counts and save to table
