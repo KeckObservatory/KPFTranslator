@@ -148,6 +148,8 @@ class TestScienceADC(KPFTranslatorFunction):
             for j,yi in enumerate(yis):
                 # Offset to position
                 nominalx, nominaly = kpffiu['ADCPRISMS'].read(binary=True)
+                nominalx += 20
+                nominaly += -40
                 log.info(f"Offsetting to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 kpffiu['ADC1VAL'].write(nominalx + xs[i])
                 kpffiu['ADC2VAL'].write(nominaly + ys[j])
