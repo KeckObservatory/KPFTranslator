@@ -46,7 +46,7 @@ def calculate_DAR_arcsec(EL):
     CRED2wav = args.get('CRED2wav', 1.075)
     sciencewav = args.get('sciencewav', 0.55)
     DAR_arcsec = dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
-#     print(f"{DAR_arcsec:.3f} arcsec")
+    log.info(f"{DAR_arcsec:.3f} arcsec")
     return DAR_arcsec
 
 
