@@ -146,7 +146,7 @@ def analyze_test_science_ADC(date_time_string, flux_prefix=None, fiber='Science'
 
     plt.figure(figsize=(12,8))
     
-    plt.subplot(3,1,1)
+    plt.subplot(4,1,1)
     plt.title(f"ADC Optimization")
     for counter,flux_plot in enumerate(flux_plots):
         plt.plot(wavebins, flux_plot, label=flux_plot_labels[counter])
@@ -156,7 +156,7 @@ def analyze_test_science_ADC(date_time_string, flux_prefix=None, fiber='Science'
     plt.legend(loc='best')
     plt.grid()
 
-    plt.subplot(3,1,2)
+    plt.subplot(4,1,2)
     for counter,flux_plot in enumerate(norm2s):
         plt.plot(wavebins, flux_plot, label=flux_plot_labels[counter])
     plt.ylabel('Delta Relative Flux')
@@ -165,7 +165,7 @@ def analyze_test_science_ADC(date_time_string, flux_prefix=None, fiber='Science'
     plt.legend(loc='best')
     plt.grid()
 
-    plt.subplot(3,1,3)
+    plt.subplot(4,1,3)
     for counter,wave_plot in enumerate(wave_plots):
         plt.plot(wave_plot, label=wave_plot_labels[counter])
     plt.ylabel('Relative Flux')
@@ -174,7 +174,24 @@ def analyze_test_science_ADC(date_time_string, flux_prefix=None, fiber='Science'
     plt.grid()
     plt.legend(loc='best')
 
+    for i,fpl in enumerate(flux_plot_labels):
+        print(i, fpl)
+
+    plt.subplot(4,1,4)
+    std = []
+    minmax = []
+    for counter,flux_plot in enumerate(norm2s):
+        std.append(np.std(flux_plot))
+        minmax.append(max(flux_plot)-min(flux_plot))
+    plt.plot(std, 'ko', label='StdDev')
+    plt.plot(minmax, 'rx', label='P2V')
+    plt.xlabel('Run Number')
+    plt.xlim(-0.2,npos*1.1)
+    plt.grid()
+    plt.legend(loc='best')
+
     plt.show()
+
 
 
 if __name__ == '__main__':
