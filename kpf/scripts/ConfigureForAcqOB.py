@@ -39,9 +39,9 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
     @register_script(Path(__file__).name, os.getpid())
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
-        log.info(f"Running ConfigureForCalOB")
+        log.info(f"Running ConfigureForAcqOB")
         for key in OB:
-            if key not in ['SEQ_Darks', 'SEQ_Calibrations']:
+            if key not in ['SEQ_Observations']:
                 log.debug(f"  {key}: {OB[key]}")
             else:
                 log.debug(f"  {key}:")
@@ -50,7 +50,7 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Set Target Paramerts from OB
-        log.info(f"Setting target parameters")
+#         log.info(f"Setting target parameters")
 #         TargetName
 #         GaiaID
 #         2MASSID
@@ -63,7 +63,6 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
         # Set guide camera parameters (only manual supported for now)
         if OB.get('GuideMode', 'manual') != 'manual':
             log.warning('GuideMode = "manual" is the only supported mode')
-        InitializeTipTilt.execute({})
         SetGuiderFPS.execute(OB)
         SetGuiderGain.execute(OB)
         SetTipTiltGain.execute(OB)
