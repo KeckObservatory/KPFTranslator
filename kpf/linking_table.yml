@@ -101,6 +101,8 @@ links:
         cmd: guider.StopGuiderContinuous.StopGuiderContinuous
     TakeGuiderExposure:
         cmd: guider.TakeGuiderExposure.TakeGuiderExposure
+    TakeGuiderCube:
+        cmd: guider.TakeGuiderCube.TakeGuiderCube
     # Scripts
     CleanupAfterCalOB:
         cmd: scripts.CleanupAfterCalOB.CleanupAfterCalOB
