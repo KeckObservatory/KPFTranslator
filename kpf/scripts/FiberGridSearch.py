@@ -188,7 +188,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                         obj_choice = kpfguide['OBJECT_CHOICE'].read()
                         if obj_choice in [None, 'None']:
                             log.error(f"  --> Lost star <--")
-                            sys.exit(1)
+                            raise KPFException('Lost Star')
 
 #                     log.error(f"You have 30 seconds to recover")
 #                     time.sleep(30)
