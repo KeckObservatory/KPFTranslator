@@ -94,26 +94,27 @@ class CorrectDAR(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        EL = float(args.get('EL'))
+        base_names = {'KPF': 'SCIENCE_BASE',
+                      'SKY': 'SKY_BASE'}
+        POname = ktl.cache('dcs', 'PONAME').read()
+        base_name = base_names.get(POname, None)
+        if base_name is None:
+            log.error(f"dcs.PONAME={POname} is not recognized")
+            return
+
+        # Set CURRENT_BASE
+        log.info(f"dcs.PONAME is {POname}, setting CURRENT_BASE to {base_name}")
+        reference_pix = list(kpfguide[base_name].read(binary=True))
+        kpfguide['CURRENT_BASE'].write(reference_pix)
+
+        EL = ktl.cache('dcs', 'EL').read(binary=True)
         final_pix = calculate_DAR_pix(EL)
         log.info(f"Writing new CURRENT_BASE = {final_pix[0]:.2f} {final_pix[1]:.2f}")
         kpfguide['CURRENT_BASE'].write(final_pix)
 
-
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['EL'] = {'type': float,
-                    'help': 'Elevation in degrees (90-ZA)'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-        return super().add_cmdline_args(parser, cfg)
 
 
 ##-------------------------------------------------------------------------
@@ -136,8 +137,10 @@ class CalculateDAR(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         EL = float(args.get('EL'))
-        final_pix = calculate_DAR_pix(EL)
-        log.info(f"New CURRENT_BASE should be = {final_pix[0]:.2f} {final_pix[1]:.2f}")
+        DARarcsec = calculate_DAR_arcsec(EL)
+        print(f"{DARarcsec:.3f}")
+#         final_pix = calculate_DAR_pix(EL)
+#         log.info(f"New CURRENT_BASE should be = {final_pix[0]:.2f} {final_pix[1]:.2f}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
