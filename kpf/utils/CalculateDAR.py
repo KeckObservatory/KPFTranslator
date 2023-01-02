@@ -1,5 +1,8 @@
 import numpy as np
 
+import ktl
+from astropy import wcs
+
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
@@ -33,6 +36,86 @@ def dR(wav, z, T=7, P=600, f=8, wav0=0.5):
     return dR
 
 
+def calculate_DAR_arcsec(EL):
+    # Maunakea atmospheric values
+    za = 90-EL
+    args = {} # Fix later
+    T0 = args.get('T0', 0)
+    P0 = args.get('P0', 465)
+    f0 = args.get('f0', 4.5)
+    CRED2wav = args.get('CRED2wav', 1.075)
+    sciencewav = args.get('sciencewav', 0.55)
+    DAR_arcsec = dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
+#     print(f"{DAR_arcsec:.3f} arcsec")
+    return DAR_arcsec
+
+
+def calculate_DAR_pix(EL):
+    DAR_arcsec = calculate_DAR_arcsec(EL)
+
+    kpfguide = ktl.cache('kpfguide')
+    w = wcs.WCS(naxis=2)
+    w.wcs.crpix = [kpfguide['CRPIX1Y'].read(binary=True),
+                   kpfguide['CRPIX2Y'].read(binary=True)]
+    w.wcs.crval = [kpfguide['CRVAL1Y'].read(binary=True),
+                   kpfguide['CRVAL2Y'].read(binary=True)]
+    w.wcs.ctype = ["RA---TAN", "DEC--TAN"]
+    w.wcs.pc = np.array([[kpfguide['CD1_1Y'].read(binary=True), 
+                          kpfguide['CD1_2Y'].read(binary=True)],
+                         [kpfguide['CD2_1Y'].read(binary=True),
+                          kpfguide['CD2_2Y'].read(binary=True)]])
+
+    reference_pix = list(kpfguide['CURRENT_BASE'].read(binary=True))
+    log.info(f"Initial CURRENT_BASE = {reference_pix[0]:.2f} {reference_pix[1]:.2f}")
+    azel = w.all_pix2world(np.array([reference_pix], dtype=np.float), 0)[0]
+    log.debug(f"Initial Az, EL = {azel}")
+    modified_azel = np.array([[azel[0],azel[1] + DAR_arcsec/60/60]], dtype=np.float)
+    log.debug(f"Modified Az, EL = {modified_azel[0]}")
+    final_pix = w.all_world2pix(modified_azel, 0)[0]
+    return final_pix
+
+
+##-------------------------------------------------------------------------
+## CorrectDAR
+##-------------------------------------------------------------------------
+class CorrectDAR(KPFTranslatorFunction):
+    '''Return the DAR correction in arcseconds between the CRED2 wavelength
+    and the science wavelength.
+    
+    Calculation from Filippenko 1982 (PASP, 94:715-721, August 1982)
+    
+    ARGS:
+    EL - Elevation of the telescope.
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'EL', value_min=1, value_max=90)
+        return True
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        EL = float(args.get('EL'))
+        final_pix = calculate_DAR_pix(EL)
+        log.info(f"Writing new CURRENT_BASE = {final_pix[0]:.2f} {final_pix[1]:.2f}")
+        kpfguide['CURRENT_BASE'].write(final_pix)
+
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
+        args_to_add = OrderedDict()
+        args_to_add['EL'] = {'type': float,
+                    'help': 'Elevation in degrees (90-ZA)'}
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)
+
+
 ##-------------------------------------------------------------------------
 ## CalculateDAR
 ##-------------------------------------------------------------------------
@@ -52,16 +135,9 @@ class CalculateDAR(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        # Maunakea atmospheric values
-        za = 90-float(args.get('EL'))
-        T0 = args.get('T0', 0)
-        P0 = args.get('P0', 465)
-        f0 = args.get('f0', 4.5)
-        CRED2wav = args.get('CRED2wav', 1.075)
-        sciencewav = args.get('sciencewav', 0.55)
-        DAR_arcsec = dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
-        print(f"{DAR_arcsec:.3f}")
-        return DAR_arcsec
+        EL = float(args.get('EL'))
+        final_pix = calculate_DAR_pix(EL)
+        log.info(f"New CURRENT_BASE should be = {final_pix[0]:.2f} {final_pix[1]:.2f}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -75,15 +151,5 @@ class CalculateDAR(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['EL'] = {'type': float,
                     'help': 'Elevation in degrees (90-ZA)'}
-#         args_to_add['CRED2wav'] = {'type': float,
-#                     'help': 'Wavelength (in microns) for the CRED2'}
-#         args_to_add['sciencewav'] = {'type': float,
-#                     'help': 'Wavelength (in microns) for the science arm'}
-#         args_to_add['T0'] = {'type': float,
-#                     'help': 'Air temperature in deg C'}
-#         args_to_add['P0'] = {'type': float,
-#                     'help': 'Air pressure in mm Hg'}
-#         args_to_add['f0'] = {'type': float,
-#                     'help': 'Water vapor pressure in mm Hg'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)
