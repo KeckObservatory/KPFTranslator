@@ -52,7 +52,6 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_tgsd'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
-        check_input(OB, 'GuideCamGain', allowed_values=['high', 'medium', 'low'])
         check_input(OB, 'FPSvalues')
         return True
 
@@ -70,10 +69,9 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
                        dtype=('a90',       'a10',  'f4'))
 
         kpfguide = ktl.cache('kpfguide')
-
-        gain = OB.get('GuideCamGain')
-        log.info(f"Setting gain to {gain}")
-        SetGuiderGain.execute(OB)
+        log.info(f"Guider gain is {kpfguide['GAIN'].read()}")
+        log.info(f"Ensuring TRIGCUBE is Active")
+        kpfguide['TRIGCUBE'].write('Active')
 
         cube_duration = OB.get('cube_duration')
         for FPS in OB.get('FPSvalues'):
@@ -88,7 +86,7 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
             time.sleep(cube_duration)
             # End cube collection
             kpfguide['TRIGGER'].write('Inactive')
-            # Wait for cuber file to be updated
+            # Wait for cube file to be updated
             ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lastfile}'")
             cube_file = kpfguide['LASTTRIGFILE'].read()
             log.info(f"  cube file: {cube_file}")
