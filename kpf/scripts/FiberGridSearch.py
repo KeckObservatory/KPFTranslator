@@ -16,6 +16,8 @@ from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop
 from ..fiu.SetTipTiltTargetPixel import SetTipTiltTargetPixel
+from ..fiu.StartTipTilt import StartTipTilt
+from ..fiu.StopTipTilt import StopTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..fvc.SetFVCExpTime import SetFVCExpTime
 from ..guider.TakeGuiderExposure import TakeGuiderExposure
@@ -148,8 +150,12 @@ class FiberGridSearch(KPFTranslatorFunction):
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
-                log.info(f"Offsetting to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
+                log.info(f"Stopping tip tilt")
+                StopTipTilt.execute({})
+                log.info(f"Adjusting target to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
+                log.info(f"Starting tip tilt")
+                StartTipTilt.execute({})
 
                 # Take Exposure to make sure we wait at least one cycle
                 log.info(f"Taking extra guider exposure to wait one cycle")
@@ -158,6 +164,14 @@ class FiberGridSearch(KPFTranslatorFunction):
                 sleep_time = 5
                 log.info(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
                 time.sleep(sleep_time)
+
+                obj_choice = kpfguide['OBJECT_CHOICE'].read()
+                obj_pos = kpfguide[obj_choice].read(binary=True)
+                log.debug(f'{obj_choice} is at {obj_pos[0]:.1f} {obj_pos[1]:.1f}')
+                if obj_pos[0] < -1 or obj_pos[1] < -1:
+                    log.error(f"  --> Lost star <--")
+                    log.error(f"You have 30 seconds to recover")
+                    time.sleep(30)
 
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
