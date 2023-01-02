@@ -250,7 +250,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                     lastfile = kpf_expmeter['FITSFILE'].read()
                 else:
                     lastfile = 'failed'
-                log.info(f'  Done.  Lastfile={lastfile}')
+                log.debug(f'  Done.  Lastfile={lastfile}')
                 row = {'file': lastfile, 'camera': 'ExpMeter',
                        'dx': xs[i], 'dy': ys[j]}
                 images.add_row(row)
