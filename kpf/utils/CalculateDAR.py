@@ -76,48 +76,6 @@ def calculate_DAR_pix(EL):
 
 
 ##-------------------------------------------------------------------------
-## CorrectDAR
-##-------------------------------------------------------------------------
-class CorrectDAR(KPFTranslatorFunction):
-    '''Return the DAR correction in arcseconds between the CRED2 wavelength
-    and the science wavelength.
-    
-    Calculation from Filippenko 1982 (PASP, 94:715-721, August 1982)
-    
-    ARGS:
-    EL - Elevation of the telescope.
-    '''
-    @classmethod
-    def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'EL', value_min=1, value_max=90)
-        return True
-
-    @classmethod
-    def perform(cls, args, logger, cfg):
-        base_names = {'KPF': 'SCIENCE_BASE',
-                      'SKY': 'SKY_BASE'}
-        POname = ktl.cache('dcs', 'PONAME').read()
-        base_name = base_names.get(POname, None)
-        if base_name is None:
-            log.error(f"dcs.PONAME={POname} is not recognized")
-            return
-
-        # Set CURRENT_BASE
-        log.info(f"dcs.PONAME is {POname}, setting CURRENT_BASE to {base_name}")
-        reference_pix = list(kpfguide[base_name].read(binary=True))
-        kpfguide['CURRENT_BASE'].write(reference_pix)
-
-        EL = ktl.cache('dcs', 'EL').read(binary=True)
-        final_pix = calculate_DAR_pix(EL)
-        log.info(f"Writing new CURRENT_BASE = {final_pix[0]:.2f} {final_pix[1]:.2f}")
-        kpfguide['CURRENT_BASE'].write(final_pix)
-
-    @classmethod
-    def post_condition(cls, args, logger, cfg):
-        return True
-
-
-##-------------------------------------------------------------------------
 ## CalculateDAR
 ##-------------------------------------------------------------------------
 class CalculateDAR(KPFTranslatorFunction):

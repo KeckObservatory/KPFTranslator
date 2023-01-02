@@ -161,7 +161,7 @@ links:
     CalculateDAR:
         cmd: utils.CalculateDAR.CalculateDAR
     CorrectDAR:
-        cmd: utils.CalculateDAR.CorrectDAR
+        cmd: utils.CorrectDAR.CorrectDAR
     ImageBackIlluminatedFibers:
         cmd: utils.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
     SetObserverFromSchedule:
