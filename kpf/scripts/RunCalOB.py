@@ -38,7 +38,7 @@ class RunCalOB(KPFTranslatorFunction):
             return False
 
         # Configure: Turn on Lamps
-        ConfigureForCalOB.execute(OB)
+        ConfigureForCalibrations.execute(OB)
         # Execute the Cal Sequence
         #   Wrap in try/except so that cleanup happens
         try:
