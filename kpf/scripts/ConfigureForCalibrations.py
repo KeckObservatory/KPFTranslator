@@ -15,7 +15,7 @@ from ..calbench.CalLampPower import CalLampPower
 from ..fiu.ConfigureFIU import ConfigureFIU
 
 
-class ConfigureForCalOB(KPFTranslatorFunction):
+class ConfigureForCalibrations(KPFTranslatorFunction):
     '''Script which configures the instrument for Cal OBs.
     
     Can be called by `ddoi_script_functions.configure_for_science`.

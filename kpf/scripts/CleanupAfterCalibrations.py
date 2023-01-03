@@ -16,7 +16,7 @@ from ..spectrograph.SetObject import SetObject
 from ..spectrograph.WaitForReady import WaitForReady
 
 
-class CleanupAfterCalOB(KPFTranslatorFunction):
+class CleanupAfterCalibrations(KPFTranslatorFunction):
     '''Script which cleans up after Cal OBs.
     
     Can be called by `ddoi_script_functions.post_observation_cleanup`.

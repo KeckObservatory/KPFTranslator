@@ -8,7 +8,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from .ConfigureForCalOB import ConfigureForCalOB
 from .ExecuteCalSequence import ExecuteCalSequence
-from .CleanupAfterCalOB import CleanupAfterCalOB
+from .CleanupAfterCalibrations import CleanupAfterCalibrations
 
 
 class RunCalOB(KPFTranslatorFunction):
@@ -47,7 +47,7 @@ class RunCalOB(KPFTranslatorFunction):
             log.error("ExecuteCalSequence failed:")
             log.error(e)
         # Cleanup: Turn off lamps
-        CleanupAfterCalOB.execute(OB)
+        CleanupAfterCalibrations.execute(OB)
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

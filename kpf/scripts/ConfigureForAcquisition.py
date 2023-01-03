@@ -18,7 +18,7 @@ from ..fiu.SetTipTiltGain import SetTipTiltGain
 from ..fiu.ConfigureFIU import ConfigureFIU
 
 
-class ConfigureForAcqOB(KPFTranslatorFunction):
+class ConfigureForAcquisition(KPFTranslatorFunction):
     '''Script which configures the instrument for Acquisition step.
     
     - Sets target parameters

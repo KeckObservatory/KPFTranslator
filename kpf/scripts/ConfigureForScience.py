@@ -18,7 +18,7 @@ from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 
 
-class ConfigureForSciOB(KPFTranslatorFunction):
+class ConfigureForScience(KPFTranslatorFunction):
     '''Script which configures the instrument for Science observations.
     
     - Turns on lamp power for all sequences

@@ -104,14 +104,14 @@ links:
     TakeGuiderCube:
         cmd: guider.TakeGuiderCube.TakeGuiderCube
     # Scripts
-    CleanupAfterCalOB:
-        cmd: scripts.CleanupAfterCalOB.CleanupAfterCalOB
-    ConfigureForAcqOB:
-        cmd: scripts.ConfigureForAcqOB.ConfigureForAcqOB
-    ConfigureForCalOB:
-        cmd: scripts.ConfigureForCalOB.ConfigureForCalOB
-    ConfigureForSciOB:
-        cmd: scripts.ConfigureForSciOB.ConfigureForSciOB
+    CleanupAfterCalibrations:
+        cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations
+    ConfigureForAcquisition:
+        cmd: scripts.ConfigureForAcquisition.ConfigureForAcquisition
+    ConfigureForCalibrations:
+        cmd: scripts.ConfigureForCalibrations.ConfigureForCalibrations
+    ConfigureForScience:
+        cmd: scripts.ConfigureForScience.ConfigureForScience
     EndOfNight:
         cmd: scripts.EndOfNight.EndOfNight
     ExecuteCalSequence:
