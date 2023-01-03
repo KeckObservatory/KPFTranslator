@@ -54,7 +54,7 @@ def check_scriptstop():
     if scriptstop.read() == 'Yes':
         log.warning("SCRIPTSTOP requested.  Resetting SCRIPTSTOP and exiting")
         scriptstop.write('No')
-        clear_script()
+        _clear_script()
         raise KPFException("SCRIPTSTOP triggered")
 
 
