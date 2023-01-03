@@ -25,7 +25,6 @@ class ConfigureForSciOB(KPFTranslatorFunction):
     - Sets octagon / simulcal source & ND filters for first sequence (skip if
       slew cal is selected?)
     - Sets source select shutters
-    - Sets triggered detectors
 
     Can be called by `ddoi_script_functions.configure_for_science`.
     '''

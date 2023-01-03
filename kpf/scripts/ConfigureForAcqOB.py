@@ -63,9 +63,12 @@ class ConfigureForAcqOB(KPFTranslatorFunction):
         # Set guide camera parameters (only manual supported for now)
         if OB.get('GuideMode', 'manual') != 'manual':
             log.warning('GuideMode = "manual" is the only supported mode')
-        SetGuiderFPS.execute(OB)
-        SetGuiderGain.execute(OB)
-        SetTipTiltGain.execute(OB)
+        if OB.get('GuideCamGain', None) is not None:
+            SetGuiderGain.execute(OB)
+        if OB.get('GuideFPS', None) is not None:
+            SetGuiderFPS.execute(OB)
+        if OB.get('GuideLoopGain', None) is not None:
+            SetTipTiltGain.execute(OB)
 
         # Set FIU Mode
         ConfigureFIU.execute({'mode': 'observing'})

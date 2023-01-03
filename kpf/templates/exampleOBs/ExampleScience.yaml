@@ -12,9 +12,9 @@ Jmag: 9
 Teff: 5700
 # Guider Setup
 GuideMode: manual
-GuideFPS: 100
 GuideCamGain: high
-GuideLoopGain: 0.6
+GuideFPS: 100
+GuideLoopGain: 0.4
 # Spectrograph Setup
 TriggerCaHK: False
 TriggerGreen: True
