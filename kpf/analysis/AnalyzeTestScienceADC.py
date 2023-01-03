@@ -190,9 +190,8 @@ def analyze_test_science_ADC(date_time_string, flux_prefix=None, fiber='Science'
     plt.grid()
     plt.legend(loc='best')
 
-    plt.show()
-
-
+#     plt.show()
+    plt.savefig(ouput_analysis_image_file, bbox_inches='tight', pad_inches=0.10)
 
 if __name__ == '__main__':
     analyze_test_science_ADC(args.datetimestr,
