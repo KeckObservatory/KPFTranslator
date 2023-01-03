@@ -10,3 +10,9 @@ nx: 5
 ny: 5
 dx: 5
 dy: 5
+ADC1Offset: 0
+ADC2Offset: 0
+ADC1Reverse: False
+ADC2Reverse: False
+ADC1Flip: False
+ADC2Flip: False

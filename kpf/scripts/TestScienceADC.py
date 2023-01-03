@@ -148,8 +148,27 @@ class TestScienceADC(KPFTranslatorFunction):
             for j,yi in enumerate(yis):
                 # Offset to position
                 nominalx, nominaly = kpffiu['ADCPRISMS'].read(binary=True)
-                nominalx += 20
-                nominaly += -40
+                log.info(f"ADC nominal position: {nominalx:.1f} {nominaly:.1f}")
+
+                # Apply offset if requested
+                nominalx += OB.get('ADC1Offset', 0)
+                nominaly += OB.get('ADC2Offset', 0)
+                log.info(f"ADC offset nominal position: {nominalx:.1f} {nominaly:.1f}")
+
+                # Apply reverse rotation if requested
+                if OB.get('ADC1Reverse', False) is True:
+                    nominalx = -nominalx
+                if OB.get('ADC2Reverse', False) is True:
+                    nominaly = -nominaly
+                log.info(f"ADC reverse nominal position: {nominalx:.1f} {nominaly:.1f}")
+
+                # Apply flip if requested
+                if OB.get('ADC1Flip', False) is True:
+                    nominalx += 180
+                if OB.get('ADC2Flip', False) is True:
+                    nominaly += 180
+                log.info(f"ADC flip nominal position: {nominalx:.1f} {nominaly:.1f}")
+
                 log.info(f"Offsetting to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 kpffiu['ADC1VAL'].write(nominalx + xs[i])
                 kpffiu['ADC2VAL'].write(nominaly + ys[j])
