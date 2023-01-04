@@ -9,6 +9,7 @@ from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.WaitForReady import WaitForReady
+from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 
 
 class StartOfNight(KPFTranslatorFunction):
@@ -35,6 +36,7 @@ class StartOfNight(KPFTranslatorFunction):
         scriptallow.write('No')
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
+        SetSourceSelectShutters.execute({'SSS_Science': True, 'SSS_Sky': True})
 #         log.info('Initialize tip tilt mirror')
 #         InitializeTipTilt.execute({})
         # Setup AO
