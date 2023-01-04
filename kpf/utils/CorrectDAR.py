@@ -23,18 +23,19 @@ def calculate_DAR_pix(EL):
                           kpfguide['CD1_2Y'].read(binary=True)],
                          [kpfguide['CD2_1Y'].read(binary=True),
                           kpfguide['CD2_2Y'].read(binary=True)]])
+    log.debug(f"Using WCS:\n{w.to_header_string()}")
 
     reference_pix = list(kpfguide['CURRENT_BASE'].read(binary=True))
-    log.info(f"Initial CURRENT_BASE = {reference_pix[0]:.2f} {reference_pix[1]:.2f}")
+    log.debug(f"Initial CURRENT_BASE = {reference_pix[0]:.2f} {reference_pix[1]:.2f}")
     azel = w.all_pix2world(np.array([reference_pix], dtype=np.float), 0)[0]
     log.debug(f"Initial Az, EL = {azel}")
     modified_azel = np.array([[azel[0],azel[1] + DAR_arcsec/60/60]], dtype=np.float)
     log.debug(f"Modified Az, EL = {modified_azel[0]}")
     final_pix = w.all_world2pix(modified_azel, 0)[0]
-    log.info(f"Final Pixel = {final_pix[0]:.2f} {final_pix[1]:.2f}")
+    log.debug(f"Final Pixel = {final_pix[0]:.2f} {final_pix[1]:.2f}")
     delta_pix = ((final_pix[0]-reference_pix[0])**2 + (final_pix[1]-reference_pix[1])**2)**0.5
     log.info(f"Pixel shift is {delta_pix:.1f}")
-    
+
     return final_pix
 
 
@@ -63,17 +64,21 @@ class CorrectDAR(KPFTranslatorFunction):
         base_name = base_names.get(POname, None)
         if base_name is None:
             log.error(f"dcs.PONAME={POname} is not recognized")
+            log.error("Leaving CURRENT_BASE unmodified")
             return
+#             log.error(f"Using SCIENCE_BASE for testing")
+#             base_name = 'SCIENCE_BASE'
 
         # Set CURRENT_BASE
         log.info(f"dcs.PONAME is {POname}, setting CURRENT_BASE to {base_name}")
         reference_pix = list(kpfguide[base_name].read(binary=True))
         kpfguide['CURRENT_BASE'].write(reference_pix)
 
-        EL = ktl.cache('dcs', 'EL').read(binary=True)
+        EL = ktl.cache('dcs', 'EL').read(binary=True)*180/np.pi
+        log.debug(f"Telescope elevation EL = {EL:.1f}")
         final_pix = calculate_DAR_pix(EL)
-        log.info(f"NOT Writing new CURRENT_BASE = {final_pix[0]:.2f} {final_pix[1]:.2f}")
-#         kpfguide['CURRENT_BASE'].write(final_pix)
+        log.info(f"Writing new CURRENT_BASE = {final_pix[0]:.2f} {final_pix[1]:.2f}")
+        kpfguide['CURRENT_BASE'].write(final_pix)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
