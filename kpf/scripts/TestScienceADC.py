@@ -66,7 +66,7 @@ class TestScienceADC(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_eng_fgs'])
+        check_input(OB, 'Template_Name', allowed_values=['kpf_eng_tsa'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.4')
         check_input(OB, 'nx')
         check_input(OB, 'ny')
