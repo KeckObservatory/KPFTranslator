@@ -186,7 +186,7 @@ class TestScienceADC(KPFTranslatorFunction):
 
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
-                kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
+                kpfexpose['OBJECT'].write(f'ADC test {xs[i]}, {ys[j]} arcsec')
                 log.info(f"Starting kpfexpose cameras")
                 StartExposure.execute({})
                 # Begin timestamp for history retrieval
