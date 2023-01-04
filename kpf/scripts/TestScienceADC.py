@@ -75,7 +75,7 @@ class TestScienceADC(KPFTranslatorFunction):
         check_input(OB, 'ExpMeter_exptime')
         FVCs = OB.get('FVCs', '').split(',')
         for FVC in FVCs:
-            if FVC not in ['SCI', 'CAHK', 'EXT']:
+            if FVC not in ['SCI', 'CAHK', 'EXT', '']:
                 raise FailedPreCondition(f"FVC {FVC} not supported")
         return True
 
