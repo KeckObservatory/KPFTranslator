@@ -6,7 +6,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from .ConfigureForCalOB import ConfigureForCalOB
+from .ConfigureForCalibrations import ConfigureForCalibrations
 from .ExecuteCalSequence import ExecuteCalSequence
 from .CleanupAfterCalibrations import CleanupAfterCalibrations
 
