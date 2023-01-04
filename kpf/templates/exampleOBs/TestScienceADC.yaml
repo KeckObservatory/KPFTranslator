@@ -2,7 +2,7 @@ Template_Name: kpf_eng_testsciadc
 Template_Version: 0.3
 
 comment: test run
-cameras: CRED2,SCI,CAHK,ExpMeter
+FVCs: SCI,CAHK
 ExpMeter_exptime: 2
 SCIFVC_exptime: 10
 CAHKFVC_exptime: 10
