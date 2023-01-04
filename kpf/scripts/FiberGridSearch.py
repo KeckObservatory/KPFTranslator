@@ -74,7 +74,6 @@ class FiberGridSearch(KPFTranslatorFunction):
         check_input(OB, 'ny')
         check_input(OB, 'dx')
         check_input(OB, 'dy')
-        check_input(OB, 'FVCs')
         check_input(OB, 'ExpMeter_exptime')
         FVCs = OB.get('FVCs', '').split(',')
         for FVC in FVCs:
