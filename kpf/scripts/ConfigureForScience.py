@@ -16,6 +16,7 @@ from ..calbench.SetCalSource import SetCalSource
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
 
 
 class ConfigureForScience(KPFTranslatorFunction):
@@ -50,13 +51,15 @@ class ConfigureForScience(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Turn on lamps
-        lamps = [seq['CalSource'] for seq in OB.get('SEQ_Observations')\
-                 if 'CalSource' in seq.keys()]
-        for lamp in set(lamps):
-            if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                        'BrdbandFiber', 'WideFlat']:
-                log.debug(f"Ensuring lamp {lamp} is on")
-                CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+#         lamps = [seq['CalSource'] for seq in OB.get('SEQ_Observations')\
+#                  if 'CalSource' in seq.keys()]
+#         for lamp in set(lamps):
+#             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
+#                         'BrdbandFiber', 'WideFlat']:
+#                 log.debug(f"Ensuring lamp {lamp} is on")
+#                 CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+
+        # 
 
         # Set Octagon
         log.info(f"Set CalSource/Octagon: {lamps[0]}")
@@ -64,9 +67,11 @@ class ConfigureForScience(KPFTranslatorFunction):
 
         # Set source select shutters
         log.info(f"Set Source Select Shutters")
-        SetSourceSelectShutters.execute({'SciSelect': True, 'SkySelect': True,
-                                         'SoCalSci': False, 'SoCalCal': False,
-                                         'Cal_SciSky': False})
+        SetSourceSelectShutters.execute({'SSS_Science': True,
+                                         'SSS_Sky': True,
+                                         'SSS_SoCalSci': False,
+                                         'SSS_SoCalCal': False,
+                                         'SSS_CalSciSky': False})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
