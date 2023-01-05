@@ -53,8 +53,7 @@ class EndOfNight(KPFTranslatorFunction):
             log.info('Sending PCU stage to Home position')
             SendPCUtoHome.execute({})
         # Finish FIU shutdown
-        WaitForConfigureFIU.execute({'mode': 'Stowed'})
-        ShutdownTipTilt.execute({})
+#         WaitForConfigureFIU.execute({'mode': 'Stowed'})
         # Power off FVCs
         for camera in ['SCI', 'CAHK', 'CAL']:
             FVCPower.execute({'camera': camera, 'power': 'off'})
