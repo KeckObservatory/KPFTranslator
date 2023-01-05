@@ -41,7 +41,9 @@ links:
         cmd: calbench.WaitForND1.WaitForND1
     WaitForND2:
         cmd: calbench.WaitForND2.WaitForND2
-    # ExpoMeter
+    # ExpMeter
+    SetExpMeterExptime:
+        cmd: expmeter.SetExpMeterExptime.SetExpMeterExptime
     # FIU
     ConfigureFIU:
         cmd: fiu.ConfigureFIU.ConfigureFIU
