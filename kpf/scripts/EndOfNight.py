@@ -52,8 +52,6 @@ class EndOfNight(KPFTranslatorFunction):
 #             TurnHepaOn.execute({})
             log.info('Sending PCU stage to Home position')
             SendPCUtoHome.execute({})
-        # Finish FIU shutdown
-#         WaitForConfigureFIU.execute({'mode': 'Stowed'})
         # Power off FVCs
         for camera in ['SCI', 'CAHK', 'CAL']:
             FVCPower.execute({'camera': camera, 'power': 'off'})
@@ -69,6 +67,8 @@ class EndOfNight(KPFTranslatorFunction):
         log.info('Set SCRIPTALLOW to Yes')
         scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
         scriptallow.write('Yes')
+        # Finish FIU shutdown
+        WaitForConfigureFIU.execute({'mode': 'Stowed'})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
