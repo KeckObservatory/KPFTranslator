@@ -148,16 +148,12 @@ class FiberGridSearch(KPFTranslatorFunction):
                 SetFVCExpTime.execute({'camera': FVC, 'exptime': exptime})
 
         for i,xi in enumerate(xis):
+            yis.reverse()
             for j,yi in enumerate(yis):
+                check_scriptstop()
                 # Offset to position
-#                 log.debug(f"Stopping tip tilt")
-#                 StopTipTilt.execute({})
-#                 time.sleep(1)
                 log.info(f"Adjusting target to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
-#                 time.sleep(0.2)
-#                 log.debug(f"Starting tip tilt")
-#                 StartTipTilt.execute({})
 
                 # Take Exposure to make sure we wait at least one cycle
                 log.debug(f"Taking extra guider exposure to wait one cycle")
@@ -180,25 +176,15 @@ class FiberGridSearch(KPFTranslatorFunction):
                     obj_choice = kpfguide['OBJECT_CHOICE'].read()
                     if obj_choice in [None, 'None']:
                         log.error(f"  --> Lost star <--")
-                        log.info(f"Stopping tip tilt")
-                        StopTipTilt.execute({})
-                        time.sleep(1)
+                        subprocess.call(['kpf', 'restart', 'kpfguide2'])
+                        time.sleep(5)
                         log.info(f"Starting tip tilt")
                         StartTipTilt.execute({})
                         time.sleep(5)
-
                         obj_choice = kpfguide['OBJECT_CHOICE'].read()
                         if obj_choice in [None, 'None']:
                             log.error(f"  --> Lost star <--")
-                            subprocess.call(['kpf', 'restart', 'kpfguide2'])
-                            time.sleep(5)
-                            log.info(f"Starting tip tilt")
-                            StartTipTilt.execute({})
-                            time.sleep(5)
-                            obj_choice = kpfguide['OBJECT_CHOICE'].read()
-                            if obj_choice in [None, 'None']:
-                                log.error(f"  --> Lost star <--")
-                                raise KPFError('Lost Star')
+                            raise KPFError('Lost Star')
 
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
@@ -225,7 +211,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                        'dx': xs[i], 'dy': ys[j]}
                 images.add_row(row)
 
-                # Here's where we wait for the duration of the FVC exposures
+                check_scriptstop()
 
                 # Collect files for FVC exposures
                 for FVC in ['SCI', 'CAHK', 'EXT']:
@@ -244,6 +230,8 @@ class FiberGridSearch(KPFTranslatorFunction):
                             row = {'file': lastfile, 'camera': FVC,
                                    'dx': xs[i], 'dy': ys[j]}
                             images.add_row(row)
+
+                check_scriptstop()
 
                 # Here's where we wait for the remainder of the TimeOnPosition
                 log.info(f"  Waiting for kpfexpose to be ready")
@@ -273,13 +261,14 @@ class FiberGridSearch(KPFTranslatorFunction):
                     kws = {'kpf_expmeter': [counts_kw]}
                     counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
                     # Extract counts and save to table
-                    fluxes = np.zeros((len(counts_history), 4))
+                    fluxes = np.zeros((len(counts_history)-2, 4))
                     for k,entry in enumerate(counts_history):
-                        value_floats = [float(v) for v in entry['ascvalue'].split()]
-                        ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
-                        log.debug(f"  {ts}: {value_floats}")
-                        fluxes[k] = value_floats
-                    avg_fluxes = np.median(fluxes, axis=0)
+                        if k != 0 and k != len(counts_history)-1:
+                            value_floats = [float(v) for v in entry['ascvalue'].split()]
+                            ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
+                            log.debug(f"  {ts}: {value_floats}")
+                            fluxes[k-1] = value_floats
+                    avg_fluxes = np.mean(fluxes, axis=0)
                     expmeter_data[f"{counts_kw[:3].lower()}1"] = avg_fluxes[0]
                     expmeter_data[f"{counts_kw[:3].lower()}2"] = avg_fluxes[1]
                     expmeter_data[f"{counts_kw[:3].lower()}3"] = avg_fluxes[2]
