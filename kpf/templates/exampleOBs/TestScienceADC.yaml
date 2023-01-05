@@ -3,6 +3,7 @@ Template_Version: 0.3
 
 comment: test run
 FVCs: SCI,CAHK
+TimeOnPosition: 60
 ExpMeter_exptime: 2
 SCIFVC_exptime: 10
 CAHKFVC_exptime: 10
