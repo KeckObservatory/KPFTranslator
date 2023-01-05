@@ -123,7 +123,7 @@ class TestScienceADC(KPFTranslatorFunction):
 
         # Set up kpfexpose
         kpfexpose = ktl.cache('kpfexpose')
-        SetSourceSelectShutters.execute({'SSS_Science': True, 'SSS_Sky': True})
+        SetSourceSelectShutters.execute(OB)
         SetTimedShutters.execute({'TimedShutter_Scrambler': True})
         SetTriggeredDetectors.execute({'TriggerExpMeter': True})
         total_exptime = ExpMeter_exptime = OB.get('TimeOnPosition')
