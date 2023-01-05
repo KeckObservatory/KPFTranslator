@@ -4,6 +4,7 @@ import logging
 from datetime import datetime, timedelta
 import time
 import yaml
+import subprocess
 
 import numpy as np
 from astropy.table import Table, Row
@@ -189,10 +190,15 @@ class FiberGridSearch(KPFTranslatorFunction):
                         obj_choice = kpfguide['OBJECT_CHOICE'].read()
                         if obj_choice in [None, 'None']:
                             log.error(f"  --> Lost star <--")
-                            raise KPFException('Lost Star')
-
-#                     log.error(f"You have 30 seconds to recover")
-#                     time.sleep(30)
+                            subprocess.call(['kpf', 'restart', 'kpfguide2'])
+                            time.sleep(5)
+                            log.info(f"Starting tip tilt")
+                            StartTipTilt.execute({})
+                            time.sleep(5)
+                            obj_choice = kpfguide['OBJECT_CHOICE'].read()
+                            if obj_choice in [None, 'None']:
+                                log.error(f"  --> Lost star <--")
+                                raise KPFError('Lost Star')
 
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
