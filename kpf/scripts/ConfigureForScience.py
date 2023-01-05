@@ -51,8 +51,8 @@ class ConfigureForScience(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Turn on lamps
-#         lamps = [seq['CalSource'] for seq in OB.get('SEQ_Observations')\
-#                  if 'CalSource' in seq.keys()]
+        lamps = [seq['CalSource'] for seq in OB.get('SEQ_Observations')\
+                 if 'CalSource' in seq.keys()]
 #         for lamp in set(lamps):
 #             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
 #                         'BrdbandFiber', 'WideFlat']:
