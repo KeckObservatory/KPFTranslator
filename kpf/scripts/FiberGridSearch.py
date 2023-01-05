@@ -279,7 +279,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                         ts = datetime.fromtimestamp(entry['time']).strftime('%Y-%m-%d %H:%M:%S')
                         log.debug(f"  {ts}: {value_floats}")
                         fluxes[k] = value_floats
-                    avg_fluxes = np.mean(fluxes, axis=0)
+                    avg_fluxes = np.median(fluxes, axis=0)
                     expmeter_data[f"{counts_kw[:3].lower()}1"] = avg_fluxes[0]
                     expmeter_data[f"{counts_kw[:3].lower()}2"] = avg_fluxes[1]
                     expmeter_data[f"{counts_kw[:3].lower()}3"] = avg_fluxes[2]
