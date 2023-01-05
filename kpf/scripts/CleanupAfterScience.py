@@ -22,8 +22,6 @@ class CleanupAfterScience(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.4')
         return True
 
     @classmethod
