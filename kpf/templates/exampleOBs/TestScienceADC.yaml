@@ -1,8 +1,8 @@
-Template_Name: kpf_eng_testsciadc
+Template_Name: kpf_eng_tsa
 Template_Version: 0.3
 
 comment: test run
-cameras: CRED2,SCI,CAHK,ExpMeter
+FVCs: SCI,CAHK
 ExpMeter_exptime: 2
 SCIFVC_exptime: 10
 CAHKFVC_exptime: 10
@@ -10,7 +10,12 @@ nx: 5
 ny: 5
 dx: 5
 dy: 5
+ADC1Offset: 0
+ADC2Offset: 0
+ADC1Reverse: False
+ADC2Reverse: False
+ADC1Flip: False
+ADC2Flip: False
 SSS_Science: True
 SSS_Sky: True
 SSS_CalSciSky: True
-
