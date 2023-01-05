@@ -96,8 +96,9 @@ class CalculateDAR(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         EL = float(args.get('EL'))
         DARarcsec = calculate_DAR_arcsec(EL)
-        print(f"{DARarcsec:.3f}")
-#         final_pix = calculate_DAR_pix(EL)
+        print(f"DAR in arcsec = {DARarcsec:.3f}")
+        final_pix = calculate_DAR_pix(EL)
+        print(f"NewTarget Pix = {final_pix[0]:.1f}, {final_pix[1]:.1f}")
 #         log.info(f"New CURRENT_BASE should be = {final_pix[0]:.2f} {final_pix[1]:.2f}")
 
     @classmethod
