@@ -106,6 +106,8 @@ links:
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations
+    CleanupAfterScience:
+        cmd: scripts.CleanupAfterScience.CleanupAfterScience
     ConfigureForAcquisition:
         cmd: scripts.ConfigureForAcquisition.ConfigureForAcquisition
     ConfigureForCalibrations:
