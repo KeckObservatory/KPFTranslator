@@ -59,7 +59,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
     @register_script(Path(__file__).name, os.getpid())
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
-        log.info(f"Running ExecuteObservingSequence")
+        log.info(f"Running ExecuteSciSequence")
         for key in OB:
             if key not in ['SEQ_Observations']:
                 log.debug(f"  {key}: {OB[key]}")

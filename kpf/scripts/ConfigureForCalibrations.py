@@ -31,7 +31,7 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
     @register_script(Path(__file__).name, os.getpid())
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
-        log.info(f"Running ConfigureForCalOB")
+        log.info(f"Running ConfigureForCalibrations")
         for key in OB:
             if key not in ['SEQ_Darks', 'SEQ_Calibrations']:
                 log.debug(f"  {key}: {OB[key]}")
