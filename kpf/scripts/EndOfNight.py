@@ -16,6 +16,7 @@ from ..spectrograph.SetObserver import SetObserver
 from ..spectrograph.SetObject import SetObject
 from ..calbench.CalLampPower import CalLampPower
 from ..fvc.FVCPower import FVCPower
+from ..fiu.StopTipTilt import StopTipTilt
 
 
 class EndOfNight(KPFTranslatorFunction):
@@ -38,6 +39,8 @@ class EndOfNight(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        StopTipTilt.execute({})
+
         # Start FIU stow
         log.info('Setting FIU mode to Stowed')
         ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
