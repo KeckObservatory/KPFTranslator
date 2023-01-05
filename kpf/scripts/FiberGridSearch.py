@@ -150,14 +150,14 @@ class FiberGridSearch(KPFTranslatorFunction):
         for i,xi in enumerate(xis):
             for j,yi in enumerate(yis):
                 # Offset to position
-                log.debug(f"Stopping tip tilt")
-                StopTipTilt.execute({})
-                time.sleep(1)
+#                 log.debug(f"Stopping tip tilt")
+#                 StopTipTilt.execute({})
+#                 time.sleep(1)
                 log.info(f"Adjusting target to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
-                time.sleep(0.2)
-                log.debug(f"Starting tip tilt")
-                StartTipTilt.execute({})
+#                 time.sleep(0.2)
+#                 log.debug(f"Starting tip tilt")
+#                 StartTipTilt.execute({})
 
                 # Take Exposure to make sure we wait at least one cycle
                 log.debug(f"Taking extra guider exposure to wait one cycle")
