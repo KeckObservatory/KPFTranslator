@@ -1,10 +1,13 @@
 #!python3
 
 ## Import General Tools
+import sys
+import os
 from pathlib import Path
 import argparse
 import logging
 import subprocess
+from datetime import datetime, timedelta
 
 import numpy as np
 from astropy.io import fits
@@ -206,6 +209,12 @@ def generate_cube_gif(file, giffile):
     log.info('Generating animation')
     hdul = fits.open(file)
 
+    date_beg = hdul[0].header.get('DATE-BEG')
+    start = datetime.fromisoformat(date_beg)
+    date_end = hdul[0].header.get('DATE-END')
+    end = datetime.fromisoformat(date_end)
+    duration = (end - start).total_seconds()
+
     cube_ext = None
     table_ext = None
     for i,ext in enumerate(hdul):
@@ -231,27 +240,35 @@ def generate_cube_gif(file, giffile):
     fig = plt.figure(figsize=(8,8))
 
     fps = 10
-    writer = animation.ImageMagickWriter(fps=fps)
-#     writer = animation.ImageMagickFileWriter(fps=fps)
-#     writer = animation.FFMpegWriter(fps=fps)
-#     writer = animation.PillowWriter(fps=fps)
+    if sys.platform == 'darwin':
+#         writer = animation.ImageMagickWriter(fps=fps)
+#         writer = animation.ImageMagickFileWriter(fps=fps)
+        writer = animation.FFMpegWriter(fps=fps)
+#         writer = animation.PillowWriter(fps=fps)
+    else:
+        writer = animation.ImageMagickWriter(fps=fps)
 
 
     log.info('Building individual frames')
     ims = []
     for j,im in enumerate(cube):
-        plt.title(f"{file.name}: frame {j:04d}")
+        plt.title(f"{file.name}: {duration:.1f} s, {nf:d} frames")
         im = plt.imshow(im, origin='lower', cmap='gray', norm=norm, animated=True)
+        frametext = plt.text(nx-20, ny-5, f"{j:04d}/{nf:04d}", color='r')
+        lines = []
         if t[j]['object1_x'] > 0 and t[j]['object1_y'] > 0:
             xpix = t[j]['object1_x'] - (t[j]['target_x'] - nx/2)
             ypix = t[j]['object1_y'] - (t[j]['target_y'] - ny/2)
             lines = plt.plot(xpix, ypix, 'r+')
-        ims.append([im] + lines)
+        newim = [im] + [frametext] + lines
+        ims.append(newim)
 
     log.info('Building animation')
     ani = animation.ArtistAnimation(fig, ims, interval=1000/fps, blit=True,
                                     repeat_delay=1000)
     log.info(f'Writing {giffile} using {writer}')
+    p = Path(giffile)
+    if p.expanduser().exists(): p.unlink()
     ani.save(f"{giffile}", writer)
     log.info('Done')
 
