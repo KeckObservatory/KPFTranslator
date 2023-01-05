@@ -69,6 +69,8 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        kpfguide = ktl.cache('kpfguide')
+        kpfguide['TRIGCUBE'].write('Inactive')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         runagitator = OB.get('RunAgitator', False)
         # This is a time shim to insert a pause between exposures so that the
@@ -123,8 +125,12 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                 if runagitator is True:
                     StartAgitator.execute({})
                 log.info(f"Starting expoure {j+1}/{nexp} ({seq.get('Object')})")
+                log.info('Starting TRIGGER file')
+                kpfguide['TRIGGER'].write(1)
                 StartExposure.execute({})
                 WaitForReadout.execute({})
+                log.info('Stopping TRIGGER file')
+                kpfguide['TRIGGER'].write(0)
                 log.info(f"Readout has begun")
                 if runagitator is True:
                     StopAgitator.execute({})
