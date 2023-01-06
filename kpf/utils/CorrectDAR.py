@@ -13,28 +13,38 @@ def calculate_DAR_pix(EL):
     DAR_arcsec = calculate_DAR_arcsec(EL)
 
     kpfguide = ktl.cache('kpfguide')
-    w = wcs.WCS(naxis=2)
-    w.wcs.crpix = [kpfguide['CRPIX1Y'].read(binary=True),
-                   kpfguide['CRPIX2Y'].read(binary=True)]
-    w.wcs.crval = [kpfguide['CRVAL1Y'].read(binary=True),
-                   kpfguide['CRVAL2Y'].read(binary=True)]
-    w.wcs.ctype = ["RA---TAN", "DEC--TAN"]
-    w.wcs.pc = np.array([[kpfguide['CD1_1Y'].read(binary=True), 
-                          kpfguide['CD1_2Y'].read(binary=True)],
-                         [kpfguide['CD2_1Y'].read(binary=True),
-                          kpfguide['CD2_2Y'].read(binary=True)]])
-    log.debug(f"Using WCS:\n{w.to_header_string()}")
 
     reference_pix = list(kpfguide['CURRENT_BASE'].read(binary=True))
     log.debug(f"Initial CURRENT_BASE = {reference_pix[0]:.2f} {reference_pix[1]:.2f}")
-    azel = w.all_pix2world(np.array([reference_pix], dtype=np.float), 0)[0]
-    log.debug(f"Initial Az, EL = {azel}")
-    modified_azel = np.array([[azel[0],azel[1] + DAR_arcsec/60/60]], dtype=np.float)
-    log.debug(f"Modified Az, EL = {modified_azel[0]}")
-    final_pix = w.all_world2pix(modified_azel, 0)[0]
+
+#     w = wcs.WCS(naxis=2)
+#     w.wcs.crpix = [kpfguide['CRPIX1Y'].read(binary=True),
+#                    kpfguide['CRPIX2Y'].read(binary=True)]
+#     w.wcs.crval = [kpfguide['CRVAL1Y'].read(binary=True),
+#                    kpfguide['CRVAL2Y'].read(binary=True)]
+#     w.wcs.ctype = ["RA---TAN", "DEC--TAN"]
+#     w.wcs.pc = np.array([[kpfguide['CD1_1Y'].read(binary=True), 
+#                           kpfguide['CD1_2Y'].read(binary=True)],
+#                          [kpfguide['CD2_1Y'].read(binary=True),
+#                           kpfguide['CD2_2Y'].read(binary=True)]])
+#     log.debug(f"Using WCS:\n{w.to_header_string()}")
+
+#     azel = w.all_pix2world(np.array([reference_pix], dtype=np.float), 0)[0]
+#     log.debug(f"Initial Az, EL = {azel}")
+#     modified_azel = np.array([[azel[0],azel[1] + DAR_arcsec/60/60]], dtype=np.float)
+#     log.debug(f"Modified Az, EL = {modified_azel[0]}")
+#     final_pix = w.all_world2pix(modified_azel, 0)[0]
+#     delta_pix = ((final_pix[0]-reference_pix[0])**2 + (final_pix[1]-reference_pix[1])**2)**0.5
+#     log.info(f"Pixel shift is {delta_pix:.1f}")
+
+    va = kpfguide['VA'].read(binary=True) # in degrees
+    pixel_scale = kpfguide['PSCALE'].read(binary=True) # arcsec/pix
+    dx = DAR_arcsec/pixel_scale*np.sin(va*np.pi/180)
+    dy = -DAR_arcsec/pixel_scale*np.cos(va*np.pi/180)
+    log.info(f"Pixel shift is {dx:.1f}, {dy:.1f} = {(dx**2+dy**2)**0.5:.1f}")
+    final_pixel = [reference_pix[0] + dx, reference_pix[1] + dy]
+
     log.debug(f"Final Pixel = {final_pix[0]:.2f} {final_pix[1]:.2f}")
-    delta_pix = ((final_pix[0]-reference_pix[0])**2 + (final_pix[1]-reference_pix[1])**2)**0.5
-    log.info(f"Pixel shift is {delta_pix:.1f}")
 
     return final_pix
 
