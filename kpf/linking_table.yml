@@ -99,12 +99,18 @@ links:
         cmd: guider.SetGuiderOutdir.SetGuiderOutdir
     StartGuiderContinuous:
         cmd: guider.StartGuiderContinuous.StartGuiderContinuous
+    StartTriggerFile:
+        cmd: guider.StartTriggerFile.StartTriggerFile
     StopGuiderContinuous:
         cmd: guider.StopGuiderContinuous.StopGuiderContinuous
-    TakeGuiderExposure:
-        cmd: guider.TakeGuiderExposure.TakeGuiderExposure
+    StopTriggerFile:
+        cmd: guider.StopTriggerFile.StopTriggerFile
     TakeGuiderCube:
         cmd: guider.TakeGuiderCube.TakeGuiderCube
+    TakeGuiderExposure:
+        cmd: guider.TakeGuiderExposure.TakeGuiderExposure
+    WaitForTriggerFile:
+        cmd: guider.WaitForTriggerFile.WaitForTriggerFile
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations
