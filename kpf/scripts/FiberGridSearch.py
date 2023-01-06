@@ -21,7 +21,9 @@ from ..fiu.StartTipTilt import StartTipTilt
 from ..fiu.StopTipTilt import StopTipTilt
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..fvc.SetFVCExpTime import SetFVCExpTime
-from ..guider.TakeGuiderExposure import TakeGuiderExposure
+from ..guider.StartTriggerFile import StartTriggerFile
+from ..guider.StopTriggerFile import StopTriggerFile
+from ..guider.WaitForTriggerFile import WaitForTriggerFile
 from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
@@ -119,6 +121,8 @@ class FiberGridSearch(KPFTranslatorFunction):
 
         # Set up guider (assume parameters set during acquisition of star)
         kpfguide = ktl.cache('kpfguide')
+        log.info('Setting TRIGCUBE Inactive')
+        kpfguide['TRIGCUBE'].write('Inactive')
         xpix0, ypix0 = kpfguide['PIX_TARGET'].read(binary=True)
         log.info(f"Center pixel is {xpix0:.2f}, {ypix0:.2f}")
         # Pixel targets must be in absolute coordinates
@@ -155,10 +159,6 @@ class FiberGridSearch(KPFTranslatorFunction):
                 log.info(f"Adjusting target to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                 SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
 
-                # Take Exposure to make sure we wait at least one cycle
-                log.debug(f"Taking extra guider exposure to wait one cycle")
-                TakeGuiderExposure.execute({}) # Blocks until done
-
                 sleep_time = 5
                 log.debug(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
                 time.sleep(sleep_time)
@@ -193,6 +193,9 @@ class FiberGridSearch(KPFTranslatorFunction):
                 StartExposure.execute({})
                 # Begin timestamp for history retrieval
                 begin = time.time()
+                log.info('Starting guider Trigger file')
+                initial_last_cube = kpfguide['LASTTRIGFILE'].read()
+                StartTriggerFile.execute({})
 
                 # Start FVC Exposures
                 initial_lastfile = {}
@@ -202,14 +205,6 @@ class FiberGridSearch(KPFTranslatorFunction):
                         log.debug(f"  Initial lastfile for {FVC} = {initial_lastfile[FVC]}")
                         log.info(f"  Starting {FVC} FVC exposure")
                         TakeFVCExposure.execute({'camera': FVC, 'wait': False})
-
-                # Expose using CRED2
-                log.info(f"  Taking CRED2 exposure")
-                TakeGuiderExposure.execute({}) # Blocks until done
-                lastfile = kpfguide[f"LASTFILE"].read()
-                row = {'file': lastfile, 'camera': 'CRED2',
-                       'dx': xs[i], 'dy': ys[j]}
-                images.add_row(row)
 
                 check_scriptstop()
 
@@ -236,6 +231,13 @@ class FiberGridSearch(KPFTranslatorFunction):
                 # Here's where we wait for the remainder of the TimeOnPosition
                 log.info(f"  Waiting for kpfexpose to be ready")
                 WaitForReady.execute({})
+
+                StopTriggerFile.execute({})
+                WaitForTriggerFile.execute({'initial_lastfile': initial_last_cube})
+                last_cube = kpfguide['LASTTRIGFILE'].read()
+                row = {'file': last_cube, 'camera': 'CRED2',
+                       'dx': xs[i], 'dy': ys[j]}
+                images.add_row(row)
 
                 # Stop Exposure Meter
                 log.info(f"  Waiting for ExpMeter to be Ready")
