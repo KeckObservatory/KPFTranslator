@@ -6,8 +6,9 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import guider_is_saving, guider_is_active
-from . import TriggerSingleGuiderExposure, GrabGuiderExposure
+from .StartTriggerFile import StartTriggerFile
+from .StopTriggerFile import StopTriggerFile
+from .WaitForTriggerFile import WaitForTriggerFile
 
 
 class TakeGuiderCube(KPFTranslatorFunction):
@@ -24,17 +25,14 @@ class TakeGuiderCube(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         duration = float(args.get('duration'))
         kpfguide = ktl.cache('kpfguide')
-        all_loops = kpfguide['ALL_LOOPS'].read()
         initial_lastfile = kpfguide['LASTTRIGFILE'].read()
+        all_loops = kpfguide['ALL_LOOPS'].read()
         log.info(f"Starting guider cube data collection, duration = {duration:.1f} s")
-        kpfguide['TRIGGER'].write('Active')
+        StartTriggerFile.execute({})
         time.sleep(duration)
-        kpfguide['TRIGGER'].write('Inactive', wait=False)
+        StopTriggerFile.execute({})
         kpfguide['ALL_LOOPS'].write('Inactive', wait=False)
-        # Wait for cube file to be updated
-        ktl.waitFor(f"$kpfguide.LASTTRIGFILE != '{initial_lastfile}'")
-        cube_file = kpfguide['LASTTRIGFILE'].read()
-        log.info(f"  cube file: {cube_file}")
+        WaitForTriggerFile.execute({'initial_lastfile': initial_lastfile})
         if all_loops == 'Active':
             kpfguide['ALL_LOOPS'].write('Active')
 
