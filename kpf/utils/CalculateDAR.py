@@ -50,31 +50,6 @@ def calculate_DAR_arcsec(EL):
     return DAR_arcsec
 
 
-def calculate_DAR_pix(EL):
-    DAR_arcsec = calculate_DAR_arcsec(EL)
-
-    kpfguide = ktl.cache('kpfguide')
-    w = wcs.WCS(naxis=2)
-    w.wcs.crpix = [kpfguide['CRPIX1Y'].read(binary=True),
-                   kpfguide['CRPIX2Y'].read(binary=True)]
-    w.wcs.crval = [kpfguide['CRVAL1Y'].read(binary=True),
-                   kpfguide['CRVAL2Y'].read(binary=True)]
-    w.wcs.ctype = ["RA---TAN", "DEC--TAN"]
-    w.wcs.pc = np.array([[kpfguide['CD1_1Y'].read(binary=True), 
-                          kpfguide['CD1_2Y'].read(binary=True)],
-                         [kpfguide['CD2_1Y'].read(binary=True),
-                          kpfguide['CD2_2Y'].read(binary=True)]])
-
-    reference_pix = list(kpfguide['CURRENT_BASE'].read(binary=True))
-    log.info(f"Initial CURRENT_BASE = {reference_pix[0]:.2f} {reference_pix[1]:.2f}")
-    azel = w.all_pix2world(np.array([reference_pix], dtype=np.float), 0)[0]
-    log.debug(f"Initial Az, EL = {azel}")
-    modified_azel = np.array([[azel[0],azel[1] + DAR_arcsec/60/60]], dtype=np.float)
-    log.debug(f"Modified Az, EL = {modified_azel[0]}")
-    final_pix = w.all_world2pix(modified_azel, 0)[0]
-    return final_pix
-
-
 ##-------------------------------------------------------------------------
 ## CalculateDAR
 ##-------------------------------------------------------------------------
@@ -97,9 +72,6 @@ class CalculateDAR(KPFTranslatorFunction):
         EL = float(args.get('EL'))
         DARarcsec = calculate_DAR_arcsec(EL)
         print(f"DAR in arcsec = {DARarcsec:.3f}")
-        final_pix = calculate_DAR_pix(EL)
-        print(f"NewTarget Pix = {final_pix[0]:.1f}, {final_pix[1]:.1f}")
-#         log.info(f"New CURRENT_BASE should be = {final_pix[0]:.2f} {final_pix[1]:.2f}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
