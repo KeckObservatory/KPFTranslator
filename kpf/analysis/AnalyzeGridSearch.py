@@ -200,6 +200,13 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     assert len(dxs) == nx
     dys = sorted(set(images['dy']))
     assert len(dys) == ny
+    hdu = fits.PrimaryHDU()
+    posdata = np.zeros((2,ny,nx))
+    hdu.header.set('Name', 'Spectral Cube')
+    hdu.header.set('Comment', comment)
+    hdu_norm = fits.PrimaryHDU()
+    hdu_norm.header.set('Name', 'Spectral Cube')
+    hdu_norm.header.set('Comment', comment)
     for entry in images[images['camera'] == camname]:
         i = dxs.index(entry['dx'])
         j = dys.index(entry['dy'])
@@ -215,38 +222,42 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         hdul = fits.open(specfile)
         spec_table = Table(hdul[1].data)
         spectrum = []
-        for k,key in enumerate(spec_table.keys()):
+        wavelengths = []
+        k = 0
+        for key in spec_table.keys():
             if key not in ['Date-Beg', 'Date-End']:
+                k+=1
                 wav = float(key)
-#                 if abs(wav-550)<2:
-#                     print(k, wav)
+                hdu.header.set(f"{k}", key)
+                hdu_norm.header.set(f"{k}", key)
                 spectrum.append(np.median(spec_table[key]))
 
         spec_cube[:,j,i] = np.array(spectrum)
-#         spec_cube[0,j,i] = entry['dx']
-#         spec_cube[1,j,i] = entry['dy']
+        posdata[0,j,i] = entry['dx']
+        posdata[1,j,i] = entry['dy']
 
     flux_map = np.sum(spec_cube, axis=0)
     max_index = np.unravel_index(flux_map.argmax(), flux_map.shape)
-    print(max_index)
     max_spec = spec_cube[:,max_index[0], max_index[1]]
-    print(max_spec.shape)
+    max_spec /= (max_spec.sum()/len(max_spec))
 
     for entry in images[images['camera'] == camname]:
         i = dxs.index(entry['dx'])
         j = dys.index(entry['dy'])
-        spec_cube_norm[:,j,i] = spec_cube[:,j,i]/max_spec
-#         spec_cube_norm[0,j,i] = entry['dx']
-#         spec_cube_norm[1,j,i] = entry['dy']
+        spec_cube_norm[:,j,i] = spec_cube[:,j,i]/spec_cube[:,j,i].sum()*len(spec_cube[:,j,i])/max_spec
 
     if ouput_spec_cube.exists() is True: ouput_spec_cube.unlink()
     log.info(f"Saving: {ouput_spec_cube}")
-    hdu = fits.PrimaryHDU(data=spec_cube)
-    hdu.writeto(f'{ouput_spec_cube}')
-    if ouput_spec_cube_norm.exists() is True: ouput_spec_cube_norm.unlink()
-    log.info(f"Saving: {ouput_spec_cube_norm}")
-    hdu = fits.PrimaryHDU(data=spec_cube_norm)
-    hdu.writeto(f'{ouput_spec_cube_norm}')
+    hdu.data=spec_cube
+    hdul = fits.HDUList([hdu])
+    hdu_norm.data=spec_cube_norm
+    hdu_norm.header.set('Name', 'Normalized Spectral Cube')
+    hdul.append(hdu_norm)
+    poshdu = fits.ImageHDU()
+    poshdu.data = posdata
+    poshdu.header.set('COMMENT', 'X and Y positions')
+    hdul.append(poshdu)
+    hdul.writeto(f'{ouput_spec_cube}')
 
     # Loop over positions
     for imno,flux_entry in enumerate(flux_table):
