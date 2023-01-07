@@ -262,6 +262,8 @@ def generate_cube_gif(file, giffile):
             lines = plt.plot(xpix, ypix, 'r+')
         newim = [im] + [frametext] + lines
         ims.append(newim)
+        if j%100 == 0
+        log.info(f"Processed frame {j}/{nf}")
 
     log.info('Building animation')
     ani = animation.ArtistAnimation(fig, ims, interval=1000/fps, blit=True,
