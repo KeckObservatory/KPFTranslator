@@ -45,9 +45,17 @@ def calculate_DAR_arcsec(EL):
     f0 = args.get('f0', 4.5)
     CRED2wav = args.get('CRED2wav', 1.075)
     sciencewav = args.get('sciencewav', 0.55)
-    DAR_arcsec = dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
-    log.info(f"Calculated DAR for {EL:.1f} EL = {DAR_arcsec:.3f} arcsec")
-    return DAR_arcsec
+    DARarcsec = dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
+    return DARarcsec
+
+
+def calculate_DAR_pix(DARarcsec):
+    kpfguide = ktl.cache('kpfguide')
+    va = kpfguide['VA'].read(binary=True) # in degrees
+    pixel_scale = kpfguide['PSCALE'].read(binary=True) # arcsec/pix
+    dx = DARarcsec/pixel_scale*np.sin(va*np.pi/180)
+    dy = -DARarcsec/pixel_scale*np.cos(va*np.pi/180)
+    return dx, dy
 
 
 ##-------------------------------------------------------------------------
@@ -64,26 +72,17 @@ class CalculateDAR(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'EL', value_min=1, value_max=90)
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        EL = float(args.get('EL'))
+        dcs = ktl.cache('dcs')
+        EL = dcs['EL'].read(binary=True)*180/np.pi
         DARarcsec = calculate_DAR_arcsec(EL)
-        print(f"DAR in arcsec = {DARarcsec:.3f}")
+        log.info(f"Calculated DAR for {EL:.1f} EL = {DARarcsec:.3f} arcsec")
+        dx, dy = calculate_DAR_pix(DARarcsec)
+        log.info(f"Pixel shift is {dx:.1f}, {dy:.1f} = {(dx**2+dy**2)**0.5:.1f}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['EL'] = {'type': float,
-                    'help': 'Elevation in degrees (90-ZA)'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-        return super().add_cmdline_args(parser, cfg)

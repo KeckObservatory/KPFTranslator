@@ -5,7 +5,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from .CalculateDAR import calculate_DAR_arcsec
+from .CalculateDAR import calculate_DAR_arcsec, calculate_DAR_pix
 
 
 ##-------------------------------------------------------------------------
@@ -28,6 +28,12 @@ class CorrectDAR(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
         dcs = ktl.cache('dcs')
+        EL = dcs['EL'].read(binary=True)*180/np.pi
+        DARarcsec = calculate_DAR_arcsec(EL)
+        log.info(f"DAR is {DARarcsec:.3f} arcseconds")
+        dx, dy = calculate_DAR_pix(DARarcsec)
+        total_pix = (dx**2+dy**2)**0.5
+        log.info(f"Pixel shift is {dx:.1f}, {dy:.1f} = {total_pix:.1f}")
 
         base_names = {'KPF': 'SCIENCE_BASE',
                       'SKY': 'SKY_BASE'}
@@ -40,27 +46,25 @@ class CorrectDAR(KPFTranslatorFunction):
 #             log.error(f"Using SCIENCE_BASE for testing")
 #             base_name = 'SCIENCE_BASE'
 
-        # Calculate magnitude of DAR in arcsec
-        EL = dcs['EL'].read(binary=True)*180/np.pi
-        log.debug(f"Telescope elevation EL = {EL:.1f}")
-        DAR_arcsec = calculate_DAR_arcsec(EL)
-        log.info(f"DAR is {DAR_arcsec:.3f} arcseconds")
-
         # Set CURRENT_BASE
         log.info(f"dcs.PONAME is {POname}, using {base_name} as reference pixel")
-        reference_pix = list(kpfguide['base_name'].read(binary=True))
+        reference_pix = list(kpfguide[base_name].read(binary=True))
         log.debug(f"Initial CURRENT_BASE = {reference_pix[0]:.1f} {reference_pix[1]:.1f}")
-
-        va = kpfguide['VA'].read(binary=True) # in degrees
-        pixel_scale = kpfguide['PSCALE'].read(binary=True) # arcsec/pix
-        dx = DAR_arcsec/pixel_scale*np.sin(va*np.pi/180)
-        dy = -DAR_arcsec/pixel_scale*np.cos(va*np.pi/180)
-        log.info(f"Pixel shift is {dx:.1f}, {dy:.1f} = {(dx**2+dy**2)**0.5:.1f}")
         final_pixel = [reference_pix[0] + dx, reference_pix[1] + dy]
-        log.debug(f"Final Pixel = {final_pix[0]:.2f} {final_pix[1]:.2f}")
+        final_pixel_string = f"{final_pixel[0]:.2f} {final_pixel[1]:.2f}"
+        log.debug(f"Final Pixel = {final_pixel_string}")
 
-        log.info(f"Writing new CURRENT_BASE = {final_pix[0]:.1f} {final_pix[1]:.1f}")
-        kpfguide['CURRENT_BASE'].write(final_pix)
+        min_x_pixel = cfg.get('guider', 'min_x_pixel', fallback=0)
+        max_x_pixel = cfg.get('guider', 'max_x_pixel', fallback=640)
+        min_y_pixel = cfg.get('guider', 'min_y_pixel', fallback=0)
+        max_y_pixel = cfg.get('guider', 'max_y_pixel', fallback=512)
+        if final_pixel[0] < min_x_pixel or final_pixel[0] > max_x_pixel or\
+           final_pixel[1] < min_y_pixel or final_pixel[1] > max_y_pixel:
+            log.error(f"Target pixel ({final_pixel_string}) is not on guide camera")
+            log.error("Leaving CURRENT_BASE unmodified")
+        else:
+            log.info(f"Writing new CURRENT_BASE = {final_pixel_string}")
+            kpfguide['CURRENT_BASE'].write(final_pixel)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
