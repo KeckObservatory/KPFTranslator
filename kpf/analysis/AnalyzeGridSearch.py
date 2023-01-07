@@ -248,8 +248,6 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     hdu = fits.PrimaryHDU(data=spec_cube_norm)
     hdu.writeto(f'{ouput_spec_cube_norm}')
 
-    return
-
     # Loop over positions
     for imno,flux_entry in enumerate(flux_table):
         j = flux_entry['i']
