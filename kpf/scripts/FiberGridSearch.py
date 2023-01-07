@@ -247,8 +247,16 @@ class FiberGridSearch(KPFTranslatorFunction):
                     lastfile = kpf_expmeter['FITSFILE'].read()
                 else:
                     lastfile = 'failed'
-                log.debug(f'  Done.  Lastfile={lastfile}')
+                log.debug(f'  Done.  FITSFILE={lastfile}')
                 row = {'file': lastfile, 'camera': 'ExpMeter',
+                       'dx': xs[i], 'dy': ys[j]}
+                images.add_row(row)
+                if EMsuccess is True:
+                    loutfile = kpf_expmeter['LOUTFILE'].read()
+                else:
+                    loutfile = 'failed'
+                log.debug(f'  Done.  LOUTFILE={loutfile}')
+                row = {'file': loutfile, 'camera': 'ExpMeter_1Dspec',
                        'dx': xs[i], 'dy': ys[j]}
                 images.add_row(row)
 
@@ -262,7 +270,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                     log.debug(f"  Retrieving keyword history for {counts_kw}")
                     kws = {'kpf_expmeter': [counts_kw]}
                     counts_history = keygrabber.retrieve(kws, begin=begin, end=end)
-                    # Extract counts and save to table
+                    # Extract counts and save to table (initial style output)
                     fluxes = np.zeros((len(counts_history)-2, 4))
                     for k,entry in enumerate(counts_history):
                         if k != 0 and k != len(counts_history)-1:
@@ -275,6 +283,7 @@ class FiberGridSearch(KPFTranslatorFunction):
                     expmeter_data[f"{counts_kw[:3].lower()}2"] = avg_fluxes[1]
                     expmeter_data[f"{counts_kw[:3].lower()}3"] = avg_fluxes[2]
                     expmeter_data[f"{counts_kw[:3].lower()}4"] = avg_fluxes[3]
+
                 expmeter_data['nimages'] = len(counts_history)
                 expmeter_flux.add_row(expmeter_data)
 
