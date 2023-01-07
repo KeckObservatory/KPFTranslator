@@ -236,10 +236,14 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         posdata[0,j,i] = entry['dx']
         posdata[1,j,i] = entry['dy']
 
+    # Build flux map 
     flux_map = np.sum(spec_cube, axis=0)
     max_index = np.unravel_index(flux_map.argmax(), flux_map.shape)
     max_spec = spec_cube[:,max_index[0], max_index[1]]
     max_spec /= (max_spec.sum()/len(max_spec))
+    # Build flux map for 550nm
+    npix = 30
+    flux_map_550 = np.sum(spec_cube[index_for_550nm-npix:index_for_550nm+npix,:,:], axis=0)
 
     for entry in images[images['camera'] == camname]:
         i = dxs.index(entry['dx'])
@@ -257,6 +261,15 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     poshdu.data = posdata
     poshdu.header.set('COMMENT', 'X and Y positions')
     hdul.append(poshdu)
+    fluxhdu = fits.ImageHDU()
+    fluxhdu.data = flux_map
+    fluxhdu.header.set('COMMENT', 'Total flux map')
+    hdul.append(fluxhdu)
+    flux550hdu = fits.ImageHDU()
+    flux550hdu.data = flux_map_550
+    flux550hdu.header.set('COMMENT', 'Flux map near 550nm')
+    hdul.append(flux550hdu)
+
     hdul.writeto(f'{ouput_spec_cube}')
 
     # Loop over positions
