@@ -53,8 +53,8 @@ def calculate_DAR_pix(DARarcsec):
     kpfguide = ktl.cache('kpfguide')
     va = kpfguide['VA'].read(binary=True) # in degrees
     pixel_scale = kpfguide['PSCALE'].read(binary=True) # arcsec/pix
-    dx = DARarcsec/pixel_scale*np.sin(va*np.pi/180)
-    dy = -DARarcsec/pixel_scale*np.cos(va*np.pi/180)
+    dx = DARarcsec/pixel_scale*np.cos(va*np.pi/180)
+    dy = -DARarcsec/pixel_scale*np.sin(va*np.pi/180)
     return dx, dy
 
 

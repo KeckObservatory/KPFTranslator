@@ -128,6 +128,8 @@ links:
         cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
     ExecuteSciSequence:
         cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
+    GridSearch:
+        cmd: scripts.GridSearch.GridSearch
     FiberGridSearch:
         cmd: scripts.FiberGridSearch.FiberGridSearch
     RunCalOB:
