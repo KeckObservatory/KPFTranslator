@@ -119,9 +119,9 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                        'Science': 'cur',
                        'Sky': None}[fiber]
 
-    fluxes_file = data_path / Path('script_logs') / Path(f'FiberGridSearch_fluxes_{date_time_string}.txt')
-    images_file = data_path / Path('script_logs') / Path(f'FiberGridSearch_images_{date_time_string}.txt')
-    log_file = data_path / Path('script_logs') / Path(f'FiberGridSearch_{date_time_string}.log')
+    fluxes_file = data_path / Path('script_logs') / Path(f'TipTiltGridSearch_fluxes_{date_time_string}.txt')
+    images_file = data_path / Path('script_logs') / Path(f'TipTiltGridSearch_images_{date_time_string}.txt')
+    log_file = data_path / Path('script_logs') / Path(f'GridSearch_{date_time_string}.log')
     ouput_spec_cube = Path(f"{date_time_string}_spec_cube.fits")
     ouput_spec_cube_norm = Path(f"{date_time_string}_spec_cube_norm.fits")
     ouput_cred2_image_file = Path(f"{date_time_string}_CRED2_images.png")
@@ -256,11 +256,13 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
 #     index_for_450nm = 405
 #     flux_map_450 = np.sum(spec_cube[index_for_450nm-npix:index_for_450nm+npix,:,:], axis=0)
 
-    avg_spec = np.mean(np.mean(spec_cube, axis=1), axis=1)
+    max_index = np.unravel_index(flux_map.argmax(), flux_map.shape)
+    max_spec = spec_cube[:,max_index[0], max_index[1]]
+#     avg_spec = np.mean(np.mean(spec_cube, axis=1), axis=1)
     for entry in images[images['camera'] == camname]:
         i = dxs.index(entry['x'])
         j = dys.index(entry['y'])
-        spec_cube_norm[:,j,i] = spec_cube[:,j,i]/spec_cube[:,j,i].sum()*len(spec_cube[:,j,i])/avg_spec
+        spec_cube_norm[:,j,i] = spec_cube[:,j,i]/spec_cube[index_for_550nm,j,i]/(max_spec/max_spec[index_for_550nm])
 
     if ouput_spec_cube.exists() is True: ouput_spec_cube.unlink()
     log.info(f"Saving: {ouput_spec_cube}")
