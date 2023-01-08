@@ -29,7 +29,7 @@ class RunCalOB(KPFTranslatorFunction):
     @classmethod
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
-        log.info(f"Running RunCalOB")
+        log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
         scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')

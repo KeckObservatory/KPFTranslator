@@ -83,7 +83,7 @@ class TestScienceADC(KPFTranslatorFunction):
     @register_script(Path(__file__).name, os.getpid())
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
-        log.info(f"Running TestScienceADC OB")
+        log.info(f"Running {cls.__name__}")
         for key in OB:
             log.debug(f"  {key}: {OB[key]}")
         log.info('-------------------------')
