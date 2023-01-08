@@ -134,19 +134,19 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     log.info(f"Read in {fluxes_file.name} with {len(flux_table)} lines")
 
     images = Table.read(images_file, format='ascii.csv')
-    nx = len(set(set(images['dx'])))
-    ny = len(set(set(images['dy'])))
+    nx = len(set(set(images['x'])))
+    ny = len(set(set(images['y'])))
     log.info(f"Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
 
     cameras = set(images['camera'])
     log.info(f"Found cameras: {cameras}")
 
-    dxs = set(flux_table['dx'])
+    dxs = set(flux_table['x'])
     if len(dxs) > 1:
         deltax = (max(dxs) - min(dxs))/(len(dxs)-1)
     else:
         deltax = 0
-    dys = set(flux_table['dy'])
+    dys = set(flux_table['y'])
     if len(dys) > 1:
         deltay = (max(dys) - min(dys))/(len(dys)-1)
     else:
@@ -196,9 +196,9 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     index_for_550nm = 184
     spec_cube = np.zeros((nwav,ny,nx))
     spec_cube_norm = np.zeros((nwav,ny,nx))
-    dxs = sorted(set(images['dx']))
+    dxs = sorted(set(images['x']))
     assert len(dxs) == nx
-    dys = sorted(set(images['dy']))
+    dys = sorted(set(images['y']))
     assert len(dys) == ny
     hdu = fits.PrimaryHDU()
     posdata = np.zeros((2,ny,nx))
@@ -208,8 +208,8 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     hdu_norm.header.set('Name', 'Spectral Cube')
     hdu_norm.header.set('Comment', comment)
     for entry in images[images['camera'] == camname]:
-        i = dxs.index(entry['dx'])
-        j = dys.index(entry['dy'])
+        i = dxs.index(entry['x'])
+        j = dys.index(entry['y'])
         if specfiles is False:
             p = Path(entry['file'])
             ismatch = re.search('(kpf_em_\d+)\.\d{3}\.fits', p.name)
@@ -233,8 +233,8 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                 spectrum.append(np.median(spec_table[key]))
 
         spec_cube[:,j,i] = np.array(spectrum)
-        posdata[0,j,i] = entry['dx']
-        posdata[1,j,i] = entry['dy']
+        posdata[0,j,i] = entry['x']
+        posdata[1,j,i] = entry['y']
 
     # Build flux map 
     flux_map = np.sum(spec_cube, axis=0)
@@ -248,8 +248,8 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
 
     avg_spec = np.mean(np.mean(spec_cube, axis=1), axis=1)
     for entry in images[images['camera'] == camname]:
-        i = dxs.index(entry['dx'])
-        j = dys.index(entry['dy'])
+        i = dxs.index(entry['x'])
+        j = dys.index(entry['y'])
         spec_cube_norm[:,j,i] = spec_cube[:,j,i]/spec_cube[:,j,i].sum()*len(spec_cube[:,j,i])/avg_spec
 
     if ouput_spec_cube.exists() is True: ouput_spec_cube.unlink()
@@ -278,41 +278,41 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     for imno,flux_entry in enumerate(flux_table):
         j = flux_entry['i']
         i = flux_entry['j']
-        xoffset[j, i] = flux_entry['dx']
-        yoffset[j, i] = flux_entry['dy']
+        xoffset[j, i] = flux_entry['x']
+        yoffset[j, i] = flux_entry['y']
         for k in ks:
             fluxes[k, j, i] = flux_entry[f'{flux_prefix}{k+1}']
 
         if 'CRED2' in cameras:
-            log.debug(f"  Determining CRED2 pixel for {flux_entry['dx']:.2f}, {flux_entry['dy']:.2f}")
+            log.debug(f"  Determining CRED2 pixel for {flux_entry['x']:.2f}, {flux_entry['y']:.2f}")
             log.debug(f"  Centering image on {cred2_pixels}")
-            x, y = show_CRED2_image(flux_entry['dx'], flux_entry['dy'],
+            x, y = show_CRED2_image(flux_entry['x'], flux_entry['y'],
                                     images, flux_table,
                                     data_path=data_path/Path('CRED2'),
                                     x0=cred2_pixels[0], y0=cred2_pixels[1],
                                     fig=cred2_images_fig, imno=imno+1,
-                                    initial_x=flux_entry['dx'],
-                                    initial_y=flux_entry['dy'],
+                                    initial_x=flux_entry['x'],
+                                    initial_y=flux_entry['y'],
                                     )
             xcred2[j, i] = x
             ycred2[j, i] = y
         if 'SCI' in FVCs and fvcsci_pixels is not None:
             log.debug(f"  Generating SCI FVC image centered on {fvcsci_pixels}")
-            show_FVC_image(flux_entry['dx'], flux_entry['dy'],
+            show_FVC_image(flux_entry['x'], flux_entry['y'],
                            images, flux_table, camera='SCI',
                            data_path=data_path/Path('FVC1'),
                            x0=fvcsci_pixels[0], y0=fvcsci_pixels[1],
                            fig=sci_FVC_images_fig, imno=imno+1)
         if 'CAHK' in FVCs and fvccahk_pixels is not None:
             log.debug(f"  Generating SCI FVC image centered on {fvcsci_pixels}")
-            show_FVC_image(flux_entry['dx'], flux_entry['dy'],
+            show_FVC_image(flux_entry['x'], flux_entry['y'],
                            images, flux_table, camera='CAHK',
                            data_path=data_path/Path('FVC2'),
                            x0=fvccahk_pixels[0], y0=fvccahk_pixels[1],
                            fig=sci_CAHK_images_fig, imno=imno+1)
         if 'EXT' in FVCs and fvcext_pixels is not None:
             log.debug(f"  Generating EXT FVC image centered on {fvcext_pixels}")
-            show_FVC_image(flux_entry['dx'], flux_entry['dy'],
+            show_FVC_image(flux_entry['x'], flux_entry['y'],
                            images, flux_table, camera='EXT',
                            data_path=data_path/Path('FVC4'),
                            x0=fvcext_pixels[0], y0=fvcext_pixels[1],
@@ -324,14 +324,14 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         plt.subplot(nx+2,ny,nx*ny+2)
         plt.title('Grid positions in CRED2 pixel space', size=8)
         plt.plot(xcred2, ycred2, 'r+', alpha=0.5)
-        plt.plot(flux_table['dx'], flux_table['dy'], 'bx', alpha=0.5)
+        plt.plot(flux_table['x'], flux_table['y'], 'bx', alpha=0.5)
         for imno,flux_entry in enumerate(flux_table):
             j = flux_entry['i']
             i = flux_entry['j']
-    #         print(i, j, flux_entry['dx'], flux_entry['dy'])
-            plt.arrow(flux_entry['dx'], flux_entry['dy'],
-                      xcred2[j, i]-flux_entry['dx'],
-                      ycred2[j, i]-flux_entry['dy'],
+    #         print(i, j, flux_entry['x'], flux_entry['y'])
+            plt.arrow(flux_entry['x'], flux_entry['y'],
+                      xcred2[j, i]-flux_entry['x'],
+                      ycred2[j, i]-flux_entry['y'],
                       color='g', alpha=0.5,
                       head_width=0.1, length_includes_head=True)
         plt.gca().xaxis.set_major_locator(MultipleLocator(base=1.0))
@@ -414,7 +414,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     plt.subplot(3,2,(5,6))
     plt.title(f"CRED2 Positions in ExpMeter Bands: RMS=({xrms:.0f}, {yrms:.0f} mas)")
 
-    plt.plot(flux_table['dx'], flux_table['dy'], 'k+')
+    plt.plot(flux_table['x'], flux_table['y'], 'k+')
 
     for k in [0,1,2,3]:
         xpix = cred2_pixel_of_fiber[k,0]
@@ -449,10 +449,10 @@ def show_CRED2_image(x, y, images, fluxes,
                      fig=None, imno=1,
                      initial_x=None, initial_y=None):
     data_path = Path(data_path)
-    nx = len(set(set(images['dx'])))
-    ny = len(set(set(images['dy'])))
+    nx = len(set(set(images['x'])))
+    ny = len(set(set(images['y'])))
     tol = 0.001
-    original_cred2_files = images[(abs(images['dx'] - x) < tol) & (abs(images['dy'] - y) < tol) & (images['camera'] == 'CRED2')]['file']
+    original_cred2_files = images[(abs(images['x'] - x) < tol) & (abs(images['y'] - y) < tol) & (images['camera'] == 'CRED2')]['file']
     original_cred2_file = Path(original_cred2_files[-1])
     cred2_file = original_cred2_file.name
     log.debug(f"  Found {len(original_cred2_files)} CRED2 files.  Using {cred2_file}")
@@ -548,10 +548,10 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
                    x0=800, y0=600,
                    fig=None, imno=1):
     data_path = Path(data_path)
-    nx = len(set(set(images['dx'])))
-    ny = len(set(set(images['dy'])))
+    nx = len(set(set(images['x'])))
+    ny = len(set(set(images['y'])))
     tol = 0.001
-    original_fvc_files = images[(abs(images['dx'] - x) < tol) & (abs(images['dy'] - y) < tol) & (images['camera'] == camera)]['file']
+    original_fvc_files = images[(abs(images['x'] - x) < tol) & (abs(images['y'] - y) < tol) & (images['camera'] == camera)]['file']
     original_fvc_file = Path(original_fvc_files[0])
     fvc_file = original_fvc_file.name
     log.debug(f"  Found {len(original_fvc_files)} {camera} FVC files.  Using {fvc_file}")

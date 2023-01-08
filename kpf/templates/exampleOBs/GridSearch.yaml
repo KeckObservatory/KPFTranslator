@@ -1,0 +1,25 @@
+Template_Name: kpf_eng_grid
+Template_Version: 0.4
+
+comment: test run
+# Grid Parameters
+Grid: TipTilt
+nx: 5
+ny: 5
+dx: 2
+dy: 2
+TimeOnPosition: 30
+# Instrument Setup
+SSS_Science: True
+SSS_Sky: True
+SSS_CalSciSky: True
+ExpMeter_exptime: 2
+FVCs: SCI
+SCIFVC_exptime: 10
+# Extra ADC Parameters
+ADC1Position: 0
+ADC2Position: 0
+ADC1Reverse: False
+ADC2Reverse: False
+ADC1Flip: False
+ADC2Flip: False
