@@ -239,7 +239,7 @@ class GridSearch(KPFTranslatorFunction):
 
                 # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
-                kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]} arcsec')
+                kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]}')
                 log.info(f"Starting kpfexpose cameras")
                 StartExposure.execute({})
                 # Begin timestamp for history retrieval
@@ -250,18 +250,23 @@ class GridSearch(KPFTranslatorFunction):
 
                 # Start FVC Exposures
                 initial_lastfile = {}
+                failedFVCs = []
                 for FVC in ['SCI', 'CAHK', 'EXT']:
                     if FVC in FVCs:
                         initial_lastfile[FVC] = kpffvc[f"{FVC}LASTFILE"].read()
                         log.debug(f"  Initial lastfile for {FVC} = {initial_lastfile[FVC]}")
                         log.info(f"  Starting {FVC} FVC exposure")
-                        TakeFVCExposure.execute({'camera': FVC, 'wait': False})
+                        try:
+                            TakeFVCExposure.execute({'camera': FVC, 'wait': False})
+                        except:
+                            log.error('Starting FVC image failed')
+                            failedFVCs.append(FVC)
 
                 check_scriptstop()
 
                 # Collect files for FVC exposures
                 for FVC in ['SCI', 'CAHK', 'EXT']:
-                    if FVC in FVCs:
+                    if FVC in FVCs and FVC not in failedFVCs:
                         log.info(f"  Looking for output file for {FVC}")
                         expr = f'($kpffvc.{FVC}LASTFILE != "{initial_lastfile[FVC]}")'
                         log.debug(f"  Waiting for: {expr}")
