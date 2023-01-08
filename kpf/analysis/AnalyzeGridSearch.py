@@ -238,17 +238,19 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
 
     # Build flux map 
     flux_map = np.sum(spec_cube, axis=0)
-    max_index = np.unravel_index(flux_map.argmax(), flux_map.shape)
-    max_spec = spec_cube[:,max_index[0], max_index[1]]
-    max_spec /= (max_spec.sum()/len(max_spec))
     # Build flux map for 550nm
     npix = 30
     flux_map_550 = np.sum(spec_cube[index_for_550nm-npix:index_for_550nm+npix,:,:], axis=0)
+#     index_for_675nm = 61
+#     flux_map_675 = np.sum(spec_cube[index_for_675nm-npix:index_for_675nm+npix,:,:], axis=0)
+#     index_for_450nm = 405
+#     flux_map_450 = np.sum(spec_cube[index_for_450nm-npix:index_for_450nm+npix,:,:], axis=0)
 
+    avg_spec = np.mean(np.mean(spec_cube, axis=1), axis=1)
     for entry in images[images['camera'] == camname]:
         i = dxs.index(entry['dx'])
         j = dys.index(entry['dy'])
-        spec_cube_norm[:,j,i] = spec_cube[:,j,i]/spec_cube[:,j,i].sum()*len(spec_cube[:,j,i])/max_spec
+        spec_cube_norm[:,j,i] = spec_cube[:,j,i]/spec_cube[:,j,i].sum()*len(spec_cube[:,j,i])/avg_spec
 
     if ouput_spec_cube.exists() is True: ouput_spec_cube.unlink()
     log.info(f"Saving: {ouput_spec_cube}")
