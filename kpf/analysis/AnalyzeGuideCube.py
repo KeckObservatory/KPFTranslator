@@ -255,15 +255,18 @@ def generate_cube_gif(file, giffile):
         plt.title(f"{file.name}: {duration:.1f} s, {nf:d} frames")
         im = plt.imshow(im, origin='lower', cmap='gray', norm=norm, animated=True)
         frametext = plt.text(nx-20, ny-5, f"{j:04d}/{nf:04d}", color='r')
+        xtpix = nx/2
+        ytpix = ny/2
+        tlines = plt.plot(xtpix, ytpix, 'bx')
         lines = []
         if t[j]['object1_x'] > 0 and t[j]['object1_y'] > 0:
             xpix = t[j]['object1_x'] - (t[j]['target_x'] - nx/2)
             ypix = t[j]['object1_y'] - (t[j]['target_y'] - ny/2)
             lines = plt.plot(xpix, ypix, 'r+')
-        newim = [im] + [frametext] + lines
+        newim = [im] + [frametext] + lines + tlines
         ims.append(newim)
-        if j%100 == 0:
-            log.info(f"Processed frame {j}/{nf}")
+#         if j%100 == 0:
+#             log.info(f"Processed frame {j}/{nf}")
 
     log.info('Building animation')
     ani = animation.ArtistAnimation(fig, ims, interval=1000/fps, blit=True,
