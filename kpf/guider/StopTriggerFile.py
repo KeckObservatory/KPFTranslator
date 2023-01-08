@@ -8,7 +8,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 
 
-class StartTriggerFile(KPFTranslatorFunction):
+class StopTriggerFile(KPFTranslatorFunction):
     '''
     
     ARGS: None
