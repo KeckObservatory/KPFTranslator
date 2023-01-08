@@ -11,7 +11,7 @@ import numpy as np
 from astropy.io import fits
 from astropy import visualization as viz
 from astropy import units as u
-from astropy.table import Table
+from astropy.table import Table, Column
 from astropy import stats
 from astropy.nddata import CCDData
 import ccdproc
@@ -132,8 +132,18 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
 
     flux_table = Table.read(fluxes_file, format='ascii.csv')
     log.info(f"Read in {fluxes_file.name} with {len(flux_table)} lines")
+    if 'dx' in flux_table.keys():
+        log.warning('Renaming old column names')
+        # This is an old file with old column names
+        flux_table.add_column(Column(name='x', data=flux_table['dx'].data))
+        flux_table.add_column(Column(name='y', data=flux_table['dy'].data))
 
     images = Table.read(images_file, format='ascii.csv')
+    if 'dx' in images.keys():
+        log.warning('Renaming old column names')
+        # This is an old file with old column names
+        images.add_column(Column(name='x', data=images['dx'].data))
+        images.add_column(Column(name='y', data=images['dy'].data))
     nx = len(set(set(images['x'])))
     ny = len(set(set(images['y'])))
     log.info(f"Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
