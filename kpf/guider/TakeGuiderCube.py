@@ -25,6 +25,8 @@ class TakeGuiderCube(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         duration = float(args.get('duration'))
         kpfguide = ktl.cache('kpfguide')
+        trigcube = kpfguide['TRIGCUBE'].read()
+        kpfguide['TRIGCUBE'].write('Active')
         initial_lastfile = kpfguide['LASTTRIGFILE'].read()
         all_loops = kpfguide['ALL_LOOPS'].read()
         log.info(f"Starting guider cube data collection, duration = {duration:.1f} s")
@@ -33,6 +35,7 @@ class TakeGuiderCube(KPFTranslatorFunction):
         StopTriggerFile.execute({})
         kpfguide['ALL_LOOPS'].write('Inactive', wait=False)
         WaitForTriggerFile.execute({'initial_lastfile': initial_lastfile})
+        kpfguide['TRIGCUBE'].write(trigcube)
         if all_loops == 'Active':
             kpfguide['ALL_LOOPS'].write('Active')
 
