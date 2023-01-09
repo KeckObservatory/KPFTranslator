@@ -34,6 +34,12 @@ p.add_argument('datetimestr', type=str,
 p.add_argument("-v", "--verbose", dest="verbose",
     default=False, action="store_true",
     help="Be verbose! (default = False)")
+p.add_argument("--adc", dest="adc",
+    default=False, action="store_true",
+    help="Data is an ADC grid search (instead of position)")
+p.add_argument("--skipcred2", dest="skipcred2",
+    default=False, action="store_true",
+    help="Skip building figure of CRED2 images")
 ## add options
 p.add_argument("--flux_prefix", dest="flux_prefix", type=str,
     default='cur',
@@ -47,9 +53,6 @@ p.add_argument("--FVCs", dest="FVCs", type=str,
 p.add_argument("--data_path", dest="data_path", type=str,
     default='/s/sdata1701/kpfeng/2022dec14',
     help="The path to the data directory with logs and CRED2 sub-directories")
-# p.add_argument("--log_path", dest="log_path", type=str,
-#     default='/s/sdata1701/kpfeng/2022nov06/script_logs',
-#     help="The path to the directory containing the logs")
 args = p.parse_args()
 
 
@@ -119,8 +122,9 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                        'Science': 'cur',
                        'Sky': None}[fiber]
 
-    fluxes_file = data_path / Path('script_logs') / Path(f'TipTiltGridSearch_fluxes_{date_time_string}.txt')
-    images_file = data_path / Path('script_logs') / Path(f'TipTiltGridSearch_images_{date_time_string}.txt')
+    file_prefix = {True: 'SciADC', False: 'TipTilt'}[args.adc]
+    fluxes_file = data_path / Path('script_logs') / Path(f'{file_prefix}GridSearch_fluxes_{date_time_string}.txt')
+    images_file = data_path / Path('script_logs') / Path(f'{file_prefix}GridSearch_images_{date_time_string}.txt')
     log_file = data_path / Path('script_logs') / Path(f'GridSearch_{date_time_string}.log')
     ouput_spec_cube = Path(f"{date_time_string}_spec_cube.fits")
     ouput_spec_cube_norm = Path(f"{date_time_string}_spec_cube_norm.fits")
@@ -180,7 +184,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     # Prep ExpMeter flux analysis
     fluxes = np.zeros((4, len(set(flux_table['i'])), len(set(flux_table['j']))))
     # Prep CRED2 Analysis
-    if 'CRED2' in cameras:
+    if 'CRED2' in cameras and args.skipcred2 is False:
         cred2_images_fig = plt.figure(figsize=(12,14))
         xcred2 = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
         ycred2 = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
@@ -295,7 +299,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         for k in ks:
             fluxes[k, j, i] = flux_entry[f'{flux_prefix}{k+1}']
 
-        if 'CRED2' in cameras:
+        if 'CRED2' in cameras and args.skipcred2 is False:
             log.debug(f"  Determining CRED2 pixel for {flux_entry['x']:.2f}, {flux_entry['y']:.2f}")
             log.debug(f"  Centering image on {cred2_pixels}")
             x, y = show_CRED2_image(flux_entry['x'], flux_entry['y'],
@@ -330,7 +334,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
                            x0=fvcext_pixels[0], y0=fvcext_pixels[1],
                            fig=ext_FVC_images_fig, imno=imno+1)
 
-    if 'CRED2' in cameras:
+    if 'CRED2' in cameras and args.skipcred2 is False:
         # Plot CRED2 Positions of each offset
         plt.figure(num=cred2_images_fig.number)
         plt.subplot(nx+2,ny,nx*ny+2)
@@ -388,7 +392,7 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         peak_pos_j, peak_pos_i = np.unravel_index(flux_map.argmax(), flux_map.shape)
         peak_xoffset = xoffset[peak_pos_j, peak_pos_i]
         peak_yoffset = yoffset[peak_pos_j, peak_pos_i]
-        if 'CRED2' in cameras:
+        if 'CRED2' in cameras and args.skipcred2 is False:
             peak_xcred2 = xcred2[peak_pos_j, peak_pos_i]
             peak_ycred2 = ycred2[peak_pos_j, peak_pos_i]
         else:
