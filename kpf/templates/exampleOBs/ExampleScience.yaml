@@ -26,6 +26,7 @@ SEQ_Observations:
   nExp: 3
   Exptime: 120
   ExpMeterMode: monitor
+  ExpMeterExpTime: 1
   ExpMeterBand: 1
   ExpMeterFlux: 100000
   TimedShutter_SimulCal: True
@@ -34,6 +35,7 @@ SEQ_Observations:
   Exptime: 120
   TimedShutter_SimulCal: True
   ExpMeterMode: monitor
+  ExpMeterExpTime: 1
   ExpMeterBand: 1
   ExpMeterFlux: 100000
   TimedShutter_SimulCal: True
