@@ -47,20 +47,20 @@ class RunSciOB(KPFTranslatorFunction):
         ConfigureForScience.execute(OB)
 
         print()
-        print("#######################################")
-        print("When the OA has acquired the target and")
+        print("########################################")
+        print("After the OA has acquired the target and")
         print("placed it on the KPF pointing origin,")
         print("press 'Enter' to continue ...")
+        print("########################################")
         print()
         user_input = input()
-        print("#######################################")
 
         log.info(f"Starting tip tilt loops")
         StartTipTilt.execute({})
         CorrectDAR.execute({})
         log.info(f"Sleeping 3 seconds to allow loops to close")
         time.sleep(3)
-
+        
         # Execute the Science Sequence
         #   Wrap in try/except so that cleanup happens
         try:
