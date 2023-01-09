@@ -80,6 +80,14 @@ class ExecuteSciSequence(KPFTranslatorFunction):
 
         for seq in OB.get('SEQ_Observations'):
             ## ----------------------------------------------------------------
+            ## Setup exposure meter
+            ## ----------------------------------------------------------------
+            em_exptime = OB.get('ExpMeterExpTime', None)
+            if em_exptime is not None:
+                kpf_expmeter = ktl.cache('kpf_expmeter')
+                kpf_expmeter['EXPOSURE'].write(em_exptime)
+            
+            ## ----------------------------------------------------------------
             ## Setup simulcal
             ## ----------------------------------------------------------------
             # Set octagon and ND filters
