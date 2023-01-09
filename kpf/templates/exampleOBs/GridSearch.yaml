@@ -10,6 +10,7 @@ dx: 2
 dy: 2
 TimeOnPosition: 30
 # Instrument Setup
+UseCRED2: True
 SSS_Science: True
 SSS_Sky: True
 SSS_CalSciSky: True

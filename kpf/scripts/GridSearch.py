@@ -244,9 +244,11 @@ class GridSearch(KPFTranslatorFunction):
                 StartExposure.execute({})
                 # Begin timestamp for history retrieval
                 begin = time.time()
-                log.info('Starting guider Trigger file')
-                initial_last_cube = kpfguide['LASTTRIGFILE'].read()
-                StartTriggerFile.execute({})
+                # Take CRED2 image
+                if OB.get('UseCRED2', True) is True:
+                    log.info('Starting guider Trigger file')
+                    initial_last_cube = kpfguide['LASTTRIGFILE'].read()
+                    StartTriggerFile.execute({})
 
                 # Start FVC Exposures
                 initial_lastfile = {}
@@ -288,12 +290,14 @@ class GridSearch(KPFTranslatorFunction):
                 log.info(f"  Waiting for kpfexpose to be ready")
                 WaitForReady.execute({})
 
-                StopTriggerFile.execute({})
-                WaitForTriggerFile.execute({'initial_lastfile': initial_last_cube})
-                last_cube = kpfguide['LASTTRIGFILE'].read()
-                row = {'file': last_cube, 'camera': 'CRED2',
-                       'x': xs[i], 'y': ys[j]}
-                images.add_row(row)
+                # Collect CRED2 File
+                if OB.get('UseCRED2', True) is True:
+                    StopTriggerFile.execute({})
+                    WaitForTriggerFile.execute({'initial_lastfile': initial_last_cube})
+                    last_cube = kpfguide['LASTTRIGFILE'].read()
+                    row = {'file': last_cube, 'camera': 'CRED2',
+                           'x': xs[i], 'y': ys[j]}
+                    images.add_row(row)
 
                 # Stop Exposure Meter
                 log.info(f"  Waiting for ExpMeter to be Ready")
