@@ -25,19 +25,30 @@ class TakeGuiderCube(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         duration = float(args.get('duration'))
         kpfguide = ktl.cache('kpfguide')
-        trigcube = kpfguide['TRIGCUBE'].read()
-        kpfguide['TRIGCUBE'].write('Active')
+        # Read initial conditions, so we can set them back at the end
+        initial_trigcube = kpfguide['TRIGCUBE'].read()
         initial_lastfile = kpfguide['LASTTRIGFILE'].read()
-        all_loops = kpfguide['ALL_LOOPS'].read()
+        initial_all_loops = kpfguide['ALL_LOOPS'].read()
+
+        # Do we want to take the image cube?
+        collect_image_cube = args.get('ImageCube', False)
+        set_trigcube = {True: 'Active', False: 'Inactive'}[collect_image_cube]
+        kpfguide['TRIGCUBE'].write(set_trigcube)
+
+        # Trigger data collection
         log.info(f"Starting guider cube data collection, duration = {duration:.1f} s")
         StartTriggerFile.execute({})
         time.sleep(duration)
         StopTriggerFile.execute({})
-        kpfguide['ALL_LOOPS'].write('Inactive', wait=False)
+        # Stop all loops if we're writing out a full image cube
+        if initial_all_loops == 'Active' and collect_image_cube == True:
+            kpfguide['ALL_LOOPS'].write('Inactive', wait=False)
         WaitForTriggerFile.execute({'initial_lastfile': initial_lastfile})
-        kpfguide['TRIGCUBE'].write(trigcube)
-        if all_loops == 'Active':
-            kpfguide['ALL_LOOPS'].write('Active')
+
+        # Reset TRIGCUBE and ALL_LOOPS to initial values
+        kpfguide['TRIGCUBE'].write(initial_trigcube)
+        if initial_all_loops == 'Active' and collect_image_cube == True:
+            kpfguide['ALL_LOOPS'].write(initial_all_loops)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -51,6 +62,7 @@ class TakeGuiderCube(KPFTranslatorFunction):
         args_to_add = OrderedDict()
         args_to_add['duration'] = {'type': float,
                                    'help': 'The duration in seconds.'}
-
         parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser = cls._add_bool_arg(parser, 'ImageCube',
+            'Collect the full image cube?', default=True)
         return super().add_cmdline_args(parser, cfg)
