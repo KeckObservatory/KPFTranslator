@@ -134,6 +134,8 @@ links:
         cmd: scripts.FiberGridSearch.FiberGridSearch
     RunCalOB:
         cmd: scripts.RunCalOB.RunCalOB
+    RunSciOB:
+        cmd: scripts.RunSciOB.RunSciOB
     RunScheduledCals:
         cmd: scripts.RunScheduledCals.RunScheduledCals
     StartOfNight:
