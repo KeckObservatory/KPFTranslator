@@ -35,11 +35,6 @@ class RunSciOB(KPFTranslatorFunction):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
-        scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
-        if scriptallow.read() == 'No':
-            log.warning(f"SCRIPTALLOW is No, skipping RunCalOB")
-            return False
-
         # Configure: 
         log.info(f"Configuring for Acquisition: setting up guider and FIU")
         ConfigureForAcquisition.execute(OB)
