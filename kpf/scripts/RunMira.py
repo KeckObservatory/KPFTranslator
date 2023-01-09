@@ -7,34 +7,49 @@ import subprocess
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+
+from ddoi_telescope_translator.pmfm import PMFM
+
+
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop
+from .ConfigureForAcquisition import ConfigureForAcquisition
+from ..guider.TakeGuiderCube import TakeGuiderCube
+
 
 def comira(command, message):
     pass
 
+notes = '''From kpfMias.sh
 
+# Big picture sequence (skipping details)
+miasLock
+initOnce = saveOldValues
+cleanUp
+greeting
+initCheck
+requestParameters
 
-def check_mias_lock(SERIESFILE, LOCKFILE):
-    if SERIESFILE.exists() and LOCKFILE.exists():
-        subprocess.call(['beep'])
-        cmd = '''echo 'yesNoMessage Title (title, "Warning !!!");  \
-SetWindowPos (600, 300); \
-Panel (p1, 0, 0) { \
-SetFont ("Dialog", 35); \
-SetFGColor (255, 0, 0); \
-StaticText ("Warning !!!", 0, 0); } \
-Panel (p1, 0, 1, 1, 1, BOTH, NORTHWEST, 1, 1, 10, 10, 10, 10) { \
-SetBGColor (255, 0, 0); \
-SetFGColor (255, 255, 255); \
-SetFont ("Dialog", 25); \
-StaticText ("Application is locked!", 0, 1); \
-StaticText ("Another script may be running! ", 0, 2); \
-StaticText ("To continue anyways, press Yes", 0, 3); \
-StaticText ("To abort, press No", 0, 4); } \
-' | $COMIRA $MIRAHOST $MIRAPORT'''
+# Positive PMFM images
+getSeriesNumber
+setITime
+setACSPmfm
+takeImage
+askUser (whether to continue)
+requestParameters
+#Optional additional images at +PMFM
+takeImage
 
+# Negative PMFM images
+setACSPmfm
+takeImage (take multiple images)
+
+restoreValues
+setACSPmfm 0
+analyze
+restoreValues
+'''
 
 
 class RunMira(KPFTranslatorFunction):
@@ -54,11 +69,19 @@ class RunMira(KPFTranslatorFunction):
             log.debug(f"  {key}: {OB[key]}")
         log.info('-------------------------')
 
-        SERIESNR = 0
-        SERIESFILE = Path("/s/nightly1/log/MiasNumber")
-        LOCKFILE = Path("/s/nightly1/log/mias/kpfMias.locked")
+        # Check lockfile, if set, pop up for OA
+        # Initcheck: check DCS simulation, set data directory
+        # Query Mira parameters from operator via GUI
         
-        
+        # Set PMFM
+        ConfigureForAcquisition.execute(OB)
+        PMFM.execute({'pmfm_nm': OB.get('PMFM')})
+
+        # Take CRED2 trigger file (without full cube)
+        TakeGuiderCube.execute({'duration': OB.get('GuiderDuration'),
+                                'ImageCube': False})
+        lastfile = ktl.cache('kpfguide', 'LASTTRIGFILE')
+
 
 
     @classmethod

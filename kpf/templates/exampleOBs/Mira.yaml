@@ -1,0 +1,5 @@
+PMFM: 300
+nImages: 2
+GuiderGain: high
+GuiderFPS: 100
+GuiderDuration: 20
