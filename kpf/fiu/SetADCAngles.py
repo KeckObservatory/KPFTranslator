@@ -9,11 +9,11 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 def calculate_ADC_delta(za):
     # Zeemax model data to fit
-    za = np.array([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65])
-    ADC_delta = np.array([0, -2.71, -5.47, -8.32, -11.33, -14.58, -18.15, -22.19, -26.89, -32.59, -39.89, -50.15, -68.03, -90])
+    za_zeemax = np.array([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65])
+    ADC_delta_zeemax = np.array([0, -2.71, -5.47, -8.32, -11.33, -14.58, -18.15, -22.19, -26.89, -32.59, -39.89, -50.15, -68.03, -90])
     poly0 = models.Polynomial1D(degree=4)
     fitter = fitting.LinearLSQFitter()
-    poly = fitter(poly0, za, ADC_delta)
+    poly = fitter(poly0, za_zeemax, ADC_delta_zeemax)
     log.debug(f"ADC Hack: poly.degree={poly.degree:d}")
     log.debug(f"ADC Hack: poly.c0={poly.c0}")
     log.debug(f"ADC Hack: poly.c1={poly.c1}")
