@@ -75,9 +75,9 @@ class ConfigureForScience(KPFTranslatorFunction):
                                          'SSS_CalSciSky': False})
 
         # Set up ADCs (temporary hack for testing)
-        kpffiu = ktl.cache('kpffiu')
-        kpffiu['ADCTRACK'].write('Off')
-        SetADCAngles.execute({})
+#         kpffiu = ktl.cache('kpffiu')
+#         kpffiu['ADCTRACK'].write('Off')
+#         SetADCAngles.execute({})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
