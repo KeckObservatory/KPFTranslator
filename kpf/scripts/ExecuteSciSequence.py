@@ -83,8 +83,10 @@ class ExecuteSciSequence(KPFTranslatorFunction):
             ## Setup exposure meter
             ## ----------------------------------------------------------------
             em_exptime = seq.get('ExpMeterExpTime', None)
+            log.debug(f"ExpMeterExpTime requested {em_exptime:.1f}")
             if em_exptime is not None:
                 kpf_expmeter = ktl.cache('kpf_expmeter')
+                log.debug(f"Setting ExpMeterExpTime = {em_exptime:.1f}")
                 kpf_expmeter['EXPOSURE'].write(em_exptime)
             
             ## ----------------------------------------------------------------
