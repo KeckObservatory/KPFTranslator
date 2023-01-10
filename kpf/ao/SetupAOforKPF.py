@@ -12,6 +12,7 @@ from .SetAFMtoMirror import SetAFMtoMirror
 from .SendPCUtoHome import SendPCUtoHome
 from .SendPCUtoKPF import SendPCUtoKPF
 from .SetAFStoNGS import SetAFStoNGS
+from .TurnLightSourceOff import TurnLightSourceOff
 
 
 class SetupAOforKPF(KPFTranslatorFunction):
@@ -51,6 +52,9 @@ class SetupAOforKPF(KPFTranslatorFunction):
 
         log.info('Set AFS to NGS')
         SetAFStoNGS.execute({})
+
+        log.info('Turn K1 AO light source off')
+        TurnLightSourceOff.execute({})
 
         log.info('Move PCU to Home')
         SendPCUtoHome.execute({})
