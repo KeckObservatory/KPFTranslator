@@ -1,4 +1,5 @@
 import ktl
+import numpy as np
 from astropy.modeling import models, fitting
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
