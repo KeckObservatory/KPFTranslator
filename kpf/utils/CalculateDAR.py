@@ -1,7 +1,6 @@
 import numpy as np
 
 import ktl
-from astropy import wcs
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
