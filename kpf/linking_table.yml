@@ -53,6 +53,8 @@ links:
         cmd: fiu.ControlHatch.ControlHatch
     InitializeTipTilt:
         cmd: fiu.InitializeTipTilt.InitializeTipTilt
+    SetADCAngles:
+        cmd: fiu.SetADCAngles.SetADCAngles
     SetTipTiltCalculations:
         cmd: fiu.SetTipTiltCalculations.SetTipTiltCalculations
     SetTipTiltControl:
