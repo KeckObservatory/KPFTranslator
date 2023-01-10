@@ -19,12 +19,10 @@ def calculate_ADC_delta(za):
     log.debug(f"ADC Hack: poly.c2={poly.c2}")
     log.debug(f"ADC Hack: poly.c3={poly.c3}")
     log.debug(f"ADC Hack: poly.c4={poly.c4}")
-
     if za >= 0 and za <= 65:
         return poly(za)
     else:
         return poly(65)
-
 
 
 class SetADCAngles(KPFTranslatorFunction):
@@ -39,7 +37,6 @@ class SetADCAngles(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpffiu = ktl.cache('kpffiu')
-
         dcs = ktl.cache('dcs')
         za = 90 - dcs['EL'].read(binary=True)*180/np.pi
         ADC_delta = calculate_ADC_delta(za)
@@ -53,6 +50,7 @@ class SetADCAngles(KPFTranslatorFunction):
         log.debug(f"ADC Hack: ADC1_offset={ADC1_offset:.1f}")
         log.debug(f"ADC Hack: ADC2_offset={ADC2_offset:.1f}")
 
+        # Calculations
         ADC1 = common_angle + ADC1_offset - za - ADC_delta
         ADC2 = common_angle + ADC2_offset - za - ADC_delta
         log.info(f"ADC Hack: Writing ADC1VAL={ADC1:.1f}, ADC2VAL={ADC2:.1f}")
