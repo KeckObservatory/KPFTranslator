@@ -71,7 +71,8 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             SetTipTiltGain.execute(OB)
 
         # Set FIU Mode
-        ConfigureFIU.execute({'mode': 'observing', 'wait': False})
+        log.info('Setting FIU mode to Observing')
+        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

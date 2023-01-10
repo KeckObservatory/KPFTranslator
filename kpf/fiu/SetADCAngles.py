@@ -52,7 +52,7 @@ class SetADCAngles(KPFTranslatorFunction):
         log.debug(f"ADC Hack: ADC2_offset={ADC2_offset:.1f}")
 
         # Calculations
-        ADC1 = common_angle + ADC1_offset - za - ADC_delta
+        ADC1 = common_angle + ADC1_offset + za - ADC_delta
         ADC2 = common_angle + ADC2_offset - za - ADC_delta
         log.info(f"ADC Hack: Writing ADC1VAL={ADC1:.1f}, ADC2VAL={ADC2:.1f}")
         kpffiu['ADC1VAL'].write(ADC1)
