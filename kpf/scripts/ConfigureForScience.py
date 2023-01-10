@@ -14,7 +14,7 @@ from . import register_script, obey_scriptrun, check_scriptstop
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..fiu.ConfigureFIU import ConfigureFIU
-from ..fiu.SetADCAngles import SetADCAngles
+# from ..fiu.SetADCAngles import SetADCAngles
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
