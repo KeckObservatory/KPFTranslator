@@ -18,7 +18,7 @@ class TurnHepaOn(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         ao = ktl.cache('ao')
         log.debug('Setting AO HEPA filter to on')
-        ao['OBHPAON'].write('1')
+        ao['OBHPAON'].write(1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
