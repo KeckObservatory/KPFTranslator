@@ -33,6 +33,14 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
+        check_input(OB, 'TargetName')
+        check_input(OB, 'GaiaID')
+        check_input(OB, '2MASSID')
+        check_input(OB, 'Parallax')
+        check_input(OB, 'RadialVelocity')
+        check_input(OB, 'Gmag')
+        check_input(OB, 'Jmag')
+        check_input(OB, 'Teff')
         return True
 
     @classmethod
@@ -49,16 +57,19 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        # Set Target Paramerts from OB
-#         log.info(f"Setting target parameters")
-#         TargetName
-#         GaiaID
-#         2MASSID
-#         Parallax
-#         RadialVelocity
-#         Gmag <-- There is a TARGET_VMAG in kpf_expmeter
-#         Jmag
-#         Teff <-- There is a TARGET_TEFF in kpf_expmeter
+        dcs = ktl.cache('dcs')
+        kpfconfig = ktl.cache('kpfconfig')
+        kpf_expmeter = ktl.cache('kpf_expmeter')
+        # Set Target Parameters from OB
+        log.info(f"Setting target parameters")
+        kpfconfig['TARGET_NAME'].write(OB.get('TargetName'))
+        kpfconfig['TARGET_GAIA'].write(OB.get('GaiaID'))
+        kpfconfig['TARGET_2MASS'].write(OB.get('2MASSID'))
+        kpfconfig['TARGET_GMAG'].write(OB.get('Gmag'))
+        kpfconfig['TARGET_JMAG'].write(OB.get('Jmag'))
+        kpf_expmeter['TARGET_TEFF'].write(OB.get('Teff'))
+        dcs['TARGPLAX'].write(OB.get('Parallax'))
+        dcs['TARGRADV'].write(OB.get('RadialVelocity'))
 
         # Set guide camera parameters (only manual supported for now)
         if OB.get('GuideMode', 'manual') != 'manual':
