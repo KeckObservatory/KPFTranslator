@@ -48,8 +48,8 @@ class EndOfNight(KPFTranslatorFunction):
         if args.get('AO', True) is True:
             log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'closed'})
-#             log.info('Turning on AO HEPA Filter System')
-#             TurnHepaOn.execute({})
+            log.info('Turning on AO HEPA Filter System')
+            TurnHepaOn.execute({})
             log.info('Sending PCU stage to Home position')
             SendPCUtoHome.execute({})
         # Power off FVCs
