@@ -9,7 +9,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from .ConfigureForAcquisition import ConfigureForAcquisition
 from .ConfigureForScience import ConfigureForScience
 from ..fiu.StartTipTilt import StartTipTilt
-from ..utils.CorrectDAR import CorrectDAR
+# from ..utils.CorrectDAR import CorrectDAR
 from .ExecuteSciSequence import ExecuteSciSequence
 from .CleanupAfterScience import CleanupAfterScience
 
@@ -55,7 +55,7 @@ class RunSciOB(KPFTranslatorFunction):
 
         log.info(f"Starting tip tilt loops")
         StartTipTilt.execute({})
-        CorrectDAR.execute({})
+#         CorrectDAR.execute({})
         log.info(f"Sleeping 3 seconds to allow loops to close")
         time.sleep(3)
         
