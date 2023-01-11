@@ -13,6 +13,8 @@ links:
         cmd: ao.SendPCUtoKPF.SendPCUtoKPF
     SetAORotator:
         cmd: ao.SetAORotator.SetAORotator
+    SetupAOforACAM:
+        cmd: ao.SetupAOforACAM.SetupAOforACAM
     SetupAOforKPF:
         cmd: ao.SetupAOforKPF.SetupAOforKPF
     TurnHepaOff:
