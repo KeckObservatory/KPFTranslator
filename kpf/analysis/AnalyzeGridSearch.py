@@ -28,8 +28,8 @@ from matplotlib.ticker import MultipleLocator
 p = argparse.ArgumentParser(description='''
 ''')
 ## add arguments
-p.add_argument('logfile', type=str,
-               help="")
+p.add_argument('logfile', type=str, nargs='*',
+               help="The logfile or files of the grid search runs to analyze")
 ## add flags
 p.add_argument("-v", "--verbose", dest="verbose",
     default=False, action="store_true",
@@ -105,6 +105,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     onedspecfiles = (n1dspec >= nexpmeter)
     camname = {True: 'ExpMeter_1Dspec', False: 'ExpMeter'}[onedspecfiles]
 
+    log.info('  Building FITS cube')
     wavs = None
     for entry in images[images['camera'] == camname]:
         i = xs.index(entry['x'])
@@ -142,14 +143,15 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
         posdata[0,j,i] = entry['x']
         posdata[1,j,i] = entry['y']
 
+    log.info('  Building flux maps')
     flux_map = np.sum(spec_cube, axis=0)
     npix = 30
-    color_images = np.zeros((3,nx,ny))
+    color_images = np.zeros((3,ny,nx))
     color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
     color_images[1,:,:] = np.sum(spec_cube[index_550nm-npix:index_550nm+npix,:,:], axis=0)
     color_images[2,:,:] = np.sum(spec_cube[index_650nm-npix:index_650nm+npix,:,:], axis=0)
 
-    color_cube = np.zeros((2,nx,ny))
+    color_cube = np.zeros((2,ny,nx))
     color_cube[0,:,:] = color_images[0,:,:]/color_images[1,:,:]
     color_cube[1,:,:] = color_images[2,:,:]/color_images[1,:,:]
 
@@ -184,6 +186,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     wavhdu.header.set('OBJECT', 'Wavelength_Values')
     wavhdu.data = np.array(wavs)
     hdul = fits.HDUList([hdu, fluxmaphdu, fluxcubehdu, colormaphdu, poshdu, wavhdu])
+    log.info(f'  Writing {ouput_spec_cube}')
     hdul.writeto(f'{ouput_spec_cube}', overwrite=True)
 
 
@@ -195,6 +198,7 @@ def analyze_grid_search(logfile, fiber='Science', FVCs=[]):
     logfile = Path(logfile)
     assert logfile.exists()
     assert logfile.suffix == '.log'
+    log.info(f"Analyzing {logfile.name}")
     data_path = logfile.parent.parent
 
     # Build output FITS cube file name
@@ -213,7 +217,7 @@ def analyze_grid_search(logfile, fiber='Science', FVCs=[]):
     else:
         mode = 'TipTilt'
         images_file = logfile.parent / logfile.name.replace('GridSearch', 'GridSearch_images').replace('.log', '.txt')
-    log.info(f"Found: {images_file}")
+    log.info(f"  Found: {images_file}")
 
     # Determine comment string from log file
     try:
@@ -223,7 +227,7 @@ def analyze_grid_search(logfile, fiber='Science', FVCs=[]):
             m = re.search("comment: (.*)", line)
             if m is not None:
                 comment = m.groups()[0].strip('\n')
-        log.info(f"Log Comment: {comment}")
+        log.info(f"  Log Comment: {comment}")
     except:
         comment = ''
         log.error('Could not find comment in log file')
@@ -237,7 +241,7 @@ def analyze_grid_search(logfile, fiber='Science', FVCs=[]):
         images.add_column(Column(name='y', data=images['dy'].data))
     nx = len(set(set(images['x'])))
     ny = len(set(set(images['y'])))
-    log.info(f"Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
+    log.info(f"  Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
 
     build_FITS_cube(images, comment, ouput_spec_cube)
 
@@ -721,7 +725,8 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
 
 
 if __name__ == '__main__':
-    analyze_grid_search(args.logfile,
-                        fiber=args.fiber,
-                        FVCs=args.FVCs.split(','),
-                        )
+    for logfile in args.logfile:
+        analyze_grid_search(logfile,
+                            fiber=args.fiber,
+                            FVCs=args.FVCs.split(','),
+                            )
