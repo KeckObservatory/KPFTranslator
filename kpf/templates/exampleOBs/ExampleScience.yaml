@@ -2,43 +2,32 @@ Template_Name: kpf_sci
 Template_Version: 0.4
 
 # Target Info
-TargetName: mystar
-GaiaID: 12345
-2MASSID: 678910
-Parallax: 0
-RadialVelocity: 0
-Gmag: 10
-Jmag: 9
-Teff: 5700
+TargetName: 10700               # kpfconfig.TARGET_NAME
+GaiaID: DR2 2452378776434276992 # kpfconfig.TARGET_GAIA
+2MASSID: 01440402-1556141       # kpfconfig.TARGET_2MASS
+Parallax: 273.81                # dcs.TARGPLAX
+RadialVelocity: -16.597         # dcs.TARGRADV
+Gmag: 3.3                       # kpfconfig.TARGET_GMAG
+Jmag: 2.14                      # kpfconfig.TARGET_JMAG
+Teff: 5266                      # kpf_expmeter.TARGET_TEFF
 # Guider Setup
-GuideMode: manual
-GuideCamGain: high
-GuideFPS: 100
-GuideLoopGain: 0.4
+GuideMode: manual               # Only "manual" is currently supported
+GuideCamGain: low               # The guide camera's gain: high, medium, or low
+GuideFPS: 100                   # The frames per second for the guide camera (100 is a good default)
+GuideLoopGain: 0.3              # The tip tilt loop gain (0-1), guidance will be provided after testing
 # Spectrograph Setup
-TriggerCaHK: False
-TriggerGreen: True
-TriggerRed: True
-RunAgitator: True
+TriggerCaHK: False              # Expose using the Ca H&K spectrograph?
+TriggerGreen: True              # Expose using the Green camera in the main spectrograph?
+TriggerRed: True                # Expose using the Red camera in the main spectrograph?
+RunAgitator: True               # Run the agitator during exposures?
 # Observations
 SEQ_Observations:
-- Object: Long Exposure of My Target, no SimulCal
-  nExp: 3
-  Exptime: 120
-  ExpMeterMode: monitor
-  ExpMeterExpTime: 1
-  ExpMeterBand: 1
-  ExpMeterFlux: 100000
-  TimedShutter_SimulCal: True
-- Object: Short Exposure of My Target with SimulCal
-  nExp: 3
-  Exptime: 120
-  TimedShutter_SimulCal: True
-  ExpMeterMode: monitor
-  ExpMeterExpTime: 1
-  ExpMeterBand: 1
-  ExpMeterFlux: 100000
-  TimedShutter_SimulCal: True
-  CalSource: Th_daily
-  CalND1: OD 0.1
-  CalND2: OD 0.1
+- Object: 10700                 # User settable comment
+  nExp: 4                       # Number of exposures for the selected detectors
+  Exptime: 30                   # Exposure time for each exposure (Red, Gree, & Ca HK)
+  ExpMeterMode: monitor         # Only "monitor" is currently supported
+  ExpMeterExpTime: 0.5          # Exposure time for the exposure meter spectrograph
+  TimedShutter_SimulCal: True   # Open the simultaneous calibration shutter?
+  CalSource: LFCFiber           # Which cal source to use for simultaneous calibrations?
+  CalND1: OD 4.0                # Which ND1 filter to use for simultaneous calibrations?
+  CalND2: OD 0.1                # Which ND2 filter to use for simultaneous calibrations?
