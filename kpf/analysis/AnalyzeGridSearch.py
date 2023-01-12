@@ -28,8 +28,8 @@ from matplotlib.ticker import MultipleLocator
 p = argparse.ArgumentParser(description='''
 ''')
 ## add arguments
-p.add_argument('datetimestr', type=str,
-               help="The date and time string of the grid search (e.g. 20221107at090316).")
+p.add_argument('logfile', type=str,
+               help="")
 ## add flags
 p.add_argument("-v", "--verbose", dest="verbose",
     default=False, action="store_true",
@@ -41,18 +41,12 @@ p.add_argument("--skipcred2", dest="skipcred2",
     default=False, action="store_true",
     help="Skip building figure of CRED2 images")
 ## add options
-p.add_argument("--flux_prefix", dest="flux_prefix", type=str,
-    default='cur',
-    help="The flux prefix to use ('cur', 'raw', or 'bck').")
 p.add_argument("--fiber", dest="fiber", type=str,
     default='Science',
     help="The fiber being examined (Science, Sky, or EMSky).")
 p.add_argument("--FVCs", dest="FVCs", type=str,
     default='',
     help="A comma separated list of FVC cameras to trigger (SCI, CAHK, EXT).")
-p.add_argument("--data_path", dest="data_path", type=str,
-    default='/s/sdata1701/kpfeng/2022dec14',
-    help="The path to the data directory with logs and CRED2 sub-directories")
 args = p.parse_args()
 
 
@@ -97,12 +91,163 @@ def mode(data):
 
 
 ##-------------------------------------------------------------------------
+## build_FITS_cube
+##-------------------------------------------------------------------------
+def build_FITS_cube(images, comment, ouput_spec_cube):
+    nx = len(set(images['x']))
+    ny = len(set(images['y']))
+    xs = sorted(set(images['x']))
+    ys = sorted(set(images['y']))
+
+    # Figure out of the table contains the filename for the 1D extracted spectra
+    nexpmeter = len(images[images['camera'] == 'ExpMeter'])
+    n1dspec = len(images[images['camera'] == 'ExpMeter_1Dspec'])
+    onedspecfiles = (n1dspec >= nexpmeter)
+    camname = {True: 'ExpMeter_1Dspec', False: 'ExpMeter'}[onedspecfiles]
+
+    wavs = None
+    for entry in images[images['camera'] == camname]:
+        i = xs.index(entry['x'])
+        j = ys.index(entry['y'])
+        if onedspecfiles is False:
+            p = Path(entry['file'])
+            ismatch = re.search('(kpf_em_\d+)\.\d{3}\.fits', p.name)
+            if ismatch:
+                specfile = p.parent / f"{ismatch.groups(1)[0]}.fits"
+            else:
+                print(f'Failed Match: {p}')
+        else:
+            onedspecfile = Path(entry['file'])
+        # If this is first file, pull the wavelengths out
+        hdul = fits.open(onedspecfile)
+        onedspec_table = Table(hdul[1].data)
+        if wavs is None:
+            wavs_strings = [k for k in onedspec_table.keys() if k not in ['Date-Beg', 'Date-End']]
+            wavs = [float(k) for k in onedspec_table.keys() if k not in ['Date-Beg', 'Date-End']]
+            dwav = [wav-wavs[i-1] for i,wav in enumerate(wavs) if i>0]
+            nwav = len(wavs)
+            spec_cube = np.zeros((nwav,ny,nx))
+            posdata = np.zeros((2,ny,nx))
+            index_450nm = np.argmin([abs(w-450) for w in wavs])
+            index_550nm = np.argmin([abs(w-550) for w in wavs])
+            index_650nm = np.argmin([abs(w-650) for w in wavs])
+
+        all_EM_spectra = np.zeros((len(onedspec_table), nwav), dtype=float)
+        for lineno,line in enumerate(onedspec_table):
+            linewavs = np.array([float(line[key]) for key in wavs_strings])
+            all_EM_spectra[lineno,:] = linewavs
+#         mean_EM_spectrum = all_EM_spectra.mean(axis=0)
+        mean_EM_spectrum_dropFL = all_EM_spectra[1:-1,:].mean(axis=0)
+        spec_cube[:,j,i] = np.array(mean_EM_spectrum_dropFL)
+        posdata[0,j,i] = entry['x']
+        posdata[1,j,i] = entry['y']
+
+    flux_map = np.sum(spec_cube, axis=0)
+    npix = 30
+    color_images = np.zeros((3,nx,ny))
+    color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
+    color_images[1,:,:] = np.sum(spec_cube[index_550nm-npix:index_550nm+npix,:,:], axis=0)
+    color_images[2,:,:] = np.sum(spec_cube[index_650nm-npix:index_650nm+npix,:,:], axis=0)
+
+    color_cube = np.zeros((2,nx,ny))
+    color_cube[0,:,:] = color_images[0,:,:]/color_images[1,:,:]
+    color_cube[1,:,:] = color_images[2,:,:]/color_images[1,:,:]
+
+    hdu = fits.PrimaryHDU()
+    hdu.header.set('Name', 'Spectral_Cube')
+    hdu.header.set('OBJECT', 'Spectral_Cube')
+    hdu.header.set('Comment', comment)
+    hdu.data = spec_cube
+    fluxmaphdu = fits.ImageHDU()
+    fluxmaphdu.header.set('Name', 'Flux_Map')
+    fluxmaphdu.header.set('OBJECT', 'Flux_Map')
+    fluxmaphdu.data = flux_map
+    fluxcubehdu = fits.ImageHDU()
+    fluxcubehdu.header.set('Name', 'Three_Color_Cube')
+    fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
+    fluxcubehdu.header.set('Layer1', '450nm')
+    fluxcubehdu.header.set('Layer2', '550nm')
+    fluxcubehdu.header.set('Layer3', '650nm')
+    fluxcubehdu.data = color_images
+    colormaphdu = fits.ImageHDU()
+    colormaphdu.header.set('Name', 'Color_Map_Ratios')
+    colormaphdu.header.set('OBJECT', 'Color_Map_Ratios')
+    colormaphdu.header.set('Layer1', '450nm/550nm')
+    colormaphdu.header.set('Layer2', '650nm/550nm')
+    colormaphdu.data = color_cube
+    poshdu = fits.ImageHDU()
+    poshdu.header.set('Name', 'Spatial_Positions')
+    poshdu.header.set('OBJECT', 'Spatial_Positions')
+    poshdu.data = posdata
+    wavhdu = fits.ImageHDU()
+    wavhdu.header.set('Name', 'Wavelength_Values')
+    wavhdu.header.set('OBJECT', 'Wavelength_Values')
+    wavhdu.data = np.array(wavs)
+    hdul = fits.HDUList([hdu, fluxmaphdu, fluxcubehdu, colormaphdu, poshdu, wavhdu])
+    hdul.writeto(f'{ouput_spec_cube}', overwrite=True)
+
+
+##-------------------------------------------------------------------------
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
-def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
-                        data_path=Path('/s/sdata1701/kpfeng/2022dec14'),
-                        FVCs=['SCI'],
-                        ):
+def analyze_grid_search(logfile, fiber='Science', FVCs=[]):
+
+    logfile = Path(logfile)
+    assert logfile.exists()
+    assert logfile.suffix == '.log'
+    data_path = logfile.parent.parent
+
+    # Build output FITS cube file name
+    ouput_spec_cube = logfile.name.replace('.log', '.fits')
+
+    # Check for images table name to determine mode
+    mode = None
+    tiptilt_images_file = logfile.parent / logfile.name.replace('GridSearch', 'TipTiltGridSearch_images').replace('.log', '.txt')
+    sciADC_images_file = logfile.parent / logfile.name.replace('GridSearch', 'SciADCGridSearch_images').replace('.log', '.txt')
+    if tiptilt_images_file.exists():
+        mode = 'TipTilt'
+        images_file = tiptilt_images_file
+    elif sciADC_images_file.exists():
+        mode = 'SciADC'
+        images_file = sciADC_images_file
+    else:
+        mode = 'TipTilt'
+        images_file = logfile.parent / logfile.name.replace('GridSearch', 'GridSearch_images').replace('.log', '.txt')
+    log.info(f"Found: {images_file}")
+
+    # Determine comment string from log file
+    try:
+        with open(logfile) as FO:
+            lines = FO.readlines()
+        for line in lines[:20]:
+            m = re.search("comment: (.*)", line)
+            if m is not None:
+                comment = m.groups()[0].strip('\n')
+        log.info(f"Log Comment: {comment}")
+    except:
+        comment = ''
+        log.error('Could not find comment in log file')
+
+    # Load images table and fix old bad naming
+    images = Table.read(images_file, format='ascii.csv')
+    if 'dx' in images.keys():
+        log.warning('Renaming old column names')
+        # This is an old file with old column names
+        images.add_column(Column(name='x', data=images['dx'].data))
+        images.add_column(Column(name='y', data=images['dy'].data))
+    nx = len(set(set(images['x'])))
+    ny = len(set(set(images['y'])))
+    log.info(f"Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
+
+    build_FITS_cube(images, comment, ouput_spec_cube)
+
+    return
+
+
+
+
+
+
     ks = [0,1,2,3]
 
     cred2_pixels = {'EMSky': (160, 256),
@@ -142,15 +287,6 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
         flux_table.add_column(Column(name='x', data=flux_table['dx'].data))
         flux_table.add_column(Column(name='y', data=flux_table['dy'].data))
 
-    images = Table.read(images_file, format='ascii.csv')
-    if 'dx' in images.keys():
-        log.warning('Renaming old column names')
-        # This is an old file with old column names
-        images.add_column(Column(name='x', data=images['dx'].data))
-        images.add_column(Column(name='y', data=images['dy'].data))
-    nx = len(set(set(images['x'])))
-    ny = len(set(set(images['y'])))
-    log.info(f"Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
 
     cameras = set(images['camera'])
     log.info(f"Found cameras: {cameras}")
@@ -166,17 +302,6 @@ def analyze_grid_search(date_time_string, flux_prefix=None, fiber='Science',
     else:
         deltay = 0
 
-    try:
-        with open(log_file) as FO:
-            lines = FO.readlines()
-        for line in lines[:20]:
-            m = re.search("comment: (.*)", line)
-            if m is not None:
-                comment = m.groups()[0].strip('\n')
-        log.info(f"Log Comment: {comment}")
-    except:
-        comment = ''
-        log.error('Could not find comment in log file')
 
     xoffset = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
     yoffset = np.zeros((len(set(flux_table['i'])), len(set(flux_table['j']))))
@@ -596,8 +721,7 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
 
 
 if __name__ == '__main__':
-    analyze_grid_search(args.datetimestr,
-                        flux_prefix=args.flux_prefix,
+    analyze_grid_search(args.logfile,
                         fiber=args.fiber,
                         FVCs=args.FVCs.split(','),
-                        data_path=args.data_path)
+                        )
