@@ -8,15 +8,14 @@ import re
 
 from pathlib import Path
 import numpy as np
+import astropy
 from astropy.io import fits
 from astropy import visualization as viz
-from astropy import units as u
 from astropy.table import Table, Column
-from astropy import stats
 from astropy.nddata import CCDData
-import ccdproc
-import photutils
-from photutils.centroids import centroid_com, centroid_2dg
+
+import warnings
+warnings.filterwarnings('ignore', category=astropy.wcs.FITSFixedWarning, append=True)
 
 from matplotlib import pyplot as plt
 from matplotlib.ticker import MultipleLocator
@@ -34,19 +33,16 @@ p.add_argument('logfile', type=str, nargs='*',
 p.add_argument("-v", "--verbose", dest="verbose",
     default=False, action="store_true",
     help="Be verbose! (default = False)")
-p.add_argument("--adc", dest="adc",
-    default=False, action="store_true",
-    help="Data is an ADC grid search (instead of position)")
 p.add_argument("--skipcred2", dest="skipcred2",
     default=False, action="store_true",
     help="Skip building figure of CRED2 images")
+p.add_argument("--skipFVCs", dest="skipFVCs",
+    default=False, action="store_true",
+    help="Skip building figures of FVC images")
 ## add options
 p.add_argument("--fiber", dest="fiber", type=str,
     default='Science',
     help="The fiber being examined (Science, Sky, or EMSky).")
-p.add_argument("--FVCs", dest="FVCs", type=str,
-    default='',
-    help="A comma separated list of FVC cameras to trigger (SCI, CAHK, EXT).")
 args = p.parse_args()
 
 
@@ -191,18 +187,160 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
 
 
 ##-------------------------------------------------------------------------
+## build_CRED2_graphic
+##-------------------------------------------------------------------------
+def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
+                        iterate=True, x0=335, y0=256):
+    ouput_cred2_image_file = Path(ouput_cred2_image_file)
+    import ccdproc
+    import photutils
+    from photutils.centroids import centroid_com, centroid_2dg
+
+    nx = len(set(images['x']))
+    ny = len(set(images['y']))
+    xs = sorted(set(images['x']))
+    ys = sorted(set(images['y']))
+
+    log.info('  Building CRED2 graphic')
+    fig = plt.figure(figsize=(15,15))
+    nimages = len(images[images['camera'] == 'CRED2'])
+    for fig_index,entry in enumerate(images[images['camera'] == 'CRED2']):
+        i = xs.index(entry['x'])
+        j = ys.index(entry['y'])
+        cred2_file = Path(entry['file'])
+
+        # Create and Subtract Background
+        ccddata = CCDData.read(entry['file'], unit="adu", memmap=False)
+        source_mask = photutils.make_source_mask(ccddata.data, 10, 100)
+        bkg = photutils.Background2D(ccddata,
+                                     box_size=128,
+                                     mask=source_mask,
+                                     sigma_clip=astropy.stats.SigmaClip())
+        image_data = ccddata.data - bkg.background.value
+        log.debug(f"  CRED2 mode = {mode(ccddata.data)} ({mode(image_data)} after background sub)")
+
+        log.debug("Running median CR reject to get rid of bad pixels")
+        image_data, mask = ccdproc.cosmicray_median(image_data, mbox=7, gbox=0, rbox=7)
+
+        # Pull largeish subframe and centroid
+        dx = 60
+        dy = 50
+        subframe = image_data[y0-dy:y0+dy,x0-dx:x0+dx]
+        dx1, dy1 = centroid_com(subframe)
+        x1 = x0 - dx + dx1
+        y1 = y0 - dy + dy1
+        log.debug(f"  Iteration 1: {x1:.1f} {y1:.1f} ({entry['x']:.1f} {entry['y']:.1f})")
+
+        # Iterate on fit with smaller box
+        if iterate is True:
+            dx = 35
+            dy = 30
+            subframe = image_data[int(y1)-dy:int(y1)+dy,int(x1)-dx:int(x1)+dx]
+            dx2, dy2 = centroid_com(subframe)
+            x2 = int(x1) - dx + dx2
+            y2 = int(y1) - dy + dy2
+        else:
+            x2 = x1
+            y2 = y1
+        log.debug(f"  Iteration 2: {x2:.1f} {y2:.1f} ({entry['x']:.1f} {entry['y']:.1f})")
+
+        # Third iteration
+        if iterate is True:
+            dx = 35
+            dy = 30
+            subframe = image_data[int(y2)-dy:int(y2)+dy,int(x2)-dx:int(x2)+dx]
+            dx3, dy3 = centroid_com(subframe)
+            x3 = int(x2) - dx + dx3
+            y3 = int(y2) - dy + dy3
+        else:
+            x3 = x1
+            y3 = y1
+        log.debug(f"  Iteration 3: {x3:.1f} {y3:.1f} ({entry['x']:.1f} {entry['y']:.1f})")
+
+        # Add plot to figure
+        plt.subplot(ny,nx,fig_index+1)
+        cube_number = cred2_file.name.replace('kpfguide_cube_', '').replace('.fits', '')
+        title_string = f"{cube_number}: x,y={entry['x']:.1f}, {entry['y']:.1f}"
+        plt.title(title_string, size=8)
+        norm = viz.ImageNormalize(image_data,
+                                  interval=viz.AsymmetricPercentileInterval(1.5,100),
+                                  stretch=viz.LogStretch())
+        plt.imshow(subframe, interpolation='none', cmap='gray', origin='lower', norm=norm)
+
+        plt.plot(entry['x'] - x2 + dx, entry['y'] - y2 + dy, 'bx')
+        if iterate is True:
+            plt.arrow(entry['x'] - x2 + dx, entry['y'] - y2 + dy,
+                      dx3-(entry['x'] - x2 + dx),
+                      dy3-(entry['y'] - y2 + dy),
+                      color='g', alpha=0.5,
+                      head_width=0.1, length_includes_head=True)
+            plt.plot(dx3, dy3, 'r+')
+        plt.gca().set_aspect('equal', 'box')
+        plt.gca().set_yticks([])
+        plt.gca().set_xticks([])
+
+    log.info(f"Saving: {ouput_cred2_image_file}")
+    if ouput_cred2_image_file.exists() is True:
+        ouput_cred2_image_file.unlink()
+    plt.savefig(ouput_cred2_image_file, bbox_inches='tight', pad_inches=0.10)
+
+
+##-------------------------------------------------------------------------
+## build_FVC_graphic
+##-------------------------------------------------------------------------
+def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
+                      x0=335, y0=256):
+    data_path = Path(data_path)
+    ouput_FVC_image_file = Path(ouput_FVC_image_file)
+
+    nx = len(set(images['x']))
+    ny = len(set(images['y']))
+    xs = sorted(set(images['x']))
+    ys = sorted(set(images['y']))
+
+    log.info(f'  Building {FVC}FVC graphic')
+    fig = plt.figure(figsize=(15,15))
+    nimages = len(images[images['camera'] == FVC])
+    for fig_index,entry in enumerate(images[images['camera'] == FVC]):
+        i = xs.index(entry['x'])
+        j = ys.index(entry['y'])
+        fvc_file = Path(entry['file'])
+        hdul = fits.open(fvc_file)
+        dx = 200
+        dy = 200
+        subframe = hdul[0].data[y0-dy:y0+dy,x0-dx:x0+dx]
+        plt.subplot(ny,nx,fig_index+1)
+        title_string = f"{fvc_file.name}: x,y={entry['x']:.1f}, {entry['y']:.1f}"
+        plt.title(title_string, size=8)
+        norm = viz.ImageNormalize(hdul[0].data,
+                                  interval=viz.AsymmetricPercentileInterval(0.2,99.9),
+                                  stretch=viz.LogStretch())
+        plt.imshow(subframe, cmap='gray', origin='lower', norm=norm)
+        radius = {'EXT': 27, 'SCI': 40, 'CAHK': 40}[FVC]
+        circ = plt.Circle((dx, dy), radius=radius, alpha=0.25,
+                          edgecolor='green', fill=False)
+        plt.plot(dx, dy, 'r+', alpha=0.25)
+        plt.gca().add_patch(circ)
+        plt.gca().set_yticks([])
+        plt.gca().set_xticks([])
+
+    log.info(f"Saving: {ouput_FVC_image_file}")
+    if ouput_FVC_image_file.exists() is True:
+        ouput_FVC_image_file.unlink()
+    plt.savefig(ouput_FVC_image_file, bbox_inches='tight', pad_inches=0.10)
+
+
+##-------------------------------------------------------------------------
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
-def analyze_grid_search(logfile, fiber='Science', FVCs=[]):
+def analyze_grid_search(logfile, fiber='Science',
+                        skipcred2=False, skipFVCs=False):
 
     logfile = Path(logfile)
     assert logfile.exists()
     assert logfile.suffix == '.log'
     log.info(f"Analyzing {logfile.name}")
     data_path = logfile.parent.parent
-
-    # Build output FITS cube file name
-    ouput_spec_cube = logfile.name.replace('.log', '.fits')
 
     # Check for images table name to determine mode
     mode = None
@@ -243,8 +381,42 @@ def analyze_grid_search(logfile, fiber='Science', FVCs=[]):
     ny = len(set(set(images['y'])))
     log.info(f"  Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
 
+    # Build output FITS cube file name
+    ouput_spec_cube = logfile.name.replace('.log', '.fits')
     build_FITS_cube(images, comment, ouput_spec_cube)
 
+    # Build graphic of CRED2 Images
+    if skipcred2 is not True:
+        ouput_cred2_image_file = Path(logfile.name.replace('.log', '_CRED2_images.png'))
+        cred2_pixels = {'EMSky': (160, 256),
+                        'Science': (335, 256),
+                        'Sky': (510, 256)}[fiber]
+        build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
+                            x0=cred2_pixels[0], y0=cred2_pixels[1])
+
+    # Build graphic of FVC Images
+    if skipFVCs is not True:
+        FVCs = ['SCI', 'CAHK', 'EXT']
+        fvc_pixels = {'SCI': {'EMSky': None,
+                              'Science': (800, 600),
+                              'Sky': None},
+                      'CAHK': {'EMSky': None,
+                               'Science': (800, 600),
+                               'Sky': None},
+                      'EXT': {'EMSky': None,
+                              'Science': (620, 700),
+                              'Sky': None}
+                     }
+        fvcsci_pixels = [fiber]
+        fvccahk_pixels = [fiber]
+        fvcext_pixels = [fiber]
+        for FVC in FVCs:
+            ouput_fvc_image_file = Path(logfile.name.replace('.log', f'_{FVC}FVC_images.png'))
+            fvc_images = images[images['camera'] == FVC]
+            if len(fvc_images) > 0:
+                build_FVC_graphic(FVC, images, comment, ouput_fvc_image_file, data_path,
+                                  x0=fvc_pixels[FVC][fiber][0],
+                                  y0=fvc_pixels[FVC][fiber][1])
     return
 
 
@@ -610,7 +782,7 @@ def show_CRED2_image(x, y, images, fluxes,
     bkg = photutils.Background2D(ccddata,
                                  box_size=128,
                                  mask=source_mask,
-                                 sigma_clip=stats.SigmaClip())
+                                 sigma_clip=astropy.stats.SigmaClip())
     image_data = ccddata.data - bkg.background.value
 #     image_data = ccddata.data - np.percentile(ccddata.data, 48)
     log.debug(f"  CRED2 mode = {mode(ccddata.data)} ({mode(image_data)} after background sub)")
@@ -727,6 +899,6 @@ def show_FVC_image(x, y, images, fluxes, camera='SCI',
 if __name__ == '__main__':
     for logfile in args.logfile:
         analyze_grid_search(logfile,
+                            skipcred2=args.skipcred2,
                             fiber=args.fiber,
-                            FVCs=args.FVCs.split(','),
                             )
