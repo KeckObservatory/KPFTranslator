@@ -306,21 +306,22 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
         j = ys.index(entry['y'])
         fvc_file = Path(entry['file'])
         hdul = fits.open(fvc_file)
-        dx = 200
-        dy = 200
+        dx = 50
+        dy = 50
         subframe = hdul[0].data[y0-dy:y0+dy,x0-dx:x0+dx]
         plt.subplot(ny,nx,fig_index+1)
-        title_string = f"{fvc_file.name}: x,y={entry['x']:.1f}, {entry['y']:.1f}"
+        title_string = f"{fvc_file.name.replace('.fits','').replace('fvc','')}: {entry['x']:.1f}, {entry['y']:.1f}"
         plt.title(title_string, size=8)
-        norm = viz.ImageNormalize(hdul[0].data,
-                                  interval=viz.AsymmetricPercentileInterval(0.2,99.9),
-                                  stretch=viz.LogStretch())
+        norm = viz.ImageNormalize(subframe,
+                                  interval=viz.AsymmetricPercentileInterval(40,99.9),
+#                                   interval=viz.MinMaxInterval(),
+                                  stretch=viz.LinearStretch())
         plt.imshow(subframe, cmap='gray', origin='lower', norm=norm)
-        radius = {'EXT': 27, 'SCI': 40, 'CAHK': 40}[FVC]
-        circ = plt.Circle((dx, dy), radius=radius, alpha=0.25,
-                          edgecolor='green', fill=False)
-        plt.plot(dx, dy, 'r+', alpha=0.25)
-        plt.gca().add_patch(circ)
+#         radius = {'EXT': 27, 'SCI': 40, 'CAHK': 40}[FVC]
+#         circ = plt.Circle((dx, dy), radius=radius, alpha=0.25,
+#                           edgecolor='green', fill=False)
+#         plt.plot(dx, dy, 'r+', alpha=0.25)
+#         plt.gca().add_patch(circ)
         plt.gca().set_yticks([])
         plt.gca().set_xticks([])
 
@@ -398,7 +399,7 @@ def analyze_grid_search(logfile, fiber='Science',
     if skipFVCs is not True:
         FVCs = ['SCI', 'CAHK', 'EXT']
         fvc_pixels = {'SCI': {'EMSky': None,
-                              'Science': (800, 600),
+                              'Science': (805, 605),
                               'Sky': None},
                       'CAHK': {'EMSky': None,
                                'Science': (800, 600),
