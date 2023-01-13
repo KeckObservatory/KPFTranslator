@@ -397,12 +397,14 @@ def analyze_grid_search(logfile, fiber='Science',
     log.info(f"  Read in {images_file.name} with {len(images)} lines ({nx} x {ny} grid)")
 
     # Build output FITS cube file name
-    ouput_spec_cube = logfile.name.replace('.log', '.fits')
-    build_FITS_cube(images, comment, ouput_spec_cube)
+    ouput_spec_cube = f"{mode}{logfile.name.replace('.log', '.fits')}"
+    hdul = build_FITS_cube(images, comment, ouput_spec_cube)
+#     ouput_cube_graphic = logfile.name.replace('.log', '.png')
+#     build_cube_graphic(hdul, ouput_cube_graphic)
 
     # Build graphic of CRED2 Images
     if skipcred2 is not True and len(images[images['camera'] == 'CRED2']) > 0:
-        ouput_cred2_image_file = Path(logfile.name.replace('.log', '_CRED2_images.png'))
+        ouput_cred2_image_file = Path(f"{mode}{logfile.name.replace('.log', '_CRED2_images.png')}")
         cred2_pixels = {'EMSky': (160, 256),
                         'Science': (335, 256),
                         'Sky': (510, 256)}[fiber]
@@ -426,7 +428,7 @@ def analyze_grid_search(logfile, fiber='Science',
         fvccahk_pixels = [fiber]
         fvcext_pixels = [fiber]
         for FVC in FVCs:
-            ouput_fvc_image_file = Path(logfile.name.replace('.log', f'_{FVC}FVC_images.png'))
+            ouput_fvc_image_file = Path(f"{mode}{logfile.name.replace('.log', f'_{FVC}FVC_images.png')}")
             fvc_images = images[images['camera'] == FVC]
             if len(fvc_images) > 0:
                 build_FVC_graphic(FVC, images, comment, ouput_fvc_image_file, data_path,
