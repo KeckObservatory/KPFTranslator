@@ -101,8 +101,9 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     onedspecfiles = (n1dspec >= nexpmeter)
     camname = {True: 'ExpMeter_1Dspec', False: 'ExpMeter'}[onedspecfiles]
 
-    log.info('  Building FITS cube')
     wavs = None
+    nspectra = len(images[images['camera'] == camname])
+    log.info(f'  Building FITS cube using {nspectra} spectra')
     for entry in images[images['camera'] == camname]:
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
@@ -139,7 +140,6 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
         posdata[0,j,i] = entry['x']
         posdata[1,j,i] = entry['y']
 
-    log.info('  Building flux maps')
     flux_map = np.sum(spec_cube, axis=0)
     npix = 30
     color_images = np.zeros((3,ny,nx))
@@ -201,9 +201,9 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
     xs = sorted(set(images['x']))
     ys = sorted(set(images['y']))
 
-    log.info('  Building CRED2 graphic')
     fig = plt.figure(figsize=(15,15))
     nimages = len(images[images['camera'] == 'CRED2'])
+    log.info(f'  Building CRED2 graphic with {nimages} images')
     for fig_index,entry in enumerate(images[images['camera'] == 'CRED2']):
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
@@ -261,6 +261,7 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
         plt.subplot(ny,nx,fig_index+1)
         cube_number = cred2_file.name.replace('kpfguide_cube_', '').replace('.fits', '')
         title_string = f"{cube_number}: x,y={entry['x']:.1f}, {entry['y']:.1f}"
+        log.debug(f"Building frame: {title_string}")
         plt.title(title_string, size=8)
         norm = viz.ImageNormalize(image_data,
                                   interval=viz.AsymmetricPercentileInterval(1.5,100),
@@ -279,7 +280,7 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
         plt.gca().set_yticks([])
         plt.gca().set_xticks([])
 
-    log.info(f"Saving: {ouput_cred2_image_file}")
+    log.info(f"  Saving: {ouput_cred2_image_file}")
     if ouput_cred2_image_file.exists() is True:
         ouput_cred2_image_file.unlink()
     plt.savefig(ouput_cred2_image_file, bbox_inches='tight', pad_inches=0.10)
@@ -298,9 +299,9 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
     xs = sorted(set(images['x']))
     ys = sorted(set(images['y']))
 
-    log.info(f'  Building {FVC}FVC graphic')
     fig = plt.figure(figsize=(15,15))
     nimages = len(images[images['camera'] == FVC])
+    log.info(f'  Building {FVC}FVC graphic with {nimages} images')
     for fig_index,entry in enumerate(images[images['camera'] == FVC]):
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
@@ -311,6 +312,7 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
         subframe = hdul[0].data[int(y0)-dy:int(y0)+dy,int(x0)-dx:int(x0)+dx]
         plt.subplot(ny,nx,fig_index+1)
         title_string = f"{fvc_file.name.replace('.fits','').replace('fvc','')}: {entry['x']:.1f}, {entry['y']:.1f}"
+        log.debug(f"Building frame: {title_string}")
         plt.title(title_string, size=8)
         norm = viz.ImageNormalize(subframe,
                                   interval=viz.AsymmetricPercentileInterval(40,99.9),
@@ -324,7 +326,7 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
         plt.gca().set_yticks([])
         plt.gca().set_xticks([])
 
-    log.info(f"Saving: {ouput_FVC_image_file}")
+    log.info(f"  Saving: {ouput_FVC_image_file}")
     if ouput_FVC_image_file.exists() is True:
         ouput_FVC_image_file.unlink()
     plt.savefig(ouput_FVC_image_file, bbox_inches='tight', pad_inches=0.10)
@@ -355,7 +357,11 @@ def analyze_grid_search(logfile, fiber='Science',
     else:
         mode = 'TipTilt'
         images_file = logfile.parent / logfile.name.replace('GridSearch', 'GridSearch_images').replace('.log', '.txt')
-    log.info(f"  Found: {images_file}")
+    if images_file.exists():
+        log.info(f"  Found: {images_file}")
+    else:
+        log.error('Unable to find an images table, skipping this run')
+        return
 
     # Determine comment string from log file
     try:
@@ -386,7 +392,7 @@ def analyze_grid_search(logfile, fiber='Science',
     build_FITS_cube(images, comment, ouput_spec_cube)
 
     # Build graphic of CRED2 Images
-    if skipcred2 is not True:
+    if skipcred2 is not True and len(images[images['camera'] == 'CRED2']) > 0:
         ouput_cred2_image_file = Path(logfile.name.replace('.log', '_CRED2_images.png'))
         cred2_pixels = {'EMSky': (160, 256),
                         'Science': (335, 256),
