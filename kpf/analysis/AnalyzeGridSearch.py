@@ -140,6 +140,11 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
         posdata[0,j,i] = entry['x']
         posdata[1,j,i] = entry['y']
 
+
+    norm_spec_cube = np.zeros((nwav,ny,nx))
+    for w,spectral_slice in enumerate(spec_cube):
+        norm_spec_cube[w,:,:] = spectral_slice / spectral_slice.mean()
+
     flux_map = np.sum(spec_cube, axis=0)
     npix = 30
     color_images = np.zeros((3,ny,nx))
@@ -156,6 +161,10 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     hdu.header.set('OBJECT', 'Spectral_Cube')
     hdu.header.set('Comment', comment)
     hdu.data = spec_cube
+    normcubehdu = fits.ImageHDU()
+    normcubehdu.header.set('Name', 'Normalized_Spectral_Cube')
+    normcubehdu.header.set('OBJECT', 'Normalized_Spectral_Cube')
+    normcubehdu.data = norm_spec_cube
     fluxmaphdu = fits.ImageHDU()
     fluxmaphdu.header.set('Name', 'Flux_Map')
     fluxmaphdu.header.set('OBJECT', 'Flux_Map')
@@ -181,7 +190,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     wavhdu.header.set('Name', 'Wavelength_Values')
     wavhdu.header.set('OBJECT', 'Wavelength_Values')
     wavhdu.data = np.array(wavs)
-    hdul = fits.HDUList([hdu, fluxmaphdu, fluxcubehdu, colormaphdu, poshdu, wavhdu])
+    hdul = fits.HDUList([hdu, normcubehdu, fluxmaphdu, fluxcubehdu, colormaphdu, poshdu, wavhdu])
     log.info(f'  Writing {ouput_spec_cube}')
     hdul.writeto(f'{ouput_spec_cube}', overwrite=True)
 
