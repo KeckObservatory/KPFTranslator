@@ -61,6 +61,21 @@
             "type": "str",
             "ui_name": "Guide camera exposure mode.",
             "units": null
+        },
+        "pointing_origin": {
+            "allowed": [
+                "KPF",
+                "SKY",
+                "EM_SKY",
+                "REF"
+            ],
+            "default": "KPF",
+            "description": "Pointing origin",
+            "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "Pointing origin",
+            "units": null
         }
     }
 }
