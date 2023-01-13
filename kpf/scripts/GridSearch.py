@@ -127,6 +127,11 @@ class GridSearch(KPFTranslatorFunction):
         log.info('Setting TRIGCUBE Inactive')
         kpfguide['TRIGCUBE'].write('Inactive')
         if grid == 'TipTilt':
+            current_base = kpfguide['CURRENT_BASE'].read(binary=True)
+            log.info(f"CURRENT_BASE = {current_base[0]:.2f} {current_base[1]:.2f}")
+            log.info(f"DAR_ENABLE = {kpfguide['DAR_ENABLE'].read()}")
+            dar_offset = kpfguide['DAR_OFFSET'].read(binary=True)
+            log.info(f"DAR_OFFSET = {dar_offset[0]:.2f} {dar_offset[1]:.2f}")
             xpix0, ypix0 = kpfguide['PIX_TARGET'].read(binary=True)
             log.info(f"Center pixel is {xpix0:.2f}, {ypix0:.2f}")
             # Pixel targets must be in absolute coordinates
