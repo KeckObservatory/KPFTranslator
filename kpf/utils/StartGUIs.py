@@ -18,7 +18,7 @@ def get_window_list(env=None):
     else:
         wmctrl_proc = subprocess.run(wmctrl_cmd, stdout=subprocess.PIPE)
     wmctrl_list = wmctrl_proc.stdout.decode().strip('\n').split('\n')
-    patt = "(\w+)\s+([\+\-\d]+)\s+([\w\/]+)\s+([\w\s\-\(\)]+)"
+    patt = "(\w+)\s+([\+\-\d]+)\s+([\.\w\/]+)\s+([\w\s\-\(\)]+)"
     matches = [re.match(patt, line) for line in wmctrl_list]
     window_names = [m.group(4 ) for m in matches if m is not None]
     if len(wmctrl_list) > len(window_names):
@@ -56,14 +56,19 @@ class StartGUIs(KPFTranslatorFunction):
                                          stdout=subprocess.PIPE)
             uidisp[dispno] = uidisp_proc.stdout.decode().strip('\n')
 
-        GUIs = [{'name': 'KPF Fiber Injection Unit (FIU)',
+        GUIs = [
+                {'name': 'KPF Fiber Injection Unit (FIU)',
                  'cmd': ['/kroot/rel/default/bin/fiu_gui'],
-                 'dispno': 0,
+                 'dispno': 1,
                  'position': '0,80,165,-1,-1'},
                 {'name': 'KPF Exposure Meter',
                  'cmd': ['/kroot/rel/default/bin/expmeter_gui'],
-                 'dispno': 0,
+                 'dispno': 1,
                  'position': '0,5,665,-1,-1'},
+                {'name': 'SAOImage kpfds9',
+                 'cmd':  ['kpf', 'start', 'kpfds9'],
+                 'dispno': 2,
+                 'position': '0,1,55,1800,900'},
 #                 {'name': 'KECK 1 FACSUM',
 #                  'cmd':  ['xterm', '-T', 'xterm KECK 1 FACSUM', '-e', 'ssh', '-X', 'k1ruts@vm-k1obs', 'Facsum', '-k1'],
 #                  'dispno': 3,
@@ -95,7 +100,7 @@ class StartGUIs(KPFTranslatorFunction):
             if GUI.get('position', None) is not None:
                 log.info(f"Positioning '{GUIname}' GUI")
                 wmctrl_cmd = ['wmctrl', '-r', f'"{GUIname}"', '-e', GUI['position']]
-                log.info(f"  Running: {' '.join(wmctrl_cmd)}")
+                log.debug(f"  Running: {' '.join(wmctrl_cmd)}")
                 wmctrl_proc = subprocess.run(' '.join(wmctrl_cmd), env=env, shell=True)
                 if GUI['cmd'][0] == 'xterm':
                     xterm_title = GUI['cmd'][2]
