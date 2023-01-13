@@ -3,6 +3,7 @@ import time
 import subprocess
 from datetime import datetime, timedelta
 import re
+from astropy.table import Table
 
 import ktl
 
@@ -51,42 +52,64 @@ class StartGUIs(KPFTranslatorFunction):
         # Get DISPLAY varibales
         env = os.environ
         uidisp = {}
-        for dispno in [0, 1, 2, 3]:
-            uidisp_proc = subprocess.run(['uidisp', f'{dispno}'], env=env,
+#         for dispno in [0, 1, 2, 3]:
+#             uidisp_proc = subprocess.run(['uidisp', f'{dispno}'], env=env,
+#                                          stdout=subprocess.PIPE)
+#             uidisp[dispno] = uidisp_proc.stdout.decode().strip('\n')
+
+        kvncstatus_proc = subprocess.run(['kvncstatus'], env=env,
                                          stdout=subprocess.PIPE)
-            uidisp[dispno] = uidisp_proc.stdout.decode().strip('\n')
+        kvncstatus = Table.read(kvncstatus_proc.stdout.decode(), format='ascii')
+        username = os.getlogin()
+        display = {'control0':  kvncstatus[kvncstatus['Desktop'] == f'kpf-{username}-control0']['Display'][0],
+                   'control1':  kvncstatus[kvncstatus['Desktop'] == f'kpf-{username}-control1']['Display'][0],
+                   'control2':  kvncstatus[kvncstatus['Desktop'] == f'kpf-{username}-control2']['Display'][0],
+                   'telstatus':  kvncstatus[kvncstatus['Desktop'] == f'kpf-{username}-telstatus']['Display'][0],
+                   }
 
         GUIs = [
+                # Control0 for DSI
+                # Control1
+                # - add Spectrograph GUI
                 {'name': 'KPF Fiber Injection Unit (FIU)',
                  'cmd': ['/kroot/rel/default/bin/fiu_gui'],
-                 'dispno': 1,
-                 'position': '0,80,165,-1,-1'},
+                 'display': 'control1',
+                 'position': '0,80,50,-1,-1'},
                 {'name': 'KPF Exposure Meter',
                  'cmd': ['/kroot/rel/default/bin/expmeter_gui'],
-                 'dispno': 1,
-                 'position': '0,5,665,-1,-1'},
+                 'display': 'control1',
+                 'position': '0,5,550,-1,-1'},
+                # Control2
+                # - add Eventsounds
                 {'name': 'SAOImage kpfds9',
                  'cmd':  ['kpf', 'start', 'kpfds9'],
-                 'dispno': 2,
+                 'display': 'control2',
                  'position': '0,1,55,1800,900'},
-#                 {'name': 'KECK 1 FACSUM',
-#                  'cmd':  ['xterm', '-T', 'xterm KECK 1 FACSUM', '-e', 'ssh', '-X', 'k1ruts@vm-k1obs', 'Facsum', '-k1'],
-#                  'dispno': 3,
-#                  'position': '0,250,10,-1,-1'},
-#                 {'name': 'KECK 1 MET',
-#                  'cmd':  ['xterm', '-T', 'xterm KECK 1 MET', '-e', 'ssh', '-X', 'k1ruts@vm-k1obs', 'Met', '-k1'],
-#                  'dispno': 3,
-#                  'position': '0,250,535,-1,-1'},
-#                 {'name': 'MAGIQ - Observer UI',
-#                  'cmd':  ['xterm', '-T', 'xterm MAGIQ - Observer UI', '-e', 'ssh', '-X', 'k1ruts@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
-#                  'dispno': 3,
-#                  'position': '0,500,15,-1,-1'},
+                # Telstatus
+                # - add Tip Tilt GUI
+                {'name': 'xshow_TipTilt',
+                 'cmd':  ['/home/kpfeng/bin/xshow_tiptilt'],
+                 'display': 'telstatus',
+                 'position': '0,1020,5,200,310'},
+                {'name': 'KECK 1 FACSUM',
+                 'cmd':  ['xterm', '-T', 'xterm KECK 1 FACSUM', '-e', 'ssh', '-X', 'k1ruts@vm-k1obs', 'Facsum', '-k1'],
+                 'display': 'telstatus',
+                 'position': '0,250,10,-1,-1'},
+                {'name': 'KECK 1 MET',
+                 'cmd':  ['xterm', '-T', 'xterm KECK 1 MET', '-e', 'ssh', '-X', 'k1ruts@vm-k1obs', 'Met', '-k1'],
+                 'display': 'telstatus',
+                 'position': '0,250,535,-1,-1'},
+                {'name': 'MAGIQ - Observer UI',
+                 'cmd':  ['xterm', '-T', 'xterm MAGIQ - Observer UI', '-e', 'ssh', '-X', 'k1ruts@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
+                 'display': 'telstatus',
+                 'position': '0,500,15,-1,-1'},
                  ]
 
         # Start GUIs if needed
         for GUI in GUIs:
             # Find out of GUIs are Running
-            env['DISPLAY'] = uidisp[GUI['dispno']]
+            log.debug(f"Setting DISPLAY to kpf{display[GUI['display']]}")
+            env['DISPLAY'] = f"kpf{display[GUI['display']]}"
             window_names = get_window_list(env=env)
             GUIname = GUI['name']
             if GUIname not in window_names:
@@ -97,6 +120,7 @@ class StartGUIs(KPFTranslatorFunction):
                 success = waitfor_window_to_appear(GUIname, env=env)
             else:
                 log.info(f"Existing '{GUIname}' window found")
+            time.sleep(2)
             if GUI.get('position', None) is not None:
                 log.info(f"Positioning '{GUIname}' GUI")
                 wmctrl_cmd = ['wmctrl', '-r', f'"{GUIname}"', '-e', GUI['position']]
