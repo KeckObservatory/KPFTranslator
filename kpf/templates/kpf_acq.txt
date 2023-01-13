@@ -76,6 +76,92 @@
             "type": "str",
             "ui_name": "Pointing origin",
             "units": null
+        },
+        "target_2mass_id": {
+            "description": "The 2MASS ID of the target",
+            "optionality": "required",
+            "type": "string",
+            "ui_name": "The 2MASS ID of the target",
+            "units": null
+        },
+        "target_gaia_id": {
+            "description": "The GAIA DR3 ID of the target",
+            "optionality": "required",
+            "type": "string",
+            "ui_name": "The GAIA DR3 ID of the target",
+            "units": null
+        },
+        "target_gmag": {
+            "allowed": [
+                -30,
+                30
+            ],
+            "default": 0,
+            "description": "Gaia G magnitude of target",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Gaia G magnitude of target",
+            "units": null
+        },
+        "target_jmag": {
+            "allowed": [
+                -30,
+                30
+            ],
+            "default": 0,
+            "description": "2MASS J magnitude of target",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "2MASS J magnitude of target",
+            "units": null
+        },
+        "target_name": {
+            "description": "observer provided name",
+            "optionality": "required",
+            "type": "string",
+            "ui_name": "observer provided name",
+            "units": null
+        },
+        "target_parallax": {
+            "allowed": [
+                0,
+                1000000.0
+            ],
+            "default": 0,
+            "description": "Parallax in milliarcseconds; needed for DRP not pointing telescope",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Parallax in milliarcseconds",
+            "units": "mas"
+        },
+        "target_rv": {
+            "allowed": [
+                -1000000.0,
+                1000000.0
+            ],
+            "default": 0,
+            "description": "Radial velocity in km/s; needed for DRP",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Radial velocity",
+            "units": "km/s"
+        },
+        "target_teff": {
+            "allowed": [
+                0,
+                1000000.0
+            ],
+            "default": 0,
+            "description": "Teff of target in K",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Effective Temperature",
+            "units": "K"
         }
     }
 }
