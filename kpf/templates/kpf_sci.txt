@@ -2,7 +2,7 @@
     "metadata": {
         "instrument": "KPF",
         "name": "kpf_sci",
-        "script": "BEGIN_SLEW                    # Starts telescope slew\nCONFIGURE_SCIENCE             # Sets: shutters, octagon, lamp\nCONFIGURE_FOR_ACQUISITION     # Sets: guide camera parameters, fold mirror position\nWAITFOR_CONFIGURE_ACQUISITION # (For long slew, this returns first, slew blocks)\nWAITFOR_SLEW                  # (For short slew, this is done and does not block)\nACQUIRE                       # OA acquires to PO and starts tip tilt loop\nWAITFOR_ACQUIRE               # Returns when tip tilt loop is closed\nWAITFOR_CONFIGURE_SCIENCE     # (For long slew, this is already done. For short slew, might wait on octagon)\nEXECUTE_OBSERVATION           # Ends on Readout\n",
+        "script": "BEGIN_SLEW                    # Starts telescope slew\nCONFIGURE_SCIENCE             # Sets: source select shutters, octagon & lamp power (from first sequence)\nCONFIGURE_FOR_ACQUISITION     # Sets: guide camera parameters, fold mirror position\nWAITFOR_CONFIGURE_ACQUISITION # (For long slew, this returns first, slew blocks)\nWAITFOR_SLEW                  # (For short slew, this is done and does not block)\nACQUIRE                       # OA acquires to PO and starts tip tilt loop\nWAITFOR_ACQUIRE               # Returns when tip tilt loop is closed\nWAITFOR_CONFIGURE_SCIENCE     # (For long slew, this is already done. For short slew, might wait on octagon)\nEXECUTE_OBSERVATION           # Ends on Readout Start\nPOST_OBSERVATION_CLEANUP      # Turns off tip tilt loops\n",
         "script_version": "0.4.0",
         "template_type": "science",
         "ui_name": "KPF science",
