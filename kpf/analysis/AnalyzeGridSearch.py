@@ -193,6 +193,28 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     hdul = fits.HDUList([hdu, normcubehdu, fluxmaphdu, fluxcubehdu, colormaphdu, poshdu, wavhdu])
     log.info(f'  Writing {ouput_spec_cube}')
     hdul.writeto(f'{ouput_spec_cube}', overwrite=True)
+    return hdul
+
+
+##-------------------------------------------------------------------------
+## build_cube_graphic
+##-------------------------------------------------------------------------
+# def build_cube_graphic(hdul, ouput_cube_graphic):
+#     Xprojection = hdul[0].data.mean(axis=1)
+#     Xpeaks = []
+#     for i,cut in enumerate(Xprojection):
+#         Xpeaks.append(np.argmax(cut))
+#         Xprojection[i,:] /= Xprojection[i,:].mean()
+#     Xprojection = Xprojection.transpose()
+#     Xprojection.shape
+# 
+#     Yprojection = hdul[0].data.mean(axis=2)
+#     Ypeaks = []
+#     for i,cut in enumerate(Yprojection):
+#         Ypeaks.append(np.argmax(cut))
+#         Yprojection[i,:] /= Yprojection[i,:].mean()
+#     Yprojection = Yprojection.transpose()
+#     Yprojection.shape
 
 
 ##-------------------------------------------------------------------------
