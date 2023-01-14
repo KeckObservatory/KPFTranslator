@@ -135,11 +135,11 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                 if runagitator is True:
                     StartAgitator.execute({})
                 log.info(f"Starting expoure {j+1}/{nexp} ({seq.get('Object')})")
-                log.info('Starting TRIGGER file')
+                log.debug('Starting TRIGGER file')
                 kpfguide['TRIGGER'].write(1)
                 StartExposure.execute({})
                 WaitForReadout.execute({})
-                log.info('Stopping TRIGGER file')
+                log.debug('Stopping TRIGGER file')
                 kpfguide['TRIGGER'].write(0)
                 log.info(f"Readout has begun")
                 if runagitator is True:
