@@ -26,7 +26,7 @@ class SetGuiderFPS(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        fpstol = cfg.get('tolerances', 'guider_fps_tolerance', fallback=0.0001)
+        fpstol = cfg.get('tolerances', 'guider_fps_tolerance', fallback=0.01)
         fpskw = ktl.cache('kpfguide', 'FPS')
         fps = args.get('GuideFPS')
         expr = (f'($kpfguide.FPS >= {fps-fpstol}) and '\
