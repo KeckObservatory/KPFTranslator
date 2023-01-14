@@ -134,7 +134,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                 # Start next exposure
                 if runagitator is True:
                     StartAgitator.execute({})
-                log.info(f"Starting expoure {j+1}/{nexp} ({seq.get('Object')})")
+                log.info(f"Starting {seq.get('Exptime')} s expoure {j+1}/{nexp} ({seq.get('Object')})")
                 log.debug('Starting TRIGGER file')
                 kpfguide['TRIGGER'].write(1)
                 StartExposure.execute({})
