@@ -37,7 +37,7 @@ def _check_script_running():
     kpfconfig = ktl.cache('kpfconfig')
     scriptname = kpfconfig['SCRIPTNAME'].read()
     pid = kpfconfig['SCRIPTPID'].read()
-    if scriptname != '':
+    if scriptname not in ['None', '':
         msg = (f"Existing script {scriptname} ({pid}) is running.\n"
                f"If the offending script is not running (PID not listed in ps)\n"
                f"then the script keywords can be cleared by running:\n"
