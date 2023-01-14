@@ -38,8 +38,10 @@ class SetADCAngles(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpffiu = ktl.cache('kpffiu')
-        dcs = ktl.cache('dcs')
-        za = 90 - dcs['EL'].read(binary=True)*180/np.pi
+#         dcs = ktl.cache('dcs')
+#         el = dcs['EL'].read(binary=True)*180/np.pi
+        el = args.get('EL')
+        za = 90 - el
         ADC_delta = calculate_ADC_delta(za)
         log.info(f"ADC Hack: za={za:.1f}, ADC_delta={ADC_delta:.1f}")
 
@@ -62,3 +64,15 @@ class SetADCAngles(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
+        args_to_add = OrderedDict()
+        args_to_add['EL'] = {'type': float,
+                             'help': 'The telescope elevation to use in the calculation.'}
+
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)
