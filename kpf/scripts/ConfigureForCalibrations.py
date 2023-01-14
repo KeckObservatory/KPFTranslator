@@ -28,7 +28,6 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
         return True
 
     @classmethod
-    @register_script(Path(__file__).name, os.getpid())
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
