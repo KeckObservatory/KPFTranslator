@@ -280,7 +280,6 @@ class GridSearch(KPFTranslatorFunction):
                         if ktl.waitFor(expr, timeout=20) is False:
                             lastfile = kpffvc[f'{FVC}LASTFILE'].read()
                             log.error('No new FVC file found')
-                            log.error(f"  expecting: {nextfile[FVC]}")
                             log.error(f"  kpffvc.{FVC}LASTFILE = {lastfile}")
                         else:
                             lastfile = kpffvc[f'{FVC}LASTFILE'].read()
