@@ -26,7 +26,7 @@ def _clear_script():
     '''
     kpfconfig = ktl.cache('kpfconfig')
     log.debug("Clearing SCRIPTNAME and SCRIPTPID")
-    kpfconfig['SCRIPTNAME'].write('')
+    kpfconfig['SCRIPTNAME'].write('None')
     kpfconfig['SCRIPTPID'].write(-1)
     kpfconfig['SCRIPTHOST'].write('')
 
