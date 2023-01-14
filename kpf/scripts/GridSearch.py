@@ -171,7 +171,7 @@ class GridSearch(KPFTranslatorFunction):
         kpfexpose = ktl.cache('kpfexpose')
         SetSourceSelectShutters.execute(OB)
         SetTimedShutters.execute({'TimedShutter_Scrambler': True})
-        SetTriggeredDetectors.execute({'TriggerExpMeter': True})
+        SetTriggeredDetectors.execute(OB)
         total_exptime = ExpMeter_exptime = OB.get('TimeOnPosition')
         SetExptime.execute({'Exptime': total_exptime})
 
