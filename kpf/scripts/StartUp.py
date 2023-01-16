@@ -15,14 +15,15 @@ from ..utils.StartGUIs import StartGUIs
 
 class StartUp(KPFTranslatorFunction):
     '''Start KPF software for afternoon setup.
-    
-    - Set OUTDIRS
-    - Set PROGNAME
-    - Set OBSERVER value based on schedule
-    - bring up GUIs
-    
+
+    This will set the output directories, set the program ID and observers, and
+    bring up the instrument GUIS.
+
     ARGS:
-    progname - The program ID to set.
+    progname - The program ID to set.  The program ID can be obtained from the
+               telescope schedule:
+               https://www2.keck.hawaii.edu/observing/keckSchedule/keckSchedule.php?calType=day&telnr=1&viewType=schedule
+               The program ID has the format of [letter][three numbers]
     '''
     @classmethod
     @obey_scriptrun
