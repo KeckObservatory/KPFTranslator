@@ -62,21 +62,6 @@
             "ui_name": "Guide camera exposure mode.",
             "units": null
         },
-        "pointing_origin": {
-            "allowed": [
-                "KPF",
-                "SKY",
-                "EM_SKY",
-                "REF"
-            ],
-            "default": "KPF",
-            "description": "Pointing origin",
-            "option": "set",
-            "optionality": "required",
-            "type": "str",
-            "ui_name": "Pointing origin",
-            "units": null
-        },
         "target_2mass_id": {
             "description": "The 2MASS ID of the target",
             "optionality": "required",
@@ -162,6 +147,21 @@
             "type": "float",
             "ui_name": "Effective Temperature",
             "units": "K"
+        },
+        "tcs_coord_po": {
+            "allowed": [
+                "KPF",
+                "SKY",
+                "EM_SKY",
+                "REF"
+            ],
+            "default": "KPF",
+            "description": "Pointing origin",
+            "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "Pointing origin",
+            "units": null
         }
     }
 }
