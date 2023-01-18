@@ -1,0 +1,85 @@
+{
+    "metadata": {
+        "instrument": "KPF",
+        "name": "kpf_dark",
+        "script": "kpf_dark",
+        "script_version": "0.1.0",
+        "template_type": "calibration",
+        "ui_name": "KPF Dark Sequence",
+        "version": "0.1.0"
+        "sequence_number" : 0
+    },
+    "parameters": {
+        "det_exp_time": {
+            "allowed": [
+                0.1,
+                3600
+            ],
+            "default": null,
+            "description": "Exposure time in seconds",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Exposure time",
+            "units": "seconds"
+        },
+        "det_exp_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": null,
+            "description": "Number of exposures to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "int",
+            "ui_name": "Number of Exposures",
+            "units": null
+        },
+        "target_info_object": {
+            "default": "",
+            "description": "Value for the object keyword",
+            "option": "open",
+            "optionality": "optional",
+            "type": "string",
+            "ui_name": "Object Keyword",
+            "units": null
+        },
+        "inst_cfg_runagitator": {
+            "default": null,
+            "description": "Run the agitator during exposures?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Agitator On",
+            "units": null
+        },
+        "det1_cfg_trigger": {
+            "default": null,
+            "description": "Trigger the Ca H&K detector?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Ca H&K Detector Trigger",
+            "units": null
+        },
+        "det2_cfg_trigger": {
+            "default": null,
+            "description": "Trigger the green detector?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Green Detector Trigger",
+            "units": null
+        },
+        "det3_cfg_trigger": {
+            "default": null,
+            "description": "Use red detector?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Red Detector Trigger",
+            "units": null
+        }
+    }
+}
