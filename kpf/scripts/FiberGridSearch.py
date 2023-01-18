@@ -3,7 +3,6 @@ from pathlib import Path
 import logging
 from datetime import datetime, timedelta
 import time
-import yaml
 import subprocess
 
 import numpy as np
