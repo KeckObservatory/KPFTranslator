@@ -17,11 +17,7 @@
         },
         "target_info_comment" : {
 			"ui_name" : "Target Comment",
-			"option" : "regex",
-			"allowed" : [
-				null,
-				"[ -~]{100}"
-			],
+			"option" : "optional",
 			"default" : "",
 			"optionality" : "optional",
 			"type" : "string",
