@@ -32,7 +32,7 @@ class ConfigureForScience(KPFTranslatorFunction):
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
