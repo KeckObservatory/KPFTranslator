@@ -59,6 +59,20 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         dcs = ktl.cache('dcs')
         kpfconfig = ktl.cache('kpfconfig')
         kpf_expmeter = ktl.cache('kpf_expmeter')
+
+        ## Slew Cal
+#         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+#             slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
+#             log.info(f"Beginning Slew Cal")
+#             log.debug(f"Using: {slewcal_argsfile}")
+#             with open(slewcal_argsfile, 'r') as file
+#                 slewcal_args = yaml.safe_load(file)
+#             ExecuteSlewCals.execute({slewcal_args})
+
+        # Set FIU Mode
+        log.info('Setting FIU mode to Observing')
+        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+
         # Set Target Parameters from OB
         log.info(f"Setting target parameters")
         kpfconfig['TARGET_NAME'].write(OB.get('TargetName', ''))
@@ -79,10 +93,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             SetGuiderFPS.execute(OB)
         if OB.get('GuideLoopGain', None) is not None:
             SetTipTiltGain.execute(OB)
-
-        # Set FIU Mode
-        log.info('Setting FIU mode to Observing')
-        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

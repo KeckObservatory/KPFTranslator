@@ -23,9 +23,7 @@ from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
 class ConfigureForScience(KPFTranslatorFunction):
     '''Script which configures the instrument for Science observations.
     
-    - Turns on lamp power for all sequences
-    - Sets octagon / simulcal source & ND filters for first sequence (skip if
-      slew cal is selected?)
+    - Sets octagon / simulcal source
     - Sets source select shutters
 
     Can be called by `ddoi_script_functions.configure_for_science`.
@@ -50,20 +48,10 @@ class ConfigureForScience(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        # Turn on lamps
-        lamps = [seq['CalSource'] for seq in OB.get('SEQ_Observations')\
-                 if 'CalSource' in seq.keys()]
-#         for lamp in set(lamps):
-#             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-#                         'BrdbandFiber', 'WideFlat']:
-#                 log.debug(f"Ensuring lamp {lamp} is on")
-#                 CalLampPower.execute({'lamp': lamp, 'power': 'on'})
-
-        # 
-
         # Set Octagon
+        calsource = 'EtalonFiber' # <- read KTL keyword when available
         log.info(f"Set CalSource/Octagon: {lamps[0]}")
-        SetCalSource.execute({'CalSource': lamps[0], 'wait': False})
+        SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
         # Set source select shutters
         WaitForReady.execute({})

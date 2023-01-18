@@ -27,7 +27,7 @@ SEQ_Observations:               #
   Exptime: 30                   # Exposure time of the main spectrometer and CaH&K. See Exposure Meter section below.
   ExpMeterMode: monitor         # Only "monitor" is available for now
   ExpMeterExpTime: 0.5          # Exposure time of the Exposure Meter subframes
-  TimedShutter_SimulCal: True   # Boolean for simultaneous calibrations
-  CalSource: LFCFiber           # Calibration source for simultaneous cals 
+  TakeSimulCal: True            # Take simultaneous calibrations? (True/False)
+  AutoNDFilters: False          # Automatically set ND filters -- Not available at this time!
   CalND1: OD 4.0                # OD=Optical Density. Throughput = 10^-OD. Values = OD 0.1, OD 1.0, OD 1.3, OD 2.0, OD 3.0, OD 4.0
   CalND2: OD 0.1                # Values: OD 0.1, OD 0.3, OD 0.5, OD 0.8, OD 1.0, OD 4.0
