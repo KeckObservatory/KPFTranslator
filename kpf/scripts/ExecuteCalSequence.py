@@ -50,7 +50,7 @@ class ExecuteCalSequence(KPFTranslatorFunction):
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.4')
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
@@ -125,7 +125,8 @@ class ExecuteCalSequence(KPFTranslatorFunction):
 #         WaitForLampsWarm.execute(OB)
 
         # Run lamp calibrations
-        runagitator = OB.get('RunAgitator', False)
+        kpfconfig = ktl.cache('kpfconfig')
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         for calibration in OB.get('SEQ_Calibrations'):
             calsource = calibration.get('CalSource')
             nd1 = calibration.get('CalND1')
