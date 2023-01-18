@@ -19,7 +19,6 @@ GuideLoopGain: 0.3              # Gain on tip-tilt system
 TriggerCaHK: False              # Include CaHK in exposure (True/False)
 TriggerGreen: True              # Include Green CCD in exposure (True/False)
 TriggerRed: True                # Include Red CCD in exposure (True/False)
-RunAgitator: True               # Activate Agitator during exposure (True/False)
 # Observations
 SEQ_Observations:               # 
 - Object: 10700                 # User settable comment

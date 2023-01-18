@@ -71,11 +71,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
         kpfguide = ktl.cache('kpfguide')
         kpfguide['TRIGCUBE'].write('Inactive')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
-        runagitator = OB.get('RunAgitator', False)
-        # This is a time shim to insert a pause between exposures so that the
-        # temperature of the CCDs can be measured by the archons
-#         archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
-#                              fallback=2)
+        runagitator = True # <- read KTL keyword when available
 
         for seq in OB.get('SEQ_Observations'):
             ## ----------------------------------------------------------------
@@ -129,7 +125,6 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                     log.info(f"Waiting for kpfexpose to be Ready")
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
-#                     sleep(archon_time_shim)
                     check_scriptstop() # Stop here if requested
                 # Start next exposure
                 if runagitator is True:
