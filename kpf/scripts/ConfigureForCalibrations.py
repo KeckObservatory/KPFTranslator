@@ -47,6 +47,12 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'on'})
 
+        log.debug(f"Ensuring back illumination LEDs are off")
+        CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'CaHKLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'SciLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'SkyLED', 'power': 'off'})
+
         # Configure FIU
         ConfigureFIU.execute({'mode': 'calibration'})
 

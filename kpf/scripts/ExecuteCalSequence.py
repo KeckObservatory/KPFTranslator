@@ -74,11 +74,6 @@ class ExecuteCalSequence(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(OB)
-        log.info(f"Ensuring back illumination LEDs are off")
-        CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})
-        CalLampPower.execute({'lamp': 'CaHKLED', 'power': 'off'})
-        CalLampPower.execute({'lamp': 'SciLED', 'power': 'off'})
-        CalLampPower.execute({'lamp': 'SkyLED', 'power': 'off'})
 
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
 
