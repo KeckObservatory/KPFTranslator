@@ -2,7 +2,6 @@ import os
 from time import sleep
 from packaging import version
 from pathlib import Path
-import yaml
 
 import ktl
 
@@ -52,7 +51,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.4')
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
@@ -69,14 +68,11 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        kpfconfig = ktl.cache('kpfconfig')
         kpfguide = ktl.cache('kpfguide')
         kpfguide['TRIGCUBE'].write('Inactive')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
-        runagitator = OB.get('RunAgitator', False)
-        # This is a time shim to insert a pause between exposures so that the
-        # temperature of the CCDs can be measured by the archons
-        archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
-                             fallback=2)
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
 
         for seq in OB.get('SEQ_Observations'):
             ## ----------------------------------------------------------------
@@ -93,13 +89,14 @@ class ExecuteSciSequence(KPFTranslatorFunction):
             ## Setup simulcal
             ## ----------------------------------------------------------------
             # Set octagon and ND filters
-            if seq.get('TimedShutter_SimulCal') == True:
-                SetCalSource.execute({'CalSource': seq['CalSource'], 'wait': False})
-                SetND1.execute({'CalND1': seq['CalND1'], 'wait': False})
-                SetND2.execute({'CalND2': seq['CalND2'], 'wait': False})
-                WaitForND1.execute(seq)
-                WaitForND2.execute(seq)
-                WaitForCalSource.execute(seq)
+            if seq.get('TakeSimulCal') == True:
+                if seq.get('AutoNDFilters') == True:
+                    raise NotImplementedError('AutoNDFilters is not available')
+                else:
+                    SetND1.execute({'CalND1': seq['CalND1'], 'wait': False})
+                    SetND2.execute({'CalND2': seq['CalND2'], 'wait': False})
+                    WaitForND1.execute(seq)
+                    WaitForND2.execute(seq)
 
             check_scriptstop() # Stop here if requested
 
@@ -129,7 +126,6 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                     log.info(f"Waiting for kpfexpose to be Ready")
                     WaitForReady.execute({})
                     log.info(f"Readout complete")
-                    sleep(archon_time_shim)
                     check_scriptstop() # Stop here if requested
                 # Start next exposure
                 if runagitator is True:

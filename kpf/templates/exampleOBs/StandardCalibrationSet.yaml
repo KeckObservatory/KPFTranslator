@@ -1,10 +1,9 @@
 Template_Name: kpf_cal
-Template_Version: 0.4
+Template_Version: 0.5
 
 TriggerCaHK: False
 TriggerGreen: True
 TriggerRed: True
-RunAgitator: True
 SEQ_Darks:
 - Object: autocal-bias
   nExp: 11

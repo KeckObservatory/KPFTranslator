@@ -2,7 +2,6 @@ import os
 from time import sleep
 from packaging import version
 from pathlib import Path
-import yaml
 
 import ktl
 
@@ -51,7 +50,7 @@ class ExecuteCalSequence(KPFTranslatorFunction):
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.4')
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
@@ -75,11 +74,6 @@ class ExecuteCalSequence(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(OB)
-        log.info(f"Ensuring back illumination LEDs are off")
-        CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})
-        CalLampPower.execute({'lamp': 'CaHKLED', 'power': 'off'})
-        CalLampPower.execute({'lamp': 'SciLED', 'power': 'off'})
-        CalLampPower.execute({'lamp': 'SkyLED', 'power': 'off'})
 
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
 
@@ -131,7 +125,8 @@ class ExecuteCalSequence(KPFTranslatorFunction):
 #         WaitForLampsWarm.execute(OB)
 
         # Run lamp calibrations
-        runagitator = OB.get('RunAgitator', False)
+        kpfconfig = ktl.cache('kpfconfig')
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         for calibration in OB.get('SEQ_Calibrations'):
             calsource = calibration.get('CalSource')
             nd1 = calibration.get('CalND1')

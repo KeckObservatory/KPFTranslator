@@ -2,7 +2,6 @@ import os
 from time import sleep
 from packaging import version
 from pathlib import Path
-import yaml
 import numpy as np
 
 import ktl
@@ -24,7 +23,7 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
@@ -47,6 +46,12 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+
+        log.debug(f"Ensuring back illumination LEDs are off")
+        CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'CaHKLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'SciLED', 'power': 'off'})
+        CalLampPower.execute({'lamp': 'SkyLED', 'power': 'off'})
 
         # Configure FIU
         ConfigureFIU.execute({'mode': 'calibration'})

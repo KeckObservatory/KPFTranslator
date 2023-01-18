@@ -1,7 +1,6 @@
 from time import sleep
 from packaging import version
 from pathlib import Path
-import yaml
 
 import ktl
 

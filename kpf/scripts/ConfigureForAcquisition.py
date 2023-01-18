@@ -32,7 +32,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
 #         check_input(OB, 'TargetName')
 #         check_input(OB, 'GaiaID')
 #         check_input(OB, '2MASSID')
@@ -59,6 +59,23 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         dcs = ktl.cache('dcs')
         kpfconfig = ktl.cache('kpfconfig')
         kpf_expmeter = ktl.cache('kpf_expmeter')
+
+        ## Execute Slew Cal if Requested
+        if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+            slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
+            log.info(f"Beginning Slew Cal")
+            log.debug(f"Using: {slewcal_argsfile}")
+            with open(slewcal_argsfile, 'r') as file
+                slewcal_args = yaml.safe_load(file)
+            slewcal_args['TriggerCaHK'] = OB['TriggerCaHK']
+            slewcal_args['TriggerGreen'] = OB['TriggerGreen']
+            slewcal_args['TriggerRed'] = OB['TriggerRed']
+            ExecuteSlewCals.execute(slewcal_args)
+
+        # Set FIU Mode
+        log.info('Setting FIU mode to Observing')
+        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+
         # Set Target Parameters from OB
         log.info(f"Setting target parameters")
         kpfconfig['TARGET_NAME'].write(OB.get('TargetName', ''))
@@ -79,10 +96,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             SetGuiderFPS.execute(OB)
         if OB.get('GuideLoopGain', None) is not None:
             SetTipTiltGain.execute(OB)
-
-        # Set FIU Mode
-        log.info('Setting FIU mode to Observing')
-        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
