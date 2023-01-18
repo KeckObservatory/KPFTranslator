@@ -67,7 +67,10 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
 #             log.debug(f"Using: {slewcal_argsfile}")
 #             with open(slewcal_argsfile, 'r') as file
 #                 slewcal_args = yaml.safe_load(file)
-#             ExecuteSlewCals.execute({slewcal_args})
+#             slewcal_args['TriggerCaHK'] = OB['TriggerCaHK']
+#             slewcal_args['TriggerGreen'] = OB['TriggerGreen']
+#             slewcal_args['TriggerRed'] = OB['TriggerRed']
+#             ExecuteSlewCals.execute(slewcal_args)
 
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
