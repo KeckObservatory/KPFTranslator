@@ -68,10 +68,11 @@ class ExecuteSciSequence(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        kpfconfig = ktl.cache('kpfconfig')
         kpfguide = ktl.cache('kpfguide')
         kpfguide['TRIGCUBE'].write('Inactive')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
-        runagitator = True # <- read KTL keyword when available
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
 
         for seq in OB.get('SEQ_Observations'):
             ## ----------------------------------------------------------------

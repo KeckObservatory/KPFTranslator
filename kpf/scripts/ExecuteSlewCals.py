@@ -76,12 +76,12 @@ class ExecuteSlewCals(KPFTranslatorFunction):
 
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
 
-        runagitator = True # <- read KTL keyword when available
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
 
         ## ----------------------------------------------------------------
         ## First, configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
-        calsource = 'EtalonFiber' # <- read KTL keyword when available
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
         nd1 = args.get('CalND1')
         nd2 = args.get('CalND2')
         log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")

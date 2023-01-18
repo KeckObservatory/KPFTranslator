@@ -49,8 +49,9 @@ class ConfigureForScience(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Set Octagon
-        calsource = 'EtalonFiber' # <- read KTL keyword when available
-        log.info(f"Set CalSource/Octagon: {lamps[0]}")
+        kpfconfig = ktl.cache('kpfconfig')
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        log.info(f"Set CalSource/Octagon: {calsource}")
         SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
         # Set source select shutters
