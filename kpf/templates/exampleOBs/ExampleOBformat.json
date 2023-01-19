@@ -8,7 +8,10 @@
 		"pi_id" : 8899,
 		"sem_id" : "2022A_N028",
 		"instrument" : "kpf",
-		"tags" : [ ],
+		"tags" : [
+			"63c8afbb6a16d62b8fd16a5d",
+			"63c8afbb6a16d62b8fd16a5c"
+		],
 		"comment" : "Calibration Stars"
 	},
 	"target" : {
@@ -47,7 +50,8 @@
 			"script_version" : "0.1.0",
 			"template_type" : "acquisition",
 			"ui_name" : "KPF acquisition",
-			"version" : "0.1.0"
+			"version" : "0.1.0",
+			"sequence_number" : 0
 		},
 		"parameters" : {
 			"guider_cfg_gain" : "high",
@@ -78,7 +82,7 @@
 				"inst_cfg_em_flux" : 442803426.1039392,
 				"inst_cfg_em_mode" : "manual",
 				"det_exp_time" : 1535.6072409699716,
-				"det_exp_number" : 71.56511985817173,
+				"det_exp_number" : 92,
 				"target_info_object" : "autocal-flat-sci",
 				"inst_cfg_ts_simulcal" : true
 			}
@@ -103,7 +107,7 @@
 				"inst_cfg_em_flux" : 112486066.78505713,
 				"inst_cfg_em_mode" : "manual",
 				"det_exp_time" : 482.5360969353023,
-				"det_exp_number" : 23.724997491703448,
+				"det_exp_number" : 31,
 				"target_info_object" : "autocal-flat-sci",
 				"inst_cfg_ts_simulcal" : true
 			}
@@ -118,17 +122,17 @@
 	"status" : {
 		"state" : 4,
 		"priority" : 48,
-		"current_seq" : 2,
+		"current_seq" : 1,
 		"current_step" : 0,
 		"current_exp_det1" : 0,
 		"current_exp_det2" : 0,
 		"executions" : [
-			"2019-08-10 17:01:37",
-			"2019-06-02 01:32:37",
-			"2020-03-22 07:05:37",
-			"2020-07-08 13:18:37",
-			"2019-06-07 03:07:37",
-			"2018-02-16 08:38:37"
+			"2019-08-10 17:01:07",
+			"2019-06-02 01:32:07",
+			"2020-03-22 07:05:07",
+			"2020-07-08 13:18:07",
+			"2019-06-07 03:07:07",
+			"2018-02-16 08:38:07"
 		],
 		"deleted" : false
 	},
