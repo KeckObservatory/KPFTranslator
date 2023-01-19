@@ -6,7 +6,8 @@
         "script_version": "0.1.0",
         "template_type": "acquisition",
         "ui_name": "KPF acquisition",
-        "version": "0.1.0"
+        "version": "0.1.0",
+        "sequence_number": 0
     },
     "parameters": {
         "guider_cfg_gain": {

@@ -6,7 +6,8 @@
         "script_version": "0.1.0",
         "template_type": "science",
         "ui_name": "KPF science",
-        "version": "0.1.0"
+        "version": "0.1.0",
+        "sequence_number": 1
     },
     "parameters": {
 
