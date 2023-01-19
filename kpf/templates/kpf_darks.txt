@@ -45,41 +45,5 @@
             "ui_name": "Object Keyword",
             "units": null
         },
-        "inst_cfg_runagitator": {
-            "default": null,
-            "description": "Run the agitator during exposures?",
-            "option": "boolean",
-            "optionality": "required",
-            "type": "boolean",
-            "ui_name": "Agitator On",
-            "units": null
-        },
-        "det1_cfg_trigger": {
-            "default": null,
-            "description": "Trigger the Ca H&K detector?",
-            "option": "boolean",
-            "optionality": "required",
-            "type": "boolean",
-            "ui_name": "Ca H&K Detector Trigger",
-            "units": null
-        },
-        "det2_cfg_trigger": {
-            "default": null,
-            "description": "Trigger the green detector?",
-            "option": "boolean",
-            "optionality": "required",
-            "type": "boolean",
-            "ui_name": "Green Detector Trigger",
-            "units": null
-        },
-        "det3_cfg_trigger": {
-            "default": null,
-            "description": "Use red detector?",
-            "option": "boolean",
-            "optionality": "required",
-            "type": "boolean",
-            "ui_name": "Red Detector Trigger",
-            "units": null
-        }
     }
 }
