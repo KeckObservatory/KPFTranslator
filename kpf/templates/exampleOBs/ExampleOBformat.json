@@ -1,0 +1,111 @@
+{
+	"_id" : ObjectId("63c8acd69c421b58ea48901d"),
+	"_ob_id" : "2022A_N028_0001",
+	"metadata" : {
+		"name" : "standard stars #4",
+		"version" : "0.1.0",
+		"priority" : 100,
+		"ob_type" : "science",
+		"pi_id" : 8899,
+		"sem_id" : "2022A_N028",
+		"instrument" : "kpf",
+		"tags" : [ ],
+		"comment" : "Calibration Stars"
+	},
+	"target" : null,
+	"acquisition" : {
+		"metadata" : {
+			"instrument" : "KPF",
+			"name" : "kpf_acq",
+			"script" : "kpf_acq",
+			"script_version" : "0.1.0",
+			"template_type" : "acquisition",
+			"ui_name" : "KPF acquisition",
+			"version" : "0.1.0"
+		},
+		"parameters" : {
+			"guider_cfg_gain" : "high",
+			"guider_cfg_fps" : 17.63854309677786,
+			"guider_cfg_loopgain" : 0.2032129897257441,
+			"guider_mode" : "manual",
+			"tcs_coord_po" : "KPF"
+		}
+	},
+	"observations" : [
+		{
+			"metadata" : {
+				"instrument" : "KPF",
+				"name" : "kpf_sci",
+				"script" : "kpf_sci",
+				"script_version" : "0.1.0",
+				"template_type" : "science",
+				"ui_name" : "KPF science",
+				"version" : "0.1.0",
+				"sequence_number" : 1
+			},
+			"parameters" : {
+				"inst_cfg_nd1" : "OD 0.1",
+				"inst_cfg_nd2" : "OD 0.1",
+				"inst_cfg_calsource" : "EtalonFiber",
+				"inst_cfg_em_band" : 1,
+				"inst_cfg_em_exptime" : 30.08940939464906,
+				"inst_cfg_em_flux" : 442803426.1039392,
+				"inst_cfg_em_mode" : "manual",
+				"det_exp_time" : 1535.6072409699716,
+				"det_exp_number" : 71.56511985817173,
+				"target_info_object" : "autocal-flat-sci",
+				"inst_cfg_ts_simulcal" : true
+			}
+		},
+		{
+			"metadata" : {
+				"instrument" : "KPF",
+				"name" : "kpf_sci",
+				"script" : "kpf_sci",
+				"script_version" : "0.1.0",
+				"template_type" : "science",
+				"ui_name" : "KPF science",
+				"version" : "0.1.0",
+				"sequence_number" : 2
+			},
+			"parameters" : {
+				"inst_cfg_nd1" : "OD 0.1",
+				"inst_cfg_nd2" : "OD 0.1",
+				"inst_cfg_calsource" : "EtalonFiber",
+				"inst_cfg_em_band" : 1,
+				"inst_cfg_em_exptime" : 53.52290265220589,
+				"inst_cfg_em_flux" : 112486066.78505713,
+				"inst_cfg_em_mode" : "manual",
+				"det_exp_time" : 482.5360969353023,
+				"det_exp_number" : 23.724997491703448,
+				"target_info_object" : "autocal-flat-sci",
+				"inst_cfg_ts_simulcal" : true
+			}
+		}
+	],
+	"associations" : [
+		"lyxcg",
+		"zsoym",
+		"wyzxx",
+		"jilol"
+	],
+	"status" : {
+		"state" : 4,
+		"priority" : 48,
+		"current_seq" : 2,
+		"current_step" : 0,
+		"current_exp_det1" : 0,
+		"current_exp_det2" : 0,
+		"executions" : [
+			"2019-08-10 17:01:10",
+			"2019-06-02 01:32:10",
+			"2020-03-22 07:05:10",
+			"2020-07-08 13:18:10",
+			"2019-06-07 03:07:10",
+			"2018-02-16 08:38:10"
+		],
+		"deleted" : false
+	},
+	"common_parameters" : null,
+	"comment" : "High Priority"
+}
