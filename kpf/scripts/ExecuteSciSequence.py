@@ -70,7 +70,6 @@ class ExecuteSciSequence(KPFTranslatorFunction):
 
         kpfconfig = ktl.cache('kpfconfig')
         kpfguide = ktl.cache('kpfguide')
-        kpfguide['TRIGCUBE'].write('Inactive')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
 

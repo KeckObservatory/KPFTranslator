@@ -48,6 +48,9 @@ class ConfigureForScience(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        kpfguide = ktl.cache('kpfguide')
+        kpfguide['TRIGCUBE'].write('Inactive')
+
         # Set Octagon
         kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
