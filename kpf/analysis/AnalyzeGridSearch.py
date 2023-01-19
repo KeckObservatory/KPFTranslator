@@ -140,12 +140,11 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
         posdata[0,j,i] = entry['x']
         posdata[1,j,i] = entry['y']
 
-
     norm_spec_cube = np.zeros((nwav,ny,nx))
     for w,spectral_slice in enumerate(spec_cube):
         norm_spec_cube[w,:,:] = spectral_slice / spectral_slice.mean()
 
-    flux_map = np.sum(spec_cube, axis=0)
+    flux_map = np.sum(spec_cube, axis=0) / np.sum(spec_cube)
     npix = 30
     color_images = np.zeros((3,ny,nx))
     color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
@@ -166,8 +165,8 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     normcubehdu.header.set('OBJECT', 'Normalized_Spectral_Cube')
     normcubehdu.data = norm_spec_cube
     fluxmaphdu = fits.ImageHDU()
-    fluxmaphdu.header.set('Name', 'Flux_Map')
-    fluxmaphdu.header.set('OBJECT', 'Flux_Map')
+    fluxmaphdu.header.set('Name', 'Normalized_Flux_Map')
+    fluxmaphdu.header.set('OBJECT', 'Normalized_Flux_Map')
     fluxmaphdu.data = flux_map
     fluxcubehdu = fits.ImageHDU()
     fluxcubehdu.header.set('Name', 'Three_Color_Cube')
