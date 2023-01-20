@@ -13,6 +13,7 @@ from astropy.io import fits
 from astropy import visualization as viz
 from astropy.table import Table, Column
 from astropy.nddata import CCDData
+from astropy.modeling import models, fitting
 
 import warnings
 warnings.filterwarnings('ignore', category=astropy.wcs.FITSFixedWarning, append=True)
@@ -103,7 +104,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
 
     wavs = None
     nspectra = len(images[images['camera'] == camname])
-    log.info(f'  Building FITS cube using {nspectra} spectra')
+    log.info(f'Building FITS cube using {nspectra} spectra')
     for entry in images[images['camera'] == camname]:
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
@@ -125,26 +126,34 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
             dwav = [wav-wavs[i-1] for i,wav in enumerate(wavs) if i>0]
             nwav = len(wavs)
             spec_cube = np.zeros((nwav,ny,nx))
-            posdata = np.zeros((2,ny,nx))
+            posdata = np.zeros((5,ny,nx))
             index_450nm = np.argmin([abs(w-450) for w in wavs])
             index_550nm = np.argmin([abs(w-550) for w in wavs])
             index_650nm = np.argmin([abs(w-650) for w in wavs])
 
         all_EM_spectra = np.zeros((len(onedspec_table), nwav), dtype=float)
+        individual_EM_fluxes = np.zeros(len(onedspec_table), dtype=float)
         for lineno,line in enumerate(onedspec_table):
-            linewavs = np.array([float(line[key]) for key in wavs_strings])
-            all_EM_spectra[lineno,:] = linewavs
+            fluxes = np.array([float(line[key]) for key in wavs_strings])
+            all_EM_spectra[lineno,:] = fluxes
+            individual_EM_fluxes[lineno] = fluxes.sum()
 #         mean_EM_spectrum = all_EM_spectra.mean(axis=0)
         mean_EM_spectrum_dropFL = all_EM_spectra[1:-1,:].mean(axis=0)
+        std_of_EM_spectra_dropFL = all_EM_spectra[1:-1,:].std(axis=0)
+        mean_of_EM_fluxes_dropFL = individual_EM_fluxes[1:-1].mean()
+        std_of_EM_fluxes_dropFL = individual_EM_fluxes[1:-1].std()
         spec_cube[:,j,i] = np.array(mean_EM_spectrum_dropFL)
         posdata[0,j,i] = entry['x']
         posdata[1,j,i] = entry['y']
+        posdata[2,j,i] = mean_of_EM_fluxes_dropFL
+        posdata[3,j,i] = std_of_EM_fluxes_dropFL
+        posdata[4,j,i] = mean_of_EM_fluxes_dropFL/std_of_EM_fluxes_dropFL
 
     norm_spec_cube = np.zeros((nwav,ny,nx))
     for w,spectral_slice in enumerate(spec_cube):
         norm_spec_cube[w,:,:] = spectral_slice / spectral_slice.mean()
 
-    flux_map = np.sum(spec_cube, axis=0) / np.sum(spec_cube)
+    flux_map = np.sum(spec_cube, axis=0) / np.sum(spec_cube, axis=0).max()
     npix = 30
     color_images = np.zeros((3,ny,nx))
     color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
@@ -190,7 +199,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     wavhdu.header.set('OBJECT', 'Wavelength_Values')
     wavhdu.data = np.array(wavs)
     hdul = fits.HDUList([hdu, normcubehdu, fluxmaphdu, fluxcubehdu, colormaphdu, poshdu, wavhdu])
-    log.info(f'  Writing {ouput_spec_cube}')
+    log.info(f'  Writing FITS cube {ouput_spec_cube}')
     hdul.writeto(f'{ouput_spec_cube}', overwrite=True)
     return hdul
 
@@ -198,22 +207,89 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
 ##-------------------------------------------------------------------------
 ## build_cube_graphic
 ##-------------------------------------------------------------------------
-# def build_cube_graphic(hdul, ouput_cube_graphic):
-#     Xprojection = hdul[0].data.mean(axis=1)
-#     Xpeaks = []
-#     for i,cut in enumerate(Xprojection):
-#         Xpeaks.append(np.argmax(cut))
-#         Xprojection[i,:] /= Xprojection[i,:].mean()
-#     Xprojection = Xprojection.transpose()
-#     Xprojection.shape
-# 
-#     Yprojection = hdul[0].data.mean(axis=2)
-#     Ypeaks = []
-#     for i,cut in enumerate(Yprojection):
-#         Ypeaks.append(np.argmax(cut))
-#         Yprojection[i,:] /= Yprojection[i,:].mean()
-#     Yprojection = Yprojection.transpose()
-#     Yprojection.shape
+def build_cube_graphic(hdul, ouput_cube_graphic):
+    log.info(f"Building cube graphic")
+    # Build Coupling Model
+    # Uses data from Steve Gibson, assuming 0.7 arcsec FWHM seeing
+    arcsec_off = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1,
+                  0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    coupling_pct = [6.502697525223425,  10.402900846106968,  16.04379037219113,
+                    23.560753387006162, 32.66221884550632, 42.57025000243172,
+                    52.20303841351422, 60.515715332817, 66.7723280089551,
+                    70.60253075731977, 71.88564487441448, 70.60253075731977,
+                    66.7723280089551, 60.515715332817, 52.203038413514214,
+                    42.57025000243172, 32.66221884550632, 23.56075338700616,
+                    16.04379037219113, 10.402900846106968, 6.502697525223425]
+    pix_scale = 0.058
+    model_pix = np.array(arcsec_off)/pix_scale
+    model_flux = np.array(coupling_pct)/max(coupling_pct)
+
+    fit0 = models.Polynomial1D(degree=4)
+    fitter = fitting.LinearLSQFitter()
+    fit = fitter(fit0, model_pix, model_flux)
+
+    # Build Plots from on sky data
+    flux_map = hdul[5].data[2]
+    snr_map = hdul[5].data[4]
+    nlayers, ny, nx = hdul[5].data.shape
+    nplots = ny if nx > ny else nx
+    plot_axis_name = 'X' if nx > ny else 'Y'
+    xplot_values = hdul[5].data[0][0,:] if nx > ny else hdul[5].data[1][:,0]
+    xplot_strings = [f"{val:.1f}" for val in xplot_values]
+    iterated_pix_values = hdul[5].data[1][:,0] if nx > ny else hdul[5].data[0][0,:]
+    iterated_pix_strings = [f"{val:.1f}" for val in iterated_pix_values]
+    iterated_axis_name = 'Y' if nx > ny else 'X'
+    log.info(f"  Plots will be cuts across {plot_axis_name} axis")
+
+    plt.figure(figsize=(18,18))
+
+    plt.subplot(5,1,(1,2))
+    norm = viz.ImageNormalize(flux_map,
+                              interval=viz.MinMaxInterval(),
+                              stretch=viz.LinearStretch())
+    plt.title('Flux Map')
+    plt.imshow(flux_map, interpolation='none', cmap='gray', origin='lower', norm=norm)
+    plt.xlabel(f"{iterated_axis_name} pixels")
+    plt.gca().set_xticklabels(['']+iterated_pix_strings)
+    plt.ylabel(f"{plot_axis_name} pixels")
+    plt.gca().set_yticklabels(['']+xplot_strings)
+
+    ax1 = plt.subplot(5,1,(3,4))
+    ax1.set_xticks(xplot_values)
+    ax1.set_xticklabels(xplot_strings)
+    plt.ylim(0,flux_map.max()*1.15)
+    xpmin = xplot_values.min()
+    xpmax = xplot_values.max()
+    xlim = (xpmin-(xpmax-xpmin)*0.04,
+            xpmax+(xpmax-xpmin)*0.04)
+    plt.xlim(xlim)
+    plt.ylabel('Flux')
+
+    ax2 = plt.subplot(5,1,5)
+    ax2.set_xticks(xplot_values)
+    ax2.set_xticklabels(xplot_strings)
+    plt.ylim(0,snr_map.max()*1.15)
+    plt.xlim(xlim)
+    plt.ylabel('SNR')
+    plt.xlabel(f"{plot_axis_name} pixels")
+
+    for i in range(nplots):
+        iterated_pix_value = iterated_pix_values[i]
+        line = ax1.plot(xplot_values, flux_map[:,i],
+                 marker='o', ds='steps-mid', alpha=1,
+                 label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
+        peak_index = np.argmax(flux_map[:,i])
+        ax1.plot(model_pix+xplot_values[peak_index], fit(model_pix)*flux_map[peak_index,i],
+                 color=line[0].get_c(), linestyle=':', alpha=0.7)
+        ax2.plot(xplot_values, snr_map[:,i],
+                 marker='o', ds='steps-mid', alpha=1,
+                 label=f'SNR {iterated_axis_name}={iterated_pix_value:.1f}')
+    ax1.grid()
+    ax1.legend(loc='best')
+    ax2.grid()
+
+    log.info(f"  Saving: {ouput_cube_graphic}")
+    plt.savefig(ouput_cube_graphic, bbox_inches='tight', pad_inches=0.10)
 
 
 ##-------------------------------------------------------------------------
@@ -233,7 +309,7 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
 
     fig = plt.figure(figsize=(15,15))
     nimages = len(images[images['camera'] == 'CRED2'])
-    log.info(f'  Building CRED2 graphic with {nimages} images')
+    log.info(f'Building CRED2 graphic with {nimages} images')
     for fig_index,entry in enumerate(images[images['camera'] == 'CRED2']):
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
@@ -331,7 +407,7 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
 
     fig = plt.figure(figsize=(15,15))
     nimages = len(images[images['camera'] == FVC])
-    log.info(f'  Building {FVC}FVC graphic with {nimages} images')
+    log.info(f'Building {FVC}FVC graphic with {nimages} images')
     for fig_index,entry in enumerate(images[images['camera'] == FVC]):
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
@@ -420,8 +496,10 @@ def analyze_grid_search(logfile, fiber='Science',
     # Build output FITS cube file name
     ouput_spec_cube = f"{mode}{logfile.name.replace('.log', '.fits')}"
     hdul = build_FITS_cube(images, comment, ouput_spec_cube)
-#     ouput_cube_graphic = logfile.name.replace('.log', '.png')
-#     build_cube_graphic(hdul, ouput_cube_graphic)
+
+    # Build graphic of cube fluxes
+    ouput_cube_graphic = f"{mode}{logfile.name.replace('.log', '.png')}"
+    build_cube_graphic(hdul, ouput_cube_graphic)
 
     # Build graphic of CRED2 Images
     if skipcred2 is not True and len(images[images['camera'] == 'CRED2']) > 0:
