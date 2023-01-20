@@ -241,7 +241,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic):
     iterated_axis_name = 'Y' if nx > ny else 'X'
     log.info(f"  Plots will be cuts across {plot_axis_name} axis")
 
-    plt.figure(figsize=(18,18))
+    plt.figure(figsize=(15,15))
 
     plt.subplot(5,1,(1,2))
     norm = viz.ImageNormalize(flux_map,
@@ -249,10 +249,14 @@ def build_cube_graphic(hdul, ouput_cube_graphic):
                               stretch=viz.LinearStretch())
     plt.title('Flux Map')
     plt.imshow(flux_map, interpolation='none', cmap='gray', origin='lower', norm=norm)
-    plt.xlabel(f"{iterated_axis_name} pixels")
-    plt.gca().set_xticklabels(['']+iterated_pix_strings)
-    plt.ylabel(f"{plot_axis_name} pixels")
-    plt.gca().set_yticklabels(['']+xplot_strings)
+    plt.xlabel(f"X pixels")
+    plt.ylabel(f"Y pixels")
+    if plot_axis_name == 'X':
+        plt.gca().set_yticklabels(['']+iterated_pix_strings)
+        plt.gca().set_xticklabels(['']+xplot_strings)
+    else:
+        plt.gca().set_xticklabels(['']+iterated_pix_strings)
+        plt.gca().set_yticklabels(['']+xplot_strings)
 
     ax1 = plt.subplot(5,1,(3,4))
     ax1.set_xticks(xplot_values)
@@ -275,13 +279,19 @@ def build_cube_graphic(hdul, ouput_cube_graphic):
 
     for i in range(nplots):
         iterated_pix_value = iterated_pix_values[i]
-        line = ax1.plot(xplot_values, flux_map[:,i],
+        if plot_axis_name == 'X':
+            flux_map_i = flux_map[i,:]
+            snr_map_i = snr_map[i,:]
+        else:
+            flux_map_i = flux_map[:,i]
+            snr_map_i = snr_map[:,i]
+        line = ax1.plot(xplot_values, flux_map_i,
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
-        peak_index = np.argmax(flux_map[:,i])
-        ax1.plot(model_pix+xplot_values[peak_index], fit(model_pix)*flux_map[peak_index,i],
+        peak_index = np.argmax(flux_map_i)
+        ax1.plot(model_pix+xplot_values[peak_index], fit(model_pix)*flux_map_i[peak_index],
                  color=line[0].get_c(), linestyle=':', alpha=0.7)
-        ax2.plot(xplot_values, snr_map[:,i],
+        ax2.plot(xplot_values, snr_map_i,
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'SNR {iterated_axis_name}={iterated_pix_value:.1f}')
     ax1.grid()
@@ -498,7 +508,7 @@ def analyze_grid_search(logfile, fiber='Science',
     hdul = build_FITS_cube(images, comment, ouput_spec_cube)
 
     # Build graphic of cube fluxes
-    ouput_cube_graphic = f"{mode}{logfile.name.replace('.log', '.png')}"
+    ouput_cube_graphic = f"{mode}{logfile.name.replace('.log', '_fluxmap.png')}"
     build_cube_graphic(hdul, ouput_cube_graphic)
 
     # Build graphic of CRED2 Images
