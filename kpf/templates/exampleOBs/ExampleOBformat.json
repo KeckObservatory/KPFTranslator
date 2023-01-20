@@ -9,8 +9,8 @@
 		"sem_id" : "2022A_N028",
 		"instrument" : "kpf",
 		"tags" : [
-			"63c8afbb6a16d62b8fd16a5d",
-			"63c8afbb6a16d62b8fd16a5c"
+			"63c9f629614fd0d28051ec85",
+			"63c9f629614fd0d28051ec83"
 		],
 		"comment" : "Calibration Stars"
 	},
@@ -122,20 +122,41 @@
 	"status" : {
 		"state" : 4,
 		"priority" : 48,
-		"current_seq" : 1,
+		"current_seq" : 0,
 		"current_step" : 0,
-		"current_exp_det1" : 0,
-		"current_exp_det2" : 0,
 		"executions" : [
-			"2019-08-10 17:01:07",
-			"2019-06-02 01:32:07",
-			"2020-03-22 07:05:07",
-			"2020-07-08 13:18:07",
-			"2019-06-07 03:07:07",
-			"2018-02-16 08:38:07"
+			"2019-08-10 17:01:57",
+			"2019-06-02 01:32:57",
+			"2020-03-22 07:05:57",
+			"2020-07-08 13:18:57",
+			"2019-06-07 03:07:57",
+			"2018-02-16 08:38:57"
 		],
-		"deleted" : false
+		"deleted" : false,
+		"current_exp_det" : 0
 	},
-	"common_parameters" : null,
+	"common_parameters" : {
+		"metadata" : {
+			"name" : "kpf_common_parameters",
+			"ui_name" : "KPF Common Parameters",
+			"instrument" : "KPF",
+			"template_type" : "common_parameters",
+			"version" : "0.1.1"
+		},
+		"instrument_parameters" : {
+			"inst_cfg_runagitator" : true
+		},
+		"detector_parameters" : {
+			"det1_cfg_trigger" : true,
+			"det2_cfg_trigger" : true,
+			"det3_cfg_trigger" : true
+		},
+		"guider_parameters" : {
+
+		},
+		"tcs_parameters" : {
+
+		}
+	},
 	"comment" : "High Priority"
 }
