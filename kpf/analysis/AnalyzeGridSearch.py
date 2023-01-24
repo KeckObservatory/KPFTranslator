@@ -19,7 +19,7 @@ import warnings
 warnings.filterwarnings('ignore', category=astropy.wcs.FITSFixedWarning, append=True)
 
 from matplotlib import pyplot as plt
-from matplotlib.ticker import MultipleLocator
+from matplotlib.ticker import MultipleLocator, FixedLocator
 
 ##-------------------------------------------------------------------------
 ## Parse Command Line Arguments
@@ -143,7 +143,7 @@ def correct_DAR(cred2_file):
 ##-------------------------------------------------------------------------
 ## build_FITS_cube
 ##-------------------------------------------------------------------------
-def build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=True):
+def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt'):
     nx = len(set(images['x']))
     ny = len(set(images['y']))
     xs = sorted(set(images['x']))
@@ -165,13 +165,16 @@ def build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=True):
 #         print(j, entry['y'])
 
         # Find CRED2 image at same position to get info for DAR correction
-        this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
-        cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
-        DARx, DARy = correct_DAR(cred2_file)
-        Xpix = entry['x'] - DARx
-        Ypix = entry['y'] - DARy
-        log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
-
+        if mode == 'TipTilt':
+            this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
+            cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
+            DARx, DARy = correct_DAR(cred2_file)
+            Xpix = entry['x'] - DARx
+            Ypix = entry['y'] - DARy
+            log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
+        else:
+            Xpix = entry['x']
+            Ypix = entry['y']
 
         # Figure out the 1d extracted exposure meter file if not recorded
         if onedspecfiles is False:
@@ -193,7 +196,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=True):
             dwav = [wav-wavs[i-1] for i,wav in enumerate(wavs) if i>0]
             nwav = len(wavs)
             spec_cube = np.zeros((nwav,ny,nx))
-            posdata = np.zeros((7,ny,nx))
+            posdata = np.zeros((8,ny,nx))
             index_450nm = np.argmin([abs(w-450) for w in wavs])
             index_550nm = np.argmin([abs(w-550) for w in wavs])
             index_650nm = np.argmin([abs(w-650) for w in wavs])
@@ -204,19 +207,28 @@ def build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=True):
             fluxes = np.array([float(line[key]) for key in wavs_strings])
             all_EM_spectra[lineno,:] = fluxes
             individual_EM_fluxes[lineno] = fluxes.sum()
-#         mean_EM_spectrum = all_EM_spectra.mean(axis=0)
-        mean_EM_spectrum_dropFL = all_EM_spectra[1:-1,:].mean(axis=0)
-        std_of_EM_spectra_dropFL = all_EM_spectra[1:-1,:].std(axis=0)
-        mean_of_EM_fluxes_dropFL = individual_EM_fluxes[1:-1].mean()
-        std_of_EM_fluxes_dropFL = individual_EM_fluxes[1:-1].std()
-        spec_cube[:,j,i] = np.array(mean_EM_spectrum_dropFL)
+
+        if len(onedspec_table) <= 4:
+            log.warning(f'Number of EM spectra is low: {len(onedspec_table)}')
+            mean_EM_spectrum = all_EM_spectra.mean(axis=0)
+            std_of_EM_spectra = all_EM_spectra.std(axis=0)
+            mean_of_EM_fluxes = individual_EM_fluxes.mean()
+            std_of_EM_fluxes = individual_EM_fluxes.std()
+        else:
+            # Drop first and last
+            mean_EM_spectrum = all_EM_spectra[1:-1,:].mean(axis=0)
+            std_of_EM_spectra = all_EM_spectra[1:-1,:].std(axis=0)
+            mean_of_EM_fluxes = individual_EM_fluxes[1:-1].mean()
+            std_of_EM_fluxes = individual_EM_fluxes[1:-1].std()
+        spec_cube[:,j,i] = np.array(mean_EM_spectrum)
         posdata[0,j,i] = Xpix
         posdata[1,j,i] = Ypix
         posdata[2,j,i] = entry['x']
         posdata[3,j,i] = entry['y']
-        posdata[4,j,i] = mean_of_EM_fluxes_dropFL
-        posdata[5,j,i] = std_of_EM_fluxes_dropFL
-        posdata[6,j,i] = mean_of_EM_fluxes_dropFL/std_of_EM_fluxes_dropFL
+        posdata[4,j,i] = 1 if np.isnan(mean_of_EM_fluxes) else mean_of_EM_fluxes
+        posdata[5,j,i] = 0 if np.isnan(std_of_EM_fluxes) else std_of_EM_fluxes
+        posdata[6,j,i] = mean_of_EM_fluxes/std_of_EM_fluxes if std_of_EM_fluxes > 0 else 0
+        posdata[7,j,i] = len(onedspec_table)
 
     norm_spec_cube = np.zeros((nwav,ny,nx))
     for w,spectral_slice in enumerate(spec_cube):
@@ -276,9 +288,9 @@ def build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=True):
 ##-------------------------------------------------------------------------
 ## build_cube_graphic
 ##-------------------------------------------------------------------------
-def build_cube_graphic(hdul, ouput_cube_graphic, overlaymodel=True):
+def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode):
     log.info(f"Building cube graphic")
-    if overlaymodel is True:
+    if mode == 'TipTilt':
         # Build Coupling Model
         # Uses data from Steve Gibson, assuming 0.7 arcsec FWHM seeing
         arcsec_off = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1,
@@ -322,11 +334,19 @@ def build_cube_graphic(hdul, ouput_cube_graphic, overlaymodel=True):
     plt.xlabel(f"X pixels")
     plt.ylabel(f"Y pixels")
     if plot_axis_name == 'X':
-        plt.gca().set_yticklabels(['']+iterated_pix_strings)
-        plt.gca().set_xticklabels(['']+xplot_strings)
+        plt.gca().set_yticklabels(iterated_pix_strings)
+        plt.gca().set_xticklabels(xplot_strings)
+        plt.gca().set_yticks(iterated_pix_values)
+        plt.gca().set_xticks(xplot_values)
+#         plt.gca().set_yticklabels(['']+iterated_pix_strings)
+#         plt.gca().set_xticklabels(['']+xplot_strings)
     else:
-        plt.gca().set_xticklabels(['']+iterated_pix_strings)
-        plt.gca().set_yticklabels(['']+xplot_strings)
+        plt.gca().set_xticklabels(iterated_pix_strings)
+        plt.gca().set_yticklabels(xplot_strings)
+        plt.gca().set_xticks(iterated_pix_values)
+        plt.gca().set_yticks(xplot_values)
+#         plt.gca().set_xticklabels(['']+iterated_pix_strings)
+#         plt.gca().set_yticklabels(['']+xplot_strings)
 
     ax1 = plt.subplot(5,1,(3,4))
     ax1.set_xticks(xplot_values)
@@ -342,7 +362,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, overlaymodel=True):
     ax2 = plt.subplot(5,1,5)
     ax2.set_xticks(xplot_values)
     ax2.set_xticklabels(xplot_strings)
-    plt.ylim(0,snr_map.max()*1.15)
+    plt.ylim(0,(snr_map.max()+1)*1.15)
     plt.xlim(xlim)
     plt.ylabel('SNR')
     plt.xlabel(f"{plot_axis_name} pixels")
@@ -359,7 +379,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, overlaymodel=True):
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
         peak_index = np.argmax(flux_map_i)
-        if overlaymodel is True:
+        if mode == 'TipTilt':
             ax1.plot(model_pix+xplot_values[peak_index], fit(model_pix)*flux_map_i[peak_index],
                      color=line[0].get_c(), linestyle=':', alpha=0.7)
         ax2.plot(xplot_values, snr_map_i,
@@ -544,6 +564,7 @@ def analyze_grid_search(logfile, fiber='Science',
     logfile = Path(logfile)
     assert logfile.exists()
     assert logfile.suffix == '.log'
+    log.info("")
     log.info(f"Analyzing {logfile.name}")
     data_path = logfile.parent.parent
 
@@ -592,14 +613,14 @@ def analyze_grid_search(logfile, fiber='Science',
 
     # Build output FITS cube file name
     ouput_spec_cube = f"{mode}{logfile.name.replace('.log', '.fits')}"
-    hdul = build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=(mode == 'TipTilt'))
+    hdul = build_FITS_cube(images, comment, ouput_spec_cube, mode=mode)
 
     # Build graphic of cube fluxes
     ouput_cube_graphic = f"{mode}{logfile.name.replace('.log', '_fluxmap.png')}"
-    build_cube_graphic(hdul, ouput_cube_graphic)
+    build_cube_graphic(hdul, ouput_cube_graphic, mode=mode)
 
     # Build graphic of CRED2 Images
-    if skipcred2 is not True and len(images[images['camera'] == 'CRED2']) > 0:
+    if skipcred2 is not True and len(images[images['camera'] == 'CRED2']) > 0 and mode == 'TipTilt':
         ouput_cred2_image_file = Path(f"{mode}{logfile.name.replace('.log', '_CRED2_images.png')}")
         cred2_pixels = {'EMSky': (160, 256),
                         'Science': (335, 256),
@@ -608,7 +629,7 @@ def analyze_grid_search(logfile, fiber='Science',
                             x0=cred2_pixels[0], y0=cred2_pixels[1])
 
     # Build graphic of FVC Images
-    if skipFVCs is not True:
+    if skipFVCs is not True and mode == 'TipTilt':
         FVCs = ['SCI', 'CAHK', 'EXT']
         fvc_pixels = {'SCI': {'EMSky': None,
                               'Science': (803.5, 607.0),
