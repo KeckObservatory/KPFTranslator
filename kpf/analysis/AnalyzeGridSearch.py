@@ -207,26 +207,27 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
 ##-------------------------------------------------------------------------
 ## build_cube_graphic
 ##-------------------------------------------------------------------------
-def build_cube_graphic(hdul, ouput_cube_graphic):
+def build_cube_graphic(hdul, ouput_cube_graphic, overlaymodel=True):
     log.info(f"Building cube graphic")
-    # Build Coupling Model
-    # Uses data from Steve Gibson, assuming 0.7 arcsec FWHM seeing
-    arcsec_off = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1,
-                  0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    coupling_pct = [6.502697525223425,  10.402900846106968,  16.04379037219113,
-                    23.560753387006162, 32.66221884550632, 42.57025000243172,
-                    52.20303841351422, 60.515715332817, 66.7723280089551,
-                    70.60253075731977, 71.88564487441448, 70.60253075731977,
-                    66.7723280089551, 60.515715332817, 52.203038413514214,
-                    42.57025000243172, 32.66221884550632, 23.56075338700616,
-                    16.04379037219113, 10.402900846106968, 6.502697525223425]
-    pix_scale = 0.058
-    model_pix = np.array(arcsec_off)/pix_scale
-    model_flux = np.array(coupling_pct)/max(coupling_pct)
+    if overlaymodel is True:
+        # Build Coupling Model
+        # Uses data from Steve Gibson, assuming 0.7 arcsec FWHM seeing
+        arcsec_off = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1,
+                      0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+        coupling_pct = [6.502697525223425,  10.402900846106968,  16.04379037219113,
+                        23.560753387006162, 32.66221884550632, 42.57025000243172,
+                        52.20303841351422, 60.515715332817, 66.7723280089551,
+                        70.60253075731977, 71.88564487441448, 70.60253075731977,
+                        66.7723280089551, 60.515715332817, 52.203038413514214,
+                        42.57025000243172, 32.66221884550632, 23.56075338700616,
+                        16.04379037219113, 10.402900846106968, 6.502697525223425]
+        pix_scale = 0.058
+        model_pix = np.array(arcsec_off)/pix_scale
+        model_flux = np.array(coupling_pct)/max(coupling_pct)
 
-    fit0 = models.Polynomial1D(degree=4)
-    fitter = fitting.LinearLSQFitter()
-    fit = fitter(fit0, model_pix, model_flux)
+        fit0 = models.Polynomial1D(degree=4)
+        fitter = fitting.LinearLSQFitter()
+        fit = fitter(fit0, model_pix, model_flux)
 
     # Build Plots from on sky data
     flux_map = hdul[5].data[2]
@@ -289,8 +290,9 @@ def build_cube_graphic(hdul, ouput_cube_graphic):
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
         peak_index = np.argmax(flux_map_i)
-        ax1.plot(model_pix+xplot_values[peak_index], fit(model_pix)*flux_map_i[peak_index],
-                 color=line[0].get_c(), linestyle=':', alpha=0.7)
+        if overlaymodel is True:
+            ax1.plot(model_pix+xplot_values[peak_index], fit(model_pix)*flux_map_i[peak_index],
+                     color=line[0].get_c(), linestyle=':', alpha=0.7)
         ax2.plot(xplot_values, snr_map_i,
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'SNR {iterated_axis_name}={iterated_pix_value:.1f}')
@@ -505,7 +507,7 @@ def analyze_grid_search(logfile, fiber='Science',
 
     # Build output FITS cube file name
     ouput_spec_cube = f"{mode}{logfile.name.replace('.log', '.fits')}"
-    hdul = build_FITS_cube(images, comment, ouput_spec_cube)
+    hdul = build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=(mode == 'TipTilt'))
 
     # Build graphic of cube fluxes
     ouput_cube_graphic = f"{mode}{logfile.name.replace('.log', '_fluxmap.png')}"
