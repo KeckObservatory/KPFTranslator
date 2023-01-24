@@ -127,6 +127,18 @@ def calculate_DAR_pix(DARarcsec, va, pixel_scale=0.058):
     dy = -DARarcsec/pixel_scale*np.sin(va*np.pi/180)
     return dx, dy
 
+def correct_DAR(cred2_file):
+    cred2_image_filename = Path(cred2_file).name
+    log.debug(f"Correcting pixel position for DAR using {cred2_image_filename}")
+    hdul = fits.open(cred2_file)
+    EL = float(hdul[0].header.get("EL"))
+    DARarcsec = calculate_DAR_arcsec(EL)
+    log.debug(f"DAR at EL={EL:.1f} is {DARarcsec:.3f} arcsec")
+    va = np.arctan(hdul[0].header.get("CD1_1Y")/hdul[0].header.get("CD1_2Y"))*180/np.pi + 90
+    DARx, DARy = calculate_DAR_pix(DARarcsec, va)
+    log.debug(f"DAR correction is {DARx:.2f}, {DARy:.2f} pix")
+    return DARx, DARy
+
 
 ##-------------------------------------------------------------------------
 ## build_FITS_cube
@@ -154,19 +166,12 @@ def build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=True):
 
         # Find CRED2 image at same position to get info for DAR correction
         this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
-        cred2_image = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
-        cred2_image_filename = Path(cred2_image).name
-        log.debug(f"Correcting pixel position for DAR using {cred2_image_filename}")
-        hdul = fits.open(cred2_image)
-        EL = float(hdul[0].header.get("EL"))
-        DARarcsec = calculate_DAR_arcsec(EL)
-        log.debug(f"DAR at EL={EL:.1f} is {DARarcsec:.3f} arcsec")
-        va = np.arctan(hdul[0].header.get("CD1_1Y")/hdul[0].header.get("CD1_2Y"))*180/np.pi + 90
-        DARx, DARy = calculate_DAR_pix(DARarcsec, va)
-        log.debug(f"DAR correction is {DARx:.2f}, {DARy:.2f} pix")
+        cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
+        DARx, DARy = correct_DAR(cred2_file)
         Xpix = entry['x'] - DARx
         Ypix = entry['y'] - DARy
         log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
+
 
         # Figure out the 1d extracted exposure meter file if not recorded
         if onedspecfiles is False:
@@ -390,6 +395,9 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
         cred2_file = Path(entry['file'])
+        DARx, DARy = correct_DAR(cred2_file)
+        Xpix = entry['x'] - DARx
+        Ypix = entry['y'] - DARy
 
         # Create and Subtract Background
         ccddata = CCDData.read(entry['file'], unit="adu", memmap=False)
@@ -439,10 +447,14 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
             y3 = y1
         log.debug(f"  Iteration 3: {x3:.1f} {y3:.1f} ({entry['x']:.1f} {entry['y']:.1f})")
 
+        log.debug(f"  Applying DAR correction")
+        x3 -= DARx
+        y3 -= DARy
+
         # Add plot to figure
         plt.subplot(ny,nx,fig_index+1)
         cube_number = cred2_file.name.replace('kpfguide_cube_', '').replace('.fits', '')
-        title_string = f"{cube_number}: x,y={entry['x']:.1f}, {entry['y']:.1f}"
+        title_string = f"{cube_number}: x,y={Xpix:.1f}, {Ypix:.1f}"
         log.debug(f"Building frame: {title_string}")
         plt.title(title_string, size=8)
         norm = viz.ImageNormalize(image_data,
@@ -487,13 +499,22 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
     for fig_index,entry in enumerate(images[images['camera'] == FVC]):
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
+
+        # Find CRED2 image at same position to get info for DAR correction
+        this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
+        cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
+        DARx, DARy = correct_DAR(cred2_file)
+        Xpix = entry['x'] - DARx
+        Ypix = entry['y'] - DARy
+        log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
+
         fvc_file = Path(entry['file'])
         hdul = fits.open(fvc_file)
         dx = 50
         dy = 50
         subframe = hdul[0].data[int(y0)-dy:int(y0)+dy,int(x0)-dx:int(x0)+dx]
         plt.subplot(ny,nx,fig_index+1)
-        title_string = f"{fvc_file.name.replace('.fits','').replace('fvc','')}: {entry['x']:.1f}, {entry['y']:.1f}"
+        title_string = f"{fvc_file.name.replace('.fits','').replace('fvc','')}: {Xpix:.1f}, {Ypix:.1f}"
         log.debug(f"Building frame: {title_string}")
         plt.title(title_string, size=8)
         norm = viz.ImageNormalize(subframe,
