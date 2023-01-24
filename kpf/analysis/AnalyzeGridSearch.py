@@ -88,9 +88,50 @@ def mode(data):
 
 
 ##-------------------------------------------------------------------------
+## Utility functions
+## from Filippenko 1982 (PASP, 94:715-721, August 1982)
+##-------------------------------------------------------------------------
+def n_15760(wav):
+    '''wav in microns'''
+    foo = 64.328 + 29498.1/(146-(1/wav)**2) + 255.4/(41-(1/wav)**2)
+    n_15760 = foo/10**6 + 1
+    return n_15760
+
+def n(wav, T=7, P=600, f=8):
+    '''T air temperature in deg C
+    P air pressure in mm Hg
+    f is water vapor pressure in mm Hg
+    '''
+    n0 = (n_15760(wav) - 1) * P*(1+(1.049 - 0.0157*T)*10**-6*P) / (720.883*(1+0.003661*T)) + 1
+    reduction = (0.0624 - 0.000680/wav**2)/(1+0.003661*T)*f
+    n = ( (n0-1)*10**6 - reduction ) / 10**6 + 1
+    return n
+
+def dR(wav, z, T=7, P=600, f=8, wav0=0.5):
+    '''z is zenith angle in degrees
+    '''
+    z *= np.pi/180 # convert to radians
+    dR = 206265 * ( n(wav, T=T, P=P, f=f) - n(wav0, T=T, P=P, f=f) ) * np.tan(z)
+    return dR
+
+
+def calculate_DAR_arcsec(EL, CRED2wav=1.075, sciencewav=0.55,
+                         T0=0, P0=465, f0=4.5):
+    za = 90-EL
+    DARarcsec = dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
+    return DARarcsec
+
+
+def calculate_DAR_pix(DARarcsec, va, pixel_scale=0.058):
+    dx = DARarcsec/pixel_scale*np.cos(va*np.pi/180)
+    dy = -DARarcsec/pixel_scale*np.sin(va*np.pi/180)
+    return dx, dy
+
+
+##-------------------------------------------------------------------------
 ## build_FITS_cube
 ##-------------------------------------------------------------------------
-def build_FITS_cube(images, comment, ouput_spec_cube):
+def build_FITS_cube(images, comment, ouput_spec_cube, overlaymodel=True):
     nx = len(set(images['x']))
     ny = len(set(images['y']))
     xs = sorted(set(images['x']))
@@ -108,6 +149,26 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
     for entry in images[images['camera'] == camname]:
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
+#         print(i, entry['x'])
+#         print(j, entry['y'])
+
+        # Find CRED2 image at same position to get info for DAR correction
+        this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
+        cred2_image = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
+        cred2_image_filename = Path(cred2_image).name
+        log.debug(f"Correcting pixel position for DAR using {cred2_image_filename}")
+        hdul = fits.open(cred2_image)
+        EL = float(hdul[0].header.get("EL"))
+        DARarcsec = calculate_DAR_arcsec(EL)
+        log.debug(f"DAR at EL={EL:.1f} is {DARarcsec:.3f} arcsec")
+        va = np.arctan(hdul[0].header.get("CD1_1Y")/hdul[0].header.get("CD1_2Y"))*180/np.pi + 90
+        DARx, DARy = calculate_DAR_pix(DARarcsec, va)
+        log.debug(f"DAR correction is {DARx:.2f}, {DARy:.2f} pix")
+        Xpix = entry['x'] - DARx
+        Ypix = entry['y'] - DARy
+        log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
+
+        # Figure out the 1d extracted exposure meter file if not recorded
         if onedspecfiles is False:
             p = Path(entry['file'])
             ismatch = re.search('(kpf_em_\d+)\.\d{3}\.fits', p.name)
@@ -117,6 +178,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
                 print(f'Failed Match: {p}')
         else:
             onedspecfile = Path(entry['file'])
+
         # If this is first file, pull the wavelengths out
         hdul = fits.open(onedspecfile)
         onedspec_table = Table(hdul[1].data)
@@ -126,7 +188,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
             dwav = [wav-wavs[i-1] for i,wav in enumerate(wavs) if i>0]
             nwav = len(wavs)
             spec_cube = np.zeros((nwav,ny,nx))
-            posdata = np.zeros((5,ny,nx))
+            posdata = np.zeros((7,ny,nx))
             index_450nm = np.argmin([abs(w-450) for w in wavs])
             index_550nm = np.argmin([abs(w-550) for w in wavs])
             index_650nm = np.argmin([abs(w-650) for w in wavs])
@@ -143,11 +205,13 @@ def build_FITS_cube(images, comment, ouput_spec_cube):
         mean_of_EM_fluxes_dropFL = individual_EM_fluxes[1:-1].mean()
         std_of_EM_fluxes_dropFL = individual_EM_fluxes[1:-1].std()
         spec_cube[:,j,i] = np.array(mean_EM_spectrum_dropFL)
-        posdata[0,j,i] = entry['x']
-        posdata[1,j,i] = entry['y']
-        posdata[2,j,i] = mean_of_EM_fluxes_dropFL
-        posdata[3,j,i] = std_of_EM_fluxes_dropFL
-        posdata[4,j,i] = mean_of_EM_fluxes_dropFL/std_of_EM_fluxes_dropFL
+        posdata[0,j,i] = Xpix
+        posdata[1,j,i] = Ypix
+        posdata[2,j,i] = entry['x']
+        posdata[3,j,i] = entry['y']
+        posdata[4,j,i] = mean_of_EM_fluxes_dropFL
+        posdata[5,j,i] = std_of_EM_fluxes_dropFL
+        posdata[6,j,i] = mean_of_EM_fluxes_dropFL/std_of_EM_fluxes_dropFL
 
     norm_spec_cube = np.zeros((nwav,ny,nx))
     for w,spectral_slice in enumerate(spec_cube):
@@ -230,8 +294,8 @@ def build_cube_graphic(hdul, ouput_cube_graphic, overlaymodel=True):
         fit = fitter(fit0, model_pix, model_flux)
 
     # Build Plots from on sky data
-    flux_map = hdul[5].data[2]
-    snr_map = hdul[5].data[4]
+    flux_map = hdul[5].data[4]
+    snr_map = hdul[5].data[6]
     nlayers, ny, nx = hdul[5].data.shape
     nplots = ny if nx > ny else nx
     plot_axis_name = 'X' if nx > ny else 'Y'
