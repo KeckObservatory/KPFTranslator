@@ -49,14 +49,10 @@ class RunCalOB(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
-        if scriptallow.read() == 'No':
-            log.warning(f"SCRIPTALLOW is No, skipping RunCalOB")
-            return False
-
         # Configure: Turn on Lamps
         ConfigureForCalibrations.execute(OB)
 
+        # Execute Sequences
         set_script_keywords(Path(__file__).name, os.getpid())
         # Execute the Dark Sequence
         darks = OB.get('SEQ_Darks', [])
