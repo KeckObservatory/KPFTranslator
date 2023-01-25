@@ -59,8 +59,10 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
         CalLampPower.execute({'lamp': 'SciLED', 'power': 'off'})
         CalLampPower.execute({'lamp': 'SkyLED', 'power': 'off'})
 
-        # Configure FIU
-        ConfigureFIU.execute({'mode': 'calibration'})
+        log.info(f"Configuring FIU")
+        ConfigureFIU.execute({'mode': 'Calibration'})
+        log.info(f"Set Detector List")
+        SetTriggeredDetectors.execute(OB)
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

@@ -76,10 +76,6 @@ class ExecuteCalSequence(KPFTranslatorFunction):
         # Setup
         log.info(f"Wait for any existing exposures to be complete")
         WaitForReady.execute({})
-        log.info(f"Configuring FIU")
-        ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
-        log.info(f"Set Detector List")
-        SetTriggeredDetectors.execute(OB)
 
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
 
