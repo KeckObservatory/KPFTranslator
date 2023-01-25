@@ -2,7 +2,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from . import register_script, obey_scriptrun, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..ao.ControlAOHatch import ControlAOHatch
 from ..ao.TurnHepaOn import TurnHepaOn
 from ..ao.SendPCUtoHome import SendPCUtoHome
@@ -16,12 +16,6 @@ from ..spectrograph.SetObject import SetObject
 from ..calbench.CalLampPower import CalLampPower
 from ..fvc.FVCPower import FVCPower
 from ..fiu.StopTipTilt import StopTipTilt
-
-
-## Create special script logger object
-from . import get_script_log
-this_file_name = Path(__file__).name.replace(".py", "")
-log = get_script_log(this_file_name)
 
 
 class EndOfNight(KPFTranslatorFunction):
@@ -43,6 +37,7 @@ class EndOfNight(KPFTranslatorFunction):
         return True
 
     @classmethod
+    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         StopTipTilt.execute({})
 

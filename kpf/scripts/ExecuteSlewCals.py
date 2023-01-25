@@ -8,7 +8,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
@@ -34,12 +34,6 @@ from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from .WaitForLampsWarm import WaitForLampsWarm
 
 
-## Create special script logger object
-from . import get_script_log
-this_file_name = Path(__file__).name.replace(".py", "")
-log = get_script_log(this_file_name)
-
-
 class ExecuteSlewCals(KPFTranslatorFunction):
     '''Script which executes the observations of a Slew Cal
     '''
@@ -59,6 +53,7 @@ class ExecuteSlewCals(KPFTranslatorFunction):
 
     @classmethod
     @register_script(Path(__file__).name, os.getpid())
+    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
