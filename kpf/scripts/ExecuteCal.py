@@ -33,7 +33,7 @@ from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from .WaitForLampsWarm import WaitForLampsWarm
 
 
-class ExecuteCalSequence(KPFTranslatorFunction):
+class ExecuteCal(KPFTranslatorFunction):
     '''Script which executes the observations from a Calibration OB
     
     Can be called by `ddoi_script_functions.execute_observation`.
