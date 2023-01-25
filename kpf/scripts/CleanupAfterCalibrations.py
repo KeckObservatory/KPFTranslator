@@ -49,6 +49,7 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
                 CalLampPower.execute({'lamp': lamp, 'power': 'off'})
 
         # Set OBJECT back to empty string
+        log.info('Waiting for readout to finish')
         WaitForReady.execute({})
         SetObject.execute({'Object': ''})
 
