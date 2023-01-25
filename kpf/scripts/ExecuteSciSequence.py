@@ -6,7 +6,7 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop
 from ..spectrograph.SetObject import SetObject
@@ -25,6 +25,12 @@ from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForCalSource import WaitForCalSource
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
+
+
+## Create special script logger object
+from . import get_script_log
+this_file_name = Path(__file__).name.replace(".py", "")
+log = get_script_log(this_file_name)
 
 
 class ExecuteSciSequence(KPFTranslatorFunction):

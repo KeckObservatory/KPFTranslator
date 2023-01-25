@@ -1,7 +1,7 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop
 from ..ao.SetupAOforKPF import SetupAOforKPF
@@ -10,6 +10,12 @@ from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+
+
+## Create special script logger object
+from . import get_script_log
+this_file_name = Path(__file__).name.replace(".py", "")
+log = get_script_log(this_file_name)
 
 
 class StartOfNight(KPFTranslatorFunction):

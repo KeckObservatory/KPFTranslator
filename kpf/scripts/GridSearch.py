@@ -32,33 +32,10 @@ from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 
 
-##-------------------------------------------------------------------------
-## Create logger object
-##-------------------------------------------------------------------------
+## Create special script logger object
+from . import get_script_log
 this_file_name = Path(__file__).name.replace(".py", "")
-
-log = logging.getLogger(f'{this_file_name}')
-log.setLevel(logging.DEBUG)
-## Set up console output
-LogConsoleHandler = logging.StreamHandler()
-LogConsoleHandler.setLevel(logging.INFO)
-LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s',
-                              datefmt='%Y-%m-%d %H:%M:%S')
-LogConsoleHandler.setFormatter(LogFormat)
-log.addHandler(LogConsoleHandler)
-## Set up file output
-utnow = datetime.utcnow()
-now_str = utnow.strftime('%Y%m%dat%H%M%S')
-date = utnow-timedelta(days=1)
-date_str = date.strftime('%Y%b%d').lower()
-log_dir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}/script_logs/")
-if log_dir.exists() is False:
-    log_dir.mkdir(parents=True)
-LogFileName = log_dir / f"{this_file_name}_{now_str}.log"
-LogFileHandler = logging.FileHandler(LogFileName)
-LogFileHandler.setLevel(logging.DEBUG)
-LogFileHandler.setFormatter(LogFormat)
-log.addHandler(LogFileHandler)
+log = get_script_log(this_file_name)
 
 
 ##-------------------------------------------------------------------------

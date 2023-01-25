@@ -6,7 +6,7 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
+from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop
 from ..calbench.CalLampPower import CalLampPower
@@ -32,6 +32,12 @@ from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from .WaitForLampsWarm import WaitForLampsWarm
+
+
+## Create special script logger object
+from . import get_script_log
+this_file_name = Path(__file__).name.replace(".py", "")
+log = get_script_log(this_file_name)
 
 
 class ExecuteSlewCals(KPFTranslatorFunction):
