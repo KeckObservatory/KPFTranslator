@@ -34,7 +34,7 @@ from .WaitForLampsWarm import WaitForLampsWarm
 
 
 class ExecuteCal(KPFTranslatorFunction):
-    '''Script which executes the observations from a Calibration OB
+    '''Script which executes a single observation from a Calibration sequence
     
     Can be called by `ddoi_script_functions.execute_observation`.
     '''
