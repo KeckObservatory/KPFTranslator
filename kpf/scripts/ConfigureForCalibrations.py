@@ -12,6 +12,7 @@ from .. import (KPFException, FailedPreCondition, FailedPostCondition,
 from . import register_script, obey_scriptrun, check_scriptstop
 from ..calbench.CalLampPower import CalLampPower
 from ..fiu.ConfigureFIU import ConfigureFIU
+from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 
 
 ## Create special script logger object
