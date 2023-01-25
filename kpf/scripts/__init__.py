@@ -5,11 +5,46 @@ import functools
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
+import re
 
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log, KPFException, FailedPreCondition
+
+
+##-----------------------------------------------------------------------------
+## Tools to generate a custom script log file
+##-----------------------------------------------------------------------------
+def add_script_handler(this_file_name):
+    log = logging.getLogger('KPFTranslator')
+    for handler in log.handlers:
+        if isinstance(handler, logging.FileHandler):
+            kpflog_filehandler = handler
+    ## Set up script log file
+    utnow = datetime.utcnow()
+    now_str = utnow.strftime('%Y%m%dat%H%M%S')
+    date = utnow-timedelta(days=1)
+    date_str = date.strftime('%Y%b%d').lower()
+    script_logfile = Path(kpflog_filehandler.baseFilename).parent / f"{this_file_name}_{now_str}.log"
+    ScriptLogFileHandler = logging.FileHandler(script_logfile)
+    ScriptLogFileHandler.setLevel(logging.DEBUG)
+    ScriptLogFileHandler.format = kpflog_filehandler.format
+    log.addHandler(ScriptLogFileHandler)
+    return log
+
+def remove_script_handler(this_file_name):
+    log = logging.getLogger('KPFTranslator')
+    script_handler_index = None
+    for i,handler in enumerate(log.handlers):
+        if isinstance(handler, logging.FileHandler):
+            filename = Path(handler.baseFilename).name
+            if re.search(f"{this_file_name}_", filename) is not None:
+                ScriptLogFileHandler = handler
+                script_handler_index = i
+    if script_handler_index is not None:
+        log.handlers.pop(script_handler_index)
+
 
 ##-----------------------------------------------------------------------------
 ## Functions to interact with kpfconfig.SCRIPT% keywords
@@ -86,28 +121,15 @@ def register_script(scriptname, pid):
 
 
 ##-----------------------------------------------------------------------------
-## Function to generate a custom script log file
+## Decorator to add and remove script log file output
 ##-----------------------------------------------------------------------------
-def get_script_log(this_file_name):
-    log = logging.getLogger(f'{this_file_name}')
-    log.setLevel(logging.DEBUG)
-    ## Set up console output
-    LogConsoleHandler = logging.StreamHandler()
-    LogConsoleHandler.setLevel(logging.INFO)
-    LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
-    LogConsoleHandler.setFormatter(LogFormat)
-    log.addHandler(LogConsoleHandler)
-    ## Set up file output
-    utnow = datetime.utcnow()
-    now_str = utnow.strftime('%Y%m%dat%H%M%S')
-    date = utnow-timedelta(days=1)
-    date_str = date.strftime('%Y%b%d').lower()
-    log_dir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}/script_logs/")
-    if log_dir.exists() is False:
-        log_dir.mkdir(parents=True)
-    LogFileName = log_dir / f"{this_file_name}_{now_str}.log"
-    LogFileHandler = logging.FileHandler(LogFileName)
-    LogFileHandler.setLevel(logging.DEBUG)
-    LogFileHandler.setFormatter(LogFormat)
-    log.addHandler(LogFileHandler)
-    return log
+def add_script_log(this_file_name):
+    def decorator_add_scriptlog(func):
+        @functools.wraps(func)
+        def wrapper_add_scriptlog(*args, **kwargs):
+            add_script_handler(this_file_name)
+            value = func(*args, **kwargs)
+            remove_script_handler(this_file_name)
+            return value
+        return wrapper_add_scriptlog
+    return decorator_add_scriptlog

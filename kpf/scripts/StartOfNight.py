@@ -3,19 +3,13 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..ao.SetupAOforKPF import SetupAOforKPF
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-
-
-## Create special script logger object
-from . import get_script_log
-this_file_name = Path(__file__).name.replace(".py", "")
-log = get_script_log(this_file_name)
 
 
 class StartOfNight(KPFTranslatorFunction):
@@ -35,6 +29,7 @@ class StartOfNight(KPFTranslatorFunction):
         return True
 
     @classmethod
+    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         # Guider
         log.info('Set SCRIPTALLOW to No')
@@ -43,8 +38,6 @@ class StartOfNight(KPFTranslatorFunction):
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
         SetSourceSelectShutters.execute({'SSS_Science': True, 'SSS_Sky': True})
-#         log.info('Initialize tip tilt mirror')
-#         InitializeTipTilt.execute({})
         # Setup AO
         if args.get('AO', True) is True:
             SetupAOforKPF.execute({})

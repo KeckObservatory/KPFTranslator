@@ -13,15 +13,9 @@ from ddoi_telescope_translator.pmfm import PMFM
 
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from .ConfigureForAcquisition import ConfigureForAcquisition
 from ..guider.TakeGuiderCube import TakeGuiderCube
-
-
-## Create special script logger object
-from . import get_script_log
-this_file_name = Path(__file__).name.replace(".py", "")
-log = get_script_log(this_file_name)
 
 
 def comira(command, message):

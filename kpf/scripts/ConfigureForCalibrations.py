@@ -7,18 +7,12 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.CalLampPower import CalLampPower
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
-
-
-## Create special script logger object
-from . import get_script_log
-this_file_name = Path(__file__).name.replace(".py", "")
-log = get_script_log(this_file_name)
 
 
 class ConfigureForCalibrations(KPFTranslatorFunction):
@@ -34,6 +28,7 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
         return True
 
     @classmethod
+    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")

@@ -8,7 +8,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.SetTimedShutters import SetTimedShutters
@@ -25,12 +25,6 @@ from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForCalSource import WaitForCalSource
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
-
-
-## Create special script logger object
-from . import get_script_log
-this_file_name = Path(__file__).name.replace(".py", "")
-log = get_script_log(this_file_name)
 
 
 class ExecuteSciSequence(KPFTranslatorFunction):
@@ -62,6 +56,7 @@ class ExecuteSciSequence(KPFTranslatorFunction):
 
     @classmethod
     @register_script(Path(__file__).name, os.getpid())
+    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")

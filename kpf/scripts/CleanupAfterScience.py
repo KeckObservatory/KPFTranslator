@@ -1,14 +1,8 @@
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (KPFException, FailedPreCondition, FailedPostCondition,
+from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop
+from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..fiu.StopTipTilt import StopTipTilt
-
-
-## Create special script logger object
-from . import get_script_log
-this_file_name = Path(__file__).name.replace(".py", "")
-log = get_script_log(this_file_name)
 
 
 class CleanupAfterScience(KPFTranslatorFunction):
@@ -22,6 +16,7 @@ class CleanupAfterScience(KPFTranslatorFunction):
         return True
 
     @classmethod
+    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
