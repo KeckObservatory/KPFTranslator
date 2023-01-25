@@ -6,6 +6,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
+from . import set_script_keywords, clear_script_keywords
 from .ConfigureForCalibrations import ConfigureForCalibrations
 from .ExecuteDark import ExecuteDark
 from .ExecuteCal import ExecuteCal
@@ -54,6 +55,7 @@ class RunCalOB(KPFTranslatorFunction):
         # Configure: Turn on Lamps
         ConfigureForCalibrations.execute(OB)
 
+        set_script_keywords(Path(__file__).name, os.getpid())
         # Execute the Dark Sequence
         darks = OB.get('SEQ_Darks', [])
         if len(darks) > 0:
@@ -84,6 +86,7 @@ class RunCalOB(KPFTranslatorFunction):
             except Exception as e:
                 log.error("ExecuteCal failed:")
                 log.error(e)
+        clear_script_keywords()
 
         # Cleanup: Turn off lamps
         CleanupAfterCalibrations.execute(OB)

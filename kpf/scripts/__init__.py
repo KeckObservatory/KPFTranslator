@@ -49,7 +49,7 @@ def remove_script_handler(this_file_name):
 ##-----------------------------------------------------------------------------
 ## Functions to interact with kpfconfig.SCRIPT% keywords
 ##-----------------------------------------------------------------------------
-def _register_script(scriptname, PID):
+def set_script_keywords(scriptname, PID):
     '''Function to write name, PID, and host to kpfconfig.SCRIPT% keywords
     '''
     kpfconfig = ktl.cache('kpfconfig')
@@ -59,7 +59,7 @@ def _register_script(scriptname, PID):
     kpfconfig['SCRIPTHOST'].write(socket.gethostname())
 
 
-def _clear_script():
+def clear_script_keywords():
     '''Function to clear kpfconfig.SCRIPT% keywords
     '''
     kpfconfig = ktl.cache('kpfconfig')
@@ -69,7 +69,7 @@ def _clear_script():
     kpfconfig['SCRIPTHOST'].write('')
 
 
-def _check_script_running():
+def check_script_running():
     '''Function to check if a script is running via kpfconfig.SCRIPT% keywords
     '''
     kpfconfig = ktl.cache('kpfconfig')
@@ -92,7 +92,7 @@ def check_scriptstop():
     if scriptstop.read() == 'Yes':
         log.warning("SCRIPTSTOP requested.  Resetting SCRIPTSTOP and exiting")
         scriptstop.write('No')
-        _clear_script()
+        clear_script_keywords()
         raise KPFException("SCRIPTSTOP triggered")
 
 
@@ -102,7 +102,7 @@ def check_scriptstop():
 def obey_scriptrun(func):
     @functools.wraps(func)
     def wrapper_decorator(*args, **kwargs):
-        _check_script_running()
+        check_script_running()
         value = func(*args, **kwargs)
         return value
     return wrapper_decorator
@@ -112,9 +112,9 @@ def register_script(scriptname, pid):
     def decorator_register_as_script(func):
         @functools.wraps(func)
         def wrapper_register_as_script(*args, **kwargs):
-            _register_script(scriptname, pid)
+            set_script_keywords(scriptname, pid)
             value = func(*args, **kwargs)
-            _clear_script()
+            clear_script_keywords()
             return value
         return wrapper_register_as_script
     return decorator_register_as_script
