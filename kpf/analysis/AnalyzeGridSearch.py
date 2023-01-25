@@ -34,16 +34,13 @@ p.add_argument('logfile', type=str, nargs='*',
 p.add_argument("-v", "--verbose", dest="verbose",
     default=False, action="store_true",
     help="Be verbose! (default = False)")
-p.add_argument("--skipcred2", dest="skipcred2",
-    default=False, action="store_true",
-    help="Skip building figure of CRED2 images")
-p.add_argument("--skipFVCs", dest="skipFVCs",
-    default=False, action="store_true",
-    help="Skip building figures of FVC images")
 ## add options
 p.add_argument("--fiber", dest="fiber", type=str,
     default='Science',
     help="The fiber being examined (Science, Sky, or EMSky).")
+p.add_argument("--seeing", dest="seeing", type=float,
+    default=0.7,
+    help="The seeing model to overlay on the fiber coupling plot.")
 args = p.parse_args()
 
 
@@ -138,6 +135,14 @@ def correct_DAR(cred2_file):
     DARx, DARy = calculate_DAR_pix(DARarcsec, va)
     log.debug(f"DAR correction is {DARx:.2f}, {DARy:.2f} pix")
     return DARx, DARy
+
+# Manual checks of VA calculation:
+#
+# UT time,  HST time       , EL   , VA   , CRED2 file           , CD1_1Y      , CD1_2Y      , PARANG, VA Calculation
+#  080406, Jan 13 22:04 HST, 57.0 , 123.0, kpfguide_0371200.fits, -8.77474E-06, -1.35119E-05, -1.99 , 123.00002845799975
+#  050343, Jan 13 19:03 HST, 71.14, 108.7, kpfguide_0360390.fits, -5.21867E-06, -1.52425E-05, -39.15, 108.89998589102663
+
+
 
 
 ##-------------------------------------------------------------------------
@@ -296,24 +301,18 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt'):
 ##-------------------------------------------------------------------------
 ## build_cube_graphic
 ##-------------------------------------------------------------------------
-def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode):
+def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
+                       model='Fiber Coupling Model seeing 0.70 arcsec.csv'):
     log.info(f"Building cube graphic")
     if mode == 'TipTilt':
         # Build Coupling Model
         # Uses data from Steve Gibson, assuming 0.7 arcsec FWHM seeing
-        arcsec_off = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1,
-                      0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-        coupling_pct = [6.502697525223425,  10.402900846106968,  16.04379037219113,
-                        23.560753387006162, 32.66221884550632, 42.57025000243172,
-                        52.20303841351422, 60.515715332817, 66.7723280089551,
-                        70.60253075731977, 71.88564487441448, 70.60253075731977,
-                        66.7723280089551, 60.515715332817, 52.203038413514214,
-                        42.57025000243172, 32.66221884550632, 23.56075338700616,
-                        16.04379037219113, 10.402900846106968, 6.502697525223425]
+        this_location = Path(__file__).parent
+        model_file = this_location / Path(model)
+        t = Table.read(f"{model_file}", format='ascii.csv')
         pix_scale = 0.058
-        model_pix = np.array(arcsec_off)/pix_scale
-        model_flux = np.array(coupling_pct)/max(coupling_pct)
-
+        model_pix = np.array(t['Fiber_offset_arcsec'])/pix_scale
+        model_flux = np.array(t['Percent_thru'])/max(t['Percent_thru'])
         fit0 = models.Polynomial1D(degree=4)
         fitter = fitting.LinearLSQFitter()
         fit = fitter(fit0, model_pix, model_flux)
@@ -566,9 +565,11 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
 ##-------------------------------------------------------------------------
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
-def analyze_grid_search(logfile, fiber='Science',
-                        skipcred2=False, skipFVCs=False):
-
+def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7):
+    if f"{model_seeing:.2f}" not in ['0.50', '0.70', '0.90']:
+        print(f"Seeing models only available for 0.50, 0.70, and 0.90 arcsec")
+        return
+    model = f"Fiber Coupling Model seeing {model_seeing:.2f} arcsec.csv"
     logfile = Path(logfile)
     assert logfile.exists()
     assert logfile.suffix == '.log'
@@ -628,7 +629,7 @@ def analyze_grid_search(logfile, fiber='Science',
     build_cube_graphic(hdul, ouput_cube_graphic, mode=mode)
 
     # Build graphic of CRED2 Images
-    if skipcred2 is not True and len(images[images['camera'] == 'CRED2']) > 0 and mode == 'TipTilt':
+    if len(images[images['camera'] == 'CRED2']) > 0 and mode == 'TipTilt':
         ouput_cred2_image_file = Path(f"{mode}{logfile.name.replace('.log', '_CRED2_images.png')}")
         cred2_pixels = {'EMSky': (160, 256),
                         'Science': (335, 256),
@@ -637,7 +638,7 @@ def analyze_grid_search(logfile, fiber='Science',
                             x0=cred2_pixels[0], y0=cred2_pixels[1])
 
     # Build graphic of FVC Images
-    if skipFVCs is not True and mode == 'TipTilt':
+    if mode == 'TipTilt':
         FVCs = ['SCI', 'CAHK', 'EXT']
         fvc_pixels = {'SCI': {'EMSky': None,
                               'Science': (803.5, 607.0),
@@ -665,6 +666,6 @@ def analyze_grid_search(logfile, fiber='Science',
 if __name__ == '__main__':
     for logfile in args.logfile:
         analyze_grid_search(logfile,
-                            skipcred2=args.skipcred2,
                             fiber=args.fiber,
+                            model_seeing=args.seeing,
                             )
