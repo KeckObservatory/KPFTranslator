@@ -6,10 +6,11 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
+from . import set_script_keywords, clear_script_keywords, add_script_log
 from .ConfigureForAcquisition import ConfigureForAcquisition
 from .ConfigureForScience import ConfigureForScience
 from ..fiu.StartTipTilt import StartTipTilt
-# from ..utils.CorrectDAR import CorrectDAR
+
 from .ExecuteSciSequence import ExecuteSciSequence
 from .CleanupAfterScience import CleanupAfterScience
 
@@ -55,17 +56,24 @@ class RunSciOB(KPFTranslatorFunction):
 
         log.info(f"Starting tip tilt loops")
         StartTipTilt.execute({})
-#         CorrectDAR.execute({})
         log.info(f"Sleeping 3 seconds to allow loops to close")
         time.sleep(3)
-        
-        # Execute the Science Sequence
+
+        # Execute Sequences
+        set_script_keywords(Path(__file__).name, os.getpid())
+        # Execute the Cal Sequence
         #   Wrap in try/except so that cleanup happens
-        try:
-            ExecuteSciSequence.execute(OB)
-        except Exception as e:
-            log.error("ExecuteCalSequence failed:")
-            log.error(e)
+        observations = OB.get('SEQ_Observations', [])
+        for observation in observations:
+            log.debug(f"Automatically setting TimedShutter_CaHK: {OB['TriggerCaHK']}")
+            observation['TimedShutter_CaHK'] = OB['TriggerCaHK']
+            try:
+                ExecuteSci.execute(observation)
+            except Exception as e:
+                log.error("ExecuteSci failed:")
+                log.error(e)
+        clear_script_keywords()
+
         # Cleanup: 
         CleanupAfterScience.execute(OB)
 
