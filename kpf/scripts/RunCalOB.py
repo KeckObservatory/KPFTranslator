@@ -7,7 +7,8 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from .ConfigureForCalibrations import ConfigureForCalibrations
-from .ExecuteCalSequence import ExecuteCalSequence
+from .ExecuteDark import ExecuteDark
+from .ExecuteCal import ExecuteCal
 from .CleanupAfterCalibrations import CleanupAfterCalibrations
 
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
@@ -36,6 +37,13 @@ class RunCalOB(KPFTranslatorFunction):
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
+        for key in OB:
+            if key not in ['SEQ_Darks', 'SEQ_Calibrations']:
+                log.debug(f"  {key}: {OB[key]}")
+            else:
+                log.debug(f"  {key}:")
+                for entry in OB[key]:
+                    log.debug(f"    {entry}")
         log.info('-------------------------')
 
         scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
