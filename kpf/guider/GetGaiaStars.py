@@ -12,7 +12,7 @@ except:
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+import KPFTranslatorFunction
 
 
 class GetGaiaStars(KPFTranslatorFunction):

@@ -5,7 +5,7 @@ import numpy as np
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+import KPFTranslatorFunction
 from .. import log
 
 
