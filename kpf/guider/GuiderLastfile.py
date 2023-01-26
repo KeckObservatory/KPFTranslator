@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class GuiderLastfile(KPFTranslatorFunction):

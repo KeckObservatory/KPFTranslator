@@ -2,7 +2,7 @@ import ktl
 from time import sleep
 from datetime import datetime, timedelta
 
-from KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 

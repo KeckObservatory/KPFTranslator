@@ -9,7 +9,7 @@ import re
 
 import ktl
 
-from KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log, KPFException, FailedPreCondition
 
 

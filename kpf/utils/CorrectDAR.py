@@ -2,7 +2,7 @@ import numpy as np
 
 import ktl
 
-from KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from .CalculateDAR import calculate_DAR_arcsec, calculate_DAR_pix

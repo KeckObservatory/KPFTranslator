@@ -1,7 +1,7 @@
 from time import sleep
 import ktl
 
-from KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 
 
