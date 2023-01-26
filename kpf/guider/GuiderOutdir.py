@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-import KPFTranslatorFunction
+from KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class GuiderOutdir(KPFTranslatorFunction):

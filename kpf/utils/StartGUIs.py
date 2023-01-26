@@ -7,7 +7,7 @@ from astropy.table import Table
 
 import ktl
 
-import KPFTranslatorFunction
+from KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 

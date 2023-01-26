@@ -8,7 +8,7 @@ from astropy.table import Table, Row
 
 import ktl
 
-import KPFTranslatorFunction
+from KPFTranslatorFunction import KPFTranslatorFunction
 from ..fvc.TakeFVCExposure import TakeFVCExposure
 from ..calbench.CalLampPower import CalLampPower
 

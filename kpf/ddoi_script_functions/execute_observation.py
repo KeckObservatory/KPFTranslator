@@ -1,6 +1,6 @@
 import ktl
 
-import KPFTranslatorFunction
+from KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class ExecuteObservation(KPFTranslatorFunction):

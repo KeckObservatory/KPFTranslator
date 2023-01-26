@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-import KPFTranslatorFunction
+from KPFTranslatorFunction import KPFTranslatorFunction
 from .. import log
 from . import guider_is_saving, guider_is_active
 from . import TriggerSingleGuiderExposure, GrabGuiderExposure

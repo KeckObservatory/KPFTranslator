@@ -12,7 +12,7 @@ except:
 
 import ktl
 
-import KPFTranslatorFunction
+from KPFTranslatorFunction import KPFTranslatorFunction
 
 
 class GetGaiaStars(KPFTranslatorFunction):
