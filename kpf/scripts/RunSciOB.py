@@ -26,6 +26,14 @@ class RunSciOB(KPFTranslatorFunction):
     various locations in the script.  As a result, the script will not stop
     immediately, but will stop when it reaches a breakpoint.
     '''
+    abortable = True
+
+    @classmethod
+    def abort_execution(args, logger, cfg):
+        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
+        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
+        scriptstop.write('Yes')
+
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])

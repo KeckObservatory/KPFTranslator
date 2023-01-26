@@ -39,6 +39,7 @@ class ExecuteSlewCals(KPFTranslatorFunction):
     '''
     abortable = True
 
+    @classmethod
     def abort_execution(args, logger, cfg):
         scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
         log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
