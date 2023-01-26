@@ -33,6 +33,8 @@ class RunCalOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
+        check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
@@ -67,6 +69,8 @@ class RunCalOB(KPFTranslatorFunction):
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
         for dark in darks:
             # Wrap in try/except so that cleanup happens
+            dark['Template_Name'] = 'kpf_dark'
+            dark['Template_Version'] = OB['Template_Version']
             try:
                 ExecuteDark.execute(dark)
             except Exception as e:
@@ -79,6 +83,8 @@ class RunCalOB(KPFTranslatorFunction):
             # No need to specify TimedShutter_CaHK in OB/calibration
             cal['TimedShutter_CaHK'] = OB['TriggerCaHK']
             log.debug(f"Automatically setting TimedShutter_CaHK: {cal['TimedShutter_CaHK']}")
+            cal['Template_Name'] = 'kpf_lamp'
+            cal['Template_Version'] = OB['Template_Version']
             try:
                 ExecuteCal.execute(cal)
             except Exception as e:
