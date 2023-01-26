@@ -28,6 +28,8 @@ class RunSciOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
+        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
+        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
@@ -65,6 +67,8 @@ class RunSciOB(KPFTranslatorFunction):
         #   Wrap in try/except so that cleanup happens
         observations = OB.get('SEQ_Observations', [])
         for observation in observations:
+            observation['Template_Name'] = 'kpf_sci'
+            observation['Template_Version'] = OB['Template_Version']
             log.debug(f"Automatically setting TimedShutter_CaHK: {OB['TriggerCaHK']}")
             observation['TimedShutter_CaHK'] = OB['TriggerCaHK']
             try:
