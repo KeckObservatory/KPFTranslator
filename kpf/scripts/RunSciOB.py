@@ -8,11 +8,10 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import set_script_keywords, clear_script_keywords, add_script_log
 from .ConfigureForAcquisition import ConfigureForAcquisition
+from .WaitForConfigureAcquisition import WaitForConfigureAcquisition
 from .ConfigureForScience import ConfigureForScience
+from .WaitForConfigureScience import WaitForConfigureScience
 from ..fiu.StartTipTilt import StartTipTilt
-
-from .ExecuteSciSequence import ExecuteSciSequence
-from .CleanupAfterScience import CleanupAfterScience
 
 
 class RunSciOB(KPFTranslatorFunction):
@@ -52,14 +51,15 @@ class RunSciOB(KPFTranslatorFunction):
         log.info(f"Configuring for Science: setting up spectrograph")
         ConfigureForScience.execute(OB)
 
+        WaitForConfigureAcquisition.execute(OB)
+
         print()
         print("########################################")
         print("Before continuing, please ensure that:")
         print("  1) The OA has placed the star on the KPF PO")
-        print("  2) We are not guiding (you can verify on FACSUM)")
-        print("  3) The octagon has completed its move")
+        print("  2) We are NOT guiding (you can verify on FACSUM)")
         print()
-        print("If all of those are true, press 'Enter' to continue ...")
+        print("If both of those are true, press 'Enter' to continue ...")
         print("########################################")
         print()
         user_input = input()
@@ -68,6 +68,8 @@ class RunSciOB(KPFTranslatorFunction):
         StartTipTilt.execute({})
         log.info(f"Sleeping 3 seconds to allow loops to close")
         time.sleep(3)
+
+        WaitForConfigureScience.execute(OB)
 
         # Execute Sequences
         set_script_keywords(Path(__file__).name, os.getpid())
