@@ -105,7 +105,15 @@ class SetOutdirs(KPFTranslatorFunction):
                 log.error(f"ERROR setting Red outdir")
                 log.error(e)
 
-
+        if args.get('L0', True) is True:
+            L0_outdir = outdir / 'L0'
+            log.info(f"Setting kpfasemble OUTDIR to {L0_outdir}")
+            kpfassemble_outdir = ktl.cache('kpfassemble', 'OUTDIR')
+            try:
+                kpfassemble_outdir.write(f"{L0_outdir}")
+            except Exception as e:
+                log.error(f"ERROR setting kpfasemble outdir")
+                log.error(e)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -150,6 +158,10 @@ class SetOutdirs(KPFTranslatorFunction):
             expr = f"$kpfred.FITSDIR == '{outdir}/Red'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
+        if args.get('L0', True) is True:
+            expr = f"$kpfassemble.OUTDIR == '{outdir}/L0'"
+            success = ktl.waitFor(expr, timeout=5)
+            tests.append(success)
 
         return np.all(np.array(tests))
 
@@ -175,5 +187,7 @@ class SetOutdirs(KPFTranslatorFunction):
             'Set Green OUTDIR (kpfgreen.FITSDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'Red',
             'Set Red OUTDIR (kpfred.FITSDIR)?', default=True)
+        parser = cls._add_bool_arg(parser, 'L0',
+            'Set Red OUTDIR (kpfassemble.OUTDIR)?', default=True)
 
         return super().add_cmdline_args(parser, cfg)
