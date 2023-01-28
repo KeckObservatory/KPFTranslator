@@ -60,7 +60,14 @@ class RunCalOB(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Configure: Turn on Lamps
-        ConfigureForCalibrations.execute(OB)
+        try:
+            ConfigureForCalibrations.execute(OB)
+        except FailedPostCondition as e:
+            log.error('Failed post condition on ConfigureForCalibrations')
+            log.error(e)
+            log.error('Running CleanupAfterCalibrations and exiting')
+            CleanupAfterCalibrations.execute(OB)
+            raise(e)
 
         # Execute Sequences
         set_script_keywords(Path(__file__).name, os.getpid())
