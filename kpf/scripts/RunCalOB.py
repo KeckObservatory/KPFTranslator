@@ -62,53 +62,67 @@ class RunCalOB(KPFTranslatorFunction):
         # Configure: Turn on Lamps
         try:
             ConfigureForCalibrations.execute(OB)
-        except FailedPostCondition as e:
-            log.error('Failed post condition on ConfigureForCalibrations')
+        except Exception as e:
+            log.error('ConfigureForCalibrations Failed')
             log.error(e)
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
+            # --> Email logs to kpf_info? <--
             raise(e)
 
-        # Execute Sequences
         set_script_keywords(Path(__file__).name, os.getpid())
+
         # Execute the Dark Sequence
-        darks = OB.get('SEQ_Darks', [])
-        if len(darks) > 0:
-            log.info(f"Setting source select shutters")
-            SetSourceSelectShutters.execute({}) # No args defaults all to false
-            log.info(f"Setting timed shutters")
-            SetTimedShutters.execute({}) # No args defaults all to false
-            log.info(f"Setting OCTAGON to Home position")
-            SetCalSource.execute({'CalSource': 'Home'})
-            log.info(f"Setting FlatField Fiber position to 'Blank'")
-            SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
-        for dark in darks:
-            # Wrap in try/except so that cleanup happens
-            dark['Template_Name'] = 'kpf_dark'
-            dark['Template_Version'] = OB['Template_Version']
-            try:
+        try:
+            darks = OB.get('SEQ_Darks', [])
+            if len(darks) > 0:
+                log.info(f"Setting source select shutters")
+                SetSourceSelectShutters.execute({}) # No args defaults all to false
+                log.info(f"Setting timed shutters")
+                SetTimedShutters.execute({}) # No args defaults all to false
+                log.info(f"Setting OCTAGON to Home position")
+                SetCalSource.execute({'CalSource': 'Home'})
+                log.info(f"Setting FlatField Fiber position to 'Blank'")
+                SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
+            for dark in darks:
+                # Wrap in try/except so that cleanup happens
+                dark['Template_Name'] = 'kpf_dark'
+                dark['Template_Version'] = OB['Template_Version']
                 ExecuteDark.execute(dark)
-            except Exception as e:
-                log.error("ExecuteDark failed:")
-                log.error(e)
+        except Exception as e:
+            log.error("ExecuteDarks failed:")
+            log.error(e)
+            clear_script_keywords()
+            # --> Email logs to kpf_info? <--
+            raise(e)
+
         # Execute the Cal Sequence
-        #   Wrap in try/except so that cleanup happens
-        cals = OB.get('SEQ_Calibrations', [])
-        for cal in cals:
-            # No need to specify TimedShutter_CaHK in OB/calibration
-            cal['TimedShutter_CaHK'] = OB['TriggerCaHK']
-            log.debug(f"Automatically setting TimedShutter_CaHK: {cal['TimedShutter_CaHK']}")
-            cal['Template_Name'] = 'kpf_lamp'
-            cal['Template_Version'] = OB['Template_Version']
-            try:
+        try:
+            cals = OB.get('SEQ_Calibrations', [])
+            for cal in cals:
+                # No need to specify TimedShutter_CaHK in OB/calibration
+                cal['TimedShutter_CaHK'] = OB['TriggerCaHK']
+                log.debug(f"Automatically setting TimedShutter_CaHK: {cal['TimedShutter_CaHK']}")
+                cal['Template_Name'] = 'kpf_lamp'
+                cal['Template_Version'] = OB['Template_Version']
                 ExecuteCal.execute(cal)
-            except Exception as e:
-                log.error("ExecuteCal failed:")
-                log.error(e)
+        except Exception as e:
+            log.error("ExecuteCals failed:")
+            log.error(e)
+            clear_script_keywords()
+            # --> Email logs to kpf_info? <--
+            raise(e)
+
         clear_script_keywords()
 
         # Cleanup: Turn off lamps
-        CleanupAfterCalibrations.execute(OB)
+        try:
+            CleanupAfterCalibrations.execute(OB)
+        except Exception as e:
+            log.error("CleanupAfterCalibrations failed:")
+            log.error(e)
+            # --> Email logs to kpf_info? <--
+            raise(e)
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
