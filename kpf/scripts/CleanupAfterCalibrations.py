@@ -11,6 +11,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.CalLampPower import CalLampPower
+from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.WaitForReady import WaitForReady
 
