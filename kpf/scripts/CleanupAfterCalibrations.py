@@ -48,6 +48,9 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'off'})
 
+        log.info(f"Stowing FIU")
+        ConfigureFIU.execute({'mode': 'Stowed'})
+
         # Set OBJECT back to empty string
         log.info('Waiting for readout to finish')
         WaitForReady.execute({})
