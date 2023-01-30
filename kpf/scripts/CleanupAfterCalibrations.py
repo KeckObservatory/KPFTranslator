@@ -11,6 +11,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.CalLampPower import CalLampPower
+from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.WaitForReady import WaitForReady
 
@@ -28,7 +29,6 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         return True
 
     @classmethod
-    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
@@ -49,7 +49,11 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'off'})
 
+#         log.info(f"Stowing FIU")
+#         ConfigureFIU.execute({'mode': 'Stowed'})
+
         # Set OBJECT back to empty string
+        log.info('Waiting for readout to finish')
         WaitForReady.execute({})
         SetObject.execute({'Object': ''})
 

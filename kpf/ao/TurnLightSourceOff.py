@@ -22,4 +22,7 @@ class TurnLightSourceOff(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        success = ktl.waitfor('($ao.OBSWSTA == off)', timeout=3)
+        if success is not True:
+            ao = ktl.cache('ao')
+            raise FailedToReachDestination(ao['OBSWSTA'].read(), 'off')

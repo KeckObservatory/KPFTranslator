@@ -23,7 +23,6 @@ from ..spectrograph.SetObject import SetObject
 from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
-from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from ..spectrograph.StartAgitator import StartAgitator
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.StopAgitator import StopAgitator
@@ -34,8 +33,10 @@ from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from .WaitForLampsWarm import WaitForLampsWarm
 
 
-class ExecuteSlewCals(KPFTranslatorFunction):
-    '''Script which executes the observations of a Slew Cal
+class ExecuteCal(KPFTranslatorFunction):
+    '''Script which executes a single observation from a Calibration sequence
+    
+    Can be called by `ddoi_script_functions.execute_observation`.
     '''
     abortable = True
 
@@ -46,60 +47,66 @@ class ExecuteSlewCals(KPFTranslatorFunction):
         scriptstop.write('Yes')
 
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'Template_Name', allowed_values=['kpf_slewcal'])
-        check_input(args, 'Template_Version', version_check=True, value_min='0.4')
+        check_input(args, 'Template_Name', allowed_values=['kpf_lamp'])
+        check_input(args, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
-    @register_script(Path(__file__).name, os.getpid())
-    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
-        log.info('-------------------------')
-        log.info(f"Running {cls.__name__}")
-        for key in args:
-            log.debug(f"  {key}: {args[key]}")
-        log.info('-------------------------')
-
-        # Setup
-        log.info(f"Wait for any existing exposures to be complete")
-        WaitForReady.execute({})
-        log.info(f"Configuring FIU")
-        ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
-        log.info(f"Set Detector List")
-        SetTriggeredDetectors.execute(args)
-        log.info(f"Set Source Select Shutters")
-        SetSourceSelectShutters.execute({'SSS_Science': True,
-                                         'SSS_Sky': True,
-                                         'SSS_SoCalSci': False,
-                                         'SSS_SoCalCal': False,
-                                         'SSS_CalSciSky': True})
-
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
-
+        kpfconfig = ktl.cache('kpfconfig')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        # This is a time shim to insert a pause between exposures so that the
+        # temperature of the CCDs can be measured by the archons
+        archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
+                             fallback=2)
 
+
+        calsource = args.get('CalSource')
+        nd1 = args.get('CalND1')
+        nd2 = args.get('CalND2')
         ## ----------------------------------------------------------------
         ## First, configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
-        calsource = kpfconfig['SIMULCALSOURCE'].read()
-        nd1 = args.get('CalND1')
-        nd2 = args.get('CalND2')
-        log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
-        SetND1.execute({'CalND1': nd1, 'wait': False})
-        SetND2.execute({'CalND2': nd2, 'wait': False})
-        log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
-        WaitForND1.execute(args)
-        WaitForND2.execute(args)
-        WaitForCalSource.execute({'CalSource': calsource})
-        WaitForConfigureFIU.execute({'mode': 'Calibration'})
-
         check_scriptstop() # Stop here if requested
+        ## Setup WideFlat
+        if calsource == 'WideFlat':
+            log.info('Configuring for WideFlat')
+            SetCalSource.execute({'CalSource': 'Home', 'wait': False})
+            FF_FiberPos = args.get('FF_FiberPos', None)
+            SetFlatFieldFiberPos.execute({'FF_FiberPos': FF_FiberPos,
+                                          'wait': False})
+            log.info(f"Waiting for Octagon/CalSource, FF_FiberPos, FIU")
+            WaitForCalSource.execute({'CalSource': 'Home'})
+            WaitForFlatFieldFiberPos.execute(args)
+            WaitForConfigureFIU.execute({'mode': 'Calibration'})
+        ## Setup Octagon Lamps and LFCFiber
+        elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
+                           'Th_gold', 'LFCFiber', 'EtalonFiber']:
+            log.info(f"Setting cal source: {calsource}")
+            SetCalSource.execute({'CalSource': calsource, 'wait': False})
+            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
+            SetND1.execute({'CalND1': nd1, 'wait': False})
+            SetND2.execute({'CalND2': nd2, 'wait': False})
+            log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
+            WaitForND1.execute(args)
+            WaitForND2.execute(args)
+            WaitForCalSource.execute(args)
+            WaitForConfigureFIU.execute({'mode': 'Calibration'})
+        ## Setup SoCal
+        elif calsource in ['SoCal-CalFib']:
+            raise NotImplementedError()
+        # WTF!?
+        else:
+            msg = f"CalSource {calsource} not recognized"
+            log.error(msg)
+            raise Exception(msg)
 
         ## ----------------------------------------------------------------
         ## Second, configure kpfexpose (may not happen during readout)
         ## ----------------------------------------------------------------
+        check_scriptstop() # Stop here if requested
         # Wait for current exposure to readout
         if exposestatus.read() != 'Ready':
             log.info(f"Waiting for kpfexpose to be Ready")
@@ -109,15 +116,17 @@ class ExecuteSlewCals(KPFTranslatorFunction):
             check_scriptstop() # Stop here if requested
         log.info(f"Set exposure time: {args.get('Exptime'):.3f}")
         SetExptime.execute(args)
-        # No need to specify TimedShutter_Scrambler
-        args['TimedShutter_Scrambler'] = True
+        log.info(f"Setting source select shutters")
+        # No need to specify SSS_CalSciSky in OB/calibration
+        args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
+        log.debug(f"Automatically setting SSS_CalSciSky: {args['SSS_CalSciSky']}")
+        # No need to specify TimedShutter_Scrambler in OB/calibration
+        args['TimedShutter_Scrambler'] = args['SSS_Science'] or args['SSS_Sky']
         log.debug(f"Automatically setting TimedShutter_Scrambler: {args['TimedShutter_Scrambler']}")
-        # No need to specify TimedShutter_CaHK
-        args['TimedShutter_CaHK'] = args['TriggerCaHK']
-        log.debug(f"Automatically setting TimedShutter_CaHK: {args['TimedShutter_CaHK']}")
-        # No need to specify TimedShutter_FlatField
-        args['TimedShutter_FlatField'] = False
+        # No need to specify TimedShutter_FlatField in OB/calibration
+        args['TimedShutter_FlatField'] = (args['CalSource'] == 'WideFlat')
         log.debug(f"Automatically setting TimedShutter_FlatField: {args['TimedShutter_FlatField']}")
+        SetSourceSelectShutters.execute(args)
         log.info(f"Setting timed shutters")
         SetTimedShutters.execute(args)
         log.info(f"Setting OBJECT: {args.get('Object')}")
@@ -134,6 +143,7 @@ class ExecuteSlewCals(KPFTranslatorFunction):
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
+                sleep(archon_time_shim)
                 check_scriptstop() # Stop here if requested
             # Start next exposure
             if runagitator is True:
@@ -144,6 +154,8 @@ class ExecuteSlewCals(KPFTranslatorFunction):
             log.info(f"Readout has begun")
             if runagitator is True:
                 StopAgitator.execute({})
+        if calsource == 'WideFlat':
+            SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

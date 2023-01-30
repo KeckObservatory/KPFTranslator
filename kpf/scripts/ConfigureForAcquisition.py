@@ -26,7 +26,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
     - Sets FIU mode
     - Executes Slew Cal????? (Not implemented yet)
     
-    Can be called by `ddoi_script_functions.configure_for_science`.
+    Can be called by `ddoi_script_functions.configure_for_acquisition`.
     '''
     @classmethod
     @obey_scriptrun
