@@ -16,11 +16,12 @@
                 "medium",
                 "low"
             ],
-            "description": "Only used if guide mode is manual",
+            "default": "high",
+            "description": "The CRED2 guide camera gain value (high, medium, or low)",
             "option": "set",
             "optionality": "required",
             "type": "str",
-            "ui_name": "Guider camera gain (high, medium, or low).",
+            "ui_name": "Guide camera gain",
             "units": null
         },
         "guider_cfg_fps": {
@@ -28,11 +29,12 @@
                 0.01,
                 400
             ],
-            "description": "Only used if guide mode is manual",
+            "default": 100,
+            "description": "The CRED2 guide camera frames per second value",
             "option": "range",
             "optionality": "required",
             "type": "float",
-            "ui_name": "Guider Rate",
+            "ui_name": "Guider frame rate",
             "units": "Hz"
         },
         "guider_cfg_loopgain": {
@@ -40,6 +42,7 @@
                 0.01,
                 1
             ],
+            "default": 0.3,
             "description": "Tip tilt loop gain",
             "option": "range",
             "optionality": "required",
@@ -54,11 +57,12 @@
                 "manual",
                 "auto"
             ],
+            "default": "manual",
             "description": "off = do not guide, telescope = use slow telescope guiding only, manual = use tip tilt with manually configured exposure parameters, auto = use tip tilt with automatically configured exposure parameters",
             "option": "set",
             "optionality": "required",
             "type": "str",
-            "ui_name": "Guide camera exposure mode.",
+            "ui_name": "Guide camera mode",
             "units": null
         },
         "tcs_coord_po": {
@@ -68,6 +72,7 @@
                 "EM_SKY",
                 "REF"
             ],
+            "default": "KPF",
             "description": "Pointing origin",
             "option": "set",
             "optionality": "required",

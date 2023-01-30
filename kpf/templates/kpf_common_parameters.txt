@@ -6,20 +6,9 @@
 		"template_type" : "common_parameters",
 		"version" : "0.1.1"
 	},
-	"instrument_parameters" : {
-        "inst_cfg_runagitator": {
-            "default": null,
-            "description": "Run the agitator during exposures?",
-            "option": "boolean",
-            "optionality": "required",
-            "type": "boolean",
-            "ui_name": "Agitator On",
-            "units": null
-        }
-	},
 	"detector_parameters" : {
         "det1_cfg_trigger": {
-            "default": null,
+            "default": True,
             "description": "Trigger the Ca H&K detector?",
             "option": "boolean",
             "optionality": "required",
@@ -28,7 +17,7 @@
             "units": null
         },
         "det2_cfg_trigger": {
-            "default": null,
+            "default": True,
             "description": "Trigger the green detector?",
             "option": "boolean",
             "optionality": "required",
@@ -37,7 +26,7 @@
             "units": null
         },
         "det3_cfg_trigger": {
-            "default": null,
+            "default": True,
             "description": "Use red detector?",
             "option": "boolean",
             "optionality": "required",

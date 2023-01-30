@@ -1,12 +1,12 @@
 {
     "metadata": {
         "instrument": "KPF",
-        "name": "kpf_arcs",
-        "script": "kpf_arcs",
+        "name": "kpf_lamps",
+        "script": "kpf_lamps",
         "script_version": "0.1.0",
         "template_type": "calibration",
         "ui_name": "KPF Arc Lamps",
-        "version": "0.1.0",
+        "version": "0.5.0",
         "sequence_number" : 0
     },
     "parameters": {
@@ -19,7 +19,7 @@
                 "OD 3.0",
                 "OD 4.0"
             ],
-            "default": null,
+            "default": "OD 0.1",
             "description": "Filter to use in the ND1 filter wheel",
             "option": "set",
             "optionality": "required",
@@ -36,7 +36,7 @@
                 "OD 1.0",
                 "OD 4.0"
             ],
-            "default": null,
+            "default": "OD 0.1",
             "description": "Filter to use in the ND2 filter wheel",
             "option": "set",
             "optionality": "required",
@@ -73,12 +73,12 @@
                 "13.2 mm f/2.3",
                 "Open"
             ],
-            "default": "Open",
-            "description": "Flat field aperture choice.",
+            "default": "Blank",
+            "description": "Flat field aperture",
             "option": "set",
             "optionality": "optional",
             "type": "str",
-            "ui_name": "Flat field aperture choice.",
+            "ui_name": "Flat field aperture",
             "units": null
         },
         "det_exp_time": {
@@ -99,7 +99,7 @@
                 1,
                 100
             ],
-            "default": null,
+            "default": 1,
             "description": "Number of exposures to take",
             "option": "range",
             "optionality": "required",
@@ -113,11 +113,11 @@
             "option": "open",
             "optionality": "optional",
             "type": "string",
-            "ui_name": "Value for the object keyword",
+            "ui_name": "Value for object keyword",
             "units": null
         },
         "inst_cfg_sss_science": {
-            "default": null,
+            "default": True,
             "description": "Should the source select shutter for science be open?",
             "option": "boolean",
             "optionality": "required",
@@ -126,7 +126,7 @@
             "units": null
         },
         "inst_cfg_sss_sky": {
-            "default": null,
+            "default": True,
             "description": "Should the source select shutter for sky be open?",
             "option": "boolean",
             "optionality": "required",
@@ -135,12 +135,12 @@
             "units": null
         },
         "inst_cfg_simulcal_ts": {
-            "default": null,
+            "default": True,
             "description": "Should the timed shutter for simultaneous calibration fiber be opened during exposure?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Simultaneous Calibration Fiber Timed Shutter Open",
+            "ui_name": "Simultaneous Calibration Timed Shutter Open",
             "units": null
         }
     }

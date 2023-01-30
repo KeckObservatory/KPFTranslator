@@ -6,11 +6,10 @@
         "script_version": "0.1.0",
         "template_type": "science",
         "ui_name": "KPF science",
-        "version": "0.1.0",
+        "version": "0.5.0",
         "sequence_number": 1
     },
     "parameters": {
-
         "inst_cfg_nd1": {
             "allowed": [
                 "OD 0.1",
@@ -20,7 +19,7 @@
                 "OD 3.0",
                 "OD 4.0"
             ],
-            "default": null,
+            "default": "OD 0.1",
             "description": "Filter to use in the ND1 filter wheel",
             "option": "set",
             "optionality": "required",
@@ -37,32 +36,12 @@
                 "OD 1.0",
                 "OD 4.0"
             ],
-            "default": null,
+            "default": "OD 0.1",
             "description": "Filter to use in the ND2 filter wheel",
             "option": "set",
             "optionality": "required",
             "type": "str",
             "ui_name": "ND2 Filter",
-            "units": null
-        },
-        "inst_cfg_calsource": {
-            "allowed": [
-                "Home",
-                "EtalonFiber",
-                "BrdbandFiber",
-                "U_gold",
-                "U_daily",
-                "Th_daily",
-                "Th_gold",
-                "SoCal-CalFib",
-                "LFCFiber"
-            ],
-            "default": null,
-            "description": "Calibration source to use",
-            "option": "set",
-            "optionality": "required",
-            "type": "str",
-            "ui_name": "Calibration source",
             "units": null
         },
         "inst_cfg_em_band": {
@@ -86,11 +65,11 @@
                 1800
             ],
             "default": null,
-            "description": "Exposure time in seconds",
+            "description": "Exposure Meter exposure time in seconds",
             "option": "range",
             "optionality": "required",
             "type": "float",
-            "ui_name": "Exposure time in seconds",
+            "ui_name": "Exposure Meter exposure time",
             "units": "s"
         },
         "inst_cfg_em_flux": {
@@ -118,7 +97,7 @@
             "option": "set",
             "optionality": "required",
             "type": "str",
-            "ui_name": "Exposure meter mode.",
+            "ui_name": "Exposure meter mode",
             "units": null
         },
         "det_exp_time": {
@@ -139,12 +118,12 @@
                 1,
                 100
             ],
-            "default": null,
+            "default": 1,
             "description": "Number of exposures to take",
             "option": "range",
             "optionality": "required",
             "type": "int",
-            "ui_name": "Number of Exposures",
+            "ui_name": "Number of exposures",
             "units": null
         },
         "target_info_object": {
@@ -156,13 +135,13 @@
             "ui_name": "Object Keyword",
             "units": null
         },
-        "inst_cfg_ts_simulcal": {
-            "default": null,
+        "inst_cfg_simulcal_ts": {
+            "default": True,
             "description": "Should the timed shutter for simultaneous calibration fiber be opened during exposure?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Simultaneous Calibration fiber Timed Shutter Open",
+            "ui_name": "Simultaneous Calibration Timed Shutter Open",
             "units": null
         }
     }
