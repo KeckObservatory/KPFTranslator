@@ -17,7 +17,7 @@ from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
-
+from ..utils.SendEmail import SendEmail
 
 
 class RunCalOB(KPFTranslatorFunction):
@@ -67,7 +67,13 @@ class RunCalOB(KPFTranslatorFunction):
             log.error(e)
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            # --> Email logs to kpf_info? <--
+            # Email error to kpf_info
+            try:
+                SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
+                                   'Message': f'{e}'})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
             raise(e)
 
         set_script_keywords(Path(__file__).name, os.getpid())
@@ -93,7 +99,13 @@ class RunCalOB(KPFTranslatorFunction):
             log.error("ExecuteDarks failed:")
             log.error(e)
             clear_script_keywords()
-            # --> Email logs to kpf_info? <--
+            # Email error to kpf_info
+            try:
+                SendEmail.execute({'Subject': 'ExecuteDarks Failed',
+                                   'Message': f'{e}'})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
             raise(e)
 
         # Execute the Cal Sequence
@@ -110,7 +122,13 @@ class RunCalOB(KPFTranslatorFunction):
             log.error("ExecuteCals failed:")
             log.error(e)
             clear_script_keywords()
-            # --> Email logs to kpf_info? <--
+            # Email error to kpf_info
+            try:
+                SendEmail.execute({'Subject': 'ExecuteCals Failed',
+                                   'Message': f'{e}'})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
             raise(e)
 
         clear_script_keywords()
@@ -121,7 +139,13 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("CleanupAfterCalibrations failed:")
             log.error(e)
-            # --> Email logs to kpf_info? <--
+            # Email error to kpf_info
+            try:
+                SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
+                                   'Message': f'{e}'})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
             raise(e)
 
     @classmethod
