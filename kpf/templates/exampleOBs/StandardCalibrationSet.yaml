@@ -1,5 +1,5 @@
 Template_Name: kpf_cal
-Template_Version: 0.5
+Template_Version: 0.6
 
 TriggerCaHK: False
 TriggerGreen: True
@@ -21,7 +21,7 @@ SEQ_Calibrations:
   Exptime: 0.2
   SSS_Science: True
   SSS_Sky: False
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: BrdbandFiber
   Object: autocal-flat-sky
   CalND1: OD 0.1
@@ -30,7 +30,7 @@ SEQ_Calibrations:
   Exptime: 0.2
   SSS_Science: False
   SSS_Sky: True
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: BrdbandFiber
   Object: autocal-flat-cal
   CalND1: OD 0.1
@@ -39,7 +39,7 @@ SEQ_Calibrations:
   Exptime: 0.2
   SSS_Science: False
   SSS_Sky: False
-  TimedShutter_SimulCal: True
+  TakeSimulCal: True
 - CalSource: BrdbandFiber
   Object: autocal-flat-all
   CalND1: OD 0.1
@@ -48,7 +48,7 @@ SEQ_Calibrations:
   Exptime: 0.2
   SSS_Science: True
   SSS_Sky: True
-  TimedShutter_SimulCal: True
+  TakeSimulCal: True
 # WideFlat
 - CalSource: WideFlat
   Object: autocal-wideflat-f5
@@ -57,7 +57,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: WideFlat
   Object: autocal-wideflat-f4
   FF_FiberPos: 7.5 mm f/4
@@ -65,7 +65,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: WideFlat
   Object: autocal-wideflat-f3
   FF_FiberPos: 10 mm f/3
@@ -73,7 +73,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: WideFlat
   Object: autocal-wideflat-f2.3
   FF_FiberPos: 13.2 mm f/2.3
@@ -81,7 +81,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: WideFlat
   Object: autocal-wideflat-open
   FF_FiberPos: Open
@@ -89,7 +89,7 @@ SEQ_Calibrations:
   Exptime: 0.1
   SSS_Science: False
   SSS_Sky: False
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 # LFCFiber Set
 # - CalSource: LFCFiber
 #   Object: autocal-lfc-sci
@@ -99,7 +99,7 @@ SEQ_Calibrations:
 #   Exptime: 0.5
 #   SSS_Science: True
 #   SSS_Sky: False
-#   TimedShutter_SimulCal: False
+#   TakeSimulCal: False
 # - CalSource: LFCFiber
 #   Object: autocal-lfc-sky
 #   CalND1: OD 0.1
@@ -108,7 +108,7 @@ SEQ_Calibrations:
 #   Exptime: 0.5
 #   SSS_Science: False
 #   SSS_Sky: True
-#   TimedShutter_SimulCal: False
+#   TakeSimulCal: False
 # - CalSource: LFCFiber
 #   Object: autocal-lfc-cal
 #   CalND1: OD 0.1
@@ -117,7 +117,7 @@ SEQ_Calibrations:
 #   Exptime: 0.5
 #   SSS_Science: False
 #   SSS_Sky: False
-#   TimedShutter_SimulCal: True
+#   TakeSimulCal: True
 # - CalSource: LFCFiber
 #   Object: autocal-lfc-all
 #   CalND1: OD 0.1
@@ -126,7 +126,7 @@ SEQ_Calibrations:
 #   Exptime: 0.5
 #   SSS_Science: True
 #   SSS_Sky: True
-#   TimedShutter_SimulCal: True
+#   TakeSimulCal: True
 # EtalonFiber Set
 # - CalSource: EtalonFiber
 #   Object: autocal-etalon-sci
@@ -136,7 +136,7 @@ SEQ_Calibrations:
 #   Exptime: 5
 #   SSS_Science: True
 #   SSS_Sky: False
-#   TimedShutter_SimulCal: False
+#   TakeSimulCal: False
 # - CalSource: EtalonFiber
 #   Object: autocal-etalon-sky
 #   CalND1: OD 0.1
@@ -145,7 +145,7 @@ SEQ_Calibrations:
 #   Exptime: 5
 #   SSS_Science: False
 #   SSS_Sky: True
-#   TimedShutter_SimulCal: False
+#   TakeSimulCal: False
 # - CalSource: EtalonFiber
 #   Object: autocal-etalon-cal
 #   CalND1: OD 0.1
@@ -154,7 +154,7 @@ SEQ_Calibrations:
 #   Exptime: 5
 #   SSS_Science: False
 #   SSS_Sky: False
-#   TimedShutter_SimulCal: True
+#   TakeSimulCal: True
 # - CalSource: EtalonFiber
 #   Object: autocal-etalon-all
 #   CalND1: OD 0.1
@@ -163,7 +163,7 @@ SEQ_Calibrations:
 #   Exptime: 5
 #   SSS_Science: True
 #   SSS_Sky: True
-#   TimedShutter_SimulCal: True
+#   TakeSimulCal: True
 # Thorium set
 - CalSource: Th_gold
   Object: autocal-thar-sci
@@ -173,7 +173,7 @@ SEQ_Calibrations:
   Exptime: 2
   SSS_Science: True
   SSS_Sky: False
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: Th_gold
   Object: autocal-thar-sky
   CalND1: OD 0.1
@@ -182,7 +182,7 @@ SEQ_Calibrations:
   Exptime: 2
   SSS_Science: False
   SSS_Sky: True
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: Th_gold
   Object: autocal-thar-cal
   CalND1: OD 0.1
@@ -191,7 +191,7 @@ SEQ_Calibrations:
   Exptime: 2
   SSS_Science: False
   SSS_Sky: False
-  TimedShutter_SimulCal: True
+  TakeSimulCal: True
 - CalSource: Th_gold
   Object: autocal-thar-all
   CalND1: OD 0.1
@@ -200,7 +200,7 @@ SEQ_Calibrations:
   Exptime: 2
   SSS_Science: True
   SSS_Sky: True
-  TimedShutter_SimulCal: True
+  TakeSimulCal: True
 # U_daily set
 - CalSource: U_daily
   Object: autocal-une-sci
@@ -210,7 +210,7 @@ SEQ_Calibrations:
   Exptime: 5
   SSS_Science: True
   SSS_Sky: False
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: U_daily
   Object: autocal-une-sky
   CalND1: OD 0.1
@@ -219,7 +219,7 @@ SEQ_Calibrations:
   Exptime: 5
   SSS_Science: False
   SSS_Sky: True
-  TimedShutter_SimulCal: False
+  TakeSimulCal: False
 - CalSource: U_daily
   Object: autocal-une-cal
   CalND1: OD 0.1
@@ -228,7 +228,7 @@ SEQ_Calibrations:
   Exptime: 5
   SSS_Science: False
   SSS_Sky: False
-  TimedShutter_SimulCal: True
+  TakeSimulCal: True
 - CalSource: U_daily
   Object: autocal-une-all
   CalND1: OD 0.1
@@ -237,4 +237,4 @@ SEQ_Calibrations:
   Exptime: 5
   SSS_Science: True
   SSS_Sky: True
-  TimedShutter_SimulCal: True
+  TakeSimulCal: True
