@@ -120,13 +120,17 @@ class ExecuteCal(KPFTranslatorFunction):
         # No need to specify SSS_CalSciSky in OB/calibration
         args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
         log.debug(f"Automatically setting SSS_CalSciSky: {args['SSS_CalSciSky']}")
+        SetSourceSelectShutters.execute(args)
+
         # No need to specify TimedShutter_Scrambler in OB/calibration
         args['TimedShutter_Scrambler'] = args['SSS_Science'] or args['SSS_Sky']
         log.debug(f"Automatically setting TimedShutter_Scrambler: {args['TimedShutter_Scrambler']}")
         # No need to specify TimedShutter_FlatField in OB/calibration
         args['TimedShutter_FlatField'] = (args['CalSource'] == 'WideFlat')
         log.debug(f"Automatically setting TimedShutter_FlatField: {args['TimedShutter_FlatField']}")
-        SetSourceSelectShutters.execute(args)
+        # Set TimedShutter_SimulCal
+        args['TimedShutter_SimulCal'] = args['TakeSimulCal']
+        log.debug(f"Automatically setting TimedShutter_SimulCal: {args['TakeSimulCal']}")
         log.info(f"Setting timed shutters")
         SetTimedShutters.execute(args)
         log.info(f"Setting OBJECT: {args.get('Object')}")

@@ -22,7 +22,6 @@ from ..fvc.FVCPower import FVCPower
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.SetExptime import SetExptime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..spectrograph.StartAgitator import StartAgitator
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.StopAgitator import StopAgitator
