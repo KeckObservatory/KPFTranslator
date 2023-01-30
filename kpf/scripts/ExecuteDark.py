@@ -48,8 +48,8 @@ class ExecuteDark(KPFTranslatorFunction):
 
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_dark'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
+        check_input(args, 'Template_Name', allowed_values=['kpf_dark'])
+        check_input(args, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
@@ -88,5 +88,5 @@ class ExecuteDark(KPFTranslatorFunction):
             log.info(f"Readout has begun")
 
     @classmethod
-    def post_condition(cls, OB, logger, cfg):
+    def post_condition(cls, args, logger, cfg):
         return True
