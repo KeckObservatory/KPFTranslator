@@ -4,7 +4,7 @@
 		"ui_name" : "KPF Common Parameters",
 		"instrument" : "KPF",
 		"template_type" : "common_parameters",
-		"version" : "0.1.1"
+		"version" : "0.6.0"
 	},
 	"detector_parameters" : {
         "det1_cfg_trigger": {
@@ -13,7 +13,7 @@
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Ca H&K Detector Trigger",
+            "ui_name": "Trigger Ca H&K",
             "units": null
         },
         "det2_cfg_trigger": {
@@ -22,7 +22,7 @@
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Green Detector Trigger",
+            "ui_name": "Trigger Green",
             "units": null
         },
         "det3_cfg_trigger": {
@@ -31,7 +31,7 @@
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Red Detector Trigger",
+            "ui_name": "Trigger Red",
             "units": null
         }
 	},

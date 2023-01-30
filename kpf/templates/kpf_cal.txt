@@ -6,7 +6,7 @@
         "script_version": "0.3.0",
         "template_type": "calibration",
         "ui_name": "KPF calibration",
-        "version": "0.4.0"
+        "version": "0.6.0"
     },
     "parameters": {
         "darksequence": {
