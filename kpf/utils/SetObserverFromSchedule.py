@@ -42,7 +42,6 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'progname')
         return True
 
     @classmethod
@@ -52,31 +51,42 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
         date_str = date.strftime('%Y-%m-%d')
         KPF_programs = [s for s in get_schedule(date_str, 1)
                         if s['Instrument'] == 'KPF']
-        log.debug(f"Found {len(KPF_programs)} KPF programs in schedule for tonight")
+        nKPFprograms = len(KPF_programs)
+        log.debug(f"Found {nKPFprograms} KPF programs in schedule for tonight")
+        project_codes = [p['ProjCode'] for p in KPF_programs]
 
-        progname = args.get('progname')
-        this_program = [p for p in KPF_programs if p['ProjCode'] == progname]
-        log.debug(f"Found {len(this_program)} entries for {progname} in schedule for tonight")
-        
-        if len(this_program) > 0:
-            observers = this_program[0]['Observers']
-            log.info(f"Setting observer list based on telescope schedule:")
-            log.info(f"{observers}")
-            SetObserver.execute({'observer': observers})
+        if nKPFprograms == 0:
+            log.warning(f"No KPF programs found on schedule")
+            progname = None
+        elif nKPFprograms == 1:
+            progname = KPF_programs[0]['ProjCode']
+        elif nKPFprograms > 1:
+            print()
+            print(f"########################################")
+            print(f"  Found {nKPFprograms} KPF programs for tonight:")
+            for project_code in project_codes:
+                print(f"    {project_code}")
+            print(f"  Please entry the program ID for your observations:")
+            print(f"########################################")
+            print()
+            progname = input()
+            if progname.strip() not in project_codes:
+                log.warning(f"Project code {progname} not on schedule")
+                progname = None
+
+        if progname is None:
+            log.warning(f"Not setting observers")
         else:
-            log.error(f"Failed to set observers. Could not find this program on the schedule.")
+            this_program = [p for p in KPF_programs if p['ProjCode'] == progname]
+            log.debug(f"Found {len(this_program)} entries for {progname} in schedule for tonight")
+            if len(this_program) > 0:
+                observers = this_program[0]['Observers']
+                log.info(f"Setting observer list based on telescope schedule:")
+                log.info(f"{observers}")
+                SetObserver.execute({'observer': observers})
+            else:
+                log.error(f"Failed to set observers. Could not find this program on the schedule.")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['progname'] = {'type': str,
-                                   'help': 'The PROGNAME keyword.'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-        return super().add_cmdline_args(parser, cfg)
