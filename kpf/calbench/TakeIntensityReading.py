@@ -20,12 +20,14 @@ class TakeIntensityReading(KPFTranslatorFunction):
 
         # Turn on intensity monitor
         if intensemon.read() == 'Off':
+            log.debug('Turning kpflamps.INTENSEMON on')
             intensemon.write('On')
             boottime = cfg.get('times', 'intenmon_boot_time', fallback=5)
             time.sleep(boottime)
 
         # Verify serial connection is active
         if kpfcal['SERIALCONN'].read() == 'Off':
+            lof.debug('Initiating serial connection')
             kpfcal['SERIALCONN'].write('On')
             expr = f"($kpfcal.SERIALCONN == 'On')"
             boottime = cfg.get('times', 'intenmon_boot_time', fallback=5)
@@ -34,9 +36,11 @@ class TakeIntensityReading(KPFTranslatorFunction):
                 raise KPFException(f'Intensity monitor serial connection is Off')
 
         # Move sensor in to beam
+        log.info('Moving Intensity Monitor in to beam')
         kpfcal['INTENMON'].write('Boresight')
         # Set averaging
         navg = cfg.get('times', 'intenmon_avg_time', fallback=60)
+        log.info(f'Starting measurement: NAVG={navg}')
         kpfcal['NAVG'].write(navg)
         kpfcal['AVG'].write('On')
 
@@ -53,9 +57,11 @@ class TakeIntensityReading(KPFTranslatorFunction):
             raise KPFException(f'Intensity monitor measurement timed out')
 
         # Move sensor out of beam
+        log.info('Moving Intensity Monitor out of beam')
         kpfcal['INTENMON'].write('Out')
 
         # Turn off intensity monitor
+        log.debug('Turning kpflamps.INTENSEMON off')
         intensemon.write('Off')
 
     @classmethod
