@@ -14,6 +14,7 @@ from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
 from ..calbench.SetND1 import SetND1
 from ..calbench.SetND2 import SetND2
+from ..calbench.TakeIntensityReading import TakeIntensityReading
 from ..calbench.WaitForCalSource import WaitForCalSource
 from ..calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
 from ..calbench.WaitForND1 import WaitForND1
@@ -62,7 +63,6 @@ class ExecuteCal(KPFTranslatorFunction):
         archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
                              fallback=2)
 
-
         calsource = args.get('CalSource')
         nd1 = args.get('CalND1')
         nd2 = args.get('CalND2')
@@ -94,6 +94,8 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForND2.execute(args)
             WaitForCalSource.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
+            # Take intensity monitor reading
+            TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
             raise NotImplementedError()
