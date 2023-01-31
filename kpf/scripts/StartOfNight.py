@@ -31,12 +31,14 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
-        # Guider
+        # Disallow cron job calibration scripts
         log.info('Set SCRIPTALLOW to No')
         scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
         scriptallow.write('No')
+        # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
+        # Configure Source Select Shutters
         SetSourceSelectShutters.execute({'SSS_Science': True, 'SSS_Sky': True})
         # Setup AO
         if args.get('AO', True) is True:
