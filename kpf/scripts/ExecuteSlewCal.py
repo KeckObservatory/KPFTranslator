@@ -34,7 +34,7 @@ from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from .WaitForLampsWarm import WaitForLampsWarm
 
 
-class ExecuteSlewCals(KPFTranslatorFunction):
+class ExecuteSlewCal(KPFTranslatorFunction):
     '''Script which executes the observations of a Slew Cal
     '''
     abortable = True
@@ -46,15 +46,12 @@ class ExecuteSlewCals(KPFTranslatorFunction):
         scriptstop.write('Yes')
 
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Template_Name', allowed_values=['kpf_slewcal'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.4')
         return True
 
     @classmethod
-    @register_script(Path(__file__).name, os.getpid())
-    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")

@@ -67,6 +67,9 @@ class ConfigureForScience(KPFTranslatorFunction):
                                          'SSS_SoCalCal': False,
                                          'SSS_CalSciSky': False})
 
+        # Set Triggered Detectors
+        SetTriggeredDetectors.execute(OB)
+
     @classmethod
     def post_condition(cls, OB, logger, cfg):
         return True

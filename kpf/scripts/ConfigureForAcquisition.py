@@ -11,6 +11,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
+from .ExecuteSlewCal import ExecuteSlewCal
 from ..guider.SetGuiderFPS import SetGuiderFPS
 from ..guider.SetGuiderGain import SetGuiderGain
 from ..fiu.InitializeTipTilt import InitializeTipTilt
@@ -41,6 +42,11 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
 #         check_input(OB, 'Gmag')
 #         check_input(OB, 'Jmag')
 #         check_input(OB, 'Teff')
+        # Check Slewcals
+        if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+            slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
+            if slewcal_argsfile.exists() is False:
+                raise FailedPreCondition(f"Slew cal file {slewcal_argsfile} does not exist")
         return True
 
     @classmethod
@@ -71,7 +77,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             slewcal_args['TriggerCaHK'] = OB['TriggerCaHK']
             slewcal_args['TriggerGreen'] = OB['TriggerGreen']
             slewcal_args['TriggerRed'] = OB['TriggerRed']
-            ExecuteSlewCals.execute(slewcal_args)
+            ExecuteSlewCal.execute(slewcal_args)
 
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
