@@ -112,10 +112,12 @@ class GridSearch(KPFTranslatorFunction):
             dar_offset = kpfguide['DAR_OFFSET'].read(binary=True)
             log.info(f"DAR_OFFSET = {dar_offset[0]:.2f} {dar_offset[1]:.2f}")
             xpix0, ypix0 = kpfguide['PIX_TARGET'].read(binary=True)
-            log.info(f"Center pixel is {xpix0:.2f}, {ypix0:.2f}")
+            log.info(f"PIX_TARGET is {xpix0:.2f}, {ypix0:.2f}")
+            basex, basey = kpfguide['CURRENT_BASE'].read(binary=True)
+            log.info(f"CURRENT_BASE is {basex:.2f}, {basey:.2f}")
             # Pixel targets must be in absolute coordinates
-            xs = [xpix+xpix0 for xpix in xs]
-            ys = [ypix+ypix0 for ypix in ys]
+            xs = [basex+xpix0 for xpix in xs]
+            ys = [basey+ypix0 for ypix in ys]
         elif grid == 'SciADC':
             kpffiu = ktl.cache('kpffiu')
             kpffiu['ADCTRACK'].write('Off')
@@ -179,11 +181,13 @@ class GridSearch(KPFTranslatorFunction):
                     ##------------------------------------------------------
                     ## Tip Tilt
                     ##------------------------------------------------------
-                    log.info(f"Adjusting target to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
+                    log.info(f"Adjusting CURRENT_BASE to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                     SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
                     sleep_time = 5
                     log.debug(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
                     time.sleep(sleep_time)
+                    xpix, ypix = kpfguide['PIX_TARGET'].read(binary=True)
+                    log.info(f"PIX_TARGET is {xpix:.2f}, {ypix:.2f}")
                     # Check for lost star
                     obj_choice = kpfguide['OBJECT_CHOICE'].read()
                     if obj_choice in [None, 'None']:
