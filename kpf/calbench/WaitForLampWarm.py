@@ -10,12 +10,13 @@ class WaitForLampWarm(KPFTranslatorFunction):
     '''Wait for the specified lamp to be warm.
     
     ARGS:
-    lamp - The name of the lamp to wait for.
+    CalSource - The name of the lamp to wait for.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        lamp = standardize_lamp_name(args.get('lamp', None))
+        check_input(args, 'CalSource')
         # Check that lamp is actually on
+        lamp = standardize_lamp_name(args.get('CalSource'))
         lamp_status = ktl.cache('kpflamps', f'{lamp}').read()
         if lamp_status != 'On':
             raise FailedPreCondition(f"Lamp {lamp} is not on: {lamp_status}")
@@ -23,11 +24,11 @@ class WaitForLampWarm(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        lamp = standardize_lamp_name(args.get('lamp'))
-        kpflamps = ktl.cache('kpflamps')
+        lamp = standardize_lamp_name(args.get('CalSource'))
         lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
                                   'TH_GOLD', 'U_DAILY', 'U_GOLD']
         if lamp in lamps_that_need_warmup:
+            kpflamps = ktl.cache('kpflamps')
             lamp_status = kpflamps[f'{lamp}_STATUS'].read()
             if lamp_status == 'Off':
                 raise FailedPreCondition(f"Lamp {lamp} is not on: {lamp_status}")
