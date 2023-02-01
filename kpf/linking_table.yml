@@ -192,3 +192,5 @@ links:
         cmd: utils.SetOutdirs.SetOutdirs
     StartGUIs:
         cmd: utils.StartGUIs.StartGUIs
+    StopGUIs:
+        cmd: utils.StopGUIs.StopGUIs
