@@ -98,6 +98,8 @@ class GridSearch(KPFTranslatorFunction):
         dy = OB.get('dy')
         xis = [xi for xi in range(int(-nx/2),int((nx+1)/2),1)]
         yis = [yi for yi in range(int(-ny/2),int((ny+1)/2),1)]
+        xindicies = [ind for ind in range(nx)]
+        yindicies = [ind for ind in range(ny)]
         xs = [xi*dx for xi in xis]
         ys = [yi*dy for yi in yis]
 
@@ -172,9 +174,12 @@ class GridSearch(KPFTranslatorFunction):
                 log.info(f"Setting {FVC} FVC Exptime = {exptime:.2f} s")
                 SetFVCExpTime.execute({'camera': FVC, 'exptime': exptime})
 
-        for i,xi in enumerate(xis):
-            yis.reverse()
-            for j,yi in enumerate(yis):
+#         for i,xi in enumerate(xis):
+#             yis.reverse()
+#             for j,yi in enumerate(yis):
+        for i in xindicies:
+            yindicies.reverse()
+            for j in yindicies:
                 check_scriptstop()
 
                 if grid == 'TipTilt':
