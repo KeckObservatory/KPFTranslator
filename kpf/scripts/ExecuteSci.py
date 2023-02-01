@@ -18,11 +18,8 @@ from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.StopAgitator import StopAgitator
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
-from ..calbench.CalLampPower import CalLampPower
-from ..calbench.SetCalSource import SetCalSource
 from ..calbench.SetND1 import SetND1
 from ..calbench.SetND2 import SetND2
-from ..calbench.WaitForCalSource import WaitForCalSource
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
 

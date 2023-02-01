@@ -9,27 +9,11 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..calbench.CalLampPower import CalLampPower
-from ..calbench.SetCalSource import SetCalSource
-from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
-from ..calbench.SetND1 import SetND1
-from ..calbench.SetND2 import SetND2
-from ..calbench.WaitForCalSource import WaitForCalSource
-from ..calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
-from ..calbench.WaitForND1 import WaitForND1
-from ..calbench.WaitForND2 import WaitForND2
-from ..fvc.FVCPower import FVCPower
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.SetExptime import SetExptime
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.StartAgitator import StartAgitator
 from ..spectrograph.StartExposure import StartExposure
-from ..spectrograph.StopAgitator import StopAgitator
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
-from .WaitForLampsWarm import WaitForLampsWarm
 
 
 class ExecuteDark(KPFTranslatorFunction):
