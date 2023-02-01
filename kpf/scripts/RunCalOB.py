@@ -118,7 +118,7 @@ class RunCalOB(KPFTranslatorFunction):
                 cal['Template_Version'] = OB['Template_Version']
                 ExecuteCal.execute(cal)
         except Exception as e:
-            log.error("ExecuteCals failed:")
+            log.error("ExecuteCal failed:")
             log.error(e)
             clear_script_keywords()
             # Email error to kpf_info
