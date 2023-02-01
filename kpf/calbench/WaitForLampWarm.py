@@ -4,6 +4,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import standardize_lamp_name
+from .CalLampPower import CalLampPower
 
 
 class WaitForLampWarm(KPFTranslatorFunction):
@@ -15,11 +16,6 @@ class WaitForLampWarm(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'CalSource')
-        # Check that lamp is actually on
-        lamp = standardize_lamp_name(args.get('CalSource'))
-        lamp_status = ktl.cache('kpflamps', f'{lamp}').read()
-        if lamp_status != 'On':
-            raise FailedPreCondition(f"Lamp {lamp} is not on: {lamp_status}")
         return True
 
     @classmethod
@@ -29,9 +25,13 @@ class WaitForLampWarm(KPFTranslatorFunction):
                                   'TH_GOLD', 'U_DAILY', 'U_GOLD']
         if lamp in lamps_that_need_warmup:
             kpflamps = ktl.cache('kpflamps')
+            log.debug(f'Lamp {lamp} does need to be warmed up before use')
+            # Check that lamp is actually on
+            lamp = standardize_lamp_name(args.get('CalSource'))
             lamp_status = kpflamps[f'{lamp}_STATUS'].read()
             if lamp_status == 'Off':
-                raise FailedPreCondition(f"Lamp {lamp} is not on: {lamp_status}")
+                log.warning(f"Lamp {lamp} is not on: {lamp_status}")
+                CalLampPower.execute({'lamp': args.get('CalSource'), 'power': 'on'})
             elif lamp_status == 'Warm':
                 log.info(f"Lamp {lamp} is warm")
             elif lamp_status == 'Warming':
