@@ -15,6 +15,7 @@ from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.SetObserver import SetObserver
 from ..spectrograph.SetObject import SetObject
+from ..spectrograph.StopAgitator import StopAgitator
 from ..calbench.CalLampPower import CalLampPower
 from ..fvc.FVCPower import FVCPower
 from ..fiu.StopTipTilt import StopTipTilt
@@ -70,6 +71,7 @@ class EndOfNight(KPFTranslatorFunction):
         scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
         scriptallow.write('Yes')
         # Finish FIU shutdown
+        StopAgitator.execute({})
         WaitForConfigureFIU.execute({'mode': 'Stowed'})
 
     @classmethod

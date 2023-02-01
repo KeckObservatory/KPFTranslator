@@ -54,6 +54,17 @@ class StartOfNight(KPFTranslatorFunction):
         else:
             log.warning(f"Instrument is {inst}, not configuring DCS")
 
+        # Report Agitator status
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        if runagitator is True:
+            log.info(f"Agitator use is enabled")
+        else:
+            log.warning(f"Agitator use is disabled for tonight")
+        # Pre-configure cal source
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        log.info(f"Setting simultaneous CalSource/Octagon: {calsource}")
+        SetCalSource.execute({'CalSource': calsource, 'wait': True})
+
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
