@@ -14,30 +14,35 @@ class WaitForLampWarm(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        # Check lamp name
         lamp = standardize_lamp_name(args.get('lamp', None))
-        if lamp is None:
-            return False
         # Check that lamp is actually on
-        kpflamps = ktl.cache('kpflamps')
-        if kpflamps[lamp].read() != 'On':
-            return False
+        lamp_status = ktl.cache('kpflamps', f'{lamp}').read()
+        if lamp_status != 'On':
+            raise FailedPreCondition(f"Lamp {lamp} is not on: {lamp_status}")
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         lamp = standardize_lamp_name(args.get('lamp'))
-        warmup_time = cfg.get('warmup_times', f'{lamp}_warmup_time',
-                              fallback=0)
         kpflamps = ktl.cache('kpflamps')
-        expr = f"($kpflamps.{lamp.upper()}_TIMEON > {warmup_time:.0f})"
-        success = ktl.waitFor(expr, timeout=warmup_time*1.1+1)
-        if success is not True:
-            timeon = kpflamps[f"{lamp.upper()}_TIMEON"].read()
-            msg = (f"{lamp} lamp failed to reach warmup time ({warmup_time:.0f} s)"
-                   f" (kpflamps.{lamp.upper()}_TIMEON = {timeon})")
-            log.error(msg)
-            raise Exception(msg)
+        lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
+                                  'TH_GOLD', 'U_DAILY', 'U_GOLD']
+        if lamp in lamps_that_need_warmup:
+            lamp_status = kpflamps[f'{lamp}_STATUS'].read()
+            if lamp_status == 'Off':
+                raise FailedPreCondition(f"Lamp {lamp} is not on: {lamp_status}")
+            elif lamp_status == 'Warm':
+                log.info(f"Lamp {lamp} is warm")
+            elif lamp_status == 'Warming':
+                lamp_timeon = kpflamps[f'{lamp}_TIMEON'].read(binary=True)
+                lamp_threshold = kpflamps[f'{lamp}_THRESHOLD'].read(binary=True)
+                time_to_wait = lamp_threshold - lamp_timeon
+                log.info(f"Lamp {lamp} is warming")
+                log.info(f"Estimated time remaining = {time_to_wait:.0f} s")
+                expr = f"($kpfcal.{lamp}_STATUS == 'Warm')"
+                success = ktl.waitFor(expr, timeout=time_to_wait+30)
+                if success is False:
+                    raise KPFException(f"Lamp {lamp} failed to reach warm state")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
