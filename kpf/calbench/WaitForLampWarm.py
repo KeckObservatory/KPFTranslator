@@ -40,7 +40,7 @@ class WaitForLampWarm(KPFTranslatorFunction):
                 time_to_wait = lamp_threshold - lamp_timeon
                 log.info(f"Lamp {lamp} is warming")
                 log.info(f"Estimated time remaining = {time_to_wait:.0f} s")
-                expr = f"($kpfcal.{lamp}_STATUS == 'Warm')"
+                expr = f"($kpflamps.{lamp}_STATUS == 'Warm')"
                 success = ktl.waitFor(expr, timeout=time_to_wait+30)
                 if success is False:
                     raise KPFException(f"Lamp {lamp} failed to reach warm state")
