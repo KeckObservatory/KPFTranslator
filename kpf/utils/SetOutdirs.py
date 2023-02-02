@@ -23,13 +23,23 @@ class SetOutdirs(KPFTranslatorFunction):
         date_str = date.strftime('%Y%b%d').lower()
         outdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
 
+
+
         if args.get('CRED2', True) is True:
-            log.info(f"Setting guider OUTDIR to {outdir / 'CRED2'}")
+            log.info(f"Setting guider OUTDIR to /s/sdata1701/kpfguide")
             guide_outdir = ktl.cache('kpfguide', 'OUTDIR')
             try:
-                guide_outdir.write(f"{outdir / 'CRED2'}")
+                guide_outdir.write(f"/s/sdata1701/kpfguide")
             except Exception as e:
                 log.error(f"ERROR setting guider outdir")
+                log.error(e)
+
+            log.info(f"Setting guider TRIGOUTDIR to {outdir / 'CRED2'}")
+            trig_outdir = ktl.cache('kpfguide', 'TRIGOUTDIR')
+            try:
+                trig_outdir.write(f"{outdir / 'CRED2'}")
+            except Exception as e:
+                log.error(f"ERROR setting guider TRIGOUTDIR")
                 log.error(e)
 
         kpffvc = ktl.cache('kpffvc')
@@ -123,7 +133,11 @@ class SetOutdirs(KPFTranslatorFunction):
         outdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
         tests = []
         if args.get('CRED2', True) is True:
-            expr = f"$kpfguide.OUTDIR == '{outdir}/CRED2'"
+            expr = f"$kpfguide.OUTDIR == '/s/sdata1701/kpfguide'"
+            success = ktl.waitFor(expr, timeout=5)
+            tests.append(success)
+        if args.get('CRED2', True) is True:
+            expr = f"$kpfguide.TRIGOUTDIR == '{outdir}/CRED2'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
         if args.get('FVC1', True) is True:
