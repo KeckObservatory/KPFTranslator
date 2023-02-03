@@ -68,7 +68,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         kpf_expmeter = ktl.cache('kpf_expmeter')
 
         ## Execute Slew Cal if Requested
-        if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+        if kpfconfig['SLEWCALREQ'].read() == 'Yes':
             slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
             log.info(f"Beginning Slew Cal")
             log.debug(f"Using: {slewcal_argsfile}")
