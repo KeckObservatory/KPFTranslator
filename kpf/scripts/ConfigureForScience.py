@@ -61,8 +61,12 @@ class ConfigureForScience(KPFTranslatorFunction):
             log.info(f"Set CalSource/Octagon: {calsource}")
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
+        exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
+        if exposestatus.read() != 'Ready':
+            log.info(f"Waiting for kpfexpose to be Ready")
+            WaitForReady.execute({})
+            log.info(f"Readout complete")
         # Set source select shutters
-        WaitForReady.execute({})
         log.info(f"Set Source Select Shutters")
         SetSourceSelectShutters.execute({'SSS_Science': True,
                                          'SSS_Sky': True,
