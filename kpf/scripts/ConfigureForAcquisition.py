@@ -79,6 +79,8 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             slewcal_args['TriggerGreen'] = OB['TriggerGreen']
             slewcal_args['TriggerRed'] = OB['TriggerRed']
             ExecuteSlewCal.execute(slewcal_args)
+            log.info('Slew cal complete. Resetting SLEWCALREQ')
+            kpfconfig['SLEWCALREQ'].write('No')
 
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
