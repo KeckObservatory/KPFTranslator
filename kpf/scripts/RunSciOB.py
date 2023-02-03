@@ -84,6 +84,9 @@ class RunSciOB(KPFTranslatorFunction):
             observation['Template_Version'] = OB['Template_Version']
             log.debug(f"Automatically setting TimedShutter_CaHK: {OB['TriggerCaHK']}")
             observation['TimedShutter_CaHK'] = OB['TriggerCaHK']
+            observation['TriggerCaHK'] = OB['TriggerCaHK']
+            observation['TriggerGreen'] = OB['TriggerGreen']
+            observation['TriggerRed'] = OB['TriggerRed']
             try:
                 ExecuteSci.execute(observation)
             except Exception as e:
