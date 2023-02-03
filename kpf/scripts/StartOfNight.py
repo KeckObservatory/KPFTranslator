@@ -9,6 +9,7 @@ from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..ao.SetupAOforKPF import SetupAOforKPF
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
+from ..calbench.SetCalSource import SetCalSource
 from ..spectrograph.SetProgram import SetProgram
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
