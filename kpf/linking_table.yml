@@ -75,6 +75,8 @@ links:
         cmd: fiu.StartTipTilt.StartTipTilt
     StopTipTilt:
         cmd: fiu.StopTipTilt.StopTipTilt
+    UpdateCurrentBase:
+        cmd: fiu.UpdateCurrentBase.UpdateCurrentBase
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
     # FVCs

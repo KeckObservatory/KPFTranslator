@@ -15,6 +15,7 @@ from .CleanupAfterScience import CleanupAfterScience
 from .WaitForConfigureScience import WaitForConfigureScience
 from .ExecuteSci import ExecuteSci
 from ..fiu.StartTipTilt import StartTipTilt
+from ..fiu.UpdateCurrentBase import UpdateCurrentBase
 
 
 class RunSciOB(KPFTranslatorFunction):
@@ -68,6 +69,7 @@ class RunSciOB(KPFTranslatorFunction):
         user_input = input()
 
         log.info(f"Starting tip tilt loops")
+        UpdateCurrentBase.execute({})
         StartTipTilt.execute({})
         log.info(f"Sleeping 3 seconds to allow loops to close")
         time.sleep(3)
