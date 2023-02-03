@@ -91,7 +91,6 @@ class ExecuteSlewCal(KPFTranslatorFunction):
             log.info(f"Waiting for kpfexpose to be Ready")
             WaitForReady.execute({})
             log.info(f"Readout complete")
-            sleep(archon_time_shim)
             check_scriptstop() # Stop here if requested
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(args)
