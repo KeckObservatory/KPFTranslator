@@ -75,6 +75,12 @@ class GridSearch(KPFTranslatorFunction):
 
         grid = OB.get('Grid')
 
+        this_file_name = Path(__file__).name.replace('.py', '')
+        utnow = datetime.utcnow()
+        now_str = utnow.strftime('%Y%m%dat%H%M%S')
+        date = utnow-timedelta(days=1)
+        date_str = date.strftime('%Y%b%d').lower()
+        log_dir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}/script_logs")
         images_file = log_dir / Path(f'{grid}{this_file_name}_images_{now_str}.txt')
         fluxes_file = log_dir / Path(f'{grid}{this_file_name}_fluxes_{now_str}.txt')
 
@@ -118,8 +124,8 @@ class GridSearch(KPFTranslatorFunction):
             basex, basey = kpfguide['CURRENT_BASE'].read(binary=True)
             log.info(f"CURRENT_BASE is {basex:.2f}, {basey:.2f}")
             # Pixel targets must be in absolute coordinates
-            xs = [basex+xpix0 for xpix in xs]
-            ys = [basey+ypix0 for ypix in ys]
+            xs = [basex+xpix for xpix in xs]
+            ys = [basey+ypix for ypix in ys]
         elif grid == 'SciADC':
             kpffiu = ktl.cache('kpffiu')
             kpffiu['ADCTRACK'].write('Off')
