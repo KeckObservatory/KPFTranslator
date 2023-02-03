@@ -53,28 +53,22 @@ class ExecuteSlewCal(KPFTranslatorFunction):
             log.debug(f"  {key}: {args[key]}")
         log.info('-------------------------')
 
-        # Setup
-        log.info(f"Wait for any existing exposures to be complete")
-        WaitForReady.execute({})
-        log.info(f"Configuring FIU")
-        ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
-        log.info(f"Set Detector List")
-        SetTriggeredDetectors.execute(args)
-        log.info(f"Set Source Select Shutters")
-        SetSourceSelectShutters.execute({'SSS_Science': True,
-                                         'SSS_Sky': True,
-                                         'SSS_SoCalSci': False,
-                                         'SSS_SoCalCal': False,
-                                         'SSS_CalSciSky': True})
-
-        exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
-
-        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
 
         ## ----------------------------------------------------------------
         ## First, configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
+        log.info(f"Configuring FIU")
+        ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
+
+        kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+
+        # Set Octagon
+        octagon = ktl.cache('kpfcal', 'OCTAGON')
+        if octagon.read() != calsource:
+            log.info(f"Set CalSource/Octagon: {calsource}")
+            SetCalSource.execute({'CalSource': calsource, 'wait': False})
         nd1 = args.get('CalND1')
         nd2 = args.get('CalND2')
         log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
@@ -92,12 +86,21 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         ## Second, configure kpfexpose (may not happen during readout)
         ## ----------------------------------------------------------------
         # Wait for current exposure to readout
+        exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         if exposestatus.read() != 'Ready':
             log.info(f"Waiting for kpfexpose to be Ready")
             WaitForReady.execute({})
             log.info(f"Readout complete")
             sleep(archon_time_shim)
             check_scriptstop() # Stop here if requested
+        log.info(f"Set Detector List")
+        SetTriggeredDetectors.execute(args)
+        log.info(f"Set Source Select Shutters")
+        SetSourceSelectShutters.execute({'SSS_Science': True,
+                                         'SSS_Sky': True,
+                                         'SSS_SoCalSci': False,
+                                         'SSS_SoCalCal': False,
+                                         'SSS_CalSciSky': True})
         log.info(f"Set exposure time: {args.get('Exptime'):.3f}")
         SetExptime.execute(args)
         # No need to specify TimedShutter_Scrambler
