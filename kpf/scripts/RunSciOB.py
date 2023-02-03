@@ -1,4 +1,5 @@
 import time
+import os
 from pathlib import Path
 
 import ktl
@@ -10,7 +11,9 @@ from . import set_script_keywords, clear_script_keywords, add_script_log
 from .ConfigureForAcquisition import ConfigureForAcquisition
 from .WaitForConfigureAcquisition import WaitForConfigureAcquisition
 from .ConfigureForScience import ConfigureForScience
+from .CleanupAfterScience import CleanupAfterScience
 from .WaitForConfigureScience import WaitForConfigureScience
+from .ExecuteSci import ExecuteSci
 from ..fiu.StartTipTilt import StartTipTilt
 
 

@@ -86,7 +86,7 @@ class ExecuteSci(KPFTranslatorFunction):
         args['TimedShutter_SimulCal'] = args['TakeSimulCal']
         SetTimedShutters.execute(args)
         args['TriggerExpMeter'] = (args.get('ExpMeterMode', 'monitor') != 'off')
-        SetTriggeredDetectors.execute(args)
+#         SetTriggeredDetectors.execute(args)
 
         ## ----------------------------------------------------------------
         ## Take actual exposures

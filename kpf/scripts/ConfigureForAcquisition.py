@@ -43,10 +43,10 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
 #         check_input(OB, 'Jmag')
 #         check_input(OB, 'Teff')
         # Check Slewcals
-        if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
-            slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
-            if slewcal_argsfile.exists() is False:
-                raise FailedPreCondition(f"Slew cal file {slewcal_argsfile} does not exist")
+#         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+#             slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
+#             if slewcal_argsfile.exists() is False:
+#                 raise FailedPreCondition(f"Slew cal file {slewcal_argsfile} does not exist")
         return True
 
     @classmethod
@@ -68,16 +68,16 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         kpf_expmeter = ktl.cache('kpf_expmeter')
 
         ## Execute Slew Cal if Requested
-        if kpfconfig['SLEWCALREQ'].read() == 'Yes':
-            slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
-            log.info(f"Beginning Slew Cal")
-            log.debug(f"Using: {slewcal_argsfile}")
-            with open(slewcal_argsfile, 'r') as file
-                slewcal_args = yaml.safe_load(file)
-            slewcal_args['TriggerCaHK'] = OB['TriggerCaHK']
-            slewcal_args['TriggerGreen'] = OB['TriggerGreen']
-            slewcal_args['TriggerRed'] = OB['TriggerRed']
-            ExecuteSlewCal.execute(slewcal_args)
+#         if kpfconfig['SLEWCALREQ'].read() == 'Yes':
+#             slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
+#             log.info(f"Beginning Slew Cal")
+#             log.debug(f"Using: {slewcal_argsfile}")
+#             with open(slewcal_argsfile, 'r') as file
+#                 slewcal_args = yaml.safe_load(file)
+#             slewcal_args['TriggerCaHK'] = OB['TriggerCaHK']
+#             slewcal_args['TriggerGreen'] = OB['TriggerGreen']
+#             slewcal_args['TriggerRed'] = OB['TriggerRed']
+#             ExecuteSlewCal.execute(slewcal_args)
 
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
@@ -90,7 +90,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         kpfconfig['TARGET_2MASS'].write(OB.get('2MASSID', ''))
         kpfconfig['TARGET_GMAG'].write(OB.get('Gmag', ''))
         kpfconfig['TARGET_JMAG'].write(OB.get('Jmag', ''))
-        kpf_expmeter['TARGET_TEFF'].write(OB.get('Teff', 0))
+        kpf_expmeter['TARGET_TEFF'].write(float(OB.get('Teff', 0)))
         dcs['TARGPLAX'].write(OB.get('Parallax', 0))
         dcs['TARGRADV'].write(OB.get('RadialVelocity', 0))
 

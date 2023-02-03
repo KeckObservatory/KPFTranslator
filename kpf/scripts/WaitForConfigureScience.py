@@ -12,6 +12,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.WaitForCalSource import WaitForCalSource
 from ..fiu.ConfigureFIU import ConfigureFIU
+from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 # from ..fiu.SetADCAngles import SetADCAngles
 from ..spectrograph.WaitForReady import WaitForReady
 
@@ -29,8 +30,7 @@ class WaitForConfigureScience(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, OB, logger, cfg):
-        WaitForConfigureFIU.execute({'mode': 'Observing', 'wait': False})
-        WaitForCalSource.execute({'CalSource': calsource, 'wait': False})
+        WaitForConfigureFIU.execute({'mode': 'Observing'})
         WaitForReady.execute({})
 
     @classmethod
