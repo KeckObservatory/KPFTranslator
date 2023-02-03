@@ -23,7 +23,6 @@ class StartUp(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'progname')
         return True
 
     @classmethod
