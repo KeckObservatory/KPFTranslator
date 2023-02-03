@@ -55,8 +55,10 @@ class ConfigureForScience(KPFTranslatorFunction):
         # Set Octagon
         kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
-        log.info(f"Set CalSource/Octagon: {calsource}")
-        SetCalSource.execute({'CalSource': calsource, 'wait': False})
+        octagon = ktl.cache('kpfcal', 'OCTAGON')
+        if octagon.read() != calsource:
+            log.info(f"Set CalSource/Octagon: {calsource}")
+            SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
         # Set source select shutters
         WaitForReady.execute({})
