@@ -105,6 +105,8 @@ class RunCalOB(KPFTranslatorFunction):
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
+            # Cleanup
+            CleanupAfterCalibrations.execute(OB)
             raise(e)
 
         # Execute the Cal Sequence
@@ -128,6 +130,8 @@ class RunCalOB(KPFTranslatorFunction):
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
+            # Cleanup
+            CleanupAfterCalibrations.execute(OB)
             raise(e)
 
         clear_script_keywords()
