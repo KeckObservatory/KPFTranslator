@@ -13,7 +13,7 @@ from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..fiu.ConfigureFIU import ConfigureFIU
-# from ..fiu.SetADCAngles import SetADCAngles
+from ..fiu.SetCurrentBase import SetCurrentBase
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from ..spectrograph.WaitForReady import WaitForReady
@@ -51,6 +51,7 @@ class ConfigureForScience(KPFTranslatorFunction):
 
         kpfguide = ktl.cache('kpfguide')
         kpfguide['TRIGCUBE'].write('Inactive')
+        SetCurrentBase.execute({})
 
         # Set Octagon
         kpfconfig = ktl.cache('kpfconfig')

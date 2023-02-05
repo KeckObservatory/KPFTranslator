@@ -5,7 +5,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 
 
-class UpdateCurrentBase(KPFTranslatorFunction):
+class SetCurrentBase(KPFTranslatorFunction):
     '''
     
     ARGS: None
@@ -17,7 +17,8 @@ class UpdateCurrentBase(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
-        poname = ktl.cache('dcs', 'PONAME').read()
+#         poname = ktl.cache('dcs', 'PONAME').read()
+        poname = args.get('PO', 'KPF')
         basename = {'KPF': 'SCIENCE_BASE',
                     'SKY': 'SKY_BASE'}[poname]
         log.info(f'Setting CURRENT_BASE to {basename}')
