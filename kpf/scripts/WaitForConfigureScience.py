@@ -30,6 +30,9 @@ class WaitForConfigureScience(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, OB, logger, cfg):
+        kpfconfig = ktl.cache('kpfconfig')
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        WaitForCalSource.execute({'CalSource': calsource})
         WaitForConfigureFIU.execute({'mode': 'Observing'})
         WaitForReady.execute({})
 

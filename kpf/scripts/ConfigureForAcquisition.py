@@ -34,14 +34,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
-#         check_input(OB, 'TargetName')
-#         check_input(OB, 'GaiaID')
-#         check_input(OB, '2MASSID')
-#         check_input(OB, 'Parallax')
-#         check_input(OB, 'RadialVelocity')
-#         check_input(OB, 'Gmag')
-#         check_input(OB, 'Jmag')
-#         check_input(OB, 'Teff')
         # Check Slewcals
         kpfconfig = ktl.cache('kpfconfig')
         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
@@ -67,6 +59,15 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         dcs = ktl.cache('dcs')
         kpfconfig = ktl.cache('kpfconfig')
         kpf_expmeter = ktl.cache('kpf_expmeter')
+
+        # Set Octagon
+        kpfconfig = ktl.cache('kpfconfig')
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        octagon = ktl.cache('kpfcal', 'OCTAGON').read()
+        log.debug(f"Current OCTAGON = {octagon}, desired = {calsource}")
+        if octagon != calsource:
+            log.info(f"Set CalSource/Octagon: {calsource}")
+            SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
         ## Execute Slew Cal if Requested
         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:

@@ -64,11 +64,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
 
-        # Set Octagon
-        octagon = ktl.cache('kpfcal', 'OCTAGON')
-        if octagon.read() != calsource:
-            log.info(f"Set CalSource/Octagon: {calsource}")
-            SetCalSource.execute({'CalSource': calsource, 'wait': False})
+        # Configure Cal Bench
         nd1 = args.get('CalND1')
         nd2 = args.get('CalND2')
         log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
