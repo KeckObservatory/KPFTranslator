@@ -238,8 +238,10 @@ class GridSearch(KPFTranslatorFunction):
                         msg = f'Timed out waiting for ADCs: ADC1STA={ADC1STA} ADC2STA={ADC2STA}'
                         raise KPFException(msg)
 
-                # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
+                check_scriptstop() # Stop here if requested
+
+                # Start Exposure Meter and Science Cameras
                 kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]}')
                 log.info(f"Starting kpfexpose cameras")
                 StartExposure.execute({})

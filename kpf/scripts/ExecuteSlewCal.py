@@ -53,7 +53,6 @@ class ExecuteSlewCal(KPFTranslatorFunction):
             log.debug(f"  {key}: {args[key]}")
         log.info('-------------------------')
 
-
         ## ----------------------------------------------------------------
         ## First, configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
@@ -63,6 +62,8 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+
+        check_scriptstop() # Stop here if requested
 
         # Configure Cal Bench
         nd1 = args.get('CalND1')

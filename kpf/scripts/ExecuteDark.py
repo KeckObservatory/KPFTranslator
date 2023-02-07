@@ -43,6 +43,8 @@ class ExecuteDark(KPFTranslatorFunction):
         archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
                              fallback=2)
 
+        check_scriptstop() # Stop here if requested
+
         # Wait for current exposure to readout
         if exposestatus.read() != 'Ready':
             log.info(f"Waiting for kpfexpose to be Ready")
