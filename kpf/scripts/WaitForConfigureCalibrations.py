@@ -15,23 +15,21 @@ from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from ..spectrograph.WaitForReady import WaitForReady
 
 
-class WaitForConfigureScience(KPFTranslatorFunction):
-    '''Script which waits for the instrument to be configured for Science observations.
+class WaitForConfigureCalibrations(KPFTranslatorFunction):
+    '''Script which waits for the instrument to be configured for calibrations.
     
     Can be called by `ddoi_script_functions.waitfor_configure_for_science`.
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
+        check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
     def perform(cls, OB, logger, cfg):
-        kpfconfig = ktl.cache('kpfconfig')
-        calsource = kpfconfig['SIMULCALSOURCE'].read()
-        WaitForCalSource.execute({'CalSource': calsource})
-        WaitForConfigureFIU.execute({'mode': 'Observing'})
+        WaitForCalSource.execute(OB)
+        WaitForConfigureFIU.execute({'mode': 'Calibration'})
         WaitForReady.execute({})
 
     @classmethod

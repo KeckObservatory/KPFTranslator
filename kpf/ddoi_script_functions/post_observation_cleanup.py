@@ -3,7 +3,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 
-class WaitForConfigureAcquisition(KPFTranslatorFunction):
+class post_observation_cleanup(KPFTranslatorFunction):
     '''
     '''
     @classmethod
@@ -12,7 +12,13 @@ class WaitForConfigureAcquisition(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        raise NotImplementedError()
+        OBtype = args.get('Template_Name')
+        if OBtype == '':
+            
+        elif OBtype == '':
+            
+        else:
+            raise NotImplementedError(f"Template name {OBtype} not supported")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
