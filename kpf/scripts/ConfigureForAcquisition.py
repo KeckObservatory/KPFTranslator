@@ -17,6 +17,7 @@ from ..guider.SetGuiderGain import SetGuiderGain
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.SetTipTiltGain import SetTipTiltGain
 from ..fiu.ConfigureFIU import ConfigureFIU
+from ..utils.PredictGuiderParameters import predict_guider_parameters
 
 
 class ConfigureForAcquisition(KPFTranslatorFunction):
@@ -34,6 +35,10 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
+        # Check guider parameters
+        guide_mode = OB.get('GuideMode', 'auto')
+        if guide_mode == 'auto':
+            check_input(OB, 'Jmag', allowed_types=[float, int])
         # Check Slewcals
         kpfconfig = ktl.cache('kpfconfig')
         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
@@ -99,14 +104,21 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         dcs['TARGRADV'].write(OB.get('RadialVelocity', 0))
 
         # Set guide camera parameters (only manual supported for now)
-        if OB.get('GuideMode', 'manual') != 'manual':
-            log.warning('GuideMode = "manual" is the only supported mode')
-        if OB.get('GuideCamGain', None) is not None:
-            SetGuiderGain.execute(OB)
-        if OB.get('GuideFPS', None) is not None:
-            SetGuiderFPS.execute(OB)
-        if OB.get('GuideLoopGain', None) is not None:
-            SetTipTiltGain.execute(OB)
+        guide_mode = OB.get('GuideMode', 'auto')
+        if guide_mode == 'manual':
+            if OB.get('GuideCamGain', None) is not None:
+                SetGuiderGain.execute(OB)
+            if OB.get('GuideFPS', None) is not None:
+                SetGuiderFPS.execute(OB)
+            if OB.get('GuideLoopGain', None) is not None:
+                SetTipTiltGain.execute(OB)
+        elif guide_mode == 'auto':
+            guider_parameters = predict_guider_parameters(OB.get('Jmag'))
+            SetGuiderGain.execute(guider_parameters)
+            SetGuiderFPS.execute(guider_parameters)
+        else:
+            log.error(f"Guide mode '{guide_mode}' is not supported.")
+            log.error(f"Not setting guider parameters.")
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
