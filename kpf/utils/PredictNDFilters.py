@@ -40,7 +40,7 @@ description = '''
     '''
 
 
-def get_nd_to_use(snr_desired, exp_time, cal_source='LFCFiber'):
+def predict_nd_filters(snr_desired, exp_time, cal_source='LFCFiber'):
     nonlinear_limit_snr = 550.  # rough non-linearity limit for single exposure
 
     # **hardcoded values for scaling**
@@ -133,4 +133,4 @@ if __name__ == "__main__":
     p.add_argument('ExpTime', type=float,
                    help="The exposure time")
     args = p.parse_args()
-    result = get_nd_to_use(args.SNR, args.ExpTime)
+    result = predict_nd_filters(args.SNR, args.ExpTime)
