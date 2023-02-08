@@ -123,7 +123,7 @@ def get_nd_to_use(snr_desired, exp_time, cal_source='LFCFiber'):
     if snr_exptime > nonlinear_limit_snr:
         print('WARNING: etalon SNR >% 3.1f' %nonlinear_limit_snr)
 
-    return f"OD {ND1}", f"OD {ND2}"
+    return {'CalND1': f"OD {ND1}", 'CalND2': f"OD {ND2}"}
 
 
 if __name__ == "__main__":
