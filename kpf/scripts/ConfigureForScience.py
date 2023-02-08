@@ -2,6 +2,7 @@ import os
 from time import sleep
 from packaging import version
 from pathlib import Path
+from datetime import datetime, timedelta
 import numpy as np
 
 import ktl
@@ -51,7 +52,12 @@ class ConfigureForScience(KPFTranslatorFunction):
 
         kpfguide = ktl.cache('kpfguide')
         kpfguide['TRIGCUBE'].write('Inactive')
-        SetCurrentBase.execute({})
+
+        # Start tip tilt loops
+        log.info(f"Starting tip tilt loops")
+        SetCurrentBase.execute(OB)
+        StartTipTilt.execute({})
+        tick = datetime.now()
 
         # Set Octagon
         kpfconfig = ktl.cache('kpfconfig')
@@ -77,6 +83,15 @@ class ConfigureForScience(KPFTranslatorFunction):
 
         # Set Triggered Detectors
         SetTriggeredDetectors.execute(OB)
+
+        # Make sure tip tilt loops have had time to close
+        tock = datetime.now()
+        time_passed = (tock - tick).total_seconds()
+        tt_close_time = cfg.get('times', 'tip_tilt_close_time', fallback=3)
+        sleep_time = tt_close_time - time_passed
+        if sleep_time > 0:
+            log.info(f"Sleeping {sleep_time} seconds to allow loops to close")
+            time.sleep(sleep_time)
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

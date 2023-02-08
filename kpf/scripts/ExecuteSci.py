@@ -60,7 +60,7 @@ class ExecuteSci(KPFTranslatorFunction):
             kpf_expmeter = ktl.cache('kpf_expmeter')
             log.debug(f"Setting ExpMeterExpTime = {em_exptime:.1f}")
             kpf_expmeter['EXPOSURE'].write(em_exptime)
-        
+
         ## ----------------------------------------------------------------
         ## Setup simulcal
         ## ----------------------------------------------------------------
@@ -88,6 +88,8 @@ class ExecuteSci(KPFTranslatorFunction):
         SetTimedShutters.execute(args)
         args['TriggerExpMeter'] = (args.get('ExpMeterMode', 'monitor') != 'off')
         SetTriggeredDetectors.execute(args)
+
+        check_scriptstop() # Stop here if requested
 
         ## ----------------------------------------------------------------
         ## Take actual exposures

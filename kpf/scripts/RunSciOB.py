@@ -49,11 +49,8 @@ class RunSciOB(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Configure: 
-        log.info(f"Configuring for Acquisition: setting up guider and FIU")
+        log.info(f"Configuring for Acquisition")
         ConfigureForAcquisition.execute(OB)
-        log.info(f"Configuring for Science: setting up spectrograph")
-        ConfigureForScience.execute(OB)
-
         WaitForConfigureAcquisition.execute(OB)
 
         print()
@@ -67,11 +64,8 @@ class RunSciOB(KPFTranslatorFunction):
         print()
         user_input = input()
 
-        log.info(f"Starting tip tilt loops")
-        StartTipTilt.execute({})
-        log.info(f"Sleeping 3 seconds to allow loops to close")
-        time.sleep(3)
-
+        log.info(f"Configuring for Science")
+        ConfigureForScience.execute(OB)
         WaitForConfigureScience.execute(OB)
 
         # Execute Sequences

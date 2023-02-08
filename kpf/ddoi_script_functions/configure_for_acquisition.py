@@ -1,9 +1,10 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from ..scripts.ConfigureForAcquisition import ConfigureForAcquisition
 
 
-class ConfigureForAcquisition(KPFTranslatorFunction):
+class confgure_for_acquisition(KPFTranslatorFunction):
     '''
     '''
     @classmethod
@@ -12,7 +13,12 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        raise NotImplementedError()
+        OBtype = args.get('Template_Name')
+        if OBtype == 'kpf_acq':
+            ConfigureForAcquisition.execute(args)
+        else:
+            raise NotImplementedError(f"Template name {OBtype} not supported")
+
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

@@ -1,9 +1,10 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from ..scripts.WaitForConfigureScience import WaitForConfigureScience
 
 
-class WaitForConfigureScience(KPFTranslatorFunction):
+class waitfor_configure_science(KPFTranslatorFunction):
     '''
     '''
     @classmethod
@@ -12,7 +13,13 @@ class WaitForConfigureScience(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        raise NotImplementedError()
+        OBtype = args.get('Template_Name')
+        if OBtype == 'kpf_acq':
+            WaitForConfigureScience.execute(args)
+        elif OBtype == 'kpf_acq_cal':
+            WaitForConfigureCalibrations.execute(args)
+        else:
+            raise NotImplementedError(f"Template name {OBtype} not supported")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
