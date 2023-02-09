@@ -1,6 +1,24 @@
 description = '''
 '''
 
+# Engineering OBs (not consistent)
+# Jmag, Gain
+# 4.37, low
+# 2.14, low
+# 4.45, low
+# 4.29, low
+# 6.13, low
+# 4.88, low
+# 4.48, low
+# 5.93, low
+# 3.3, low
+# 4.48, low
+# 9, medium
+# 10, medium
+# 7.5, low
+# 2.4, low
+# 8.4, high
+
 def predict_guider_parameters(Jmag):
     if Jmag < 5.0:
         guider_parameters = {'GuideCamGain': 'low',
