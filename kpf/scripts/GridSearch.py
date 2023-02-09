@@ -78,11 +78,9 @@ class GridSearch(KPFTranslatorFunction):
         this_file_name = Path(__file__).name.replace('.py', '')
         utnow = datetime.utcnow()
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
-        date = utnow-timedelta(days=1)
-        date_str = date.strftime('%Y%b%d').lower()
-        log_dir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}/script_logs")
-        images_file = log_dir / Path(f'{grid}{this_file_name}_images_{now_str}.txt')
-        fluxes_file = log_dir / Path(f'{grid}{this_file_name}_fluxes_{now_str}.txt')
+        date_str = (utnow-timedelta(days=1)).strftime('%Y%b%d').lower()
+        images_file = Path(f'~/kpflogs/{date_str}/{grid}{this_file_name}_images_{now_str}.txt')
+        fluxes_file = Path(f'~/kpflogs/{date_str}/{grid}{this_file_name}_fluxes_{now_str}.txt')
 
         images = Table(names=('file', 'camera', 'x', 'y'),
                        dtype=('a90',  'a10',    'f4', 'f4'))
