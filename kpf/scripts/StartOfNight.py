@@ -7,7 +7,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..ao.SetupAOforKPF import SetupAOforKPF
-from ..fiu.InitializeTipTilt import InitializeTipTilt
+from ..fiu.SetTipTiltGain import SetTipTiltGain
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..calbench.SetCalSource import SetCalSource
 from ..spectrograph.SetProgram import SetProgram
@@ -19,7 +19,6 @@ class StartOfNight(KPFTranslatorFunction):
     '''Send KPF in to a reasonable starting configuration
     
     - set FIU mode to observing
-    - initialize tip tilt (set closed loop mode and 0, 0)
     - Setup AO for KPF
     - Configure DCS (ROTDEST and ROTMODE)
     
@@ -67,6 +66,10 @@ class StartOfNight(KPFTranslatorFunction):
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         log.info(f"Setting simultaneous CalSource/Octagon: {calsource}")
         SetCalSource.execute({'CalSource': calsource, 'wait': True})
+        # Set tip tilt loop gain
+        tip_tilt_gain = cfg.get('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
+        log.info(f"Setting default tip tilt loop gain of {tip_tilt_gain}")
+        SetTipTiltGain.execute({'GuideLoopGain': tip_tilt_gain})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

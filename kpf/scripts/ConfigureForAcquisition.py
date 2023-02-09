@@ -15,7 +15,6 @@ from .ExecuteSlewCal import ExecuteSlewCal
 from ..guider.SetGuiderFPS import SetGuiderFPS
 from ..guider.SetGuiderGain import SetGuiderGain
 from ..fiu.InitializeTipTilt import InitializeTipTilt
-from ..fiu.SetTipTiltGain import SetTipTiltGain
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..utils.PredictGuiderParameters import predict_guider_parameters
 
@@ -110,8 +109,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
                 SetGuiderGain.execute(OB)
             if OB.get('GuideFPS', None) is not None:
                 SetGuiderFPS.execute(OB)
-            if OB.get('GuideLoopGain', None) is not None:
-                SetTipTiltGain.execute(OB)
         elif guide_mode == 'auto':
             guider_parameters = predict_guider_parameters(OB.get('Jmag'))
             SetGuiderGain.execute(guider_parameters)
