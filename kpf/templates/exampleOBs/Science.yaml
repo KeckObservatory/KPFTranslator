@@ -1,5 +1,5 @@
 Template_Name: kpf_sci
-Template_Version: 0.5
+Template_Version: 0.6
 
 # Target Info
 TargetName: 10700               # Name 
@@ -14,7 +14,6 @@ Teff: 5266                      # Effective temperature
 GuideMode: manual               # Only "manual" is avaiable for now
 GuideCamGain: low               # Guide camera gain; values = low | medium | high
 GuideFPS: 100                   # Frames per second for guide camera (for tip-tilt)
-GuideLoopGain: 0.3              # Gain on tip-tilt system
 # Spectrograph Setup
 TriggerCaHK: False              # Include CaHK in exposure (True/False)
 TriggerGreen: True              # Include Green CCD in exposure (True/False)

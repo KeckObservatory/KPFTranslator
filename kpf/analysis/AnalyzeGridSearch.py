@@ -34,6 +34,9 @@ p.add_argument('logfile', type=str, nargs='*',
 p.add_argument("-v", "--verbose", dest="verbose",
     default=False, action="store_true",
     help="Be verbose! (default = False)")
+p.add_argument("--cred2", dest="cred2",
+    default=False, action="store_true",
+    help="Generate CRED2 plots? (default = False)")
 ## add options
 p.add_argument("--fiber", dest="fiber", type=str,
     default='Science',
@@ -41,6 +44,12 @@ p.add_argument("--fiber", dest="fiber", type=str,
 p.add_argument("--seeing", dest="seeing", type=float,
     default=0.7,
     help="The seeing model to overlay on the fiber coupling plot.")
+p.add_argument("--xfit", dest="xfit", type=float,
+    default=None,
+    help="The X pixel position to use as the center when overlaying the model.")
+p.add_argument("--yfit", dest="yfit", type=float,
+    default=None,
+    help="The X pixel position to use as the center when overlaying the model.")
 args = p.parse_args()
 
 
@@ -148,7 +157,8 @@ def correct_DAR(cred2_file):
 ##-------------------------------------------------------------------------
 ## build_FITS_cube
 ##-------------------------------------------------------------------------
-def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt'):
+def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
+                    applydar=False):
     nx = len(set(images['x']))
     ny = len(set(images['y']))
     xs = sorted(set(images['x']))
@@ -170,7 +180,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt'):
 #         print(j, entry['y'])
 
         # Find CRED2 image at same position to get info for DAR correction
-        if mode == 'TipTilt':
+        if mode == 'TipTilt' and applydar is True:
             this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
             cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
             DARx, DARy = correct_DAR(cred2_file)
@@ -302,11 +312,12 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt'):
 ## build_cube_graphic
 ##-------------------------------------------------------------------------
 def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
-                       model='Fiber Coupling Model seeing 0.70 arcsec.csv'):
+                       model='Fiber Coupling Model seeing 0.70 arcsec.csv',
+                       xfit=None, yfit=None):
     log.info(f"Building cube graphic")
     if mode == 'TipTilt':
         # Build Coupling Model
-        # Uses data from Steve Gibson, assuming 0.7 arcsec FWHM seeing
+        # Uses data from Steve Gibson
         this_location = Path(__file__).parent
         model_file = this_location / Path(model)
         t = Table.read(f"{model_file}", format='ascii.csv')
@@ -320,6 +331,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
     # Build Plots from on sky data
     flux_map = hdul[5].data[4]
     snr_map = hdul[5].data[6]
+    emcount_map = hdul[5].data[7]
     nlayers, ny, nx = hdul[5].data.shape
     nplots = ny if nx > ny else nx
     plot_axis_name = 'X' if nx > ny else 'Y'
@@ -336,24 +348,40 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
     norm = viz.ImageNormalize(flux_map,
                               interval=viz.MinMaxInterval(),
                               stretch=viz.LinearStretch())
-    plt.title('Flux Map')
+    plt.title(f'Flux Map: fiber at {xfit:.1f} {yfit:.1f}')
     plt.imshow(flux_map, interpolation='none', cmap='gray', origin='lower', norm=norm)
     plt.xlabel(f"X pixels")
     plt.ylabel(f"Y pixels")
+    xplot_ticks = [i for i in range(len(xplot_strings))]
+    iterated_pix_ticks = [i for i in range(len(iterated_pix_strings))]
     if plot_axis_name == 'X':
-        plt.gca().set_yticks([i for i in range(len(iterated_pix_strings))])
+        plt.gca().set_yticks(iterated_pix_ticks)
         plt.gca().set_yticklabels(iterated_pix_strings)
-        plt.gca().set_xticks([i for i in range(len(xplot_strings))])
+        plt.gca().set_xticks(xplot_ticks)
         plt.gca().set_xticklabels(xplot_strings)
-#         plt.gca().set_yticklabels(['']+iterated_pix_strings)
-#         plt.gca().set_xticklabels(['']+xplot_strings)
     else:
-        plt.gca().set_xticks([i for i in range(len(iterated_pix_strings))])
+        plt.gca().set_xticks(iterated_pix_ticks)
         plt.gca().set_xticklabels(iterated_pix_strings)
-        plt.gca().set_yticks([i for i in range(len(xplot_strings))])
+        plt.gca().set_yticks(xplot_ticks)
         plt.gca().set_yticklabels(xplot_strings)
-#         plt.gca().set_xticklabels(['']+iterated_pix_strings)
-#         plt.gca().set_yticklabels(['']+xplot_strings)
+
+    if xfit is not None and yfit is not None:
+        if plot_axis_name == 'X':
+            xifit = np.interp(xfit, xplot_values, xplot_ticks)
+            yifit = np.interp(yfit, iterated_pix_values, iterated_pix_ticks)
+            log.info(f"Overplotting {xfit:.1f} {yfit:.1f} as {xifit:.1f} {yifit:.1f}")
+            if xfit > min(xplot_values)-0.5 and xfit < max(xplot_values)+0.5:
+                plt.plot([xifit]*2, [min(iterated_pix_ticks)-0.5, max(iterated_pix_ticks)+0.5], 'r-', alpha=0.2)
+            if yfit > min(iterated_pix_values)-0.5 and yfit < max(iterated_pix_values)+0.5:
+                plt.plot([min(iterated_pix_ticks)-0.5, max(iterated_pix_ticks)+0.5], [yifit]*2, 'r-', alpha=0.2)
+        else:
+            xifit = np.interp(xfit, iterated_pix_values, iterated_pix_ticks)
+            yifit = np.interp(yfit, xplot_values, xplot_ticks)
+            log.info(f"Overplotting {xfit:.1f} {yfit:.1f} as {xifit:.1f} {yifit:.1f}")
+            if xfit > min(iterated_pix_values)-0.5 and xfit < max(iterated_pix_values)+0.5:
+                plt.plot([xifit]*2, [min(iterated_pix_ticks)-0.5, max(iterated_pix_ticks)+0.5], 'r-', alpha=0.2)
+            if yfit > min(xplot_values)-0.5 and yfit < max(xplot_values)+0.5:
+                plt.plot([min(iterated_pix_ticks)-0.5, max(iterated_pix_ticks)+0.5], [yifit]*2, 'r-', alpha=0.2)
 
     ax1 = plt.subplot(5,1,(3,4))
     ax1.set_xticks(xplot_values)
@@ -369,9 +397,9 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
     ax2 = plt.subplot(5,1,5)
     ax2.set_xticks(xplot_values)
     ax2.set_xticklabels(xplot_strings)
-    plt.ylim(0,(snr_map.max()+1)*1.15)
+    plt.ylim(0,(emcount_map.max()+1)*1.15)
     plt.xlim(xlim)
-    plt.ylabel('SNR')
+    plt.ylabel('N ExpMeter')
     plt.xlabel(f"{plot_axis_name} pixels")
 
     for i in range(nplots):
@@ -379,17 +407,31 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
         if plot_axis_name == 'X':
             flux_map_i = flux_map[i,:]
             snr_map_i = snr_map[i,:]
+            emcount_map_i = emcount_map[i,:]
         else:
             flux_map_i = flux_map[:,i]
             snr_map_i = snr_map[:,i]
+            emcount_map_i = emcount_map[:,i]
         line = ax1.plot(xplot_values, flux_map_i,
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
         peak_index = np.argmax(flux_map_i)
         if mode == 'TipTilt':
-            ax1.plot(model_pix+xplot_values[peak_index], fit(model_pix)*flux_map_i[peak_index],
-                     color=line[0].get_c(), linestyle=':', alpha=0.7)
-        ax2.plot(xplot_values, snr_map_i,
+            if plot_axis_name == 'X':
+                if xfit == None:
+                    model_center = xplot_values[peak_index]
+                else:
+                    model_center = xfit
+            elif plot_axis_name == 'Y':
+                if yfit == None:
+                    model_center = xplot_values[peak_index]
+                else:
+                    model_center = yfit
+#             log.info(f"  Using model center = {model_center:.1f}")
+            ax1.plot(model_pix+model_center, fit(model_pix)*flux_map_i[peak_index],
+                     color=line[0].get_c(), linestyle=':', alpha=0.7,
+                     label=f'Model, center={model_center:.1f}')
+        ax2.plot(xplot_values, emcount_map_i,
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'SNR {iterated_axis_name}={iterated_pix_value:.1f}')
     ax1.grid()
@@ -404,7 +446,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
 ## build_CRED2_graphic
 ##-------------------------------------------------------------------------
 def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
-                        iterate=True, x0=335, y0=256):
+                        iterate=True, x0=335, y0=256, applydar=False):
     ouput_cred2_image_file = Path(ouput_cred2_image_file)
     import ccdproc
     import photutils
@@ -422,7 +464,11 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
         cred2_file = Path(entry['file'])
-        DARx, DARy = correct_DAR(cred2_file)
+        if applydar is True:
+            DARx, DARy = correct_DAR(cred2_file)
+        else:
+            DARx = 0
+            DARy = 0
         Xpix = entry['x'] - DARx
         Ypix = entry['y'] - DARy
 
@@ -511,7 +557,7 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
 ## build_FVC_graphic
 ##-------------------------------------------------------------------------
 def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
-                      x0=335, y0=256):
+                      x0=335, y0=256, applydar=False):
     data_path = Path(data_path)
     ouput_FVC_image_file = Path(ouput_FVC_image_file)
 
@@ -530,7 +576,11 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
         # Find CRED2 image at same position to get info for DAR correction
         this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
         cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
-        DARx, DARy = correct_DAR(cred2_file)
+        if applydar is True:
+            DARx, DARy = correct_DAR(cred2_file)
+        else:
+            DARx = 0
+            DARy = 0
         Xpix = entry['x'] - DARx
         Ypix = entry['y'] - DARy
         log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
@@ -565,7 +615,9 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
 ##-------------------------------------------------------------------------
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
-def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7):
+def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7,
+                        xfit=None, yfit=None, applydar=False,
+                        generate_cred2=False):
     if f"{model_seeing:.2f}" not in ['0.50', '0.70', '0.90']:
         print(f"Seeing models only available for 0.50, 0.70, and 0.90 arcsec")
         return
@@ -600,7 +652,7 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7):
     try:
         with open(logfile) as FO:
             lines = FO.readlines()
-        for line in lines[:20]:
+        for line in lines[:60]:
             m = re.search("comment: (.*)", line)
             if m is not None:
                 comment = m.groups()[0].strip('\n')
@@ -608,6 +660,29 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7):
     except:
         comment = ''
         log.error('Could not find comment in log file')
+
+    # Determine comment string from log file
+    try:
+        with open(logfile) as FO:
+            lines = FO.readlines()
+        for line in lines[:60]:
+            m = re.search("DAR_ENABLE = (.*)", line)
+            if m is not None:
+                dar_enable = m.groups()[0].strip('\n')
+        log.info(f"  DAR_ENABLE: {dar_enable}")
+        if dar_enable == 'No':
+            log.warning('Applying DAR in analysis')
+            applydar = True
+        elif dar_enable == 'Yes':
+            log.info('DAR corrected at telescope')
+            applydar = False
+        else:
+            log.error(f'Unknown value for DAR_ENABLE ={dar_enable}')
+    except:
+        log.warning('Could not find DAR_ENABLE in log file')
+        applydar = True
+    log.info(f'Using applydar = {applydar}')
+
 
     # Load images table and fix old bad naming
     images = Table.read(images_file, format='ascii.csv')
@@ -622,20 +697,20 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7):
 
     # Build output FITS cube file name
     ouput_spec_cube = f"{mode}{logfile.name.replace('.log', '.fits')}"
-    hdul = build_FITS_cube(images, comment, ouput_spec_cube, mode=mode)
+    hdul = build_FITS_cube(images, comment, ouput_spec_cube, mode=mode, applydar=applydar)
 
     # Build graphic of cube fluxes
     ouput_cube_graphic = f"{mode}{logfile.name.replace('.log', '_fluxmap.png')}"
-    build_cube_graphic(hdul, ouput_cube_graphic, mode=mode)
+    build_cube_graphic(hdul, ouput_cube_graphic, mode=mode, xfit=xfit, yfit=yfit)
 
     # Build graphic of CRED2 Images
-    if len(images[images['camera'] == 'CRED2']) > 0 and mode == 'TipTilt':
+    if len(images[images['camera'] == 'CRED2']) > 0 and mode == 'TipTilt' and generate_cred2 is True:
         ouput_cred2_image_file = Path(f"{mode}{logfile.name.replace('.log', '_CRED2_images.png')}")
         cred2_pixels = {'EMSky': (160, 256),
                         'Science': (335, 256),
                         'Sky': (510, 256)}[fiber]
         build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
-                            x0=cred2_pixels[0], y0=cred2_pixels[1])
+                            x0=cred2_pixels[0], y0=cred2_pixels[1], applydar=applydar)
 
     # Build graphic of FVC Images
     if mode == 'TipTilt':
@@ -659,7 +734,8 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7):
             if len(fvc_images) > 0:
                 build_FVC_graphic(FVC, images, comment, ouput_fvc_image_file, data_path,
                                   x0=fvc_pixels[FVC][fiber][0],
-                                  y0=fvc_pixels[FVC][fiber][1])
+                                  y0=fvc_pixels[FVC][fiber][1],
+                                  applydar=applydar)
     return
 
 
@@ -668,4 +744,6 @@ if __name__ == '__main__':
         analyze_grid_search(logfile,
                             fiber=args.fiber,
                             model_seeing=args.seeing,
+                            xfit=args.xfit, yfit=args.yfit,
+                            generate_cred2=args.cred2,
                             )

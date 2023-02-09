@@ -38,6 +38,14 @@ from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 class GridSearch(KPFTranslatorFunction):
     '''
     '''
+    abortable = True
+
+    @classmethod
+    def abort_execution(args, logger, cfg):
+        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
+        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
+        scriptstop.write('Yes')
+
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
@@ -67,8 +75,12 @@ class GridSearch(KPFTranslatorFunction):
 
         grid = OB.get('Grid')
 
-        images_file = log_dir / Path(f'{grid}{this_file_name}_images_{now_str}.txt')
-        fluxes_file = log_dir / Path(f'{grid}{this_file_name}_fluxes_{now_str}.txt')
+        this_file_name = Path(__file__).name.replace('.py', '')
+        utnow = datetime.utcnow()
+        now_str = utnow.strftime('%Y%m%dat%H%M%S')
+        date_str = (utnow-timedelta(days=1)).strftime('%Y%b%d').lower()
+        images_file = Path(f'~/kpflogs/{date_str}/{grid}{this_file_name}_images_{now_str}.txt')
+        fluxes_file = Path(f'~/kpflogs/{date_str}/{grid}{this_file_name}_fluxes_{now_str}.txt')
 
         images = Table(names=('file', 'camera', 'x', 'y'),
                        dtype=('a90',  'a10',    'f4', 'f4'))
@@ -90,6 +102,8 @@ class GridSearch(KPFTranslatorFunction):
         dy = OB.get('dy')
         xis = [xi for xi in range(int(-nx/2),int((nx+1)/2),1)]
         yis = [yi for yi in range(int(-ny/2),int((ny+1)/2),1)]
+        xindicies = [ind for ind in range(nx)]
+        yindicies = [ind for ind in range(ny)]
         xs = [xi*dx for xi in xis]
         ys = [yi*dy for yi in yis]
 
@@ -104,10 +118,12 @@ class GridSearch(KPFTranslatorFunction):
             dar_offset = kpfguide['DAR_OFFSET'].read(binary=True)
             log.info(f"DAR_OFFSET = {dar_offset[0]:.2f} {dar_offset[1]:.2f}")
             xpix0, ypix0 = kpfguide['PIX_TARGET'].read(binary=True)
-            log.info(f"Center pixel is {xpix0:.2f}, {ypix0:.2f}")
+            log.info(f"PIX_TARGET is {xpix0:.2f}, {ypix0:.2f}")
+            basex, basey = kpfguide['CURRENT_BASE'].read(binary=True)
+            log.info(f"CURRENT_BASE is {basex:.2f}, {basey:.2f}")
             # Pixel targets must be in absolute coordinates
-            xs = [xpix+xpix0 for xpix in xs]
-            ys = [ypix+ypix0 for ypix in ys]
+            xs = [basex+xpix for xpix in xs]
+            ys = [basey+ypix for ypix in ys]
         elif grid == 'SciADC':
             kpffiu = ktl.cache('kpffiu')
             kpffiu['ADCTRACK'].write('Off')
@@ -162,20 +178,25 @@ class GridSearch(KPFTranslatorFunction):
                 log.info(f"Setting {FVC} FVC Exptime = {exptime:.2f} s")
                 SetFVCExpTime.execute({'camera': FVC, 'exptime': exptime})
 
-        for i,xi in enumerate(xis):
-            yis.reverse()
-            for j,yi in enumerate(yis):
+#         for i,xi in enumerate(xis):
+#             yis.reverse()
+#             for j,yi in enumerate(yis):
+        for i in xindicies:
+            yindicies.reverse()
+            for j in yindicies:
                 check_scriptstop()
 
                 if grid == 'TipTilt':
                     ##------------------------------------------------------
                     ## Tip Tilt
                     ##------------------------------------------------------
-                    log.info(f"Adjusting target to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
+                    log.info(f"Adjusting CURRENT_BASE to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                     SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
                     sleep_time = 5
                     log.debug(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
                     time.sleep(sleep_time)
+                    xpix, ypix = kpfguide['PIX_TARGET'].read(binary=True)
+                    log.info(f"PIX_TARGET is {xpix:.2f}, {ypix:.2f}")
                     # Check for lost star
                     obj_choice = kpfguide['OBJECT_CHOICE'].read()
                     if obj_choice in [None, 'None']:
@@ -215,8 +236,10 @@ class GridSearch(KPFTranslatorFunction):
                         msg = f'Timed out waiting for ADCs: ADC1STA={ADC1STA} ADC2STA={ADC2STA}'
                         raise KPFException(msg)
 
-                # Start Exposure Meter and Science Cameras
                 WaitForReady.execute({})
+                check_scriptstop() # Stop here if requested
+
+                # Start Exposure Meter and Science Cameras
                 kpfexpose['OBJECT'].write(f'Grid search {xs[i]}, {ys[j]}')
                 log.info(f"Starting kpfexpose cameras")
                 StartExposure.execute({})

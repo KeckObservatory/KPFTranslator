@@ -22,14 +22,23 @@ class SetOutdirs(KPFTranslatorFunction):
         date = utnow-timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
         outdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
+        magiq_outdir = Path(f"/s/sdata1701/kpfguide")
 
         if args.get('CRED2', True) is True:
-            log.info(f"Setting guider OUTDIR to {outdir / 'CRED2'}")
+            log.info(f"Setting guider OUTDIR to {magiq_outdir}")
             guide_outdir = ktl.cache('kpfguide', 'OUTDIR')
             try:
-                guide_outdir.write(f"{outdir / 'CRED2'}")
+                guide_outdir.write(f"{magiq_outdir}")
             except Exception as e:
                 log.error(f"ERROR setting guider outdir")
+                log.error(e)
+
+            log.info(f"Setting guider TRIGOUTDIR to {outdir / 'CRED2'}")
+            trig_outdir = ktl.cache('kpfguide', 'TRIGOUTDIR')
+            try:
+                trig_outdir.write(f"{outdir / 'CRED2'}")
+            except Exception as e:
+                log.error(f"ERROR setting guider TRIGOUTDIR")
                 log.error(e)
 
         kpffvc = ktl.cache('kpffvc')
@@ -105,7 +114,15 @@ class SetOutdirs(KPFTranslatorFunction):
                 log.error(f"ERROR setting Red outdir")
                 log.error(e)
 
-
+        if args.get('L0', True) is True:
+            L0_outdir = outdir / 'L0'
+            log.info(f"Setting kpfasemble OUTDIR to {L0_outdir}")
+            kpfassemble_outdir = ktl.cache('kpfassemble', 'OUTDIR')
+            try:
+                kpfassemble_outdir.write(f"{L0_outdir}")
+            except Exception as e:
+                log.error(f"ERROR setting kpfasemble outdir")
+                log.error(e)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -115,7 +132,11 @@ class SetOutdirs(KPFTranslatorFunction):
         outdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
         tests = []
         if args.get('CRED2', True) is True:
-            expr = f"$kpfguide.OUTDIR == '{outdir}/CRED2'"
+            expr = f"$kpfguide.OUTDIR == '/s/sdata1701/kpfguide'"
+            success = ktl.waitFor(expr, timeout=5)
+            tests.append(success)
+        if args.get('CRED2', True) is True:
+            expr = f"$kpfguide.TRIGOUTDIR == '{outdir}/CRED2'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
         if args.get('FVC1', True) is True:
@@ -150,6 +171,10 @@ class SetOutdirs(KPFTranslatorFunction):
             expr = f"$kpfred.FITSDIR == '{outdir}/Red'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
+        if args.get('L0', True) is True:
+            expr = f"$kpfassemble.OUTDIR == '{outdir}/L0'"
+            success = ktl.waitFor(expr, timeout=5)
+            tests.append(success)
 
         return np.all(np.array(tests))
 
@@ -175,5 +200,7 @@ class SetOutdirs(KPFTranslatorFunction):
             'Set Green OUTDIR (kpfgreen.FITSDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'Red',
             'Set Red OUTDIR (kpfred.FITSDIR)?', default=True)
+        parser = cls._add_bool_arg(parser, 'L0',
+            'Set Red OUTDIR (kpfassemble.OUTDIR)?', default=True)
 
         return super().add_cmdline_args(parser, cfg)

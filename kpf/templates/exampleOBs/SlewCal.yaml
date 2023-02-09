@@ -8,4 +8,4 @@ Object: slewcal
 CalND1: OD 0.1
 CalND2: OD 0.1
 nExp: 1
-Exptime: 60
+Exptime: 30 # Appropriate for Etalon

@@ -33,6 +33,8 @@ links:
         cmd: calbench.SetND1.SetND1
     SetND2:
         cmd: calbench.SetND2.SetND2
+    TakeIntensityReading:
+        cmd: calbench.TakeIntensityReading.TakeIntensityReading
     WaitForCalSource:
         cmd: calbench.WaitForCalSource.WaitForCalSource
     WaitForFlatFieldFiberPos:
@@ -73,6 +75,8 @@ links:
         cmd: fiu.StartTipTilt.StartTipTilt
     StopTipTilt:
         cmd: fiu.StopTipTilt.StopTipTilt
+    UpdateCurrentBase:
+        cmd: fiu.UpdateCurrentBase.UpdateCurrentBase
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
     # FVCs
@@ -190,3 +194,5 @@ links:
         cmd: utils.SetOutdirs.SetOutdirs
     StartGUIs:
         cmd: utils.StartGUIs.StartGUIs
+    StopGUIs:
+        cmd: utils.StopGUIs.StopGUIs

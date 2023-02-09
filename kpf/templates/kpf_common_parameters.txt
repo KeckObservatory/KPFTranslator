@@ -4,45 +4,34 @@
 		"ui_name" : "KPF Common Parameters",
 		"instrument" : "KPF",
 		"template_type" : "common_parameters",
-		"version" : "0.1.1"
-	},
-	"instrument_parameters" : {
-        "inst_cfg_runagitator": {
-            "default": null,
-            "description": "Run the agitator during exposures?",
-            "option": "boolean",
-            "optionality": "required",
-            "type": "boolean",
-            "ui_name": "Agitator On",
-            "units": null
-        }
+		"version" : "0.6.0"
 	},
 	"detector_parameters" : {
         "det1_cfg_trigger": {
-            "default": null,
+            "default": True,
             "description": "Trigger the Ca H&K detector?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Ca H&K Detector Trigger",
+            "ui_name": "Trigger Ca H&K",
             "units": null
         },
         "det2_cfg_trigger": {
-            "default": null,
+            "default": True,
             "description": "Trigger the green detector?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Green Detector Trigger",
+            "ui_name": "Trigger Green",
             "units": null
         },
         "det3_cfg_trigger": {
-            "default": null,
+            "default": True,
             "description": "Use red detector?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Red Detector Trigger",
+            "ui_name": "Trigger Red",
             "units": null
         }
 	},

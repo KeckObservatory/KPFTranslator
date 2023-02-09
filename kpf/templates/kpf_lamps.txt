@@ -1,16 +1,15 @@
 {
     "metadata": {
         "instrument": "KPF",
-        "name": "kpf_sci",
-        "script": "kpf_sci",
+        "name": "kpf_lamps",
+        "script": "kpf_lamps",
         "script_version": "0.1.0",
-        "template_type": "science",
-        "ui_name": "KPF science",
-        "version": "0.1.0",
-        "sequence_number": 1
+        "template_type": "calibration",
+        "ui_name": "KPF Arc Lamps",
+        "version": "0.6.0",
+        "sequence_number" : 0
     },
     "parameters": {
-
         "inst_cfg_nd1": {
             "allowed": [
                 "OD 0.1",
@@ -20,7 +19,7 @@
                 "OD 3.0",
                 "OD 4.0"
             ],
-            "default": null,
+            "default": "OD 0.1",
             "description": "Filter to use in the ND1 filter wheel",
             "option": "set",
             "optionality": "required",
@@ -37,7 +36,7 @@
                 "OD 1.0",
                 "OD 4.0"
             ],
-            "default": null,
+            "default": "OD 0.1",
             "description": "Filter to use in the ND2 filter wheel",
             "option": "set",
             "optionality": "required",
@@ -65,60 +64,21 @@
             "ui_name": "Calibration source",
             "units": null
         },
-        "inst_cfg_em_band": {
+        "inst_cfg_fffiberpos": {
             "allowed": [
-                1,
-                2,
-                3,
-                4
+                "Blank",
+                "6 mm f/5",
+                "7.5 mm f/4",
+                "10 mm f/3",
+                "13.2 mm f/2.3",
+                "Open"
             ],
-            "default": 1,
-            "description": "Which wavelength band of the exposure meter to use for termination condition?",
+            "default": "Blank",
+            "description": "Flat field aperture",
             "option": "set",
             "optionality": "optional",
-            "type": "int",
-            "ui_name": "Exposure Meter Wavelength Band",
-            "units": null
-        },
-        "inst_cfg_em_exptime": {
-            "allowed": [
-                0.1,
-                1800
-            ],
-            "default": null,
-            "description": "Exposure time in seconds",
-            "option": "range",
-            "optionality": "required",
-            "type": "float",
-            "ui_name": "Exposure time in seconds",
-            "units": "s"
-        },
-        "inst_cfg_em_flux": {
-            "allowed": [
-                1,
-                1000000000.0
-            ],
-            "default": 100000.0,
-            "description": "What flux value should trigger the exposure termination?",
-            "option": "range",
-            "optionality": "optional",
-            "type": "float",
-            "ui_name": "Termination flux",
-            "units": "counts"
-        },
-        "inst_cfg_em_mode": {
-            "allowed": [
-                "off",
-                "telescope",
-                "manual",
-                "auto"
-            ],
-            "default": "manual",
-            "description": "off = do not take EM exposures, monitor = take EM exposures, but do not use for exposure termination, trigger = take EM exposures and use for exposure termination, auto = take EM exposures using automatic exposure time and use for exposure termination",
-            "option": "set",
-            "optionality": "required",
             "type": "str",
-            "ui_name": "Exposure meter mode.",
+            "ui_name": "Flat field aperture",
             "units": null
         },
         "det_exp_time": {
@@ -131,7 +91,7 @@
             "option": "range",
             "optionality": "required",
             "type": "float",
-            "ui_name": "Exposure time",
+            "ui_name": "Exposure Time",
             "units": "seconds"
         },
         "det_exp_number": {
@@ -139,12 +99,12 @@
                 1,
                 100
             ],
-            "default": null,
+            "default": 1,
             "description": "Number of exposures to take",
             "option": "range",
             "optionality": "required",
             "type": "int",
-            "ui_name": "Number of Exposures",
+            "ui_name": "Number of exposures to take",
             "units": null
         },
         "target_info_object": {
@@ -153,16 +113,34 @@
             "option": "open",
             "optionality": "optional",
             "type": "string",
-            "ui_name": "Object Keyword",
+            "ui_name": "Value for object keyword",
             "units": null
         },
-        "inst_cfg_ts_simulcal": {
-            "default": null,
+        "inst_cfg_sss_science": {
+            "default": True,
+            "description": "Should the source select shutter for science be open?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Source Shutter Open",
+            "units": null
+        },
+        "inst_cfg_sss_sky": {
+            "default": True,
+            "description": "Should the source select shutter for sky be open?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Sky Shutter Open",
+            "units": null
+        },
+        "inst_cfg_simulcal_ts": {
+            "default": True,
             "description": "Should the timed shutter for simultaneous calibration fiber be opened during exposure?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "ui_name": "Simultaneous Calibration fiber Timed Shutter Open",
+            "ui_name": "Simultaneous Calibration Timed Shutter Open",
             "units": null
         }
     }

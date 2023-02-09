@@ -6,7 +6,7 @@
         "script_version": "0.1.0",
         "template_type": "calibration",
         "ui_name": "KPF Dark Sequence",
-        "version": "0.1.0",
+        "version": "0.6.0",
         "sequence_number" : 0
     },
     "parameters": {
@@ -28,7 +28,7 @@
                 1,
                 100
             ],
-            "default": null,
+            "default": 1,
             "description": "Number of exposures to take",
             "option": "range",
             "optionality": "required",
