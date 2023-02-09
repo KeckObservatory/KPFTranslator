@@ -22,14 +22,13 @@ class SetOutdirs(KPFTranslatorFunction):
         date = utnow-timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
         outdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
-
-
+        magiq_outdir = Path(f"/s/sdata1701/kpfguide")
 
         if args.get('CRED2', True) is True:
-            log.info(f"Setting guider OUTDIR to /s/sdata1701/kpfguide")
+            log.info(f"Setting guider OUTDIR to {magiq_outdir}")
             guide_outdir = ktl.cache('kpfguide', 'OUTDIR')
             try:
-                guide_outdir.write(f"/s/sdata1701/kpfguide")
+                guide_outdir.write(f"{magiq_outdir}")
             except Exception as e:
                 log.error(f"ERROR setting guider outdir")
                 log.error(e)
