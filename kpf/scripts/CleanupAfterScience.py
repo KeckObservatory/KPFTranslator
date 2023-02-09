@@ -18,7 +18,6 @@ class CleanupAfterScience(KPFTranslatorFunction):
         return True
 
     @classmethod
-    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
