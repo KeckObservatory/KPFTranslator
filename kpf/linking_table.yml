@@ -182,6 +182,8 @@ links:
     WaitForReady:
         cmd: spectrograph.WaitForReady.WaitForReady
     # Utils
+    BuildOBfromQuery:
+        cmd: utils.BuildOBfromQuery.BuildOBfromQuery
     CalculateDAR:
         cmd: utils.CalculateDAR.CalculateDAR
     CorrectDAR:
