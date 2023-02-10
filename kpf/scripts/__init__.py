@@ -56,7 +56,7 @@ def set_script_keywords(scriptname, PID):
     log.debug(f"Registering script {scriptname} with PID {PID}")
     kpfconfig['SCRIPTNAME'].write(scriptname)
     kpfconfig['SCRIPTPID'].write(PID)
-    user_at_host = f"{os.getlogin()}@{socket.gethostname()}""
+    user_at_host = f"{os.getlogin()}@{socket.gethostname()}"
     kpfconfig['SCRIPTHOST'].write()
 
 
