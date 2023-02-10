@@ -50,10 +50,10 @@ class WaitForReadout(KPFTranslatorFunction):
             log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
             if 'Green' in detector_list:
                 nextfile = ktl.cache('kpfgreen', 'NEXTFILE')
-                log.info(f"Green nextfile: {nextfile.read()}")
+                log.debug(f"Green nextfile: {nextfile.read()}")
             if 'Red' in detector_list:
                 nextfile = ktl.cache('kpfred', 'NEXTFILE')
-                log.info(f"Red nextfile: {nextfile.read()}")
+                log.debug(f"Red nextfile: {nextfile.read()}")
         else:
             log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
             log.debug(f'kpfexpose EXPLAINR = {kpfexpose["EXPLAINR"].read()}')
