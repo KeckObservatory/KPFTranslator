@@ -1,4 +1,5 @@
 import re
+from astropy.coordinates import SkyCoord
 from astroquery.vizier import Vizier
 from astroquery.simbad import Simbad
 
@@ -51,7 +52,7 @@ class BuildOBfromQuery(KPFTranslatorFunction):
 #                 'Gmag', 'e_Gmag', 'RVDR2', 'e_RVDR2',
 #                 'Tefftemp', 'loggtemp',
 #                 'GmagCorr', 'e_GmagCorr']
-        cols = ['Source', 'Plx', 'Gmag', 'RVDR2', 'Tefftemp']
+        cols = ['RA_ICRS', 'DE_ICRS', 'Source', 'Plx', 'Gmag', 'RVDR2', 'Tefftemp']
         r = Vizier(catalog=cat, columns=cols).query_constraints(Source=gaiaid)[0]
 
         OB.append("# Target Info")
@@ -91,6 +92,15 @@ class BuildOBfromQuery(KPFTranslatorFunction):
 
         for line in OB:
             print(line)
+
+        # Build Starlist line
+
+        coord = SkyCoord(float(r['RA_ICRS']), float(r['DE_ICRS']), frame='icrs', unit='deg')
+        coord_string = coord.to_string('hmsdms', sep=' ', precision=1)
+        starlist_line = f"{hdnumber:16s}{coord_string} 2000 vmag={Gmag}"
+        print()
+        print("Line for Keck star list:")
+        print(starlist_line)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
