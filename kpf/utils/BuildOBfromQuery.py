@@ -1,42 +1,48 @@
 import re
-import numpy as np
 from astroquery.vizier import Vizier
 from astroquery.simbad import Simbad
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
+from .. import FailedPostCondition, check_input
 
 
 ##-------------------------------------------------------------------------
-## CalculateDAR
+## BuildOBfromQuery
 ##-------------------------------------------------------------------------
 class BuildOBfromQuery(KPFTranslatorFunction):
     '''
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'GaiaID')
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         gaiaid = args.get('GaiaID')
-
-        # Using Gaia ID, query for 2MASS ID
-        twomassid = None
+        OB = ["# Built using BuildOBfromQuery tool",
+              "# --> Observer must replace all ? below with real values <--",
+              "Template_Name: kpf_sci",
+              "Template_Version: 0.6",
+              ""]
+        # Using Gaia ID, query for HD number and query for 2MASS ID
+        hdnumber = '?'
+        twomassid = '?'
         names = Simbad.query_objectids(f"Gaia DR3 {gaiaid}")
         for name in names:
-            is2mass = re.match('^2MASS (J[\d\+\-]+)', name[0])
+            is2mass = re.match('^2MASS\s+(J[\d\+\-]+)', name[0])
             if is2mass is not None:
                 twomassid = is2mass.group(1)
+            ishd = re.match('^HD\s+([\d\+\-]+)', name[0])
+            if ishd is not None:
+                hdnumber = ishd.group(1)
 
         # Using 2MASS ID query for Jmag
         cat = 'II/246/out'
         cols = ['2MASS', 'Jmag']
         r = Vizier(catalog=cat, columns=cols).query_constraints(Source=gaiaid)[0]
         Jmag_masked = r['Jmag'].mask[0]
-        Jmag = r['Jmag'][0] if Jmag_masked == False else None
-        
+        Jmag = f"{r['Jmag'][0]:.2f}" if Jmag_masked == False else '?'
         
         # Using Gaia ID, query for Gaia parameters
         cat = 'I/350/gaiaedr3'
@@ -48,64 +54,43 @@ class BuildOBfromQuery(KPFTranslatorFunction):
         cols = ['Source', 'Plx', 'Gmag', 'RVDR2', 'Tefftemp']
         r = Vizier(catalog=cat, columns=cols).query_constraints(Source=gaiaid)[0]
 
+        OB.append("# Target Info")
+        OB.append(f"TargetName: {hdnumber}")
+        OB.append(f"GaiaID: DR3 {int(r['Source'])}")
+        OB.append(f"2MASSID: {twomassid}")
+        plx = float(r['Plx']) if r['Plx'].mask[0] == False else '?'
+        OB.append(f"Parallax: {plx} # mas")
+        rv = float(r['RVDR2']) if r['RVDR2'].mask[0] == False else '?'
+        OB.append(f"RadialVelocity: {rv} # km/s")
+        Gmag = f"{float(r['Gmag']):.2f}" if r['Gmag'].mask[0] == False else '?'
+        OB.append(f"Gmag: {Gmag}")
+        OB.append(f"Jmag: {Jmag}")
+        Teff = f"{float(r['Tefftemp']):.0f}" if r['Tefftemp'].mask[0] == False else '?'
+        OB.append(f"Teff: {Teff}")
+        OB.append("")
+        OB.append("# Guider Setup")
+        OB.append("GuiderMode: auto         # auto or manual. If manual, gain and FPS values below will be used")
+        OB.append("GuiderCamGain: high      # Options are low, medium, high")
+        OB.append("GuiderFPS: 100           # Frames per second")
+        OB.append("")
+        OB.append("# Spectrograph Setup")
+        OB.append("TriggerCaHK: True        # Take data with the Ca H&K detector")
+        OB.append("TriggerGreen: True       # Take data with the Green detector")
+        OB.append("TriggerRed: True         # Take data with the Red detector")
+        OB.append("")
+        OB.append("# Observations (repeat the indented block below to take multiple observations)")
+        OB.append("SEQ_Observations:")
+        OB.append(" - Object: ?             # Free text field for notes")
+        OB.append("   nExp: ?               # Number of exposures")
+        OB.append("   Exptime: ?            # Individual exposure time")
+        OB.append("   ExpMeterMode: monitor # Only monitor is supported for now")
+        OB.append("   ExpMeterExpTime: ?    # Exposure time for exposure meter")
+        OB.append("   TakeSimulCal: ?       # True or False, take simultaneous calibration data?")
+        OB.append("   CalND1: ?             # Which ND filter to put in wheel 1")
+        OB.append("   CalND2: ?             # Which ND filter to put in wheel 2")
 
-
-
-        OBvalues = [('Source', 'GaiaID', int),
-                    ('2massid', '2MASSID', str),
-                    ('Plx', 'Parallax', float),
-                    ('RVDR2', 'RadialVelocity', float),
-                    ('Gmag', 'Gmag', float),
-                    ('Jmag', 'Jmag', float),
-                    ('Tefftemp', 'Teff', float),
-                    ]
-
-        print("Template_Name: kpf_sci")
-        print("Template_Version: 0.6")
-        print()
-        print("# Target Info")
-        for OBvalue in OBvalues:
-            OBname = OBvalue[1]
-            if OBvalue[0] == '2massid':
-                if twomassid is not None:
-                    print(f"{OBname}: {twomassid}")
-                else:
-                    print(f"{OBname}: ?")
-            elif OBvalue[0] == 'Jmag':
-                if Jmag is not None:
-                    print(f"{OBname}: {Jmag}")
-                else:
-                    print(f"{OBname}: ?")
-            elif OBvalue[0] in cols:
-                masked = r[OBvalue[0]].mask[0]
-                if masked == False:
-                    val = OBvalue[2](r[OBvalue[0]])
-                    print(f"{OBname}: {val}")
-                else:
-                    print(f"{OBname}: ?")
-            else:
-                print(f"{OBname}: ?")
-
-        print("# Guider Setup")
-        print("GuiderMode: auto")
-
-        print("# Spectrograph Setup")
-        print("TriggerCaHK: True")
-        print("TriggerGreen: True")
-        print("TriggerRed: True")
-
-        print("# Observations")
-        print("SEQ_Observations:")
-        print(" - Object: ?")
-        print("   nExp: ?")
-        print("   Exptime: ?")
-        print("   TakeSimulCal: ?")
-        print("   ExpMeterMode: ?")
-        print("   ExpMeterExpTime: ?")
-        print("   CalND1: ?")
-        print("   CalND2: ?")
-
-
+        for line in OB:
+            print(line)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
