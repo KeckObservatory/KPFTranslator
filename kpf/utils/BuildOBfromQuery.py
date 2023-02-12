@@ -7,6 +7,53 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import FailedPostCondition, check_input
 
 
+def get_names_from_gaiaid(gaiaid):
+    # Using Gaia ID, query for HD number and query for 2MASS ID
+    hdnumber = '?'
+    twomassid = '?'
+    names = Simbad.query_objectids(f"Gaia DR3 {gaiaid}")
+    for name in names:
+        is2mass = re.match('^2MASS\s+(J[\d\+\-]+)', name[0])
+        if is2mass is not None:
+            twomassid = is2mass.group(1)
+        ishd = re.match('^HD\s+([\d\+\-]+)', name[0])
+        if ishd is not None:
+            hdnumber = ishd.group(1)
+    return {'TargetName': hdnumber, '2MASSID': twomassid}
+
+
+def get_Jmag(twomassid):
+    cat = 'II/246/out'
+    cols = ['2MASS', 'Jmag']
+    r = Vizier(catalog=cat, columns=cols).query_constraints(Source=twomassid)[0]
+    Jmag_masked = r['Jmag'].mask[0]
+    Jmag = f"{r['Jmag'][0]:.2f}" if Jmag_masked == False else '?'
+    return {'Jmag': Jmag}
+
+
+def get_gaia_parameters(gaiaid):
+    cat = 'I/350/gaiaedr3'
+#     cols = ['RA_ICRS', 'DE_ICRS', 'Source', 'Plx',
+#             'PM', 'pmRA', 'e_pmRA', 'pmDE', 'e_pmDE',
+#             'Gmag', 'e_Gmag', 'RVDR2', 'e_RVDR2',
+#             'Tefftemp', 'loggtemp',
+#             'GmagCorr', 'e_GmagCorr']
+    cols = ['RA_ICRS', 'DE_ICRS', 'Source', 'Plx', 'Gmag', 'RVDR2', 'Tefftemp']
+    r = Vizier(catalog=cat, columns=cols).query_constraints(Source=gaiaid)[0]
+    plx = float(r['Plx']) if r['Plx'].mask[0] == False else '?'
+    rv = float(r['RVDR2']) if r['RVDR2'].mask[0] == False else '?'
+    Gmag = f"{float(r['Gmag']):.2f}" if r['Gmag'].mask[0] == False else '?'
+    Teff = f"{float(r['Tefftemp']):.0f}" if r['Tefftemp'].mask[0] == False else '?'
+    gaia_params = {'Parallax': plx,
+                   'RadialVelocity': rv,
+                   'Gmag': Gmag,
+                   'Teff': Teff,
+                   'RA_ICRS': float(r['RA_ICRS']),
+                   'DE_ICRS': float(r['DE_ICRS']),
+                   }
+    return gaia_params
+
+
 ##-------------------------------------------------------------------------
 ## BuildOBfromQuery
 ##-------------------------------------------------------------------------
@@ -26,48 +73,25 @@ class BuildOBfromQuery(KPFTranslatorFunction):
               "Template_Name: kpf_sci",
               "Template_Version: 0.6",
               ""]
-        # Using Gaia ID, query for HD number and query for 2MASS ID
-        hdnumber = '?'
-        twomassid = '?'
-        names = Simbad.query_objectids(f"Gaia DR3 {gaiaid}")
-        for name in names:
-            is2mass = re.match('^2MASS\s+(J[\d\+\-]+)', name[0])
-            if is2mass is not None:
-                twomassid = is2mass.group(1)
-            ishd = re.match('^HD\s+([\d\+\-]+)', name[0])
-            if ishd is not None:
-                hdnumber = ishd.group(1)
+
+        # Get target name and 2MASS ID from Gaia ID
+        names = get_names_from_gaiaid(gaiaid)
 
         # Using 2MASS ID query for Jmag
-        cat = 'II/246/out'
-        cols = ['2MASS', 'Jmag']
-        r = Vizier(catalog=cat, columns=cols).query_constraints(Source=gaiaid)[0]
-        Jmag_masked = r['Jmag'].mask[0]
-        Jmag = f"{r['Jmag'][0]:.2f}" if Jmag_masked == False else '?'
+        twomass_params = get_Jmag(names['2MASSID'])
         
         # Using Gaia ID, query for Gaia parameters
-        cat = 'I/350/gaiaedr3'
-#         cols = ['RA_ICRS', 'DE_ICRS', 'Source', 'Plx',
-#                 'PM', 'pmRA', 'e_pmRA', 'pmDE', 'e_pmDE',
-#                 'Gmag', 'e_Gmag', 'RVDR2', 'e_RVDR2',
-#                 'Tefftemp', 'loggtemp',
-#                 'GmagCorr', 'e_GmagCorr']
-        cols = ['RA_ICRS', 'DE_ICRS', 'Source', 'Plx', 'Gmag', 'RVDR2', 'Tefftemp']
-        r = Vizier(catalog=cat, columns=cols).query_constraints(Source=gaiaid)[0]
+        gaia_params = get_gaia_parameters(gaiaid)
 
         OB.append("# Target Info")
-        OB.append(f"TargetName: {hdnumber}")
-        OB.append(f"GaiaID: DR3 {int(r['Source'])}")
-        OB.append(f"2MASSID: {twomassid}")
-        plx = float(r['Plx']) if r['Plx'].mask[0] == False else '?'
-        OB.append(f"Parallax: {plx} # mas")
-        rv = float(r['RVDR2']) if r['RVDR2'].mask[0] == False else '?'
-        OB.append(f"RadialVelocity: {rv} # km/s")
-        Gmag = f"{float(r['Gmag']):.2f}" if r['Gmag'].mask[0] == False else '?'
-        OB.append(f"Gmag: {Gmag}")
-        OB.append(f"Jmag: {Jmag}")
-        Teff = f"{float(r['Tefftemp']):.0f}" if r['Tefftemp'].mask[0] == False else '?'
-        OB.append(f"Teff: {Teff}")
+        OB.append(f"TargetName: {names['TargetName']}")
+        OB.append(f"GaiaID: DR3 {gaiaid}")
+        OB.append(f"2MASSID: {names['2MASSID']}")
+        OB.append(f"Parallax: {gaia_params['Parallax']} # mas")
+        OB.append(f"RadialVelocity: {gaia_params['RadialVelocity']} # km/s")
+        OB.append(f"Gmag: {gaia_params['Gmag']}")
+        OB.append(f"Jmag: {twomass_params['Jmag']}")
+        OB.append(f"Teff: {gaia_params['Teff']}")
         OB.append("")
         OB.append("# Guider Setup")
         OB.append("GuiderMode: auto         # auto or manual. If manual, gain and FPS values below will be used")
@@ -95,9 +119,9 @@ class BuildOBfromQuery(KPFTranslatorFunction):
 
         # Build Starlist line
 
-        coord = SkyCoord(float(r['RA_ICRS']), float(r['DE_ICRS']), frame='icrs', unit='deg')
+        coord = SkyCoord(float(gaia_params['RA_ICRS']), float(gaia_params['DE_ICRS']), frame='icrs', unit='deg')
         coord_string = coord.to_string('hmsdms', sep=' ', precision=1)
-        starlist_line = f"{hdnumber:16s}{coord_string} 2000 vmag={Gmag}"
+        starlist_line = f"{names['TargetName']:16s}{coord_string} 2000 vmag={gaia_params['Gmag']}"
         print()
         print("Line for Keck star list:")
         print(starlist_line)
