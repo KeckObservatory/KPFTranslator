@@ -40,8 +40,8 @@ def get_gaia_parameters(gaiaid):
 #             'GmagCorr', 'e_GmagCorr']
     cols = ['RA_ICRS', 'DE_ICRS', 'Source', 'Plx', 'Gmag', 'RVDR2', 'Tefftemp']
     r = Vizier(catalog=cat, columns=cols).query_constraints(Source=gaiaid)[0]
-    plx = float(r['Plx']) if r['Plx'].mask[0] == False else '?'
-    rv = float(r['RVDR2']) if r['RVDR2'].mask[0] == False else '?'
+    plx = f"{float(r['Plx']):.2f}" if r['Plx'].mask[0] == False else '?'
+    rv = f"{float(r['RVDR2']):.2f}" if r['RVDR2'].mask[0] == False else '?'
     Gmag = f"{float(r['Gmag']):.2f}" if r['Gmag'].mask[0] == False else '?'
     Teff = f"{float(r['Tefftemp']):.0f}" if r['Tefftemp'].mask[0] == False else '?'
     gaia_params = {'Parallax': plx,
