@@ -18,11 +18,14 @@ class SetOutdirs(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        log.info(f"SetOutdirs invoked")
         utnow = datetime.utcnow()
         date = utnow-timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
         outdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
         magiq_outdir = Path(f"/s/sdata1701/kpfguide")
+        log.debug(f"base outdir: {outdir}")
+        log.debug(f"magiq outdir: {magiq_outdir}")
 
         if args.get('CRED2', True) is True:
             log.info(f"Setting guider OUTDIR to {magiq_outdir}")
