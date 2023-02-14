@@ -75,6 +75,7 @@ class RunCalOB(KPFTranslatorFunction):
                 log.error(email_err)
             raise(e)
 
+        check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
 
         # Execute the Dark Sequence

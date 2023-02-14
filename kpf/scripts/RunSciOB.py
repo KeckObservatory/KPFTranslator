@@ -69,6 +69,7 @@ class RunSciOB(KPFTranslatorFunction):
         WaitForConfigureScience.execute(OB)
 
         # Execute Sequences
+        check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
         # Execute the Cal Sequence
         #   Wrap in try/except so that cleanup happens
