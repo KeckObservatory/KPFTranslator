@@ -24,6 +24,7 @@ SEQ_Observations:               #
   nExp: 4                       # Number of exoposures in the OB
   Exptime: 30                   # Exposure time of the main spectrometer and CaH&K. See Exposure Meter section below.
   ExpMeterMode: monitor         # Only "monitor" is available for now
+  AutoExpMeter: False           # Set the exposure meter exposure time automatically
   ExpMeterExpTime: 0.5          # Exposure time of the Exposure Meter subframes
   TakeSimulCal: True            # Take simultaneous calibrations? (True/False)
   AutoNDFilters: False          # Automatically set ND filters -- Not available at this time!
