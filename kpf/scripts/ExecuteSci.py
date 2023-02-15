@@ -22,8 +22,8 @@ from ..calbench.SetND1 import SetND1
 from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
+from ..expmeter.PredictExpMeterParameters import predict_expmeter_parameters
 from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
-from ..utils.PredictExpMeterParameters import predict_expmeter_parameters
 
 
 class ExecuteSci(KPFTranslatorFunction):

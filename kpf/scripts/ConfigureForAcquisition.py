@@ -12,11 +12,11 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from .ExecuteSlewCal import ExecuteSlewCal
+from ..guider.PredictGuiderParameters import predict_guider_parameters
 from ..guider.SetGuiderFPS import SetGuiderFPS
 from ..guider.SetGuiderGain import SetGuiderGain
 from ..fiu.InitializeTipTilt import InitializeTipTilt
 from ..fiu.ConfigureFIU import ConfigureFIU
-from ..utils.PredictGuiderParameters import predict_guider_parameters
 
 
 class ConfigureForAcquisition(KPFTranslatorFunction):
