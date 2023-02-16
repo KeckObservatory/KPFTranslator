@@ -198,3 +198,5 @@ links:
         cmd: utils.StartGUIs.StartGUIs
     StopGUIs:
         cmd: utils.StopGUIs.StopGUIs
+    ZeroOutSlewCalTime:
+        cmd: utils.ZeroOutSlewCalTime.ZeroOutSlewCalTime

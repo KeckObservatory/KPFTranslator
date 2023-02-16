@@ -26,6 +26,7 @@ from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from ..utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 
 
 class ExecuteSlewCal(KPFTranslatorFunction):
@@ -134,6 +135,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
             log.info(f"Readout has begun")
             if runagitator is True:
                 StopAgitator.execute({})
+            ZeroOutSlewCalTime.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
