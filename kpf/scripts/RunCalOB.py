@@ -7,7 +7,8 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import set_script_keywords, clear_script_keywords, add_script_log
+from . import (set_script_keywords, clear_script_keywords, add_script_log,
+               check_script_running)
 from .ConfigureForCalibrations import ConfigureForCalibrations
 from .ExecuteDark import ExecuteDark
 from .ExecuteCal import ExecuteCal
