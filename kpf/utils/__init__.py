@@ -2,7 +2,7 @@
 GUI_list = [
             # Control0 for DSI
             # Control1
-            # - add Spectrograph GUI
+            #   To do: add Spectrograph GUI
             {'name': 'KPF Fiber Injection Unit (FIU)',
              'cmd': ['kpf', 'start', 'fiu_gui'],
              'display': 'control1',
@@ -12,13 +12,16 @@ GUI_list = [
              'display': 'control1',
              'position': '0,5,550,-1,-1'},
             # Control2
-            # - add Eventsounds
+#             {'name': 'Kpf eventsounds',
+#              'cmd':  ['eventsounds', '-a', 'kpf'],
+#              'display': 'control2',
+#              'position': None},
             {'name': 'SAOImage kpfds9',
              'cmd':  ['kpf', 'start', 'kpfds9'],
              'display': 'control2',
              'position': '0,1,55,1800,900'},
             # Telstatus
-            # - add Tip Tilt GUI
+            #   To do: add Tip Tilt GUI
             {'name': 'xshow_TipTilt',
              'cmd':  ['/home/kpfeng/bin/xshow_tiptilt'],
              'display': 'telstatus',
