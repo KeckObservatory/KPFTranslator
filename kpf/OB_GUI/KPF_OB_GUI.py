@@ -57,6 +57,8 @@ class MainWindow(QMainWindow):
         # Slew Cal Time Colors/Warnings
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
+        # Path to OB files
+        self.file_path = Path('/s/starlists')
 
 
     def setupUi(self):
@@ -526,30 +528,34 @@ class MainWindow(QMainWindow):
 
     def run_write_to_file(self):
         print('Not implemented')
+        lines = self.OB_to_lines()
+        
 
     def run_load_from_file(self):
-        result = QFileDialog.getOpenFileName(self, "Open OB File", "/s/starlists",
-                             "YAML Files (*yaml);;All Files (*)")
+        result = QFileDialog.getOpenFileName(self, "Open OB File",
+                                             f"{self.file_path}",
+                                             "YAML Files (*yaml);;All Files (*)")
         if result:
             fname = result[0]
-            with open(fname, 'r') as f:
-                contents = yaml.safe_load(f)
-            for key in contents:
-                if key == 'GaiaID':
-                    value = contents[key]
-                    print(f"{key}: {value} ({type(value)})")
-                    self.set_gaia_id(value)
-                elif key == 'SEQ_Observations':
-                    for seq_key in contents[key][0]:
-                        seq_value = contents[key][0][seq_key]
-                        print(f"SEQ_Observations: {seq_key}: {seq_value} ({type(seq_value)})")
-                        self.update_OB(seq_key, seq_value)
-                else:
-                    value = contents[key]
-                    print(f"{key}: {value} ({type(value)})")
-                    self.update_OB(key, value)
-
-
+            if fname != '' and Path(fname).exists():
+                with open(fname, 'r') as f:
+                    contents = yaml.safe_load(f)
+                for key in contents:
+                    if key == 'GaiaID':
+                        value = contents[key]
+                        print(f"{key}: {value} ({type(value)})")
+                        self.set_gaia_id(value)
+                    elif key == 'SEQ_Observations':
+                        for seq_key in contents[key][0]:
+                            seq_value = contents[key][0][seq_key]
+                            print(f"SEQ_Observations: {seq_key}: {seq_value} ({type(seq_value)})")
+                            self.update_OB(seq_key, seq_value)
+                    else:
+                        value = contents[key]
+                        print(f"{key}: {value} ({type(value)})")
+                        self.update_OB(key, value)
+                # save fname as path to use in future
+                self.file_path = Path(fname).parent
 
     ##-------------------------------------------
     ## Methods relating to executing an OB
