@@ -76,7 +76,7 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
                 progname = None
 
         if progname is None:
-            log.warning(f"Not setting observers")
+            log.warning(f"Not setting progname or observer values")
         else:
             this_program = [p for p in KPF_programs if p['ProjCode'] == progname]
             log.debug(f"Found {len(this_program)} entries for {progname} in schedule for tonight")

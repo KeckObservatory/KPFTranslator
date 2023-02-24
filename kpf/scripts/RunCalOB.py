@@ -7,7 +7,8 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import set_script_keywords, clear_script_keywords, add_script_log
+from . import (set_script_keywords, clear_script_keywords, add_script_log,
+               check_script_running)
 from .ConfigureForCalibrations import ConfigureForCalibrations
 from .ExecuteDark import ExecuteDark
 from .ExecuteCal import ExecuteCal
@@ -75,6 +76,7 @@ class RunCalOB(KPFTranslatorFunction):
                 log.error(email_err)
             raise(e)
 
+        check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
 
         # Execute the Dark Sequence

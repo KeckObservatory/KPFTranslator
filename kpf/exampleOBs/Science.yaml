@@ -3,7 +3,7 @@ Template_Version: 0.6
 
 # Target Info
 TargetName: 10700               # Name 
-GaiaID: DR2 2452378776434276992 # Gaia ID 
+GaiaID: DR3 2452378776434276992 # Gaia ID 
 2MASSID: 01440402-1556141       # 2MASS ID 
 Parallax: 273.81                # Parallax in arcsec
 RadialVelocity: -16.597         # Radial Velocity in km/s
@@ -11,7 +11,7 @@ Gmag: 3.3                       # G band magnitude (eventualy used by exposure m
 Jmag: 2.14                      # J band magnitude (eventualy used by guider)
 Teff: 5266                      # Effective temperature
 # Guider Setup
-GuideMode: manual               # Only "manual" is avaiable for now
+GuideMode: manual               # "manual", "auto", "off", "slow telescope guiding"
 GuideCamGain: low               # Guide camera gain; values = low | medium | high
 GuideFPS: 100                   # Frames per second for guide camera (for tip-tilt)
 # Spectrograph Setup
@@ -24,6 +24,7 @@ SEQ_Observations:               #
   nExp: 4                       # Number of exoposures in the OB
   Exptime: 30                   # Exposure time of the main spectrometer and CaH&K. See Exposure Meter section below.
   ExpMeterMode: monitor         # Only "monitor" is available for now
+  AutoExpMeter: False           # Set the exposure meter exposure time automatically
   ExpMeterExpTime: 0.5          # Exposure time of the Exposure Meter subframes
   TakeSimulCal: True            # Take simultaneous calibrations? (True/False)
   AutoNDFilters: False          # Automatically set ND filters -- Not available at this time!

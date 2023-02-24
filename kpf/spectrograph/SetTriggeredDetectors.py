@@ -32,6 +32,8 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
             detector_list.append('Ca_HK')
         if args.get('TriggerExpMeter', False) is True:
             detector_list.append('ExpMeter')
+        if args.get('TriggerGuide', False) is True:
+            detector_list.append('Guide')
 
         detectors_string = ','.join(detector_list)
         log.debug(f"Setting triggered detectors to '{detectors_string}'")
@@ -50,7 +52,10 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
 
         detector_names = [('Red', 'TriggerRed'),
                           ('Green', 'TriggerGreen'),
-                          ('Ca_HK', 'TriggerCaHK')]
+                          ('Ca_HK', 'TriggerCaHK'),
+                          ('ExpMeter', 'TriggerExpMeter'),
+                          ('Guide', 'TriggerGuide'),
+                          ]
         for detector in detector_names:
             detector_status = detector[0] in detector_list
             detector_target = args.get(detector[1], False)
@@ -72,5 +77,8 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
                                    default=False)
         parser = cls._add_bool_arg(parser, 'TriggerExpMeter',
                                    'Trigger the ExpMeter detector?',
+                                   default=False)
+        parser = cls._add_bool_arg(parser, 'TriggerGuide',
+                                   'Trigger the Guide detector?',
                                    default=False)
         return super().add_cmdline_args(parser, cfg)

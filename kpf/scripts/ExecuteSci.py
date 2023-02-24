@@ -22,6 +22,8 @@ from ..calbench.SetND1 import SetND1
 from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
+from ..expmeter.PredictExpMeterParameters import predict_expmeter_parameters
+from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
 
 
 class ExecuteSci(KPFTranslatorFunction):
@@ -54,12 +56,19 @@ class ExecuteSci(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Setup exposure meter
         ## ----------------------------------------------------------------
-        em_exptime = args.get('ExpMeterExpTime', None)
-        log.debug(f"ExpMeterExpTime requested {em_exptime:.1f}")
-        if em_exptime is not None:
-            kpf_expmeter = ktl.cache('kpf_expmeter')
-            log.debug(f"Setting ExpMeterExpTime = {em_exptime:.1f}")
-            kpf_expmeter['EXPOSURE'].write(em_exptime)
+        if args.get('ExpMeterMode', 'monitor') == 'monitor':
+            pass
+        else:
+            log.warning(f"Only monitor mode is available right now")
+
+        if args.get('AutoExpMeter', False) == True:
+            em_params = predict_expmeter_parameters(args.get('Gmag'))
+            args['ExpMeterExpTime'] = em_params
+        else:
+            pass
+
+        log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
+        SetExpMeterExptime.execute(args)
 
         ## ----------------------------------------------------------------
         ## Setup simulcal

@@ -32,6 +32,7 @@ from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from ..utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 
 
 class ExecuteCal(KPFTranslatorFunction):
@@ -161,6 +162,8 @@ class ExecuteCal(KPFTranslatorFunction):
             log.info(f"Readout has begun")
             if runagitator is True:
                 StopAgitator.execute({})
+            if calsource in ['LFCFiber', 'EtalonFiber']:
+                ZeroOutSlewCalTime.execute({})
         if calsource == 'WideFlat':
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
 

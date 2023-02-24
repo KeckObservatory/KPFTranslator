@@ -7,7 +7,8 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import set_script_keywords, clear_script_keywords, add_script_log
+from . import (set_script_keywords, clear_script_keywords, add_script_log,
+               check_script_running)
 from .ConfigureForAcquisition import ConfigureForAcquisition
 from .WaitForConfigureAcquisition import WaitForConfigureAcquisition
 from .ConfigureForScience import ConfigureForScience
@@ -69,6 +70,7 @@ class RunSciOB(KPFTranslatorFunction):
         WaitForConfigureScience.execute(OB)
 
         # Execute Sequences
+        check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
         # Execute the Cal Sequence
         #   Wrap in try/except so that cleanup happens
@@ -81,6 +83,7 @@ class RunSciOB(KPFTranslatorFunction):
             observation['TriggerCaHK'] = OB['TriggerCaHK']
             observation['TriggerGreen'] = OB['TriggerGreen']
             observation['TriggerRed'] = OB['TriggerRed']
+            observation['TriggerGuide'] = (OB.get('GuideMode', 'off') != 'off')
             try:
                 ExecuteSci.execute(observation)
             except Exception as e:

@@ -26,7 +26,7 @@ def add_script_handler(this_file_name):
     now_str = utnow.strftime('%Y%m%dat%H%M%S')
     date = utnow-timedelta(days=1)
     date_str = date.strftime('%Y%b%d').lower()
-    script_logfile = Path(kpflog_filehandler.baseFilename).parent / f"{this_file_name}_{now_str}.log"
+    script_logfile = Path(kpflog_filehandler.baseFilename).parent / f"{now_str}_{this_file_name}.log"
     ScriptLogFileHandler = logging.FileHandler(script_logfile)
     ScriptLogFileHandler.setLevel(logging.DEBUG)
     ScriptLogFileHandler.format = kpflog_filehandler.format
@@ -56,7 +56,8 @@ def set_script_keywords(scriptname, PID):
     log.debug(f"Registering script {scriptname} with PID {PID}")
     kpfconfig['SCRIPTNAME'].write(scriptname)
     kpfconfig['SCRIPTPID'].write(PID)
-    kpfconfig['SCRIPTHOST'].write(socket.gethostname())
+    user_at_host = f"{os.getlogin()}@{socket.gethostname()}"
+    kpfconfig['SCRIPTHOST'].write(user_at_host)
 
 
 def clear_script_keywords():
