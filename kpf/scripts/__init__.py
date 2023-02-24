@@ -90,11 +90,22 @@ def check_scriptstop():
     '''Function to check if a stop has been requested via kpfconfig.SCRIPTSTOP
     '''
     scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
+    scriptpause = ktl.cache('kpfconfig', 'SCRIPTPAUSE')
     if scriptstop.read() == 'Yes':
-        log.warning("SCRIPTSTOP requested.  Resetting SCRIPTSTOP and exiting")
+        log.warning("SCRIPTSTOP requested. Resetting SCRIPTSTOP and exiting")
         scriptstop.write('No')
         clear_script_keywords()
         raise KPFException("SCRIPTSTOP triggered")
+    if scriptpause.read() == 'Yes':
+        log.warning("SCRIPTPAUSE requested. Waiting for SCRIPTPAUSE=No.")
+        expr = f"($kpfconfig.SCRIPTPAUSE == 'No')"
+        timeout = cfg.get('times', 'scriptpause_timeout', fallback=600)
+        success = ktl.waitFor(expr, timeout=timeout)
+        if success == False:
+            log.error(f"Timed out waiting {timeout:.0f} s for SCRIPTPAUSE to resume")
+            raise KPFException("SCRIPTPAUSE Timeout")
+        else:
+            log.info(f"Resuming script")
 
 
 ##-----------------------------------------------------------------------------
