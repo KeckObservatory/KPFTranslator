@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import subprocess
 import yaml
+from datetime import datetime, timedelta
 
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
@@ -422,9 +423,6 @@ class MainWindow(QMainWindow):
         elif key == 'Teff':
             self.Teff.setText(f"{value}")
         elif key == 'GuideMode':
-            print()
-            print(self.OB['GuideMode'])
-            print()
             self.GuideMode.setCurrentText(value)
             self.GuideCamGain.setEnabled((value != 'auto'))
             self.GuideFPS.setEnabled((value != 'auto'))
@@ -531,24 +529,27 @@ class MainWindow(QMainWindow):
         return OB
 
     def run_write_to_file(self):
-        print('Not implemented')
-        lines = self.OB_to_lines()
         result = QFileDialog.getSaveFileName(self, 'Save File',
                                              f"{self.file_path}",
-                                             "YAML Files (*yaml);;All Files (*)")
+                                             "OB Files (*yaml);;All Files (*)")
         if result:
             save_file = result[0]
-            with open(save_file, 'w') as f:
-                for line in lines:
-                    f.write(line+'\n')
-            # save fname as path to use in future
-            self.file_path = Path(save_file).parent
+            if save_file != '':
+                self.write_to_this_file(save_file)
 
+    def write_to_this_file(self, save_file):
+        print(f"Writing to: {save_file}")
+        lines = self.OB_to_lines()
+        with open(save_file, 'w') as f:
+            for line in lines:
+                f.write(line+'\n')
+        # save fname as path to use in future
+        self.file_path = Path(save_file).parent
 
     def run_load_from_file(self):
         result = QFileDialog.getOpenFileName(self, "Open OB File",
                                              f"{self.file_path}",
-                                             "YAML Files (*yaml);;All Files (*)")
+                                             "OB Files (*yaml);;All Files (*)")
         if result:
             fname = result[0]
             if fname != '' and Path(fname).exists():
@@ -586,9 +587,9 @@ class MainWindow(QMainWindow):
     def run_executeOB_popup_clicked(self, i):
         print(f"run_executeOB_popup_clicked: {i.text()}")
         if i.text() == '&Yes':
-#             print("Setting kpfconfig.SLEWCALREQ=No")
-#             self.kpfconfig['SLEWCALREQ'].write('No')
-#             time.sleep(0.1)
+            print("Setting kpfconfig.SLEWCALREQ=No")
+            self.kpfconfig['SLEWCALREQ'].write('No')
+            time.sleep(0.1)
             print(f'Triggering RunSciOB')
             self.RunSciOB()
         else:
@@ -616,14 +617,23 @@ class MainWindow(QMainWindow):
 
     def RunSciOB(self):
         self.verify_OB()
-        print('RunSciOB not implemented')
-        RunSciOB_cmd = 'echo Hello World! ; sleep 10'
+
+        # Write to temporary file
+        utnow = datetime.utcnow()
+        now_str = utnow.strftime('%Y%m%dat%H%M%S')
+        date = utnow-timedelta(days=1)
+        date_str = date.strftime('%Y%b%d').lower()
+        tmp_file = Path(f'~/kpflogs/{date_str}/executedOB_{now_str}.yaml').expanduser()
+        print(tmp_file)
+        self.write_to_this_file(tmp_file)
+
+#         RunSciOB_cmd = 'echo "Hello World" ; sleep 10'
+        RunSciOB_cmd = f'kpfdo RunCalOB -f {tmp_file}'
+        # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'RunSciOB', '-name', 'RunSciOB',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
                '-e', f'{RunSciOB_cmd}']
         proc = subprocess.Popen(cmd)
-
-
 
 
 # end of class MainWindow
