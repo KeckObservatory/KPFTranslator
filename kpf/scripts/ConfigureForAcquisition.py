@@ -12,6 +12,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from .ExecuteSlewCal import ExecuteSlewCal
+from ..calbench.SetCalSource import SetCalSource
 from ..guider.PredictGuiderParameters import predict_guider_parameters
 from ..guider.SetGuiderFPS import SetGuiderFPS
 from ..guider.SetGuiderGain import SetGuiderGain

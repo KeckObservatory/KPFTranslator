@@ -628,7 +628,7 @@ class MainWindow(QMainWindow):
         self.write_to_this_file(tmp_file)
 
 #         RunSciOB_cmd = 'echo "Hello World" ; sleep 10'
-        RunSciOB_cmd = f'kpfdo RunCalOB -f {tmp_file}'
+        RunSciOB_cmd = f'kpfdo RunSciOB -f {tmp_file} ; echo "Done!" ; sleep 30'
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'RunSciOB', '-name', 'RunSciOB',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
