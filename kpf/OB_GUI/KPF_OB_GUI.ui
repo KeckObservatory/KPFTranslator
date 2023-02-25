@@ -301,7 +301,7 @@
      <item row="1" column="1">
       <widget class="QPushButton" name="write_to_file_btn">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
         <string>Write OB to File</string>
@@ -603,13 +603,13 @@
       </widget>
      </item>
      <item row="11" column="1">
-      <widget class="QComboBox" name="GuiderCamGain"/>
+      <widget class="QComboBox" name="GuideCamGain"/>
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="TargetName"/>
      </item>
      <item row="10" column="1">
-      <widget class="QComboBox" name="GuiderMode"/>
+      <widget class="QComboBox" name="GuideMode"/>
      </item>
      <item row="6" column="2">
       <widget class="QLabel" name="label_40">
@@ -619,7 +619,7 @@
       </widget>
      </item>
      <item row="12" column="1">
-      <widget class="QLineEdit" name="GuiderFPS"/>
+      <widget class="QLineEdit" name="GuideFPS"/>
      </item>
     </layout>
    </widget>
