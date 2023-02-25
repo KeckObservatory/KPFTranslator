@@ -43,7 +43,7 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         modes = kpffiu['MODE'].read()
         if dest.lower() not in modes.lower().split(','):
-            raise FailedToReachDestination(dest, modes)
+            raise FailedToReachDestination(modes, dest)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
