@@ -441,7 +441,7 @@ class MainWindow(QMainWindow):
         elif key == 'nExp':
             self.nExpEdit.setText(f"{value}")
         elif key == 'Exptime':
-            self.ExptimeEdit.setText(f"{float(value):.1f}")
+            self.ExptimeEdit.setText(f"{value}")
         elif key == 'ExpMeterMode':
             self.ExpMeterMode.setCurrentText(value)
         elif key == 'AutoExpMeter':
