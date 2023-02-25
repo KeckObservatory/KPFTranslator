@@ -34,9 +34,9 @@ class MainWindow(QMainWindow):
                    'TriggerCaHK': True,
                    'TriggerGreen': True,
                    'TriggerRed': True,
-                   'GuiderMode': 'auto',
-                   'GuiderCamGain': 'high',
-                   'GuiderFPS': 100,
+                   'GuideMode': 'auto',
+                   'GuideCamGain': 'high',
+                   'GuideFPS': 100,
                    'SEQ_Observations': [
                         {'Object': '',
                          'nExp': '1',
@@ -160,20 +160,20 @@ class MainWindow(QMainWindow):
         self.Teff = self.findChild(QLabel, 'Teff')
 
         # Guider Setup
-        self.GuiderMode = self.findChild(QComboBox, 'GuiderMode')
-        self.GuiderMode.addItems(["auto", "manual"])
-        self.update_OB('GuiderMode', self.OB['GuiderMode'])
-        self.GuiderMode.currentTextChanged.connect(self.set_guider_mode)
+        self.GuideMode = self.findChild(QComboBox, 'GuideMode')
+        self.GuideMode.addItems(["auto", "manual"])
+        self.update_OB('GuideMode', self.OB['GuideMode'])
+        self.GuideMode.currentTextChanged.connect(self.set_guide_mode)
         
-        self.GuiderCamGain = self.findChild(QComboBox, 'GuiderCamGain')
-        self.GuiderCamGain.addItems(["high", "medium", "low"])
-        self.update_OB('GuiderCamGain', self.OB['GuiderCamGain'])
-        self.GuiderCamGain.currentTextChanged.connect(self.set_guider_gain)
-        self.GuiderFPS = self.findChild(QLineEdit, 'GuiderFPS')
-        self.update_OB('GuiderFPS', self.OB['GuiderFPS'])
-        self.GuiderFPS.textChanged.connect(self.set_fps)
-        if self.OB['GuiderMode'] == 'auto':
-            self.GuiderFPS.setEnabled(False)
+        self.GuideCamGain = self.findChild(QComboBox, 'GuideCamGain')
+        self.GuideCamGain.addItems(["high", "medium", "low"])
+        self.update_OB('GuideCamGain', self.OB['GuideCamGain'])
+        self.GuideCamGain.currentTextChanged.connect(self.set_guide_gain)
+        self.GuideFPS = self.findChild(QLineEdit, 'GuideFPS')
+        self.update_OB('GuideFPS', self.OB['GuideFPS'])
+        self.GuideFPS.textChanged.connect(self.set_fps)
+        if self.OB['GuideMode'] == 'auto':
+            self.GuideFPS.setEnabled(False)
 
         # Spectrograph Setup
         self.TriggerCaHK = self.findChild(QCheckBox, 'TriggerCaHK')
@@ -345,14 +345,14 @@ class MainWindow(QMainWindow):
         self.update_OB('TargetName', value)
         self.TargetName.setText(f"{value}")
 
-    def set_guider_mode(self, value):
-        self.update_OB('GuiderMode', value)
+    def set_guide_mode(self, value):
+        self.update_OB('GuideMode', value)
 
-    def set_guider_gain(self, value):
-        self.update_OB('GuiderCamGain', value)
+    def set_guide_gain(self, value):
+        self.update_OB('GuideCamGain', value)
 
     def set_fps(self, value):
-        self.update_OB('GuiderFPS', value)
+        self.update_OB('GuideFPS', value)
 
     def set_object(self, value):
         self.update_OB('Object', value)
@@ -421,13 +421,17 @@ class MainWindow(QMainWindow):
             self.Jmag.setText(f"{value}")
         elif key == 'Teff':
             self.Teff.setText(f"{value}")
-        elif key == 'GuiderMode':
-            self.GuiderCamGain.setEnabled((value != 'auto'))
-            self.GuiderFPS.setEnabled((value != 'auto'))
-        elif key == 'GuiderCamGain':
-            self.GuiderCamGain.setCurrentText(value)
-        elif key == 'GuiderFPS':
-            self.GuiderFPS.setText(f"{value}")
+        elif key == 'GuideMode':
+            print()
+            print(self.OB['GuideMode'])
+            print()
+            self.GuideMode.setCurrentText(value)
+            self.GuideCamGain.setEnabled((value != 'auto'))
+            self.GuideFPS.setEnabled((value != 'auto'))
+        elif key == 'GuideCamGain':
+            self.GuideCamGain.setCurrentText(value)
+        elif key == 'GuideFPS':
+            self.GuideFPS.setText(f"{value}")
         elif key == 'TriggerCaHK':
             self.TriggerCaHK.setChecked(value)
         elif key == 'TriggerGreen':
@@ -484,11 +488,11 @@ class MainWindow(QMainWindow):
               f"Teff: {self.OB.get('Teff', '?')}",
               f"",
               f"# Guider Setup",
-              f"GuiderMode: {self.OB.get('GuiderMode', '?')}"]
-        if self.OB.get('GuiderMode', None) != 'auto':
+              f"GuideMode: {self.OB.get('GuideMode', '?')}"]
+        if self.OB.get('GuideMode', None) != 'auto':
             OB.extend([
-              f"GuiderCamGain: {self.OB.get('GuiderCamGain', '?')}",
-              f"GuiderFPS: {self.OB.get('GuiderFPS', '?')}",
+              f"GuideCamGain: {self.OB.get('GuideCamGain', '?')}",
+              f"GuideFPS: {self.OB.get('GuideFPS', '?')}",
               ])
         OB.extend([
               f"",
@@ -529,7 +533,17 @@ class MainWindow(QMainWindow):
     def run_write_to_file(self):
         print('Not implemented')
         lines = self.OB_to_lines()
-        
+        result = QFileDialog.getSaveFileName(self, 'Save File',
+                                             f"{self.file_path}",
+                                             "YAML Files (*yaml);;All Files (*)")
+        if result:
+            save_file = result[0]
+            with open(save_file, 'w') as f:
+                for line in lines:
+                    f.write(line+'\n')
+            # save fname as path to use in future
+            self.file_path = Path(save_file).parent
+
 
     def run_load_from_file(self):
         result = QFileDialog.getOpenFileName(self, "Open OB File",
