@@ -535,6 +535,8 @@ class MainWindow(QMainWindow):
         if result:
             save_file = result[0]
             if save_file != '':
+                # save fname as path to use in future
+                self.file_path = Path(save_file).parent
                 self.write_to_this_file(save_file)
 
     def write_to_this_file(self, save_file):
@@ -543,8 +545,6 @@ class MainWindow(QMainWindow):
         with open(save_file, 'w') as f:
             for line in lines:
                 f.write(line+'\n')
-        # save fname as path to use in future
-        self.file_path = Path(save_file).parent
 
     def run_load_from_file(self):
         result = QFileDialog.getOpenFileName(self, "Open OB File",

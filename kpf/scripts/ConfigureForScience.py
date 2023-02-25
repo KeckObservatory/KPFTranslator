@@ -15,6 +15,7 @@ from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.SetCurrentBase import SetCurrentBase
+from ..fiu.StartTipTilt import StartTipTilt
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from ..spectrograph.WaitForReady import WaitForReady
