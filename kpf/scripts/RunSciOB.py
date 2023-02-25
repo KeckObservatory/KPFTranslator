@@ -8,7 +8,7 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import (set_script_keywords, clear_script_keywords, add_script_log,
-               check_script_running)
+               check_script_running, check_scriptstop)
 from .ConfigureForAcquisition import ConfigureForAcquisition
 from .WaitForConfigureAcquisition import WaitForConfigureAcquisition
 from .ConfigureForScience import ConfigureForScience
@@ -64,6 +64,8 @@ class RunSciOB(KPFTranslatorFunction):
         print("########################################")
         print()
         user_input = input()
+
+        check_scriptstop()
 
         log.info(f"Configuring for Science")
         ConfigureForScience.execute(OB)
