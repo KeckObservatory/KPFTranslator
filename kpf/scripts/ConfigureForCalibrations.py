@@ -13,6 +13,7 @@ from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.CalLampPower import CalLampPower
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from ..spectrograph.WaitForReady import WaitForReady
 
 
 class ConfigureForCalibrations(KPFTranslatorFunction):
@@ -57,6 +58,7 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
         log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration'})
         log.info(f"Set Detector List")
+        WaitForReady.execute({})
         SetTriggeredDetectors.execute(OB)
 
     @classmethod
