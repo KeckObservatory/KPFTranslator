@@ -4,7 +4,6 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from .WaitForConfigureFIU import WaitForConfigureFIU
 
 
 ##-----------------------------------------------------------------------------
@@ -15,11 +14,6 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        keyword = ktl.cache('kpffiu', 'MODE')
-        allowed_values = list(keyword._getEnumerators())
-        if 'None' in allowed_values:
-            allowed_values.pop(allowed_values.index('None'))
-        check_input(args, 'mode', allowed_values=allowed_values)
         return True
 
     @classmethod
@@ -33,13 +27,7 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        if args.get('wait', True) is True:
-            WaitForConfigureFIU.execute(args)
-            dest = args.get('mode')
-            kpffiu = ktl.cache('kpffiu')
-            modes = kpffiu['MODE'].read()
-            if dest.lower() not in modes.lower().split(','):
-                raise FailedToReachDestination(dest, modes)
+        return True
 
 
 ##-----------------------------------------------------------------------------
@@ -50,7 +38,8 @@ class ConfigureFIU(KPFTranslatorFunction):
     fails.
     
     ARGS:
-    mode - The desired FIU mode
+    mode - The desired FIU mode.  One of:
+           Stowed, Alignment, Acquisition, Observing, Calibration
     wait (bool) - Wait for move to complete before returning? (default: True)
     '''
     @classmethod
@@ -78,12 +67,14 @@ class ConfigureFIU(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         if args.get('wait', True) is True:
-            WaitForConfigureFIU.execute(args)
             dest = args.get('mode')
             kpffiu = ktl.cache('kpffiu')
             modes = kpffiu['MODE'].read()
             if dest.lower() not in modes.lower().split(','):
                 raise FailedToReachDestination(dest, modes)
+            else:
+                log.info(f"FIU mode is now {dest}")
+        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

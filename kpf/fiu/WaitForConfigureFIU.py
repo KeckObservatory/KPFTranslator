@@ -1,11 +1,10 @@
 import ktl
-from time import sleep
+import time
 from datetime import datetime, timedelta
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from .ConfigureFIU import ConfigureFIU
 
 
 ##-----------------------------------------------------------------------------
@@ -19,11 +18,6 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        keyword = ktl.cache('kpffiu', 'MODE')
-        allowed_values = list(keyword._getEnumerators())
-        if 'None' in allowed_values:
-            allowed_values.pop(allowed_values.index('None'))
-        check_input(args, 'mode', allowed_values=allowed_values)
         return True
 
     @classmethod
@@ -36,7 +30,7 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
                       cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
         end = start + timedelta(seconds=max(move_times))
         while dest.lower() not in modes.lower().split(',') and datetime.utcnow() <= end:
-            sleep(1)
+            time.sleep(1)
             modes = kpffiu['MODE'].read()
 
     @classmethod
@@ -46,21 +40,7 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
         modes = kpffiu['MODE'].read()
         if dest.lower() not in modes.lower().split(','):
             raise FailedToReachDestination(modes, dest)
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['mode'] = {'type': str,
-                               'help': 'Desired mode (see kpffiu.MODE)'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after move is finished?', default=True)
-
-        return super().add_cmdline_args(parser, cfg)
+        return True
 
 
 ##-----------------------------------------------------------------------------
@@ -91,6 +71,7 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
             log.warning(f'FIU failed to reach destination. Retrying.')
             shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=0.5)
             time.sleep(shim_time)
+            from .ConfigureFIU import ConfigureFIUOnce
             ConfigureFIUOnce.execute({'mode': dest, 'wait': True})
 
     @classmethod
@@ -100,6 +81,8 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
         modes = kpffiu['MODE'].read()
         if dest.lower() not in modes.lower().split(','):
             raise FailedToReachDestination(modes, dest)
+        else:
+            log.info(f"FIU mode is now {dest}")
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
