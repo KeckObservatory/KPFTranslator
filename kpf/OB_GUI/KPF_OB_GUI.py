@@ -6,6 +6,7 @@ import re
 import subprocess
 import yaml
 from datetime import datetime, timedelta
+from astropy.coordinates import SkyCoord
 
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
@@ -31,6 +32,9 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, *args, **kwargs)
         uic.loadUi('KPF_OB_GUI.ui', self)
         # Initial OB settings
+        self.target_names = None
+        self.twomass_params = None
+        self.gaia_params = None
         self.OB = {
                    'TriggerCaHK': True,
                    'TriggerGreen': True,
@@ -60,6 +64,7 @@ class MainWindow(QMainWindow):
         self.bad_slew_cal_time = 2.0 # hours
         # Path to OB files
         self.file_path = Path('/s/starlists')
+        self.starlist_file_name = ''
 
 
     def setupUi(self):
@@ -68,7 +73,7 @@ class MainWindow(QMainWindow):
         # script name
         self.scriptname_value = self.findChild(QLabel, 'scriptname_value')
         scriptname_kw = kPyQt.kFactory(self.kpfconfig['SCRIPTNAME'])
-        scriptname_kw.stringCallback.connect(self.scriptname_value.setText)
+        scriptname_kw.stringCallback.connect(self.update_scriptname_value)
 
         # script pause
         self.scriptpause_value = self.findChild(QLabel, 'scriptpause_value')
@@ -147,6 +152,14 @@ class MainWindow(QMainWindow):
         ##----------------------
         ## OB Contents
         ##----------------------
+        # Star List
+        self.star_list_line = self.findChild(QLabel, 'star_list_line')
+        self.star_list_line.setText('#TargetName       00:00:00.0 00:00:00.0 2000')
+        self.star_list_line.setStyleSheet("background-color:white; font-family:monospace")
+
+        self.append_to_star_list_btn = self.findChild(QPushButton, 'append_to_star_list_btn')
+        self.append_to_star_list_btn.clicked.connect(self.run_append_to_star_list)
+
         # Target Name
         self.TargetName = self.findChild(QLineEdit, 'TargetName')
         self.TargetName.textChanged.connect(self.set_target_name)
@@ -236,6 +249,15 @@ class MainWindow(QMainWindow):
     ##-------------------------------------------
     ## Methods relating to updates from keywords
     ##-------------------------------------------
+    # Script Name
+    def update_scriptname_value(self, value):
+        '''Set label text and set color'''
+        self.scriptname_value.setText(value)
+        if value in ['None', '']:
+            self.scriptname_value.setStyleSheet("color:green")
+        else:
+            self.scriptname_value.setStyleSheet("color:orange")
+
     # Expose Status
     def update_expose_status_value(self, value):
         '''Set label text and set color'''
@@ -317,22 +339,49 @@ class MainWindow(QMainWindow):
     ## Methods relating modifying OB fields
     ##-------------------------------------------
     def run_query_gaia(self):
+        # Will this query overwrite any values?
+        target_OB_keys = ['GaiaID', '2MASSID', 'Parallax', 'RadialVelocity',
+                          'Gmag', 'Jmag', 'Teff']
+        currently_used = [v for v in target_OB_keys if v in self.OB.keys()]
+        if len(currently_used) > 0:
+            overwrite_popup = QMessageBox()
+            overwrite_popup.setWindowTitle('OB Data Overwrite Confirmation')
+            msg = ("This query may overwrite data in the current OB.\n"
+                   "Do you wish to continue and use Gaia catalog values?")
+            overwrite_popup.setText(msg)
+            overwrite_popup.setIcon(QMessageBox.Critical)
+            overwrite_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
+            overwrite_popup.buttonClicked.connect(self.run_overwrite_popup_clicked)
+            overwrite_popup.exec_()
+        else:
+            self.execute_query_gaia()
+
+    def run_overwrite_popup_clicked(self, i):
+        print(f"run_overwrite_popup_clicked: {i.text()}")
+        if i.text() == '&Yes':
+            self.execute_query_gaia()
+        else:
+            print('Skipping Gaia query')
+
+    def execute_query_gaia(self):
+        # Perform Query and Update OB
         gaiaid = self.OB['GaiaID']
         if len(gaiaid.split(' ')) == 2:
             gaiaid = gaiaid.split(' ')[1]
-        names = BuildOBfromQuery.get_names_from_gaiaid(gaiaid)
-        if names is not None:
-            for key in names:
-                self.update_OB(key, names[key])
-        twomass_params = BuildOBfromQuery.get_Jmag(names['2MASSID'])
-        if twomass_params is not None:
-            for key in twomass_params:
-                self.update_OB(key, twomass_params[key])
-        gaia_params = BuildOBfromQuery.get_gaia_parameters(gaiaid)
-        if gaia_params is not None:
-            for key in gaia_params:
-                self.update_OB(key, gaia_params[key])
-        self.OB_to_lines()
+        self.target_names = BuildOBfromQuery.get_names_from_gaiaid(gaiaid)
+        if self.target_names is not None:
+            for key in self.target_names:
+                self.update_OB(key, self.target_names[key])
+        self.twomass_params = BuildOBfromQuery.get_Jmag(self.target_names['2MASSID'])
+        if self.twomass_params is not None:
+            for key in self.twomass_params:
+                self.update_OB(key, self.twomass_params[key])
+        self.gaia_params = BuildOBfromQuery.get_gaia_parameters(gaiaid)
+        if self.gaia_params is not None:
+            for key in self.gaia_params:
+                self.update_OB(key, self.gaia_params[key])
+#         self.OB_to_lines()
+        self.form_star_list_line()
 
     def set_gaia_id(self, value):
         includes_prefix = re.match('DR3 (\d+)', value)
@@ -407,7 +456,9 @@ class MainWindow(QMainWindow):
             self.OB[key] = value
 
         if key == 'TargetName':
+            self.OB[key] = f"{value}"
             self.TargetName.setText(f"{value}")
+            self.form_star_list_line()
         elif key == 'GaiaID':
             self.GaiaID.setText(f"{value}")
         elif key == '2MASSID':
@@ -544,6 +595,42 @@ class MainWindow(QMainWindow):
         lines = self.OB_to_lines()
         with open(save_file, 'w') as f:
             for line in lines:
+                f.write(line+'\n')
+
+    def form_star_list_line(self):
+        if self.gaia_params is not None:
+            coord = SkyCoord(float(self.gaia_params['RA_ICRS']),
+                             float(self.gaia_params['DE_ICRS']),
+                             frame='icrs', unit='deg')
+            coord_string = coord.to_string('hmsdms', sep=' ', precision=2)
+            starlist_entry = (f"{self.OB['TargetName']:18s} {coord_string} "
+                              f"2000.0 vmag={self.OB['Gmag']} "
+                              f"# Built by KPF OB GUI")
+            self.star_list_line.setText(starlist_entry)
+            return starlist_entry
+        else:
+            msg = 'Unable to form star list line without Gaia coordinates'
+            self.star_list_line.setText(msg)
+            print(msg)
+            return None
+
+    def run_append_to_star_list(self):
+        result = QFileDialog.getSaveFileName(self, 'Star List File',
+                                             f"{self.file_path}",
+                                             "txt Files (*txt);;All Files (*)")
+        if result:
+            starlist_file = result[0]
+            if starlist_file != '':
+                # save fname as path to use in future
+                starlist_file = Path(starlist_file)
+                self.file_path = starlist_file.parent
+                self.starlist_file_name = starlist_file.name
+                self.append_to_starlist_file(starlist_file)
+
+    def append_to_starlist_file(self, starlist_file):
+        line = self.form_star_list_line()
+        if line is not None:
+            with open(starlist_file, 'a') as f:
                 f.write(line+'\n')
 
     def run_load_from_file(self):
