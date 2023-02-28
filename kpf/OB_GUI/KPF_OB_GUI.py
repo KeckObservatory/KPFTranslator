@@ -154,7 +154,7 @@ class MainWindow(QMainWindow):
         ##----------------------
         # Star List
         self.star_list_line = self.findChild(QLabel, 'star_list_line')
-        self.star_list_line.setText('#TargetName       00:00:00.0 00:00:00.0 2000')
+        self.star_list_line.setText('Unable to form star list line without Gaia coordinates')
         self.star_list_line.setStyleSheet("background-color:white; font-family:monospace")
 
         self.append_to_star_list_btn = self.findChild(QPushButton, 'append_to_star_list_btn')
@@ -615,6 +615,9 @@ class MainWindow(QMainWindow):
             return None
 
     def run_append_to_star_list(self):
+        if self.form_star_list_line() is None:
+            # Don't bother with dialog if we can't form a star list entry
+            return None
         result = QFileDialog.getSaveFileName(self, 'Star List File',
                                              f"{self.file_path}",
                                              "txt Files (*txt);;All Files (*)")
