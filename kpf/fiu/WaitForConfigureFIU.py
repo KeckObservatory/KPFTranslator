@@ -26,7 +26,7 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         modes = kpffiu['MODE'].read()
         start = datetime.utcnow()
-        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=30),
+        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=40),
                       cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
         end = start + timedelta(seconds=max(move_times))
         while dest.lower() not in modes.lower().split(',') and datetime.utcnow() <= end:
