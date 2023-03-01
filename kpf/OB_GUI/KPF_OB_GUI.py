@@ -380,7 +380,6 @@ class MainWindow(QMainWindow):
         if self.gaia_params is not None:
             for key in self.gaia_params:
                 self.update_OB(key, self.gaia_params[key])
-#         self.OB_to_lines()
         self.form_star_list_line()
 
     def set_gaia_id(self, value):
@@ -520,65 +519,6 @@ class MainWindow(QMainWindow):
     def verify_OB(self):
         print('Not implemented')
 
-    def OB_to_lines(self):
-        obs = self.OB.get('SEQ_Observations')[0]
-        OB = [f"# Built using KPF OB GUI tool",
-              f"Template_Name: kpf_sci",
-              f"Template_Version: 0.6",
-              f"",
-              f"# Target Info",
-              f"TargetName: {self.OB.get('TargetName', '?')}",
-              f"GaiaID: {self.OB.get('GaiaID', '?')}",
-              f"2MASSID: {self.OB.get('2MASSID', '?')}",
-              f"Parallax: {self.OB.get('Parallax', '?')}",
-              f"RadialVelocity: {self.OB.get('RadialVelocity', '?')}",
-              f"Gmag: {self.OB.get('Gmag', '?')}",
-              f"Jmag: {self.OB.get('Jmag', '?')}",
-              f"Teff: {self.OB.get('Teff', '?')}",
-              f"",
-              f"# Guider Setup",
-              f"GuideMode: {self.OB.get('GuideMode', '?')}"]
-        if self.OB.get('GuideMode', None) != 'auto':
-            OB.extend([
-              f"GuideCamGain: {self.OB.get('GuideCamGain', '?')}",
-              f"GuideFPS: {self.OB.get('GuideFPS', '?')}",
-              ])
-        OB.extend([
-              f"",
-              f"# Spectrograph Setup",
-              f"TriggerCaHK: {self.OB.get('TriggerCaHK', '?')}",
-              f"TriggerGreen: {self.OB.get('TriggerGreen', '?')}",
-              f"TriggerRed: {self.OB.get('TriggerRed', '?')}",
-              f"",
-              f"# Observations (repeat the indented block below to take multiple observations,",
-              f"SEQ_Observations:",
-              f" - Object: {obs.get('Object', '?')}",
-              f"   nExp: {obs.get('nExp', '?')}",
-              f"   Exptime: {obs.get('Exptime', '?')}",
-              f"   ExpMeterMode: {obs.get('ExpMeterMode', '?')}",
-              f"   AutoExpMeter: {obs.get('AutoExpMeter', 'False')}",
-              ])
-        if obs.get('AutoExpMeter', False) != True:
-            OB.extend([
-              f"   ExpMeterExpTime: {obs.get('ExpMeterExpTime', '?')}",
-              ])
-        OB.extend([
-              f"   TakeSimulCal: {obs.get('TakeSimulCal', '?')}",
-              ])
-        if obs.get('TakeSimulCal', None) == True:
-            OB.extend([
-              f"   AutoNDFilters: {obs.get('AutoNDFilters', '?')}",
-              ])
-            if obs.get('AutoNDFilters', None) != True:
-                OB.extend([
-                  f"   CalND1: {obs.get('CalND1', '?')}",
-                  f"   CalND2: {obs.get('CalND2', '?')}",
-                  ])
-        for line in OB:
-            print(line)
-        print(self.OB)
-        return OB
-
     def run_write_to_file(self):
         result = QFileDialog.getSaveFileName(self, 'Save File',
                                              f"{self.file_path}",
@@ -592,22 +532,20 @@ class MainWindow(QMainWindow):
 
     def write_to_this_file(self, save_file):
         print(f"Writing to: {save_file}")
-        lines = self.OB_to_lines()
+        lines = BuildOBfromQuery.OBdict_to_lines(self.OB)
         with open(save_file, 'w') as f:
             for line in lines:
                 f.write(line+'\n')
 
     def form_star_list_line(self):
         if self.gaia_params is not None:
-            coord = SkyCoord(float(self.gaia_params['RA_ICRS']),
-                             float(self.gaia_params['DE_ICRS']),
-                             frame='icrs', unit='deg')
-            coord_string = coord.to_string('hmsdms', sep=' ', precision=2)
-            starlist_entry = (f"{self.OB['TargetName']:18s} {coord_string} "
-                              f"2000.0 vmag={self.OB['Gmag']} "
-                              f"# Built by KPF OB GUI")
-            self.star_list_line.setText(starlist_entry)
-            return starlist_entry
+            starlist = BuildOBfromQuery.form_starlist_line(self.OB['TargetName'],
+                                                           self.gaia_params['RA_ICRS'],
+                                                           self.gaia_params['DE_ICRS'],
+                                                           vmag=self.OB['Gmag']
+                                                           )
+            self.star_list_line.setText(starlist)
+            return starlist
         else:
             msg = 'Unable to form star list line without Gaia coordinates'
             self.star_list_line.setText(msg)
