@@ -30,7 +30,8 @@ class MainWindow(QMainWindow):
 
     def __init__(self, *args, **kwargs):
         QMainWindow.__init__(self, *args, **kwargs)
-        uic.loadUi('KPF_OB_GUI.ui', self)
+        ui_file = Path(__file__).parent / 'KPF_OB_GUI.ui'
+        uic.loadUi(f"{ui_file}", self)
         # Initial OB settings
         self.target_names = None
         self.twomass_params = None
