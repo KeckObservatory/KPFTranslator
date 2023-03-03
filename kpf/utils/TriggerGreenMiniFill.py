@@ -24,13 +24,22 @@ class TriggerGreenMiniFill(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpffill = ktl.cache('kpffill')
+        # Start fill
         log.warning(f'Starting green mini fill')
         kpffill['GREENSTART'].write(1)
+        # Wait
         sleep_time = 180
         log.debug(f'Sleeping {sleep_time:.0f} s')
-        log.warning(f'Stopping green mini fill')
-        kpffill['GREENSTOP'].write(1)
-        time.sleep(5)
+        # Stop fill
+        if kpffill['GREENFILLIP'].read() == 'True':
+            log.warning(f'Stopping green mini fill')
+            kpffill['GREENSTOP'].write(1)
+            time.sleep(5)
+        else:
+            msg = 'Expected green mini fill to be in progress.'
+            SendEmail.execute({'Subject': 'TriggerGreenMiniFill Failed',
+                               'Message': f'{msg}'})
+            raise KPFException(msg)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
