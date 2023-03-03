@@ -8,7 +8,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 ##-------------------------------------------------------------------------
-## CorrectDAR
+## ZeroOutSlewCalTime
 ##-------------------------------------------------------------------------
 class ZeroOutSlewCalTime(KPFTranslatorFunction):
     '''
