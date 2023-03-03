@@ -198,5 +198,7 @@ links:
         cmd: utils.StartGUIs.StartGUIs
     StopGUIs:
         cmd: utils.StopGUIs.StopGUIs
+    TriggerGreenMiniFill:
+        cmd: utils.TriggerGreenMiniFill.TriggerGreenMiniFill
     ZeroOutSlewCalTime:
         cmd: utils.ZeroOutSlewCalTime.ZeroOutSlewCalTime
