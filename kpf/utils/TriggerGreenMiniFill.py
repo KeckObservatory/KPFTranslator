@@ -28,7 +28,7 @@ class TriggerGreenMiniFill(KPFTranslatorFunction):
         log.warning(f'Starting green mini fill')
         kpffill['GREENSTART'].write(1)
         # Wait
-        sleep_time = 300
+        sleep_time = 240
         log.debug(f'Sleeping {sleep_time:.0f} s')
         # Stop fill
         if kpffill['GREENFILLIP'].read() == 'True':
