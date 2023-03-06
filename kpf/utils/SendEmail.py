@@ -23,7 +23,7 @@ class SendEmail(KPFTranslatorFunction):
         msg['Subject'] = args.get('Subject', 'KPF Alert')
         log.warning(f"Sending email, To {msg['To']}")
         log.warning(f"Sending email, Subject {msg['Subject']}")
-        log.warning(f"{args.get('message')}")
+        log.warning(f"{msg['Message']}")
         s = smtplib.SMTP('relay.keck.hawaii.edu')
         s.send_message(msg)
         s.quit()
