@@ -27,7 +27,7 @@ class TakeIntensityReading(KPFTranslatorFunction):
 
         # Verify serial connection is active
         if kpfcal['SERIALCONN'].read() == 'Off':
-            lof.debug('Initiating serial connection')
+            log.debug('Initiating serial connection')
             kpfcal['SERIALCONN'].write('On')
             expr = f"($kpfcal.SERIALCONN == 'On')"
             boottime = cfg.get('times', 'intenmon_boot_time', fallback=5)
