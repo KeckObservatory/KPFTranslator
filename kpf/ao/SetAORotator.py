@@ -11,7 +11,8 @@ class SetAORotator(KPFTranslatorFunction):
     '''Set the AO rotator destination
     
     ARGS:
-    dest - Angle in degrees
+    =====
+    :dest: Angle in degrees
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

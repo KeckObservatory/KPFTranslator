@@ -14,9 +14,10 @@ class SetND(KPFTranslatorFunction):
     ND2: "OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"
     
     ARGS:
-    CalND1 - The neutral density filter to put in the first filter wheel.
-    CalND2 - The neutral density filter to put in the second filter wheel.
-    wait (bool) - Wait for move to complete before returning? (default: True)
+    =====
+    :CalND1: The neutral density filter to put in the first filter wheel.
+    :CalND2: The neutral density filter to put in the second filter wheel.
+    :wait: (bool) Wait for move to complete before returning? (default: True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

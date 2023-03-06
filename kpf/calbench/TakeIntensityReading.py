@@ -7,7 +7,12 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class TakeIntensityReading(KPFTranslatorFunction):
-    '''
+    '''Insert the intensity monitor (aka "cal diode") in to the beam and record
+    a measurement of the cal lamp intensity.
+    
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
