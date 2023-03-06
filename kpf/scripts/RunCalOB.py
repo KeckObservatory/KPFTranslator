@@ -66,7 +66,7 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error('ConfigureForCalibrations Failed')
             log.error(e)
-            for line in traceback.format_exc()
+            for line in traceback.format_exc(sys.exc_info()[2]):
                 log.error(line)
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
@@ -77,7 +77,7 @@ class RunCalOB(KPFTranslatorFunction):
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
-                for line in traceback.format_exc()
+                for line in traceback.format_exc(sys.exc_info()[2]):
                     log.error(line)
 
             raise(e)
@@ -105,7 +105,7 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("ExecuteDarks failed:")
             log.error(e)
-            for line in traceback.format_exc()
+            for line in traceback.format_exc(sys.exc_info()[2]):
                 log.error(line)
             clear_script_keywords()
             # Email error to kpf_info
@@ -115,7 +115,7 @@ class RunCalOB(KPFTranslatorFunction):
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
-                for line in traceback.format_exc()
+                for line in traceback.format_exc(sys.exc_info()[2]):
                     log.error(line)
             # Cleanup
             CleanupAfterCalibrations.execute(OB)
@@ -134,7 +134,7 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("ExecuteCal failed:")
             log.error(e)
-            for line in traceback.format_exc()
+            for line in traceback.format_exc(sys.exc_info()[2]):
                 log.error(line)
             clear_script_keywords()
             # Email error to kpf_info
@@ -144,7 +144,7 @@ class RunCalOB(KPFTranslatorFunction):
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
-                for line in traceback.format_exc()
+                for line in traceback.format_exc(sys.exc_info()[2]):
                     log.error(line)
             # Cleanup
             CleanupAfterCalibrations.execute(OB)
@@ -158,7 +158,7 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("CleanupAfterCalibrations failed:")
             log.error(e)
-            for line in traceback.format_exc()
+            for line in traceback.format_exc(sys.exc_info()[2]):
                 log.error(line)
             # Email error to kpf_info
             try:
@@ -167,7 +167,7 @@ class RunCalOB(KPFTranslatorFunction):
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
-                for line in traceback.format_exc()
+                for line in traceback.format_exc(sys.exc_info()[2]):
                     log.error(line)
             raise(e)
 
