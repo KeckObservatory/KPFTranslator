@@ -12,9 +12,13 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 ##-----------------------------------------------------------------------------
 class WaitForConfigureFIUOnce(KPFTranslatorFunction):
     '''Wait for the FIU to reach specified mode (kpffiu.MODE)
-    
+
+    This is intended to be wrapped by :py:func:`ConfigureFIU` to handle retries.
+
     ARGS:
-    mode - The desired FIU mode
+    =====
+    :mode: The desired FIU mode.  One of:
+           Stowed, Alignment, Acquisition, Observing, Calibration
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -51,7 +55,9 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     the configure command if the system fails to reach its destination.
     
     ARGS:
-    mode - The desired FIU mode
+    =====
+    :mode: The desired FIU mode.  One of:
+           Stowed, Alignment, Acquisition, Observing, Calibration
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

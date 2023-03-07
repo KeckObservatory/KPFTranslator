@@ -9,9 +9,14 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetTipTiltPosition(KPFTranslatorFunction):
     '''Set the position of the tip tilt mirror.
     
+    This should only be used in an engineering context. To control the position
+    of a star, set the CURRENT_BASE or PIX_TARGET keywords as appropriate, e.g.
+    via the :py:func:`SetTipTiltTargetPixel` translator module function.
+    
     ARGS:
-    x - The desired X position (TTXVAX).
-    y - The desired Y position (TTYVAX).
+    =====
+    :x: The desired X position (TTXVAX).
+    :y: The desired Y position (TTYVAX).
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

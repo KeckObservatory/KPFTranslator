@@ -9,7 +9,8 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
     '''Turn the tip tilt control software on or off.
     
     ARGS:
-    control - The desired state of the calculations (Active or Inactive)
+    =====
+    :control: The desired state of the calculations (Active or Inactive)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

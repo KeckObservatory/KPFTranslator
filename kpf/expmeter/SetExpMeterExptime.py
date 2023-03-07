@@ -10,7 +10,8 @@ class SetExpMeterExptime(KPFTranslatorFunction):
     '''Sets the exposure time for the exposure meter
     
     Args:
-    ExpMeterExptime - The exposure time in seconds
+    =====
+    :ExpMeterExptime: The exposure time in seconds
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
