@@ -32,9 +32,10 @@ class EndOfNight(KPFTranslatorFunction):
     - close AO hatch
     - HEPA on
     - Send PCU to Home
-    
+
     ARGS:
-    AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
+    =====
+    :AO: (bool) Close AO hatch, home PCU, and turn on HEPA? (default=True)
     '''
     @classmethod
     @obey_scriptrun

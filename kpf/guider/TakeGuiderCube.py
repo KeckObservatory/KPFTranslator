@@ -12,9 +12,13 @@ from .WaitForTriggerFile import WaitForTriggerFile
 
 
 class TakeGuiderCube(KPFTranslatorFunction):
-    '''
+    '''Take a "trigger file" from the guide camera of a given duration.
     
-    ARGS: None
+    ARGS:
+    =====
+    :duration: The duration in seconds of the image set.
+    :ImageCube: (bool) Collect the full cube of images? (default True) This will
+                slow down file write considerably.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

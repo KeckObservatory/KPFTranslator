@@ -16,8 +16,12 @@ from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 
 class WaitForConfigureAcquisition(KPFTranslatorFunction):
     '''Script which waits for the configure for Acquisition step.
-    
+
     Can be called by `ddoi_script_functions.waitfor_configure_for_acquisition`.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):

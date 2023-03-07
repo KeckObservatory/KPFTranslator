@@ -18,8 +18,15 @@ from ..spectrograph.WaitForReady import WaitForReady
 
 class ConfigureForCalibrations(KPFTranslatorFunction):
     '''Script which configures the instrument for Cal OBs.
-    
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
     Can be called by `ddoi_script_functions.configure_for_science`.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     @obey_scriptrun

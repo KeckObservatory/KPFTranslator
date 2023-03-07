@@ -18,8 +18,15 @@ from ..spectrograph.WaitForReady import WaitForReady
 
 class CleanupAfterCalibrations(KPFTranslatorFunction):
     '''Script which cleans up after Cal OBs.
-    
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
     Can be called by `ddoi_script_functions.post_observation_cleanup`.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     @obey_scriptrun

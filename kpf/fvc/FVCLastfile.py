@@ -11,7 +11,8 @@ class FVCLastfile(KPFTranslatorFunction):
     '''Print the value of the kpffvc.[camera]LASTFILE keyword to STDOUT
     
     ARGS:
-    camera - Which FVC camera (SCI, CAHK, EXT, CAL)?
+    =====
+    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

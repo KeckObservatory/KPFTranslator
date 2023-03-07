@@ -36,7 +36,14 @@ from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 ## fiber_grid_search
 ##-------------------------------------------------------------------------
 class GridSearch(KPFTranslatorFunction):
-    '''
+    '''Executes an engineering grid search OB.
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
+    ARGS:
+    =====
+    None
     '''
     abortable = True
 

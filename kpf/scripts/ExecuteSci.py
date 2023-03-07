@@ -28,8 +28,15 @@ from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
 
 class ExecuteSci(KPFTranslatorFunction):
     '''Script which executes a single observation from a science sequence
-    
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
     Can be called by `ddoi_script_functions.execute_observation`.
+
+    ARGS:
+    =====
+    None
     '''
     abortable = True
 

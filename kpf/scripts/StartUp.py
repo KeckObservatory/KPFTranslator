@@ -19,6 +19,8 @@ class StartUp(KPFTranslatorFunction):
     bring up the instrument GUIS.
 
     ARGS:
+    =====
+    None
     '''
     @classmethod
     @obey_scriptrun

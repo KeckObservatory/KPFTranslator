@@ -13,7 +13,9 @@ class TakeGuiderExposure(KPFTranslatorFunction):
     not, this will either grab the next exposure (if in continuous mode) or
     trigger a new exposure.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -54,7 +54,8 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     control of what an individual frame looks like.
 
     ARGS:
-    exptime - The exposure time in seconds.
+    =====
+    :exptime: The exposure time in seconds.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -8,7 +8,9 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 class GuiderOutdir(KPFTranslatorFunction):
     '''Print the value of the kpfguide.OUTDIR keyword to STDOUT
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

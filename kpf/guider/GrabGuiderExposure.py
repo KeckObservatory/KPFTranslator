@@ -11,7 +11,9 @@ class GrabGuiderExposure(KPFTranslatorFunction):
     '''If the guider is active and saving images, return the filename of the
     next image to be written.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

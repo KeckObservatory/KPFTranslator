@@ -12,8 +12,9 @@ class SetFVCExpTime(KPFTranslatorFunction):
     '''Set the exposure time of the specified fiber viewing camera
 
     ARGS:
-    camera - Which FVC camera (SCI, CAHK, EXT, CAL)?
-    exptime - The exposure time in seconds.
+    =====
+    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
+    :exptime: The exposure time in seconds.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
