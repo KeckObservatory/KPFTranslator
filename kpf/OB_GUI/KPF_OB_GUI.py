@@ -341,7 +341,7 @@ class MainWindow(QMainWindow):
     ##-------------------------------------------
     def run_query_gaia(self):
         # Will this query overwrite any values?
-        target_OB_keys = ['GaiaID', '2MASSID', 'Parallax', 'RadialVelocity',
+        target_OB_keys = ['2MASSID', 'Parallax', 'RadialVelocity',
                           'Gmag', 'Jmag', 'Teff']
         currently_used = [v for v in target_OB_keys if v in self.OB.keys()]
         if len(currently_used) > 0:
