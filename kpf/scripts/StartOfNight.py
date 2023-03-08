@@ -34,6 +34,7 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
+        log.info(f"Running KPF Start of Night script")
         # Disallow cron job calibration scripts
         log.info('Set SCRIPTALLOW to No')
         kpfconfig = ktl.cache('kpfconfig')

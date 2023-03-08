@@ -146,6 +146,8 @@ links:
         cmd: scripts.RunSciOB.RunSciOB
     RunScheduledCals:
         cmd: scripts.RunScheduledCals.RunScheduledCals
+    RunTwilightRVStandard:
+        cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
     StartOfNight:
         cmd: scripts.StartOfNight.StartOfNight
     StartUp:
