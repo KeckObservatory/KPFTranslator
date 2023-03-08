@@ -28,7 +28,7 @@ class TriggerGreenMiniFill(KPFTranslatorFunction):
         log.warning(f'Starting green mini fill')
         kpffill['GREENSTART'].write(1)
         # Wait
-        sleep_time = 240
+        sleep_time = args.get('duration', 240)
         log.debug(f'Sleeping {sleep_time:.0f} s')
         time.sleep(sleep_time)
         # Stop fill
@@ -51,3 +51,14 @@ class TriggerGreenMiniFill(KPFTranslatorFunction):
                                'Message': f'{msg}'})
             raise FailedPostCondition(msg)
         return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        from collections import OrderedDict
+        args_to_add = OrderedDict()
+        args_to_add['duration'] = {'type': float,
+                'help': 'The duration of the fill in seconds (240 recommended).'}
+        parser = cls._add_args(parser, args_to_add, print_only=False)
+        return super().add_cmdline_args(parser, cfg)
