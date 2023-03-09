@@ -77,7 +77,9 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
                f"our target will be {targname}.",
                "",
                "Please begin a slew to a Mira star near the target and execute",
-               "a standard Mira focus for KPF. When Mira is complete,",
+               "a standard Mira focus for KPF. When Mira is complete, please",
+               "beign a slew to the target. During that slew the script will",
+               "configure the instrument. Once the slew has started,"
                "press Enter to continue (or 'q' to abort and quit).",
                "",
                ]
@@ -92,7 +94,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # OA Focus and Slew to Target
         # ---------------------------------
         print('Running RunSciOB')
-#         RunSciOB.execute({})
+#         RunSciOB.execute(sciOB)
 
         # ---------------------------------
         # Done with telescope
@@ -107,7 +109,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         print()
         print('Starting internal calibration')
         print('Running RunCalOB')
-#         RunCalOB.execute({})
+#         RunCalOB.execute(calOB)
         print()
         print('Internal calibrations complete')
         email = {'To': 'kpf_info@keck.hawaii.edu,ahoward@caltech.edu,sphalverson@gmail.com',
