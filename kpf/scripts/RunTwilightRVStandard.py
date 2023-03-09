@@ -41,14 +41,14 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         targname = "HD157347"
-        sciOBfile = Path(f'/s/starlists/teamkeck/{targname}.yaml')
+        sciOBfile = Path(f'/s/starlists/kpftwilight/{targname}.yaml')
         if sciOBfile.exists() is False:
             log.error(f"Could not load OB file: {sciOBfile}")
             return
         with open(sciOBfile, 'r') as f:
             sciOB = yaml.safe_load(f)
 
-        calOBfile = Path('/s/starlists/teamkeck/twilight_program_cal.yaml')
+        calOBfile = Path('/s/starlists/kpftwilight/twilight_program_cal.yaml')
         if calOBfile.exists() is False:
             log.error(f"Could not load OB file: {calOBfile}")
             return
@@ -71,7 +71,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
                "    Josh Walawender: 808-990-4294 (cell)",
                "",
                "Please load the starlist at",
-               "/s/starlists/teamkeck/starlist_kpfTwilight.txt",
+               "/s/starlists/kpftwilight/starlist.txt",
                f"our target will be {targname}.",
                "",
                "Please begin a slew to a Mira star near the target.  When Mira",
