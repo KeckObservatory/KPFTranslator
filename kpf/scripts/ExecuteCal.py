@@ -75,7 +75,7 @@ class ExecuteCal(KPFTranslatorFunction):
         nd1 = args.get('CalND1')
         nd2 = args.get('CalND2')
         ## ----------------------------------------------------------------
-        ## First, configure lamps and cal bench (may happen during readout)
+        ## Configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
         check_scriptstop() # Stop here if requested
         ## Setup WideFlat
@@ -114,7 +114,16 @@ class ExecuteCal(KPFTranslatorFunction):
             raise Exception(msg)
 
         ## ----------------------------------------------------------------
-        ## Second, configure kpfexpose (may not happen during readout)
+        ## Configure exposure meter
+        ## ----------------------------------------------------------------
+        if args.get('AutoExpMeter', False) == True:
+            raise KPFException('AutoExpMeter is not supported for calibrations')
+        if args.get('ExpMeterExpTime', None) is not None:
+            log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
+            SetExpMeterExptime.execute(args)
+
+        ## ----------------------------------------------------------------
+        ## Configure kpfexpose (may not happen during readout)
         ## ----------------------------------------------------------------
         check_scriptstop() # Stop here if requested
         # Wait for current exposure to readout
@@ -147,7 +156,7 @@ class ExecuteCal(KPFTranslatorFunction):
         SetObject.execute(args)
 
         ## ----------------------------------------------------------------
-        ## Third, take actual exposures
+        ## Take actual exposures
         ## ----------------------------------------------------------------
         WaitForLampWarm.execute(args)
         nexp = args.get('nExp', 1)
