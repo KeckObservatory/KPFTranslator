@@ -1,0 +1,26 @@
+Template_Name: kpf_cal
+Template_Version: 0.6
+
+TriggerCaHK: True
+TriggerGreen: True
+TriggerRed: True
+TriggerExpMeter: False
+SEQ_Darks:
+- Object: bias
+  nExp: 3
+  Exptime: 0
+- Object: dark
+  nExp: 1
+  Exptime: 60
+SEQ_Calibrations:
+- CalSource: BrdbandFiber
+  Object: flat
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  nExp: 1
+  Exptime: 0.2
+  SSS_Science: True
+  SSS_Sky: False
+  TakeSimulCal: False
+  FF_FiberPos: Blank       # This is only needed if CalSource = WideFlat
+  ExpMeterExpTime: 0.5     # This is only needed if TriggerExpMeter = True
