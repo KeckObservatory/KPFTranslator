@@ -20,18 +20,20 @@ from ..utils.SendEmail import SendEmail
 ## RunTwilightRVStandard
 ##-------------------------------------------------------------------------
 class RunTwilightRVStandard(KPFTranslatorFunction):
-    '''
-    - Start Twilight script
-    - Script: run StartOfNight
-    - OA: Select a Mira star near the science target
-    - OA: Slew to Mira target
-    - OA: Perform Mira
-    - OA: Start slew to target star
-    - Script: Start Sci OB + Slew Cal
-    - Script: Obtain science data
-    - OA: Release to regular use, OA can park or do other tasks
-    - Script: run EndOfNight
-    - Script: run Calibration
+    '''Executes a twilight observation of one a selected RV standard star. This
+    script performs all necessary instrument actions from sart up to shut down.
+
+    Sequence of Actions (and who performs them) once this script is invoked:
+    - (Script): run StartOfNight
+    - (OA): Select a Mira star near the science target
+    - (OA): Slew to Mira target
+    - (OA): Perform Mira
+    - (OA): Start slew to target star
+    - (Script): Start Sci OB + Slew Cal
+    - (Script): Obtain science data
+    - (OA): Release to regular use, OA can park or do other tasks
+    - (Script): run EndOfNight
+    - (Script): run Calibration
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -74,8 +76,9 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
                "/s/starlists/kpftwilight/starlist.txt",
                f"our target will be {targname}.",
                "",
-               "Please begin a slew to a Mira star near the target.  When Mira",
-               "is complete, press Enter to continue (or 'q' to abort and quit).",
+               "Please begin a slew to a Mira star near the target and execute",
+               "a standard Mira focus for KPF. When Mira is complete,",
+               "press Enter to continue (or 'q' to abort and quit).",
                "",
                ]
         for line in msg:
