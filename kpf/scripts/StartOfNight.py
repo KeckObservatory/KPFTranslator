@@ -34,6 +34,25 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
+
+        # ---------------------------------
+        # User Verification
+        # ---------------------------------
+        msg = ["",
+               "--------------------------------------------------------------",
+               "This script will configure the FIU and AO bench for observing.",
+               "The AO bench area should be clear of personnel before proceeding."
+               "Do you wish to to continue? (y/n)",
+               "--------------------------------------------------------------",
+               "",
+               ]
+        for line in msg:
+            print(line)
+        user_input = input()
+        if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+            log.warning(f'User aborted Start Of Night')
+            return
+
         log.info(f"Running KPF Start of Night script")
         # Disallow cron job calibration scripts
         log.info('Set ALLOWSCHEDULEDCALS to No')
