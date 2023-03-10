@@ -117,11 +117,11 @@ class ExecuteCal(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Configure exposure meter
         ## ----------------------------------------------------------------
-        if args.get('AutoExpMeter', False) == True:
-            raise KPFException('AutoExpMeter is not supported for calibrations')
-        if args.get('ExpMeterExpTime', None) is not None:
-            log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
-            SetExpMeterExptime.execute(args)
+#         if args.get('AutoExpMeter', False) == True:
+#             raise KPFException('AutoExpMeter is not supported for calibrations')
+#         if args.get('ExpMeterExpTime', None) is not None:
+#             log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
+#             SetExpMeterExptime.execute(args)
 
         ## ----------------------------------------------------------------
         ## Configure kpfexpose (may not happen during readout)
