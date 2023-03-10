@@ -52,6 +52,25 @@ class EndOfNight(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
 
         if args.get('AO', True) is True:
+
+            # ---------------------------------
+            # User Verification
+            # ---------------------------------
+            msg = ["",
+                   "--------------------------------------------------------------",
+                   "This script will configure the FIU and AO bench for observing.",
+                   "The AO bench area should be clear of personnel before proceeding."
+                   "Do you wish to to continue? (y/n)",
+                   "--------------------------------------------------------------",
+                   "",
+                   ]
+            for line in msg:
+                print(line)
+            user_input = input()
+            if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+                log.warning(f'User aborted Start Of Night')
+                return
+
             log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'closed'})
 #             log.info('Turning on AO HEPA Filter System')
