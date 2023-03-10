@@ -72,6 +72,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # OA Focus
         # ---------------------------------
         msg = ["",
+               "-------------------------------------------------------------",
                "Thank you for executing a KPF Twilight Stability Measurement.",
                "If you encounter urgent problems or questions contact one of",
                "the KPF SAs.  Contact info:",
@@ -85,15 +86,13 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
                "to the target. Once you are on target:",
                " - Focus on target using autfoc",
                " - Then place the target on the KPF PO",
-               "When complete, press Enter to continue (or 'q' to abort/quit).",
+               "When those steps are done, press Enter to continue.",
+               "-------------------------------------------------------------",
                "",
                ]
         for line in msg:
             print(line)
         user_input = input()
-        if user_input.lower() in ['q', 'quit']:
-            log.warning('User requested quit. Quitting')
-            return
 
         # ---------------------------------
         # Execute Observation
@@ -107,7 +106,6 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
         # Execute the Cal Sequence
-        #   Wrap in try/except so that cleanup happens
         observations = sciOB.get('SEQ_Observations', [])
         for observation in observations:
             observation['Template_Name'] = 'kpf_sci'
@@ -118,6 +116,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
             observation['TriggerGreen'] = sciOB['TriggerGreen']
             observation['TriggerRed'] = sciOB['TriggerRed']
             observation['TriggerGuide'] = (sciOB.get('GuideMode', 'off') != 'off')
+            # Wrap in try/except so that cleanup happens
             try:
                 ExecuteSci.execute(observation)
             except Exception as e:
@@ -132,22 +131,23 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # Done with telescope
         # ---------------------------------
         log.debug('Observations complete. Alerting OA.')
+        print()
+        print("-------------------------------------------------------------")
         print('Observation complete. You may park the telescope or do whatever')
         print('else is needed. Please leave this script running as it will')
         print('perform shutdown and internal calibrations.')
+        print("-------------------------------------------------------------")
         print()
-#         EndOfNight.execute({})
-        print()
-        print('Starting internal calibration')
-        print('Running RunCalOB')
-#         RunCalOB.execute(calOB)
-        print()
-        print('Internal calibrations complete')
+        EndOfNight.execute({})
+        RunCalOB.execute(calOB)
         email = {'To': 'jwalawender@keck.hawaii.edu',
 #                  'To': 'kpf_info@keck.hawaii.edu,ahoward@caltech.edu,sphalverson@gmail.com',
                  'Subject': 'KPF Twilight Program Completed',
                  'Message': 'A KPF twilight observation has been completed.'}
-#         SendEmail.execute(email)
+        SendEmail.execute(email)
+        print()
+        print('Internal calibrations complete. Script complete.')
+        time.sleep(120)
 
 
     @classmethod
