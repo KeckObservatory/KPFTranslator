@@ -10,7 +10,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExptime import SetExptime
+from ..spectrograph.SetExpTime import SetExpTime
 from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from ..spectrograph.StartAgitator import StartAgitator
@@ -23,7 +23,7 @@ from ..calbench.SetND2 import SetND2
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
 from ..expmeter.PredictExpMeterParameters import predict_expmeter_parameters
-from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
+from ..expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 
 
 class ExecuteSci(KPFTranslatorFunction):
@@ -75,7 +75,7 @@ class ExecuteSci(KPFTranslatorFunction):
             pass
 
         log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
-        SetExpMeterExptime.execute(args)
+        SetExpMeterExpTime.execute(args)
 
         ## ----------------------------------------------------------------
         ## Setup simulcal
@@ -97,7 +97,7 @@ class ExecuteSci(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         WaitForReady.execute({})
         SetObject.execute(args)
-        SetExptime.execute(args)
+        SetExpTime.execute(args)
         args['TimedShutter_Scrambler'] = True
         args['TimedShutter_FlatField'] = False
         args['TimedShutter_SimulCal'] = args['TakeSimulCal']
@@ -122,7 +122,7 @@ class ExecuteSci(KPFTranslatorFunction):
             # Start next exposure
             if runagitator is True:
                 StartAgitator.execute({})
-            log.info(f"Starting {args.get('Exptime')} s expoure {j+1}/{nexp} ({args.get('Object')})")
+            log.info(f"Starting {args.get('ExpTime')} s expoure {j+1}/{nexp} ({args.get('Object')})")
             log.debug('Starting TRIGGER file')
             kpfguide['TRIGGER'].write(1)
             StartExposure.execute({})

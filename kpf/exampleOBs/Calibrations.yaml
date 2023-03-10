@@ -8,17 +8,17 @@ TriggerExpMeter: False
 SEQ_Darks:
 - Object: bias
   nExp: 3
-  Exptime: 0
+  ExpTime: 0
 - Object: dark
   nExp: 1
-  Exptime: 60
+  ExpTime: 60
 SEQ_Calibrations:
 - CalSource: BrdbandFiber
   Object: flat
   CalND1: OD 0.1
   CalND2: OD 0.1
   nExp: 1
-  Exptime: 0.2
+  ExpTime: 0.2
   SSS_Science: True
   SSS_Sky: False
   TakeSimulCal: False

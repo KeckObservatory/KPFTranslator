@@ -90,7 +90,7 @@ def OBdict_to_lines(OB):
           f"SEQ_Observations:",
           f" - Object: {obs.get('Object', '?')}",
           f"   nExp: {obs.get('nExp', '?')}",
-          f"   Exptime: {obs.get('Exptime', '?')}",
+          f"   ExpTime: {obs.get('ExpTime', '?')}",
           f"   ExpMeterMode: {obs.get('ExpMeterMode', '?')}",
           f"   AutoExpMeter: {obs.get('AutoExpMeter', '?')}",
           ])

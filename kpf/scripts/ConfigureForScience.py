@@ -19,7 +19,6 @@ from ..fiu.StartTipTilt import StartTipTilt
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from ..spectrograph.WaitForReady import WaitForReady
-from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
 
 
 class ConfigureForScience(KPFTranslatorFunction):

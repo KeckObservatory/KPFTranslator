@@ -22,7 +22,7 @@ from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
 from ..fvc.FVCPower import FVCPower
 from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExptime import SetExptime
+from ..spectrograph.SetExpTime import SetExpTime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..spectrograph.StartAgitator import StartAgitator
@@ -33,7 +33,7 @@ from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from ..utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
-from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
+from ..expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 
 
 class ExecuteCal(KPFTranslatorFunction):
@@ -117,11 +117,11 @@ class ExecuteCal(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Configure exposure meter
         ## ----------------------------------------------------------------
-#         if args.get('AutoExpMeter', False) == True:
-#             raise KPFException('AutoExpMeter is not supported for calibrations')
-#         if args.get('ExpMeterExpTime', None) is not None:
-#             log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
-#             SetExpMeterExptime.execute(args)
+        if args.get('AutoExpMeter', False) == True:
+            raise KPFException('AutoExpMeter is not supported for calibrations')
+        if args.get('ExpMeterExpTime', None) is not None:
+            log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
+            SetExpMeterExpTime.execute(args)
 
         ## ----------------------------------------------------------------
         ## Configure kpfexpose (may not happen during readout)
@@ -134,8 +134,8 @@ class ExecuteCal(KPFTranslatorFunction):
             log.info(f"Readout complete")
             sleep(archon_time_shim)
             check_scriptstop() # Stop here if requested
-        log.info(f"Set exposure time: {args.get('Exptime'):.3f}")
-        SetExptime.execute(args)
+        log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
+        SetExpTime.execute(args)
         log.info(f"Setting source select shutters")
         # No need to specify SSS_CalSciSky in OB/calibration
         args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
