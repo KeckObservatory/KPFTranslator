@@ -33,6 +33,7 @@ from ..spectrograph.WaitForReadout import WaitForReadout
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from ..utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
+from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
 
 
 class ExecuteCal(KPFTranslatorFunction):
