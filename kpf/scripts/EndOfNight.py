@@ -70,9 +70,9 @@ class EndOfNight(KPFTranslatorFunction):
         SetProgram.execute({'progname': ''})
         SetObserver.execute({'observer': ''})
         SetObject.execute({'Object': ''})
-        log.info('Set SCRIPTALLOW to Yes')
-        scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
-        scriptallow.write('Yes')
+        log.info('Set ALLOWSCHEDULEDCALS to Yes')
+        kpfconfig = ktl.cache('kpfconfig')
+        kpfconfig['ALLOWSCHEDULEDCALS'].write('Yes')
         # Finish FIU shutdown
         StopAgitator.execute({})
         WaitForConfigureFIU.execute({'mode': 'Stowed'})

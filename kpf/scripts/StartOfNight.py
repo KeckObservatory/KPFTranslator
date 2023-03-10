@@ -36,9 +36,9 @@ class StartOfNight(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         log.info(f"Running KPF Start of Night script")
         # Disallow cron job calibration scripts
-        log.info('Set SCRIPTALLOW to No')
+        log.info('Set ALLOWSCHEDULEDCALS to No')
         kpfconfig = ktl.cache('kpfconfig')
-        kpfconfig['SCRIPTALLOW'].write('No')
+        kpfconfig['ALLOWSCHEDULEDCALS'].write('No')
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
