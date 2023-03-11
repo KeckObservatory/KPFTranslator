@@ -77,7 +77,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -111,7 +111,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ExecuteDarks Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -136,7 +136,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ExecuteCals Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -155,7 +155,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
