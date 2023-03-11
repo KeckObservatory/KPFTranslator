@@ -104,7 +104,8 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForCalSource.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Take intensity monitor reading
-            TakeIntensityReading.execute({})
+            if calsource != 'LFCFiber':
+                TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
             raise NotImplementedError()
