@@ -1,3 +1,4 @@
+import os
 import time
 from pathlib import Path
 import yaml
@@ -46,14 +47,14 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         targname = "HD157347"
-        sciOBfile = Path(f'/s/starlists/kpftwilight/{targname}.yaml')
+        sciOBfile = Path(f'/s/starlists/000000_kpftwilight/{targname}.yaml')
         if sciOBfile.exists() is False:
             log.error(f"Could not load OB file: {sciOBfile}")
             return
         with open(sciOBfile, 'r') as f:
             sciOB = yaml.safe_load(f)
 
-        calOBfile = Path('/s/starlists/kpftwilight/twilight_program_cal.yaml')
+        calOBfile = Path('/s/starlists/000000_kpftwilight/twilight_program_cal.yaml')
         if calOBfile.exists() is False:
             log.error(f"Could not load OB file: {calOBfile}")
             return
@@ -63,7 +64,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # ---------------------------------
         # Start Of Night
         # ---------------------------------
-        StartOfNight.execute({})
+#         StartOfNight.execute({})
 
         log.info(f"Configuring for Acquisition")
         ConfigureForAcquisition.execute(sciOB)
@@ -99,8 +100,8 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # ---------------------------------
         WaitForConfigureAcquisition.execute(sciOB)
         log.info(f"Configuring for Science")
-        ConfigureForScience.execute(OB)
-        WaitForConfigureScience.execute(OB)
+#         ConfigureForScience.execute(sciOB)
+#         WaitForConfigureScience.execute(sciOB)
 
         # Execute Sequences
         check_script_running()
@@ -125,7 +126,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         clear_script_keywords()
 
         # Cleanup
-        CleanupAfterScience.execute(OB)
+        CleanupAfterScience.execute(sciOB)
 
         # ---------------------------------
         # Done with telescope
