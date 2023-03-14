@@ -1,3 +1,5 @@
+import time
+
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -21,6 +23,8 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
         lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE')
         log.info('Setting LFC to StandbyHigh')
         lfc_mode.write('StandbyHigh')
+        time_shim = cfg.get('times', 'LFC_startup_time', fallback=10)
+        time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
