@@ -19,6 +19,7 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE')
+        log.info('Setting LFC to AstroComb')
         lfc_mode.write('AstroComb')
 
     @classmethod
