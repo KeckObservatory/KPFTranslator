@@ -80,7 +80,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
                "    Josh Walawender: 808-990-4294 (cell)",
                "",
                "Please load the starlist at",
-               "/s/starlists/kpftwilight/starlist.txt",
+               "/s/starlists/000000_kpftwilight/starlist.txt",
                f"our target will be {targname}.",
                "",
                "The instrument is being configured now, please begin slewing",
