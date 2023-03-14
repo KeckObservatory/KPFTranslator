@@ -27,9 +27,9 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
         '''Verifies that kpfmon shows no errors.
         '''
         kpfmon = ktl.cache('kpfmon')
-        expr = f"($kpfmon.LFCSTA == 'OK')"
+        expr = f"($kpfmon.LFCREADYSTA == 'OK')"
         timeout = cfg.get('times', 'LFC_startup_time', fallback=60)
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            raise FailedPostCondition('kpfmon.LFCSTA is not OK')
+            raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
         return success
