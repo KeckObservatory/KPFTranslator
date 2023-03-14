@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
 
 
     def setupUi(self):
-        self.setWindowTitle("KPF OB Builder")
+        self.setWindowTitle("KPF OB GUI")
 
         # script name
         self.scriptname_value = self.findChild(QLabel, 'scriptname_value')

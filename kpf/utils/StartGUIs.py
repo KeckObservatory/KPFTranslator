@@ -15,6 +15,10 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 # List of GUIs for KPF
 GUI_list = [
             # Control0 for DSI
+            {'name': 'KPF OB GUI',
+             'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/OB_GUI/KPF_OB_GUI.py'],
+             'display': 'control0',
+             'position': '0,255,35,-1,-1'},
             # Control1
             #   To do: add Spectrograph GUI
             {'name': 'KPF Fiber Injection Unit (FIU)',
