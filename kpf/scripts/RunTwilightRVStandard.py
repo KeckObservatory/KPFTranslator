@@ -64,7 +64,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # ---------------------------------
         # Start Of Night
         # ---------------------------------
-#         StartOfNight.execute({})
+        StartOfNight.execute({})
 
         log.info(f"Configuring for Acquisition")
         ConfigureForAcquisition.execute(sciOB)
@@ -100,8 +100,8 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # ---------------------------------
         WaitForConfigureAcquisition.execute(sciOB)
         log.info(f"Configuring for Science")
-#         ConfigureForScience.execute(sciOB)
-#         WaitForConfigureScience.execute(sciOB)
+        ConfigureForScience.execute(sciOB)
+        WaitForConfigureScience.execute(sciOB)
 
         # Execute Sequences
         check_script_running()
@@ -141,8 +141,9 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         print()
         EndOfNight.execute({})
         RunCalOB.execute(calOB)
-        email = {'To': 'jwalawender@keck.hawaii.edu',
-#                  'To': 'kpf_info@keck.hawaii.edu,ahoward@caltech.edu,sphalverson@gmail.com',
+        email = {
+                 'To': 'kpf_info@keck.hawaii.edu,ahoward@caltech.edu,sphalverson@gmail.com',
+#                  'To': 'jwalawender@keck.hawaii.edu',
                  'Subject': 'KPF Twilight Program Completed',
                  'Message': 'A KPF twilight observation has been completed.'}
         SendEmail.execute(email)
