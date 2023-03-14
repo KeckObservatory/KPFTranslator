@@ -29,6 +29,10 @@ links:
         cmd: calbench.SetCalSource.SetCalSource
     SetFlatFieldFiberPos:
         cmd: calbench.SetFlatFieldFiberPos.SetFlatFieldFiberPos
+    SetLFCtoAstroComb:
+        cmd: calbench.SetLFCtoAstroComb.SetLFCtoAstroComb
+    SetLFCtoStandbyHigh:
+        cmd: calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh
     SetND1:
         cmd: calbench.SetND1.SetND1
     SetND2:
