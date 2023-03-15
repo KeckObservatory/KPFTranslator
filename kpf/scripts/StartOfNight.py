@@ -41,8 +41,8 @@ class StartOfNight(KPFTranslatorFunction):
         msg = ["",
                "--------------------------------------------------------------",
                "This script will configure the FIU and AO bench for observing.",
-               "The AO bench area should be clear of personnel before proceeding."
-               "Do you wish to to continue? (y/n)",
+               "The AO bench area should be clear of personnel before proceeding.",
+               "Do you wish to to continue? [Y/n]",
                "--------------------------------------------------------------",
                "",
                ]
