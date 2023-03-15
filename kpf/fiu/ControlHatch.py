@@ -9,14 +9,12 @@ class ControlHatch(KPFTranslatorFunction):
     '''Open or close the FIU hatch
     
     ARGS:
-    destination - The desired FIU hatch position name
+    =====
+    :destination: The desired FIU hatch position name
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'destination', allowed_values=['closed', 'open'])
-#        destination = args.get('destination', '').strip()
-#        if destination.lower() not in ['closed', 'open']:
-#            raise FailedPreCondition(f"Requested state {destination} is invalid")
         return True
 
     @classmethod

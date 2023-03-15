@@ -5,9 +5,6 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import (green_detector_power_is_on, green_detector_temperature_is_ok,
-               red_detector_power_is_on, red_detector_temperature_is_ok,
-               cahk_detector_temperature_is_ok)
 from .WaitForReady import WaitForReady
 
 
@@ -20,23 +17,6 @@ class StartExposure(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
-        detectors = kpfexpose['TRIG_TARG'].read()
-        detector_list = detectors.split(',')
-        if 'Green' in detector_list:
-            green_detector_power_is_on()
-            tol = cfg.get('tolerances', 'green_detector_temperature_tolerance',
-                          fallback=10)
-            green_detector_temperature_is_ok(temperature_tolerance=tol)
-        if 'Red' in detector_list:
-            red_detector_power_is_on()
-            tol = cfg.get('tolerances', 'red_detector_temperature_tolerance',
-                          fallback=10)
-            red_detector_temperature_is_ok(temperature_tolerance=tol)
-        if 'Ca_HK' in detector_list:
-            tol = cfg.get('tolerances', 'cahk_detector_temperature_tolerance',
-                          fallback=10)
-            cahk_detector_temperature_is_ok(temperature_tolerance=tol)
         return True
 
     @classmethod

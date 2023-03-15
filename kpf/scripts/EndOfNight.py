@@ -32,9 +32,10 @@ class EndOfNight(KPFTranslatorFunction):
     - close AO hatch
     - HEPA on
     - Send PCU to Home
-    
+
     ARGS:
-    AO (bool) - Close AO hatch, home PCU, and turn on HEPA? (default=True)
+    =====
+    :AO: (bool) Close AO hatch, home PCU, and turn on HEPA? (default=True)
     '''
     @classmethod
     @obey_scriptrun
@@ -51,6 +52,25 @@ class EndOfNight(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
 
         if args.get('AO', True) is True:
+
+            # ---------------------------------
+            # User Verification
+            # ---------------------------------
+            msg = ["",
+                   "--------------------------------------------------------------",
+                   "This script will configure the FIU and AO bench.",
+                   "The AO bench area should be clear of personnel before proceeding.",
+                   "Do you wish to to continue? [Y/n]",
+                   "--------------------------------------------------------------",
+                   "",
+                   ]
+            for line in msg:
+                print(line)
+            user_input = input()
+            if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+                log.warning(f'User aborted Start Of Night')
+                return
+
             log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'closed'})
 #             log.info('Turning on AO HEPA Filter System')
@@ -69,9 +89,9 @@ class EndOfNight(KPFTranslatorFunction):
         SetProgram.execute({'progname': ''})
         SetObserver.execute({'observer': ''})
         SetObject.execute({'Object': ''})
-        log.info('Set SCRIPTALLOW to Yes')
-        scriptallow = ktl.cache('kpfconfig', 'SCRIPTALLOW')
-        scriptallow.write('Yes')
+        log.info('Set ALLOWSCHEDULEDCALS to Yes')
+        kpfconfig = ktl.cache('kpfconfig')
+        kpfconfig['ALLOWSCHEDULEDCALS'].write('Yes')
         # Finish FIU shutdown
         StopAgitator.execute({})
         WaitForConfigureFIU.execute({'mode': 'Stowed'})

@@ -29,7 +29,9 @@ def calculate_ADC_delta(za):
 class SetADCAngles(KPFTranslatorFunction):
     '''Quick and dirty code to set ADC angles
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -38,8 +40,6 @@ class SetADCAngles(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpffiu = ktl.cache('kpffiu')
-#         dcs = ktl.cache('dcs')
-#         el = dcs['EL'].read(binary=True)*180/np.pi
         el = args.get('EL')
         za = 90 - el
         ADC_delta = calculate_ADC_delta(za)

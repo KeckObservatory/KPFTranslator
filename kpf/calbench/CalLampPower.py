@@ -26,8 +26,9 @@ class CalLampPower(KPFTranslatorFunction):
      - SkyLED
     
     ARGS:
-    lamp - name of the lamp to control
-    power - "on" or "off" destination state for lamp
+    =====
+    :lamp: name of the lamp to control
+    :power: "on" or "off" destination state for lamp
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

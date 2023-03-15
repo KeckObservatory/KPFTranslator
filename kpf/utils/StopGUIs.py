@@ -8,7 +8,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
-from . import GUI_list
+from .StartGUIs import GUI_list
 
 
 class StopGUIs(KPFTranslatorFunction):

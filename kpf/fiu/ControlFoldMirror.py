@@ -9,8 +9,9 @@ class ControlFoldMirror(KPFTranslatorFunction):
     '''Insert or remove the FIU Cal Fold Mirror from the beam.
     
     ARGS:
-    destination - The desired FIU fold mirror position name
-    wait (bool) - Wait for move to complete before returning? (default: True)
+    =====
+    :destination: The desired FIU fold mirror position name
+    :wait: (bool) Wait for move to complete before returning? (default: True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

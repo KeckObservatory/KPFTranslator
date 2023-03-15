@@ -11,7 +11,8 @@ class WaitForLampWarm(KPFTranslatorFunction):
     '''Wait for the specified lamp to be warm.
     
     ARGS:
-    CalSource - The name of the lamp to wait for.
+    =====
+    :CalSource: The name of the lamp to wait for.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

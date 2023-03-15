@@ -12,6 +12,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from .ExecuteSlewCal import ExecuteSlewCal
+from ..calbench.SetCalSource import SetCalSource
 from ..guider.PredictGuiderParameters import predict_guider_parameters
 from ..guider.SetGuiderFPS import SetGuiderFPS
 from ..guider.SetGuiderGain import SetGuiderGain
@@ -21,13 +22,20 @@ from ..fiu.ConfigureFIU import ConfigureFIU
 
 class ConfigureForAcquisition(KPFTranslatorFunction):
     '''Script which configures the instrument for Acquisition step.
-    
+
     - Sets target parameters
     - Sets guide camera parameters
     - Sets FIU mode
-    - Executes Slew Cal????? (Not implemented yet)
-    
+    - Executes Slew Cal
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
     Can be called by `ddoi_script_functions.configure_for_acquisition`.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     @obey_scriptrun

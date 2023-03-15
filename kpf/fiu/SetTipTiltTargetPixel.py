@@ -7,11 +7,13 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetTipTiltTargetPixel(KPFTranslatorFunction):
-    '''Set the target pixel of the tip tilt mirror.
+    '''Set the target pixel of the tip tilt mirror.  This sets the CURRENT_BASE
+    keyword.
     
     ARGS:
-    x - The desired X target pixel
-    y - The desired Y target pixel
+    =====
+    :x: The desired X target pixel
+    :y: The desired Y target pixel
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

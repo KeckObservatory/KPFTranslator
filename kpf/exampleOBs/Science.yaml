@@ -22,7 +22,7 @@ TriggerRed: True                # Include Red CCD in exposure (True/False)
 SEQ_Observations:               # 
 - Object: 10700                 # User settable comment
   nExp: 4                       # Number of exoposures in the OB
-  Exptime: 30                   # Exposure time of the main spectrometer and CaH&K. See Exposure Meter section below.
+  ExpTime: 30                   # Exposure time of the main spectrometer and CaH&K. See Exposure Meter section below.
   ExpMeterMode: monitor         # Only "monitor" is available for now
   AutoExpMeter: False           # Set the exposure meter exposure time automatically
   ExpMeterExpTime: 0.5          # Exposure time of the Exposure Meter subframes

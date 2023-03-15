@@ -16,8 +16,9 @@ class TakeFVCContinuous(KPFTranslatorFunction):
     '''Take exposures with the specified FVC continuously and display to ds9.
     
     ARGS:
-    camera - Which FVC camera (SCI, CAHK, EXT, CAL)?
-    exptime - The exposure time in seconds.
+    =====
+    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
+    :exptime: The exposure time in seconds.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

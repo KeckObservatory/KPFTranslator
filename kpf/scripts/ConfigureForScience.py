@@ -15,19 +15,26 @@ from ..calbench.CalLampPower import CalLampPower
 from ..calbench.SetCalSource import SetCalSource
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..fiu.SetCurrentBase import SetCurrentBase
+from ..fiu.StartTipTilt import StartTipTilt
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from ..spectrograph.WaitForReady import WaitForReady
-from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
 
 
 class ConfigureForScience(KPFTranslatorFunction):
     '''Script which configures the instrument for Science observations.
-    
+
     - Sets octagon / simulcal source
     - Sets source select shutters
 
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
     Can be called by `ddoi_script_functions.configure_for_science`.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     @obey_scriptrun

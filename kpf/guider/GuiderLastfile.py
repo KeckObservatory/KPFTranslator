@@ -9,7 +9,8 @@ class GuiderLastfile(KPFTranslatorFunction):
     '''Print the value of the kpfguide.LASTFILE keyword to STDOUT
     
     ARGS:
-    wait - Return only after lastfile is updated? (default = False)
+    =====
+    :wait: (bool) Return only after lastfile is updated? (default = False)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

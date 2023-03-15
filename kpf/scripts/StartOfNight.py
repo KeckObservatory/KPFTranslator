@@ -23,7 +23,8 @@ class StartOfNight(KPFTranslatorFunction):
     - Configure DCS (ROTDEST and ROTMODE)
     
     ARGS:
-    AO (bool) - Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
+    =====
+    :AO: (bool) Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
     @obey_scriptrun
@@ -33,10 +34,30 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
+
+        # ---------------------------------
+        # User Verification
+        # ---------------------------------
+        msg = ["",
+               "--------------------------------------------------------------",
+               "This script will configure the FIU and AO bench for observing.",
+               "The AO bench area should be clear of personnel before proceeding.",
+               "Do you wish to to continue? [Y/n]",
+               "--------------------------------------------------------------",
+               "",
+               ]
+        for line in msg:
+            print(line)
+        user_input = input()
+        if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+            log.warning(f'User aborted Start Of Night')
+            return
+
+        log.info(f"Running KPF Start of Night script")
         # Disallow cron job calibration scripts
-        log.info('Set SCRIPTALLOW to No')
+        log.info('Set ALLOWSCHEDULEDCALS to No')
         kpfconfig = ktl.cache('kpfconfig')
-        kpfconfig['SCRIPTALLOW'].write('No')
+        kpfconfig['ALLOWSCHEDULEDCALS'].write('No')
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})

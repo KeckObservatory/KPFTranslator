@@ -8,7 +8,9 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class TurnLightSourceOff(KPFTranslatorFunction):
     '''Turn K1 AO light source off
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

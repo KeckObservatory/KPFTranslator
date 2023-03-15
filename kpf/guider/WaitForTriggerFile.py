@@ -6,9 +6,11 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class WaitForTriggerFile(KPFTranslatorFunction):
-    '''
+    '''Wait for a trigger file in progress to finish being collected.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -6,9 +6,14 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetCurrentBase(KPFTranslatorFunction):
-    '''
+    '''Sets the CURRENT_BASE keyword to the value of SCIENCE_BASE or SKY_BASE
+    based upon the pointing origin (PO) argument.  The target pixel for tip
+    tilt controll will be this value, but modified by the DAR correction and 
+    offset guiding parameters.
     
-    ARGS: None
+    ARGS:
+    =====
+    :PO: The pointing origin name (either "KPF" or "SKY")
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

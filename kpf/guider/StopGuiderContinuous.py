@@ -9,7 +9,9 @@ from . import guider_is_active, guider_is_saving
 class StopGuiderContinuous(KPFTranslatorFunction):
     '''Stop the guider's continuous exposure mode and stop saving images.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

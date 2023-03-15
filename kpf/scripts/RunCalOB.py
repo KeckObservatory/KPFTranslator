@@ -22,14 +22,21 @@ from ..utils.SendEmail import SendEmail
 
 class RunCalOB(KPFTranslatorFunction):
     '''Script to run a full Calibration OB from the command line.
-    
+
+    This must have arguments as input, typically from a file using the `-f`
+    command line tool.
+
     Not intended to be called by DDOI's execution engine. This script replaces
     the DDOI Script.
-    
+
     This script is abortable.  When the `.abort_execution()` is invoked, the
     `kpconfig.SCRIPTSTOP` is set to Yes.  This script checked for this value at
     various locations in the script.  As a result, the script will not stop
     immediately, but will stop when it reaches a breakpoint.
+
+    ARGS:
+    =====
+    None
     '''
     abortable = True
 
@@ -70,10 +77,11 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
+
             raise(e)
 
         check_script_running()
@@ -103,7 +111,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ExecuteDarks Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -128,7 +136,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ExecuteCals Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -147,7 +155,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)

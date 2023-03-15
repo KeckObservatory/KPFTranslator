@@ -9,8 +9,12 @@ from ..fiu.StopTipTilt import StopTipTilt
 
 class CleanupAfterScience(KPFTranslatorFunction):
     '''Script which cleans up at the end of Science OBs.
-    
+
     Can be called by `ddoi_script_functions.post_observation_cleanup`.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     @obey_scriptrun

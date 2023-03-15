@@ -9,12 +9,12 @@ class SetND1(KPFTranslatorFunction):
     '''Set the filter in the ND1 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND1POS` keyword.
     
-    Allowed Values:
-    "OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"
-    
     ARGS:
-    CalND1 - The neutral density filter to put in the first filter wheel.
-    wait (bool) - Wait for move to complete before returning? (default: True)
+    =====
+    :CalND1: The neutral density filter to put in the first filter wheel.
+        Allowed values are "OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0",
+        "OD 4.0"
+    :wait: (bool) Wait for move to complete before returning? (default: True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

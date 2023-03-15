@@ -15,7 +15,7 @@ from ..calbench.WaitForCalSource import WaitForCalSource
 from ..calbench.WaitForND1 import WaitForND1
 from ..calbench.WaitForND2 import WaitForND2
 from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExptime import SetExptime
+from ..spectrograph.SetExpTime import SetExpTime
 from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from ..spectrograph.SetTimedShutters import SetTimedShutters
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
@@ -31,6 +31,13 @@ from ..utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 
 class ExecuteSlewCal(KPFTranslatorFunction):
     '''Script which executes the observations of a Slew Cal
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
+    ARGS:
+    =====
+    None
     '''
     abortable = True
 
@@ -98,8 +105,8 @@ class ExecuteSlewCal(KPFTranslatorFunction):
                                          'SSS_SoCalSci': False,
                                          'SSS_SoCalCal': False,
                                          'SSS_CalSciSky': True})
-        log.info(f"Set exposure time: {args.get('Exptime'):.3f}")
-        SetExptime.execute(args)
+        log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
+        SetExpTime.execute(args)
         # No need to specify TimedShutter_Scrambler
         args['TimedShutter_Scrambler'] = True
         log.debug(f"Automatically setting TimedShutter_Scrambler: {args['TimedShutter_Scrambler']}")

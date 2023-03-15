@@ -8,7 +8,9 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class TurnHepaOn(KPFTranslatorFunction):
     '''Turn HEPA Filter system on
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

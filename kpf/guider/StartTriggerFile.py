@@ -6,9 +6,11 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class StartTriggerFile(KPFTranslatorFunction):
-    '''
+    '''Start a "trigger file" from the guide camera.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

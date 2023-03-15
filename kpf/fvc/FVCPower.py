@@ -13,8 +13,9 @@ class FVCPower(KPFTranslatorFunction):
     '''Turn on or off the power for the specified FVC camera.
     
     ARGS:
-    camera - Which FVC camera (SCI, CAHK, EXT, CAL)?
-    power - Desired state: on or off
+    =====
+    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
+    :power: Desired state: on or off
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -42,7 +43,7 @@ class FVCPower(KPFTranslatorFunction):
         kpfpower = ktl.cache('kpfpower')
         outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
         outletname = kpfpower[f"{outlet}_NAME"].read()
-        log.info(f"Turning {pwr} {camera} FVC (outlet {outlet}: {outletname})")
+        log.debug(f"Turning {pwr} {camera} FVC (outlet {outlet}: {outletname})")
         kpfpower[f"KPFFVC{camnum}"].write(pwr)
         time.sleep(1)
 

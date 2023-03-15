@@ -8,7 +8,9 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetAORotatorManual(KPFTranslatorFunction):
     '''AO rotator needs to be in the Manual mode before observing.
     
-    ARGS
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -11,14 +11,23 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.CalLampPower import CalLampPower
+from ..calbench.SetLFCtoAstroComb import SetLFCtoAstroComb
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from ..spectrograph.WaitForReady import WaitForReady
 
 
 class ConfigureForCalibrations(KPFTranslatorFunction):
     '''Script which configures the instrument for Cal OBs.
-    
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
     Can be called by `ddoi_script_functions.configure_for_science`.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     @obey_scriptrun
@@ -47,6 +56,8 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+            if lamp == 'LFCFiber':
+                SetLFCtoAstroComb.execute({})
 
         log.debug(f"Ensuring back illumination LEDs are off")
         CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})
@@ -57,6 +68,7 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
         log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration'})
         log.info(f"Set Detector List")
+        WaitForReady.execute({})
         SetTriggeredDetectors.execute(OB)
 
     @classmethod

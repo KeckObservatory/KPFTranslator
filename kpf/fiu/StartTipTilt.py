@@ -6,9 +6,14 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class StartTipTilt(KPFTranslatorFunction):
-    '''
+    '''Start the tip tilt control loop.  This uses the ALL_LOOPS keyword to
+    start all functions including DAR (via DAR_ENABLE), tip tilt calculations
+    (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to
+    the telescope (via OFFLOAD_DCS and OFFLOAD).
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -19,10 +24,6 @@ class StartTipTilt(KPFTranslatorFunction):
         kpfguide = ktl.cache('kpfguide')
         log.debug(f'Ensuring kpfguide.DAR_ENABLE is yes')
         kpfguide['DAR_ENABLE'].write('Yes')
-#         kpfguide['TIPTILT_CALC'].write('Active')
-#         kpfguide['TIPTILT_CONTROL'].write('Active')
-#         kpfguide['OFFLOAD_DCS'].write('Yes')
-#         kpfguide['OFFLOAD'].write('Active')
         log.info('Turning kpfguide.ALL_LOOPS on')
         kpfguide['ALL_LOOPS'].write('Active')
 

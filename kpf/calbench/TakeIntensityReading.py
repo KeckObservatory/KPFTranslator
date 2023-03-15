@@ -7,7 +7,12 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class TakeIntensityReading(KPFTranslatorFunction):
-    '''
+    '''Insert the intensity monitor (aka "cal diode") in to the beam and record
+    a measurement of the cal lamp intensity.
+    
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -27,13 +32,16 @@ class TakeIntensityReading(KPFTranslatorFunction):
 
         # Verify serial connection is active
         if kpfcal['SERIALCONN'].read() == 'Off':
-            lof.debug('Initiating serial connection')
+            log.debug('Initiating serial connection')
             kpfcal['SERIALCONN'].write('On')
             expr = f"($kpfcal.SERIALCONN == 'On')"
             boottime = cfg.get('times', 'intenmon_boot_time', fallback=5)
             success = ktl.waitFor(expr, timeout=boottime)
             if success is False:
-                raise KPFException(f'Intensity monitor serial connection is Off')
+                msg = f'Intensity monitor serial connection is Off'
+                log.error(msg)
+                SendEmail.execute({'Subject': 'TakeIntensityReading Failed',
+                                   'Message': f'{msg}'})
 
         # Move sensor in to beam
         log.info('Moving Intensity Monitor in to beam')
@@ -48,13 +56,19 @@ class TakeIntensityReading(KPFTranslatorFunction):
         expr = f"($kpfcal.MEASURING == 'Yes')"
         success = ktl.waitFor(expr, timeout=5)
         if success is False:
-            raise KPFException(f'Intensity monitor is not measuring')
+            msg = f'Intensity monitor is not measuring'
+            log.error(msg)
+            SendEmail.execute({'Subject': 'TakeIntensityReading Failed',
+                               'Message': f'{msg}'})
 
         # Wait for readings to be complete
         expr = f"($kpfcal.AVG == 'Off')"
         success = ktl.waitFor(expr, timeout=navg+10)
         if success is False:
-            raise KPFException(f'Intensity monitor measurement timed out')
+            msg = f'Intensity monitor measurement timed out'
+            log.error(msg)
+            SendEmail.execute({'Subject': 'TakeIntensityReading Failed',
+                               'Message': f'{msg}'})
 
         # Move sensor out of beam
         log.info('Moving Intensity Monitor out of beam')

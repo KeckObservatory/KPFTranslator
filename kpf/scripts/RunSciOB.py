@@ -8,7 +8,7 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import (set_script_keywords, clear_script_keywords, add_script_log,
-               check_script_running)
+               check_script_running, check_scriptstop)
 from .ConfigureForAcquisition import ConfigureForAcquisition
 from .WaitForConfigureAcquisition import WaitForConfigureAcquisition
 from .ConfigureForScience import ConfigureForScience
@@ -20,14 +20,21 @@ from ..fiu.StartTipTilt import StartTipTilt
 
 class RunSciOB(KPFTranslatorFunction):
     '''Script to run a full Science OB from the command line.
-    
+
+    This must have arguments as input, typically from a file using the `-f`
+    command line tool.
+
     Not intended to be called by DDOI's execution engine. This script replaces
     the DDOI Script.
-    
+
     This script is abortable.  When the `.abort_execution()` is invoked, the
     `kpconfig.SCRIPTSTOP` is set to Yes.  This script checked for this value at
     various locations in the script.  As a result, the script will not stop
     immediately, but will stop when it reaches a breakpoint.
+
+    ARGS:
+    =====
+    None
     '''
     abortable = True
 
@@ -64,6 +71,8 @@ class RunSciOB(KPFTranslatorFunction):
         print("########################################")
         print()
         user_input = input()
+
+        check_scriptstop()
 
         log.info(f"Configuring for Science")
         ConfigureForScience.execute(OB)

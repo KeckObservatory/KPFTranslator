@@ -16,7 +16,8 @@ class SetCalSource(KPFTranslatorFunction):
     Th_daily, Th_gold, SoCal-CalFib, LFCFiber
     
     ARGS:
-    CalSource - The octagon position to select
+    =====
+    :CalSource: The octagon position to select
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

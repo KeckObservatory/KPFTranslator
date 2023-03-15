@@ -14,7 +14,8 @@ class WaitForCalSource(KPFTranslatorFunction):
     Th_daily, Th_gold, SoCal-CalFib, LFCFiber
     
     ARGS:
-    CalSource - The octagon position that is the destination
+    =====
+    :CalSource: The octagon position that is the destination
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -11,6 +11,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..calbench.CalLampPower import CalLampPower
+from ..calbench.SetLFCtoStandbyHigh import SetLFCtoStandbyHigh
 from ..fiu.ConfigureFIU import ConfigureFIU
 from ..spectrograph.SetObject import SetObject
 from ..spectrograph.WaitForReady import WaitForReady
@@ -18,8 +19,15 @@ from ..spectrograph.WaitForReady import WaitForReady
 
 class CleanupAfterCalibrations(KPFTranslatorFunction):
     '''Script which cleans up after Cal OBs.
-    
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
     Can be called by `ddoi_script_functions.post_observation_cleanup`.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     @obey_scriptrun
@@ -48,6 +56,8 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+            if lamp == 'LFCFiber':
+                SetLFCtoStandbyHigh.execute({})
 
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})

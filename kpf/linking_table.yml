@@ -29,6 +29,10 @@ links:
         cmd: calbench.SetCalSource.SetCalSource
     SetFlatFieldFiberPos:
         cmd: calbench.SetFlatFieldFiberPos.SetFlatFieldFiberPos
+    SetLFCtoAstroComb:
+        cmd: calbench.SetLFCtoAstroComb.SetLFCtoAstroComb
+    SetLFCtoStandbyHigh:
+        cmd: calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh
     SetND1:
         cmd: calbench.SetND1.SetND1
     SetND2:
@@ -146,6 +150,8 @@ links:
         cmd: scripts.RunSciOB.RunSciOB
     RunScheduledCals:
         cmd: scripts.RunScheduledCals.RunScheduledCals
+    RunTwilightRVStandard:
+        cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
     StartOfNight:
         cmd: scripts.StartOfNight.StartOfNight
     StartUp:
@@ -198,5 +204,7 @@ links:
         cmd: utils.StartGUIs.StartGUIs
     StopGUIs:
         cmd: utils.StopGUIs.StopGUIs
+    TriggerGreenMiniFill:
+        cmd: utils.TriggerGreenMiniFill.TriggerGreenMiniFill
     ZeroOutSlewCalTime:
         cmd: utils.ZeroOutSlewCalTime.ZeroOutSlewCalTime

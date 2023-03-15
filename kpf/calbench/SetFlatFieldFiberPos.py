@@ -12,8 +12,9 @@ class SetFlatFieldFiberPos(KPFTranslatorFunction):
     "Blank", "6 mm f/5", "7.5 mm f/4", "10 mm f/3", "13.2 mm f/2.3", "Open"
     
     ARGS:
-    FF_FiberPos - The name of the flat field fiber position desired.
-    wait (bool) - Wait for move to complete before returning? (default: True)
+    =====
+    :FF_FiberPos: The name of the flat field fiber position desired.
+    :wait: (bool) Wait for move to complete before returning? (default: True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

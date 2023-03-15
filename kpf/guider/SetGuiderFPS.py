@@ -10,7 +10,8 @@ class SetGuiderFPS(KPFTranslatorFunction):
     keyword.
     
     ARGS:
-    fps - Number of frames per second
+    =====
+    :fps: Number of frames per second
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

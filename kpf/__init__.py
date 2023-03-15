@@ -102,6 +102,6 @@ def check_input(args, input_name, allowed_types=None, allowed_values=None,
             allowed_values = [val.lower() if type(val) == str else str(val)\
                               for val in allowed_values]
             target = str(target)
-            if target.lower() not in allowed_values:
+            if target.lower().strip() not in allowed_values:
                 raise FailedPreCondition(f"Input {input_name} value {target} "
                                          f"not in allowed values")

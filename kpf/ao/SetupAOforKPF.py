@@ -21,12 +21,13 @@ class SetupAOforKPF(KPFTranslatorFunction):
         2. Set AO rotator to 0 deg
         3. Turn off HEPA
         4. Set AO in DCS sim mode
-
-        5. Home PCU <-- to be implemented and tested
-        6. Move PCU to the KPF position <-- to be implemented and tested
+        5. Home PCU
+        6. Move PCU to the KPF position
         7. Open AO hatch 
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

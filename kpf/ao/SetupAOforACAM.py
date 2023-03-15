@@ -20,7 +20,9 @@ class SetupAOforACAM(KPFTranslatorFunction):
         1. Set AFM to Mirror
         2. Set AFS to ngs
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

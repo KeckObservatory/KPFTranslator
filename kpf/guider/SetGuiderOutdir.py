@@ -11,7 +11,8 @@ class SetGuiderOutdir(KPFTranslatorFunction):
     '''Set the value of the kpfguide.OUTDIR keyword
     
     ARGS:
-    outdir - The desired output path
+    =====
+    :outdir: The desired output path
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

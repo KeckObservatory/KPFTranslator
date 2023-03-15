@@ -1,5 +1,5 @@
 import ktl
-from time import sleep
+import time
 from datetime import datetime, timedelta
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
@@ -7,13 +7,57 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 
 
-class WaitForConfigureFIU(KPFTranslatorFunction):
+##-----------------------------------------------------------------------------
+## WaitForConfigureFIU Once
+##-----------------------------------------------------------------------------
+class WaitForConfigureFIUOnce(KPFTranslatorFunction):
     '''Wait for the FIU to reach specified mode (kpffiu.MODE)
-    
-    Values: 0 None 1 Stowed 2 Alignment 3 Acquisition 4 Observing 5 Calibration
+
+    This is intended to be wrapped by :py:func:`ConfigureFIU` to handle retries.
+
+    ARGS:
+    =====
+    :mode: The desired FIU mode.  One of:
+           Stowed, Alignment, Acquisition, Observing, Calibration
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        return True
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        dest = args.get('mode')
+        kpffiu = ktl.cache('kpffiu')
+        modes = kpffiu['MODE'].read()
+        start = datetime.utcnow()
+        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=40),
+                      cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
+        end = start + timedelta(seconds=max(move_times))
+        while dest.lower() not in modes.lower().split(',') and datetime.utcnow() <= end:
+            time.sleep(1)
+            modes = kpffiu['MODE'].read()
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        dest = args.get('mode')
+        kpffiu = ktl.cache('kpffiu')
+        modes = kpffiu['MODE'].read()
+        if dest.lower() not in modes.lower().split(','):
+            raise FailedToReachDestination(modes, dest)
+        return True
+
+
+##-----------------------------------------------------------------------------
+## WaitForConfigureFIU
+##-----------------------------------------------------------------------------
+class WaitForConfigureFIU(KPFTranslatorFunction):
+    '''Wait for the FIU to reach specified mode (kpffiu.MODE). This will retry
+    the configure command if the system fails to reach its destination.
     
     ARGS:
-    mode - The desired FIU mode
+    =====
+    :mode: The desired FIU mode.  One of:
+           Stowed, Alignment, Acquisition, Observing, Calibration
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -27,15 +71,14 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         dest = args.get('mode')
-        kpffiu = ktl.cache('kpffiu')
-        modes = kpffiu['MODE'].read()
-        start = datetime.utcnow()
-        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=30),
-                      cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
-        end = start + timedelta(seconds=max(move_times))
-        while dest.lower() not in modes.lower().split(',') and datetime.utcnow() <= end:
-            sleep(1)
-            modes = kpffiu['MODE'].read()
+        try:
+            WaitForConfigureFIUOnce.execute({'mode': dest})
+        except FailedToReachDestination:
+            log.warning(f'FIU failed to reach destination. Retrying.')
+            shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=0.5)
+            time.sleep(shim_time)
+            from .ConfigureFIU import ConfigureFIUOnce
+            ConfigureFIUOnce.execute({'mode': dest, 'wait': True})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -43,7 +86,9 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         modes = kpffiu['MODE'].read()
         if dest.lower() not in modes.lower().split(','):
-            raise FailedToReachDestination(dest, modes)
+            raise FailedToReachDestination(modes, dest)
+        else:
+            log.info(f"FIU mode is now {dest}")
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

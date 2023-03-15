@@ -6,28 +6,29 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 
 
-class SetExpMeterExptime(KPFTranslatorFunction):
+class SetExpMeterExpTime(KPFTranslatorFunction):
     '''Sets the exposure time for the exposure meter
     
     Args:
-    ExpMeterExptime - The exposure time in seconds
+    =====
+    :ExpMeterExpTime: The exposure time in seconds
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'ExpMeterExptime', allowed_types=[int, float])
+        check_input(args, 'ExpMeterExpTime', allowed_types=[int, float])
         return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         kpf_expmeter = ktl.cache('kpf_expmeter')
-        exptime = args.get('ExpMeterExptime')
+        exptime = args.get('ExpMeterExpTime')
         log.debug(f"Setting exposure time to {exptime:.3f}")
         kpf_expmeter['EXPOSURE'].write(exptime)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         log.debug("Checking for success")
-        exptime = args.get('ExpMeterExptime')
+        exptime = args.get('ExpMeterExpTime')
         tol = cfg.get('tolerances', 'kpfexpose_exptime_tolerance', fallback=0.01)
         timeout = cfg.get('times', 'kpfexpose_response_time', fallback=1)
         expr = (f"($kpf_expmeter.EXPOSURE >= {exptime-tol}) and "
@@ -44,7 +45,7 @@ class SetExpMeterExptime(KPFTranslatorFunction):
         '''
         from collections import OrderedDict
         args_to_add = OrderedDict()
-        args_to_add['ExpMeterExptime'] = {'type': float,
+        args_to_add['ExpMeterExpTime'] = {'type': float,
                                           'help': 'The exposure time in seconds.'}
         parser = cls._add_args(parser, args_to_add, print_only=False)
         return super().add_cmdline_args(parser, cfg)

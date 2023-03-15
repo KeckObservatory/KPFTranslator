@@ -10,7 +10,7 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
                 FailedToReachDestination, check_input)
 from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
 from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExptime import SetExptime
+from ..spectrograph.SetExpTime import SetExpTime
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
@@ -18,8 +18,15 @@ from ..spectrograph.WaitForReadout import WaitForReadout
 
 class ExecuteDark(KPFTranslatorFunction):
     '''Script which executes a single Dark set in a calibration OB
-    
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
     Can be called by `ddoi_script_functions.execute_observation`.
+
+    ARGS:
+    =====
+    None
     '''
     abortable = True
 
@@ -54,8 +61,8 @@ class ExecuteDark(KPFTranslatorFunction):
         check_scriptstop() # Stop here if requested
         log.info(f"Setting OBJECT: {args.get('Object')}")
         SetObject.execute(args)
-        log.info(f"Set exposure time: {args.get('Exptime'):.3f}")
-        SetExptime.execute(args)
+        log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
+        SetExpTime.execute(args)
         nexp = args.get('nExp', 1)
         for j in range(nexp):
             check_scriptstop() # Stop here if requested

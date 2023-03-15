@@ -23,7 +23,7 @@ from ..fvc.SetFVCExpTime import SetFVCExpTime
 from ..guider.StartTriggerFile import StartTriggerFile
 from ..guider.StopTriggerFile import StopTriggerFile
 from ..guider.WaitForTriggerFile import WaitForTriggerFile
-from ..spectrograph.SetExptime import SetExptime
+from ..spectrograph.SetExpTime import SetExpTime
 from ..spectrograph.StartExposure import StartExposure
 from ..spectrograph.WaitForReady import WaitForReady
 from ..spectrograph.WaitForReadout import WaitForReadout
@@ -36,7 +36,14 @@ from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 ## fiber_grid_search
 ##-------------------------------------------------------------------------
 class GridSearch(KPFTranslatorFunction):
-    '''
+    '''Executes an engineering grid search OB.
+
+    This must have arguments as input, either from a file using the `-f` command
+    line tool, or passed in from the execution engine.
+
+    ARGS:
+    =====
+    None
     '''
     abortable = True
 
@@ -162,7 +169,7 @@ class GridSearch(KPFTranslatorFunction):
         SetTimedShutters.execute(OB)
         SetTriggeredDetectors.execute(OB)
         total_exptime = ExpMeter_exptime = OB.get('TimeOnPosition')
-        SetExptime.execute({'Exptime': total_exptime})
+        SetExpTime.execute({'ExpTime': total_exptime})
 
         # Configure Exposure Meter
         kpf_expmeter = ktl.cache('kpf_expmeter')
@@ -175,7 +182,7 @@ class GridSearch(KPFTranslatorFunction):
         for FVC in ['SCI', 'CAHK', 'EXT']:
             if FVC in FVCs and OB.get(f'{FVC}FVC_exptime', None) != None:
                 exptime = OB.get(f'{FVC}FVC_exptime')
-                log.info(f"Setting {FVC} FVC Exptime = {exptime:.2f} s")
+                log.info(f"Setting {FVC} FVC ExpTime = {exptime:.2f} s")
                 SetFVCExpTime.execute({'camera': FVC, 'exptime': exptime})
 
 #         for i,xi in enumerate(xis):

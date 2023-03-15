@@ -6,9 +6,14 @@ from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class StopTipTilt(KPFTranslatorFunction):
-    '''
+    '''Stop the tip tilt control loop.  This uses the ALL_LOOPS keyword to
+    stop all functions including DAR (via DAR_ENABLE), tip tilt calculations
+    (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to
+    the telescope (via OFFLOAD_DCS and OFFLOAD).
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -17,9 +22,6 @@ class StopTipTilt(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
-#         kpfguide['TIPTILT_CALC'].write('Inactive')
-#         kpfguide['TIPTILT_CONTROL'].write('Inactive')
-#         kpfguide['OFFLOAD'].write('Inactive')
         kpfguide['ALL_LOOPS'].write('Inactive')
 
     @classmethod
