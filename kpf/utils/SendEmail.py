@@ -2,8 +2,8 @@ import smtplib
 from email.mime.text import MIMEText
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
+from .. import log
+
 
 ##-----------------------------------------------------------------------------
 ## SendEmail
