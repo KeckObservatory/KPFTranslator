@@ -8,7 +8,8 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetLFCtoAstroComb(KPFTranslatorFunction):
-    '''
+    '''Set the Laser Frequency Comb (LFC) to "AstroComb" mode. This should
+    be used during operation of the LFC.
 
     ARGS:
     =====
@@ -30,10 +31,9 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         '''Verifies that kpfmon shows no errors.
         '''
-#         kpfmon = ktl.cache('kpfmon')
-#         expr = f"($kpfmon.LFCREADYSTA == 'OK')"
-#         timeout = cfg.get('times', 'LFC_startup_time', fallback=60)
-#         success = ktl.waitFor(expr, timeout=timeout)
-#         if success is not True:
-#             raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
+        expr = f"($kpfmon.LFCREADYSTA == 'OK')"
+        timeout = cfg.get('times', 'LFC_startup_time', fallback=60)
+        success = ktl.waitFor(expr, timeout=timeout)
+        if success is not True:
+            raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
         return True #success
