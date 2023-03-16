@@ -3,8 +3,8 @@ import numpy as np
 from astropy.modeling import models, fitting
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 def calculate_ADC_delta(za):

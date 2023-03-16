@@ -3,16 +3,17 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..ao.SetupAOforKPF import SetupAOforKPF
-from ..fiu.SetTipTiltGain import SetTipTiltGain
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..calbench.SetCalSource import SetCalSource
-from ..spectrograph.SetProgram import SetProgram
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.ao.SetupAOforKPF import SetupAOforKPF
+from kpf.fiu.SetTipTiltGain import SetTipTiltGain
+from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.spectrograph.SetProgram import SetProgram
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 
 
 class StartOfNight(KPFTranslatorFunction):

@@ -4,23 +4,24 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..ao.ControlAOHatch import ControlAOHatch
-from ..ao.TurnHepaOn import TurnHepaOn
-from ..ao.SendPCUtoHome import SendPCUtoHome
-from ..fiu.ShutdownTipTilt import ShutdownTipTilt
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.SetProgram import SetProgram
-from ..spectrograph.SetObserver import SetObserver
-from ..spectrograph.SetObject import SetObject
-from ..spectrograph.StopAgitator import StopAgitator
-from ..calbench.CalLampPower import CalLampPower
-from ..fvc.FVCPower import FVCPower
-from ..fiu.StopTipTilt import StopTipTilt
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.ao.ControlAOHatch import ControlAOHatch
+from kpf.ao.TurnHepaOn import TurnHepaOn
+from kpf.ao.SendPCUtoHome import SendPCUtoHome
+from kpf.fiu.ShutdownTipTilt import ShutdownTipTilt
+from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.SetProgram import SetProgram
+from kpf.spectrograph.SetObserver import SetObserver
+from kpf.spectrograph.SetObject import SetObject
+from kpf.spectrograph.StopAgitator import StopAgitator
+from kpf.calbench.CalLampPower import CalLampPower
+from kpf.fvc.FVCPower import FVCPower
+from kpf.fiu.StopTipTilt import StopTipTilt
 
 
 class EndOfNight(KPFTranslatorFunction):

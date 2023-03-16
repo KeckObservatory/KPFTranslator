@@ -8,17 +8,18 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..calbench.CalLampPower import CalLampPower
-from ..calbench.SetCalSource import SetCalSource
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..fiu.SetCurrentBase import SetCurrentBase
-from ..fiu.StartTipTilt import StartTipTilt
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
-from ..spectrograph.WaitForReady import WaitForReady
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.calbench.CalLampPower import CalLampPower
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.fiu.SetCurrentBase import SetCurrentBase
+from kpf.fiu.StartTipTilt import StartTipTilt
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from kpf.spectrograph.WaitForReady import WaitForReady
 
 
 class ConfigureForScience(KPFTranslatorFunction):

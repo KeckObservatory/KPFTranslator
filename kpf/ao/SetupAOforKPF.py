@@ -1,18 +1,18 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from .SetAORotatorManual import SetAORotatorManual
-from .SetAORotator import SetAORotator
-from .TurnHepaOff import TurnHepaOff
-from .SetAODCStoSIM import SetAODCStoSIM
-from .ControlAOHatch import ControlAOHatch
-from .SetAFMtoMirror import SetAFMtoMirror
-from .SendPCUtoHome import SendPCUtoHome
-from .SendPCUtoKPF import SendPCUtoKPF
-from .SetAFStoNGS import SetAFStoNGS
-from .TurnLightSourceOff import TurnLightSourceOff
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.ao.SetAORotatorManual import SetAORotatorManual
+from kpf.ao.SetAORotator import SetAORotator
+from kpf.ao.TurnHepaOff import TurnHepaOff
+from kpf.ao.SetAODCStoSIM import SetAODCStoSIM
+from kpf.ao.ControlAOHatch import ControlAOHatch
+from kpf.ao.SetAFMtoMirror import SetAFMtoMirror
+from kpf.ao.SendPCUtoHome import SendPCUtoHome
+from kpf.ao.SendPCUtoKPF import SendPCUtoKPF
+from kpf.ao.SetAFStoNGS import SetAFStoNGS
+from kpf.ao.TurnLightSourceOff import TurnLightSourceOff
 
 
 class SetupAOforKPF(KPFTranslatorFunction):

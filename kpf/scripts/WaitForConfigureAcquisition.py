@@ -8,10 +8,9 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 
 
 class WaitForConfigureAcquisition(KPFTranslatorFunction):

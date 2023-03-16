@@ -10,12 +10,12 @@ from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 
 from ddoi_telescope_translator.pmfm import PMFM
 
-
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from .ConfigureForAcquisition import ConfigureForAcquisition
-from ..guider.TakeGuiderCube import TakeGuiderCube
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.scripts.ConfigureForAcquisition import ConfigureForAcquisition
+from kpf.guider.TakeGuiderCube import TakeGuiderCube
 
 
 def comira(command, message):

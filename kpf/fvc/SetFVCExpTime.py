@@ -3,9 +3,8 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import fvc_is_ready
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 class SetFVCExpTime(KPFTranslatorFunction):
@@ -19,9 +18,6 @@ class SetFVCExpTime(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
-        camera = args.get('camera')
-        if fvc_is_ready(camera=camera) is not True:
-            raise FailedPreCondition(f"Camera {camera} is not ready")
         check_input(args, 'exptime', value_min=0.001, value_max=60)
         return True
 

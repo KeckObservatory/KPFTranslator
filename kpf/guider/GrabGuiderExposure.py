@@ -3,8 +3,9 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
-from . import guider_is_saving, guider_is_active
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.guider import guider_is_saving, guider_is_active
 
 
 class GrabGuiderExposure(KPFTranslatorFunction):

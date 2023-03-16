@@ -3,9 +3,9 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from .WaitForReady import WaitForReady
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.spectrograph.WaitForReady import WaitForReady
 
 
 class StartExposure(KPFTranslatorFunction):

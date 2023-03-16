@@ -6,14 +6,15 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExpTime import SetExpTime
-from ..spectrograph.StartExposure import StartExposure
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.WaitForReadout import WaitForReadout
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.spectrograph.SetObject import SetObject
+from kpf.spectrograph.SetExpTime import SetExpTime
+from kpf.spectrograph.StartExposure import StartExposure
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.WaitForReadout import WaitForReadout
 
 
 class ExecuteDark(KPFTranslatorFunction):

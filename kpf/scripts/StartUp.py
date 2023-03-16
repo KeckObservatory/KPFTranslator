@@ -3,13 +3,14 @@ import time
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..utils.SetOutdirs import SetOutdirs
-from ..spectrograph.WaitForReady import WaitForReady
-from ..utils.SetObserverFromSchedule import SetObserverFromSchedule
-from ..utils.StartGUIs import StartGUIs
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.utils.SetOutdirs import SetOutdirs
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.utils.SetObserverFromSchedule import SetObserverFromSchedule
+from kpf.utils.StartGUIs import StartGUIs
 
 
 class StartUp(KPFTranslatorFunction):

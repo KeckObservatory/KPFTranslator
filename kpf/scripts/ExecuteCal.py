@@ -6,34 +6,35 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..calbench.CalLampPower import CalLampPower
-from ..calbench.SetCalSource import SetCalSource
-from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
-from ..calbench.SetND1 import SetND1
-from ..calbench.SetND2 import SetND2
-from ..calbench.TakeIntensityReading import TakeIntensityReading
-from ..calbench.WaitForCalSource import WaitForCalSource
-from ..calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
-from ..calbench.WaitForLampWarm import WaitForLampWarm
-from ..calbench.WaitForND1 import WaitForND1
-from ..calbench.WaitForND2 import WaitForND2
-from ..fvc.FVCPower import FVCPower
-from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExpTime import SetExpTime
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.SetTimedShutters import SetTimedShutters
-from ..spectrograph.StartAgitator import StartAgitator
-from ..spectrograph.StartExposure import StartExposure
-from ..spectrograph.StopAgitator import StopAgitator
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.WaitForReadout import WaitForReadout
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
-from ..utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
-from ..expmeter.SetExpMeterExpTime import SetExpMeterExpTime
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.calbench.CalLampPower import CalLampPower
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
+from kpf.calbench.SetND1 import SetND1
+from kpf.calbench.SetND2 import SetND2
+from kpf.calbench.TakeIntensityReading import TakeIntensityReading
+from kpf.calbench.WaitForCalSource import WaitForCalSource
+from kpf.calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
+from kpf.calbench.WaitForLampWarm import WaitForLampWarm
+from kpf.calbench.WaitForND1 import WaitForND1
+from kpf.calbench.WaitForND2 import WaitForND2
+from kpf.fvc.FVCPower import FVCPower
+from kpf.spectrograph.SetObject import SetObject
+from kpf.spectrograph.SetExpTime import SetExpTime
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.spectrograph.SetTimedShutters import SetTimedShutters
+from kpf.spectrograph.StartAgitator import StartAgitator
+from kpf.spectrograph.StartExposure import StartExposure
+from kpf.spectrograph.StopAgitator import StopAgitator
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.WaitForReadout import WaitForReadout
+from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
+from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 
 
 class ExecuteCal(KPFTranslatorFunction):

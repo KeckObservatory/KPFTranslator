@@ -8,16 +8,17 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from .ExecuteSlewCal import ExecuteSlewCal
-from ..calbench.SetCalSource import SetCalSource
-from ..guider.PredictGuiderParameters import predict_guider_parameters
-from ..guider.SetGuiderFPS import SetGuiderFPS
-from ..guider.SetGuiderGain import SetGuiderGain
-from ..fiu.InitializeTipTilt import InitializeTipTilt
-from ..fiu.ConfigureFIU import ConfigureFIU
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.scripts.ExecuteSlewCal import ExecuteSlewCal
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.guider.PredictGuiderParameters import predict_guider_parameters
+from kpf.guider.SetGuiderFPS import SetGuiderFPS
+from kpf.guider.SetGuiderGain import SetGuiderGain
+from kpf.fiu.InitializeTipTilt import InitializeTipTilt
+from kpf.fiu.ConfigureFIU import ConfigureFIU
 
 
 class ConfigureForAcquisition(KPFTranslatorFunction):

@@ -5,17 +5,17 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import (set_script_keywords, clear_script_keywords, add_script_log,
-               check_script_running, check_scriptstop)
-from .ConfigureForAcquisition import ConfigureForAcquisition
-from .WaitForConfigureAcquisition import WaitForConfigureAcquisition
-from .ConfigureForScience import ConfigureForScience
-from .CleanupAfterScience import CleanupAfterScience
-from .WaitForConfigureScience import WaitForConfigureScience
-from .ExecuteSci import ExecuteSci
-from ..fiu.StartTipTilt import StartTipTilt
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (set_script_keywords, clear_script_keywords,
+                         add_script_log, check_script_running, check_scriptstop)
+from kpf.scripts.ConfigureForAcquisition import ConfigureForAcquisition
+from kpf.scripts.WaitForConfigureAcquisition import WaitForConfigureAcquisition
+from kpf.scripts.ConfigureForScience import ConfigureForScience
+from kpf.scripts.CleanupAfterScience import CleanupAfterScience
+from kpf.scripts.WaitForConfigureScience import WaitForConfigureScience
+from kpf.scripts.ExecuteSci import ExecuteSci
+from kpf.fiu.StartTipTilt import StartTipTilt
 
 
 class RunSciOB(KPFTranslatorFunction):

@@ -5,19 +5,19 @@ import os
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import (set_script_keywords, clear_script_keywords, add_script_log,
-               check_script_running)
-from .ConfigureForCalibrations import ConfigureForCalibrations
-from .ExecuteDark import ExecuteDark
-from .ExecuteCal import ExecuteCal
-from .CleanupAfterCalibrations import CleanupAfterCalibrations
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.SetTimedShutters import SetTimedShutters
-from ..calbench.SetCalSource import SetCalSource
-from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
-from ..utils.SendEmail import SendEmail
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (set_script_keywords, clear_script_keywords,
+                         add_script_log, check_script_running)
+from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
+from kpf.scripts.ExecuteDark import ExecuteDark
+from kpf.scripts.ExecuteCal import ExecuteCal
+from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.spectrograph.SetTimedShutters import SetTimedShutters
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
+from kpf.utils.SendEmail import SendEmail
 
 
 class RunCalOB(KPFTranslatorFunction):

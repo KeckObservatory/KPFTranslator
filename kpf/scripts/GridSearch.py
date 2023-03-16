@@ -12,24 +12,25 @@ import ktl
 import keygrabber
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..fiu.SetTipTiltTargetPixel import SetTipTiltTargetPixel
-from ..fiu.StartTipTilt import StartTipTilt
-from ..fiu.StopTipTilt import StopTipTilt
-from ..fvc.TakeFVCExposure import TakeFVCExposure
-from ..fvc.SetFVCExpTime import SetFVCExpTime
-from ..guider.StartTriggerFile import StartTriggerFile
-from ..guider.StopTriggerFile import StopTriggerFile
-from ..guider.WaitForTriggerFile import WaitForTriggerFile
-from ..spectrograph.SetExpTime import SetExpTime
-from ..spectrograph.StartExposure import StartExposure
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.WaitForReadout import WaitForReadout
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.SetTimedShutters import SetTimedShutters
-from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.fiu.SetTipTiltTargetPixel import SetTipTiltTargetPixel
+from kpf.fiu.StartTipTilt import StartTipTilt
+from kpf.fiu.StopTipTilt import StopTipTilt
+from kpf.fvc.TakeFVCExposure import TakeFVCExposure
+from kpf.fvc.SetFVCExpTime import SetFVCExpTime
+from kpf.guider.StartTriggerFile import StartTriggerFile
+from kpf.guider.StopTriggerFile import StopTriggerFile
+from kpf.guider.WaitForTriggerFile import WaitForTriggerFile
+from kpf.spectrograph.SetExpTime import SetExpTime
+from kpf.spectrograph.StartExposure import StartExposure
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.WaitForReadout import WaitForReadout
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.spectrograph.SetTimedShutters import SetTimedShutters
+from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 
 
 ##-------------------------------------------------------------------------

@@ -4,7 +4,8 @@ from astroquery.vizier import Vizier
 from astroquery.simbad import Simbad
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import FailedPostCondition, check_input
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 def get_names_from_gaiaid(gaiaid):

@@ -3,9 +3,11 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log
-from . import guider_is_saving, guider_is_active
-from . import TriggerSingleGuiderExposure, GrabGuiderExposure
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.guider import guider_is_saving, guider_is_active
+from kpf.guider.TriggerSingleGuiderExposure import TriggerSingleGuiderExposure
+from kpf.guider.GrabGuiderExposure import GrabGuiderExposure
 
 
 class TakeGuiderExposure(KPFTranslatorFunction):
@@ -29,12 +31,12 @@ class TakeGuiderExposure(KPFTranslatorFunction):
 
         if guider_is_active():
             if guider_is_saving():
-                GrabGuiderExposure.GrabGuiderExposure.execute({})
+                GrabGuiderExposure.execute({})
             else:
                 # not sure what right action is here
                 log.warning('Guider is active, but not saving. No image saved.')
         else:
-            TriggerSingleGuiderExposure.TriggerSingleGuiderExposure.execute({})
+            TriggerSingleGuiderExposure.execute({})
 
         lastfile.monitor()
         lastfile.wait(timeout=exptime*2+1) # Wait for update which signals a new file
