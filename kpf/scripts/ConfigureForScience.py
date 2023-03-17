@@ -1,5 +1,5 @@
 import os
-from time import sleep
+import time
 from packaging import version
 from pathlib import Path
 from datetime import datetime, timedelta
