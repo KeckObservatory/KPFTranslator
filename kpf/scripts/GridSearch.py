@@ -49,12 +49,6 @@ class GridSearch(KPFTranslatorFunction):
     abortable = True
 
     @classmethod
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
-
-    @classmethod
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_grid'])

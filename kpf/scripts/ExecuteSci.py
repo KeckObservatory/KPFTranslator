@@ -42,12 +42,6 @@ class ExecuteSci(KPFTranslatorFunction):
     abortable = True
 
     @classmethod
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
-
-    @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.5')

@@ -29,7 +29,7 @@ class RunCalOB(KPFTranslatorFunction):
     Not intended to be called by DDOI's execution engine. This script replaces
     the DDOI Script.
 
-    This script is abortable.  When the `.abort_execution()` is invoked, the
+    This script is abortable.  When `.abort_execution()` is invoked, the
     `kpconfig.SCRIPTSTOP` is set to Yes.  This script checked for this value at
     various locations in the script.  As a result, the script will not stop
     immediately, but will stop when it reaches a breakpoint.
@@ -39,12 +39,6 @@ class RunCalOB(KPFTranslatorFunction):
     None
     '''
     abortable = True
-
-    @classmethod
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
 
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
