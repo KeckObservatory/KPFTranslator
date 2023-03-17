@@ -61,10 +61,13 @@ class ConfigureForScience(KPFTranslatorFunction):
         kpfguide['TRIGCUBE'].write('Inactive')
 
         # Start tip tilt loops
-        log.info(f"Starting tip tilt loops")
-        SetCurrentBase.execute(OB)
-        StartTipTilt.execute({})
-        tick = datetime.now()
+        if OB['GuideMode'] in ['manual', 'auto']:
+            log.info(f"Starting tip tilt loops")
+            SetCurrentBase.execute(OB)
+            StartTipTilt.execute({})
+            tick = datetime.now()
+        elif OB['GuideMode'] in ['off', 'telescope']:
+            log.info('GuideMode in OB is "off", not starting tip tilt loops')
 
         # Set Octagon
         kpfconfig = ktl.cache('kpfconfig')
@@ -93,13 +96,14 @@ class ConfigureForScience(KPFTranslatorFunction):
         SetTriggeredDetectors.execute(OB)
 
         # Make sure tip tilt loops have had time to close
-        tock = datetime.now()
-        time_passed = (tock - tick).total_seconds()
-        tt_close_time = cfg.get('times', 'tip_tilt_close_time', fallback=3)
-        sleep_time = tt_close_time - time_passed
-        if sleep_time > 0:
-            log.info(f"Sleeping {sleep_time} seconds to allow loops to close")
-            time.sleep(sleep_time)
+        if OB['GuideMode'] in ['manual', 'auto']:
+            tock = datetime.now()
+            time_passed = (tock - tick).total_seconds()
+            tt_close_time = cfg.get('times', 'tip_tilt_close_time', fallback=3)
+            sleep_time = tt_close_time - time_passed
+            if sleep_time > 0:
+                log.info(f"Sleeping {sleep_time:.1f} seconds to allow loops to close")
+                time.sleep(sleep_time)
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
