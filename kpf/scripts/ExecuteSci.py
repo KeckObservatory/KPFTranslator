@@ -54,7 +54,6 @@ class ExecuteSci(KPFTranslatorFunction):
         return True
 
     @classmethod
-    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         kpfconfig = ktl.cache('kpfconfig')
         kpfguide = ktl.cache('kpfguide')
