@@ -81,6 +81,8 @@ links:
         cmd: fiu.StopTipTilt.StopTipTilt
     UpdateCurrentBase:
         cmd: fiu.UpdateCurrentBase.UpdateCurrentBase
+    TestTipTiltMirrorRange:
+        cmd: fiu.TestTipTiltMirrorRange.TestTipTiltMirrorRange
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
     # FVCs
@@ -160,8 +162,6 @@ links:
         cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
     TestScienceADC:
         cmd: scripts.TestScienceADC.TestScienceADC
-    TipTiltPerformanceCheck:
-        cmd: scripts.TipTiltPerformanceCheck.TipTiltPerformanceCheck
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
     # Spectrograph
