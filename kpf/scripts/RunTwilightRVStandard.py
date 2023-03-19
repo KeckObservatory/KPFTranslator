@@ -111,6 +111,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         for observation in observations:
             observation['Template_Name'] = 'kpf_sci'
             observation['Template_Version'] = sciOB['Template_Version']
+            observation['Gmag'] = sciOB['Gmag']
             log.debug(f"Automatically setting TimedShutter_CaHK: {sciOB['TriggerCaHK']}")
             observation['TimedShutter_CaHK'] = sciOB['TriggerCaHK']
             observation['TriggerCaHK'] = sciOB['TriggerCaHK']
