@@ -62,7 +62,7 @@ class ExecuteSci(KPFTranslatorFunction):
         else:
             log.warning(f"Only monitor mode is available right now")
 
-        if args.get('AutoExpMeter', False) == True:
+        if args.get('AutoExpMeter', False) in [True, 'True']:
             em_params = predict_expmeter_parameters(args.get('Gmag'))
             args['ExpMeterExpTime'] = em_params
         else:
