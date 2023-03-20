@@ -47,49 +47,31 @@ class TestTipTiltMirrorRange(KPFTranslatorFunction):
         nsamples = 9
         movetime = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
 
-        xvals = {'-2900': [], '+2900': []}
-        TTXVAL = ktl.cache('kpffiu', 'TTXVAL')
-        for val in xvals.keys():
-            log.debug(f'Moving X to {val}')
-            TTXVAL.write(int(val))
-            time.sleep(10*movetime)
-            vals = []
-            for i in range(nsamples):
-                reading = float(TTXVAL.read())
-                log.debug(f'  TTXVAL = {reading:.1f}')
-                vals.append(reading)
-                time.sleep(movetime)
-            # Analyze Results
-            meanval = np.mean(np.array(vals))
-            stdval = np.std(np.array(vals))
-            delta = meanval - float(val)
-            frac = meanval/float(val)
-            xvals[val] = [meanval, stdval, delta, frac]
-            log.info(f"  TTXVAL={val}: mean={meanval:.1f} (stddev={stdval:.1f})")
-        log.info(f"X Axis: {-xvals['-2900'][3]:.0%} to {xvals['+2900'][3]:.0%}")
+        axis = ['X', 'Y']
+        for ax in axis:
+            vals = {'-2900': [], '+2900': []}
+            TTVAL = ktl.cache('kpffiu', f'TT{ax}VAL')
+            for val in vals.keys():
+                log.debug(f'Moving {ax} to {val}')
+                TTVAL.write(int(val))
+                time.sleep(10*movetime)
+                results = []
+                for i in range(nsamples):
+                    reading = float(TTVAL.read())
+                    log.debug(f'  TT{ax}VAL = {reading:.1f}')
+                    results.append(reading)
+                    time.sleep(movetime)
+                # Analyze Results
+                meanresult = np.mean(np.array(results))
+                stdresult = np.std(np.array(results))
+                delta = meanval - float(val)
+                frac = meanresult/float(val)
+                vals[val] = [meanresult, stdresult, delta, frac]
+                log.info(f"  TT{ax}VAL={val}: mean={meanresult:.1f} (stddev={stdresult:.1f})")
+            log.info(f"TipTilt Range {ax}: {-vals['-2900'][3]:.0%} to {vals['+2900'][3]:.0%}")
 
-        InitializeTipTilt.execute({})
-
-        yvals = {'-2900': [], '+2900': []}
-        TTYVAL = ktl.cache('kpffiu', 'TTYVAL')
-        for val in yvals.keys():
-            log.debug(f'Moving Y to {val}')
-            TTYVAL.write(int(val))
+            InitializeTipTilt.execute({})
             time.sleep(10*movetime)
-            vals = []
-            for i in range(nsamples):
-                reading = float(TTYVAL.read())
-                log.debug(f'  TTYVAL = {reading:.1f}')
-                vals.append(reading)
-                time.sleep(movetime)
-            # Analyze Results
-            meanval = np.mean(np.array(vals))
-            stdval = np.std(np.array(vals))
-            delta = meanval - float(val)
-            frac = meanval/float(val)
-            yvals[val] = [meanval, stdval, delta, frac]
-            log.info(f"  TTXVAL={val}: mean={meanval:.1f} (stddev={stdval:.1f})")
-        log.info(f"Y Axis: {-yvals['-2900'][3]:.0%} to {yvals['+2900'][3]:.0%}")
 
         ShutdownTipTilt.execute({})
 
