@@ -194,6 +194,12 @@ links:
         cmd: utils.CalculateDAR.CalculateDAR
     CorrectDAR:
         cmd: utils.CorrectDAR.CorrectDAR
+    EstimateOBDuration:
+        cmd: utils.EstimateOBDuration.EstimateOBDuration
+    EstimateCalOBDuration:
+        cmd: utils.EstimateOBDuration.EstimateCalOBDuration
+    EstimateSciOBDuration:
+        cmd: utils.EstimateOBDuration.EstimateSciOBDuration
     ImageBackIlluminatedFibers:
         cmd: utils.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
     SetObserverFromSchedule:
