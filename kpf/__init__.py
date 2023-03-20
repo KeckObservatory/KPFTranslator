@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
 import logging
-from datetime import datetime, timedelta
+from logging.handlers import TimedRotatingFileHandler
+import datetime
 from packaging import version
 
 
@@ -18,15 +19,14 @@ def create_KPF_log():
     LogConsoleHandler.setFormatter(LogFormat)
     log.addHandler(LogConsoleHandler)
     ## Set up file output
-    utnow = datetime.utcnow()
-    date = utnow-timedelta(days=1)
-    date_str = date.strftime('%Y%b%d').lower()
-#     logdir = Path(f"~/kpflogs/{date_str}").expanduser()
-    logdir = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}')
+    logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
     if logdir.exists() is False:
         logdir.mkdir(mode=0o777, parents=True)
     LogFileName = logdir / 'KPFTranslator.log'
-    LogFileHandler = logging.FileHandler(LogFileName)
+    LogFileHandler = TimedRotatingFileHandler(LogFileName,
+                                              when='D',
+                                              utc=True,  interval=30,
+                                              atTime=datetime.time(0, 0, 0))
     LogFileHandler.setLevel(logging.DEBUG)
     LogFileHandler.setFormatter(LogFormat)
     log.addHandler(LogFileHandler)
