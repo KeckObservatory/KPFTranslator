@@ -20,7 +20,7 @@ class EstimateOBDuration(KPFTranslatorFunction):
             duration = EstimateCalOBDuration.execute(OB)
         elif OB['Template_Name'] == 'kpf_sci':
             duration = EstimateSciOBDuration.execute(OB)
-        print(f"{duration:.0f} s ({duration/60:.1f} min)")
+        print(f"{duration/60:.0f} min")
         return duration
 
     @classmethod
@@ -67,7 +67,6 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
                             fallback=20)
 
         # Execute Darks
-#         print(f"{duration:.0f} s ({duration/60:.1f} min)")
         darks = OB.get('SEQ_Darks', [])
         if len(darks) > 0:
             # Set Octagon to Home
@@ -76,10 +75,8 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
         for dark in darks:
             duration += dark['nExp']*dark['ExpTime']
             duration += dark['nExp']*readout
-#             print(f"  {duration:.0f} s ({duration/60:.1f} min)")
 
         # Execute Cals
-#         print(f"{duration:.0f} s ({duration/60:.1f} min)")
         cals = OB.get('SEQ_Calibrations', [])
         archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
                              fallback=2)
@@ -98,14 +95,14 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
                     warm_up = cfg.get('time_estimates', 'lamp_warmup',
                                       fallback=1800)
                 if duration < warm_up:
-                    duration += (warm_up-duration)
+                    warm_up_wait = warm_up-duration
+                    print(f"  {lamp} warm up {warm_up_wait/60:.0f} min")
+                    duration += warm_up_wait
                 lamps_that_need_warmup.pop(lamps_that_need_warmup.index(lamp))
-#                 print(f"{lamp} warm up {duration:.0f} s ({duration/60:.1f} min)")
             duration += cal['nExp']*cal['ExpTime']
             duration += cal['nExp']*readout
-#             print(f"  {duration:.0f} s ({duration/60:.1f} min)")
 
-        print(f"{duration:.0f} s ({duration/60:.1f} min)")
+        print(f"{duration/60:.0f} min")
         return duration
 
     @classmethod
@@ -150,7 +147,7 @@ class EstimateSciOBDuration(KPFTranslatorFunction):
             duration += observation['nExp']*observation['ExpTime']
             duration += observation['nExp']*readout
 
-        print(f"{duration:.0f} s ({duration/60:.1f} min)")
+        print(f"{duration/60:.0f} min")
         return duration
 
     @classmethod
