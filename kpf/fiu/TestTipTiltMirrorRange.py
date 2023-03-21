@@ -64,7 +64,7 @@ class TestTipTiltMirrorRange(KPFTranslatorFunction):
                 # Analyze Results
                 meanresult = np.mean(np.array(results))
                 stdresult = np.std(np.array(results))
-                delta = meanval - float(val)
+                delta = meanresult - float(val)
                 frac = meanresult/float(val)
                 vals[val] = [meanresult, stdresult, delta, frac]
                 log.info(f"  TT{ax}VAL={val}: mean={meanresult:.1f} (stddev={stdresult:.1f})")
