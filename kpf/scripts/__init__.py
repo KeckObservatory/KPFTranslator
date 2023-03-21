@@ -29,6 +29,8 @@ def add_script_handler(this_file_name):
     date = utnow-timedelta(days=1)
     date_str = date.strftime('%Y%b%d').lower()
     script_log_path = Path(kpflog_filehandler.baseFilename).parent / date_str
+    if script_log_path.exists() is False:
+        script_log_path.mkdir(mode=0o777, parents=True)
     script_logfile = script_log_path / f"{now_str}_{this_file_name}.log"
     ScriptLogFileHandler = logging.FileHandler(script_logfile)
     ScriptLogFileHandler.setLevel(logging.DEBUG)
