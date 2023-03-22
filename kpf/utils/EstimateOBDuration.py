@@ -124,17 +124,23 @@ class EstimateSciOBDuration(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, OB, logger, cfg):
-        duration = 0
-        readout_red = cfg.get('time_estimates', 'readout_red', fallback=60)
-        readout_green = cfg.get('time_estimates', 'readout_green', fallback=60)
-        readout = max([readout_red, readout_green])
+        readout_red = 0 if OB['TriggerRed'] == False else\
+                      cfg.get('time_estimates', 'readout_red', fallback=60)
+        readout_green = 0 if OB['TriggerGreen'] == False else\
+                        cfg.get('time_estimates', 'readout_green', fallback=60)
+        readout_cahk = 0 if OB['TriggerCaHK'] == False else\
+                       cfg.get('time_estimates', 'readout_cahk', fallback=1)
+        readout = max([readout_red, readout_green, readout_cahk])
 
         # Configure FIU
-        duration += cfg.get('time_estimates', 'FIU_mode_change',
-                            fallback=20)
+        FIU_mode_change = cfg.get('time_estimates', 'FIU_mode_change',
+                                  fallback=20)
         # Slew
-        duration += cfg.get('time_estimates', 'slew_time',
-                            fallback=120)
+        slew_time = cfg.get('time_estimates', 'slew_time',
+                             fallback=120)
+
+        duration = max([FIU_mode_change, slew_time])
+
         # Acquire
         duration += cfg.get('time_estimates', 'acquire_time',
                             fallback=10)
