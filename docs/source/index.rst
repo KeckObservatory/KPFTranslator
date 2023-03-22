@@ -12,8 +12,19 @@ Welcome to KPF Translator's documentation!
 
    usage
    api
-
-
+   kpf
+   kpf.analysis
+   kpf.ao
+   kpf.cahk
+   kpf.calbench
+   kpf.ddoi_script_functions
+   kpf.expmeter
+   kpf.fiu
+   kpf.fvc
+   kpf.guider
+   kpf.scripts
+   kpf.spectrograph
+   kpf.utils
 
 Indices and tables
 ==================
