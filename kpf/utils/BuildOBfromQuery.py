@@ -4,7 +4,8 @@ from astroquery.vizier import Vizier
 from astroquery.simbad import Simbad
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import FailedPostCondition, check_input
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 def get_names_from_gaiaid(gaiaid):
@@ -24,10 +25,17 @@ def get_names_from_gaiaid(gaiaid):
 
 def get_Jmag(twomassid):
     cat = 'II/246/out'
-    cols = ['2MASS', 'Jmag']
-    r = Vizier(catalog=cat, columns=cols).query_constraints(Source=twomassid)[0]
-    Jmag_masked = r['Jmag'].mask[0]
-    Jmag = f"{r['Jmag'][0]:.2f}" if Jmag_masked == False else '?'
+    cols = ['2MASS', 'Jmag', 'RAJ2000', 'DEJ2000', '_r']
+    result = Vizier(catalog=cat, columns=cols).query_object(twomassid)
+    if len(result) == 0:
+        return {'Jmag': '?'}
+    table = result[0]
+    table.sort('_r')
+    if float(table['_r'][0]) > 1: # find better threshold
+        return {'Jmag': '?'}
+    if table['Jmag'].mask[0] == True:
+        return {'Jmag': '?'}
+    Jmag = f"{table['Jmag'][0]:.2f}"
     return {'Jmag': Jmag}
 
 
@@ -83,7 +91,7 @@ def OBdict_to_lines(OB):
           f"SEQ_Observations:",
           f" - Object: {obs.get('Object', '?')}",
           f"   nExp: {obs.get('nExp', '?')}",
-          f"   Exptime: {obs.get('Exptime', '?')}",
+          f"   ExpTime: {obs.get('ExpTime', '?')}",
           f"   ExpMeterMode: {obs.get('ExpMeterMode', '?')}",
           f"   AutoExpMeter: {obs.get('AutoExpMeter', '?')}",
           ])

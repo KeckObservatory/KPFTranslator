@@ -6,24 +6,25 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExptime import SetExptime
-from ..spectrograph.SetTimedShutters import SetTimedShutters
-from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
-from ..spectrograph.StartAgitator import StartAgitator
-from ..spectrograph.StartExposure import StartExposure
-from ..spectrograph.StopAgitator import StopAgitator
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.WaitForReadout import WaitForReadout
-from ..calbench.SetND1 import SetND1
-from ..calbench.SetND2 import SetND2
-from ..calbench.WaitForND1 import WaitForND1
-from ..calbench.WaitForND2 import WaitForND2
-from ..expmeter.PredictExpMeterParameters import predict_expmeter_parameters
-from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.spectrograph.SetObject import SetObject
+from kpf.spectrograph.SetExpTime import SetExpTime
+from kpf.spectrograph.SetTimedShutters import SetTimedShutters
+from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from kpf.spectrograph.StartAgitator import StartAgitator
+from kpf.spectrograph.StartExposure import StartExposure
+from kpf.spectrograph.StopAgitator import StopAgitator
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.WaitForReadout import WaitForReadout
+from kpf.calbench.SetND1 import SetND1
+from kpf.calbench.SetND2 import SetND2
+from kpf.calbench.WaitForND1 import WaitForND1
+from kpf.calbench.WaitForND2 import WaitForND2
+from kpf.expmeter.PredictExpMeterParameters import predict_expmeter_parameters
+from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 
 
 class ExecuteSci(KPFTranslatorFunction):
@@ -41,19 +42,12 @@ class ExecuteSci(KPFTranslatorFunction):
     abortable = True
 
     @classmethod
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
-
-    @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
-    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         kpfconfig = ktl.cache('kpfconfig')
         kpfguide = ktl.cache('kpfguide')
@@ -68,14 +62,14 @@ class ExecuteSci(KPFTranslatorFunction):
         else:
             log.warning(f"Only monitor mode is available right now")
 
-        if args.get('AutoExpMeter', False) == True:
+        if args.get('AutoExpMeter', False) in [True, 'True']:
             em_params = predict_expmeter_parameters(args.get('Gmag'))
             args['ExpMeterExpTime'] = em_params
         else:
             pass
 
         log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
-        SetExpMeterExptime.execute(args)
+        SetExpMeterExpTime.execute(args)
 
         ## ----------------------------------------------------------------
         ## Setup simulcal
@@ -97,7 +91,7 @@ class ExecuteSci(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         WaitForReady.execute({})
         SetObject.execute(args)
-        SetExptime.execute(args)
+        SetExpTime.execute(args)
         args['TimedShutter_Scrambler'] = True
         args['TimedShutter_FlatField'] = False
         args['TimedShutter_SimulCal'] = args['TakeSimulCal']
@@ -122,7 +116,7 @@ class ExecuteSci(KPFTranslatorFunction):
             # Start next exposure
             if runagitator is True:
                 StartAgitator.execute({})
-            log.info(f"Starting {args.get('Exptime')} s expoure {j+1}/{nexp} ({args.get('Object')})")
+            log.info(f"Starting {args.get('ExpTime')} s expoure {j+1}/{nexp} ({args.get('Object')})")
             log.debug('Starting TRIGGER file')
             kpfguide['TRIGGER'].write(1)
             StartExposure.execute({})

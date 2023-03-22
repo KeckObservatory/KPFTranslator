@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
                    'SEQ_Observations': [
                         {'Object': '',
                          'nExp': '1',
-                         'Exptime': '10',
+                         'ExpTime': '10',
                          'ExpMeterMode': 'manual',
                          'AutoExpMeter': False,
                          'ExpMeterExpTime': '0.5', 
@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
 
 
     def setupUi(self):
-        self.setWindowTitle("KPF OB Builder")
+        self.setWindowTitle("KPF OB GUI")
 
         # script name
         self.scriptname_value = self.findChild(QLabel, 'scriptname_value')
@@ -210,9 +210,9 @@ class MainWindow(QMainWindow):
         self.nExpEdit.textChanged.connect(self.set_nExp)
         self.update_OB('nExp', self.OB['SEQ_Observations'][0]['nExp'])
 
-        self.ExptimeEdit = self.findChild(QLineEdit, 'ExptimeEdit')
-        self.ExptimeEdit.textChanged.connect(self.set_exptime)
-        self.update_OB('Exptime', self.OB['SEQ_Observations'][0]['Exptime'])
+        self.ExpTimeEdit = self.findChild(QLineEdit, 'ExpTimeEdit')
+        self.ExpTimeEdit.textChanged.connect(self.set_exptime)
+        self.update_OB('ExpTime', self.OB['SEQ_Observations'][0]['ExpTime'])
 
         self.ExpMeterMode = self.findChild(QComboBox, 'ExpMeterMode')
         self.ExpMeterMode.addItems(["monitor"])
@@ -341,7 +341,7 @@ class MainWindow(QMainWindow):
     ##-------------------------------------------
     def run_query_gaia(self):
         # Will this query overwrite any values?
-        target_OB_keys = ['GaiaID', '2MASSID', 'Parallax', 'RadialVelocity',
+        target_OB_keys = ['2MASSID', 'Parallax', 'RadialVelocity',
                           'Gmag', 'Jmag', 'Teff']
         currently_used = [v for v in target_OB_keys if v in self.OB.keys()]
         if len(currently_used) > 0:
@@ -411,7 +411,7 @@ class MainWindow(QMainWindow):
         self.update_OB('nExp', value)
 
     def set_exptime(self, value):
-        self.update_OB('Exptime', value)
+        self.update_OB('ExpTime', value)
 
     def set_expmeter_mode(self, value):
         self.update_OB('ExpMeterMode', value)
@@ -447,7 +447,7 @@ class MainWindow(QMainWindow):
 
     def update_OB(self, key, value):
         print(f"Setting {key} = {value}")
-        seq_keys = ['Object', 'nExp', 'Exptime', 'ExpMeterMode',
+        seq_keys = ['Object', 'nExp', 'ExpTime', 'ExpMeterMode',
                     'AutoExpMeter', 'ExpMeterExpTime', 'TakeSimulCal',
                     'AutoNDFilters', 'CalND1', 'CalND2']
         if key in seq_keys:
@@ -491,8 +491,8 @@ class MainWindow(QMainWindow):
             self.ObjectEdit.setText(f"{value}")
         elif key == 'nExp':
             self.nExpEdit.setText(f"{value}")
-        elif key == 'Exptime':
-            self.ExptimeEdit.setText(f"{value}")
+        elif key == 'ExpTime':
+            self.ExpTimeEdit.setText(f"{value}")
         elif key == 'ExpMeterMode':
             self.ExpMeterMode.setCurrentText(value)
         elif key == 'AutoExpMeter':

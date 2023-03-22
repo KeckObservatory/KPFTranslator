@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from ..spectrograph.SetObserver import SetObserver
-from ..spectrograph.SetProgram import SetProgram
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.spectrograph.SetObserver import SetObserver
+from kpf.spectrograph.SetProgram import SetProgram
 
 
 ##-----------------------------------------------------------------------------

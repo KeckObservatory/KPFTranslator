@@ -2,7 +2,8 @@ import smtplib
 from email.mime.text import MIMEText
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import log, check_input
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 ##-----------------------------------------------------------------------------

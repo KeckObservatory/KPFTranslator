@@ -3,9 +3,9 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from .ResetDetectors import ResetDetectors
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.spectrograph.ResetDetectors import ResetDetectors
 
 
 class WaitForReadout(KPFTranslatorFunction):

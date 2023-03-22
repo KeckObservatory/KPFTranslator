@@ -1,10 +1,10 @@
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import standardize_lamp_name
-from .CalLampPower import CalLampPower
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.calbench import standardize_lamp_name
+from kpf.calbench.CalLampPower import CalLampPower
 
 
 class WaitForLampWarm(KPFTranslatorFunction):

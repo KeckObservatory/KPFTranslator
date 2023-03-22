@@ -7,13 +7,15 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..calbench.CalLampPower import CalLampPower
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
-from ..spectrograph.WaitForReady import WaitForReady
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.calbench.CalLampPower import CalLampPower
+from kpf.calbench.SetLFCtoAstroComb import SetLFCtoAstroComb
+from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from kpf.spectrograph.WaitForReady import WaitForReady
 
 
 class ConfigureForCalibrations(KPFTranslatorFunction):
@@ -55,6 +57,8 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                         'BrdbandFiber', 'WideFlat']:
                 CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+            if lamp == 'LFCFiber':
+                SetLFCtoAstroComb.execute({})
 
         log.debug(f"Ensuring back illumination LEDs are off")
         CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})

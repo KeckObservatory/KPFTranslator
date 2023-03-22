@@ -5,17 +5,17 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import (set_script_keywords, clear_script_keywords, add_script_log,
-               check_script_running, check_scriptstop)
-from .ConfigureForAcquisition import ConfigureForAcquisition
-from .WaitForConfigureAcquisition import WaitForConfigureAcquisition
-from .ConfigureForScience import ConfigureForScience
-from .CleanupAfterScience import CleanupAfterScience
-from .WaitForConfigureScience import WaitForConfigureScience
-from .ExecuteSci import ExecuteSci
-from ..fiu.StartTipTilt import StartTipTilt
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (set_script_keywords, clear_script_keywords,
+                         add_script_log, check_script_running, check_scriptstop)
+from kpf.scripts.ConfigureForAcquisition import ConfigureForAcquisition
+from kpf.scripts.WaitForConfigureAcquisition import WaitForConfigureAcquisition
+from kpf.scripts.ConfigureForScience import ConfigureForScience
+from kpf.scripts.CleanupAfterScience import CleanupAfterScience
+from kpf.scripts.WaitForConfigureScience import WaitForConfigureScience
+from kpf.scripts.ExecuteSci import ExecuteSci
+from kpf.fiu.StartTipTilt import StartTipTilt
 
 
 class RunSciOB(KPFTranslatorFunction):
@@ -27,7 +27,7 @@ class RunSciOB(KPFTranslatorFunction):
     Not intended to be called by DDOI's execution engine. This script replaces
     the DDOI Script.
 
-    This script is abortable.  When the `.abort_execution()` is invoked, the
+    This script is abortable.  When `.abort_execution()` is invoked, the
     `kpconfig.SCRIPTSTOP` is set to Yes.  This script checked for this value at
     various locations in the script.  As a result, the script will not stop
     immediately, but will stop when it reaches a breakpoint.
@@ -39,18 +39,13 @@ class RunSciOB(KPFTranslatorFunction):
     abortable = True
 
     @classmethod
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
-
-    @classmethod
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         return True
 
     @classmethod
+    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")

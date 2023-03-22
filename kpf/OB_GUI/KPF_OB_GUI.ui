@@ -773,7 +773,7 @@
      <item row="3" column="1">
       <widget class="QLabel" name="label_47">
        <property name="text">
-        <string>Exptime:</string>
+        <string>ExpTime:</string>
        </property>
       </widget>
      </item>
@@ -792,7 +792,7 @@
       </widget>
      </item>
      <item row="3" column="2">
-      <widget class="QLineEdit" name="ExptimeEdit"/>
+      <widget class="QLineEdit" name="ExpTimeEdit"/>
      </item>
     </layout>
    </widget>

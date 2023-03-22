@@ -29,6 +29,10 @@ links:
         cmd: calbench.SetCalSource.SetCalSource
     SetFlatFieldFiberPos:
         cmd: calbench.SetFlatFieldFiberPos.SetFlatFieldFiberPos
+    SetLFCtoAstroComb:
+        cmd: calbench.SetLFCtoAstroComb.SetLFCtoAstroComb
+    SetLFCtoStandbyHigh:
+        cmd: calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh
     SetND1:
         cmd: calbench.SetND1.SetND1
     SetND2:
@@ -77,6 +81,8 @@ links:
         cmd: fiu.StopTipTilt.StopTipTilt
     UpdateCurrentBase:
         cmd: fiu.UpdateCurrentBase.UpdateCurrentBase
+    TestTipTiltMirrorRange:
+        cmd: fiu.TestTipTiltMirrorRange.TestTipTiltMirrorRange
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
     # FVCs
@@ -146,6 +152,8 @@ links:
         cmd: scripts.RunSciOB.RunSciOB
     RunScheduledCals:
         cmd: scripts.RunScheduledCals.RunScheduledCals
+    RunTwilightRVStandard:
+        cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
     StartOfNight:
         cmd: scripts.StartOfNight.StartOfNight
     StartUp:
@@ -154,8 +162,6 @@ links:
         cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
     TestScienceADC:
         cmd: scripts.TestScienceADC.TestScienceADC
-    TipTiltPerformanceCheck:
-        cmd: scripts.TipTiltPerformanceCheck.TipTiltPerformanceCheck
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
     # Spectrograph
@@ -188,6 +194,12 @@ links:
         cmd: utils.CalculateDAR.CalculateDAR
     CorrectDAR:
         cmd: utils.CorrectDAR.CorrectDAR
+    EstimateOBDuration:
+        cmd: utils.EstimateOBDuration.EstimateOBDuration
+    EstimateCalOBDuration:
+        cmd: utils.EstimateOBDuration.EstimateCalOBDuration
+    EstimateSciOBDuration:
+        cmd: utils.EstimateOBDuration.EstimateSciOBDuration
     ImageBackIlluminatedFibers:
         cmd: utils.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
     SetObserverFromSchedule:

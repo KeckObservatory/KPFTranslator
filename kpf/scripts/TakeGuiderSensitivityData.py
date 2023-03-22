@@ -8,11 +8,12 @@ from astropy.table import Table, Row
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..guider.SetGuiderGain import SetGuiderGain
-from ..guider.SetGuiderFPS import SetGuiderFPS
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.guider.SetGuiderGain import SetGuiderGain
+from kpf.guider.SetGuiderFPS import SetGuiderFPS
 
 
 class TakeGuiderSensitivityData(KPFTranslatorFunction):

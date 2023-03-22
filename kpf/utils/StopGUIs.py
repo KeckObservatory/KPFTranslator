@@ -6,9 +6,9 @@ import re
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from .StartGUIs import GUI_list
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.utils.StartGUIs import GUI_list
 
 
 class StopGUIs(KPFTranslatorFunction):

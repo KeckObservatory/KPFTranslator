@@ -3,9 +3,9 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from .CalculateDAR import calculate_DAR_arcsec, calculate_DAR_pix
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.utils.CalculateDAR import calculate_DAR_arcsec, calculate_DAR_pix
 
 
 ##-------------------------------------------------------------------------

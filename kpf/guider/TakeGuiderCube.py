@@ -4,11 +4,11 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from .StartTriggerFile import StartTriggerFile
-from .StopTriggerFile import StopTriggerFile
-from .WaitForTriggerFile import WaitForTriggerFile
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.guider.StartTriggerFile import StartTriggerFile
+from kpf.guider.StopTriggerFile import StopTriggerFile
+from kpf.guider.WaitForTriggerFile import WaitForTriggerFile
 
 
 class TakeGuiderCube(KPFTranslatorFunction):

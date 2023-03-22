@@ -6,14 +6,15 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExptime import SetExptime
-from ..spectrograph.StartExposure import StartExposure
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.WaitForReadout import WaitForReadout
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.spectrograph.SetObject import SetObject
+from kpf.spectrograph.SetExpTime import SetExpTime
+from kpf.spectrograph.StartExposure import StartExposure
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.WaitForReadout import WaitForReadout
 
 
 class ExecuteDark(KPFTranslatorFunction):
@@ -29,12 +30,6 @@ class ExecuteDark(KPFTranslatorFunction):
     None
     '''
     abortable = True
-
-    @classmethod
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
 
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -61,8 +56,8 @@ class ExecuteDark(KPFTranslatorFunction):
         check_scriptstop() # Stop here if requested
         log.info(f"Setting OBJECT: {args.get('Object')}")
         SetObject.execute(args)
-        log.info(f"Set exposure time: {args.get('Exptime'):.3f}")
-        SetExptime.execute(args)
+        log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
+        SetExpTime.execute(args)
         nexp = args.get('nExp', 1)
         for j in range(nexp):
             check_scriptstop() # Stop here if requested

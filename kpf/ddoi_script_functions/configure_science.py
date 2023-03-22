@@ -5,7 +5,7 @@ from ..scripts.ConfigureForScience import ConfigureForScience
 from ..scripts.ConfigureForCalibrations import ConfigureForCalibrations
 
 
-class configure_for_science(KPFTranslatorFunction):
+class configure_science(KPFTranslatorFunction):
     '''
     '''
     @classmethod

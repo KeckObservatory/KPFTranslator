@@ -5,8 +5,8 @@ import re
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination)
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 class FVCPower(KPFTranslatorFunction):
@@ -43,7 +43,7 @@ class FVCPower(KPFTranslatorFunction):
         kpfpower = ktl.cache('kpfpower')
         outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
         outletname = kpfpower[f"{outlet}_NAME"].read()
-        log.info(f"Turning {pwr} {camera} FVC (outlet {outlet}: {outletname})")
+        log.debug(f"Turning {pwr} {camera} FVC (outlet {outlet}: {outletname})")
         kpfpower[f"KPFFVC{camnum}"].write(pwr)
         time.sleep(1)
 

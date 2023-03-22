@@ -1,5 +1,5 @@
 import os
-from time import sleep
+import time
 from packaging import version
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -8,18 +8,18 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..calbench.CalLampPower import CalLampPower
-from ..calbench.SetCalSource import SetCalSource
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..fiu.SetCurrentBase import SetCurrentBase
-from ..fiu.StartTipTilt import StartTipTilt
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
-from ..spectrograph.WaitForReady import WaitForReady
-from ..expmeter.SetExpMeterExptime import SetExpMeterExptime
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.calbench.CalLampPower import CalLampPower
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.fiu.SetCurrentBase import SetCurrentBase
+from kpf.fiu.StartTipTilt import StartTipTilt
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
+from kpf.spectrograph.WaitForReady import WaitForReady
 
 
 class ConfigureForScience(KPFTranslatorFunction):
@@ -45,7 +45,6 @@ class ConfigureForScience(KPFTranslatorFunction):
         return True
 
     @classmethod
-    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, OB, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
@@ -62,10 +61,13 @@ class ConfigureForScience(KPFTranslatorFunction):
         kpfguide['TRIGCUBE'].write('Inactive')
 
         # Start tip tilt loops
-        log.info(f"Starting tip tilt loops")
-        SetCurrentBase.execute(OB)
-        StartTipTilt.execute({})
-        tick = datetime.now()
+        if OB['GuideMode'] in ['manual', 'auto']:
+            log.info(f"Starting tip tilt loops")
+            SetCurrentBase.execute(OB)
+            StartTipTilt.execute({})
+            tick = datetime.now()
+        elif OB['GuideMode'] in ['off', 'telescope']:
+            log.info('GuideMode in OB is "off", not starting tip tilt loops')
 
         # Set Octagon
         kpfconfig = ktl.cache('kpfconfig')
@@ -94,13 +96,14 @@ class ConfigureForScience(KPFTranslatorFunction):
         SetTriggeredDetectors.execute(OB)
 
         # Make sure tip tilt loops have had time to close
-        tock = datetime.now()
-        time_passed = (tock - tick).total_seconds()
-        tt_close_time = cfg.get('times', 'tip_tilt_close_time', fallback=3)
-        sleep_time = tt_close_time - time_passed
-        if sleep_time > 0:
-            log.info(f"Sleeping {sleep_time} seconds to allow loops to close")
-            time.sleep(sleep_time)
+        if OB['GuideMode'] in ['manual', 'auto']:
+            tock = datetime.now()
+            time_passed = (tock - tick).total_seconds()
+            tt_close_time = cfg.get('times', 'tip_tilt_close_time', fallback=3)
+            sleep_time = tt_close_time - time_passed
+            if sleep_time > 0:
+                log.info(f"Sleeping {sleep_time:.1f} seconds to allow loops to close")
+                time.sleep(sleep_time)
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

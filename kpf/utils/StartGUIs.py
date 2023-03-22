@@ -8,23 +8,31 @@ from astropy.table import Table
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 # List of GUIs for KPF
 GUI_list = [
             # Control0 for DSI
+            {'name': 'KPF OB GUI',
+             'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/OB_GUI/KPF_OB_GUI.py'],
+             'display': 'control0',
+             'position': '0,255,35,-1,-1'},
             # Control1
             #   To do: add Spectrograph GUI
             {'name': 'KPF Fiber Injection Unit (FIU)',
              'cmd': ['kpf', 'start', 'fiu_gui'],
              'display': 'control1',
-             'position': '0,80,50,-1,-1'},
+             'position': '0,80,75,-1,-1'},
             {'name': 'KPF Exposure Meter',
              'cmd': ['kpf', 'start', 'emgui'],
              'display': 'control1',
-             'position': '0,5,550,-1,-1'},
+             'position': '0,5,575,-1,-1'},
+            {'name': 'KPF Spectrograph Status',
+             'cmd': ['kpf', 'start', 'specgui'],
+             'display': 'control1',
+             'position': '0,875,25,-1,-1'},
             # Control2
 #             {'name': 'Kpf eventsounds',
 #              'cmd':  ['eventsounds', '-a', 'kpf'],

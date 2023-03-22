@@ -3,16 +3,17 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..ao.SetupAOforKPF import SetupAOforKPF
-from ..fiu.SetTipTiltGain import SetTipTiltGain
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..calbench.SetCalSource import SetCalSource
-from ..spectrograph.SetProgram import SetProgram
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.ao.SetupAOforKPF import SetupAOforKPF
+from kpf.fiu.SetTipTiltGain import SetTipTiltGain
+from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.spectrograph.SetProgram import SetProgram
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 
 
 class StartOfNight(KPFTranslatorFunction):
@@ -34,10 +35,30 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
+
+        # ---------------------------------
+        # User Verification
+        # ---------------------------------
+        msg = ["",
+               "--------------------------------------------------------------",
+               "This script will configure the FIU and AO bench for observing.",
+               "The AO bench area should be clear of personnel before proceeding.",
+               "Do you wish to to continue? [Y/n]",
+               "--------------------------------------------------------------",
+               "",
+               ]
+        for line in msg:
+            print(line)
+        user_input = input()
+        if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+            log.warning(f'User aborted Start Of Night')
+            return
+
+        log.info(f"Running KPF Start of Night script")
         # Disallow cron job calibration scripts
-        log.info('Set SCRIPTALLOW to No')
+        log.info('Set ALLOWSCHEDULEDCALS to No')
         kpfconfig = ktl.cache('kpfconfig')
-        kpfconfig['SCRIPTALLOW'].write('No')
+        kpfconfig['ALLOWSCHEDULEDCALS'].write('No')
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})

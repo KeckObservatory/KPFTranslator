@@ -6,33 +6,35 @@ from pathlib import Path
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..calbench.CalLampPower import CalLampPower
-from ..calbench.SetCalSource import SetCalSource
-from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
-from ..calbench.SetND1 import SetND1
-from ..calbench.SetND2 import SetND2
-from ..calbench.TakeIntensityReading import TakeIntensityReading
-from ..calbench.WaitForCalSource import WaitForCalSource
-from ..calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
-from ..calbench.WaitForLampWarm import WaitForLampWarm
-from ..calbench.WaitForND1 import WaitForND1
-from ..calbench.WaitForND2 import WaitForND2
-from ..fvc.FVCPower import FVCPower
-from ..spectrograph.SetObject import SetObject
-from ..spectrograph.SetExptime import SetExptime
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.SetTimedShutters import SetTimedShutters
-from ..spectrograph.StartAgitator import StartAgitator
-from ..spectrograph.StartExposure import StartExposure
-from ..spectrograph.StopAgitator import StopAgitator
-from ..spectrograph.WaitForReady import WaitForReady
-from ..spectrograph.WaitForReadout import WaitForReadout
-from ..fiu.ConfigureFIU import ConfigureFIU
-from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
-from ..utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.calbench.CalLampPower import CalLampPower
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
+from kpf.calbench.SetND1 import SetND1
+from kpf.calbench.SetND2 import SetND2
+from kpf.calbench.TakeIntensityReading import TakeIntensityReading
+from kpf.calbench.WaitForCalSource import WaitForCalSource
+from kpf.calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
+from kpf.calbench.WaitForLampWarm import WaitForLampWarm
+from kpf.calbench.WaitForND1 import WaitForND1
+from kpf.calbench.WaitForND2 import WaitForND2
+from kpf.fvc.FVCPower import FVCPower
+from kpf.spectrograph.SetObject import SetObject
+from kpf.spectrograph.SetExpTime import SetExpTime
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.spectrograph.SetTimedShutters import SetTimedShutters
+from kpf.spectrograph.StartAgitator import StartAgitator
+from kpf.spectrograph.StartExposure import StartExposure
+from kpf.spectrograph.StopAgitator import StopAgitator
+from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.WaitForReadout import WaitForReadout
+from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
+from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 
 
 class ExecuteCal(KPFTranslatorFunction):
@@ -48,12 +50,6 @@ class ExecuteCal(KPFTranslatorFunction):
     None
     '''
     abortable = True
-
-    @classmethod
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
 
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -75,7 +71,7 @@ class ExecuteCal(KPFTranslatorFunction):
         nd1 = args.get('CalND1')
         nd2 = args.get('CalND2')
         ## ----------------------------------------------------------------
-        ## First, configure lamps and cal bench (may happen during readout)
+        ## Configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
         check_scriptstop() # Stop here if requested
         ## Setup WideFlat
@@ -103,7 +99,8 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForCalSource.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Take intensity monitor reading
-            TakeIntensityReading.execute({})
+            if calsource != 'LFCFiber':
+                TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
             raise NotImplementedError()
@@ -114,7 +111,16 @@ class ExecuteCal(KPFTranslatorFunction):
             raise Exception(msg)
 
         ## ----------------------------------------------------------------
-        ## Second, configure kpfexpose (may not happen during readout)
+        ## Configure exposure meter
+        ## ----------------------------------------------------------------
+        if args.get('AutoExpMeter', False) == True:
+            raise KPFException('AutoExpMeter is not supported for calibrations')
+        if args.get('ExpMeterExpTime', None) is not None:
+            log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
+            SetExpMeterExpTime.execute(args)
+
+        ## ----------------------------------------------------------------
+        ## Configure kpfexpose (may not happen during readout)
         ## ----------------------------------------------------------------
         check_scriptstop() # Stop here if requested
         # Wait for current exposure to readout
@@ -124,8 +130,8 @@ class ExecuteCal(KPFTranslatorFunction):
             log.info(f"Readout complete")
             sleep(archon_time_shim)
             check_scriptstop() # Stop here if requested
-        log.info(f"Set exposure time: {args.get('Exptime'):.3f}")
-        SetExptime.execute(args)
+        log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
+        SetExpTime.execute(args)
         log.info(f"Setting source select shutters")
         # No need to specify SSS_CalSciSky in OB/calibration
         args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
@@ -147,7 +153,7 @@ class ExecuteCal(KPFTranslatorFunction):
         SetObject.execute(args)
 
         ## ----------------------------------------------------------------
-        ## Third, take actual exposures
+        ## Take actual exposures
         ## ----------------------------------------------------------------
         WaitForLampWarm.execute(args)
         nexp = args.get('nExp', 1)

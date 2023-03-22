@@ -5,19 +5,19 @@ import os
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import (set_script_keywords, clear_script_keywords, add_script_log,
-               check_script_running)
-from .ConfigureForCalibrations import ConfigureForCalibrations
-from .ExecuteDark import ExecuteDark
-from .ExecuteCal import ExecuteCal
-from .CleanupAfterCalibrations import CleanupAfterCalibrations
-from ..spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
-from ..spectrograph.SetTimedShutters import SetTimedShutters
-from ..calbench.SetCalSource import SetCalSource
-from ..calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
-from ..utils.SendEmail import SendEmail
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.scripts import (set_script_keywords, clear_script_keywords,
+                         add_script_log, check_script_running)
+from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
+from kpf.scripts.ExecuteDark import ExecuteDark
+from kpf.scripts.ExecuteCal import ExecuteCal
+from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.spectrograph.SetTimedShutters import SetTimedShutters
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
+from kpf.utils.SendEmail import SendEmail
 
 
 class RunCalOB(KPFTranslatorFunction):
@@ -29,7 +29,7 @@ class RunCalOB(KPFTranslatorFunction):
     Not intended to be called by DDOI's execution engine. This script replaces
     the DDOI Script.
 
-    This script is abortable.  When the `.abort_execution()` is invoked, the
+    This script is abortable.  When `.abort_execution()` is invoked, the
     `kpconfig.SCRIPTSTOP` is set to Yes.  This script checked for this value at
     various locations in the script.  As a result, the script will not stop
     immediately, but will stop when it reaches a breakpoint.
@@ -39,12 +39,6 @@ class RunCalOB(KPFTranslatorFunction):
     None
     '''
     abortable = True
-
-    @classmethod
-    def abort_execution(args, logger, cfg):
-        scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-        log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
-        scriptstop.write('Yes')
 
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
@@ -77,7 +71,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -111,7 +105,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ExecuteDarks Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -136,7 +130,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'ExecuteCals Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -155,7 +149,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             try:
                 SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
-                                   'Message': f'{e}'})
+                                   'Message': f'{type(e)}: {e}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)

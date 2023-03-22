@@ -9,8 +9,10 @@ from astropy.table import Table, Row
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from ..fvc.TakeFVCExposure import TakeFVCExposure
-from ..calbench.CalLampPower import CalLampPower
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.fvc.TakeFVCExposure import TakeFVCExposure
+from kpf.calbench.CalLampPower import CalLampPower
 
 
 class ImageBackIlluminatedFibers(KPFTranslatorFunction):

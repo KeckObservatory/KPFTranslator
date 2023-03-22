@@ -7,12 +7,11 @@ import numpy as np
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import register_script, obey_scriptrun, check_scriptstop, add_script_log
-from ..calbench.WaitForCalSource import WaitForCalSource
-from ..fiu.WaitForConfigureFIU import WaitForConfigureFIU
-from ..spectrograph.WaitForReady import WaitForReady
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.calbench.WaitForCalSource import WaitForCalSource
+from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from kpf.spectrograph.WaitForReady import WaitForReady
 
 
 class WaitForConfigureScience(KPFTranslatorFunction):

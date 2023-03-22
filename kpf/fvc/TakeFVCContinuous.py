@@ -5,11 +5,10 @@ import subprocess
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from .. import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                FailedToReachDestination, check_input)
-from . import fvc_is_ready
-from .TakeFVCExposure import TakeFVCExposure
-from .SetFVCExpTime import SetFVCExpTime
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.fvc.TakeFVCExposure import TakeFVCExposure
+from kpf.fvc.SetFVCExpTime import SetFVCExpTime
 
 
 class TakeFVCContinuous(KPFTranslatorFunction):
@@ -23,9 +22,6 @@ class TakeFVCContinuous(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
-        camera = args.get('camera')
-        if fvc_is_ready(camera=camera) is not True:
-            raise FailedPreCondition(f"Camera {camera} is not ready")
         return True
 
     @classmethod
