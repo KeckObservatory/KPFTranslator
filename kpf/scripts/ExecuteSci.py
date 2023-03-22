@@ -64,7 +64,7 @@ class ExecuteSci(KPFTranslatorFunction):
 
         if args.get('AutoExpMeter', False) in [True, 'True']:
             em_params = predict_expmeter_parameters(args.get('Gmag'))
-            args['ExpMeterExpTime'] = em_params
+            args['ExpMeterExpTime'] = em_params['ExpMeterExpTime']
         else:
             pass
 
