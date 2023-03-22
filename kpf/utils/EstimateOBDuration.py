@@ -17,11 +17,11 @@ class EstimateOBDuration(KPFTranslatorFunction):
     @classmethod
     def perform(cls, OB, logger, cfg):
         if OB['Template_Name'] == 'kpf_cal':
-            duration = EstimateCalOBDuration.execute(OB)
+            return EstimateCalOBDuration.execute(OB)
         elif OB['Template_Name'] == 'kpf_sci':
-            duration = EstimateSciOBDuration.execute(OB)
-        print(f"{duration/60:.0f} min")
-        return duration
+            return EstimateSciOBDuration.execute(OB)
+        else:
+            print(f"Time estimate not supported for {OB['Template_Name']} type")
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
