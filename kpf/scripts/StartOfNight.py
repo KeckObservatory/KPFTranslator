@@ -62,8 +62,6 @@ class StartOfNight(KPFTranslatorFunction):
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
-        # Configure Source Select Shutters
-        SetSourceSelectShutters.execute({'SSS_Science': True, 'SSS_Sky': True})
         # Setup AO
         if args.get('AO', True) is True:
             SetupAOforKPF.execute({})
