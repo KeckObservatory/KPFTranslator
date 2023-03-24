@@ -145,7 +145,7 @@ class ExecuteCal(KPFTranslatorFunction):
         args['TimedShutter_FlatField'] = (args['CalSource'] == 'WideFlat')
         log.debug(f"Automatically setting TimedShutter_FlatField: {args['TimedShutter_FlatField']}")
         # Set TimedShutter_SimulCal
-        args['TimedShutter_SimulCal'] = args['TakeSimulCal']
+        args['TimedShutter_SimulCal'] = args.get('TakeSimulCal', False)
         log.debug(f"Automatically setting TimedShutter_SimulCal: {args['TakeSimulCal']}")
         log.info(f"Setting timed shutters")
         SetTimedShutters.execute(args)
