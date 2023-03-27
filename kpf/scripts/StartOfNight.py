@@ -11,7 +11,6 @@ from kpf.ao.SetupAOforKPF import SetupAOforKPF
 from kpf.fiu.SetTipTiltGain import SetTipTiltGain
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.calbench.SetCalSource import SetCalSource
-from kpf.spectrograph.SetProgram import SetProgram
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 
