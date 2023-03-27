@@ -20,6 +20,8 @@ from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.scripts.EndOfNight import EndOfNight
 from kpf.scripts.RunCalOB import RunCalOB
 from kpf.utils.SendEmail import SendEmail
+from kpf.spectrograph.SetProgram import SetProgram
+from kpf.spectrograph.SetObserver import SetObserver
 
 
 ##-------------------------------------------------------------------------
@@ -65,6 +67,8 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # Start Of Night
         # ---------------------------------
         StartOfNight.execute({})
+        SetProgram.execute({'progname': 'ENG'})
+        SetObserver.execute({'observer': 'OA'})
 
         log.info(f"Configuring for Acquisition")
         ConfigureForAcquisition.execute(sciOB)
