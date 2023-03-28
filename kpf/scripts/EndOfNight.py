@@ -84,18 +84,19 @@ class EndOfNight(KPFTranslatorFunction):
         # Power off FVCs
         for LED in ['ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']:
             CalLampPower.execute({'lamp': LED, 'power': 'off'})
+        # Finish FIU shutdown
+        StopAgitator.execute({})
+        WaitForConfigureFIU.execute({'mode': 'Stowed'})
         # Set PROGNAME
         log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
         WaitForReady.execute({})
         SetProgram.execute({'progname': ''})
         SetObserver.execute({'observer': ''})
         SetObject.execute({'Object': ''})
+        # Allow scheduledm cals
         log.info('Set ALLOWSCHEDULEDCALS to Yes')
         kpfconfig = ktl.cache('kpfconfig')
         kpfconfig['ALLOWSCHEDULEDCALS'].write('Yes')
-        # Finish FIU shutdown
-        StopAgitator.execute({})
-        WaitForConfigureFIU.execute({'mode': 'Stowed'})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
