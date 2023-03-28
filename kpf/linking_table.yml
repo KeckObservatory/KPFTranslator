@@ -181,8 +181,12 @@ links:
         cmd: spectrograph.SetTimedShutters.SetTimedShutters
     SetTriggeredDetectors:
         cmd: spectrograph.SetTriggeredDetectors.SetTriggeredDetectors
+    StartAgitator:
+        cmd: spectrograph.StartAgitator.StartAgitator
     StartExposure:
         cmd: spectrograph.StartExposure.StartExposure
+    StopAgitator:
+        cmd: spectrograph.StopAgitator.StopAgitator
     WaitForReadout:
         cmd: spectrograph.WaitForReadout.WaitForReadout
     WaitForReady:
