@@ -6,6 +6,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.fiu.StopTipTilt import StopTipTilt
+from kpf.spectrograph.StopAgitator import StopAgitator
 
 
 class CleanupAfterScience(KPFTranslatorFunction):
@@ -30,6 +31,7 @@ class CleanupAfterScience(KPFTranslatorFunction):
 
         # Turn off tip tilt
         StopTipTilt.execute({})
+        StopAgitator.execute({})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
