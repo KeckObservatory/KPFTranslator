@@ -34,26 +34,33 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
-
-        # ---------------------------------
-        # User Verification
-        # ---------------------------------
-        msg = ["",
-               "--------------------------------------------------------------",
-               "This script will configure the FIU and AO bench for observing.",
-               "The AO bench area should be clear of personnel before proceeding.",
-               "Do you wish to to continue? [Y/n]",
-               "--------------------------------------------------------------",
-               "",
-               ]
-        for line in msg:
-            print(line)
-        user_input = input()
-        if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
-            log.warning(f'User aborted Start Of Night')
-            return
-
         log.info(f"Running KPF Start of Night script")
+
+        # Setup AO
+        if args.get('AO', True) is True:
+            # ---------------------------------
+            # User Verification
+            # ---------------------------------
+            msg = ["",
+                   "--------------------------------------------------------------",
+                   "This script will configure the FIU and AO bench for observing.",
+                   "The AO bench area should be clear of personnel before proceeding.",
+                   "Do you wish to to continue? [Y/n]",
+                   "--------------------------------------------------------------",
+                   "",
+                   ]
+            for line in msg:
+                print(line)
+            user_input = input()
+            if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+                log.warning(f'User aborted Start Of Night')
+                return
+            else:
+                SetupAOforKPF.execute({})
+
+        # ---------------------------------
+        # Remaining non-AO Actions
+        # ---------------------------------
         # Disallow cron job calibration scripts
         log.info('Set ALLOWSCHEDULEDCALS to No')
         kpfconfig = ktl.cache('kpfconfig')
@@ -61,9 +68,6 @@ class StartOfNight(KPFTranslatorFunction):
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
-        # Setup AO
-        if args.get('AO', True) is True:
-            SetupAOforKPF.execute({})
         # Set DCS rotator parameters
         dcs = ktl.cache('dcs')
         inst = dcs['INSTRUME'].read()
