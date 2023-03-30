@@ -3,6 +3,9 @@ import time
 from pathlib import Path
 import yaml
 
+from astropy.time import Time
+from astropy.coordinates import EarthLocation
+
 import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
@@ -48,7 +51,17 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
-        targname = "HD157347"
+        keck = EarthLocation.of_site('keck')
+        now = Time.now()
+        now.location = keck
+        lst = now.sidereal_time('apparent')
+        if lst.value > 14.3 and lst.value < 20.3:
+            targname = "HD157347"
+        elif lst.value > 3.5 and lst.value < 10.5:
+            targname = "HD52711"
+        elif lst.value > 2.0 and lst.value < 9.0:
+            targname = "HD37008"
+
         sciOBfile = Path(f'/s/starlists/000000_kpftwilight/{targname}.yaml')
         if sciOBfile.exists() is False:
             log.error(f"Could not load OB file: {sciOBfile}")
@@ -67,7 +80,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # Start Of Night
         # ---------------------------------
         StartOfNight.execute({})
-        SetProgram.execute({'progname': 'ENG'})
+        SetProgram.execute({'progname': 'E310'})
         SetObserver.execute({'observer': 'OA'})
 
         log.info(f"Configuring for Acquisition")
