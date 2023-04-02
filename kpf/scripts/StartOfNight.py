@@ -13,6 +13,8 @@ from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.utils.SetOutdirs import SetOutdirs
+from kpf.utils.SetObserverFromSchedule import SetObserverFromSchedule
 
 
 class StartOfNight(KPFTranslatorFunction):
@@ -93,6 +95,15 @@ class StartOfNight(KPFTranslatorFunction):
         tip_tilt_gain = cfg.get('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
         log.info(f"Setting default tip tilt loop gain of {tip_tilt_gain}")
         SetTipTiltGain.execute({'GuideLoopGain': tip_tilt_gain})
+        # Set Outdirs
+        expose = ktl.cache('kpfexpose', 'EXPOSE')
+        if expose.read() != 'Ready':
+            log.info('Waiting for kpfexpose to be Ready')
+            WaitForReady.execute({})
+        SetOutdirs.execute({})
+        # Set progname and observer
+        SetObserverFromSchedule.execute({})
+
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
