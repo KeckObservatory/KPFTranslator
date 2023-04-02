@@ -57,21 +57,24 @@ class ExecuteSci(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Setup exposure meter
         ## ----------------------------------------------------------------
-        if args.get('ExpMeterMode', 'monitor') == 'monitor':
+        log.debug('Setting up exposure meter')
+        EM_mode = args.get('ExpMeterMode', 'monitor')
+        if EM_mode == 'monitor':
             pass
         else:
-            log.warning(f"Only monitor mode is available right now")
+            log.warning(f"ExpMeterMode {EM_mode} is not available")
 
         if args.get('AutoExpMeter', False) in [True, 'True']:
             em_params = predict_expmeter_parameters(args.get('Gmag'))
-            EM_ExpTime = em_params['ExpMeterExpTime']
-            log.debug(f'Automatically setting EX ExpTime to {EM_ExpTime:.1f}')
+            EM_ExpTime = em_params.get('ExpMeterExpTime', None)
+            log.debug(f'Automatically setting EM ExpTime')
             args['ExpMeterExpTime'] = EM_ExpTime
         else:
-            pass
+            EM_ExpTime = args.get('ExpMeterExpTime', None)
 
-        log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
-        SetExpMeterExpTime.execute(args)
+        if EM_ExpTime is not None:
+            log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
+            SetExpMeterExpTime.execute(args)
 
         ## ----------------------------------------------------------------
         ## Setup simulcal
@@ -98,7 +101,7 @@ class ExecuteSci(KPFTranslatorFunction):
         args['TimedShutter_FlatField'] = False
         args['TimedShutter_SimulCal'] = args['TakeSimulCal']
         SetTimedShutters.execute(args)
-        args['TriggerExpMeter'] = False #(args.get('ExpMeterMode', 'monitor') != 'off')
+        args['TriggerExpMeter'] = (args.get('ExpMeterMode', 'monitor') != 'off')
         SetTriggeredDetectors.execute(args)
 
         check_scriptstop() # Stop here if requested

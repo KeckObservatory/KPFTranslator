@@ -88,6 +88,7 @@ class RunSciOB(KPFTranslatorFunction):
             observation['TriggerGreen'] = OB['TriggerGreen']
             observation['TriggerRed'] = OB['TriggerRed']
             observation['TriggerGuide'] = (OB.get('GuideMode', 'off') != 'off')
+            observation['Gmag'] = OB['Gmag']
             try:
                 ExecuteSci.execute(observation)
             except Exception as e:
