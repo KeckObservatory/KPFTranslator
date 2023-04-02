@@ -92,7 +92,7 @@ class ConfigureForScience(KPFTranslatorFunction):
                                          'SSS_CalSciSky': False})
 
         # Set Triggered Detectors
-        OB['TriggerGuide'] = (OB.get('GuideMode', 'off') != 'off')
+        OB['TriggerGuide'] = False #(OB.get('GuideMode', 'off') != 'off')
         SetTriggeredDetectors.execute(OB)
 
         # Make sure tip tilt loops have had time to close
