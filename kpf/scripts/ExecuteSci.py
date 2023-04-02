@@ -98,7 +98,7 @@ class ExecuteSci(KPFTranslatorFunction):
         args['TimedShutter_FlatField'] = False
         args['TimedShutter_SimulCal'] = args['TakeSimulCal']
         SetTimedShutters.execute(args)
-        args['TriggerExpMeter'] = (args.get('ExpMeterMode', 'monitor') != 'off')
+        args['TriggerExpMeter'] = False #(args.get('ExpMeterMode', 'monitor') != 'off')
         SetTriggeredDetectors.execute(args)
 
         check_scriptstop() # Stop here if requested
