@@ -21,7 +21,6 @@ class StartUp(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
         return True
 
