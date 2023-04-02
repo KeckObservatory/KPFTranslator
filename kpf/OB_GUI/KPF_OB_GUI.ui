@@ -17,7 +17,7 @@
    <widget class="Line" name="line">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>120</y>
       <width>921</width>
       <height>16</height>
@@ -30,9 +30,9 @@
    <widget class="QWidget" name="gridLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>40</y>
-      <width>271</width>
+      <width>301</width>
       <height>81</height>
      </rect>
     </property>
@@ -45,6 +45,11 @@
      </property>
      <item row="2" column="1">
       <widget class="QLabel" name="scriptstop_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -52,6 +57,11 @@
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="scriptpause_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -59,6 +69,11 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_4">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Request Script Pause:</string>
        </property>
@@ -69,6 +84,11 @@
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Current Script Name:</string>
        </property>
@@ -79,6 +99,11 @@
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_5">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Request Script Stop:</string>
        </property>
@@ -109,6 +134,11 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="lineWidth">
         <number>1</number>
        </property>
@@ -135,9 +165,9 @@
    <widget class="QWidget" name="gridLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>330</x>
       <y>40</y>
-      <width>331</width>
+      <width>311</width>
       <height>81</height>
      </rect>
     </property>
@@ -150,6 +180,11 @@
      </property>
      <item row="2" column="0">
       <widget class="QLabel" name="label_9">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Lamps:</string>
        </property>
@@ -160,6 +195,11 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_8">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Object Value:</string>
        </property>
@@ -170,6 +210,11 @@
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_6">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Expose Status:</string>
        </property>
@@ -180,6 +225,11 @@
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="expose_status_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -187,6 +237,11 @@
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="object_current_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -194,6 +249,11 @@
      </item>
      <item row="2" column="1">
       <widget class="QLabel" name="lamps_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -206,7 +266,7 @@
      <rect>
       <x>660</x>
       <y>40</y>
-      <width>281</width>
+      <width>301</width>
       <height>81</height>
      </rect>
     </property>
@@ -216,6 +276,11 @@
      </property>
      <item row="2" column="0">
       <widget class="QLabel" name="label_14">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Slew Cal File:</string>
        </property>
@@ -226,6 +291,11 @@
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_12">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Time Since Cal:</string>
        </property>
@@ -236,8 +306,13 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_13">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
-        <string>Slew Cal Requested:</string>
+        <string>Request Slew Cal:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -246,6 +321,11 @@
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="slewcaltime_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -253,6 +333,11 @@
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="slewcalreq_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -260,6 +345,11 @@
      </item>
      <item row="2" column="1">
       <widget class="QLabel" name="slewcalfile_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -270,7 +360,7 @@
    <widget class="Line" name="line_5">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>310</x>
       <y>40</y>
       <width>20</width>
       <height>81</height>
