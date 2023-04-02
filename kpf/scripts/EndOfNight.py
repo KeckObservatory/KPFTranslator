@@ -47,45 +47,48 @@ class EndOfNight(KPFTranslatorFunction):
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         StopTipTilt.execute({})
+        StopAgitator.execute({})
 
         # Start FIU stow
         log.info('Setting FIU mode to Stowed')
         ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
 
-        if args.get('AO', True) is True:
-
-            # ---------------------------------
-            # User Verification
-            # ---------------------------------
-            msg = ["",
-                   "--------------------------------------------------------------",
-                   "This script will configure the FIU and AO bench.",
-                   "The AO bench area should be clear of personnel before proceeding.",
-                   "Do you wish to to continue? [Y/n]",
-                   "--------------------------------------------------------------",
-                   "",
-                   ]
-            for line in msg:
-                print(line)
-            user_input = input()
-            if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
-                log.warning(f'User aborted Start Of Night')
-                return
-
+        # ---------------------------------
+        # User Verification for AO Shutdown
+        # ---------------------------------
+        msg = ["",
+               "--------------------------------------------------------------",
+               "Perform shutdown of AO? This will move the AO hatch and PCU.",
+               "The AO area should be clear of personnel before proceeding.",
+               "",
+               "Do you wish to shutdown AO? [Y/n]",
+               "--------------------------------------------------------------",
+               "",
+               ]
+        for line in msg:
+            print(line)
+        user_input = input()
+        if user_input.lower() in ['y', 'yes', '']:
+            log.debug('User chose to shut down AO')
             log.info('Closing AO Hatch')
             ControlAOHatch.execute({'destination': 'closed'})
-#             log.info('Turning on AO HEPA Filter System')
-#             TurnHepaOn.execute({})
             log.info('Sending PCU stage to Home position')
             SendPCUtoHome.execute({})
+#             log.info('Turning on AO HEPA Filter System')
+#             TurnHepaOn.execute({})
+        else:
+            log.warning(f'User chose to skip AO shutdown')
+
+        # ---------------------------------
+        # Remaining non-AO Actions
+        # ---------------------------------
         # Power off FVCs
         for camera in ['SCI', 'CAHK', 'CAL']:
             FVCPower.execute({'camera': camera, 'power': 'off'})
-        # Power off FVCs
+        # Power off LEDs
         for LED in ['ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']:
             CalLampPower.execute({'lamp': LED, 'power': 'off'})
         # Finish FIU shutdown
-        StopAgitator.execute({})
         WaitForConfigureFIU.execute({'mode': 'Stowed'})
         # Set PROGNAME
         log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
@@ -101,11 +104,3 @@ class EndOfNight(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         return True
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        parser = cls._add_bool_arg(parser, 'AO',
-            'Close AO hatch, send PCU home, and turn on HEPA filter?', default=True)
-        return super().add_cmdline_args(parser, cfg)

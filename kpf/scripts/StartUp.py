@@ -7,9 +7,6 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
-from kpf.utils.SetOutdirs import SetOutdirs
-from kpf.spectrograph.WaitForReady import WaitForReady
-from kpf.utils.SetObserverFromSchedule import SetObserverFromSchedule
 from kpf.utils.StartGUIs import StartGUIs
 
 
@@ -30,14 +27,6 @@ class StartUp(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        # Set Outdirs
-        expose = ktl.cache('kpfexpose', 'EXPOSE')
-        if expose.read() != 'Ready':
-            log.info('Waiting for kpfexpose to be Ready')
-            WaitForReady.execute({})
-        SetOutdirs.execute({})
-        # Set progname and observer
-        SetObserverFromSchedule.execute({})
         # Start GUIs
         StartGUIs.execute({})
 
