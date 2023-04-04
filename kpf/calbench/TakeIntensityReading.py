@@ -77,6 +77,8 @@ class TakeIntensityReading(KPFTranslatorFunction):
         # Turn off intensity monitor
         log.debug('Turning kpflamps.INTENSEMON off')
         intensemon.write('Off')
+        log.debug('Turning kpfcal.SERIALCONN off')
+        kpfcal['SERIALCONN'].write('Off')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
