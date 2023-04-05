@@ -469,40 +469,30 @@
       <property name="geometry">
        <rect>
         <x>450</x>
-        <y>80</y>
+        <y>100</y>
         <width>401</width>
-        <height>91</height>
+        <height>71</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="execute_layout">
-       <item row="3" column="2">
-        <widget class="QPushButton" name="executeOB_slewcal">
+       <item row="0" column="1" colspan="2">
+        <widget class="QLabel" name="label_11">
          <property name="text">
-          <string>Execute OB with Slew Cal</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Execute This OB&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="1" column="1" rowspan="2">
         <widget class="QPushButton" name="executeOB">
          <property name="text">
           <string>Execute This OB</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="write_to_file_btn">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
+       <item row="1" column="2" rowspan="2">
+        <widget class="QPushButton" name="executeOB_slewcal">
          <property name="text">
-          <string>Write OB to File</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" colspan="2">
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>&lt;h4&gt;Export or Execute This OB&lt;/h4&gt;</string>
+          <string>Execute Slew Cal then OB</string>
          </property>
         </widget>
        </item>
@@ -1035,14 +1025,30 @@
      <widget class="QPushButton" name="load_from_file_btn">
       <property name="geometry">
        <rect>
-        <x>540</x>
+        <x>490</x>
         <y>10</y>
-        <width>399</width>
+        <width>221</width>
         <height>23</height>
        </rect>
       </property>
       <property name="text">
        <string>Load OB from File</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="write_to_file_btn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>10</y>
+        <width>221</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Write OB to File</string>
       </property>
      </widget>
     </widget>
