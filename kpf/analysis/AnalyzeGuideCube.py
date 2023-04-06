@@ -60,23 +60,26 @@ log.addHandler(LogConsoleHandler)
 ## plot_cube_stats
 ##-------------------------------------------------------------------------
 def plot_cube_stats(file, plotfile=None):
-    file = Path(file)
-    log.info(f'Generating summary plot for {file.name}')
-    hdul = fits.open(file)
-    fps = hdul[0].header.get('FPS', None)
-    if fps is None:
-        log.warning(f"Could not read FPS from header. Assuming 100.")
-        fps = 100
+#     file = Path(file)
+#     log.info(f'Generating summary plot for {file.name}')
+#     hdul = fits.open(file)
+#     fps = hdul[0].header.get('FPS', None)
+#     if fps is None:
+#         log.warning(f"Could not read FPS from header. Assuming 100.")
+#         fps = 100
 
-    cube_ext = None
-    table_ext = None
-    for i,ext in enumerate(hdul):
-        if ext.name == 'guider_cube_origins':
-            table_ext = i
-        if ext.name == 'guider_cube':
-            cube_ext = i
+#     cube_ext = None
+#     table_ext = None
+#     for i,ext in enumerate(hdul):
+#         if ext.name == 'guider_cube_origins':
+#             table_ext = i
+#         if ext.name == 'guider_cube':
+#             cube_ext = i
+# 
+#     t = Table(hdul[table_ext].data)
 
-    t = Table(hdul[table_ext].data)
+    t, metadata = read_file(file)
+    fps = metadata['FPS']
 
     # Examine timestamps for consistency
     line0 = models.Linear1D()
@@ -207,27 +210,30 @@ def plot_cube_stats(file, plotfile=None):
 ##-------------------------------------------------------------------------
 def generate_cube_gif(file, giffile):
     log.info('Generating animation')
-    hdul = fits.open(file)
+#     hdul = fits.open(file)
+    t, metadata = read_file(file)
 
-    date_beg = hdul[0].header.get('DATE-BEG')
-    start = datetime.fromisoformat(date_beg)
-    date_end = hdul[0].header.get('DATE-END')
-    end = datetime.fromisoformat(date_end)
+#     date_beg = hdul[0].header.get('DATE-BEG')
+    start = datetime.fromisoformat(metadata['DATE-BEG'])
+#     date_end = hdul[0].header.get('DATE-END')
+    end = datetime.fromisoformat(metadata['DATE-END'])
     duration = (end - start).total_seconds()
 
-    cube_ext = None
-    table_ext = None
-    for i,ext in enumerate(hdul):
-        if ext.name == 'guider_cube_origins':
-            table_ext = i
-        if ext.name == 'guider_cube':
-            cube_ext = i
+    fps = metadata['FPS']
 
-    if cube_ext is None:
-        return
+#     cube_ext = None
+#     table_ext = None
+#     for i,ext in enumerate(hdul):
+#         if ext.name == 'guider_cube_origins':
+#             table_ext = i
+#         if ext.name == 'guider_cube':
+#             cube_ext = i
+# 
+#     if cube_ext is None:
+#         return
 
     cube = hdul[cube_ext].data
-    t = Table(hdul[table_ext].data)
+#     t = Table(hdul[table_ext].data)
     nf, ny, nx = cube.shape
     norm = vis.ImageNormalize(cube,
                           interval=vis.AsymmetricPercentileInterval(1.5,99.99),
@@ -321,6 +327,43 @@ def generate_cube_gif_old(file, giffile):
     log.info('Done.')
 
 
+def read_file(file):
+    '''Read the file on disk, either the L0 file or the kpfguide_cube file.
+    
+    Return an astropy.table.Table of telemetry, the image cube (if present),
+    and a dictionary with selected metadata.
+    '''
+    hdul = fits.open(file)
+    # print(hdul.info())
+    guide_origins_hdu = None
+    guide_cube_header_hdu = fits.PrimaryHDU()
+    L0_header_hdu = fits.PrimaryHDU()
+    for hdu in hdul:
+        if hdu.name == 'guider_cube_origins':
+            guide_origins_hdu = hdu
+        if hdu.name == 'guider_avg':
+            guide_cube_header_hdu = hdu
+        if hdu.name == 'PRIMARY':
+            L0_header_hdu = hdu
+    # Assemble metadata
+    metadata = {'FPS': guide_cube_header_hdu.header.get('FPS', None),
+                'DATE-BEG': guide_cube_header_hdu.header.get('DATE-BEG', None),
+                'DATE-END': guide_cube_header_hdu.header.get('DATE-END', None),
+                'IMTYPE': L0_header_hdu.header.get('IMTYPE', None),
+                'Gmag': L0_header_hdu.header.get('GAIAMAG', None),
+               }
+    if metadata['FPS'] is None:
+        # Assume 100 FPS
+        metadata['FPS'] = 100
+    if metadata['DATE-BEG'] is None:
+        metadata['DATE-BEG'] = L0_header_hdu.header.get('DATE-BEG', None)
+    if metadata['DATE-END'] is None:
+        metadata['DATE-END'] = L0_header_hdu.header.get('DATE-END', None)
+    if guide_origins_hdu is not None:
+        return Table(guide_origins_hdu.data), metadata
+    else:
+        return None, metadata
+
 ##-------------------------------------------------------------------------
 ## if __name__ == '__main__':
 ##-------------------------------------------------------------------------
@@ -329,6 +372,7 @@ if __name__ == '__main__':
         file = Path(file).expanduser()
         if file.exists() is False:
             log.error(f"Could not find file {args.file}")
+        
 
         viewer_command = None
         if args.view is True:
