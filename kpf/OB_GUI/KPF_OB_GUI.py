@@ -7,7 +7,7 @@ from logging.handlers import TimedRotatingFileHandler
 import re
 import subprocess
 import yaml
-from datetime import datetime, timedelta
+import datetime
 from astropy.coordinates import SkyCoord
 
 import ktl                      # provided by kroot/ktl/keyword/python
@@ -714,9 +714,9 @@ class MainWindow(QMainWindow):
         self.verify_OB()
 
         # Write to temporary file
-        utnow = datetime.utcnow()
+        utnow = datetime.datetime.utcnow()
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
-        date = utnow-timedelta(days=1)
+        date = utnow-datetime.timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
         tmp_file = Path(f'~/kpflogs/{date_str}/executedOB_{now_str}.yaml').expanduser()
         print(tmp_file)
