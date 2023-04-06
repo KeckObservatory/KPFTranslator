@@ -60,25 +60,7 @@ log.addHandler(LogConsoleHandler)
 ## plot_cube_stats
 ##-------------------------------------------------------------------------
 def plot_cube_stats(file, plotfile=None):
-#     file = Path(file)
-#     log.info(f'Generating summary plot for {file.name}')
-#     hdul = fits.open(file)
-#     fps = hdul[0].header.get('FPS', None)
-#     if fps is None:
-#         log.warning(f"Could not read FPS from header. Assuming 100.")
-#         fps = 100
-
-#     cube_ext = None
-#     table_ext = None
-#     for i,ext in enumerate(hdul):
-#         if ext.name == 'guider_cube_origins':
-#             table_ext = i
-#         if ext.name == 'guider_cube':
-#             cube_ext = i
-# 
-#     t = Table(hdul[table_ext].data)
-
-    t, metadata = read_file(file)
+    t, metadata, _ = read_file(file)
     fps = metadata['FPS']
 
     # Examine timestamps for consistency
@@ -156,12 +138,21 @@ def plot_cube_stats(file, plotfile=None):
 #                 label='Y Err')
 #         plt.legend(loc='best')
 
-    log.debug(f"  Generating Time Deltas Plot")
+#     log.debug(f"  Generating Time Deltas Plot")
+#     plt.subplot(2,2,2)
+#     plt.title(f"Time deltas: mean={meantimedeltas:.1f}, rms={rmstimedeltas:.1f}, max={maxtimedeltas:.1f} ms")
+#     n, bins, foo = plt.hist(timedeltas*1000, bins=100)
+#     plt.xlabel('Time Delta (ms)')
+#     plt.ylabel('N frames')
+
+    log.debug(f"  Generating Flux Plot")
     plt.subplot(2,2,2)
-    plt.title(f"Time deltas: mean={meantimedeltas:.1f}, rms={rmstimedeltas:.1f}, max={maxtimedeltas:.1f} ms")
-    n, bins, foo = plt.hist(timedeltas*1000, bins=100)
+    plt.title(f"")
+    plt.plot(times[~objectxerr.mask], t['object1_flux'][~objectxerr.mask], 'k-',
+             alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
     plt.xlabel('Time Delta (ms)')
     plt.ylabel('N frames')
+
 
     log.debug(f"  Generating Positional Error Plot")
     plt.subplot(2,2,3)
@@ -211,7 +202,7 @@ def plot_cube_stats(file, plotfile=None):
 def generate_cube_gif(file, giffile):
     log.info('Generating animation')
 #     hdul = fits.open(file)
-    t, metadata = read_file(file)
+    t, metadata, cube = read_file(file)
 
 #     date_beg = hdul[0].header.get('DATE-BEG')
     start = datetime.fromisoformat(metadata['DATE-BEG'])
@@ -232,7 +223,7 @@ def generate_cube_gif(file, giffile):
 #     if cube_ext is None:
 #         return
 
-    cube = hdul[cube_ext].data
+#     cube = hdul[cube_ext].data
 #     t = Table(hdul[table_ext].data)
     nf, ny, nx = cube.shape
     norm = vis.ImageNormalize(cube,
@@ -335,6 +326,7 @@ def read_file(file):
     '''
     hdul = fits.open(file)
     # print(hdul.info())
+    guider_cube = None
     guide_origins_hdu = None
     guide_cube_header_hdu = fits.PrimaryHDU()
     L0_header_hdu = fits.PrimaryHDU()
@@ -345,6 +337,8 @@ def read_file(file):
             guide_cube_header_hdu = hdu
         if hdu.name == 'PRIMARY':
             L0_header_hdu = hdu
+        if hdu.name == 'guider_cube':
+            guider_cube = hdu.data
     # Assemble metadata
     metadata = {'FPS': guide_cube_header_hdu.header.get('FPS', None),
                 'DATE-BEG': guide_cube_header_hdu.header.get('DATE-BEG', None),
@@ -360,9 +354,9 @@ def read_file(file):
     if metadata['DATE-END'] is None:
         metadata['DATE-END'] = L0_header_hdu.header.get('DATE-END', None)
     if guide_origins_hdu is not None:
-        return Table(guide_origins_hdu.data), metadata
+        return Table(guide_origins_hdu.data), metadata, guider_cube
     else:
-        return None, metadata
+        return None, metadata, guider_cube
 
 ##-------------------------------------------------------------------------
 ## if __name__ == '__main__':
