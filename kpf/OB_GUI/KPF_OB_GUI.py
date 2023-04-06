@@ -18,6 +18,33 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
 from kpf.utils import BuildOBfromQuery
 
 
+##-------------------------------------------------------------------------
+## Create logger object
+##-------------------------------------------------------------------------
+def create_GUI_log():
+    log = logging.getLogger('KPF_OB_GUI')
+    log.setLevel(logging.DEBUG)
+    ## Set up console output
+    LogConsoleHandler = logging.StreamHandler()
+    LogConsoleHandler.setLevel(logging.INFO)
+    LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
+    LogConsoleHandler.setFormatter(LogFormat)
+    log.addHandler(LogConsoleHandler)
+    ## Set up file output
+    logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
+    if logdir.exists() is False:
+        logdir.mkdir(mode=0o777, parents=True)
+    LogFileName = logdir / 'GUI.log'
+    LogFileHandler = TimedRotatingFileHandler(LogFileName,
+                                              when='D',
+                                              utc=True,  interval=30,
+                                              atTime=datetime.time(0, 0, 0))
+    LogFileHandler.setLevel(logging.DEBUG)
+    LogFileHandler.setFormatter(LogFormat)
+    log.addHandler(LogFileHandler)
+    return log
+
+
 def main():
     application = QApplication(sys.argv)
     main_window = MainWindow()
@@ -32,6 +59,8 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, *args, **kwargs)
         ui_file = Path(__file__).parent / 'KPF_OB_GUI.ui'
         uic.loadUi(f"{ui_file}", self)
+        self.log = create_GUI_log()
+        self.log.debug('Initializing MainWindow')
         # Initial OB settings
         self.target_names = None
         self.twomass_params = None
@@ -47,7 +76,7 @@ class MainWindow(QMainWindow):
                         {'Object': '',
                          'nExp': '1',
                          'ExpTime': '10',
-                         'ExpMeterMode': 'manual',
+                         'ExpMeterMode': 'monitor',
                          'AutoExpMeter': False,
                          'ExpMeterExpTime': '0.5', 
                          'TakeSimulCal': True,
@@ -57,6 +86,7 @@ class MainWindow(QMainWindow):
                     ]
                    }
         # Keywords
+        self.log.debug('Cacheing keyword services')
         self.kpfconfig = ktl.cache('kpfconfig')
         self.kpflamps = ktl.cache('kpflamps')
         self.kpfexpose = ktl.cache('kpfexpose')
@@ -69,6 +99,7 @@ class MainWindow(QMainWindow):
 
 
     def setupUi(self):
+        self.log.debug('setupUi')
         self.setWindowTitle("KPF OB GUI")
 
         # script name
@@ -253,6 +284,7 @@ class MainWindow(QMainWindow):
     # Script Name
     def update_scriptname_value(self, value):
         '''Set label text and set color'''
+        self.log.debug(f'update_scriptname_value: {value}')
         self.scriptname_value.setText(value)
         if value in ['None', '']:
             self.scriptname_value.setStyleSheet("color:green")
@@ -262,6 +294,7 @@ class MainWindow(QMainWindow):
     # Expose Status
     def update_expose_status_value(self, value):
         '''Set label text and set color'''
+        self.log.debug(f'update_expose_status_value: {value}')
         self.expose_status_value.setText(value)
         if value == 'Ready':
             self.expose_status_value.setStyleSheet("color:green")
@@ -271,7 +304,7 @@ class MainWindow(QMainWindow):
     # SCRIPTPAUSE
     def update_scriptpause_value(self, value):
         '''Set label text and set color'''
-        print(f"Updating scriptpause label: {value}")
+        self.log.debug(f"update_scriptpause_value: {value}")
         self.scriptpause_value.setText(value)
         if value == 'Yes':
             self.scriptpause_value.setStyleSheet("color:orange")
@@ -281,6 +314,7 @@ class MainWindow(QMainWindow):
             self.scriptpause_btn.setText('PAUSE')
 
     def set_scriptpause(self, value):
+        self.log.debug(f'set_scriptpause: {value}')
         current_kw_value = self.kpfconfig['SCRIPTPAUSE'].read()
         if current_kw_value == 'Yes':
             self.kpfconfig['SCRIPTPAUSE'].write('No')
@@ -292,7 +326,7 @@ class MainWindow(QMainWindow):
     # SCRIPTSTOP
     def update_scriptstop_value(self, value):
         '''Set label text and set color'''
-        print(f"Updating scriptstop label: {value}")
+        self.log.debug(f'update_scriptstop_value: {value}')
         self.scriptstop_value.setText(value)
         if value == 'Yes':
             self.scriptstop_value.setStyleSheet("color:red")
@@ -302,6 +336,7 @@ class MainWindow(QMainWindow):
             self.scriptstop_btn.setText('STOP')
 
     def set_scriptstop(self, value):
+        self.log.debug(f'set_scriptstop: {value}')
         current_kw_value = self.kpfconfig['SCRIPTSTOP'].read()
         if current_kw_value == 'Yes':
             self.kpfconfig['SCRIPTSTOP'].write('No')
@@ -313,6 +348,7 @@ class MainWindow(QMainWindow):
     # Slew Cal Timer
     def update_slewcaltime_value(self, value):
         '''Updates value in QLabel and sets color'''
+        self.log.debug(f'update_slewcaltime_value: {value}')
         value = float(value)
         self.slewcaltime_value.setText(f"{value:.1f} hrs")
         if value < self.good_slew_cal_time:
@@ -325,7 +361,7 @@ class MainWindow(QMainWindow):
     # Slew cal request
     def update_slewcalreq_value(self, value):
         '''Set label text and set color'''
-        print(f"Updating slewcalreq value: {value}")
+        self.log.debug(f'update_slewcalreq_value: {value}')
         self.slewcalreq_value.setText(value)
         if value == 'Yes':
             self.slewcalreq_value.setStyleSheet("color:orange")
@@ -334,12 +370,14 @@ class MainWindow(QMainWindow):
 
     # Slew cal file
     def update_slewcalfile_value(self, value):
+        self.log.debug(f'update_slewcalfile_value: {value}')
         self.slewcalfile_value.setText(f"{Path(value).name}")
 
     ##-------------------------------------------
     ## Methods relating modifying OB fields
     ##-------------------------------------------
     def run_query_gaia(self):
+        self.log.debug(f'run_query_gaia')
         # Will this query overwrite any values?
         target_OB_keys = ['2MASSID', 'Parallax', 'RadialVelocity',
                           'Gmag', 'Jmag', 'Teff']
@@ -358,13 +396,14 @@ class MainWindow(QMainWindow):
             self.execute_query_gaia()
 
     def run_overwrite_popup_clicked(self, i):
-        print(f"run_overwrite_popup_clicked: {i.text()}")
+        self.log.debug(f"run_overwrite_popup_clicked: {i.text()}")
         if i.text() == '&Yes':
             self.execute_query_gaia()
         else:
             print('Skipping Gaia query')
 
     def execute_query_gaia(self):
+        self.log.debug(f"execute_query_gaia")
         # Perform Query and Update OB
         gaiaid = self.OB['GaiaID']
         if len(gaiaid.split(' ')) == 2:
@@ -384,6 +423,7 @@ class MainWindow(QMainWindow):
         self.form_star_list_line()
 
     def set_gaia_id(self, value):
+        self.log.debug(f"set_gaia_id: {value}")
         includes_prefix = re.match('DR3 (\d+)', value)
         print(value, includes_prefix)
         if includes_prefix is not None:
@@ -392,61 +432,77 @@ class MainWindow(QMainWindow):
         self.GaiaID.setText(f"DR3 {value}")
 
     def set_target_name(self, value):
+        self.log.debug(f"set_target_name: {value}")
         self.update_OB('TargetName', value)
         self.TargetName.setText(f"{value}")
 
     def set_guide_mode(self, value):
+        self.log.debug(f"set_guide_mode: {value}")
         self.update_OB('GuideMode', value)
 
     def set_guide_gain(self, value):
+        self.log.debug(f"set_guide_gain: {value}")
         self.update_OB('GuideCamGain', value)
 
     def set_fps(self, value):
+        self.log.debug(f"set_fps: {value}")
         self.update_OB('GuideFPS', value)
 
     def set_object(self, value):
+        self.log.debug(f"set_object: {value}")
         self.update_OB('Object', value)
 
     def set_nExp(self, value):
+        self.log.debug(f"set_nExp: {value}")
         self.update_OB('nExp', value)
 
     def set_exptime(self, value):
+        self.log.debug(f"set_exptime: {value}")
         self.update_OB('ExpTime', value)
 
     def set_expmeter_mode(self, value):
+        self.log.debug(f"set_expmeter_mode: {value}")
         self.update_OB('ExpMeterMode', value)
 
     def set_expmeter_exptime(self, value):
+        self.log.debug(f"set_expmeter_exptime: {value}")
         self.update_OB('ExpMeterExpTime', value)
 
     def set_CalND1(self, value):
+        self.log.debug(f"set_CalND1: {value}")
         self.update_OB('CalND1', value)
 
     def set_CalND2(self, value):
+        self.log.debug(f"set_CalND2: {value}")
         self.update_OB('CalND2', value)
 
     # Handle Checkboxes
     def TriggerCaHK_state_change(self, value):
+        self.log.debug(f"TriggerCaHK_state_change: {value}")
         self.update_OB('TriggerCaHK', (value == 2))
 
     def TriggerGreen_state_change(self, value):
+        self.log.debug(f"TriggerGreen_state_change: {value}")
         self.update_OB('TriggerGreen', (value == 2))
 
     def TriggerRed_state_change(self, value):
+        self.log.debug(f"TriggerRed_state_change: {value}")
         self.update_OB('TriggerRed', (value == 2))
 
     def AutoEMExpTime_state_change(self, value):
+        self.log.debug(f"AutoEMExpTime_state_change: {value}")
         self.update_OB('AutoExpMeter', (value == 2))
 
     def TakeSimulCal_state_change(self, value):
-        print(f"TakeSimulCal_state_change: {value}")
+        self.log.debug(f"TakeSimulCal_state_change: {value}")
         self.update_OB('TakeSimulCal', (value == 2))
 
     def AutoNDFilters_state_change(self, value):
+        self.log.debug(f"AutoNDFilters_state_change: {value}")
         self.update_OB('AutoNDFilters', (value == 2))
 
     def update_OB(self, key, value):
-        print(f"Setting {key} = {value}")
+        self.log.debug(f"update_OB: {key} = {value}")
         seq_keys = ['Object', 'nExp', 'ExpTime', 'ExpMeterMode',
                     'AutoExpMeter', 'ExpMeterExpTime', 'TakeSimulCal',
                     'AutoNDFilters', 'CalND1', 'CalND2']
@@ -518,9 +574,10 @@ class MainWindow(QMainWindow):
     ## Methods relating to importing or exporting OB
     ##-------------------------------------------
     def verify_OB(self):
-        print('Not implemented')
+        self.log.error('verify_OB Not implemented')
 
     def run_write_to_file(self):
+        self.log.debug(f"run_write_to_file")
         result = QFileDialog.getSaveFileName(self, 'Save File',
                                              f"{self.file_path}",
                                              "OB Files (*yaml);;All Files (*)")
@@ -532,13 +589,14 @@ class MainWindow(QMainWindow):
                 self.write_to_this_file(save_file)
 
     def write_to_this_file(self, save_file):
-        print(f"Writing to: {save_file}")
+        self.log.debug(f"write_to_this_file: {save_file}")
         lines = BuildOBfromQuery.OBdict_to_lines(self.OB)
         with open(save_file, 'w') as f:
             for line in lines:
                 f.write(line+'\n')
 
     def form_star_list_line(self):
+        self.log.debug(f"form_star_list_line")
         if self.gaia_params is not None:
             starlist = BuildOBfromQuery.form_starlist_line(self.OB['TargetName'],
                                                            self.gaia_params['RA_ICRS'],
@@ -554,6 +612,7 @@ class MainWindow(QMainWindow):
             return None
 
     def run_append_to_star_list(self):
+        self.log.debug(f"run_append_to_star_list")
         if self.form_star_list_line() is None:
             # Don't bother with dialog if we can't form a star list entry
             return None
@@ -570,12 +629,14 @@ class MainWindow(QMainWindow):
                 self.append_to_starlist_file(starlist_file)
 
     def append_to_starlist_file(self, starlist_file):
+        self.log.debug(f"append_to_starlist_file: {starlist_file}")
         line = self.form_star_list_line()
         if line is not None:
             with open(starlist_file, 'a') as f:
                 f.write(line+'\n')
 
     def run_load_from_file(self):
+        self.log.debug(f"run_load_from_file")
         result = QFileDialog.getOpenFileName(self, "Open OB File",
                                              f"{self.file_path}",
                                              "OB Files (*yaml);;All Files (*)")
@@ -605,6 +666,7 @@ class MainWindow(QMainWindow):
     ## Methods relating to executing an OB
     ##-------------------------------------------
     def run_executeOB(self):
+        self.log.debug(f"run_executeOB")
         run_executeOB_popup = QMessageBox()
         run_executeOB_popup.setWindowTitle('Run Science OB Confirmation')
         run_executeOB_popup.setText("Do you really want to execute the current OB?")
@@ -614,7 +676,7 @@ class MainWindow(QMainWindow):
         run_executeOB_popup.exec_()
 
     def run_executeOB_popup_clicked(self, i):
-        print(f"run_executeOB_popup_clicked: {i.text()}")
+        self.log.debug(f"run_executeOB_popup_clicked: {i.text()}")
         if i.text() == '&Yes':
             print("Setting kpfconfig.SLEWCALREQ=No")
             self.kpfconfig['SLEWCALREQ'].write('No')
@@ -625,6 +687,7 @@ class MainWindow(QMainWindow):
             print('Not executing OB')
 
     def run_executeOB_slewcal(self):
+        self.log.debug(f"run_executeOB_slewcal")
         run_executeOB_slewcal_popup = QMessageBox()
         run_executeOB_slewcal_popup.setWindowTitle('Run Science OB Confirmation')
         run_executeOB_slewcal_popup.setText("Do you really want to execute the current OB?")
@@ -634,7 +697,7 @@ class MainWindow(QMainWindow):
         run_executeOB_slewcal_popup.exec_()
 
     def run_executeOB_slewcal_popup_clicked(self, i):
-        print(f"run_executeOB_slewcal_popup_clicked: {i.text()}")
+        self.log.debug(f"run_executeOB_slewcal_popup_clicked: {i.text()}")
         if i.text() == '&Yes':
             print("Setting kpfconfig.SLEWCALREQ=Yes")
             self.kpfconfig['SLEWCALREQ'].write('Yes')
@@ -645,6 +708,7 @@ class MainWindow(QMainWindow):
             print('Not executing OB')
 
     def RunSciOB(self):
+        self.log.debug(f"RunSciOB")
         self.verify_OB()
 
         # Write to temporary file
