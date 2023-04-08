@@ -150,8 +150,8 @@ def plot_cube_stats(file, plotfile=None):
     plt.title(f"")
     plt.plot(times[~objectxerr.mask], t['object1_flux'][~objectxerr.mask], 'k-',
              alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
-    plt.xlabel('Time Delta (ms)')
-    plt.ylabel('N frames')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Flux')
 
 
     log.debug(f"  Generating Positional Error Plot")
