@@ -425,6 +425,7 @@ class MainWindow(QMainWindow):
         self.form_star_list_line()
 
     def set_gaia_id(self, value):
+        value = value.strip()
         self.log.debug(f"set_gaia_id: {value}")
         includes_prefix = re.match('DR3 (\d+)', value)
         print(value, includes_prefix)
