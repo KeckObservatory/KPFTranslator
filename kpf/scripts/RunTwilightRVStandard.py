@@ -51,6 +51,10 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
+
+        # ---------------------------------
+        # Select Target
+        # ---------------------------------
         keck = EarthLocation.of_site('keck')
         now = Time.now()
         now.location = keck
@@ -79,16 +83,6 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # ---------------------------------
         # Start Of Night
         # ---------------------------------
-        StartOfNight.execute({})
-        SetProgram.execute({'progname': 'E310'})
-        SetObserver.execute({'observer': 'OA'})
-
-        log.info(f"Configuring for Acquisition")
-        ConfigureForAcquisition.execute(sciOB)
-
-        # ---------------------------------
-        # OA Focus
-        # ---------------------------------
         msg = ["",
                "-------------------------------------------------------------",
                "Thank you for executing a KPF Twilight Stability Measurement.",
@@ -100,6 +94,33 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
                "/s/starlists/000000_kpftwilight/starlist.txt",
                f"our target will be {targname}.",
                "",
+               "If the instrument has not been in use, you will presumably",
+               "need to run the Start Of Night script.  This will open the AO",
+               "hatch and configure AO and KPF for observing.  This is not",
+               "needed if KPF has been observing immediately prior to this.",
+               "Do you wish to run the Start Of Night Script? [Y/n]",
+               "-------------------------------------------------------------",
+               "",
+               ]
+        for line in msg:
+            print(line)
+        user_input = input()
+        if user_input.lower() in ['n', 'no', 'cancel']:
+            log.warning('User opted to skip Start Of Night script')
+        else:
+            StartOfNight.execute({})
+
+        SetProgram.execute({'progname': 'E310'})
+        SetObserver.execute({'observer': 'OA'})
+
+        log.info(f"Configuring for Acquisition")
+        ConfigureForAcquisition.execute(sciOB)
+
+        # ---------------------------------
+        # OA Focus
+        # ---------------------------------
+        msg = ["",
+               "-------------------------------------------------------------",
                "The instrument is being configured now, please begin slewing",
                "to the target. Once you are on target:",
                " - Focus on target using autfoc",
