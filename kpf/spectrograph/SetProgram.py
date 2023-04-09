@@ -4,6 +4,7 @@ import ktl
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.spectrograph.WaitForReady import WaitForReady
 
 
 class SetProgram(KPFTranslatorFunction):
@@ -22,6 +23,8 @@ class SetProgram(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         progname = args.get('progname')
+        log.debug('Waiting for kpfexpose to be ready')
+        WaitForReady.execute({})
         log.debug(f"Setting PROGNAME to '{progname}'")
         kpfexpose['PROGNAME'].write(progname)
         time_shim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)

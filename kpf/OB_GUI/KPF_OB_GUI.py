@@ -477,7 +477,7 @@ class MainWindow(QMainWindow):
 
     def set_progID(self, value):
         self.log.debug(f"set_progID: {value}")
-        SetProgram.SetProgram.execute({'progname': 'value'})
+        SetProgram.SetProgram.execute({'progname': value})
         self.progID.setCurrentText(value)
 
     def set_name_query_input(self, value):
