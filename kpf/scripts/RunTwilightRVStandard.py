@@ -61,13 +61,13 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         now.location = keck
         lst = now.sidereal_time('apparent')
         if lst.value > 14.3 and lst.value < 20.3:
-            targname = "HD157347"
+            targname = "157347"
         elif lst.value > 3.5 and lst.value < 10.5:
-            targname = 'HD55575'
+            targname = '55575'
         elif lst.value > 3.5 and lst.value < 10.5:
-            targname = "HD52711"
+            targname = "52711"
         elif lst.value > 2.0 and lst.value < 9.0:
-            targname = "HD37008"
+            targname = "37008"
 
         sciOBfile = Path(f'/s/starlists/000000_kpftwilight/{targname}.yaml')
         if sciOBfile.exists() is False:
