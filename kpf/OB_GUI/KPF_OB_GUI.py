@@ -17,7 +17,8 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
                              QLabel, QPushButton, QLineEdit, QComboBox,
                              QCheckBox, QMessageBox, QFileDialog)
 
-from kpf.utils import BuildOBfromQuery
+from kpf.utils import BuildOBfromQuery, SetObserverFromSchedule
+from kpf.spectrograph import SetProgram
 
 
 ##-------------------------------------------------------------------------
@@ -64,6 +65,7 @@ class MainWindow(QMainWindow):
         self.log = create_GUI_log()
         self.log.debug('Initializing MainWindow')
         # Initial OB settings
+        self.gaia_query_input = ''
         self.target_names = None
         self.twomass_params = None
         self.gaia_params = None
@@ -103,6 +105,30 @@ class MainWindow(QMainWindow):
     def setupUi(self):
         self.log.debug('setupUi')
         self.setWindowTitle("KPF OB GUI")
+
+        # Program ID
+        self.progID = self.findChild(QComboBox, 'progID')
+        try:
+            utnow = datetime.datetime.utcnow()
+            date = utnow-datetime.timedelta(days=1)
+            date_str = date.strftime('%Y-%m-%d')
+            KPF_programs = [s for s in SetObserverFromSchedule.get_schedule(date_str, 1)
+                            if s['Instrument'] == 'KPF']
+            nprog = len(KPF_programs)
+            self.log.debug(f"Found {nprog} KPF programs in schedule for {date_str}")
+            project_codes = [p['ProjCode'] for p in KPF_programs]
+            project_codes.append('ENG')
+        except:
+            project_codes = ['ENG']
+        self.progID.addItems(project_codes)
+        self.progID.currentTextChanged.connect(self.set_progID)
+        progname_kw = kPyQt.kFactory(self.kpfexpose['PROGNAME'])
+        progname_kw.stringCallback.connect(self.update_progname_value)
+
+        # Observer
+        self.Observer = self.findChild(QLabel, 'Observer')
+        observer_kw = kPyQt.kFactory(self.kpfexpose['OBSERVER'])
+        observer_kw.stringCallback.connect(self.update_observer_value)
 
         # script name
         self.scriptname_value = self.findChild(QLabel, 'scriptname_value')
@@ -166,7 +192,7 @@ class MainWindow(QMainWindow):
 
         # Gaia DR3 Query
         self.gaia_id_query_input = self.findChild(QLineEdit, 'gaia_id_query_input')
-        self.gaia_id_query_input.textChanged.connect(self.set_gaia_id)
+        self.gaia_id_query_input.textChanged.connect(self.set_gaia_query_input)
 
         self.query_gaia_btn = self.findChild(QPushButton, 'query_gaia_btn')
         self.query_gaia_btn.clicked.connect(self.run_query_gaia)
@@ -283,6 +309,17 @@ class MainWindow(QMainWindow):
     ##-------------------------------------------
     ## Methods relating to updates from keywords
     ##-------------------------------------------
+    # Progname
+    def update_progname_value(self, value):
+        self.log.debug(f'update_progname_value: {value}')
+        self.progID.setCurrentText(value)
+
+    # Observer
+    def update_observer_value(self, value):
+        value = value.strip()
+        self.log.debug(f'update_observer_value: {value}')
+        self.Observer.setText(value)
+
     # Script Name
     def update_scriptname_value(self, value):
         '''Set label text and set color'''
@@ -407,7 +444,8 @@ class MainWindow(QMainWindow):
     def execute_query_gaia(self):
         self.log.debug(f"execute_query_gaia")
         # Perform Query and Update OB
-        gaiaid = self.OB['GaiaID']
+        gaiaid = self.gaia_query_input
+        self.update_OB('GaiaID', gaiaid)
         if len(gaiaid.split(' ')) == 2:
             gaiaid = gaiaid.split(' ')[1]
         self.target_names = BuildOBfromQuery.get_names_from_gaiaid(gaiaid)
@@ -424,11 +462,19 @@ class MainWindow(QMainWindow):
                 self.update_OB(key, self.gaia_params[key])
         self.form_star_list_line()
 
+    def set_progID(self, value):
+        self.log.debug(f"set_progID: {value}")
+        SetProgram.SetProgram.execute({'progname': 'value'})
+        self.progID.setCurrentText(value)
+
+    def set_gaia_query_input(self, value):
+        value = value.strip()
+        self.gaia_query_input = value
+
     def set_gaia_id(self, value):
         value = value.strip()
         self.log.debug(f"set_gaia_id: {value}")
         includes_prefix = re.match('DR3 (\d+)', value)
-        print(value, includes_prefix)
         if includes_prefix is not None:
             value = includes_prefix.group(1)
         self.update_OB('GaiaID', f"DR3 {value}")
@@ -651,16 +697,16 @@ class MainWindow(QMainWindow):
                 for key in contents:
                     if key == 'GaiaID':
                         value = contents[key]
-                        print(f"{key}: {value} ({type(value)})")
+                        self.log.debug(f"{key}: {value} ({type(value)})")
                         self.set_gaia_id(value)
                     elif key == 'SEQ_Observations':
                         for seq_key in contents[key][0]:
                             seq_value = contents[key][0][seq_key]
-                            print(f"SEQ_Observations: {seq_key}: {seq_value} ({type(seq_value)})")
+                            self.log.debug(f"SEQ_Observations: {seq_key}: {seq_value} ({type(seq_value)})")
                             self.update_OB(seq_key, seq_value)
                     else:
                         value = contents[key]
-                        print(f"{key}: {value} ({type(value)})")
+                        self.log.debug(f"{key}: {value} ({type(value)})")
                         self.update_OB(key, value)
                 # save fname as path to use in future
                 self.file_path = Path(fname).parent
