@@ -65,7 +65,8 @@ class MainWindow(QMainWindow):
         self.log = create_GUI_log()
         self.log.debug('Initializing MainWindow')
         # Initial OB settings
-        self.gaia_query_input = ''
+        self.name_query_text = ''
+        self.gaia_query_text = ''
         self.target_names = None
         self.twomass_params = None
         self.gaia_params = None
@@ -189,10 +190,15 @@ class MainWindow(QMainWindow):
         self.load_from_file_btn.clicked.connect(self.run_load_from_file)
 
         # Generic Name Query
+        self.name_query_input = self.findChild(QLineEdit, 'name_query_input')
+        self.name_query_input.textChanged.connect(self.set_name_query_input)
+
+        self.query_name_btn = self.findChild(QPushButton, 'query_name_btn')
+        self.query_name_btn.clicked.connect(self.run_query_name)
 
         # Gaia DR3 Query
-        self.gaia_id_query_input = self.findChild(QLineEdit, 'gaia_id_query_input')
-        self.gaia_id_query_input.textChanged.connect(self.set_gaia_query_input)
+        self.gaia_query_input = self.findChild(QLineEdit, 'gaia_id_query_input')
+        self.gaia_query_input.textChanged.connect(self.set_gaia_query_input)
 
         self.query_gaia_btn = self.findChild(QPushButton, 'query_gaia_btn')
         self.query_gaia_btn.clicked.connect(self.run_query_gaia)
@@ -305,6 +311,8 @@ class MainWindow(QMainWindow):
         # Do this after the CalND and AutoNDFilters objects have been created
         self.update_OB('TakeSimulCal', self.OB['SEQ_Observations'][0]['TakeSimulCal'])
 
+        self.other_names = self.findChild(QLabel, 'other_names')
+
 
     ##-------------------------------------------
     ## Methods relating to updates from keywords
@@ -415,6 +423,9 @@ class MainWindow(QMainWindow):
     ##-------------------------------------------
     ## Methods relating modifying OB fields
     ##-------------------------------------------
+    def run_query_name(self):
+        self.log.debug(f'run_query_name: {self.name_query_text}')
+
     def run_query_gaia(self):
         self.log.debug(f'run_query_gaia')
         # Will this query overwrite any values?
@@ -442,16 +453,18 @@ class MainWindow(QMainWindow):
             print('Skipping Gaia query')
 
     def execute_query_gaia(self):
-        self.log.debug(f"execute_query_gaia")
+        self.log.debug(f"execute_query_gaia: {self.gaia_query_text}")
         # Perform Query and Update OB
-        gaiaid = self.gaia_query_input
+        gaiaid = self.gaia_query_text
         self.update_OB('GaiaID', gaiaid)
         if len(gaiaid.split(' ')) == 2:
             gaiaid = gaiaid.split(' ')[1]
         self.target_names = BuildOBfromQuery.get_names_from_gaiaid(gaiaid)
         if self.target_names is not None:
-            for key in self.target_names:
+            for key in ['TargetName', '2MASSID']:
                 self.update_OB(key, self.target_names[key])
+            self.log.debug(f"other names: {self.target_names['all']}")
+            self.other_names.setText(', '.join(self.target_names['all']))
         self.twomass_params = BuildOBfromQuery.get_Jmag(self.target_names['2MASSID'])
         if self.twomass_params is not None:
             for key in self.twomass_params:
@@ -467,9 +480,13 @@ class MainWindow(QMainWindow):
         SetProgram.SetProgram.execute({'progname': 'value'})
         self.progID.setCurrentText(value)
 
+    def set_name_query_input(self, value):
+        value = value.strip()
+        self.name_query_input = value
+
     def set_gaia_query_input(self, value):
         value = value.strip()
-        self.gaia_query_input = value
+        self.gaia_query_text = value
 
     def set_gaia_id(self, value):
         value = value.strip()

@@ -20,7 +20,8 @@ def get_names_from_gaiaid(gaiaid):
         ishd = re.match('^HD\s+([\d\+\-]+)', name[0])
         if ishd is not None:
             hdnumber = ishd.group(1)
-    return {'TargetName': hdnumber, '2MASSID': twomassid}
+    return {'TargetName': hdnumber, '2MASSID': twomassid,
+            'all': [x[0] for x in names]}
 
 
 def get_Jmag(twomassid):
