@@ -2,6 +2,7 @@ import os
 import time
 from pathlib import Path
 import yaml
+import subprocess
 
 from astropy.time import Time
 from astropy.coordinates import EarthLocation
@@ -61,6 +62,8 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         lst = now.sidereal_time('apparent')
         if lst.value > 14.3 and lst.value < 20.3:
             targname = "HD157347"
+        elif lst.value > 3.5 and lst.value < 10.5:
+            targname = 'HD55575'
         elif lst.value > 3.5 and lst.value < 10.5:
             targname = "HD52711"
         elif lst.value > 2.0 and lst.value < 9.0:
@@ -133,6 +136,12 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
             print(line)
         user_input = input()
 
+        # Open an xshow for exposure status
+        cmd = ['xshow', '-s', 'kpfexpose', 'EXPOSE', 'ELAPSED', 'EXPOSURE']
+        xshow_proc = subprocess.Popen(cmd,
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE)
+
         # ---------------------------------
         # Execute Observation
         # ---------------------------------
@@ -167,19 +176,35 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # Cleanup
         CleanupAfterScience.execute(sciOB)
 
+        # Close xshow
+        xshow_proc.terminate()
+
         # ---------------------------------
         # Done with telescope
         # ---------------------------------
         log.debug('Observations complete. Alerting OA.')
-        print()
-        print("-------------------------------------------------------------")
-        print('Observation complete. You may park the telescope or do whatever')
-        print('else is needed. Please leave this script running as it will')
-        print('perform shutdown and internal calibrations.')
-        print("-------------------------------------------------------------")
-        print()
-        EndOfNight.execute({})
-        RunCalOB.execute(calOB)
+
+        msg = ["",
+               "-------------------------------------------------------------",
+               "Observation complete. Do you wish to run end of night and",
+               "perform a calibration set? Please answer yes if this is a",
+               "morning twilight or if some other instrument will be observing.",
+               "",
+               "Regardless of the choice below, you may perform other tasks as",
+               "needed after answering.",
+               "",
+               "Run End of Night and then start calibrations? [Y/n]",
+               "-------------------------------------------------------------",
+               "",
+               ]
+        for line in msg:
+            print(line)
+        user_input = input()
+        if user_input.lower() in ['y', 'yes']:
+            EndOfNight.execute({})
+            RunCalOB.execute(calOB)
+
+        # Send email
         email = {
                  'To': 'kpf_info@keck.hawaii.edu,ahoward@caltech.edu,sphalverson@gmail.com',
 #                  'To': 'jwalawender@keck.hawaii.edu',
@@ -187,7 +212,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
                  'Message': 'A KPF twilight observation has been completed.'}
         SendEmail.execute(email)
         print()
-        print('Internal calibrations complete. Script complete.')
+        print('Script complete.')
         time.sleep(120)
 
 
