@@ -95,6 +95,7 @@ class MainWindow(QMainWindow):
         self.kpfconfig = ktl.cache('kpfconfig')
         self.kpflamps = ktl.cache('kpflamps')
         self.kpfexpose = ktl.cache('kpfexpose')
+        self.new_progID = self.kpfexpose['PROGNAME'].read()
         # Slew Cal Time Colors/Warnings
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
@@ -119,6 +120,8 @@ class MainWindow(QMainWindow):
             self.log.debug(f"Found {nprog} KPF programs in schedule for {date_str}")
             project_codes = [p['ProjCode'] for p in KPF_programs]
             project_codes.append('ENG')
+            project_codes.append('')
+            self.progID.setCurrentText(self.new_progID)
         except:
             project_codes = ['ENG']
         self.progID.addItems(project_codes)
@@ -477,8 +480,26 @@ class MainWindow(QMainWindow):
 
     def set_progID(self, value):
         self.log.debug(f"set_progID: {value}")
-        SetProgram.SetProgram.execute({'progname': value})
-        self.progID.setCurrentText(value)
+        self.new_progID = value
+        kpefexpose_value = self.kpfexpose['EXPOSE'].read()
+        if kpefexpose_value != 'Ready':
+            self.log.debug(f'kpfexpose is not Ready: {kpefexpose_value}')
+            not_ready_popup = QMessageBox()
+            not_ready_popup.setWindowTitle('Waiting for kpfexpose')
+            msg = ("This operation can only be performed when kpfexpose is Ready.\n"
+                   "Please try again when Expose Status = Ready")
+            not_ready_popup.setText(msg)
+            not_ready_popup.setIcon(QMessageBox.Critical)
+            not_ready_popup.setStandardButtons(QMessageBox.Ok) 
+            not_ready_popup.buttonClicked.connect(self.run_not_ready_popup_clicked)
+            not_ready_popup.exec_()
+        else:
+            SetProgram.SetProgram.execute({'progname': value})
+            self.progID.setCurrentText(value)
+
+    def run_not_ready_popup_clicked(self, i):
+        current_value = self.kpfexpose['PROGNAME'].read()
+        self.progID.setCurrentText(current_value)
 
     def set_name_query_input(self, value):
         value = value.strip()
