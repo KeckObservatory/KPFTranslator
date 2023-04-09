@@ -11,6 +11,7 @@ from kpf.ao.SetupAOforKPF import SetupAOforKPF
 from kpf.fiu.SetTipTiltGain import SetTipTiltGain
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.calbench.SetCalSource import SetCalSource
+from kpf.calbench.CalLampPower import CalLampPower
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.utils.SetOutdirs import SetOutdirs
@@ -67,6 +68,13 @@ class StartOfNight(KPFTranslatorFunction):
         log.info('Set ALLOWSCHEDULEDCALS to No')
         kpfconfig = ktl.cache('kpfconfig')
         kpfconfig['ALLOWSCHEDULEDCALS'].write('No')
+
+        # Power on Simulcal lamp
+        kpfconfig = ktl.cache('kpfconfig')
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
+            CalLampPower.execute({'lamp': calsource, 'power': 'on'})
+
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
