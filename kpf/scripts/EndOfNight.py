@@ -96,7 +96,12 @@ class EndOfNight(KPFTranslatorFunction):
         SetProgram.execute({'progname': ''})
         SetObserver.execute({'observer': ''})
         SetObject.execute({'Object': ''})
-        # Allow scheduledm cals
+        # Power off Simulcal lamp
+        kpfconfig = ktl.cache('kpfconfig')
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
+            CalLampPower.execute({'lamp': calsource, 'power': 'off'})
+        # Allow scheduled cals
         log.info('Set ALLOWSCHEDULEDCALS to Yes')
         kpfconfig = ktl.cache('kpfconfig')
         kpfconfig['ALLOWSCHEDULEDCALS'].write('Yes')
