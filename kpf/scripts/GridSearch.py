@@ -81,8 +81,9 @@ class GridSearch(KPFTranslatorFunction):
         utnow = datetime.utcnow()
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
         date_str = (utnow-timedelta(days=1)).strftime('%Y%b%d').lower()
-        images_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/{grid}{this_file_name}_images_{now_str}.txt')
-        fluxes_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/{grid}{this_file_name}_fluxes_{now_str}.txt')
+        log_path = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}')
+        images_file = log_path / Path(f'{grid}{this_file_name}_images_{now_str}.txt')
+        fluxes_file = log_path / Path(f'{grid}{this_file_name}_fluxes_{now_str}.txt')
 
         images = Table(names=('file', 'camera', 'x', 'y'),
                        dtype=('a90',  'a10',    'f4', 'f4'))
@@ -163,7 +164,7 @@ class GridSearch(KPFTranslatorFunction):
         OB['TimedShutter_CaHK'] = OB.get('TriggerCaHK', False)
         SetTimedShutters.execute(OB)
         SetTriggeredDetectors.execute(OB)
-        total_exptime = ExpMeter_exptime = OB.get('TimeOnPosition')
+        total_exptime = OB.get('TimeOnPosition')
         SetExpTime.execute({'ExpTime': total_exptime})
 
         # Configure Exposure Meter
