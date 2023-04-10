@@ -624,15 +624,26 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7,
     model = f"Fiber Coupling Model seeing {model_seeing:.2f} arcsec.csv"
     logfile = Path(logfile)
     assert logfile.exists()
-    assert logfile.suffix == '.log'
     log.info("")
     log.info(f"Analyzing {logfile.name}")
     data_path = logfile.parent.parent
 
+    # Parse log file name
+    logfilenamematch = re.match('(\d{8}at\d{6})_GridSearch.log', logfile.name)
+    if logfilenamematch is None:
+        print('Failed to parse log file name for timestamp')
+        return
+    else:
+        ts = logfilenamematch.group(1)
+        print(ts)
+        print(logfile.parent)
+        print()
+        print()
+
     # Check for images table name to determine mode
     mode = None
-    tiptilt_images_file = logfile.parent / logfile.name.replace('GridSearch', 'TipTiltGridSearch_images').replace('.log', '.txt')
-    sciADC_images_file = logfile.parent / logfile.name.replace('GridSearch', 'SciADCGridSearch_images').replace('.log', '.txt')
+    tiptilt_images_file = logfile.parent / f"TipTiltGridSearch_images_{ts}.txt"
+    sciADC_images_file = logfile.parent / f"SciADCGridSearch_images_{ts}.txt"
     if tiptilt_images_file.exists():
         mode = 'TipTilt'
         images_file = tiptilt_images_file
