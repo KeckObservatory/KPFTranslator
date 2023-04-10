@@ -635,10 +635,6 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7,
         return
     else:
         ts = logfilenamematch.group(1)
-        print(ts)
-        print(logfile.parent)
-        print()
-        print()
 
     # Check for images table name to determine mode
     mode = None
