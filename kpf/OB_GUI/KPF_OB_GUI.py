@@ -305,12 +305,13 @@ class MainWindow(QMainWindow):
     ##-------------------------------------------
     # Progname
     def update_progname_value(self, value):
+        value = str(value).strip()
         self.log.debug(f'update_progname_value: {value}')
         self.progID.setText(value)
 
     # Observer
     def update_observer_value(self, value):
-        value = value.strip()
+        value = str(value).strip()
         self.log.debug(f'update_observer_value: {value}')
         self.Observer.setText(value)
 
