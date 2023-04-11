@@ -37,6 +37,12 @@ p.add_argument("--view", dest="view",
 p.add_argument("-v", "--verbose", dest="verbose",
     default=False, action="store_true",
     help="Be verbose")
+
+p.add_argument("--start", dest="start", type=float,
+    help="Zoom the plot in to this start time (in seconds).")
+p.add_argument("--end", dest="end", type=float,
+    help="Zoom the plot in to this end time (in seconds).")
+
 args = p.parse_args()
 
 
@@ -147,13 +153,17 @@ def plot_cube_stats(file, plotfile=None):
 
     log.debug(f"  Generating Flux Plot")
     plt.subplot(2,2,2)
-    plt.title(f"")
+    plt.title(f"Flux vs. Time")
     plt.plot(times[~objectxerr.mask], t['object1_flux'][~objectxerr.mask], 'k-',
              alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
     plt.xlabel('Time (s)')
-    plt.xlim(0,times[-1])
+    if args.start is not None and args.end is not None:
+        plt.xlim(args.start, args.end)
+    else:
+        plt.xlim(0,times[-1])
     plt.ylabel('Flux')
     plt.ylim(0,1.1*max(t['object1_flux'][~objectxerr.mask]))
+    plt.grid()
 
     log.debug(f"  Generating Positional Error Plot")
     plt.subplot(2,2,3)
@@ -171,7 +181,10 @@ def plot_cube_stats(file, plotfile=None):
     plt.ylabel('delta pix')
     plt.ylim(plotylim)
     plt.grid()
-    plt.xlim(0,times[-1])
+    if args.start is not None and args.end is not None:
+        plt.xlim(args.start, args.end)
+    else:
+        plt.xlim(0,times[-1])
     plt.xlabel('Time (s)')
 
     log.debug(f"  Generating Positional Error Histogram")
