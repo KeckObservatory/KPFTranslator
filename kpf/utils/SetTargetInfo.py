@@ -18,6 +18,7 @@ class SetTargetInfo(KPFTranslatorFunction):
     @classmethod
     def perform(cls, OB, logger, cfg):
         log.info(f"Setting target parameters")
+        kpfconfig = ktl.cache('kpfconfig')
         kpfconfig['TARGET_NAME'].write(OB.get('TargetName', ''))
         kpfconfig['TARGET_GAIA'].write(OB.get('GaiaID', ''))
         kpfconfig['TARGET_2MASS'].write(OB.get('2MASSID', ''))
