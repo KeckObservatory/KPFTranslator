@@ -510,6 +510,7 @@ class MainWindow(QMainWindow):
         self.gaia_query_text = value
 
     def set_gaia_id(self, value):
+        value = str(value)
         value = value.strip()
         self.log.debug(f"set_gaia_id: {value}")
         includes_prefix = re.match('DR3 (\d+)', value)
@@ -727,27 +728,32 @@ class MainWindow(QMainWindow):
         result = QFileDialog.getOpenFileName(self, "Open OB File",
                                              f"{self.file_path}",
                                              "OB Files (*yaml);;All Files (*)")
+        self.log.debug('  Got result: {result}')
         if result:
             fname = result[0]
             if fname != '' and Path(fname).exists():
+                self.log.debug(f"  Opening: {fname}")
                 with open(fname, 'r') as f:
                     contents = yaml.safe_load(f)
+                self.log.debug('  Read in YAML')
                 for key in contents:
+                    value = contents[key]
+                    self.log.debug(f"  {key}: {value} ({type(value)})")
                     if key == 'GaiaID':
-                        value = contents[key]
-                        self.log.debug(f"{key}: {value} ({type(value)})")
                         self.set_gaia_id(value)
                     elif key == 'SEQ_Observations':
-                        for seq_key in contents[key][0]:
-                            seq_value = contents[key][0][seq_key]
-                            self.log.debug(f"SEQ_Observations: {seq_key}: {seq_value} ({type(seq_value)})")
+                        for seq_key in value[0]:
+                            seq_value = value[0][seq_key]
+                            self.log.debug(f"  SEQ_Observations: {seq_key}: {seq_value} ({type(seq_value)})")
                             self.update_OB(seq_key, seq_value)
                     else:
-                        value = contents[key]
-                        self.log.debug(f"{key}: {value} ({type(value)})")
                         self.update_OB(key, value)
                 # save fname as path to use in future
                 self.file_path = Path(fname).parent
+                # Clear other names and star list line
+                self.other_names.setText('')
+                msg = 'Unable to form star list line without Gaia coordinates'
+                self.star_list_line.setText(msg)
 
     ##-------------------------------------------
     ## Methods relating to executing an OB
