@@ -62,19 +62,19 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
         elif nKPFprograms == 1:
             progname = KPF_programs[0]['ProjCode']
         elif nKPFprograms > 1:
-            print()
-            print(f"########################################")
-            print(f"  Found {nKPFprograms} KPF programs for tonight:")
-            for project_code in project_codes:
-                print(f"    {project_code}")
-            print(f"  Please entry the program ID for your observations:")
-            print(f"########################################")
-            print()
-            progname = input()
-            if progname.strip() not in project_codes:
-                log.warning(f"Project code {progname} not on schedule")
-                progname = None
-
+            progname = args.get('progname', None)
+            if progname is None:
+                print()
+                print(f"########################################")
+                print(f"  Found {nKPFprograms} KPF programs for tonight:")
+                for project_code in project_codes:
+                    print(f"    {project_code}")
+                print(f"  Please entry the program ID for your observations:")
+                print(f"########################################")
+                print()
+                progname = input()
+                if progname.strip() not in project_codes:
+                    log.warning(f"Project code {progname} not on schedule")
         if progname is None:
             log.warning(f"Not setting progname or observer values")
         else:
