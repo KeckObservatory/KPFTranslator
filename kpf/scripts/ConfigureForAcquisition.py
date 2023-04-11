@@ -19,6 +19,7 @@ from kpf.guider.SetGuiderFPS import SetGuiderFPS
 from kpf.guider.SetGuiderGain import SetGuiderGain
 from kpf.fiu.InitializeTipTilt import InitializeTipTilt
 from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.utils.SetTargetInfo import SetTargetInfo
 
 
 class ConfigureForAcquisition(KPFTranslatorFunction):
@@ -100,15 +101,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
         # Set Target Parameters from OB
-        log.info(f"Setting target parameters")
-        kpfconfig['TARGET_NAME'].write(OB.get('TargetName', ''))
-        kpfconfig['TARGET_GAIA'].write(OB.get('GaiaID', ''))
-        kpfconfig['TARGET_2MASS'].write(OB.get('2MASSID', ''))
-        kpfconfig['TARGET_GMAG'].write(OB.get('Gmag', ''))
-        kpfconfig['TARGET_JMAG'].write(OB.get('Jmag', ''))
-        kpf_expmeter['TARGET_TEFF'].write(float(OB.get('Teff', 0)))
-        dcs['TARGPLAX'].write(OB.get('Parallax', 0))
-        dcs['TARGRADV'].write(OB.get('RadialVelocity', 0))
+        SetTargetInfo.execute(OB)
 
         # Set guide camera parameters (only manual supported for now)
         guide_mode = OB.get('GuideMode', 'auto')
