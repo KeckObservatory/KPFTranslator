@@ -11,7 +11,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 ## SetSimulCalSource
 ##-------------------------------------------------------------------------
 class SetSimulCalSource(KPFTranslatorFunction):
-    '''Set the slew can and simultaneous calibration source.
+    '''Set the slew cal and simultaneous calibration source.
 
     Valid names: EtalonFiber, U_gold, U_daily, Th_daily, Th_gold, LFCFiber
 
