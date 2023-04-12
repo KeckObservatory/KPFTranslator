@@ -210,6 +210,8 @@ links:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
         cmd: utils.SetOutdirs.SetOutdirs
+    SetSimulCalSource:
+        cmd: utils.SetSimulCalSource.SetSimulCalSource
     StartGUIs:
         cmd: utils.StartGUIs.StartGUIs
     StopGUIs:
