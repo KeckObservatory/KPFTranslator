@@ -572,6 +572,7 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
     for fig_index,entry in enumerate(images[images['camera'] == FVC]):
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
+        new_fig_index = (i+1) + nx*(ny-j-1)
 
         # Find CRED2 image at same position to get info for DAR correction
         this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
@@ -590,13 +591,13 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
         dx = 50
         dy = 50
         subframe = hdul[0].data[int(y0)-dy:int(y0)+dy,int(x0)-dx:int(x0)+dx]
-        plt.subplot(ny,nx,fig_index+1)
-        title_string = f"{fvc_file.name.replace('.fits','').replace('fvc','')}: {Xpix:.1f}, {Ypix:.1f}"
+        plt.subplot(ny,nx,new_fig_index)
+#         title_string = f"{fvc_file.name.replace('.fits','').replace('fvc','')}: {Xpix:.1f}, {Ypix:.1f}"
+        title_string = f"{Xpix:.1f}, {Ypix:.1f}"
         log.debug(f"Building frame: {title_string}")
         plt.title(title_string, size=8)
         norm = viz.ImageNormalize(subframe,
-                                  interval=viz.AsymmetricPercentileInterval(40,99.9),
-#                                   interval=viz.MinMaxInterval(),
+                                  interval=viz.AsymmetricPercentileInterval(40,100),
                                   stretch=viz.LinearStretch())
         plt.imshow(subframe, cmap='gray', origin='lower', norm=norm)
         radius = {'EXT': 27, 'SCI': 12, 'CAHK': 40}[FVC]
@@ -726,7 +727,7 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7,
                               'Science': (803.5, 607.0),
                               'Sky': None},
                       'CAHK': {'EMSky': None,
-                               'Science': (800, 600),
+                               'Science': (770, 645),
                                'Sky': None},
                       'EXT': {'EMSky': None,
                               'Science': (620, 700),
