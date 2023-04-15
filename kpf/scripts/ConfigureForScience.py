@@ -57,9 +57,6 @@ class ConfigureForScience(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        kpfguide = ktl.cache('kpfguide')
-        kpfguide['TRIGCUBE'].write('Inactive')
-
         # Start tip tilt loops
         if OB['GuideMode'] in ['manual', 'auto']:
             log.info(f"Starting tip tilt loops")

@@ -97,6 +97,14 @@ class ExecuteSci(KPFTranslatorFunction):
         WaitForReady.execute({})
         SetObject.execute(args)
         SetExpTime.execute(args)
+
+        # Turn off writing of guider FITS cube if exposure time is long
+        exptime = args.get('ExpTime')
+        max_for_cube = cfg.get('times', 'max_exptime_for_guide_cube', fallback=60)
+        if float(exptime) > max_for_cube:
+            kpfguide = ktl.cache('kpfguide')
+            kpfguide['TRIGCUBE'].write('Inactive')
+
         args['TimedShutter_Scrambler'] = True
         args['TimedShutter_FlatField'] = False
         args['TimedShutter_SimulCal'] = args['TakeSimulCal']
