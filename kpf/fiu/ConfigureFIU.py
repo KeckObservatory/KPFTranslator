@@ -3,7 +3,7 @@ import ktl
 
 from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+                 FailedToReachDestination, check_input, KPFQuietException)
 
 
 ##-----------------------------------------------------------------------------
@@ -29,6 +29,14 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        dest = args.get('mode')
+        kpffiu = ktl.cache('kpffiu')
+        modes = kpffiu['MODE'].read()
+        if dest.lower() not in modes.lower().split(','):
+            msg = f"FIU reached {modes} while trying to reach {dest}"
+            raise KPFQuietException(msg)
+        else:
+            log.info(f"FIU mode is now {dest}")
         return True
 
 
@@ -57,15 +65,17 @@ class ConfigureFIU(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         dest = args.get('mode')
-        try:
-            ConfigureFIUOnce.execute({'mode': dest,
-                                      'wait': args.get('wait', True)})
-        except FailedToReachDestination:
-            log.warning(f'FIU failed to reach destination. Retrying.')
-            shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=0.5)
-            time.sleep(shim_time)
-            ConfigureFIUOnce.execute({'mode': dest,
-                                      'wait': args.get('wait', True)})
+        ntries = cfg.get('retries', 'fiu_mode_tries', fallback=2)
+        for i in range(ntries):
+            try:
+                ConfigureFIUOnce.execute({'mode': dest,
+                                          'wait': args.get('wait', True)})
+            except KPFQuietException:
+                log.warning(f'FIU move failed on attempt {i+1} of {ntries}')
+                shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=1)
+                time.sleep(shim_time)
+            else:
+                break
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
