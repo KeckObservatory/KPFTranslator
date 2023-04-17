@@ -35,8 +35,6 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
         if dest.lower() not in modes.lower().split(','):
             msg = f"FIU reached {modes} while trying to reach {dest}"
             raise KPFQuietException(msg)
-        else:
-            log.info(f"FIU mode is now {dest}")
         return True
 
 
