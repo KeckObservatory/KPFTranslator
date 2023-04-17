@@ -24,7 +24,7 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         log.debug(f"Setting FIU mode to {dest}")
         kpffiu['MODE'].write(dest, wait=args.get('wait', True))
-        shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=0.5)
+        shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=2)
         time.sleep(shim_time)
 
     @classmethod
@@ -70,7 +70,7 @@ class ConfigureFIU(KPFTranslatorFunction):
                                           'wait': args.get('wait', True)})
             except KPFQuietException:
                 log.warning(f'FIU move failed on attempt {i+1} of {ntries}')
-                shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=1)
+                shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=2)
                 time.sleep(shim_time)
             else:
                 break
