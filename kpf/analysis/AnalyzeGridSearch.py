@@ -133,7 +133,7 @@ def calculate_DAR_pix(DARarcsec, va, pixel_scale=0.058):
     dy = -DARarcsec/pixel_scale*np.sin(va*np.pi/180)
     return dx, dy
 
-def correct_DAR(cred2_file):
+def parse_CRED2_image_header(cred2_file):
     cred2_image_filename = Path(cred2_file).name
     log.debug(f"Correcting pixel position for DAR using {cred2_image_filename}")
     hdul = fits.open(cred2_file)
@@ -143,7 +143,7 @@ def correct_DAR(cred2_file):
     va = np.arctan(hdul[0].header.get("CD1_1Y")/hdul[0].header.get("CD1_2Y"))*180/np.pi + 90
     DARx, DARy = calculate_DAR_pix(DARarcsec, va)
     log.debug(f"DAR correction is {DARx:.2f}, {DARy:.2f} pix")
-    return DARx, DARy
+    return DARx, DARy, va
 
 # Manual checks of VA calculation:
 #
@@ -173,6 +173,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     wavs = None
     nspectra = len(images[images['camera'] == camname])
     log.info(f'Building FITS cube using {nspectra} spectra')
+    vas = []
     for entry in images[images['camera'] == camname]:
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
@@ -180,10 +181,11 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
 #         print(j, entry['y'])
 
         # Find CRED2 image at same position to get info for DAR correction
+        this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
+        cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
+        DARx, DARy, va = parse_CRED2_image_header(cred2_file)
+        vas.append(va)
         if mode == 'TipTilt' and applydar is True:
-            this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
-            cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
-            DARx, DARy = correct_DAR(cred2_file)
             Xpix = entry['x'] - DARx
             Ypix = entry['y'] - DARy
             log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
@@ -245,6 +247,8 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
         posdata[6,j,i] = mean_of_EM_fluxes/std_of_EM_fluxes if std_of_EM_fluxes > 0 else 0
         posdata[7,j,i] = len(onedspec_table)
 
+    va = np.mean(vas)
+    log.info(f"Mean VA = {va:.1f} deg")
     norm_spec_cube = np.zeros((nwav,ny,nx))
     for w,spectral_slice in enumerate(spec_cube):
         norm_spec_cube[w,:,:] = spectral_slice / spectral_slice.mean()
@@ -264,6 +268,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     hdu.header.set('Name', 'Spectral_Cube')
     hdu.header.set('OBJECT', 'Spectral_Cube')
     hdu.header.set('Comment', comment)
+    hdu.header.set('VA', va, 'Mean Vertical Angle of input images')
     hdu.data = spec_cube
     normcubehdu = fits.ImageHDU()
     normcubehdu.header.set('Name', 'Normalized_Spectral_Cube')
@@ -329,6 +334,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
         fit = fitter(fit0, model_pix, model_flux)
 
     # Build Plots from on sky data
+    va = hdul[0].header.get('VA')
     flux_map = hdul[5].data[4]
     color_maps = hdul[3].data
     snr_map = hdul[5].data[6]
@@ -367,6 +373,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
         plt.gca().set_yticklabels(xplot_strings)
 
     if xfit is not None and yfit is not None:
+        arrow_length = 0.5
         if plot_axis_name == 'X':
             xifit = np.interp(xfit, xplot_values, xplot_ticks)
             yifit = np.interp(yfit, iterated_pix_values, iterated_pix_ticks)
@@ -375,6 +382,11 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                 plt.plot([xifit]*2, [min(iterated_pix_ticks)-0.5, max(iterated_pix_ticks)+0.5], 'r-', alpha=0.2)
             if yfit > min(iterated_pix_values)-0.5 and yfit < max(iterated_pix_values)+0.5:
                 plt.plot([min(iterated_pix_ticks)-0.5, max(iterated_pix_ticks)+0.5], [yifit]*2, 'r-', alpha=0.2)
+            arrow_dx = -arrow_length*np.cos((va-90)*np.pi/180)
+            arrow_dy = -arrow_length*np.sin((va-90)*np.pi/180)
+            plt.arrow(xifit, yifit, arrow_dx, arrow_dy,
+                      head_width=arrow_length/5, color='r')
+
         else:
             xifit = np.interp(xfit, iterated_pix_values, iterated_pix_ticks)
             yifit = np.interp(yfit, xplot_values, xplot_ticks)
@@ -383,6 +395,11 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                 plt.plot([xifit]*2, [min(iterated_pix_ticks)-0.5, max(iterated_pix_ticks)+0.5], 'r-', alpha=0.2)
             if yfit > min(xplot_values)-0.5 and yfit < max(xplot_values)+0.5:
                 plt.plot([min(iterated_pix_ticks)-0.5, max(iterated_pix_ticks)+0.5], [yifit]*2, 'r-', alpha=0.2)
+            arrow_dx = -arrow_length*np.cos((va-90)*np.pi/180)
+            arrow_dy = -arrow_length*np.sin((va-90)*np.pi/180)
+            plt.arrow(xifit, yifit, arrow_dx, arrow_dy,
+                      head_width=arrow_length/5, color='b')
+
 
     ax1 = plt.subplot(5,1,(3,4))
     ax1.set_xticks(xplot_values)
@@ -477,13 +494,13 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
         cred2_file = Path(entry['file'])
+        DARx, DARy, va = parse_CRED2_image_header(cred2_file)
         if applydar is True:
-            DARx, DARy = correct_DAR(cred2_file)
+            Xpix = entry['x'] - DARx
+            Ypix = entry['y'] - DARy
         else:
-            DARx = 0
-            DARy = 0
-        Xpix = entry['x'] - DARx
-        Ypix = entry['y'] - DARy
+            Xpix = entry['x']
+            Ypix = entry['y']
 
         # Create and Subtract Background
         ccddata = CCDData.read(entry['file'], unit="adu", memmap=False)
@@ -590,13 +607,13 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
         # Find CRED2 image at same position to get info for DAR correction
         this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
         cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
+        DARx, DARy, va = parse_CRED2_image_header(cred2_file)
         if applydar is True:
-            DARx, DARy = correct_DAR(cred2_file)
+            Xpix = entry['x'] - DARx
+            Ypix = entry['y'] - DARy
         else:
-            DARx = 0
-            DARy = 0
-        Xpix = entry['x'] - DARx
-        Ypix = entry['y'] - DARy
+            Xpix = entry['x']
+            Ypix = entry['y']
         log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
 
         fvc_file = Path(entry['file'])
