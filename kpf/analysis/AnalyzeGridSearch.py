@@ -330,6 +330,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
 
     # Build Plots from on sky data
     flux_map = hdul[5].data[4]
+    color_maps = hdul[3].data
     snr_map = hdul[5].data[6]
     emcount_map = hdul[5].data[7]
     nlayers, ny, nx = hdul[5].data.shape
@@ -406,15 +407,29 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
         iterated_pix_value = iterated_pix_values[i]
         if plot_axis_name == 'X':
             flux_map_i = flux_map[i,:]
+            color_maps_i = color_maps[:,i,:]
             snr_map_i = snr_map[i,:]
             emcount_map_i = emcount_map[i,:]
         else:
             flux_map_i = flux_map[:,i]
+            color_maps_i = color_maps[:,:,i]
             snr_map_i = snr_map[:,i]
             emcount_map_i = emcount_map[:,i]
         line = ax1.plot(xplot_values, flux_map_i,
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
+
+        markers = {0: 'bx-', 1: 'g^-', 2: 'r+-'}
+        for l in [0,1,2]:
+            color_maps_il = color_maps_i[l,:]
+            color_maps_il /= color_maps_il.max()
+            color_maps_il *= flux_map_i.max()
+
+            lineb = ax1.plot(xplot_values, color_maps_il, f"{markers[l]}",
+                             ds='steps-mid', alpha=0.5,
+                             label=f'color={markers[l][0]}')
+
+
         peak_index = np.argmax(flux_map_i)
         if mode == 'TipTilt':
             if plot_axis_name == 'X':
