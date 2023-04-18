@@ -45,10 +45,10 @@ p.add_argument("--seeing", dest="seeing", type=float,
     default=0.7,
     help="The seeing model to overlay on the fiber coupling plot.")
 p.add_argument("--xfit", dest="xfit", type=float,
-    default=None,
+    default=335.5,
     help="The X pixel position to use as the center when overlaying the model.")
 p.add_argument("--yfit", dest="yfit", type=float,
-    default=None,
+    default=258,
     help="The X pixel position to use as the center when overlaying the model.")
 args = p.parse_args()
 
