@@ -419,16 +419,14 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
 
-        markers = {0: 'bx-', 1: 'g^-', 2: 'r+-'}
-        for l in [0,1,2]:
-            color_maps_il = color_maps_i[l,:]
-            color_maps_il /= color_maps_il.max()
-            color_maps_il *= flux_map_i.max()
-
-            lineb = ax1.plot(xplot_values, color_maps_il, f"{markers[l]}",
-                             ds='steps-mid', alpha=0.5,
-                             label=f'color={markers[l][0]}')
-
+        if nplots == 1:
+            markers = {0: 'bx-', 1: 'g^-', 2: 'r+-'}
+            for l in [0,1,2]:
+                color_maps_il = color_maps_i[l,:]
+                color_maps_il /= color_maps_il.max()
+                color_maps_il *= flux_map_i.max()
+                lineb = ax1.plot(xplot_values, color_maps_il, f"{markers[l]}",
+                                 ds='steps-mid', alpha=0.5)
 
         peak_index = np.argmax(flux_map_i)
         if mode == 'TipTilt':
