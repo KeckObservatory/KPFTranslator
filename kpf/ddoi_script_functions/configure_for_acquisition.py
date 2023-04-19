@@ -4,7 +4,7 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf.scripts.ConfigureForAcquisition import ConfigureForAcquisition
 
 
-class confgure_for_acquisition(KPFTranslatorFunction):
+class configure_for_acquisition(KPFTranslatorFunction):
     '''
     '''
     @classmethod
