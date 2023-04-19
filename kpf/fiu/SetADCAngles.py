@@ -2,7 +2,7 @@ import ktl
 import numpy as np
 from astropy.modeling import models, fitting
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 

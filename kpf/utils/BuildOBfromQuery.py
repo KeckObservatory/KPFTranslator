@@ -3,7 +3,7 @@ from astropy.coordinates import SkyCoord
 from astroquery.vizier import Vizier
 from astroquery.simbad import Simbad
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 

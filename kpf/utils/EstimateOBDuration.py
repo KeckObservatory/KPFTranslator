@@ -1,4 +1,4 @@
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.calbench import standardize_lamp_name

@@ -1,8 +1,8 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from ..scripts.ConfigureForScience import ConfigureForScience
-from ..scripts.ConfigureForCalibrations import ConfigureForCalibrations
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.scripts.ConfigureForScience import ConfigureForScience
+from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
 
 
 class configure_science(KPFTranslatorFunction):

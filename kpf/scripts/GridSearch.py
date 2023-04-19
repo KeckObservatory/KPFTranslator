@@ -11,7 +11,7 @@ from astropy.table import Table, Row
 import ktl
 import keygrabber
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,

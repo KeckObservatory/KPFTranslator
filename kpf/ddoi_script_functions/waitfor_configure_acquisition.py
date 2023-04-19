@@ -1,7 +1,7 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from ..scripts.WaitForConfigureAcquisition import WaitForConfigureAcquisition
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.scripts.WaitForConfigureAcquisition import WaitForConfigureAcquisition
 
 
 class waitfor_configure_acquisition(KPFTranslatorFunction):

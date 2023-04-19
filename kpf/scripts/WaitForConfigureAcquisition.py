@@ -7,7 +7,7 @@ import numpy as np
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU

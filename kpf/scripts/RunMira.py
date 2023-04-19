@@ -6,7 +6,7 @@ import subprocess
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 
 from ddoi_telescope_translator.pmfm import PMFM
 
