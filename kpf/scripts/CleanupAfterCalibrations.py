@@ -6,7 +6,7 @@ import numpy as np
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -71,3 +71,9 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, OB, logger, cfg):
         return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('--leave_lamps_on', type=bool, default=False,
+                            help='Leave the lamps on after cleanup phase?')
+        return super().add_cmdline_args(parser, cfg)
