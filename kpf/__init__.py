@@ -72,6 +72,9 @@ class FailedToReachDestination(FailedPostCondition):
         super().__init__(msg)
 
 
+LostTipTiltStar = KPFException
+
+
 ##-------------------------------------------------------------------------
 ## Utility functions
 ##-------------------------------------------------------------------------
