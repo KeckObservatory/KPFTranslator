@@ -47,7 +47,7 @@ class SetND(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         ND1target = args.get('CalND1')
         ND2target = args.get('CalND2')
-        timeout = cfg.get('times', 'nd_move_time', fallback=20)
+        timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         ND1expr = f"($kpfcal.ND1POS == '{ND1target}')"
         ND1success = ktl.waitFor(ND1expr, timeout=timeout)
         ND2expr = f"($kpfcal.ND2POS == '{ND2target}')"

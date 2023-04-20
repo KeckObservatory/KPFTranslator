@@ -24,7 +24,7 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
         lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE')
         log.info('Setting LFC to AstroComb')
         lfc_mode.write('AstroComb')
-        time_shim = cfg.get('times', 'LFC_shim_time', fallback=10)
+        time_shim = cfg.getfloat('times', 'LFC_shim_time', fallback=10)
         time.sleep(time_shim)
 
     @classmethod
@@ -32,7 +32,7 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
         '''Verifies that kpfmon shows no errors.
         '''
         expr = f"($kpfmon.LFCREADYSTA == 'OK')"
-        timeout = cfg.get('times', 'LFC_startup_time', fallback=60)
+        timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
             raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')

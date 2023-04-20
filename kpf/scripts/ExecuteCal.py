@@ -64,7 +64,7 @@ class ExecuteCal(KPFTranslatorFunction):
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         # This is a time shim to insert a pause between exposures so that the
         # temperature of the CCDs can be measured by the archons
-        archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
+        archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
                              fallback=2)
 
         calsource = args.get('CalSource')

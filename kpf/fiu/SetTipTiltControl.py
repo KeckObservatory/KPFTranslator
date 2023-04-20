@@ -27,7 +27,7 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         control = args.get('control')
-        timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
+        timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         expr = f"($kpfguide.TIPTILT_CONTROL == {calculations}) "
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:

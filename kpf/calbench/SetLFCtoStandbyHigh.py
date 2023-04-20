@@ -25,7 +25,7 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
         lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE')
         log.info('Setting LFC to StandbyHigh')
         lfc_mode.write('StandbyHigh')
-        time_shim = cfg.get('times', 'LFC_shim_time', fallback=10)
+        time_shim = cfg.getfloat('times', 'LFC_shim_time', fallback=10)
         time.sleep(time_shim)
 
     @classmethod
@@ -33,7 +33,7 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
         '''Verifies that kpfmon shows no errors.
         '''
         expr = f"($kpfmon.LFCREADYSTA == 'OK')"
-        timeout = cfg.get('times', 'LFC_startup_time', fallback=60)
+        timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
             raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')

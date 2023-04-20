@@ -30,8 +30,8 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         modes = kpffiu['MODE'].read()
         start = datetime.utcnow()
-        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=40),
-                      cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
+        move_times = [cfg.getfloat('times', 'fiu_fold_mirror_move_time', fallback=40),
+                      cfg.getfloat('times', 'fiu_hatch_move_time', fallback=2)]
         end = start + timedelta(seconds=max(move_times))
         while dest.lower() not in modes.lower().split(',') and datetime.utcnow() <= end:
             time.sleep(1)
@@ -75,7 +75,7 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
             WaitForConfigureFIUOnce.execute({'mode': dest})
         except FailedToReachDestination:
             log.warning(f'FIU failed to reach destination. Retrying.')
-            shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=0.5)
+            shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=0.5)
             time.sleep(shim_time)
             from .ConfigureFIU import ConfigureFIUOnce
             ConfigureFIUOnce.execute({'mode': dest, 'wait': True})

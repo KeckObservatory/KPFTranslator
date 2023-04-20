@@ -29,9 +29,9 @@ class SendPCUtoKPF(KPFTranslatorFunction):
         ao = ktl.cache('ao')
         log.info(f"Sending PCU to KPF")
         ao['PCSFNAME'].write('kpf')
-        shim_time = cfg.get('times', 'ao_pcu_shim_time', fallback=5)
+        shim_time = cfg.getfloat('times', 'ao_pcu_shim_time', fallback=5)
         time.sleep(shim_time)
-        timeout = cfg.get('times', 'ao_pcu_move_time', fallback=150)
+        timeout = cfg.getfloat('times', 'ao_pcu_move_time', fallback=150)
         success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=timeout)
         if success is False:
             raise FailedToReachDestination(ao['PCSFNAME'].read(), 'kpf')

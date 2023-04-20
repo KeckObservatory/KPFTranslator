@@ -29,8 +29,8 @@ class SetExpTime(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         log.debug("Checking for success")
         exptime = args.get('ExpTime')
-        tol = cfg.get('tolerances', 'kpfexpose_exptime_tolerance', fallback=0.01)
-        timeout = cfg.get('times', 'kpfexpose_response_time', fallback=1)
+        tol = cfg.getfloat('tolerances', 'kpfexpose_exptime_tolerance', fallback=0.01)
+        timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
         expr = (f"($kpfexpose.EXPOSURE >= {exptime-tol}) and "
                 f"($kpfexpose.EXPOSURE <= {exptime+tol})")
         log.debug(expr)

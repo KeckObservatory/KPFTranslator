@@ -45,7 +45,7 @@ class TestTipTiltMirrorRange(KPFTranslatorFunction):
         InitializeTipTilt.execute({})
 
         nsamples = 9
-        movetime = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
+        movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
 
         axis = ['X', 'Y']
         for ax in axis:

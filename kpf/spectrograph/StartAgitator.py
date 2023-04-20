@@ -22,14 +22,14 @@ class StartAgitator(KPFTranslatorFunction):
         if agitator.read() == 'Running':
             log.debug('Agitator is running')
         else:
-            startup = cfg.get('times', 'agitator_startup_time', fallback=0.325)
+            startup = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
             log.debug('Starting agitator motion')
             agitator.write('Run')
             time.sleep(startup)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        startup = cfg.get('times', 'agitator_startup_time', fallback=0.325)
+        startup = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
         success = ktl.waitFor('$kpfmot.AGITATOR == Running', timeout=startup)
         if success is not True:
             agitator = ktl.cache('kpfmot', 'AGITATOR')

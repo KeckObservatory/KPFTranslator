@@ -100,7 +100,7 @@ class ExecuteSci(KPFTranslatorFunction):
 
         # Turn off writing of guider FITS cube if exposure time is long
         exptime = args.get('ExpTime')
-        max_for_cube = cfg.get('times', 'max_exptime_for_guide_cube', fallback=60)
+        max_for_cube = cfg.getfloat('times', 'max_exptime_for_guide_cube', fallback=60)
         if float(exptime) > max_for_cube:
             kpfguide = ktl.cache('kpfguide')
             kpfguide['TRIGCUBE'].write('Inactive')

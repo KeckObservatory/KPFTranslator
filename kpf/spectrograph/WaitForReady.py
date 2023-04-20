@@ -30,8 +30,8 @@ class WaitForReady(KPFTranslatorFunction):
 
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
 
-        buffer_time = cfg.get('times', 'readout_buffer_time', fallback=10)
-        slowest_read = cfg.get('times', 'slowest_readout_time', fallback=120)
+        buffer_time = cfg.getfloat('times', 'readout_buffer_time', fallback=10)
+        slowest_read = cfg.getfloat('times', 'slowest_readout_time', fallback=120)
 
         wait_time = exptime+slowest_read+buffer_time if starting_status < 3 else slowest_read+buffer_time
 

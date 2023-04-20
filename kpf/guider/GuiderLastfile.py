@@ -24,7 +24,7 @@ class GuiderLastfile(KPFTranslatorFunction):
         if args.get('wait', True) is True:
             exptime = kpfguide['EXPTIME'].read(binary=True)
             initial_lastfile = kpfguide['LASTFILE'].read()
-            timeout = cfg.get('times', 'kpfguide_shim_time', fallback=0.01)
+            timeout = cfg.getfloat('times', 'kpfguide_shim_time', fallback=0.01)
             expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
             ktl.waitFor(expr, timeout=exptime+timeout)
         lastfile = kpfguide['LASTFILE'].read()

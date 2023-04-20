@@ -55,7 +55,7 @@ class FVCPower(KPFTranslatorFunction):
         kpfpower = ktl.cache('kpfpower')
         outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
         pwr = args.get('power')
-        timeout = cfg.get('times', 'lamp_response_time', fallback=1)
+        timeout = cfg.getfloat('times', 'lamp_response_time', fallback=1)
         success = ktl.waitFor(f"($kpfpower.{outlet} == {pwr})", timeout=timeout)
         if success is False:
             raise FailedToReachDestination(kpfpower[outlet].read(), pwr)

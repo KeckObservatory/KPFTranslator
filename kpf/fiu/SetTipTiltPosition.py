@@ -29,14 +29,14 @@ class SetTipTiltPosition(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         kpffiu['TTXVAX'].write(args.get('x'))
         kpffiu['TTYVAX'].write(args.get('y'))
-        time_shim = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
+        time_shim = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpffiu = ktl.cache('kpffiu')
-        timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
-        tol = cfg.get('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
+        timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
+        tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
         xdest = args.get('x')
         ydest = args.get('y')
         expr = (f'($kpffiu.TTXVAX > {xdest-tol}) and '\

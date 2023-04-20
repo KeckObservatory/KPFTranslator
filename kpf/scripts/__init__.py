@@ -104,7 +104,7 @@ def check_scriptstop():
     if scriptpause.read() == 'Yes':
         log.warning("SCRIPTPAUSE requested. Waiting for SCRIPTPAUSE=No.")
         expr = f"($kpfconfig.SCRIPTPAUSE == 'No')"
-        timeout = cfg.get('times', 'scriptpause_timeout', fallback=600)
+        timeout = cfg.getfloat('times', 'scriptpause_timeout', fallback=600)
         success = ktl.waitFor(expr, timeout=timeout)
         if success == False:
             log.error(f"Timed out waiting {timeout:.0f} s for SCRIPTPAUSE to resume")

@@ -26,8 +26,8 @@ class SetTipTiltGain(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         gain = float(args.get('GuideLoopGain'))
-        timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
-        tol = cfg.get('tolerances', 'tip_tilt_gain_tolerance', fallback=0.001)
+        timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
+        tol = cfg.getfloat('tolerances', 'tip_tilt_gain_tolerance', fallback=0.001)
         expr = (f"($kpfguide.TIPTILT_GAIN >= {gain-tol}) and "
                 f"($kpfguide.TIPTILT_GAIN <= {gain+tol})")
         success = ktl.waitFor(expr, timeout=timeout)

@@ -27,7 +27,7 @@ class WaitForReadout(KPFTranslatorFunction):
         detector_list = detectors.split(',')
 
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
-        buffer_time = cfg.get('times', 'readout_buffer_time', fallback=10)
+        buffer_time = cfg.getfloat('times', 'readout_buffer_time', fallback=10)
         wait_time = exptime+buffer_time if starting_status < 3 else buffer_time
 
         wait_logic = ''

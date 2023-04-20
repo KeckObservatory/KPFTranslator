@@ -100,7 +100,7 @@ class StartOfNight(KPFTranslatorFunction):
         log.info(f"Setting simultaneous CalSource/Octagon: {calsource}")
         SetCalSource.execute({'CalSource': calsource, 'wait': True})
         # Set tip tilt loop gain
-        tip_tilt_gain = cfg.get('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
+        tip_tilt_gain = cfg.getfloat('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
         log.info(f"Setting default tip tilt loop gain of {tip_tilt_gain}")
         SetTipTiltGain.execute({'GuideLoopGain': tip_tilt_gain})
         # Set Outdirs

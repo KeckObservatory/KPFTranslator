@@ -96,7 +96,7 @@ class ConfigureForScience(KPFTranslatorFunction):
         if OB['GuideMode'] in ['manual', 'auto']:
             tock = datetime.now()
             time_passed = (tock - tick).total_seconds()
-            tt_close_time = cfg.get('times', 'tip_tilt_close_time', fallback=3)
+            tt_close_time = cfg.getfloat('times', 'tip_tilt_close_time', fallback=3)
             sleep_time = tt_close_time - time_passed
             if sleep_time > 0:
                 log.info(f"Sleeping {sleep_time:.1f} seconds to allow loops to close")

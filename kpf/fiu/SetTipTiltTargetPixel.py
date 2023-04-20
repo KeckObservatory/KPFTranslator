@@ -17,10 +17,10 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        min_x_pixel = cfg.get('guider', 'min_x_pixel', fallback=0)
-        max_x_pixel = cfg.get('guider', 'max_x_pixel', fallback=640)
-        min_y_pixel = cfg.get('guider', 'min_y_pixel', fallback=0)
-        max_y_pixel = cfg.get('guider', 'max_y_pixel', fallback=512)
+        min_x_pixel = cfg.getint('guider', 'min_x_pixel', fallback=0)
+        max_x_pixel = cfg.getint('guider', 'max_x_pixel', fallback=640)
+        min_y_pixel = cfg.getint('guider', 'min_y_pixel', fallback=0)
+        max_y_pixel = cfg.getint('guider', 'max_y_pixel', fallback=512)
         check_input(args, 'x', value_min=min_x_pixel, value_max=max_x_pixel)
         check_input(args, 'y', value_min=min_y_pixel, value_max=max_y_pixel)
         return True
@@ -31,7 +31,7 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
         y = args.get('y')
         pixtarget = ktl.cache('kpfguide', 'CURRENT_BASE')
         pixtarget.write((x, y))
-        time_shim = cfg.get('times', 'tip_tilt_move_time', fallback=0.01)
+        time_shim = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.01)
         time.sleep(time_shim)
 
     @classmethod
