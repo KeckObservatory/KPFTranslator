@@ -33,6 +33,10 @@ class WaitForLampWarm(KPFTranslatorFunction):
             if lamp_status == 'Off':
                 log.warning(f"Lamp {lamp} is not on: {lamp_status}")
                 CalLampPower.execute({'lamp': args.get('CalSource'), 'power': 'on'})
+                lamp_status = kpflamps[f'{lamp}_STATUS'].read()
+
+            if lamp_status == 'Off':
+                log.error(f"Lamp {lamp} should be on: {lamp_status}")
             elif lamp_status == 'Warm':
                 log.info(f"Lamp {lamp} is warm")
             elif lamp_status == 'Warming':
