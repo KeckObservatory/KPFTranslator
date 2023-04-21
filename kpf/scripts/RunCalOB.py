@@ -158,3 +158,10 @@ class RunCalOB(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, OB, logger, cfg):
         return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('--leave_lamps_on', default=False,
+                            action="store_true",
+                            help='Leave the lamps on after cleanup phase?')
+        return super().add_cmdline_args(parser, cfg)

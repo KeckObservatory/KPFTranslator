@@ -51,14 +51,17 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Power off lamps
-        sequence = OB.get('SEQ_Calibrations')
-        lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
-        for lamp in lamps:
-            if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                        'BrdbandFiber', 'WideFlat']:
-                CalLampPower.execute({'lamp': lamp, 'power': 'off'})
-            if lamp == 'LFCFiber':
-                SetLFCtoStandbyHigh.execute({})
+        if OB.get('leave_lamps_on', False) == True:
+            log.info('Not turning lamps off because command line option was invoked')
+        else:
+            sequence = OB.get('SEQ_Calibrations')
+            lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
+            for lamp in lamps:
+                if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
+                            'BrdbandFiber', 'WideFlat']:
+                    CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+                if lamp == 'LFCFiber':
+                    SetLFCtoStandbyHigh.execute({})
 
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})
@@ -74,6 +77,7 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        parser.add_argument('--leave_lamps_on', type=bool, default=False,
+        parser.add_argument('--leave_lamps_on', default=False,
+                            action="store_true",
                             help='Leave the lamps on after cleanup phase?')
         return super().add_cmdline_args(parser, cfg)
