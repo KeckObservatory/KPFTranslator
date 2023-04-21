@@ -35,7 +35,7 @@ class SetFlatFieldFiberPos(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         target = args.get('FF_FiberPos')
-        timeout = cfg.get('times', 'nd_move_time', fallback=20)
+        timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.FF_FiberPos == '{target}')"
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:

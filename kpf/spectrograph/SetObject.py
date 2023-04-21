@@ -26,13 +26,13 @@ class SetObject(KPFTranslatorFunction):
             obj = ''
         log.debug(f"Setting OBJECT to '{obj}'")
         kpfexpose['OBJECT'].write(obj)
-        time_shim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         obj = args.get('Object')
-        timeout = cfg.get('times', 'kpfexpose_response_time', fallback=1)
+        timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
         expr = f"($kpfexpose.OBJECT == '{obj}')"
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:

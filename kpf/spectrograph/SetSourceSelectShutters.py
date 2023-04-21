@@ -40,13 +40,13 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         log.debug(f"Setting source select shutters to '{shutters_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['SRC_SHUTTERS'].write(shutters_string)
-        shim_time = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
-        timeshim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.01)
+        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)
         shutters = kpfexpose['SRC_SHUTTERS'].read()
         shutter_list = shutters.split(',')

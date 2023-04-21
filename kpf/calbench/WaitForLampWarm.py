@@ -3,6 +3,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.scripts import check_scriptstop
 from kpf.calbench import standardize_lamp_name
 from kpf.calbench.CalLampPower import CalLampPower
 
@@ -29,10 +30,15 @@ class WaitForLampWarm(KPFTranslatorFunction):
             log.debug(f'Lamp {lamp} does need to be warmed up before use')
             # Check that lamp is actually on
             lamp = standardize_lamp_name(args.get('CalSource'))
-            lamp_status = kpflamps[f'{lamp}_STATUS'].read()
+            lamp_statuskw = ktl.cache('kpflamps', f'{lamp}_STATUS')
+            lamp_status = lamp_statuskw.read()
             if lamp_status == 'Off':
                 log.warning(f"Lamp {lamp} is not on: {lamp_status}")
                 CalLampPower.execute({'lamp': args.get('CalSource'), 'power': 'on'})
+                lamp_status = lamp_statuskw.read()
+
+            if lamp_status == 'Off':
+                raise KPFException(f"Lamp {lamp} should be on: {lamp_status}")
             elif lamp_status == 'Warm':
                 log.info(f"Lamp {lamp} is warm")
             elif lamp_status == 'Warming':
@@ -41,10 +47,17 @@ class WaitForLampWarm(KPFTranslatorFunction):
                 time_to_wait = lamp_threshold - lamp_timeon
                 log.info(f"Lamp {lamp} is warming")
                 log.info(f"Estimated time remaining = {time_to_wait:.0f} s")
-                expr = f"($kpflamps.{lamp}_STATUS == 'Warm')"
-                success = ktl.waitFor(expr, timeout=time_to_wait+30)
-                if success is False:
-                    raise KPFException(f"Lamp {lamp} failed to reach warm state")
+                while lamp_statuskw.read() != 'Warm':
+                    # Check if scriptstop has been activated
+                    check_scriptstop()
+                    expr = f"($kpflamps.{lamp}_STATUS == 'Warm')"
+                    if ktl.waitFor(expr, timeout=10) is False:
+                        raise KPFException(f"Lamp {lamp} failed to reach warm state")
+            lamp_status = lamp_statuskw.read()
+            if lamp_status != 'Warm':
+                raise KPFException(f"Lamp {lamp} should be warm: {lamp_status}")
+            else:
+                log.info(f"Lamp {lamp} is warm")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

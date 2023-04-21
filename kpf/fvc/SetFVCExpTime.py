@@ -33,8 +33,8 @@ class SetFVCExpTime(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         camera = args.get('camera')
         exptime = args.get('exptime')
-        timeout = cfg.get('times', 'fvc_command_timeout', fallback=5)
-        tol = cfg.get('tolerances', 'guider_exptime_tolerance', fallback=0.01)
+        timeout = cfg.getfloat('times', 'fvc_command_timeout', fallback=5)
+        tol = cfg.getfloat('tolerances', 'guider_exptime_tolerance', fallback=0.01)
         expr = (f'($kpffvc.{camera}EXPTIME > {exptime}-{tol}) '\
                 f'and ($kpffvc.{camera}EXPTIME < {exptime}+{tol})')
         success = ktl.waitfor(expr, timeout=timeout)

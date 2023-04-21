@@ -29,7 +29,7 @@ class ControlFoldMirror(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         destination = args.get('destination', '').strip()
-        timeout = cfg.get('times', 'fiu_fold_mirror_move_time', fallback=5)
+        timeout = cfg.getfloat('times', 'fiu_fold_mirror_move_time', fallback=5)
         success = ktl.waitFor(f'($kpffiu.foldnam == {destination})', timeout=timeout)
         if success is not True:
             foldnam = ktl.cache('kpffiu', 'FOLDNAM')
