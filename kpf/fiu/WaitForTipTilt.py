@@ -30,11 +30,15 @@ class WaitForTipTilt(KPFTranslatorFunction):
             raise LostTipTiltStar('Unable to obtain initial lock on star')
         log.debug('Obtained initial tip tilt lock')
 
-        # Second, wait a few seconds to see if we keep lock
+        # Second, wait to see if we keep lock.
+        #   Keeping lock means that we are in the tracking state continuously
+        #   for a tip_tilt_close_time (e.g. 3 seconds)
         max_time = cfg.get('times', 'tip_tilt_max_attempt_time', fallback=60)
         lost_lock = phase.waitFor('!= Tracking', timeout=loop_close_time)
         now = datetime.now()
-        # If we didn't hold on to the star, lets try a little while longer
+        # If we didn't hold lock on the star, lets try for a moderate time 
+        # (the tip_tilt_max_attempt_time) and see if we can hold it for a
+        # tip_tilt_close_time during that period.
         while lost_lock == True and (now-t0).total_seconds() < max_time:
             log.debug(f'Lost lock, trying again')
             lost_lock = phase.waitFor('!= Tracking', timeout=loop_close_time)
