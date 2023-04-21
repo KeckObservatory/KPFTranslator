@@ -1,7 +1,6 @@
-import argparse
-
-description = '''
-'''
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 # Excel Table exported to CSV:
 #
@@ -33,28 +32,44 @@ description = '''
 # ,,ADU/spectral bin is really rough (a couple factors of two) and is based on flux estimates from counting ADU in DS9,,,,,,,
 # ,,We haven't accounted for gain in the above analysis (ADU -> e-),,,,,,,
 
-def predict_expmeter_parameters(Gmag):
-    Gmag = float(Gmag)
-    if Gmag < 4.0:
-        expmeter_parameters = {'ExpMeterExpTime': 0.5}
-    elif Gmag < 9.0:
-        expmeter_parameters = {'ExpMeterExpTime': 1.0}
-    elif Gmag < 11.0:
-        expmeter_parameters = {'ExpMeterExpTime': 2.0}
-    elif Gmag < 13.0:
-        expmeter_parameters = {'ExpMeterExpTime': 4.0}
-    elif Gmag < 15.0:
-        expmeter_parameters = {'ExpMeterExpTime': 8.0}
-    else:
-        expmeter_parameters = {'ExpMeterExpTime': 16.0}
 
-    return expmeter_parameters
+class PredictExpMeterParameters(KPFTranslatorFunction):
+    '''Estimate the proper exposure meter exposure time given the stellar Gmag.
+    
+    Args:
+    =====
+    :Gmag: The Gaia g magnitude of the target
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'Gmag', allowed_types=[int, float])
+        return True
 
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        Gmag = args.get('Gmag')
+        if Gmag < 4.0:
+            exptime = 0.5
+        elif Gmag < 9.0:
+            exptime = 1.0
+        elif Gmag < 11.0:
+            exptime = 2.0
+        elif Gmag < 13.0:
+            exptime = 4.0
+        elif Gmag < 15.0:
+            exptime = 8.0
+        else:
+            exptime = 16.0
+        log.info(f"Predicted ExpMeterExpTime = {exptime:.1f} s")
+        return {'ExpMeterExpTime': exptime}
 
-if __name__ == "__main__":
-    p = argparse.ArgumentParser(description=description)
-    p.add_argument('Gmag', type=float,
-                   help="The target G magnitude")
-    args = p.parse_args()
-    result = predict_expmeter_parameters(args.Gmag)
-    print(result)
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        return True
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('Gmag', type=float,
+                            help="The Gaia g magnitude of the target")
+        return super().add_cmdline_args(parser, cfg)
+

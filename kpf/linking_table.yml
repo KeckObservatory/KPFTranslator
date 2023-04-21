@@ -52,6 +52,8 @@ links:
     # ExpMeter
     SetExpMeterExptime:
         cmd: expmeter.SetExpMeterExptime.SetExpMeterExptime
+    PredictExpMeterParameters:
+        cmd: expmeter.PredictExpMeterParameters.PredictExpMeterParameters
     # FIU
     ConfigureFIU:
         cmd: fiu.ConfigureFIU.ConfigureFIU
@@ -103,6 +105,8 @@ links:
         cmd: guider.GuiderLastfile.GuiderLastfile
     GuiderOutdir:
         cmd: guider.GuiderOutdir.GuiderOutdir
+    PredictGuiderParameters:
+        cmd: guider.PredictGuiderParameters.PredictGuiderParameters
     SetGuiderExpTime:
         cmd: guider.SetGuiderExpTime.SetGuiderExpTime
     SetGuiderFPS:
