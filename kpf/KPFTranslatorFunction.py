@@ -40,3 +40,11 @@ class KPFTranslatorFunction(TranslatorModuleFunction):
 
         log.warning('Abort recieved, setting kpfconfig.SCRTIPSTOP=Yes')
         kpfconfig['SCRIPTSTOP'].write('Yes')
+
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
