@@ -25,16 +25,16 @@ class SendPCUtoKPF(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
+        PCSstagekw = ktl.cache('ao', 'PCSFSTST')
         log.info(f"Sending PCU to KPF")
-        ao['PCSFNAME'].write('kpf')
+        PCSstagekw.write('kpf')
         shim_time = cfg.getfloat('times', 'ao_pcu_shim_time', fallback=5)
         time.sleep(shim_time)
-        timeout = cfg.getfloat('times', 'ao_pcu_move_time', fallback=150)
-        success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=timeout)
-        if success is False:
-            raise FailedToReachDestination(ao['PCSFNAME'].read(), 'kpf')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        pass
+        PCSstagekw = ktl.cache('ao', 'PCSFSTST')
+        timeout = cfg.getfloat('times', 'ao_pcu_move_time', fallback=150)
+        success = PCSstagekw.waitfor("== INPOS", timeout=timeout)
+        if success is False:
+            raise FailedToReachDestination(PCSstagekw.read(), 'kpf')
