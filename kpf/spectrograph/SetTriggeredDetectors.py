@@ -66,19 +66,24 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser.add_argument("--Red", "--red", dest="TriggerRed",
+        parser.add_argument("--Red", "--red", "-r",
+                            dest="TriggerRed",
                             default=False, action="store_true",
                             help="Trigger the Red detector during exposure?")
-        parser.add_argument("--Green", "--green", dest="TriggerGreen",
+        parser.add_argument("--Green", "--green", "-g",
+                            dest="TriggerGreen",
                             default=False, action="store_true",
                             help="Trigger the Green detector during exposure?")
-        parser.add_argument("--CaHK", "--HK", "--cahk", "--hk", dest="TriggerCaHK",
+        parser.add_argument("--CaHK", "--HK", "--cahk", "--hk",
+                            dest="TriggerCaHK",
                             default=False, action="store_true",
                             help="Trigger the CaHK detector during exposure?")
-        parser.add_argument("--ExpMeter", "--expmeter", "--EM", dest="TriggerExpMeter",
+        parser.add_argument("--ExpMeter", "--expmeter", "--EM", "--em",
+                            dest="TriggerExpMeter",
                             default=False, action="store_true",
                             help="Trigger the ExpMeter detector during exposure?")
-        parser.add_argument("--Guide", "--Guider", "--guide", "--guider", "--CRED2", dest="TriggerGuide",
+        parser.add_argument("--Guide", "--Guider", "--guide", "--guider", "--CRED2",
+                            dest="TriggerGuide",
                             default=False, action="store_true",
                             help="Trigger the Guider detector during exposure?")
         return super().add_cmdline_args(parser, cfg)

@@ -65,10 +65,11 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser.add_argument("--Science", "--Sci", dest="SSS_Science",
+        parser.add_argument("--Science", "--Sci", "--science", "--sci",
+                            dest="SSS_Science",
                             default=False, action="store_true",
                             help="Open the SciSelect shutter?")
-        parser.add_argument("--Sky", dest="SSS_Sky",
+        parser.add_argument("--Sky", "--sky", dest="SSS_Sky",
                             default=False, action="store_true",
                             help="Open the SkySelect shutter?")
         parser.add_argument("--CalSciSky", dest="SSS_CalSciSky",
