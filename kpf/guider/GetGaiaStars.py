@@ -94,10 +94,6 @@ class GetGaiaStars(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['file'] = {'type': str,
-                               'help': 'The CRED2 file to retrieve stars for.'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('file', type=str,
+                            help='The CRED2 file to retrieve stars for')
         return super().add_cmdline_args(parser, cfg)

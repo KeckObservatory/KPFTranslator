@@ -46,6 +46,7 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after exposure is finished?', default=True)
+        parser.add_argument("--nowait", dest="wait",
+                            default=True, action="store_false",
+                            help="Start exposure and return immediately?")
         return super().add_cmdline_args(parser, cfg)

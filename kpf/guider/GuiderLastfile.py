@@ -39,6 +39,7 @@ class GuiderLastfile(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after lastfile is updated?', default=False)
+        parser.add_argument("--nowait", dest="wait",
+                            default=True, action="store_false",
+                            help="Send exposure command and return immediately?")
         return super().add_cmdline_args(parser, cfg)

@@ -89,13 +89,9 @@ class ConfigureFIU(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['mode'] = {'type': str,
-                               'help': 'Desired mode (see kpffiu.MODE)'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after move is finished?', default=True)
-
+        parser.add_argument('mode', type=str,
+                            help='Desired mode (see kpffiu.MODE)')
+        parser.add_argument("--nowait", dest="wait",
+                            default=True, action="store_false",
+                            help="Send move and return immediately?")
         return super().add_cmdline_args(parser, cfg)

@@ -40,12 +40,9 @@ class WaitForND1(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['CalND1'] = {'type': str,
-                                 'help': 'ND1 Filter to use'}
-        args_to_add['CalND2'] = {'type': str,
-                                 'help': 'ND2 Filter to use'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('CalND1', type=str,
+                            help='ND1 Filter to use.')
+        parser.add_argument('CalND2', type=str,
+                            help='ND2 Filter to use.')
         return super().add_cmdline_args(parser, cfg)
 

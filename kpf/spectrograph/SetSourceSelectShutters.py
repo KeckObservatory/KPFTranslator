@@ -65,19 +65,19 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'SSS_Science',
-                                   'Open the SciSelect shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'SSS_Sky',
-                                   'Open the SkySelect shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'SSS_CalSciSky',
-                                   'Open the Cal_SciSky shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'SSS_SoCalSci',
-                                   'Open the SoCalSci shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'SSS_SoCalCal',
-                                   'Open the SoCalCal shutter?',
-                                   default=False)
+        parser.add_argument("--Science", "--Sci", dest="SSS_Science",
+                            default=False, action="store_true",
+                            help="Open the SciSelect shutter?")
+        parser.add_argument("--Sky", dest="SSS_Sky",
+                            default=False, action="store_true",
+                            help="Open the SkySelect shutter?")
+        parser.add_argument("--CalSciSky", dest="SSS_CalSciSky",
+                            default=False, action="store_true",
+                            help="Open the Cal_SciSky shutter?")
+        parser.add_argument("--SoCalSci", dest="SSS_SoCalSci",
+                            default=False, action="store_true",
+                            help="Open the SoCalSci shutter?")
+        parser.add_argument("--SoCalCal", dest="SSS_SoCalCal",
+                            default=False, action="store_true",
+                            help="Open the SoCalCal shutter?")
         return super().add_cmdline_args(parser, cfg)

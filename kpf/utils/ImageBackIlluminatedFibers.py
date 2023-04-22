@@ -91,9 +91,6 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['cameras'] = {'type': str,
-                    'help': 'List of cameras'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('cameras', type=str,
+                            help='Comma separated list FVC cameras (SCI,CAHK,CAL)')
         return super().add_cmdline_args(parser, cfg)

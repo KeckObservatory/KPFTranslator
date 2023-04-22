@@ -11,7 +11,6 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
     '''Set the Laser Frequency Comb (LFC) to "StandbyHigh" mode. This is the
     mode which should be set after operation of the LFC for science is complete.
 
-
     ARGS:
     =====
     None

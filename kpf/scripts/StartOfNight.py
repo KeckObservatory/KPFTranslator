@@ -121,7 +121,7 @@ class StartOfNight(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        parser = cls._add_bool_arg(parser, 'AO',
-            'Configure AO?', default=True)
+        parser.add_argument("--noAO", dest="AO",
+                            default=True, action="store_false",
+                            help="Skip configuring AO?")
         return super().add_cmdline_args(parser, cfg)

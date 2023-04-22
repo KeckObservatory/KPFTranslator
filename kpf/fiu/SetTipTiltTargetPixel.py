@@ -41,12 +41,8 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['x'] = {'type': float,
-                            'help': 'X pixel target'}
-        args_to_add['y'] = {'type': float,
-                            'help': 'Y pixel target'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('x', type=float,
+                            help="X pixel target (CURRENT_BASE)")
+        parser.add_argument('y', type=float,
+                            help="X pixel target (CURRENT_BASE)")
         return super().add_cmdline_args(parser, cfg)

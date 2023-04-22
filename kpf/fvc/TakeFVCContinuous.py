@@ -40,11 +40,8 @@ class TakeFVCContinuous(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['camera'] = {'type': str,
-                                 'help': 'The camera to use (SCI, CAHK, CAL, EXT).'}
-        args_to_add['exptime'] = {'type': float,
-                                  'help': 'The exposure time in seconds.'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('camera', type=str,
+                            help='The FVC camera (SCI, CAHK, CAL)')
+        parser.add_argument('exptime', type=float,
+                            help='The exposure time in seconds')
         return super().add_cmdline_args(parser, cfg)

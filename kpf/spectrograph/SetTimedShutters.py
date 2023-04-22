@@ -63,16 +63,16 @@ class SetTimedShutters(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'TimedShutter_Scrambler',
-                                   'Open the TimedShutter_Scrambler shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'TimedShutter_SimulCal',
-                                   'Open the TimedShutter_SimulCal shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'TimedShutter_CaHK',
-                                   'Open the TimedShutter_CaHK shutter?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'TimedShutter_FlatField',
-                                   'Open the TimedShutter_FlatField shutter?',
-                                    default=False)
+        parser.add_argument("--Scrambler", dest="TimedShutter_Scrambler",
+                            default=False, action="store_true",
+                            help="Open the Scrambler Timed Shutter during exposure?")
+        parser.add_argument("--SimulCal", dest="TimedShutter_SimulCal",
+                            default=False, action="store_true",
+                            help="Open the SimulCal Timed Shutter during exposure?")
+        parser.add_argument("--CaHK", "--HK", "--cahk", "--hk", dest="TimedShutter_CaHK",
+                            default=False, action="store_true",
+                            help="Open the CaHK Timed Shutter during exposure?")
+        parser.add_argument("--FlatField", dest="TimedShutter_FlatField",
+                            default=False, action="store_true",
+                            help="Open the FlatField Timed Shutter during exposure?")
         return super().add_cmdline_args(parser, cfg)

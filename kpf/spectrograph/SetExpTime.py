@@ -42,9 +42,6 @@ class SetExpTime(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['ExpTime'] = {'type': float,
-                                  'help': 'The exposure time in seconds.'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('ExpTime', type=float,
+                            help='The exposure time in seconds')
         return super().add_cmdline_args(parser, cfg)

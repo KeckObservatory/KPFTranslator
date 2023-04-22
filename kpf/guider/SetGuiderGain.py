@@ -36,10 +36,6 @@ class SetGuiderGain(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['GuideCamGain'] = {'type': str,
-                                       'help': 'The requested gain.'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('GuideCamGain', type=str,
+                            help='The gain (high, medium, or low)')
         return super().add_cmdline_args(parser, cfg)
