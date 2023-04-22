@@ -25,7 +25,6 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
         check_input(OB, 'Template_Name', allowed_values=['kpf_eng_tgsd'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
         check_input(OB, 'FPSvalues')
-        return True
 
     @classmethod
     @register_script(Path(__file__).name, os.getpid())
@@ -77,4 +76,4 @@ class TakeGuiderSensitivityData(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass

@@ -16,7 +16,6 @@ class SetObserver(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'observer')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -37,7 +36,6 @@ class SetObserver(KPFTranslatorFunction):
             observerkw = ktl.cache('kpfexpose', 'OBSERVER')
             raise FailedToReachDestination(observerkw.read().strip(),
                                            observer.strip())
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

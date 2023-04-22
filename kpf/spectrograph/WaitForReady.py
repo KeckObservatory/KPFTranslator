@@ -18,7 +18,7 @@ class WaitForReady(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -99,6 +99,4 @@ class WaitForReady(KPFTranslatorFunction):
         notok = np.array(notok)
 
         if np.any(notok):
-            log.error(msg)
-            return False
-        return True
+            raise FailedPostCondition(msg)

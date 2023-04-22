@@ -17,7 +17,6 @@ class SetAORotator(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'dest')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):

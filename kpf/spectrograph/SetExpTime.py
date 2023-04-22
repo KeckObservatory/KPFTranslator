@@ -16,7 +16,6 @@ class SetExpTime(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'ExpTime', allowed_types=[int, float])
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):

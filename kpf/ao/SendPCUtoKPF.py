@@ -22,7 +22,6 @@ class SendPCUtoKPF(KPFTranslatorFunction):
         success = ktl.waitfor("($ao.PCSFNAME == home)", timeout=120)
         if success is False:
             raise FailedPreCondition('PCU must be at home before moving to KPF')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -38,4 +37,4 @@ class SendPCUtoKPF(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

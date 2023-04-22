@@ -22,7 +22,7 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -44,7 +44,6 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
         modes = kpffiu['MODE'].read()
         if dest.lower() not in modes.lower().split(','):
             raise FailedToReachDestination(modes, dest)
-        return True
 
 
 ##-----------------------------------------------------------------------------

@@ -54,7 +54,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
             if slewcal_argsfile.exists() is False:
                 raise FailedPreCondition(f"Slew cal file {slewcal_argsfile} does not exist")
-        return True
 
     @classmethod
     def perform(cls, OB, logger, cfg):
@@ -120,4 +119,4 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass

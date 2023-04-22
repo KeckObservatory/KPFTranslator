@@ -16,7 +16,6 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         allowed_values = ['Active', 'Inactive', '1', '0', 1, 0]
         check_input(args, 'calculations', allowed_values=allowed_values)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -33,7 +32,6 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
         if success is not True:
             tiptilt = ktl.cache('kpfguide', 'TIPTILT_CALC')
             raise FailedToReachDestination(tiptilt.read(), calculations)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

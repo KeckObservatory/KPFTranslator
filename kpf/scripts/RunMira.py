@@ -58,7 +58,7 @@ class RunMira(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
-        return True
+        pass
 
     @classmethod
     @register_script(Path(__file__).name, os.getpid())
@@ -82,8 +82,6 @@ class RunMira(KPFTranslatorFunction):
                                 'ImageCube': False})
         lastfile = ktl.cache('kpfguide', 'LASTTRIGFILE')
 
-
-
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass

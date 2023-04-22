@@ -15,7 +15,6 @@ class ControlAOHatch(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'destination', allowed_values=['close', 'closed', 'open'])
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):

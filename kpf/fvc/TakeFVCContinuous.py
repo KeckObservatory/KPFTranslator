@@ -22,7 +22,6 @@ class TakeFVCContinuous(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -35,7 +34,7 @@ class TakeFVCContinuous(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

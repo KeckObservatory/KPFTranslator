@@ -27,7 +27,6 @@ class SetSimulCalSource(KPFTranslatorFunction):
                        'Th_gold', 'LFCFiber']
         if args.get('calsource', None) not in valid_names:
             raise FailedPreCondition(f"calsource '{calsource}' must be one of {valid_names}")
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -45,7 +44,7 @@ class SetSimulCalSource(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

@@ -17,7 +17,7 @@ class StartGuiderContinuous(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -27,4 +27,7 @@ class StartGuiderContinuous(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return guider_is_active() and guider_is_saving()
+        if guider_is_active() == False:
+            raise FailedPostCondition('Guider is not active')
+        if guider_is_saving() == False:
+            raise FailedPostCondition('Guider is not saving')

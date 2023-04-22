@@ -13,6 +13,8 @@ except:
 import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 class GetGaiaStars(KPFTranslatorFunction):
@@ -25,8 +27,11 @@ class GetGaiaStars(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        if Vizier is None:
+            raise FailedPreCondition('Unable to import astroquery.vizier')
         file = Path(args.get('file', '/tmp/CRED2.fits')).expanduser().absolute()
-        return (Vizier is not None) and (file.exists() is True)
+        if file.exists() is False:
+            raise FailedPreCondition(f'Fould not find input file: {file}')
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -83,7 +88,7 @@ class GetGaiaStars(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

@@ -23,7 +23,6 @@ class TakeGuiderCube(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'duration', value_min=0)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -56,7 +55,7 @@ class TakeGuiderCube(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

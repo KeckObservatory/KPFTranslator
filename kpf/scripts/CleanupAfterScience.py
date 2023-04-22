@@ -21,7 +21,7 @@ class CleanupAfterScience(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, OB, logger, cfg):
@@ -35,4 +35,4 @@ class CleanupAfterScience(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass

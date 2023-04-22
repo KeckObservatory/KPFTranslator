@@ -23,7 +23,6 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
         max_y_pixel = cfg.getint('guider', 'max_y_pixel', fallback=512)
         check_input(args, 'x', value_min=min_x_pixel, value_max=max_x_pixel)
         check_input(args, 'y', value_min=min_y_pixel, value_max=max_y_pixel)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -36,7 +35,7 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

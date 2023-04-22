@@ -22,7 +22,6 @@ class WaitForFlatFieldFiberPos(KPFTranslatorFunction):
         if 'Unknown' in allowed_values:
             allowed_values.pop(allowed_values.index('Unknown'))
         check_input(args, 'FF_FiberPos', allowed_values=allowed_values)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -38,7 +37,6 @@ class WaitForFlatFieldFiberPos(KPFTranslatorFunction):
         target = args.get('FF_FiberPos')
         expr = f"($kpfcal.FF_FiberPos == '{target}')"
         success = ktl.waitFor(expr, timeout=0.1)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

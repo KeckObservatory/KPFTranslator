@@ -17,7 +17,6 @@ class SetGuiderOutdir(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'outdir')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -27,7 +26,7 @@ class SetGuiderOutdir(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

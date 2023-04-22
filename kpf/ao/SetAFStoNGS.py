@@ -14,7 +14,7 @@ class SetAFStoNGS(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -30,4 +30,3 @@ class SetAFStoNGS(KPFTranslatorFunction):
         if not aoamstst_success:
             ao = ktl.cache('ao')
             raise FailedToReachDestination(ao['OBASNAME'].read(), 'ngs')
-        return True

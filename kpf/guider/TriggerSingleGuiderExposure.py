@@ -17,7 +17,10 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return not guider_is_active() and not guider_is_saving()
+        if guider_is_active() == True:
+            raise FailedPreCondition('Guider is active')
+        if guider_is_saving() == True:
+            raise FailedPreCondition('Guider is saving')
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -37,7 +40,7 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

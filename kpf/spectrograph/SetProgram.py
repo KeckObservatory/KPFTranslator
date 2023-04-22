@@ -17,7 +17,6 @@ class SetProgram(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'progname')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):

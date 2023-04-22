@@ -19,7 +19,6 @@ class SetFVCExpTime(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
         check_input(args, 'exptime', value_min=0.001, value_max=60)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -41,7 +40,6 @@ class SetFVCExpTime(KPFTranslatorFunction):
         if success is not True:
             exptimekw = ktl.cache('kpffvc', f"{camera}EXPTIME")
             raise FailedToReachDestination(exptimekw.read(), exptime)
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

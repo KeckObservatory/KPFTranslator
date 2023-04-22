@@ -104,4 +104,4 @@ class ConfigureForScience(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass

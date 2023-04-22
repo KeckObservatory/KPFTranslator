@@ -19,7 +19,6 @@ class TriggerGreenMiniFill(KPFTranslatorFunction):
         kpffill = ktl.cache('kpffill')
         if kpffill['GREENFILLIP'].read() == 'True':
             raise FailedPreCondition('Green fill already in progress')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -50,7 +49,6 @@ class TriggerGreenMiniFill(KPFTranslatorFunction):
             SendEmail.execute({'Subject': 'TriggerGreenMiniFill Failed',
                                'Message': f'{msg}'})
             raise FailedPostCondition(msg)
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

@@ -23,7 +23,6 @@ class SetFlatFieldFiberPos(KPFTranslatorFunction):
         if 'Unknown' in allowed_values:
             allowed_values.pop(allowed_values.index('Unknown'))
         check_input(args, 'FF_FiberPos', allowed_values=allowed_values)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -41,7 +40,6 @@ class SetFlatFieldFiberPos(KPFTranslatorFunction):
         if success is not True:
             kpfcal = ktl.cache('kpfcal')
             raise FailedToReachDestination(kpfcal['FF_FiberPos'].read(), target)
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

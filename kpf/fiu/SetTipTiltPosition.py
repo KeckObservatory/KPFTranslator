@@ -22,7 +22,6 @@ class SetTipTiltPosition(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'x')
         check_input(args, 'y')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -49,7 +48,6 @@ class SetTipTiltPosition(KPFTranslatorFunction):
         successy = ktl.waitFor(expr, timeout=timeout)
         if successy is not True:
             raise FailedToReachDestination(kpffiu['TTYVAX'].read(), ydest)
-        return successx and successy
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

@@ -39,7 +39,6 @@ class CalLampPower(KPFTranslatorFunction):
             raise FailedPreCondition(msg)
         # Check power
         check_input(args, 'power', allowed_values=['on', 'off'])
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -58,7 +57,6 @@ class CalLampPower(KPFTranslatorFunction):
         if success is not True:
             kpflamps = ktl.cache('kpflamps')
             raise FailedPostCondition(kpflamps[lamp], pwr)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

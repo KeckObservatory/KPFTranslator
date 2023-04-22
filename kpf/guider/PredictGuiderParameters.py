@@ -30,7 +30,6 @@ class PredictGuiderParameters(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Jmag', allowed_types=[int, float])
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -59,7 +58,7 @@ class PredictGuiderParameters(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

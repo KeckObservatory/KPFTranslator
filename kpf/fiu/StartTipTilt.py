@@ -17,7 +17,7 @@ class StartTipTilt(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -43,4 +43,3 @@ class StartTipTilt(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=timeout)
         if success is False:
             raise FailedToReachDestination(kpfguide['OFFLOAD'].read(), 'Active')
-        return True

@@ -21,7 +21,6 @@ class TakeFVCExposure(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -57,7 +56,8 @@ class TakeFVCExposure(KPFTranslatorFunction):
         lastfile.monitor()
         new_file = Path(f"{lastfile}")
         log.debug(f"{camera}FVC LASTFILE: {new_file}")
-        return new_file.exists()
+        if new_file.exists() == False:
+            raise FailedPostCondition(f'Output file not found: {new_file}')
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

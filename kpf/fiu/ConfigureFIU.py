@@ -58,7 +58,6 @@ class ConfigureFIU(KPFTranslatorFunction):
         if 'None' in allowed_values:
             allowed_values.pop(allowed_values.index('None'))
         check_input(args, 'mode', allowed_values=allowed_values)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -85,7 +84,6 @@ class ConfigureFIU(KPFTranslatorFunction):
                 raise FailedToReachDestination(dest, modes)
             else:
                 log.info(f"FIU mode is now {dest}")
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

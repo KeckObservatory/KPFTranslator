@@ -13,7 +13,7 @@ class SetTargetInfo(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, OB, logger, cfg):
@@ -32,4 +32,4 @@ class SetTargetInfo(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

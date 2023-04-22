@@ -18,7 +18,7 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -37,4 +37,3 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
             raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
-        return True #success

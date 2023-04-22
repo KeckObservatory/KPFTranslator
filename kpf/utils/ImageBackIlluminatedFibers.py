@@ -23,8 +23,7 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
         cameras = args.get('cameras', '').split(',')
         for camera in cameras:
             if camera not in ['CRED2', 'SCI', 'CAHK', 'EXT', 'ExpMeter']:
-                print(f"Camera {camera} not supported")
-        return True
+                raise FailedPreCondition(f"Camera {camera} not supported")
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -86,7 +85,7 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

@@ -47,7 +47,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -220,4 +220,4 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

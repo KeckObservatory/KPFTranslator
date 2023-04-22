@@ -15,7 +15,6 @@ class SetGuiderGain(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'GuideCamGain', allowed_values=['high', 'medium', 'low'])
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -32,7 +31,6 @@ class SetGuiderGain(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=1)
         if not success:
             raise FailedToReachDestination(gainkw.read(), gain)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

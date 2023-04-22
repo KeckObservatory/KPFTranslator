@@ -18,7 +18,6 @@ class ControlFoldMirror(KPFTranslatorFunction):
         destination = args.get('destination', '').strip()
         if destination.lower() not in ['in', 'out']:
             raise FailedPreCondition(f"Requested state {destination} is invalid")
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):

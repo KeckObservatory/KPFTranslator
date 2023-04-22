@@ -26,7 +26,6 @@ class SetCalSource(KPFTranslatorFunction):
         if 'Unknown' in allowed_values:
             allowed_values.pop(allowed_values.index('Unknown'))
         check_input(args, 'CalSource', allowed_values=allowed_values)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -46,7 +45,6 @@ class SetCalSource(KPFTranslatorFunction):
         if success is not True:
             kpfcal = ktl.cache('kpfcal')
             raise FailedToReachDestination(kpfcal['OCTAGON'].read(), target)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

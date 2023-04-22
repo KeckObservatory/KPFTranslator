@@ -33,7 +33,6 @@ class FVCPower(KPFTranslatorFunction):
         locked = kpfpower[f"{outlet}_LOCK"].read() == 'Locked'
         if locked is True:
             raise FailedPreCondition(f"Outlet is locked")
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -59,7 +58,6 @@ class FVCPower(KPFTranslatorFunction):
         success = ktl.waitFor(f"($kpfpower.{outlet} == {pwr})", timeout=timeout)
         if success is False:
             raise FailedToReachDestination(kpfpower[outlet].read(), pwr)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

@@ -32,7 +32,7 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -115,7 +115,7 @@ class StartOfNight(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

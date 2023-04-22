@@ -35,7 +35,6 @@ class ExecuteDark(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Template_Name', allowed_values=['kpf_dark'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.5')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -76,4 +75,4 @@ class ExecuteDark(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

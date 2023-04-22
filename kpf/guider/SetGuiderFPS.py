@@ -35,7 +35,6 @@ class SetGuiderFPS(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=1)
         if not success:
             raise FailedToReachDestination(fpskw.read(), fps)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

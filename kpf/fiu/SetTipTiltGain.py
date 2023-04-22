@@ -15,7 +15,6 @@ class SetTipTiltGain(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'GuideLoopGain', value_min=0, value_max=1)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -34,7 +33,6 @@ class SetTipTiltGain(KPFTranslatorFunction):
         if success is not True:
             tiptiltgain = ktl.cache('kpfguide', 'TIPTILT_GAIN')
             raise FailedToReachDestination(tiptiltgain.read(), gain)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
