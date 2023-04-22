@@ -18,7 +18,6 @@ class WaitForLampWarm(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'CalSource')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -53,15 +52,15 @@ class WaitForLampWarm(KPFTranslatorFunction):
                     expr = f"($kpflamps.{lamp}_STATUS == 'Warm')"
                     if ktl.waitFor(expr, timeout=10) is False:
                         raise KPFException(f"Lamp {lamp} failed to reach warm state")
-            lamp_status = lamp_statuskw.read()
-            if lamp_status != 'Warm':
-                raise KPFException(f"Lamp {lamp} should be warm: {lamp_status}")
-            else:
-                log.info(f"Lamp {lamp} is warm")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        lamp_statuskw = ktl.cache('kpflamps', f'{lamp}_STATUS')
+        lamp_status = lamp_statuskw.read()
+        if lamp_status != 'Warm':
+            raise FailedPostCondition(f"Lamp {lamp} should be warm: {lamp_status}")
+        else:
+            log.info(f"Lamp {lamp} is warm")
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
