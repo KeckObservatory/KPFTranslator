@@ -33,4 +33,5 @@ class ShutdownTipTilt(KPFTranslatorFunction):
         timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         success1 = ktl.waitFor('($kpffiu.TTXSRV == open)', timeout=timeout)
         success2 = ktl.waitFor('($kpffiu.TTYSRV == open)', timeout=timeout)
-        return success1 and success2
+        if success1 == False or success2 == False:
+            raise FailedPostCondition(f'TT{X,Y}SRV did not open')
