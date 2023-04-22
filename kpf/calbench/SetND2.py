@@ -23,7 +23,6 @@ class SetND2(KPFTranslatorFunction):
         if 'Unknown' in allowed_values:
             allowed_values.pop(allowed_values.index('Unknown'))
         check_input(args, 'CalND2', allowed_values=allowed_values)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -34,13 +33,11 @@ class SetND2(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        target = args.get('CalND2')
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
-        expr = f"($kpfcal.ND2POS == '{target}')"
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            kpfcal = ktl.cache('kpfcal')
-            raise FailedToReachDestination(kpfcal['ND2POS'].read(), target)
+        ND2target = args.get('CalND2')
+        ND2POS = ktl.cache('kpfcal', 'ND2POS')
+        if ND2POS.waitFor(f"== '{ND2target}'", timeout=timeout) == False:
+            raise FailedToReachDestination(ND2POS.read(), ND2target)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

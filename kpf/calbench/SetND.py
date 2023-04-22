@@ -3,6 +3,8 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.calbench.SetND1 import SetND1
+from kpf.calbench.SetND2 import SetND2
 
 
 class SetND(KPFTranslatorFunction):
@@ -21,43 +23,16 @@ class SetND(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        keyword = ktl.cache('kpfcal', 'ND1POS')
-        allowed_values = list(keyword._getEnumerators())
-        if 'Unknown' in allowed_values:
-            allowed_values.pop(allowed_values.index('Unknown'))
-        check_input(args, 'CalND1', allowed_values=allowed_values)
-        keyword = ktl.cache('kpfcal', 'ND2POS')
-        allowed_values = list(keyword._getEnumerators())
-        if 'Unknown' in allowed_values:
-            allowed_values.pop(allowed_values.index('Unknown'))
-        check_input(args, 'CalND2', allowed_values=allowed_values)
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        kpfcal = ktl.cache('kpfcal')
-        ND1target = args.get('CalND1')
-        log.debug(f"Setting ND1POS to {ND1target}")
-        kpfcal['ND1POS'].write(ND1target, wait=args.get('wait', True))
-        ND2target = args.get('CalND2')
-        log.debug(f"Setting ND2POS to {ND2target}")
-        kpfcal['ND2POS'].write(ND2target, wait=args.get('wait', True))
+        SetND1.execute(args)
+        SetND2.execute(args)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        ND1target = args.get('CalND1')
-        ND2target = args.get('CalND2')
-        timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
-        ND1expr = f"($kpfcal.ND1POS == '{ND1target}')"
-        ND1success = ktl.waitFor(ND1expr, timeout=timeout)
-        ND2expr = f"($kpfcal.ND2POS == '{ND2target}')"
-        ND2success = ktl.waitFor(ND2expr, timeout=timeout)
-        if ND1success is not True:
-            kpfcal = ktl.cache('kpfcal')
-            raise FailedToReachDestination(kpfcal['ND1POS'].read(), ND1target)
-        if ND2success is not True:
-            kpfcal = ktl.cache('kpfcal')
-            raise FailedToReachDestination(kpfcal['ND2POS'].read(), ND2target)
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

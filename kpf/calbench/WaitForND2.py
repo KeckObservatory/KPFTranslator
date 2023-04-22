@@ -35,10 +35,11 @@ class WaitForND2(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        target = args.get('CalND2')
-        expr = f"($kpfcal.ND2POS == '{target}')"
-        success = ktl.waitFor(expr, timeout=0.1)
-        return success
+        timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
+        ND2target = args.get('CalND2')
+        ND2POS = ktl.cache('kpfcal', 'ND2POS')
+        if ND2POS.waitFor(f"== '{ND2target}'", timeout=timeout) == False:
+            raise FailedToReachDestination(ND2POS.read(), ND2target)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
