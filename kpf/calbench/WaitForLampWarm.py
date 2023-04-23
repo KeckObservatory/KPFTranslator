@@ -55,12 +55,16 @@ class WaitForLampWarm(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        lamp_statuskw = ktl.cache('kpflamps', f'{lamp}_STATUS')
-        lamp_status = lamp_statuskw.read()
-        if lamp_status != 'Warm':
-            raise FailedPostCondition(f"Lamp {lamp} should be warm: {lamp_status}")
-        else:
-            log.info(f"Lamp {lamp} is warm")
+        lamp = standardize_lamp_name(args.get('CalSource'))
+        lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
+                                  'TH_GOLD', 'U_DAILY', 'U_GOLD']
+        if lamp in lamps_that_need_warmup:
+            lamp_statuskw = ktl.cache('kpflamps', f'{lamp}_STATUS')
+            lamp_status = lamp_statuskw.read()
+            if lamp_status != 'Warm':
+                raise FailedPostCondition(f"Lamp {lamp} should be warm: {lamp_status}")
+            else:
+                log.info(f"Lamp {lamp} is warm")
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
