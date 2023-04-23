@@ -49,10 +49,10 @@ class WaitForLampWarm(KPFTranslatorFunction):
                 while lamp_statuskw.read() != 'Warm':
                     # Check if scriptstop has been activated
                     check_scriptstop()
+                    log.debug(f'Waiting for {lamp}_STATUS == Warm')
                     expr = f"($kpflamps.{lamp}_STATUS == 'Warm')"
                     warm = ktl.waitFor(expr, timeout=30)
                     if warm is False:
-                        log.debug(f'Waiting for {lamp}_STATUS == Warm')
                         new_lamp_timeton = kpflamps[f'{lamp}_TIMEON'].read(binary=True)
                         if new_lamp_timeton <= lamp_timeon:
                             break
