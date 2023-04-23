@@ -51,5 +51,7 @@ class SetSimulCalSource(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('CalSource', type=str,
+                            choices=['EtalonFiber', 'U_gold', 'U_daily',
+                                     'Th_daily', 'Th_gold', 'LFCFiber'],
                             help='Which lamp to use for simultaneous calibration and slew cals')
         return super().add_cmdline_args(parser, cfg)

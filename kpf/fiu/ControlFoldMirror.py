@@ -39,6 +39,7 @@ class ControlFoldMirror(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('destination', type=str,
-                            help='Desired fold mirror position: "in" or "out"')
+                            choices=['in', 'out'],
+                            help='Desired fold mirror position')
         return super().add_cmdline_args(parser, cfg)
 

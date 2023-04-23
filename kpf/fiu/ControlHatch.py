@@ -36,5 +36,6 @@ class ControlHatch(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('destination', type=str,
-                            help='Desired hatch position: "open" or "closed"')
+                            choices=['open', 'closed'],
+                            help='Desired hatch position')
         return super().add_cmdline_args(parser, cfg)

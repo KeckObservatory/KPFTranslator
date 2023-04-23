@@ -94,6 +94,8 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('mode', type=str,
+                            choices=['Stowed', 'Alignment', 'Acquisition',
+                                     'Observing', 'Calibration'],
                             help='Desired mode (see kpffiu.MODE)')
         return super().add_cmdline_args(parser, cfg)
 

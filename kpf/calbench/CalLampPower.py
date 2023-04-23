@@ -63,7 +63,12 @@ class CalLampPower(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('lamp', type=str,
+                            choices=['BrdbandFiber', 'U_gold', 'U_daily',
+                                     'Th_daily', 'Th_gold', 'WideFlat',
+                                     'ExpMeterLED', 'CaHKLED', 'SciLED',
+                                     'SkyLED'],
                             help='Which lamp to control?')
         parser.add_argument('power', type=str,
+                            choices=['on', 'off'],
                             help='Desired power state: "on" or "off"')
         return super().add_cmdline_args(parser, cfg)

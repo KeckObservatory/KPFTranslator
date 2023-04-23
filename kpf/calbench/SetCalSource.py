@@ -51,6 +51,9 @@ class SetCalSource(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('CalSource', type=str,
+                            choices=['Home', 'EtalonFiber', 'BrdbandFiber',
+                                     'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
+                                     'SoCal-CalFib', 'LFCFiber'],
                             help='Octagon position to choose?')
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",

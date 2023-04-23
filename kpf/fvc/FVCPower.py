@@ -64,7 +64,9 @@ class FVCPower(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('camera', type=str,
-                            help='The FVC camera (SCI, CAHK, CAL)')
+                            choices=['SCI', 'CAHK', 'CAL', 'EXT'],
+                            help='The FVC camera')
         parser.add_argument('power', type=str,
+                            choices=['on', 'off'],
                             help='Desired power state: "on" or "off"')
         return super().add_cmdline_args(parser, cfg)

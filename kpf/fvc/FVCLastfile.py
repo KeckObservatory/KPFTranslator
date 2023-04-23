@@ -35,5 +35,6 @@ class FVCLastfile(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('camera', type=str,
-                            help='The FVC camera (SCI, CAHK, CAL)')
+                            choices=['SCI', 'CAHK', 'CAL', 'EXT'],
+                            help='The FVC camera')
         return super().add_cmdline_args(parser, cfg)

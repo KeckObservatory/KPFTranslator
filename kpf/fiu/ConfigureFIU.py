@@ -90,6 +90,8 @@ class ConfigureFIU(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('mode', type=str,
+                            choices=['Stowed', 'Alignment', 'Acquisition',
+                                     'Observing', 'Calibration'],
                             help='Desired mode (see kpffiu.MODE)')
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",

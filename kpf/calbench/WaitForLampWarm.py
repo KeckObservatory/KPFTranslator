@@ -67,5 +67,7 @@ class WaitForLampWarm(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('lamp', type=str,
+                            choices=['BrdbandFiber', 'U_gold', 'U_daily',
+                                     'Th_daily', 'Th_gold', 'WideFlat'],
                             help='Which lamp are we waiting on?')
         return super().add_cmdline_args(parser, cfg)

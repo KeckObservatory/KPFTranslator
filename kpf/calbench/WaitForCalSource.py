@@ -51,6 +51,9 @@ class WaitForCalSource(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('CalSource', type=str,
+                            choices=['Home', 'EtalonFiber', 'BrdbandFiber',
+                                     'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
+                                     'SoCal-CalFib', 'LFCFiber'],
                             help='Octagon position to choose?')
         return super().add_cmdline_args(parser, cfg)
 
