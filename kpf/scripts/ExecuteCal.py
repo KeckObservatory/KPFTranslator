@@ -99,6 +99,7 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Take intensity monitor reading
             if calsource != 'LFCFiber':
+                WaitForLampWarm.execute(args)
                 TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
