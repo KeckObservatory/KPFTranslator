@@ -104,6 +104,13 @@ class ExecuteCal(KPFTranslatorFunction):
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
             raise NotImplementedError()
+            # OCTAGON=SoCal-CalFib
+            # SSS_SoCalCal open, SSS_CalSciSky open
+        elif calsource in ['SoCal-SciSky']:
+            raise NotImplementedError()
+            # OCTAGON=simulcal source?
+            # Set ND1 and ND2
+            # SSS_SoCalSci open
         # WTF!?
         else:
             msg = f"CalSource {calsource} not recognized"
