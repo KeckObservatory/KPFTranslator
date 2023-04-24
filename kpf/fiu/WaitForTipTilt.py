@@ -51,4 +51,4 @@ class WaitForTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
