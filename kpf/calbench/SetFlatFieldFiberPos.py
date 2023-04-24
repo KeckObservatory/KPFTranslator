@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -23,7 +23,6 @@ class SetFlatFieldFiberPos(KPFTranslatorFunction):
         if 'Unknown' in allowed_values:
             allowed_values.pop(allowed_values.index('Unknown'))
         check_input(args, 'FF_FiberPos', allowed_values=allowed_values)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -41,18 +40,16 @@ class SetFlatFieldFiberPos(KPFTranslatorFunction):
         if success is not True:
             kpfcal = ktl.cache('kpfcal')
             raise FailedToReachDestination(kpfcal['FF_FiberPos'].read(), target)
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['FF_FiberPos'] = {'type': str,
-                                      'help': 'Wide flat aperture to use.'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after move is finished?', default=True)
+        parser.add_argument('FF_FiberPos', type=str,
+                            choices=["Blank", "6 mm f/5", "7.5 mm f/4",
+                                     "10 mm f/3", "13.2 mm f/2.3", "Open"],
+                            help='Wide flat aperture to use.')
+        parser.add_argument("--nowait", dest="wait",
+                            default=True, action="store_false",
+                            help="Send move and return immediately?")
         return super().add_cmdline_args(parser, cfg)

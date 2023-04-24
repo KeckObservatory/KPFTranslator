@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -27,7 +27,6 @@ class SetSimulCalSource(KPFTranslatorFunction):
                        'Th_gold', 'LFCFiber']
         if args.get('calsource', None) not in valid_names:
             raise FailedPreCondition(f"calsource '{calsource}' must be one of {valid_names}")
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -45,16 +44,14 @@ class SetSimulCalSource(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['calsource'] = {'type': str,
-                                    'help': 'Which lamp to use for simultaneous calibration and slew cals.'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('CalSource', type=str,
+                            choices=['EtalonFiber', 'U_gold', 'U_daily',
+                                     'Th_daily', 'Th_gold', 'LFCFiber'],
+                            help='Which lamp to use for simultaneous calibration and slew cals')
         return super().add_cmdline_args(parser, cfg)

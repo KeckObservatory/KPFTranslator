@@ -5,7 +5,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -55,7 +55,6 @@ class ExecuteCal(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Template_Name', allowed_values=['kpf_lamp'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.5')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -100,10 +99,18 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Take intensity monitor reading
             if calsource != 'LFCFiber':
+                WaitForLampWarm.execute(args)
                 TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
             raise NotImplementedError()
+            # OCTAGON=SoCal-CalFib
+            # SSS_SoCalCal open, SSS_CalSciSky open
+        elif calsource in ['SoCal-SciSky']:
+            raise NotImplementedError()
+            # OCTAGON=simulcal source?
+            # Set ND1 and ND2
+            # SSS_SoCalSci open
         # WTF!?
         else:
             msg = f"CalSource {calsource} not recognized"
@@ -182,4 +189,4 @@ class ExecuteCal(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

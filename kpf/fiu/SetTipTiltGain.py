@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -15,7 +15,6 @@ class SetTipTiltGain(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'GuideLoopGain', value_min=0, value_max=1)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -34,15 +33,11 @@ class SetTipTiltGain(KPFTranslatorFunction):
         if success is not True:
             tiptiltgain = ktl.cache('kpfguide', 'TIPTILT_GAIN')
             raise FailedToReachDestination(tiptiltgain.read(), gain)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['GuideLoopGain'] = {'type': float,
-                                        'help': 'Tip tilt control loop gain'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('GuideLoopGain', type=float,
+                            help="Tip tilt control loop gain")
         return super().add_cmdline_args(parser, cfg)

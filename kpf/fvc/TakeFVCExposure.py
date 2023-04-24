@@ -3,7 +3,7 @@ import subprocess
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -21,7 +21,6 @@ class TakeFVCExposure(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -57,21 +56,20 @@ class TakeFVCExposure(KPFTranslatorFunction):
         lastfile.monitor()
         new_file = Path(f"{lastfile}")
         log.debug(f"{camera}FVC LASTFILE: {new_file}")
-        return new_file.exists()
+        if new_file.exists() == False:
+            raise FailedPostCondition(f'Output file not found: {new_file}')
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['camera'] = {'type': str,
-                                 'help': 'The camera to use (SCI, CAHK, CAL, EXT).'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after exposure is finished?', default=True)
-        parser = cls._add_bool_arg(parser, 'display',
-            'Display image via engineering ds9?', default=True)
-
+        parser.add_argument('camera', type=str,
+                            choices=['SCI', 'CAHK', 'CAL', 'EXT'],
+                            help='The FVC camera')
+        parser.add_argument("--nowait", dest="wait",
+                            default=True, action="store_false",
+                            help="Send exposure command and return immediately?")
+        parser.add_argument("--display", dest="display",
+                            default=False, action="store_true",
+                            help="Display image via engineering ds9?")
         return super().add_cmdline_args(parser, cfg)

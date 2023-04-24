@@ -4,7 +4,7 @@ import re
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -33,7 +33,6 @@ class FVCPower(KPFTranslatorFunction):
         locked = kpfpower[f"{outlet}_LOCK"].read() == 'Locked'
         if locked is True:
             raise FailedPreCondition(f"Outlet is locked")
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -59,17 +58,15 @@ class FVCPower(KPFTranslatorFunction):
         success = ktl.waitFor(f"($kpfpower.{outlet} == {pwr})", timeout=timeout)
         if success is False:
             raise FailedToReachDestination(kpfpower[outlet].read(), pwr)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['camera'] = {'type': str,
-                                 'help': 'The camera to use (SCI, CAHK, CAL).'}
-        args_to_add['power'] = {'type': str,
-                                'help': 'Desired power state: "on" or "off"'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('camera', type=str,
+                            choices=['SCI', 'CAHK', 'CAL', 'EXT'],
+                            help='The FVC camera')
+        parser.add_argument('power', type=str,
+                            choices=['on', 'off'],
+                            help='Desired power state: "on" or "off"')
         return super().add_cmdline_args(parser, cfg)

@@ -2,7 +2,7 @@ import time
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.utils.SendEmail import SendEmail
@@ -19,7 +19,6 @@ class TriggerRedMiniFill(KPFTranslatorFunction):
         kpffill = ktl.cache('kpffill')
         if kpffill['REDFILLIP'].read() == 'True':
             raise FailedPreCondition('Red fill already in progress')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -50,15 +49,11 @@ class TriggerRedMiniFill(KPFTranslatorFunction):
             SendEmail.execute({'Subject': 'TriggerRedMiniFill Failed',
                                'Message': f'{msg}'})
             raise FailedPostCondition(msg)
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['duration'] = {'type': float,
-                'help': 'The duration of the fill in seconds (240 recommended).'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('duration', type=float,
+                            help='The duration of the fill in seconds (240 recommended)')
         return super().add_cmdline_args(parser, cfg)

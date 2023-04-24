@@ -6,7 +6,7 @@ import numpy as np
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -35,7 +35,6 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
-        return True
 
     @classmethod
     def perform(cls, OB, logger, cfg):
@@ -51,14 +50,17 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         log.info('-------------------------')
 
         # Power off lamps
-        sequence = OB.get('SEQ_Calibrations')
-        lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
-        for lamp in lamps:
-            if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                        'BrdbandFiber', 'WideFlat']:
-                CalLampPower.execute({'lamp': lamp, 'power': 'off'})
-            if lamp == 'LFCFiber':
-                SetLFCtoStandbyHigh.execute({})
+        if OB.get('leave_lamps_on', False) == True:
+            log.info('Not turning lamps off because command line option was invoked')
+        else:
+            sequence = OB.get('SEQ_Calibrations')
+            lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
+            for lamp in lamps:
+                if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
+                            'BrdbandFiber', 'WideFlat']:
+                    CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+                if lamp == 'LFCFiber':
+                    SetLFCtoStandbyHigh.execute({})
 
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})
@@ -70,4 +72,11 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
+                            default=False, action="store_true",
+                            help='Leave the lamps on after cleanup phase?')
+        return super().add_cmdline_args(parser, cfg)

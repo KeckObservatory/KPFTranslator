@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import check_scriptstop
@@ -18,7 +18,6 @@ class WaitForLampWarm(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'CalSource')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -50,24 +49,34 @@ class WaitForLampWarm(KPFTranslatorFunction):
                 while lamp_statuskw.read() != 'Warm':
                     # Check if scriptstop has been activated
                     check_scriptstop()
-                    lamp_statuskw.waitFor("== 'Warm'", timeout=30)
-            lamp_status = lamp_statuskw.read()
-            if lamp_status != 'Warm':
-                raise KPFException(f"Lamp {lamp} should be warm: {lamp_status}")
-            else:
-                log.info(f"Lamp {lamp} is warm")
+                    log.debug(f'Waiting for {lamp}_STATUS == Warm')
+                    expr = f"($kpflamps.{lamp}_STATUS == 'Warm')"
+                    warm = ktl.waitFor(expr, timeout=30)
+                    if warm is False:
+                        new_lamp_timeton = kpflamps[f'{lamp}_TIMEON'].read(binary=True)
+                        if new_lamp_timeton <= lamp_timeon:
+                            break
+                        lamp_timeon = new_lamp_timeton
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        lamp = standardize_lamp_name(args.get('CalSource'))
+        lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
+                                  'TH_GOLD', 'U_DAILY', 'U_GOLD']
+        if lamp in lamps_that_need_warmup:
+            lamp_statuskw = ktl.cache('kpflamps', f'{lamp}_STATUS')
+            lamp_status = lamp_statuskw.read()
+            if lamp_status != 'Warm':
+                raise FailedPostCondition(f"Lamp {lamp} should be warm: {lamp_status}")
+            else:
+                log.info(f"Lamp {lamp} is warm")
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['lamp'] = {'type': str,
-                               'help': 'Which lamp are we waiting for?'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('lamp', type=str,
+                            choices=['BrdbandFiber', 'U_gold', 'U_daily',
+                                     'Th_daily', 'Th_gold', 'WideFlat'],
+                            help='Which lamp are we waiting on?')
         return super().add_cmdline_args(parser, cfg)

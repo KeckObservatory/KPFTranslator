@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -18,7 +18,6 @@ class ControlFoldMirror(KPFTranslatorFunction):
         destination = args.get('destination', '').strip()
         if destination.lower() not in ['in', 'out']:
             raise FailedPreCondition(f"Requested state {destination} is invalid")
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -39,11 +38,8 @@ class ControlFoldMirror(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['destination'] = {'type': str,
-                    'help': 'Desired fold mirror position: "in" or "out"'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('destination', type=str,
+                            choices=['in', 'out'],
+                            help='Desired fold mirror position')
         return super().add_cmdline_args(parser, cfg)
 

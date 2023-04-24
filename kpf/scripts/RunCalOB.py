@@ -4,7 +4,7 @@ import os
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
@@ -44,7 +44,6 @@ class RunCalOB(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
-        return True
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -157,4 +156,11 @@ class RunCalOB(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
+                            default=False, action="store_true",
+                            help='Leave the lamps on after cleanup phase?')
+        return super().add_cmdline_args(parser, cfg)

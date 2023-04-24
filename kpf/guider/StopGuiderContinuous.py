@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.guider import guider_is_active, guider_is_saving
@@ -17,7 +17,7 @@ class StopGuiderContinuous(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -27,4 +27,7 @@ class StopGuiderContinuous(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return not guider_is_active() and not guider_is_saving()
+        if guider_is_active() != False:
+            raise FailedPostCondition('Guider is not inactive')
+        if guider_is_saving() != False:
+            raise FailedPostCondition('Guider is still saving')

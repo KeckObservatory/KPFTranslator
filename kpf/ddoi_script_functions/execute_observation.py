@@ -1,9 +1,9 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
-from ..scripts.ExecuteSci import ExecuteSci
-from ..scripts.ExecuteDark import ExecuteDark
-from ..scripts.ExecuteCal import ExecuteCal
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.scripts.ExecuteSci import ExecuteSci
+from kpf.scripts.ExecuteDark import ExecuteDark
+from kpf.scripts.ExecuteCal import ExecuteCal
 
 
 class execute_observation(KPFTranslatorFunction):

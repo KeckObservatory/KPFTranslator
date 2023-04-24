@@ -2,7 +2,7 @@ import time
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -17,7 +17,7 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -36,4 +36,3 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
             raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
-        return True #success

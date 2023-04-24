@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -35,18 +35,18 @@ class WaitForND2(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        target = args.get('CalND2')
-        expr = f"($kpfcal.ND2POS == '{target}')"
-        success = ktl.waitFor(expr, timeout=0.1)
-        return success
+        timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
+        ND2target = args.get('CalND2')
+        ND2POS = ktl.cache('kpfcal', 'ND2POS')
+        if ND2POS.waitFor(f"== '{ND2target}'", timeout=timeout) == False:
+            raise FailedToReachDestination(ND2POS.read(), ND2target)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['CalND2'] = {'type': str,
-                                 'help': 'Filter to use'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('CalND2', type=str,
+                            choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
+                                     "OD 1.0", "OD 4.0"],
+                            help='ND2 Filter to use.')
         return super().add_cmdline_args(parser, cfg)

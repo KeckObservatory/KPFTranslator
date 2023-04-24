@@ -9,7 +9,7 @@ from astropy.coordinates import EarthLocation
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
@@ -47,7 +47,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -220,4 +220,4 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

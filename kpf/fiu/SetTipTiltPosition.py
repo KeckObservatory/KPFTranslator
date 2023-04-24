@@ -1,7 +1,7 @@
 import time
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -22,7 +22,6 @@ class SetTipTiltPosition(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'x')
         check_input(args, 'y')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -49,18 +48,13 @@ class SetTipTiltPosition(KPFTranslatorFunction):
         successy = ktl.waitFor(expr, timeout=timeout)
         if successy is not True:
             raise FailedToReachDestination(kpffiu['TTYVAX'].read(), ydest)
-        return successx and successy
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['x'] = {'type': float,
-                            'help': 'X position of the tip tilt mirror (TTXVAX)'}
-        args_to_add['y'] = {'type': float,
-                            'help': 'X position of the tip tilt mirror (TTYVAX)'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('x', type=float,
+                            help="X position of the tip tilt mirror (TTXVAX)")
+        parser.add_argument('y', type=float,
+                            help="X position of the tip tilt mirror (TTYVAX)")
         return super().add_cmdline_args(parser, cfg)

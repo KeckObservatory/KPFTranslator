@@ -1,7 +1,7 @@
 import time
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -23,7 +23,6 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
         max_y_pixel = cfg.getint('guider', 'max_y_pixel', fallback=512)
         check_input(args, 'x', value_min=min_x_pixel, value_max=max_x_pixel)
         check_input(args, 'y', value_min=min_y_pixel, value_max=max_y_pixel)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -36,18 +35,14 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['x'] = {'type': float,
-                            'help': 'X pixel target'}
-        args_to_add['y'] = {'type': float,
-                            'help': 'Y pixel target'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('x', type=float,
+                            help="X pixel target (CURRENT_BASE)")
+        parser.add_argument('y', type=float,
+                            help="X pixel target (CURRENT_BASE)")
         return super().add_cmdline_args(parser, cfg)

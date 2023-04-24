@@ -3,7 +3,7 @@ from astropy.coordinates import SkyCoord
 from astroquery.vizier import Vizier
 from astroquery.simbad import Simbad
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -137,7 +137,6 @@ class BuildOBfromQuery(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'GaiaID')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -179,16 +178,12 @@ class BuildOBfromQuery(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['GaiaID'] = {'type': str,
-                                 'help': 'Gaia DR3 ID to query for (e.g. "35227046884571776")'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('GaiaID', type=str,
+                            help='Gaia DR3 ID to query for (e.g. "35227046884571776")')
         return super().add_cmdline_args(parser, cfg)

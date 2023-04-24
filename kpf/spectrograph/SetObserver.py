@@ -1,7 +1,7 @@
 import time
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -16,7 +16,6 @@ class SetObserver(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'observer')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -37,15 +36,11 @@ class SetObserver(KPFTranslatorFunction):
             observerkw = ktl.cache('kpfexpose', 'OBSERVER')
             raise FailedToReachDestination(observerkw.read().strip(),
                                            observer.strip())
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['observer'] = {'type': str,
-                                   'help': 'The OBSERVER keyword.'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('observer', type=str,
+                            help='The OBSERVER keyword')
         return super().add_cmdline_args(parser, cfg)

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -19,7 +19,6 @@ class SetFVCExpTime(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
         check_input(args, 'exptime', value_min=0.001, value_max=60)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -41,18 +40,13 @@ class SetFVCExpTime(KPFTranslatorFunction):
         if success is not True:
             exptimekw = ktl.cache('kpffvc', f"{camera}EXPTIME")
             raise FailedToReachDestination(exptimekw.read(), exptime)
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['camera'] = {'type': str,
-                                 'help': 'The camera to use (SCI, CAHK, CAL).'}
-        args_to_add['exptime'] = {'type': float,
-                                  'help': 'The exposure time in seconds.'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('camera', type=str,
+                            help='The FVC camera (SCI, CAHK, CAL)')
+        parser.add_argument('exptime', type=float,
+                            help='The exposure time in seconds')
         return super().add_cmdline_args(parser, cfg)

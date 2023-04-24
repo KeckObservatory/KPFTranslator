@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.guider import guider_is_saving, guider_is_active
@@ -18,7 +18,10 @@ class GrabGuiderExposure(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return guider_is_active() and guider_is_saving()
+        if guider_is_active() == False:
+            raise FailedPreCondition('Guider is not active')
+        if guider_is_saving() == False:
+            raise FailedPreCondition('Guider is not saving')
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -40,4 +43,5 @@ class GrabGuiderExposure(KPFTranslatorFunction):
         lastfile = kpfguide['LASTFILE']
         new_file = Path(f"{lastfile.read()}")
         log.debug(f"CRED2 LASTFILE: {new_file}")
-        return new_file.exists()
+        if new_file.exists() == False:
+            raise FailedPostCondition(f"Could not find output file: {file}")
