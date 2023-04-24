@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -15,7 +15,7 @@ class InitializeTipTilt(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -27,9 +27,9 @@ class InitializeTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        movetime = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
+        movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         timeout = 10*movetime
-        tol = cfg.get('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
+        tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
         success1 = ktl.waitFor('($kpffiu.TTXSRV == closed)', timeout=timeout)
         success2 = ktl.waitFor('($kpffiu.TTYSRV == closed)', timeout=timeout)
         success3 = ktl.waitFor(f'($kpffiu.TTXVAX <= {tol})', timeout=timeout)

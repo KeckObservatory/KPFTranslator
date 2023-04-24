@@ -6,7 +6,7 @@ import numpy as np
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.calbench.WaitForCalSource import WaitForCalSource
@@ -27,7 +27,6 @@ class WaitForConfigureScience(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
-        return True
 
     @classmethod
     def perform(cls, OB, logger, cfg):
@@ -39,4 +38,4 @@ class WaitForConfigureScience(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass

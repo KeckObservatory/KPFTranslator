@@ -3,7 +3,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.guider.StartTriggerFile import StartTriggerFile
@@ -23,7 +23,6 @@ class TakeGuiderCube(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'duration', value_min=0)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -56,17 +55,15 @@ class TakeGuiderCube(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['duration'] = {'type': float,
-                                   'help': 'The duration in seconds.'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-        parser = cls._add_bool_arg(parser, 'ImageCube',
-            'Collect the full image cube?', default=True)
+        parser.add_argument('duration', type=float,
+                            help='The duration in seconds')
+        parser.add_argument("--ImageCube", dest="ImageCube",
+                            default=True, action="store_false",
+                            help="Collect the full image cube?")
         return super().add_cmdline_args(parser, cfg)

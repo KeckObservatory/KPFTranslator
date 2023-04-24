@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.guider import guider_is_saving, guider_is_active
@@ -17,7 +17,10 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return not guider_is_active() and not guider_is_saving()
+        if guider_is_active() == True:
+            raise FailedPreCondition('Guider is active')
+        if guider_is_saving() == True:
+            raise FailedPreCondition('Guider is saving')
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -37,12 +40,13 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after exposure is finished?', default=True)
+        parser.add_argument("--nowait", dest="wait",
+                            default=True, action="store_false",
+                            help="Start exposure and return immediately?")
         return super().add_cmdline_args(parser, cfg)

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -16,7 +16,7 @@ class GuiderLastfile(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -24,7 +24,7 @@ class GuiderLastfile(KPFTranslatorFunction):
         if args.get('wait', True) is True:
             exptime = kpfguide['EXPTIME'].read(binary=True)
             initial_lastfile = kpfguide['LASTFILE'].read()
-            timeout = cfg.get('times', 'kpfguide_shim_time', fallback=0.01)
+            timeout = cfg.getfloat('times', 'kpfguide_shim_time', fallback=0.01)
             expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
             ktl.waitFor(expr, timeout=exptime+timeout)
         lastfile = kpfguide['LASTFILE'].read()
@@ -33,12 +33,13 @@ class GuiderLastfile(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after lastfile is updated?', default=False)
+        parser.add_argument("--nowait", dest="wait",
+                            default=True, action="store_false",
+                            help="Send exposure command and return immediately?")
         return super().add_cmdline_args(parser, cfg)

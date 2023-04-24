@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -27,7 +27,7 @@ class SetGuiderFPS(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        fpstol = cfg.get('tolerances', 'guider_fps_tolerance', fallback=0.01)
+        fpstol = cfg.getfloat('tolerances', 'guider_fps_tolerance', fallback=0.01)
         fpskw = ktl.cache('kpfguide', 'FPS')
         fps = args.get('GuideFPS')
         expr = (f'($kpfguide.FPS >= {fps-fpstol}) and '\
@@ -35,16 +35,11 @@ class SetGuiderFPS(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=1)
         if not success:
             raise FailedToReachDestination(fpskw.read(), fps)
-        return success
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['GuideFPS'] = {'type': float,
-                                   'help': 'The frames per second (FPS).'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('GuideFPS', type=float,
+                            help='The frames per second (FPS)')
         return super().add_cmdline_args(parser, cfg)

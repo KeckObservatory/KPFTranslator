@@ -3,7 +3,7 @@ import numpy as np
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.spectrograph.ResetDetectors import ResetDetectors
@@ -18,7 +18,7 @@ class WaitForReady(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -30,8 +30,8 @@ class WaitForReady(KPFTranslatorFunction):
 
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
 
-        buffer_time = cfg.get('times', 'readout_buffer_time', fallback=10)
-        slowest_read = cfg.get('times', 'slowest_readout_time', fallback=120)
+        buffer_time = cfg.getfloat('times', 'readout_buffer_time', fallback=10)
+        slowest_read = cfg.getfloat('times', 'slowest_readout_time', fallback=120)
 
         wait_time = exptime+slowest_read+buffer_time if starting_status < 3 else slowest_read+buffer_time
 
@@ -99,6 +99,4 @@ class WaitForReady(KPFTranslatorFunction):
         notok = np.array(notok)
 
         if np.any(notok):
-            log.error(msg)
-            return False
-        return True
+            raise FailedPostCondition(msg)

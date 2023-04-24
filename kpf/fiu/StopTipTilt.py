@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -17,7 +17,7 @@ class StopTipTilt(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -27,7 +27,7 @@ class StopTipTilt(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
-        timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
+        timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         expr = f"($kpfguide.TIPTILT_CALC == Inactive) "
         success = ktl.waitFor(expr, timeout=timeout)
         if success is False:
@@ -40,4 +40,3 @@ class StopTipTilt(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=timeout)
         if success is False:
             raise FailedToReachDestination(kpfguide['OFFLOAD'].read(), 'Inactive')
-        return True

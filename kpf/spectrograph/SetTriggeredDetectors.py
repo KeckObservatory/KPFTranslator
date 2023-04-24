@@ -2,7 +2,7 @@ from time import sleep
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -19,7 +19,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -39,13 +39,13 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         log.debug(f"Setting triggered detectors to '{detectors_string}'")
         kpfexpose = ktl.cache('kpfexpose')
         kpfexpose['TRIG_TARG'].write(detectors_string)
-        shim_time = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
-        timeshim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.01)
+        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)
         detectors = kpfexpose['TRIG_TARG'].read()
         detector_list = detectors.split(',')
@@ -66,19 +66,24 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser = cls._add_bool_arg(parser, 'TriggerRed',
-                                   'Trigger the Red detector?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'TriggerGreen',
-                                   'Trigger the Green detector?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'TriggerCaHK',
-                                   'Trigger the CaH&K detector?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'TriggerExpMeter',
-                                   'Trigger the ExpMeter detector?',
-                                   default=False)
-        parser = cls._add_bool_arg(parser, 'TriggerGuide',
-                                   'Trigger the Guide detector?',
-                                   default=False)
+        parser.add_argument("--Red", "--red", "-r",
+                            dest="TriggerRed",
+                            default=False, action="store_true",
+                            help="Trigger the Red detector during exposure?")
+        parser.add_argument("--Green", "--green", "-g",
+                            dest="TriggerGreen",
+                            default=False, action="store_true",
+                            help="Trigger the Green detector during exposure?")
+        parser.add_argument("--CaHK", "--HK", "--cahk", "--hk",
+                            dest="TriggerCaHK",
+                            default=False, action="store_true",
+                            help="Trigger the CaHK detector during exposure?")
+        parser.add_argument("--ExpMeter", "--expmeter", "--EM", "--em",
+                            dest="TriggerExpMeter",
+                            default=False, action="store_true",
+                            help="Trigger the ExpMeter detector during exposure?")
+        parser.add_argument("--Guide", "--Guider", "--guide", "--guider", "--CRED2",
+                            dest="TriggerGuide",
+                            default=False, action="store_true",
+                            help="Trigger the Guider detector during exposure?")
         return super().add_cmdline_args(parser, cfg)

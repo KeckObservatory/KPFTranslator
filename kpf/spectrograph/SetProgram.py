@@ -1,7 +1,7 @@
 import time
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.spectrograph.WaitForReady import WaitForReady
@@ -17,7 +17,6 @@ class SetProgram(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'progname')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -27,13 +26,13 @@ class SetProgram(KPFTranslatorFunction):
         WaitForReady.execute({})
         log.debug(f"Setting PROGNAME to '{progname}'")
         kpfexpose['PROGNAME'].write(progname)
-        time_shim = cfg.get('times', 'kpfexpose_shim_time', fallback=0.1)
+        time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         progname = args.get('progname')
-        timeout = cfg.get('times', 'kpfexpose_response_time', fallback=1)
+        timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
         expr = f"($kpfexpose.PROGNAME == '{progname}')"
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
@@ -44,9 +43,6 @@ class SetProgram(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['progname'] = {'type': str,
-                                   'help': 'The PROGNAME keyword.'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('progname', type=str,
+                            help='The PROGNAME keyword')
         return super().add_cmdline_args(parser, cfg)

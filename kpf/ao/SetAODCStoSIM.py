@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -14,7 +14,7 @@ class SetAODCStoSIM(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -36,4 +36,3 @@ class SetAODCStoSIM(KPFTranslatorFunction):
         aodcssfp_success = ktl.waitfor('($ao.AODCSSFP == disabled)', timeout=3)
         if not aodcssfp_success:
             raise FailedToReachDestination(ao['AODCSSFP'].read(), 'disabled')
-        return True

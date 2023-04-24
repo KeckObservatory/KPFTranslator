@@ -12,7 +12,9 @@ except:
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 
 class GetGaiaStars(KPFTranslatorFunction):
@@ -25,8 +27,11 @@ class GetGaiaStars(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        if Vizier is None:
+            raise FailedPreCondition('Unable to import astroquery.vizier')
         file = Path(args.get('file', '/tmp/CRED2.fits')).expanduser().absolute()
-        return (Vizier is not None) and (file.exists() is True)
+        if file.exists() is False:
+            raise FailedPreCondition(f'Fould not find input file: {file}')
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -83,16 +88,12 @@ class GetGaiaStars(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['file'] = {'type': str,
-                               'help': 'The CRED2 file to retrieve stars for.'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('file', type=str,
+                            help='The CRED2 file to retrieve stars for')
         return super().add_cmdline_args(parser, cfg)

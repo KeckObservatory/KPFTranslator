@@ -1,6 +1,6 @@
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -15,7 +15,7 @@ class ShutdownTipTilt(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -30,7 +30,8 @@ class ShutdownTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        timeout = cfg.get('times', 'tip_tilt_move_time', fallback=0.1)
+        timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         success1 = ktl.waitFor('($kpffiu.TTXSRV == open)', timeout=timeout)
         success2 = ktl.waitFor('($kpffiu.TTYSRV == open)', timeout=timeout)
-        return success1 and success2
+        if success1 == False or success2 == False:
+            raise FailedPostCondition(f'TT{X,Y}SRV did not open')

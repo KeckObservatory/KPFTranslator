@@ -7,7 +7,7 @@ import numpy as np
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -96,7 +96,7 @@ class ConfigureForScience(KPFTranslatorFunction):
         if OB['GuideMode'] in ['manual', 'auto']:
             tock = datetime.now()
             time_passed = (tock - tick).total_seconds()
-            tt_close_time = cfg.get('times', 'tip_tilt_close_time', fallback=3)
+            tt_close_time = cfg.getfloat('times', 'tip_tilt_close_time', fallback=3)
             sleep_time = tt_close_time - time_passed
             if sleep_time > 0:
                 log.info(f"Sleeping {sleep_time:.1f} seconds to allow loops to close")
@@ -104,4 +104,4 @@ class ConfigureForScience(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
-        return True
+        pass

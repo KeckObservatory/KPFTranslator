@@ -1,4 +1,4 @@
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.calbench import standardize_lamp_name
@@ -12,7 +12,7 @@ class EstimateOBDuration(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, OB, logger, cfg):
@@ -38,17 +38,16 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
-        return True
 
     @classmethod
     def perform(cls, OB, logger, cfg):
         duration = 0
         readout_red = 0 if OB['TriggerRed'] == False else\
-                      cfg.get('time_estimates', 'readout_red', fallback=60)
+                      cfg.getfloat('time_estimates', 'readout_red', fallback=60)
         readout_green = 0 if OB['TriggerGreen'] == False else\
-                        cfg.get('time_estimates', 'readout_green', fallback=60)
+                        cfg.getfloat('time_estimates', 'readout_green', fallback=60)
         readout_cahk = 0 if OB['TriggerCaHK'] == False else\
-                       cfg.get('time_estimates', 'readout_cahk', fallback=1)
+                       cfg.getfloat('time_estimates', 'readout_cahk', fallback=1)
         readout = max([readout_red, readout_green, readout_cahk])
 
         # ConfigureForCalibrations
@@ -57,20 +56,20 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
         for lamp in lamps:
             if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                         'BrdbandFiber', 'WideFlat']:
-                duration += cfg.get('time_estimates', 'power_on_cal_lamp',
+                duration += cfg.getfloat('time_estimates', 'power_on_cal_lamp',
                                     fallback=1)
             if lamp == 'LFCFiber':
-                duration += cfg.get('time_estimates', 'LFC_to_AstroComb',
+                duration += cfg.getfloat('time_estimates', 'LFC_to_AstroComb',
                                     fallback=30)
         # Configure FIU
-        duration += cfg.get('time_estimates', 'FIU_mode_change',
+        duration += cfg.getfloat('time_estimates', 'FIU_mode_change',
                             fallback=20)
 
         # Execute Darks
         darks = OB.get('SEQ_Darks', [])
         if len(darks) > 0:
             # Set Octagon to Home
-            duration += cfg.get('time_estimates', 'octagon_move',
+            duration += cfg.getfloat('time_estimates', 'octagon_move',
                                 fallback=60)
         for dark in darks:
             duration += dark['nExp']*dark['ExpTime']
@@ -78,12 +77,12 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
 
         # Execute Cals
         cals = OB.get('SEQ_Calibrations', [])
-        archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
+        archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
                              fallback=2)
         lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
                                   'TH_GOLD', 'U_DAILY', 'U_GOLD']
         for cal in cals:
-            duration += cfg.get('time_estimates', 'octagon_move',
+            duration += cfg.getfloat('time_estimates', 'octagon_move',
                                 fallback=60)
             lamp = standardize_lamp_name(cal.get('CalSource'))
             if lamp in lamps_that_need_warmup:
@@ -92,7 +91,7 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
                     import ktl
                     warm_up = kpflamps[f'{lamp}_THRESHOLD'].read(binary=True)
                 except:
-                    warm_up = cfg.get('time_estimates', 'lamp_warmup',
+                    warm_up = cfg.getfloat('time_estimates', 'lamp_warmup',
                                       fallback=1800)
                 if duration < warm_up:
                     warm_up_wait = warm_up-duration
@@ -120,32 +119,31 @@ class EstimateSciOBDuration(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
-        return True
 
     @classmethod
     def perform(cls, OB, logger, cfg):
         readout_red = 0 if OB['TriggerRed'] == False else\
-                      cfg.get('time_estimates', 'readout_red', fallback=60)
+                      cfg.getfloat('time_estimates', 'readout_red', fallback=60)
         readout_green = 0 if OB['TriggerGreen'] == False else\
-                        cfg.get('time_estimates', 'readout_green', fallback=60)
+                        cfg.getfloat('time_estimates', 'readout_green', fallback=60)
         readout_cahk = 0 if OB['TriggerCaHK'] == False else\
-                       cfg.get('time_estimates', 'readout_cahk', fallback=1)
+                       cfg.getfloat('time_estimates', 'readout_cahk', fallback=1)
         readout = max([readout_red, readout_green, readout_cahk])
 
         # Configure FIU
-        FIU_mode_change = cfg.get('time_estimates', 'FIU_mode_change',
+        FIU_mode_change = cfg.getfloat('time_estimates', 'FIU_mode_change',
                                   fallback=20)
         # Slew
-        slew_time = cfg.get('time_estimates', 'slew_time',
+        slew_time = cfg.getfloat('time_estimates', 'slew_time',
                              fallback=120)
 
         duration = max([FIU_mode_change, slew_time])
 
         # Acquire
-        duration += cfg.get('time_estimates', 'acquire_time',
+        duration += cfg.getfloat('time_estimates', 'acquire_time',
                             fallback=10)
         # Close Tip Tilt Loops
-        duration += cfg.get('time_estimates', 'tip_tilt_loop_closure',
+        duration += cfg.getfloat('time_estimates', 'tip_tilt_loop_closure',
                             fallback=3)
         # Execute Observations
         observations = OB.get('SEQ_Observations', [])

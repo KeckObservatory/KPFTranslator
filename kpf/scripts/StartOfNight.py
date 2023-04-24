@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -32,7 +32,7 @@ class StartOfNight(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -100,7 +100,7 @@ class StartOfNight(KPFTranslatorFunction):
         log.info(f"Setting simultaneous CalSource/Octagon: {calsource}")
         SetCalSource.execute({'CalSource': calsource, 'wait': True})
         # Set tip tilt loop gain
-        tip_tilt_gain = cfg.get('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
+        tip_tilt_gain = cfg.getfloat('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
         log.info(f"Setting default tip tilt loop gain of {tip_tilt_gain}")
         SetTipTiltGain.execute({'GuideLoopGain': tip_tilt_gain})
         # Set Outdirs
@@ -115,13 +115,13 @@ class StartOfNight(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        parser = cls._add_bool_arg(parser, 'AO',
-            'Configure AO?', default=True)
+        parser.add_argument("--noAO", dest="AO",
+                            default=True, action="store_false",
+                            help="Skip configuring AO?")
         return super().add_cmdline_args(parser, cfg)

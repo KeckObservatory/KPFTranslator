@@ -8,7 +8,7 @@ from astropy.table import Table, Row
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.fvc.TakeFVCExposure import TakeFVCExposure
@@ -23,8 +23,7 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
         cameras = args.get('cameras', '').split(',')
         for camera in cameras:
             if camera not in ['CRED2', 'SCI', 'CAHK', 'EXT', 'ExpMeter']:
-                print(f"Camera {camera} not supported")
-        return True
+                raise FailedPreCondition(f"Camera {camera} not supported")
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -86,15 +85,12 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['cameras'] = {'type': str,
-                    'help': 'List of cameras'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('cameras', type=str,
+                            help='Comma separated list FVC cameras (SCI,CAHK,CAL)')
         return super().add_cmdline_args(parser, cfg)

@@ -1,7 +1,7 @@
 import time
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.utils.SendEmail import SendEmail
@@ -17,7 +17,7 @@ class TakeIntensityReading(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -28,7 +28,7 @@ class TakeIntensityReading(KPFTranslatorFunction):
         if intensemon.read() == 'Off':
             log.debug('Turning kpflamps.INTENSEMON on')
             intensemon.write('On')
-            boottime = cfg.get('times', 'intenmon_boot_time', fallback=5)
+            boottime = cfg.getfloat('times', 'intenmon_boot_time', fallback=5)
             time.sleep(boottime)
 
         # Verify serial connection is active
@@ -36,7 +36,7 @@ class TakeIntensityReading(KPFTranslatorFunction):
             log.debug('Initiating serial connection')
             kpfcal['SERIALCONN'].write('On')
             expr = f"($kpfcal.SERIALCONN == 'On')"
-            boottime = cfg.get('times', 'intenmon_boot_time', fallback=5)
+            boottime = cfg.getfloat('times', 'intenmon_boot_time', fallback=5)
             success = ktl.waitFor(expr, timeout=boottime)
             if success is False:
                 msg = f'Intensity monitor serial connection is Off'
@@ -48,7 +48,7 @@ class TakeIntensityReading(KPFTranslatorFunction):
         log.info('Moving Intensity Monitor in to beam')
         kpfcal['INTENMON'].write('Boresight')
         # Set averaging
-        navg = cfg.get('times', 'intenmon_avg_time', fallback=60)
+        navg = cfg.getfloat('times', 'intenmon_avg_time', fallback=60)
         log.info(f'Starting measurement: NAVG={navg}')
         kpfcal['NAVG'].write(navg)
         kpfcal['AVG'].write('On')
@@ -83,4 +83,4 @@ class TakeIntensityReading(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

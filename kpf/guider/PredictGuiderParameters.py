@@ -1,7 +1,6 @@
-import argparse
-
-description = '''
-'''
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
 
 # Engineering OBs (not consistent)
 # Jmag, Gain
@@ -21,32 +20,48 @@ description = '''
 # 2.4, low
 # 8.4, high
 
-def predict_guider_parameters(Jmag):
-    if Jmag < 5.0:
-        guider_parameters = {'GuideCamGain': 'low',
-                             'GuideFPS': 100}
-    elif Jmag < 8.0:
-        guider_parameters = {'GuideCamGain': 'medium',
-                             'GuideFPS': 100}
-    elif Jmag < 11.5:
-        guider_parameters = {'GuideCamGain': 'high',
-                             'GuideFPS': 100}
-    elif Jmag < 12.5:
-        guider_parameters = {'GuideCamGain': 'high',
-                             'GuideFPS': 50}
-    elif Jmag < 13.5:
-        guider_parameters = {'GuideCamGain': 'high',
-                             'GuideFPS': 20}
-    else:
-        guider_parameters = {'GuideCamGain': 'high',
-                             'GuideFPS': 10}
-    return guider_parameters
+class PredictGuiderParameters(KPFTranslatorFunction):
+    '''Estimate the proper gain and FPS given the stellar Jmag.
+    
+    Args:
+    =====
+    :Jmag: The J magnitude of the target
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'Jmag', allowed_types=[int, float])
 
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        Jmag = args.get('Jmag')
+        if Jmag < 5.0:
+            gain = 'low'
+            fps = 100
+        elif Jmag < 8.0:
+            gain = 'medium'
+            fps = 100
+        elif Jmag < 11.5:
+            gain = 'high'
+            fps = 100
+        elif Jmag < 12.5:
+            gain = 'high'
+            fps = 50
+        elif Jmag < 13.5:
+            gain = 'high'
+            fps = 20
+        else:
+            gain = 'high'
+            fps = 10
+        log.info(f"Predicted GuideCamGain = {gain}")
+        log.info(f"Predicted GuideFPS = {fps:d}")
+        return {'GuideCamGain': gain, 'GuideFPS': fps}
 
-if __name__ == "__main__":
-    p = argparse.ArgumentParser(description=description)
-    p.add_argument('Jmag', type=float,
-                   help="The target J magnitude")
-    args = p.parse_args()
-    result = predict_guider_parameters(args.Jmag)
-    print(result)
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('Jmag', type=float,
+                            help="The J magnitude of the target")
+        return super().add_cmdline_args(parser, cfg)

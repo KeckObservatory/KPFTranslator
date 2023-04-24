@@ -2,7 +2,7 @@ import ktl
 import numpy as np
 from astropy.modeling import models, fitting
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -35,7 +35,7 @@ class SetADCAngles(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -63,16 +63,12 @@ class SetADCAngles(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['EL'] = {'type': float,
-                             'help': 'The telescope elevation to use in the calculation.'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('EL', type=float,
+                            help="The telescope elevation to use in the calculation")
         return super().add_cmdline_args(parser, cfg)

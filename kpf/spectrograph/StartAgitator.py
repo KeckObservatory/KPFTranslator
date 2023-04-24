@@ -1,7 +1,7 @@
 import time
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -14,7 +14,7 @@ class StartAgitator(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -22,14 +22,14 @@ class StartAgitator(KPFTranslatorFunction):
         if agitator.read() == 'Running':
             log.debug('Agitator is running')
         else:
-            startup = cfg.get('times', 'agitator_startup_time', fallback=0.325)
+            startup = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
             log.debug('Starting agitator motion')
             agitator.write('Run')
             time.sleep(startup)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        startup = cfg.get('times', 'agitator_startup_time', fallback=0.325)
+        startup = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
         success = ktl.waitFor('$kpfmot.AGITATOR == Running', timeout=startup)
         if success is not True:
             agitator = ktl.cache('kpfmot', 'AGITATOR')

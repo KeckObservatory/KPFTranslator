@@ -5,7 +5,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -35,14 +35,13 @@ class ExecuteDark(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Template_Name', allowed_values=['kpf_dark'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.5')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         # This is a time shim to insert a pause between exposures so that the
         # temperature of the CCDs can be measured by the archons
-        archon_time_shim = cfg.get('times', 'archon_temperature_time_shim',
+        archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
                              fallback=2)
 
         check_scriptstop() # Stop here if requested
@@ -76,4 +75,4 @@ class ExecuteDark(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

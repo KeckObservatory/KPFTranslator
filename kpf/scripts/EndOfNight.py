@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
@@ -41,7 +41,7 @@ class EndOfNight(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -108,4 +108,4 @@ class EndOfNight(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

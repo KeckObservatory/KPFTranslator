@@ -1,7 +1,7 @@
 import time
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input, KPFQuietException)
 
@@ -24,7 +24,7 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         log.debug(f"Setting FIU mode to {dest}")
         kpffiu['MODE'].write(dest, wait=args.get('wait', True))
-        shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=2)
+        shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=2)
         time.sleep(shim_time)
 
     @classmethod
@@ -58,19 +58,18 @@ class ConfigureFIU(KPFTranslatorFunction):
         if 'None' in allowed_values:
             allowed_values.pop(allowed_values.index('None'))
         check_input(args, 'mode', allowed_values=allowed_values)
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
         dest = args.get('mode')
-        ntries = cfg.get('retries', 'fiu_mode_tries', fallback=2)
+        ntries = cfg.getint('retries', 'fiu_mode_tries', fallback=2)
         for i in range(ntries):
             try:
                 ConfigureFIUOnce.execute({'mode': dest,
                                           'wait': args.get('wait', True)})
             except KPFQuietException:
                 log.warning(f'FIU move failed on attempt {i+1} of {ntries}')
-                shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=2)
+                shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=2)
                 time.sleep(shim_time)
             else:
                 break
@@ -85,19 +84,16 @@ class ConfigureFIU(KPFTranslatorFunction):
                 raise FailedToReachDestination(dest, modes)
             else:
                 log.info(f"FIU mode is now {dest}")
-        return True
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['mode'] = {'type': str,
-                               'help': 'Desired mode (see kpffiu.MODE)'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after move is finished?', default=True)
-
+        parser.add_argument('mode', type=str,
+                            choices=['Stowed', 'Alignment', 'Acquisition',
+                                     'Observing', 'Calibration'],
+                            help='Desired mode (see kpffiu.MODE)')
+        parser.add_argument("--nowait", dest="wait",
+                            default=True, action="store_false",
+                            help="Send move and return immediately?")
         return super().add_cmdline_args(parser, cfg)

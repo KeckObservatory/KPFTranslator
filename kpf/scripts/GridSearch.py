@@ -11,7 +11,7 @@ from astropy.table import Table, Row
 import ktl
 import keygrabber
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -63,7 +63,6 @@ class GridSearch(KPFTranslatorFunction):
         for FVC in FVCs:
             if FVC not in ['SCI', 'CAHK', 'EXT', '']:
                 raise FailedPreCondition(f"FVC {FVC} not supported")
-        return True
 
     @classmethod
     @register_script(Path(__file__).name, os.getpid())
@@ -374,4 +373,4 @@ class GridSearch(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

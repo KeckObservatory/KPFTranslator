@@ -1,7 +1,7 @@
 from time import sleep
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -60,8 +60,7 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        exptime = args.get('exptime', None)
-        return (exptime is not None) and (float(exptime) > 0)
+        check_input(args, 'exptime', value_min=0)
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -71,7 +70,7 @@ class SetGuiderExpTime(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        exptol = cfg.get('tolerances', 'guider_exptime_tolerance', fallback=0.01)
+        exptol = cfg.getfloat('tolerances', 'guider_exptime_tolerance', fallback=0.01)
 
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
         exptimeread = exptimekw.read(binary=True)
@@ -81,19 +80,12 @@ class SetGuiderExpTime(KPFTranslatorFunction):
                 f'($kpfguide.EXPTIME <= {exptime+exptol})')
         success = ktl.waitFor(expr, timeout=exptimeread+1)
         if not success:
-            exptimeread = exptimekw.read(binary=True)
-            log.error(f"Failed to set exposure time.")
-            log.error(f"Requested {exptime:.3f} s, found {exptimeread:.3f} s")
-        return success
+            raise FailedToReachDestination(exptimekw.read(), exptime)
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['exptime'] = {'type': float,
-                                  'help': 'The exposure time in seconds.'}
-
-        parser = cls._add_args(parser, args_to_add, print_only=False)
+        parser.add_argument('exptime', type=float,
+                            help='The exposure time in seconds')
         return super().add_cmdline_args(parser, cfg)

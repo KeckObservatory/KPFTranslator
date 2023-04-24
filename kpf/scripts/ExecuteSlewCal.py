@@ -5,7 +5,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -47,7 +47,6 @@ class ExecuteSlewCal(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Template_Name', allowed_values=['kpf_slewcal'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.4')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -147,4 +146,4 @@ class ExecuteSlewCal(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass

@@ -2,7 +2,7 @@ import ktl
 import time
 from datetime import datetime, timedelta
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -22,7 +22,7 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -30,8 +30,8 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         modes = kpffiu['MODE'].read()
         start = datetime.utcnow()
-        move_times = [cfg.get('times', 'fiu_fold_mirror_move_time', fallback=40),
-                      cfg.get('times', 'fiu_hatch_move_time', fallback=2)]
+        move_times = [cfg.getfloat('times', 'fiu_fold_mirror_move_time', fallback=40),
+                      cfg.getfloat('times', 'fiu_hatch_move_time', fallback=2)]
         end = start + timedelta(seconds=max(move_times))
         while dest.lower() not in modes.lower().split(',') and datetime.utcnow() <= end:
             time.sleep(1)
@@ -44,7 +44,6 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
         modes = kpffiu['MODE'].read()
         if dest.lower() not in modes.lower().split(','):
             raise FailedToReachDestination(modes, dest)
-        return True
 
 
 ##-----------------------------------------------------------------------------
@@ -75,7 +74,7 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
             WaitForConfigureFIUOnce.execute({'mode': dest})
         except FailedToReachDestination:
             log.warning(f'FIU failed to reach destination. Retrying.')
-            shim_time = cfg.get('times', 'fiu_mode_shim_time', fallback=0.5)
+            shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=0.5)
             time.sleep(shim_time)
             from .ConfigureFIU import ConfigureFIUOnce
             ConfigureFIUOnce.execute({'mode': dest, 'wait': True})
@@ -94,14 +93,9 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        from collections import OrderedDict
-        args_to_add = OrderedDict()
-        args_to_add['mode'] = {'type': str,
-                               'help': 'Desired mode (see kpffiu.MODE)'}
-        parser = cls._add_args(parser, args_to_add, print_only=False)
-
-        parser = cls._add_bool_arg(parser, 'wait',
-            'Return only after move is finished?', default=True)
-
+        parser.add_argument('mode', type=str,
+                            choices=['Stowed', 'Alignment', 'Acquisition',
+                                     'Observing', 'Calibration'],
+                            help='Desired mode (see kpffiu.MODE)')
         return super().add_cmdline_args(parser, cfg)
 

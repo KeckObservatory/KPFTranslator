@@ -5,7 +5,7 @@ from pathlib import Path
 
 import ktl
 
-from ddoitranslatormodule.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -45,7 +45,6 @@ class ExecuteSci(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.5')
-        return True
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -100,7 +99,7 @@ class ExecuteSci(KPFTranslatorFunction):
 
         # Turn off writing of guider FITS cube if exposure time is long
         exptime = args.get('ExpTime')
-        max_for_cube = cfg.get('times', 'max_exptime_for_guide_cube', fallback=60)
+        max_for_cube = cfg.getfloat('times', 'max_exptime_for_guide_cube', fallback=60)
         if float(exptime) > max_for_cube:
             kpfguide = ktl.cache('kpfguide')
             kpfguide['TRIGCUBE'].write('Inactive')
@@ -138,4 +137,4 @@ class ExecuteSci(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        return True
+        pass
