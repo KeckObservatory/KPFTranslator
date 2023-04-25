@@ -26,8 +26,10 @@ from kpf.spectrograph.WaitForReady import WaitForReady
 class ConfigureForScience(KPFTranslatorFunction):
     '''Script which configures the instrument for Science observations.
 
+    - If needed, start tip tilt loops
     - Sets octagon / simulcal source
     - Sets source select shutters
+    - Set triggered detectors
 
     This must have arguments as input, either from a file using the `-f` command
     line tool, or passed in from the execution engine.
