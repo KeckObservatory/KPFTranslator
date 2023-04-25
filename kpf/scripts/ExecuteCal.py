@@ -98,7 +98,7 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForCalSource.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Take intensity monitor reading
-            if calsource != 'LFCFiber':
+            if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
                 WaitForLampWarm.execute(args)
                 TakeIntensityReading.execute({})
         ## Setup SoCal
@@ -190,3 +190,10 @@ class ExecuteCal(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('--nointensemon', dest="nointensemon",
+                            default=False, action="store_true",
+                            help='Skip the intensity monitor measurement?')
+        return super().add_cmdline_args(parser, cfg)

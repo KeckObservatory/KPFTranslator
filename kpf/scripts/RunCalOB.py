@@ -163,4 +163,7 @@ class RunCalOB(KPFTranslatorFunction):
         parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
                             default=False, action="store_true",
                             help='Leave the lamps on after cleanup phase?')
+        parser.add_argument('--nointensemon', dest="nointensemon",
+                            default=False, action="store_true",
+                            help='Skip the intensity monitor measurement?')
         return super().add_cmdline_args(parser, cfg)
