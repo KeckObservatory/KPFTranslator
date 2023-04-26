@@ -107,10 +107,20 @@ class ExecuteCal(KPFTranslatorFunction):
             # OCTAGON=SoCal-CalFib
             # SSS_SoCalCal open, SSS_CalSciSky open
         elif calsource in ['SoCal-SciSky']:
-            raise NotImplementedError()
-            # OCTAGON=simulcal source?
-            # Set ND1 and ND2
-            # SSS_SoCalSci open
+            # Set octagon to simulcal source
+            simulcalsource = kpfconfig['SIMULCALSOURCE'].read()
+            log.info(f"Setting cal source: {simulcalsource}")
+            SetCalSource.execute({'CalSource': simulcalsource, 'wait': False})
+            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
+            SetND1.execute({'CalND1': nd1, 'wait': False})
+            SetND2.execute({'CalND2': nd2, 'wait': False})
+            log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
+            WaitForND1.execute(args)
+            WaitForND2.execute(args)
+            WaitForCalSource.execute({'CalSource': simulcalsource})
+            WaitForConfigureFIU.execute({'mode': 'Calibration'})
+            # Open SoCalSci Shutter
+            args['SSS_SoCalSci'] = True
         # WTF!?
         else:
             msg = f"CalSource {calsource} not recognized"
@@ -141,7 +151,10 @@ class ExecuteCal(KPFTranslatorFunction):
         SetExpTime.execute(args)
         log.info(f"Setting source select shutters")
         # No need to specify SSS_CalSciSky in OB/calibration
-        args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
+        if calsource in ['SoCal-SciSky'] == False:
+            args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
+        else:
+            args['SSS_CalSciSky'] = False
         log.debug(f"Automatically setting SSS_CalSciSky: {args['SSS_CalSciSky']}")
         SetSourceSelectShutters.execute(args)
 
