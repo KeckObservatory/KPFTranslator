@@ -25,13 +25,13 @@ class SetSimulCalSource(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         valid_names = ['EtalonFiber', 'U_gold', 'U_daily', 'Th_daily',
                        'Th_gold', 'LFCFiber']
-        if args.get('calsource', None) not in valid_names:
+        if args.get('CalSource', None) not in valid_names:
             raise FailedPreCondition(f"calsource '{calsource}' must be one of {valid_names}")
 
     @classmethod
     def perform(cls, args, logger, cfg):
         log.info(f"Setting simul cal / slew cal source")
-        calsource = args.get('calsource')
+        calsource = args.get('CalSource')
         kpfconfig = ktl.cache('kpfconfig')
         slew_cal_file = Path(f'/kroot/rel/default/data/obs/kpf/SlewCal_{calsource}.yaml')
         if slew_cal_file.exists() is False:
