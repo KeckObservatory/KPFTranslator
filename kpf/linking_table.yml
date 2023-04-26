@@ -25,6 +25,8 @@ links:
     # Cal Bench
     CalLampPower:
         cmd: calbench.CalLampPower.CalLampPower
+    IsCalSourceEnabled:
+        cmd: calbench.IsCalSourceEnabled.IsCalSourceEnabled
     SetCalSource:
         cmd: calbench.SetCalSource.SetCalSource
     SetFlatFieldFiberPos:

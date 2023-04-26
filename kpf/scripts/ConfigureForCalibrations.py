@@ -12,6 +12,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.calbench.CalLampPower import CalLampPower
+from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetLFCtoAstroComb import SetLFCtoAstroComb
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
@@ -53,11 +54,12 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
         sequence = OB.get('SEQ_Calibrations')
         lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
         for lamp in lamps:
-            if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                        'BrdbandFiber', 'WideFlat']:
-                CalLampPower.execute({'lamp': lamp, 'power': 'on'})
-            if lamp == 'LFCFiber':
-                SetLFCtoAstroComb.execute({})
+            if IsCalSourceEnabled.execute(args) == True:
+                if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
+                            'BrdbandFiber', 'WideFlat']:
+                    CalLampPower.execute({'lamp': lamp, 'power': 'on'})
+                if lamp == 'LFCFiber':
+                    SetLFCtoAstroComb.execute({})
 
         log.debug(f"Ensuring back illumination LEDs are off")
         CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})

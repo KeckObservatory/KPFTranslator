@@ -11,6 +11,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.calbench.CalLampPower import CalLampPower
+from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
 from kpf.calbench.SetND1 import SetND1
@@ -67,6 +68,9 @@ class ExecuteCal(KPFTranslatorFunction):
                              fallback=2)
 
         calsource = args.get('CalSource')
+        # Skip this lamp if it is not enabled
+        if IsCalSourceEnabled.execute(args) == False:
+            return
         nd1 = args.get('CalND1')
         nd2 = args.get('CalND2')
         ## ----------------------------------------------------------------
@@ -123,9 +127,7 @@ class ExecuteCal(KPFTranslatorFunction):
             args['SSS_SoCalSci'] = True
         # WTF!?
         else:
-            msg = f"CalSource {calsource} not recognized"
-            log.error(msg)
-            raise Exception(msg)
+            raise KPFException(f"CalSource {calsource} not recognized")
 
         ## ----------------------------------------------------------------
         ## Configure exposure meter
