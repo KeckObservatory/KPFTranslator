@@ -54,7 +54,7 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
         sequence = OB.get('SEQ_Calibrations')
         lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
         for lamp in lamps:
-            if IsCalSourceEnabled.execute(args) == True:
+            if IsCalSourceEnabled.execute(OB) == True:
                 if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                             'BrdbandFiber', 'WideFlat']:
                     CalLampPower.execute({'lamp': lamp, 'power': 'on'})
