@@ -56,11 +56,12 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
             sequence = OB.get('SEQ_Calibrations')
             lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
             for lamp in lamps:
-                if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                            'BrdbandFiber', 'WideFlat']:
-                    CalLampPower.execute({'lamp': lamp, 'power': 'off'})
-                if lamp == 'LFCFiber':
-                    SetLFCtoStandbyHigh.execute({})
+                if IsCalSourceEnabled.execute({'CalSource': lamp}) == True:
+                    if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
+                                'BrdbandFiber', 'WideFlat']:
+                        CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+                    if lamp == 'LFCFiber':
+                        SetLFCtoStandbyHigh.execute({})
 
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})
