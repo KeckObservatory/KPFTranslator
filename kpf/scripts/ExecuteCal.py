@@ -151,10 +151,10 @@ class ExecuteCal(KPFTranslatorFunction):
         SetExpTime.execute(args)
         log.info(f"Setting source select shutters")
         # No need to specify SSS_CalSciSky in OB/calibration
-        if calsource in ['SoCal-SciSky'] == False:
-            args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
-        else:
+        if calsource in ['SoCal-SciSky']:
             args['SSS_CalSciSky'] = False
+        else:
+            args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
         log.debug(f"Automatically setting SSS_CalSciSky: {args['SSS_CalSciSky']}")
         SetSourceSelectShutters.execute(args)
 
