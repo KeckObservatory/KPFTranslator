@@ -103,9 +103,9 @@ class ExecuteCal(KPFTranslatorFunction):
                 TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
-            raise NotImplementedError()
-            # OCTAGON=SoCal-CalFib
-            # SSS_SoCalCal open, SSS_CalSciSky open
+            SetCalSource.execute({'CalSource': calsource, 'wait': False})
+            # Open SoCalCal Shutter
+            args['SSS_SoCalCal'] = True
         elif calsource in ['SoCal-SciSky']:
             # Set octagon to simulcal source
             simulcalsource = kpfconfig['SIMULCALSOURCE'].read()
@@ -153,6 +153,8 @@ class ExecuteCal(KPFTranslatorFunction):
         # No need to specify SSS_CalSciSky in OB/calibration
         if calsource in ['SoCal-SciSky']:
             args['SSS_CalSciSky'] = False
+        elif calsource in ['SoCal-CalFib']:
+            args['SSS_CalSciSky'] = True
         else:
             args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
         log.debug(f"Automatically setting SSS_CalSciSky: {args['SSS_CalSciSky']}")
