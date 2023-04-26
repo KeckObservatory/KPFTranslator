@@ -4,7 +4,6 @@
 import sys
 import os
 from pathlib import Path
-import argparse
 import logging
 import subprocess
 from datetime import datetime, timedelta
@@ -18,32 +17,7 @@ from astropy.modeling import models, fitting
 from matplotlib import animation
 from matplotlib import pyplot as plt
 
-
-##-------------------------------------------------------------------------
-## Parse Command Line Arguments
-##-------------------------------------------------------------------------
-## create a parser object for understanding command-line arguments
-p = argparse.ArgumentParser(description='''
-''')
-## add arguments
-p.add_argument('files', type=str, nargs='*',
-               help="The cube files to analyze")
-p.add_argument("-g", "--gif", dest="gif",
-    default=False, action="store_true",
-    help="Generate the animated GIF of frames (computationally expensive)")
-p.add_argument("--view", dest="view",
-    default=False, action="store_true",
-    help="Open a viewer once the file is generated")
-p.add_argument("-v", "--verbose", dest="verbose",
-    default=False, action="store_true",
-    help="Be verbose")
-
-p.add_argument("--start", dest="start", type=float,
-    help="Zoom the plot in to this start time (in seconds).")
-p.add_argument("--end", dest="end", type=float,
-    help="Zoom the plot in to this end time (in seconds).")
-
-args = p.parse_args()
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 ##-------------------------------------------------------------------------
@@ -53,10 +27,7 @@ log = logging.getLogger('MyLogger')
 log.setLevel(logging.DEBUG)
 ## Set up console output
 LogConsoleHandler = logging.StreamHandler()
-if args.verbose is True:
-    LogConsoleHandler.setLevel(logging.DEBUG)
-else:
-    LogConsoleHandler.setLevel(logging.INFO)
+LogConsoleHandler.setLevel(logging.INFO)
 LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
 LogConsoleHandler.setFormatter(LogFormat)
 log.addHandler(LogConsoleHandler)
@@ -372,15 +343,108 @@ def read_file(file):
     else:
         return None, metadata, guider_cube
 
+
+##-------------------------------------------------------------------------
+## AnalyzeGuideCube
+##-------------------------------------------------------------------------
+class AnalyzeGuideCube(KPFTranslatorFunction):
+    '''
+    ARGS:
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        for file in args.get('file'):
+            file = Path(file).expanduser()
+            if file.exists() is False:
+                log.error(f"Could not find file {args.get('file')}")
+
+            viewer_command = None
+            if args.get('view') is True:
+                viewer_commands = ['eog', 'open']
+                for cmd in viewer_commands:
+                    rtn = subprocess.call(['which', cmd])
+                    if rtn == 0:
+                        viewer_command = cmd
+
+            plotfile = Path(str(file.name).replace('.fits', '.png'))
+            plot_cube_stats(file, plotfile=plotfile)
+
+            if viewer_command is not None:
+                log.info(f"Opening {plotfile} using {viewer_command}")
+                proc = subprocess.Popen([viewer_command, f"{plotfile}"])
+
+            if args.get('gif') is True:
+                giffile = Path(str(file.name).replace('.fits', '.gif'))
+                generate_cube_gif(file, giffile)
+
+                if viewer_command is not None:
+                    log.info(f"Opening {giffile} using {viewer_command}")
+                    proc = subprocess.Popen([viewer_command, f"{giffile}"])
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument('files', type=str, nargs='*',
+            help="The cube files to analyze")
+        parser.add_argument("-g", "--gif", dest="gif",
+            default=False, action="store_true",
+            help="Generate the animated GIF of frames (computationally expensive)")
+        parser.add_argument("--view", dest="view",
+            default=False, action="store_true",
+            help="Open a viewer once the file is generated")
+        parser.add_argument("-v", "--verbose", dest="verbose",
+            default=False, action="store_true",
+            help="Be verbose")
+        parser.add_argument("--start", dest="start", type=float,
+            help="Zoom the plot in to this start time (in seconds).")
+        parser.add_argument("--end", dest="end", type=float,
+            help="Zoom the plot in to this end time (in seconds).")
+        return super().add_cmdline_args(parser, cfg)
+
+
+
 ##-------------------------------------------------------------------------
 ## if __name__ == '__main__':
 ##-------------------------------------------------------------------------
 if __name__ == '__main__':
+    ##-------------------------------------------------------------------------
+    ## Parse Command Line Arguments
+    ##-------------------------------------------------------------------------
+    ## create a parser object for understanding command-line arguments
+    import argparse
+    p = argparse.ArgumentParser(description='''
+    ''')
+    ## add arguments
+    p.add_argument('files', type=str, nargs='*',
+                   help="The cube files to analyze")
+    p.add_argument("-g", "--gif", dest="gif",
+        default=False, action="store_true",
+        help="Generate the animated GIF of frames (computationally expensive)")
+    p.add_argument("--view", dest="view",
+        default=False, action="store_true",
+        help="Open a viewer once the file is generated")
+    p.add_argument("-v", "--verbose", dest="verbose",
+        default=False, action="store_true",
+        help="Be verbose")
+    p.add_argument("--start", dest="start", type=float,
+        help="Zoom the plot in to this start time (in seconds).")
+    p.add_argument("--end", dest="end", type=float,
+        help="Zoom the plot in to this end time (in seconds).")
+    args = p.parse_args()
+
     for file in args.files:
         file = Path(file).expanduser()
         if file.exists() is False:
             log.error(f"Could not find file {args.file}")
-        
 
         viewer_command = None
         if args.view is True:

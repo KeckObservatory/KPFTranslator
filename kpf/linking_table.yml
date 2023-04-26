@@ -4,6 +4,10 @@ common:
 
 links:
     # Analysis
+    AnalyzeGridSearch:
+        cmd: analysis.AnalyzeGridSearch.AnalyzeGridSearch
+    AnalyzeGuideCube:
+        cmd: analysis.AnalyzeGuideCube.AnalyzeGuideCube
     # AO
     ControlAOHatch:
         cmd: ao.ControlAOHatch.ControlAOHatch

@@ -2,7 +2,6 @@
 
 ## Import General Tools
 from pathlib import Path
-import argparse
 import logging
 import re
 
@@ -21,36 +20,7 @@ warnings.filterwarnings('ignore', category=astropy.wcs.FITSFixedWarning, append=
 from matplotlib import pyplot as plt
 from matplotlib.ticker import MultipleLocator, FixedLocator
 
-##-------------------------------------------------------------------------
-## Parse Command Line Arguments
-##-------------------------------------------------------------------------
-## create a parser object for understanding command-line arguments
-p = argparse.ArgumentParser(description='''
-''')
-## add arguments
-p.add_argument('logfile', type=str, nargs='*',
-               help="The logfile or files of the grid search runs to analyze")
-## add flags
-p.add_argument("-v", "--verbose", dest="verbose",
-    default=False, action="store_true",
-    help="Be verbose! (default = False)")
-p.add_argument("--cred2", dest="cred2",
-    default=False, action="store_true",
-    help="Generate CRED2 plots? (default = False)")
-## add options
-p.add_argument("--fiber", dest="fiber", type=str,
-    default='Science',
-    help="The fiber being examined (Science, Sky, or EMSky).")
-p.add_argument("--seeing", dest="seeing", type=float,
-    default=0.7,
-    help="The seeing model to overlay on the fiber coupling plot.")
-p.add_argument("--xfit", dest="xfit", type=float,
-    default=335.5,
-    help="The X pixel position to use as the center when overlaying the model.")
-p.add_argument("--yfit", dest="yfit", type=float,
-    default=258,
-    help="The X pixel position to use as the center when overlaying the model.")
-args = p.parse_args()
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 ##-------------------------------------------------------------------------
@@ -60,10 +30,7 @@ log = logging.getLogger('MyLogger')
 log.setLevel(logging.DEBUG)
 ## Set up console output
 LogConsoleHandler = logging.StreamHandler()
-if args.verbose is True:
-    LogConsoleHandler.setLevel(logging.DEBUG)
-else:
-    LogConsoleHandler.setLevel(logging.INFO)
+LogConsoleHandler.setLevel(logging.INFO)
 LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s',
                               datefmt='%Y-%m-%d %H:%M:%S')
 LogConsoleHandler.setFormatter(LogFormat)
@@ -777,7 +744,89 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7,
     return
 
 
+##-------------------------------------------------------------------------
+## AnalyzeGridSearch
+##-------------------------------------------------------------------------
+class AnalyzeGridSearch(KPFTranslatorFunction):
+    '''
+    ARGS:
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        for logfile in args.get('logfile'):
+            analyze_grid_search(logfile,
+                                fiber=args.get('fiber'),
+                                model_seeing=args.get('seeing'),
+                                xfit=args.get('xfit'), yfit=args.get('yfit'),
+                                generate_cred2=args.get('cred2'),
+                                )
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument('logfile', type=str, nargs='*',
+            help="The logfile or files of the grid search runs to analyze")
+        ## add flags
+        parser.add_argument("--cred2", dest="cred2",
+            default=False, action="store_true",
+            help="Generate CRED2 plots? (default = False)")
+        ## add options
+        parser.add_argument("--fiber", dest="fiber", type=str,
+            default='Science',
+            help="The fiber being examined (Science, Sky, or EMSky).")
+        parser.add_argument("--seeing", dest="seeing", type=float,
+            default=0.7,
+            help="The seeing model to overlay on the fiber coupling plot.")
+        parser.add_argument("--xfit", dest="xfit", type=float,
+            default=335.5,
+            help="The X pixel position to use as the center when overlaying the model.")
+        parser.add_argument("--yfit", dest="yfit", type=float,
+            default=258,
+            help="The X pixel position to use as the center when overlaying the model.")
+
+        return super().add_cmdline_args(parser, cfg)
+
+
 if __name__ == '__main__':
+    print('start')
+    ##-------------------------------------------------------------------------
+    ## Parse Command Line Arguments
+    ##-------------------------------------------------------------------------
+    ## create a parser object for understanding command-line arguments
+    import argparse
+    p = argparse.ArgumentParser(description='''
+    ''')
+    ## add arguments
+    p.add_argument('logfile', type=str, nargs='*',
+                   help="The logfile or files of the grid search runs to analyze")
+    ## add flags
+    p.add_argument("--cred2", dest="cred2",
+        default=False, action="store_true",
+        help="Generate CRED2 plots? (default = False)")
+    ## add options
+    p.add_argument("--fiber", dest="fiber", type=str,
+        default='Science',
+        help="The fiber being examined (Science, Sky, or EMSky).")
+    p.add_argument("--seeing", dest="seeing", type=float,
+        default=0.7,
+        help="The seeing model to overlay on the fiber coupling plot.")
+    p.add_argument("--xfit", dest="xfit", type=float,
+        default=335.5,
+        help="The X pixel position to use as the center when overlaying the model.")
+    p.add_argument("--yfit", dest="yfit", type=float,
+        default=258,
+        help="The X pixel position to use as the center when overlaying the model.")
+    args = p.parse_args()
+
     for logfile in args.logfile:
         analyze_grid_search(logfile,
                             fiber=args.fiber,
