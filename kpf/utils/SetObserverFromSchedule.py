@@ -56,6 +56,7 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
         log.debug(f"Found {nKPFprograms} KPF programs in schedule for tonight")
         project_codes = [p['ProjCode'] for p in KPF_programs]
 
+        # Look at the schedule to find programs scheduled for tonight
         if nKPFprograms == 0:
             log.warning(f"No KPF programs found on schedule")
             progname = None
@@ -69,29 +70,35 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
                 print(f"  Found {nKPFprograms} KPF programs for tonight:")
                 for project_code in project_codes:
                     print(f"    {project_code}")
-                print(f"  Please entry the program ID for your observations:")
+                print(f"  Please enter the program ID for your observations:")
                 print(f"########################################")
                 print()
                 progname = input()
                 if progname.strip() not in project_codes:
                     log.warning(f"Project code {progname} not on schedule")
+
+        # Set the program
         if progname is None:
-            log.warning(f"Not setting progname or observer values")
+            print()
+            print(f"  Please enter the program ID for your observations:")
+            print()
+            progname = input()
+        if progname == '':
+            log.info('No progname specified')
         else:
-            log.info(f"Setting program to {progname}")
             SetProgram.execute({'progname': progname})
-            this_program = [p for p in KPF_programs if p['ProjCode'] == progname]
-            log.debug(f"Found {len(this_program)} entries for {progname} in schedule for tonight")
-            if len(this_program) > 0:
-                observers = this_program[0]['Observers']
-                log.info(f"Setting PROGNAME={progname} and observer list based on telescope schedule:")
-                log.info(f"{observers}")
-                SetObserver.execute({'observer': observers})
-            else:
-                log.error(f"Failed to set observers. Could not find this program on the schedule.")
-                print()
-                print('To set observers manually use the `kpfSetObserver` command')
-                print()
+
+        # Set Observers
+        this_program = [p for p in KPF_programs if p['ProjCode'] == progname]
+        if len(this_program) > 0:
+            observers = this_program[0]['Observers']
+        else:
+            print()
+            print(f"  Please enter the observer names:")
+            print()
+            observers = input()
+        log.info(f"Setting observer list: {observers}")
+        SetObserver.execute({'observer': observers})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
