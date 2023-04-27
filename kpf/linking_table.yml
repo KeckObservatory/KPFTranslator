@@ -93,6 +93,8 @@ links:
         cmd: fiu.TestTipTiltMirrorRange.TestTipTiltMirrorRange
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
+    WaitForTipTilt:
+        cmd: fiu.WaitForTipTilt.WaitForTipTilt
     # FVCs
     FVCPower:
         cmd: fvc.FVCPower.FVCPower
