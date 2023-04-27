@@ -1,3 +1,4 @@
+import time
 import requests
 import json
 from datetime import datetime, timedelta
@@ -79,6 +80,7 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
 
         # Set the program
         if progname is None:
+            time.sleep(0.5) # try time shim for log line
             print()
             print(f"  Please enter the program ID for your observations:")
             print()
