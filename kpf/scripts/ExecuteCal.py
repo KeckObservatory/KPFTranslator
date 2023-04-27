@@ -59,6 +59,11 @@ class ExecuteCal(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        log.info('-------------------------')
+        log.info(f"Running {cls.__name__}")
+        for key in args:
+            log.debug(f"  {key}: {args[key]}")
+        log.info('-------------------------')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         kpfconfig = ktl.cache('kpfconfig')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
