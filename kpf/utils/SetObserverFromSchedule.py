@@ -89,6 +89,9 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
                 SetObserver.execute({'observer': observers})
             else:
                 log.error(f"Failed to set observers. Could not find this program on the schedule.")
+                print()
+                print('To set observers manually use the `kpfSetObserver` command')
+                print()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
