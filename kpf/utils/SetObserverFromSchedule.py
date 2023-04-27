@@ -78,13 +78,14 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
         if progname is None:
             log.warning(f"Not setting progname or observer values")
         else:
+            log.info(f"Setting program to {progname}")
+            SetProgram.execute({'progname': progname})
             this_program = [p for p in KPF_programs if p['ProjCode'] == progname]
             log.debug(f"Found {len(this_program)} entries for {progname} in schedule for tonight")
             if len(this_program) > 0:
                 observers = this_program[0]['Observers']
                 log.info(f"Setting PROGNAME={progname} and observer list based on telescope schedule:")
                 log.info(f"{observers}")
-                SetProgram.execute({'progname': progname})
                 SetObserver.execute({'observer': observers})
             else:
                 log.error(f"Failed to set observers. Could not find this program on the schedule.")
