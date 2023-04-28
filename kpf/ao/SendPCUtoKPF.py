@@ -25,7 +25,7 @@ class SendPCUtoKPF(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        PCSstagekw = ktl.cache('ao', 'PCSFSTST')
+        PCSstagekw = ktl.cache('ao', 'PCSFNAME')
         log.info(f"Sending PCU to KPF")
         PCSstagekw.write('kpf')
         shim_time = cfg.getfloat('times', 'ao_pcu_shim_time', fallback=5)

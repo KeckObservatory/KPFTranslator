@@ -19,7 +19,7 @@ class SendPCUtoHome(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        PCSstagekw = ktl.cache('ao', 'PCSFSTST')
+        PCSstagekw = ktl.cache('ao', 'PCSFNAME')
         log.info(f"Sending PCU to Home")
         PCSstagekw.write('home')
         shim_time = cfg.getfloat('times', 'ao_pcu_shim_time', fallback=5)
