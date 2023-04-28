@@ -424,10 +424,13 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                     model_center = xplot_values[peak_index]
                 else:
                     model_center = yfit
-#             log.info(f"  Using model center = {model_center:.1f}")
             ax1.plot(model_pix+model_center, fit(model_pix)*flux_map_i[peak_index],
                      color=line[0].get_c(), linestyle=':', alpha=0.7,
                      label=f'Model, center={model_center:.1f}')
+            ax1.plot(model_pix+model_center, fit(model_pix+1)*flux_map_i[peak_index],
+                     color=line[0].get_c(), linestyle=':', alpha=0.3)
+            ax1.plot(model_pix+model_center, fit(model_pix-1)*flux_map_i[peak_index],
+                     color=line[0].get_c(), linestyle=':', alpha=0.3)
         ax2.plot(xplot_values, emcount_map_i,
                  marker='o', ds='steps-mid', alpha=1,
                  label=f'SNR {iterated_axis_name}={iterated_pix_value:.1f}')
