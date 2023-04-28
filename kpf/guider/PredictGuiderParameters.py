@@ -1,6 +1,9 @@
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.guider.SetGuiderGain import SetGuiderGain
+from kpf.guider.SetGuiderFPS import SetGuiderFPS
+
 
 # Engineering OBs (not consistent)
 # Jmag, Gain
@@ -54,7 +57,11 @@ class PredictGuiderParameters(KPFTranslatorFunction):
             fps = 10
         log.info(f"Predicted GuideCamGain = {gain}")
         log.info(f"Predicted GuideFPS = {fps:d}")
-        return {'GuideCamGain': gain, 'GuideFPS': fps}
+        result = {'GuideCamGain': gain, 'GuideFPS': fps}
+        if args.get('set', False):
+            SetGuiderGain.execute(result)
+            SetGuiderFPS.execute(result)
+        return result
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -64,4 +71,7 @@ class PredictGuiderParameters(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         parser.add_argument('Jmag', type=float,
                             help="The J magnitude of the target")
+        parser.add_argument("--set", dest="set",
+            default=False, action="store_true",
+            help="Set these values after calculating?")
         return super().add_cmdline_args(parser, cfg)
