@@ -24,7 +24,7 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
         kpffiu = ktl.cache('kpffiu')
         log.debug(f"Setting FIU mode to {dest}")
         kpffiu['MODE'].write(dest, wait=args.get('wait', True))
-        shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=2)
+        shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=5)
         time.sleep(shim_time)
 
     @classmethod
