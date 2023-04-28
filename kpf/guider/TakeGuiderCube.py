@@ -34,7 +34,7 @@ class TakeGuiderCube(KPFTranslatorFunction):
         initial_all_loops = kpfguide['ALL_LOOPS'].read()
 
         # Do we want to take the image cube?
-        collect_image_cube = args.get('ImageCube', False)
+        collect_image_cube = args.get('ImageCube', True)
         set_trigcube = {True: 'Active', False: 'Inactive'}[collect_image_cube]
         kpfguide['TRIGCUBE'].write(set_trigcube)
 
