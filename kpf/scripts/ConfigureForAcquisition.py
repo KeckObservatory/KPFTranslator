@@ -14,7 +14,7 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.scripts.ExecuteSlewCal import ExecuteSlewCal
 from kpf.calbench.SetCalSource import SetCalSource
-from kpf.guider.PredictGuiderParameters import predict_guider_parameters
+from kpf.guider.PredictGuiderParameters import PredictGuiderParameters
 from kpf.guider.SetGuiderFPS import SetGuiderFPS
 from kpf.guider.SetGuiderGain import SetGuiderGain
 from kpf.fiu.InitializeTipTilt import InitializeTipTilt
@@ -110,7 +110,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             if OB.get('GuideFPS', None) is not None:
                 SetGuiderFPS.execute(OB)
         elif guide_mode == 'auto':
-            guider_parameters = predict_guider_parameters(OB.get('Jmag'))
+            guider_parameters = PredictGuiderParameters.execute({OB})
             SetGuiderGain.execute(guider_parameters)
             SetGuiderFPS.execute(guider_parameters)
         else:
