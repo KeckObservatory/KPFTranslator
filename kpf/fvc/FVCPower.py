@@ -44,7 +44,8 @@ class FVCPower(KPFTranslatorFunction):
         outletname = kpfpower[f"{outlet}_NAME"].read()
         log.debug(f"Turning {pwr} {camera} FVC (outlet {outlet}: {outletname})")
         kpfpower[f"KPFFVC{camnum}"].write(pwr)
-        time.sleep(1)
+        shim = cfg.getfloat('times', 'fvc_command_timeshim', fallback=2)
+        time.sleep(shim)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -54,7 +55,7 @@ class FVCPower(KPFTranslatorFunction):
         kpfpower = ktl.cache('kpfpower')
         outlet = kpfpower[f"KPFFVC{camnum}_OUTLETS"].read().strip('kpfpower.')
         pwr = args.get('power')
-        timeout = cfg.getfloat('times', 'lamp_response_time', fallback=1)
+        timeout = cfg.getfloat('times', 'fvc_command_timeout', fallback=1)
         success = ktl.waitFor(f"($kpfpower.{outlet} == {pwr})", timeout=timeout)
         if success is False:
             raise FailedToReachDestination(kpfpower[outlet].read(), pwr)
