@@ -26,17 +26,16 @@ class StopTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfguide = ktl.cache('kpfguide')
         timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
-        expr = f"($kpfguide.TIPTILT_CALC == Inactive) "
-        success = ktl.waitFor(expr, timeout=timeout)
+        TIPTILT_CALC = ktl.cache('kpfguide', 'TIPTILT_CALC')
+        success = TIPTILT_CALC.waitFor("== 'Inactive'")
         if success is False:
-            raise FailedToReachDestination(kpfguide['TIPTILT_CALC'].read(), 'Inactive')
-        expr = f"($kpfguide.TIPTILT_CONTROL == Inactive) "
-        success = ktl.waitFor(expr, timeout=timeout)
+            raise FailedToReachDestination(TIPTILT_CALC.read(), 'Inactive')
+        TIPTILT_CONTROL = ktl.cache('kpfguide', 'TIPTILT_CONTROL')
+        success = TIPTILT_CONTROL.waitFor("== 'Inactive'")
         if success is False:
-            raise FailedToReachDestination(kpfguide['TIPTILT_CONTROL'].read(), 'Inactive')
-        expr = f"($kpfguide.OFFLOAD == Inactive) "
-        success = ktl.waitFor(expr, timeout=timeout)
+            raise FailedToReachDestination(TIPTILT_CONTROL.read(), 'Inactive')
+        OFFLOAD = ktl.cache('kpfguide', 'OFFLOAD')
+        success = OFFLOAD.waitFor("== 'Inactive'")
         if success is False:
-            raise FailedToReachDestination(kpfguide['OFFLOAD'].read(), 'Inactive')
+            raise FailedToReachDestination(OFFLOAD.read(), 'Inactive')
