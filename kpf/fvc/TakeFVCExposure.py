@@ -21,6 +21,12 @@ class TakeFVCExposure(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
+        # Check if power is on
+        camera = args.get('camera')
+        camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3}[camera]
+        powerkw = ktl.cache('kpfpower', f"KPFFVC{camnum}")
+        if powerkw.read() != 'On':
+            raise FailedPreCondition(f"{camera}FVC power is not On")
 
     @classmethod
     def perform(cls, args, logger, cfg):
