@@ -110,7 +110,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             if OB.get('GuideFPS', None) is not None:
                 SetGuiderFPS.execute(OB)
         elif guide_mode == 'auto':
-            guider_parameters = PredictGuiderParameters.execute({OB})
+            guider_parameters = PredictGuiderParameters.execute(OB)
             SetGuiderGain.execute(guider_parameters)
             SetGuiderFPS.execute(guider_parameters)
         else:
