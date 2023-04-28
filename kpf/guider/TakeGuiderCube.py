@@ -63,7 +63,7 @@ class TakeGuiderCube(KPFTranslatorFunction):
         '''
         parser.add_argument('duration', type=float,
                             help='The duration in seconds')
-        parser.add_argument("--ImageCube", dest="ImageCube",
+        parser.add_argument("--noTRIGCUBE", dest="ImageCube",
                             default=True, action="store_false",
                             help="Collect the full image cube?")
         return super().add_cmdline_args(parser, cfg)
