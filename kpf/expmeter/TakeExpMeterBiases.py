@@ -6,8 +6,8 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
-from kpf.scripts import (set_script_keywords, clear_script_keywords,
-                         add_script_log, check_script_running)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
 from kpf.expmeter.BuildMasterBias import BuildMasterBias
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.WaitForCalSource import WaitForCalSource
