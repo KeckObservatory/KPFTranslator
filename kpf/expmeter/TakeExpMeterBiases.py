@@ -1,9 +1,12 @@
 import time
+from pathlib import Path
+
 import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.expmeter.BuildMasterBias import BuildMasterBias
 
 
 class TakeExpMeterBiases(KPFTranslatorFunction):
@@ -36,6 +39,7 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         # Check if we're ok to take data
         allowscheduledcals = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
         if allowscheduledcals.read(binary=True) == False:
+            log.warning(f'kpfconfig.ALLOWSCHEDULEDCALS=No. Not taking biases.')
             return []
 
         # Proceed with taking biases
@@ -53,20 +57,36 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         kpf_expmeter['HEIGHT'].write(1024)
         kpf_expmeter['EXPOSURE'].write(0.12)
         kpf_expmeter['OBJECT'].write('bias')
+        kpf_expmeter['OBSERVER'].write('TakeExpMeterBiases')
+        kpf_expmeter['EXPMODE'].write('Continuous')
 
-        kpf_expmeter['EXPMODE'].write('Single')
-        biases = []
-        for i in nExp:
-            ready = kpf_expmeter['EXPSTATE'].waitFor("== 'Ready", timeout=60)
-            if ready is not True:
-                raise KPFError(f"Exposure Meter did not reach ready state")
-            log.debug(f"Taking bias {i+1}/{nExp}")
-            kpf_expmeter['EXPOSE'].write('Start')
-            kpf_expmeter['EXPSTATE'].waitFor("== 'Ready", timeout=5)
-            if ready is not True:
-                raise KPFError(f"Exposure Meter did not reach ready state")
-            lastfile = kpf_expmeter['FITSFILE'].read()
-            biases.append(lastfile)
+        ready = kpf_expmeter['EXPSTATE'].waitFor("== 'Ready'", timeout=60)
+        if ready is not True:
+            raise KPFException(f"Exposure Meter did not reach ready state")
+
+        # Start continuous exposures
+        log.info(f"Starting continuous exposures")
+        kpf_expmeter['EXPOSE'].write('Start')
+        started = kpf_expmeter['EXPSTATE'].waitFor("!= 'Ready'", timeout=5)
+        if started is not True:
+            raise KPFException(f"Exposure Meter did not start exposures")
+        
+        got_frames = kpf_expmeter['SEQNUM'].waitFor(f"== {nExp}", timeout=2*nExp)
+        if got_frames is not True:
+            raise KPFException(f"Exposure Meter did not get all exposures")
+        log.info(f"Stopping continuous exposures")
+        kpf_expmeter['EXPOSE'].write('End')
+
+        # Arbitrary wait to let file writing and DRP finish
+        time.sleep(2)
+
+        # Get FITSFILE
+        lastfile = Path(kpf_expmeter['FITSFILE'].read())
+        if lastfile.exists() is False:
+            raise KPFException(f"Could not find file: {lastfile}")
+        filename_parts = lastfile.name.split('.')
+        filename_parts[1] = '*'
+        biases = [f for f in lastfile.parent.glob('.'.join(filename_parts))]
 
         # Set exposure meter back to operations settings
         log.info(f"Setting exposure meter to operational windowing")
@@ -77,6 +97,10 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         kpf_expmeter['WIDTH'].write(651)
         kpf_expmeter['HEIGHT'].write(300)
         kpf_expmeter['OBJECT'].write('')
+
+        if args.get('combine', False) is True:
+            BuildMasterBias.execute({'files': biases,
+                                     'output': args.get('output')})
 
         return biases
 
@@ -90,4 +114,10 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         '''
         parser.add_argument('nExp', type=int,
                             help="The number of frames to take")
+        parser.add_argument("-c", "--combine", dest="combine",
+                            default=False, action="store_true",
+                            help="Combine the files in to a master bias?")
+        parser.add_argument("--output", dest="output", type=str,
+                            default='~/bias.fits',
+                            help="The output combined bias file.")
         return super().add_cmdline_args(parser, cfg)

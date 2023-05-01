@@ -56,10 +56,14 @@ links:
     WaitForND2:
         cmd: calbench.WaitForND2.WaitForND2
     # ExpMeter
+    BuildMasterBias:
+        cmd: expmeter.BuildMasterBias.BuildMasterBias
     SetExpMeterExptime:
         cmd: expmeter.SetExpMeterExptime.SetExpMeterExptime
     PredictExpMeterParameters:
         cmd: expmeter.PredictExpMeterParameters.PredictExpMeterParameters
+    TakeExpMeterBiases:
+        cmd: expmeter.TakeExpMeterBiases.TakeExpMeterBiases
     # FIU
     ConfigureFIU:
         cmd: fiu.ConfigureFIU.ConfigureFIU
