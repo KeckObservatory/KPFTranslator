@@ -7,6 +7,10 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.expmeter.BuildMasterBias import BuildMasterBias
+from kpf.calbench.SetCalSource import SetCalSource
+from kpf.calbench.WaitForCalSource import WaitForCalSource
+from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
+from kpf.spectrograph.WaitForReady import WaitForReady
 
 
 class TakeExpMeterBiases(KPFTranslatorFunction):
@@ -59,6 +63,12 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         kpf_expmeter['OBJECT'].write('bias')
         kpf_expmeter['OBSERVER'].write('TakeExpMeterBiases')
         kpf_expmeter['EXPMODE'].write('Continuous')
+
+        log.debug('Set Octagon to Home and close all source select shutters')
+        SetCalSource.execute({'CalSource': 'Home'})
+        WaitForReady.execute({})
+        SetSourceSelectShutters.execute({})
+        WaitForCalSource.execute({'CalSource': 'Home'})
 
         ready = kpf_expmeter['EXPSTATE'].waitFor("== 'Ready'", timeout=60)
         if ready is not True:
