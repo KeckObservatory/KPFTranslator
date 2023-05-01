@@ -6,6 +6,8 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.scripts import (set_script_keywords, clear_script_keywords,
+                         add_script_log, check_script_running)
 from kpf.expmeter.BuildMasterBias import BuildMasterBias
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.WaitForCalSource import WaitForCalSource
@@ -23,6 +25,7 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
     :nExp: The number of frames to take
     '''
     @classmethod
+    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'nExp', allowed_types=[int])
         kpf_expmeter = ktl.cache('kpf_expmeter')
@@ -39,6 +42,8 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
             raise FailedPreCondition('Exposure meter not near target temperature')
 
     @classmethod
+    @register_script(Path(__file__).name, os.getpid())
+    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         # Check if we're ok to take data
         allowscheduledcals = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
