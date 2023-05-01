@@ -134,6 +134,6 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
                             default=False, action="store_true",
                             help="Combine the files in to a master bias?")
         parser.add_argument("--output", dest="output", type=str,
-                            default='~/bias.fits',
+                            default='',
                             help="The output combined bias file.")
         return super().add_cmdline_args(parser, cfg)
