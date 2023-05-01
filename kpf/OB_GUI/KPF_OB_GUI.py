@@ -452,6 +452,8 @@ class MainWindow(QMainWindow):
                 self.update_OB(key, self.target_names[key])
             self.log.debug(f"other names: {self.target_names['all']}")
             self.other_names.setText(', '.join(self.target_names['all']))
+            self.TargetName.setToolTip(', '.join(self.target_names['all']))
+            self.GaiaID.setToolTip(', '.join(self.target_names['all']))
         self.twomass_params = BuildOBfromQuery.get_Jmag(self.target_names['2MASSID'])
         if self.twomass_params is not None:
             for key in self.twomass_params:
