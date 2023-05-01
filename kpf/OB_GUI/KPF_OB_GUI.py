@@ -159,9 +159,9 @@ class MainWindow(QMainWindow):
         slewcaltime_kw.stringCallback.connect(self.update_slewcaltime_value)
 
         # request slew cal
-        self.slewcalreq_value = self.findChild(QLabel, 'slewcalreq_value')
-        slewcalreq_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALREQ'])
-        slewcalreq_kw.stringCallback.connect(self.update_slewcalreq_value)
+#         self.slewcalreq_value = self.findChild(QLabel, 'slewcalreq_value')
+#         slewcalreq_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALREQ'])
+#         slewcalreq_kw.stringCallback.connect(self.update_slewcalreq_value)
 
         # slew cal file
         self.slewcalfile_value = self.findChild(QLabel, 'slewcalfile_value')
@@ -405,7 +405,11 @@ class MainWindow(QMainWindow):
     # Slew cal file
     def update_slewcalfile_value(self, value):
         self.log.debug(f'update_slewcalfile_value: {value}')
-        self.slewcalfile_value.setText(f"{Path(value).name}")
+        output_text = f"{Path(value).name}"
+        match_expected = re.match('SlewCal_(.+)\.yaml', output_text)
+        if match_expected is not None:
+            output_text = match_expected.group(1)
+        self.slewcalfile_value.setText(output_text)
 
     ##-------------------------------------------
     ## Methods relating modifying OB fields

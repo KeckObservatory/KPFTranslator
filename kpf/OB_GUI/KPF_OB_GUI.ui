@@ -282,7 +282,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Slew Cal File:</string>
+        <string/>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -312,7 +312,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Request Slew Cal:</string>
+        <string>Slew Cal:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -332,18 +332,6 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLabel" name="slewcalreq_value">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>_</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
       <widget class="QLabel" name="slewcalfile_value">
        <property name="font">
         <font>
