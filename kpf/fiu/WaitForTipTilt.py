@@ -60,7 +60,7 @@ class WaitForTipTilt(KPFTranslatorFunction):
         else:
             log.debug('Obtained initial tip tilt lock')
             # Second, wait a few seconds to see if we keep lock
-            max_attempt_time = cfg.get('times', 'tip_tilt_max_attempt_time', fallback=60)
+            max_attempt_time = cfg.getfloat('times', 'tip_tilt_max_attempt_time', fallback=60)
             lost_lock = phase.waitFor('!= Tracking', timeout=loop_close_time)
             now = datetime.now()
             # If we didn't hold on to the star, lets try a little while longer
