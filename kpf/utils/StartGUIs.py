@@ -18,7 +18,11 @@ GUI_list = [
             {'name': 'KPF OB GUI',
              'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/OB_GUI/KPF_OB_GUI.py'],
              'display': 'control0',
-             'position': '0,255,35,-1,-1'},
+             'position': '0,5,50,-1,-1'},
+            {'name': 'KPF TipTilt GUI',
+             'cmd': ['kpf', 'start', 'tt_gui'],
+             'display': 'control0',
+             'position': '0,800,50,-1,-1'},
             # Control1
             #   To do: add Spectrograph GUI
             {'name': 'KPF Fiber Injection Unit (FIU)',
@@ -37,7 +41,7 @@ GUI_list = [
             {'name': 'Kpf eventsounds',
              'cmd':  ['eventsounds', '-a', 'kpf'],
              'display': 'control2',
-             'position': None},
+             'position': '0,250,75,-1,-1'},
             {'name': 'SAOImage kpfds9',
              'cmd':  ['kpf', 'start', 'kpfds9'],
              'display': 'control2',
