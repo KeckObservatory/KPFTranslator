@@ -37,7 +37,7 @@ class PredictGuiderParameters(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         Jmag = args.get('Jmag')
-        if Jmag < 5.0:
+        if Jmag < 5.5:
             gain = 'low'
             fps = 100
         elif Jmag < 8.0:
