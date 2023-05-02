@@ -26,16 +26,28 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
         kpffiu['MODE'].write(dest, wait=args.get('wait', True))
         shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=5)
         time.sleep(shim_time)
-
-    @classmethod
-    def post_condition(cls, args, logger, cfg):
-        dest = args.get('mode')
-        kpffiu = ktl.cache('kpffiu')
+        # Hack to check here and return result
+        # It seems like the CLI sees this exception even though it is caught by
+        # the ConfigureFIU code, so we'll not raise an exception and we'll
+        # instead return a status from this
         modes = kpffiu['MODE'].read()
         if dest.lower() not in modes.lower().split(','):
             msg = f"FIU reached {modes} while trying to reach {dest}"
-            raise KPFQuietException(msg)
-        return True
+            log.warning(msg)
+            return False
+        else:
+            return True
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
+#         dest = args.get('mode')
+#         kpffiu = ktl.cache('kpffiu')
+#         modes = kpffiu['MODE'].read()
+#         if dest.lower() not in modes.lower().split(','):
+#             msg = f"FIU reached {modes} while trying to reach {dest}"
+#             raise KPFQuietException(msg)
+#         return True
 
 
 ##-----------------------------------------------------------------------------
@@ -64,15 +76,23 @@ class ConfigureFIU(KPFTranslatorFunction):
         dest = args.get('mode')
         ntries = cfg.getint('retries', 'fiu_mode_tries', fallback=2)
         for i in range(ntries):
-            try:
-                ConfigureFIUOnce.execute({'mode': dest,
-                                          'wait': args.get('wait', True)})
-            except KPFQuietException:
+            ok = ConfigureFIUOnce.execute({'mode': dest,
+                                           'wait': args.get('wait', True)})
+            if ok is False:
                 log.warning(f'FIU move failed on attempt {i+1} of {ntries}')
                 shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=2)
                 time.sleep(shim_time)
             else:
                 break
+#             try:
+#                 ConfigureFIUOnce.execute({'mode': dest,
+#                                           'wait': args.get('wait', True)})
+#             except KPFQuietException:
+#                 log.warning(f'FIU move failed on attempt {i+1} of {ntries}')
+#                 shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=2)
+#                 time.sleep(shim_time)
+#             else:
+#                 break
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
