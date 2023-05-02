@@ -64,7 +64,7 @@ class WaitForTipTilt(KPFTranslatorFunction):
             lost_lock = phase.waitFor('!= Tracking', timeout=loop_close_time)
             now = datetime.now()
             # If we didn't hold on to the star, lets try a little while longer
-            while lost_lock == True and (now-t0).total_seconds() < max_attmpt_time:
+            while lost_lock == True and (now-t0).total_seconds() < max_attempt_time:
                 log.debug(f'Lost lock, trying again')
                 lost_lock = phase.waitFor('!= Tracking', timeout=loop_close_time)
 
