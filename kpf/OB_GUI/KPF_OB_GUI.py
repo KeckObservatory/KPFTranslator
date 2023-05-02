@@ -776,7 +776,7 @@ class MainWindow(QMainWindow):
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
         date = utnow-datetime.timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
-        tmp_file = Path(f'~/kpflogs/{date_str}/executedOB_{now_str}.yaml').expanduser()
+        tmp_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/executedOB_{now_str}.yaml').expanduser()
         print(tmp_file)
         self.write_to_this_file(tmp_file)
 
