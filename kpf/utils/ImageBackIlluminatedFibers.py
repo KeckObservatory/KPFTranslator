@@ -11,6 +11,8 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.fvc.FVCPower import FVCPower
+from kpf.fvc.SetFVCExpTime import SetFVCExpTime
 from kpf.fvc.TakeFVCExposure import TakeFVCExposure
 from kpf.calbench.CalLampPower import CalLampPower
 
@@ -20,68 +22,64 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        cameras = args.get('cameras', '').split(',')
-        for camera in cameras:
-            if camera not in ['CRED2', 'SCI', 'CAHK', 'EXT', 'ExpMeter']:
-                raise FailedPreCondition(f"Camera {camera} not supported")
+        pass
 
     @classmethod
-    @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
-        log.info('-------------------------')
-        log.info(f"Running {cls.__name__}")
-        for key in args:
-            log.debug(f"  {key}: {args[key]}")
-        log.info('-------------------------')
-
         this_file_name = Path(__file__).name.replace('.py', '')
         utnow = datetime.utcnow()
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
         date_str = (utnow-timedelta(days=1)).strftime('%Y%b%d').lower()
-        images_file = Path(f'~/kpflogs/{date_str}/{this_file_name}_images_{now_str}.txt')
+        log_path = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}')
+        images_file = log_path / Path(f'{this_file_name}_images_{now_str}.txt')
         images = Table(names=('file', 'camera', 'LED'),
                        dtype=('a90',  'a10',    'a10'))
 
-        # Set up FVCs
+        LEDoutlets = {'Science': 'E7',
+                      'Sky': 'E8',
+                      'CaHK': 'J7',
+                      'ExpMeter': 'H1'}
+        LEDnames = {'Science': 'Science Back-Illumination LED',
+                    'Sky': 'Sky Back-Illumination LED',
+                    'CaHK': 'HK Back-Illumination LED',
+                    'ExpMeter': 'Exp Meter Back Illum LED'}
+        exptimes = {'SCI': {'Science': 0.1,
+                            'Sky': 1,
+                            'ExpMeter': 2},
+                    'CAHK': {'CaHK': 5}
+                    }
         kpffvc = ktl.cache('kpffvc')
+        kpfpower = ktl.cache('kpfpower')
 
-        for LED in ['SciLED', 'SkyLED', 'CaHKLED', 'ExpMeterLED']:
-            log.info(f"Imaging with {LED} on")
-            for LEDname in ['SciLED', 'SkyLED', 'CaHKLED', 'ExpMeterLED']:
-                pwr = {True: 'on', False: 'off'}[LED == LEDname]
-                print(LEDname, pwr)
-
-            # Start FVC Exposures
-            nextfile = {}
-            for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-                if camera in args.get('cameras', '').split(','):
-                    nextfile[camera] = kpffvc[f"{camera}LASTFILE"].read()
-                    log.debug(f"  Nextfile for {camera} = {nextfile[camera]}")
-                    log.info(f"  Starting {camera} FVC exposure")
-                    TakeFVCExposure.execute({'camera': camera, 'wait': False})
-
-            # Collect files for FVC exposures
-            for camera in ['SCI', 'CAHK', 'CAL', 'EXT']:
-                if camera in args.get('cameras', '').split(','):
-                    log.info(f"  Looking for output file for {camera}")
-                    expr = f'($kpffvc.{camera}LASTFILE == "{nextfile[camera]}")'
-                    log.debug(f"  Waiting for: {expr}")
-                    if ktl.waitFor(expr, timeout=20) is False:
-                        lastfile = kpffvc[f'{camera}LASTFILE'].read()
-                        log.error('No new FVC file found')
-                        log.error(f"  expecting: {nextfile[camera]}")
-                        log.error(f"  kpffvc.{camera}LASTFILE = {lastfile}")
-                    else:
-                        lastfile = kpffvc[f'{camera}LASTFILE'].read()
-                        log.debug(f"Found {lastfile}")
-                        row = {'file': lastfile, 'camera': camera,
-                               'LED': LED}
-                        images.add_row(row)
-
+        def take_back_illuminated_image(camera, LEDname):
+            log.info(f"Taking back illuminated image of {LEDname} fiber with {camera} FVC")
+            FVCPower.execute({'camera': camera, 'power': 'on'})
+            # Take image with Science LED on
+            outlet = LEDoutlets[LEDname]
+            if LEDnames[LEDname] != kpfpower[f"OUTLET_{outlet}_NAME"].read():
+                raise KPFException(f"Expected outlet {outlet} to have name {LEDnames[LEDname]}")
+            log.debug('Turning LED on')
+            kpfpower[f"OUTLET_{outlet}"].write('On')
+            time.sleep(3)
+            SetFVCExpTime.execute({'camera': camera,
+                                   'exptime': exptimes[camera][LEDname]})
+            lastfile = TakeFVCExposure.execute({'camera': camera})
+            log.info(f'  LASTFILE: {lastfile}')
+            log.debug('Turning LED off')
+            kpfpower[f"OUTLET_{outlet}"].write('Off')
+            images.add_row({'file': lastfile,
+                            'camera': camera,
+                            'LED': LEDname})
             if images_file.exists():
                 images_file.unlink()
             images.write(images_file, format='ascii.csv')
 
+        if args.get('SCI', False) is True:
+            take_back_illuminated_image('SCI', 'Science')
+            take_back_illuminated_image('SCI', 'Sky')
+            take_back_illuminated_image('SCI', 'ExpMeter')
+        if args.get('CAHK', False) is True:
+            take_back_illuminated_image('CAHK', 'CaHK')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -91,6 +89,12 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser.add_argument('cameras', type=str,
-                            help='Comma separated list FVC cameras (SCI,CAHK,CAL)')
+        parser.add_argument("--Science", "--Sci", "--science", "--sci", "--SCI",
+                            dest="SCI",
+                            default=False, action="store_true",
+                            help="Image science and sky fibers with science FVC?")
+        parser.add_argument("--CaHK", "--HK", "--cahk", "--hk", "--CAHK",
+                            dest="CAHK",
+                            default=False, action="store_true",
+                            help="Image CaHK fiber with CaHK FVC?")
         return super().add_cmdline_args(parser, cfg)

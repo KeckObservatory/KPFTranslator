@@ -53,6 +53,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
                               f"{regfile}"]
                 log.debug(f"Running: {' '.join(overlaycmd)}")
                 subprocess.call(' '.join(overlaycmd), shell=True)
+        return kpffvc[f"{camera}LASTFILE"].read()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
