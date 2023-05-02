@@ -365,6 +365,7 @@ class GridSearch(KPFTranslatorFunction):
 
         if grid == 'TipTilt':
             SetTipTiltTargetPixel.execute({'x': xpix0, 'y': ypix0})
+            StopTipTilt.execute({})
         elif grid == 'SciADC':
             kpffiu['ADC1NAM'].write('Null')
             kpffiu['ADC2NAM'].write('Null')
