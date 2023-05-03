@@ -304,6 +304,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
     va = hdul[0].header.get('VA')
     flux_map = hdul[5].data[4]
     color_maps = hdul[3].data
+    color_maps_colors = [hdul[3].header.get(f"Layer{i}") for i in [1,2,3]]
     snr_map = hdul[5].data[6]
     emcount_map = hdul[5].data[7]
     nlayers, ny, nx = hdul[5].data.shape
@@ -318,7 +319,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
 
     plt.figure(figsize=(15,15))
 
-    plt.subplot(5,1,(1,2))
+    plt.subplot(3,1,1)
     norm = viz.ImageNormalize(flux_map,
                               interval=viz.MinMaxInterval(),
                               stretch=viz.LinearStretch())
@@ -368,7 +369,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                       head_width=arrow_length/5, color='b')
 
 
-    ax1 = plt.subplot(5,1,(3,4))
+    ax1 = plt.subplot(3,1,2)
     ax1.set_xticks(xplot_values)
     ax1.set_xticklabels(xplot_strings)
     plt.ylim(0,flux_map.max()*1.15)
@@ -379,13 +380,16 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
     plt.xlim(xlim)
     plt.ylabel('Flux')
 
-    ax2 = plt.subplot(5,1,5)
+    ax2 = plt.subplot(3,1,3)
     ax2.set_xticks(xplot_values)
     ax2.set_xticklabels(xplot_strings)
-    plt.ylim(0,(emcount_map.max()+1)*1.15)
+    plt.ylim(0,flux_map.max()*1.15)
+    xpmin = xplot_values.min()
+    xpmax = xplot_values.max()
+    xlim = (xpmin-(xpmax-xpmin)*0.04,
+            xpmax+(xpmax-xpmin)*0.04)
     plt.xlim(xlim)
-    plt.ylabel('N ExpMeter')
-    plt.xlabel(f"{plot_axis_name} pixels")
+    plt.ylabel('Flux')
 
     for i in range(nplots):
         iterated_pix_value = iterated_pix_values[i]
@@ -399,9 +403,10 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
             color_maps_i = color_maps[:,:,i]
             snr_map_i = snr_map[:,i]
             emcount_map_i = emcount_map[:,i]
-        line = ax1.plot(xplot_values, flux_map_i,
-                 marker='o', ds='steps-mid', alpha=1,
-                 label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
+        if i == 0:
+            line = ax1.plot(xplot_values, flux_map_i,
+                     marker='o', color='k', ds='steps-mid', alpha=1,
+                     label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
 
         if nplots == 1:
             markers = {0: 'bx-', 1: 'g^-', 2: 'r+-'}
@@ -409,8 +414,9 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                 color_maps_il = color_maps_i[l,:]
                 color_maps_il /= color_maps_il.max()
                 color_maps_il *= flux_map_i.max()
-                lineb = ax1.plot(xplot_values, color_maps_il, f"{markers[l]}",
-                                 ds='steps-mid', alpha=0.5)
+                lineb = ax2.plot(xplot_values, color_maps_il, f"{markers[l]}",
+                                 ds='steps-mid', alpha=0.5,
+                                 label=f"{color_maps_colors[l]}")
 
         peak_index = np.argmax(flux_map_i)
         if mode == 'TipTilt':
@@ -431,12 +437,20 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                      color=line[0].get_c(), linestyle=':', alpha=0.3)
             ax1.plot(model_pix+model_center, fit(model_pix-1)*flux_map_i[peak_index],
                      color=line[0].get_c(), linestyle=':', alpha=0.3)
-        ax2.plot(xplot_values, emcount_map_i,
-                 marker='o', ds='steps-mid', alpha=1,
-                 label=f'SNR {iterated_axis_name}={iterated_pix_value:.1f}')
+
+            if nplots == 1:
+                ax2.plot(model_pix+model_center, fit(model_pix)*flux_map_i[peak_index],
+                         color=line[0].get_c(), linestyle=':', alpha=0.7,
+                         label=f'Model, center={model_center:.1f}')
+                ax2.plot(model_pix+model_center, fit(model_pix+1)*flux_map_i[peak_index],
+                         color=line[0].get_c(), linestyle=':', alpha=0.3)
+                ax2.plot(model_pix+model_center, fit(model_pix-1)*flux_map_i[peak_index],
+                         color=line[0].get_c(), linestyle=':', alpha=0.3)
+
     ax1.grid()
     ax1.legend(loc='best')
     ax2.grid()
+    ax2.legend(loc='best')
 
     log.info(f"  Saving: {ouput_cube_graphic}")
     plt.savefig(ouput_cube_graphic, bbox_inches='tight', pad_inches=0.10)
@@ -616,12 +630,13 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
 ##-------------------------------------------------------------------------
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
-def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7,
+def analyze_grid_search(logfile, fiber='Science', model_seeing='0.7',
                         xfit=None, yfit=None, applydar=False,
                         generate_cred2=False):
-    if f"{model_seeing:.2f}" not in ['0.50', '0.70', '0.90']:
+    if f"{float(model_seeing):.2f}" not in ['0.50', '0.70', '0.90']:
         print(f"Seeing models only available for 0.50, 0.70, and 0.90 arcsec")
         return
+    model_seeing = float(model_seeing)
     model = f"Fiber Coupling Model seeing {model_seeing:.2f} arcsec.csv"
     logfile = Path(logfile)
     assert logfile.exists()
@@ -786,8 +801,9 @@ class AnalyzeGridSearch(KPFTranslatorFunction):
         parser.add_argument("--fiber", dest="fiber", type=str,
             default='Science',
             help="The fiber being examined (Science, Sky, or EMSky).")
-        parser.add_argument("--seeing", dest="seeing", type=float,
-            default=0.7,
+        parser.add_argument("--seeing", dest="seeing", type=str,
+            choices=['0.5', '0.7', '0.9'],
+            default='0.7',
             help="The seeing model to overlay on the fiber coupling plot.")
         parser.add_argument("--xfit", dest="xfit", type=float,
             default=335.5,
