@@ -13,6 +13,8 @@ def get_names_from_gaiaid(gaiaid):
     hdnumber = '?'
     twomassid = '?'
     names = Simbad.query_objectids(f"Gaia DR3 {gaiaid}")
+    if names is None:
+        return None
     for name in names:
         is2mass = re.match('^2MASS\s+(J[\d\+\-]+)', name[0])
         if is2mass is not None:
@@ -146,6 +148,9 @@ class BuildOBfromQuery(KPFTranslatorFunction):
         OB['GaiaID'] = f"DR3 {gaiaid}"
         # Get target name and 2MASS ID from Gaia ID
         names = get_names_from_gaiaid(gaiaid)
+        if names is None:
+            log.warning(f"Query for {gaiaid} failed to return names")
+            return
         OB['TargetName'] = f"{names['TargetName']}"
         OB['2MASSID'] = f"{names['2MASSID']}"
         # Using 2MASS ID query for Jmag
