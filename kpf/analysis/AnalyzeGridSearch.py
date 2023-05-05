@@ -221,11 +221,25 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
         norm_spec_cube[w,:,:] = spectral_slice / spectral_slice.mean()
 
     flux_map = np.sum(spec_cube, axis=0) / np.sum(spec_cube, axis=0).max()
-    npix = 30
-    color_images = np.zeros((3,ny,nx))
-    color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
-    color_images[1,:,:] = np.sum(spec_cube[index_550nm-npix:index_550nm+npix,:,:], axis=0)
-    color_images[2,:,:] = np.sum(spec_cube[index_650nm-npix:index_650nm+npix,:,:], axis=0)
+#     npix = 30
+#     color_images = np.zeros((3,ny,nx))
+#     color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
+#     color_images[1,:,:] = np.sum(spec_cube[index_550nm-npix:index_550nm+npix,:,:], axis=0)
+#     color_images[2,:,:] = np.sum(spec_cube[index_650nm-npix:index_650nm+npix,:,:], axis=0)
+
+    fluxcubehdu = fits.ImageHDU()
+    fluxcubehdu.header.set('Name', 'Three_Color_Cube')
+    fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
+    wavs = np.array(wavs)
+    wavbin_centers = [475, 525, 575, 625, 675, 725, 775, 825]
+    delta_w = 25
+    color_images = np.zeros((len(wavbin_centers),ny,nx))
+    for widx,wav_center in enumerate(wavbin_centers):
+        w = np.where((wavs > wav_center-delta_w) & (wavs < wav_center+delta_w))[0]
+        print(f"For {wav_center} nm, found {len(w)} bins")
+        color_images[widx,:,:] = np.sum(spec_cube[w,:,:], axis=0)
+        fluxcubehdu.header.set(f'Layer{widx+1}', f'{wavbin_centers[widx]}nm')
+
 
     color_cube = np.zeros((2,ny,nx))
     color_cube[0,:,:] = color_images[0,:,:]/color_images[1,:,:]
@@ -245,12 +259,12 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     fluxmaphdu.header.set('Name', 'Normalized_Flux_Map')
     fluxmaphdu.header.set('OBJECT', 'Normalized_Flux_Map')
     fluxmaphdu.data = flux_map
-    fluxcubehdu = fits.ImageHDU()
-    fluxcubehdu.header.set('Name', 'Three_Color_Cube')
-    fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
-    fluxcubehdu.header.set('Layer1', '450nm')
-    fluxcubehdu.header.set('Layer2', '550nm')
-    fluxcubehdu.header.set('Layer3', '650nm')
+#     fluxcubehdu = fits.ImageHDU()
+#     fluxcubehdu.header.set('Name', 'Three_Color_Cube')
+#     fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
+#     fluxcubehdu.header.set('Layer1', '450nm')
+#     fluxcubehdu.header.set('Layer2', '550nm')
+#     fluxcubehdu.header.set('Layer3', '650nm')
     fluxcubehdu.data = color_images
     colormaphdu = fits.ImageHDU()
     colormaphdu.header.set('Name', 'Color_Map_Ratios')
