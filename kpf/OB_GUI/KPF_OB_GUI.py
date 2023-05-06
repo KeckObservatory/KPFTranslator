@@ -722,6 +722,8 @@ class MainWindow(QMainWindow):
                 # Re-run this last to make sure ND filters get greyed out or not properly
                 if 'TakeSimulCal' in contents['SEQ_Observations'][0].keys():
                     self.update_OB('TakeSimulCal', contents['SEQ_Observations'][0]['TakeSimulCal'])
+                if 'AutoExpMeter' in contents['SEQ_Observations'][0].keys():
+                    self.update_OB('AutoExpMeter', contents['SEQ_Observations'][0]['AutoExpMeter'])
                 # save fname as path to use in future
                 self.file_path = Path(fname).parent
                 # Clear other names and star list line
