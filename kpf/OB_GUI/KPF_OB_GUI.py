@@ -451,7 +451,11 @@ class MainWindow(QMainWindow):
         if len(gaiaid.split(' ')) == 2:
             gaiaid = gaiaid.split(' ')[1]
         self.target_names = BuildOBfromQuery.get_names_from_gaiaid(gaiaid)
-        if self.target_names is not None:
+        if self.target_names is None:
+            self.log.error(f'Failed to retrieve target names using {gaiaid}')
+            self.GaiaID.setToolTip(f'Failed to retrieve target names using {gaiaid}')
+            return
+        else:
             for key in ['TargetName', '2MASSID']:
                 self.update_OB(key, self.target_names[key])
             self.log.debug(f"other names: {self.target_names['all']}")
