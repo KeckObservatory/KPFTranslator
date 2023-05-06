@@ -7,7 +7,27 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input, LostTipTiltStar)
 
 
+
 class WaitForTipTilt(KPFTranslatorFunction):
+    '''Dumb versions which simply waits for a few seconds.
+
+    ARGS:
+    =====
+    None
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        loop_close_time = cfg.getfloat('times', 'tip_tilt_close_time', fallback=3)
+        time.sleep(loop_close_time)
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
+
+class WaitForTipTilt_usephase(KPFTranslatorFunction):
     '''Attempts to determine whether tip tilt loops have started successfully.
 
     This logic is just meant to put some basic starting checks on the system to
@@ -44,7 +64,7 @@ class WaitForTipTilt(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        return True
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
