@@ -719,6 +719,9 @@ class MainWindow(QMainWindow):
                             self.update_OB(seq_key, seq_value)
                     else:
                         self.update_OB(key, value)
+                # Re-run this last to make sure ND filters get greyed out or not properly
+                if 'TakeSimulCal' in contents['SEQ_Observations'][0].keys():
+                    self.update_OB('TakeSimulCal', contents['SEQ_Observations'][0]['TakeSimulCal'])
                 # save fname as path to use in future
                 self.file_path = Path(fname).parent
                 # Clear other names and star list line
@@ -781,7 +784,6 @@ class MainWindow(QMainWindow):
         date = utnow-datetime.timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
         tmp_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/executedOB_{now_str}.yaml').expanduser()
-        print(tmp_file)
         self.write_to_this_file(tmp_file)
 
 #         RunSciOB_cmd = 'echo "Hello World" ; sleep 10'
