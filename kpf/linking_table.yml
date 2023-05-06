@@ -8,6 +8,8 @@ links:
         cmd: analysis.AnalyzeGridSearch.AnalyzeGridSearch
     AnalyzeGuideCube:
         cmd: analysis.AnalyzeGuideCube.AnalyzeGuideCube
+    Fit2DGridSearch:
+        cmd: analysis.Fit2DGridSearch.Fit2DGridSearch
     # AO
     ControlAOHatch:
         cmd: ao.ControlAOHatch.ControlAOHatch
