@@ -41,7 +41,14 @@ class BuildMasterBias(KPFTranslatorFunction):
         else:
             outputfile = Path(args.get('output')).expanduser()
         log.info(f"Writing {outputfile}")
-        fits.writeto(outputfile, median, overwrite=True)
+        hdu = fits.PrimaryHDU(data=median)
+        hdu.header.set('COMBTYPE', 'median', 'Combine type')
+        hdu.header.set('NCOMBINE', len(biasfiles), 'No. of individual biases')
+        for i,biasfile in enumerate(biasfiles):
+            hdu.header.set(f"INPUTF{i+1:02d}", biasfile.name,
+                           'One of the input files')
+        hdul = fits.HDUList([hdu])
+        hdul.writeto(outputfile,overwrite =True)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
