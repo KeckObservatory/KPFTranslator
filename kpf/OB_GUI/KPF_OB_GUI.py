@@ -382,7 +382,7 @@ class MainWindow(QMainWindow):
     # Slew Cal Timer
     def update_slewcaltime_value(self, value):
         '''Updates value in QLabel and sets color'''
-        self.log.debug(f'update_slewcaltime_value: {value}')
+#         self.log.debug(f'update_slewcaltime_value: {value}')
         value = float(value)
         self.slewcaltime_value.setText(f"{value:.1f} hrs")
         if value < self.good_slew_cal_time:
