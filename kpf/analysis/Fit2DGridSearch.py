@@ -135,9 +135,13 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
         va = float(hdul[0].header.get('VA'))
 
     Xcenters, wavs, s = fit_fiber_centering_parameters(fgs_cube_fileX, xcent=xcent, plot=False, targname=targname)
+#     print(Xcenters, wavs, s)
+    print(f"X seeing = {np.mean(s):.1f}")
     if np.std(s) > 0.01:
         print(f"Seeing varied during run: {s}")
     Ycenters, wavs, s = fit_fiber_centering_parameters(fgs_cube_fileY, ycent=ycent, plot=False, targname=targname)
+#     print(Ycenters, wavs, s)
+    print(f"Y seeing = {np.mean(s):.1f}")
     if np.std(s) > 0.01:
         print(f"Seeing varied during run: {s}")
     ncolors = len(Xcenters)-1
@@ -148,28 +152,24 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
     plt.title(title)
     plt.plot([xcent, xcent], [ycent-2,ycent+2], 'k-')
     plt.plot([xcent-3, xcent+3], [ycent,ycent], 'k-')
-    for i,center in enumerate(zip(Xcenters, Ycenters)):
-        if i == 0:
-            plt.plot(center[0], center[1], marker='o',
-                     color='k',
-                     label=f'{i}',
-                     alpha=0.5)            
+
+    for i,center in enumerate(zip(Xcenters, Ycenters, wavs)):
+        xc, yc, wc = center
+        try:
+            color = mpl.colormaps['bwr'](i*cstep)
+        except AttributeError as e:
+            from matplotlib import cm
+            color = cm.bwr(i*cstep)
+        plt.plot([xc], [yc], marker='o', linestyle='',
+                 color=color,
+                 label=f'{wc:.0f} nm',
+                 markersize=15, alpha=0.7)
+        if np.isclose(wc, 550, atol=0.001):
             arrow_length = 1
             arrow_dx = -arrow_length*np.cos((va-90)*np.pi/180)
             arrow_dy = -arrow_length*np.sin((va-90)*np.pi/180)
-            plt.arrow(center[0], center[1], arrow_dx, arrow_dy,
+            plt.arrow(xc, yc, arrow_dx, arrow_dy,
                       head_width=arrow_length/5, color='k', alpha=0.2)
-        else:
-            try:
-                color = mpl.colormaps['bwr'](i*cstep)
-            except AttributeError as e:
-                from matplotlib import cm
-                color = cm.bwr(i*cstep)
-
-            plt.plot([center[0]], [center[1]], marker='o', linestyle='',
-                     color=color,
-                     label=f'{wavs[i]:.0f} nm',
-                     markersize=15, alpha=0.7)
 
     plt.grid()
     plt.xlabel('X pix')
