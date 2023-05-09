@@ -36,7 +36,7 @@ log.addHandler(LogConsoleHandler)
 ##-------------------------------------------------------------------------
 ## plot_cube_stats
 ##-------------------------------------------------------------------------
-def plot_cube_stats(file, plotfile=None):
+def plot_cube_stats(file, plotfile=None, start=None, end=None):
     t, metadata, _ = read_file(file)
     fps = metadata['FPS']
 
@@ -128,8 +128,8 @@ def plot_cube_stats(file, plotfile=None):
     plt.plot(times[~objectxerr.mask], t['object1_flux'][~objectxerr.mask], 'k-',
              alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
     plt.xlabel('Time (s)')
-    if args.start is not None and args.end is not None:
-        plt.xlim(args.start, args.end)
+    if start is not None and end is not None:
+        plt.xlim(start, end)
     else:
         plt.xlim(0,times[-1])
     plt.ylabel('Flux')
@@ -152,8 +152,8 @@ def plot_cube_stats(file, plotfile=None):
     plt.ylabel('delta pix')
     plt.ylim(plotylim)
     plt.grid()
-    if args.start is not None and args.end is not None:
-        plt.xlim(args.start, args.end)
+    if start is not None and end is not None:
+        plt.xlim(start, end)
     else:
         plt.xlim(0,times[-1])
     plt.xlabel('Time (s)')
@@ -357,7 +357,7 @@ class AnalyzeGuideCube(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        for file in args.get('file'):
+        for file in args.get('files'):
             file = Path(file).expanduser()
             if file.exists() is False:
                 log.error(f"Could not find file {args.get('file')}")
@@ -371,7 +371,10 @@ class AnalyzeGuideCube(KPFTranslatorFunction):
                         viewer_command = cmd
 
             plotfile = Path(str(file.name).replace('.fits', '.png'))
-            plot_cube_stats(file, plotfile=plotfile)
+            plot_cube_stats(file, plotfile=plotfile,
+                            start=args.get('start', None),
+                            end=args.get('end', None),
+                            )
 
             if viewer_command is not None:
                 log.info(f"Opening {plotfile} using {viewer_command}")
