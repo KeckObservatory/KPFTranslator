@@ -43,15 +43,18 @@ class PredictGuiderParameters(KPFTranslatorFunction):
         elif Jmag < 8.0:
             gain = 'medium'
             fps = 100
-        elif Jmag < 11.5:
+        elif Jmag < 12.0:
             gain = 'high'
             fps = 100
-        elif Jmag < 12.5:
+        elif Jmag < 12.8:
             gain = 'high'
             fps = 50
-        elif Jmag < 13.5:
+        elif Jmag < 13.8:
             gain = 'high'
             fps = 20
+        elif Jmag < 14.5:
+            gain = 'high'
+            fps = 10
         else:
             gain = 'high'
             fps = 10
