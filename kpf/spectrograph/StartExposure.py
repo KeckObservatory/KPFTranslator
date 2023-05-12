@@ -6,6 +6,7 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.spectrograph.ResetDetectors import ResetGreenDetector, ResetRedDetector
 
 
 class StartExposure(KPFTranslatorFunction):
@@ -21,18 +22,44 @@ class StartExposure(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
-        expose = kpfexpose['EXPOSE']
+        expose = ktl.cache('kpfexpose', 'EXPOSE')
         WaitForReady.execute({})
         log.debug(f"Beginning Exposure")
         expose.write('Start')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
-        exptime = kpfexpose['EXPOSURE'].read(binary=True)
-        shim_time = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
-        success = ktl.waitFor(f"(kpfexpose.EXPOSE != InProgress)", timeout=shim_time)
-        if success is not True:
-            raise FailedToReachDestination(kpfexpose['EXPOSE'].read(),
-                                     ['Start', 'InProgress', 'End', 'Readout'])
+        expr = f"(kpfexpose.EXPOSE != Start or kpfmon.CAMSTARTSTA != ERROR)"
+        timeout = 7 # This is to allow 5s for kpfmon.CAMSTARTSTA to work
+        no_timeout = ktl.waitFor(expr, timeout=timeout)
+        if no_timeout == True:
+            # We didn't time out, so which state is it?
+            kpfmon = ktl.cache('kpfmon')
+            if kpfmon['CAMSTARTSTA'].read() == 'ERROR':
+                log.error('kpfexpose.CAMSTARTSTA is ERROR')
+                # Handle start error
+                if kpfmon[f"G_STARTSTA"].read() == 'ERROR':
+                    log.error('Green STARTSTA is error.')
+                    ResetGreenDetector.execute({})
+                if kpfmon[f"R_STARTSTA"].read() == 'ERROR':
+                    log.error('Red STARTSTA is error.')
+                    ResetRedDetector.execute({})
+                if kpfmon[f"H_STARTSTA"].read() == 'ERROR':
+                    log.error('HK STARTSTA is Error.')
+                    log.error('Setting kpfexpose.EXPOSE to End')
+                    expose = ktl.cache('kpfexpose', 'EXPOSE')
+                    expose.write('End')
+                elif kpfmon[f"E_STARTSTA"].read() == 'ERROR':
+                    log.error('ExpMeter STARTSTA is Error')
+                    log.error('Setting kpfexpose.EXPOSE to End')
+                    expose = ktl.cache('kpfexpose', 'EXPOSE')
+                    expose.write('End')
+            else:
+                # We must have transitioned properly
+                pass
+        else:
+            # We timed out, not sure what is going on
+            CAMSTARTSTA = ktl.cache('kpfmon', 'CAMSTARTSTA')
+            EXPOSE = ktl.cache('kpfexpose', 'EXPOSE')
+            msg = f"Neither kpfmon.CAMSTARTSTA nor kpfexpose.EXPOSE transitioned as expected"
+            raise KPFException(msg)
