@@ -34,11 +34,72 @@ log.addHandler(LogConsoleHandler)
 
 
 ##-------------------------------------------------------------------------
-## plot_cube_stats
+## read_file
 ##-------------------------------------------------------------------------
-def plot_cube_stats(file, plotfile=None, start=None, end=None):
+def read_file(file):
+    '''Read the file on disk, either the L0 file or the kpfguide_cube file.
+    
+    Return an astropy.table.Table of telemetry, the image cube (if present),
+    and a dictionary with selected metadata.
+    '''
+    hdul = fits.open(file)
+    # print(hdul.info())
+    guider_cube = None
+    guide_origins_hdu = None
+    guide_cube_header_hdu = fits.PrimaryHDU()
+    L0_header_hdu = fits.PrimaryHDU()
+    for hdu in hdul:
+        if hdu.name == 'guider_cube_origins':
+            log.info(f"Found: {hdu.name}")
+            guide_origins_hdu = hdu
+        if hdu.name == 'guider_avg':
+            log.info(f"Found: {hdu.name}")
+            guide_cube_header_hdu = hdu
+        if hdu.name == 'PRIMARY':
+            log.info(f"Found: {hdu.name}")
+            L0_header_hdu = hdu
+        if hdu.name == 'guider_cube':
+            log.info(f"Found: {hdu.name}")
+            guider_cube = hdu.data
+    # Assemble metadata
+    metadata = {'FPS': guide_cube_header_hdu.header.get('FPS', None),
+                'DATE-BEG': guide_cube_header_hdu.header.get('DATE-BEG', None),
+                'DATE-END': guide_cube_header_hdu.header.get('DATE-END', None),
+                'IMTYPE': L0_header_hdu.header.get('IMTYPE', None),
+                'Gmag': L0_header_hdu.header.get('GAIAMAG', None),
+                'Jmag': L0_header_hdu.header.get('2MASSMAG', None),
+                'TARGNAME': L0_header_hdu.header.get('TARGNAME', None),
+                'IMTYPE': L0_header_hdu.header.get('IMTYPE', None),
+               }
+    if metadata['FPS'] is None:
+        # Assume 100 FPS
+        metadata['FPS'] = 100
+    if metadata['DATE-BEG'] is None:
+        metadata['DATE-BEG'] = L0_header_hdu.header.get('DATE-BEG', None)
+    if metadata['DATE-END'] is None:
+        metadata['DATE-END'] = L0_header_hdu.header.get('DATE-END', None)
+
+    if metadata['IMTYPE'] not in [None, 'Object']:
+        return None, None, None
+    if guide_origins_hdu is None:
+        return None, metadata, guider_cube
+    else:
+        return Table(guide_origins_hdu.data), metadata, guider_cube
+
+
+##-------------------------------------------------------------------------
+## plot_tiptilt_stats
+##-------------------------------------------------------------------------
+def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
+    ps = 56 # mas/pix
+    log.info(f'Reading file: {file}')
     t, metadata, _ = read_file(file)
+    if t is None: return
+    log.info('Processing telemetry table')
     fps = metadata['FPS']
+    Gmag = metadata['Gmag']
+    Jmag = metadata['Jmag']
+    targname = metadata['TARGNAME']
 
     # Examine timestamps for consistency
     line0 = models.Linear1D()
@@ -92,11 +153,47 @@ def plot_cube_stats(file, plotfile=None, start=None, end=None):
              for val in objectyvals.filled(fill_value=np.nan)\
              if np.isnan(val) == False]
 
+    # Calculate FWHM
+    objectavals = np.ma.MaskedArray(t['object1_a'], mask=maskall)
+    objectbvals = np.ma.MaskedArray(t['object1_b'], mask=maskall)
+    coef = 2*np.sqrt(2*np.log(2))
+    fwhm = np.sqrt((coef*objectavals)**2 + (coef*objectbvals)**2)
+    fwhm *= ps/1000
+    mean_fwhm = np.mean(fwhm)
+
     plt.figure(figsize=(16,8))
 
-    log.debug(f"  Generating PSD Plot")
+    log.debug(f"  Generating Flux Plot")
     plt.subplot(2,2,1)
-    plt.title(f"Power Spectral Distribution\n{file.name} ({len(xerrs)}/{len(t)} frames)")
+    title_line1 = f"{file.name} ({len(xerrs)}/{len(t)} frames)"
+    title_line2 = ''
+    if metadata['Gmag'] is not None:
+        title_line2 += f"{targname}: Gmag={Gmag}, Jmag={Jmag}, FWHM={mean_fwhm:.2f}"
+    plt.title(f"{title_line1}\n{title_line2}")
+    flux_kcounts = t['object1_flux'] / 1000
+    flux_line = plt.plot(times[~objectxerr.mask],
+                         flux_kcounts[~objectxerr.mask],
+                         'k-', alpha=0.5, drawstyle='steps-mid', label=f'flux')
+    plt.plot(times, np.ones(len(times))*5, 'r-', alpha=0.1, label='Too Dim')
+    if start is not None and end is not None:
+        plt.xlim(start, end)
+    else:
+        plt.xlim(0,times[-1])
+    plt.ylabel('Flux (kADU)')
+    plt.ylim(0,1.1*max(flux_kcounts[~objectxerr.mask]))
+
+    ax2 = plt.gca().twinx()  # instantiate a second axes that shares the same x-axis
+    fwhm_line = ax2.plot(times[~maskall], fwhm[~maskall], 'g-',
+                         alpha=0.5, drawstyle='steps-mid', label=f'FWHM')
+    ax2.set_ylim(0,2)
+    ax2.set_yticks(np.arange(0,2,0.2))
+    plt.ylabel('FWHM (arcsec)')
+    plt.legend(handles=[flux_line[0], fwhm_line[0]], loc='lower center')
+#     plt.grid()
+
+    log.debug(f"  Generating PSD Plot")
+    plt.subplot(2,2,2)
+    plt.title(f"Stellar Motion Power Spectral Distribution: FPS={fps}")
     if len(xerrs) > 0:
         plt.psd(xdeltas, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
                 label='X F2F')
@@ -105,49 +202,22 @@ def plot_cube_stats(file, plotfile=None, start=None, end=None):
         plt.legend(loc='best')
     plt.yticks([v for v in np.arange(-70,20,10)])
     plt.ylim(-70,10)
-    plt.xlim(0,fps/2)
+    plt.xlim(0,fps/4)
 
-#     plt.subplot(2,2,3)
-#     if len(xerrs) > 0:
-#         plt.psd(xerrs, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
-#                 label='X Err')
-#         plt.psd(yerrs, Fs=fps, color='b', drawstyle='steps-mid', alpha=0.6,
-#                 label='Y Err')
-#         plt.legend(loc='best')
-
-#     log.debug(f"  Generating Time Deltas Plot")
-#     plt.subplot(2,2,2)
-#     plt.title(f"Time deltas: mean={meantimedeltas:.1f}, rms={rmstimedeltas:.1f}, max={maxtimedeltas:.1f} ms")
-#     n, bins, foo = plt.hist(timedeltas*1000, bins=100)
-#     plt.xlabel('Time Delta (ms)')
-#     plt.ylabel('N frames')
-
-    log.debug(f"  Generating Flux Plot")
-    plt.subplot(2,2,2)
-    plt.title(f"Flux vs. Time")
-    plt.plot(times[~objectxerr.mask], t['object1_flux'][~objectxerr.mask], 'k-',
-             alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
-    plt.xlabel('Time (s)')
-    if start is not None and end is not None:
-        plt.xlim(start, end)
-    else:
-        plt.xlim(0,times[-1])
-    plt.ylabel('Flux')
-    plt.ylim(0,1.1*max(t['object1_flux'][~objectxerr.mask]))
-    plt.grid()
 
     log.debug(f"  Generating Positional Error Plot")
     plt.subplot(2,2,3)
-    ps = 56 # mas/pix
     plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
     plt.plot(times[~objectxerr.mask], objectxerr[~objectxerr.mask], 'g-',
              alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
-#     for badt in times[objectxerr.mask]:
-#         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+    for badt in times[objectxerr.mask]:
+        print(badt)
+        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
     plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
              alpha=0.5, drawstyle='steps-mid', label=f'Ypos-Ytarg')
-#     for badt in times[objectyerr.mask]:
-#         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+    for badt in times[objectyerr.mask]:
+        print(badt)
+        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
     plt.legend(loc='best')
     plt.ylabel('delta pix')
     plt.ylim(plotylim)
@@ -160,11 +230,11 @@ def plot_cube_stats(file, plotfile=None, start=None, end=None):
 
     log.debug(f"  Generating Positional Error Histogram")
     plt.subplot(2,2,4)
-    plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
+#     plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
     nx, binsx, foox = plt.hist(objectxerr[~objectxerr.mask], bins=100, label='X',
-                               color='g', alpha=0.6)
+                               color='g', alpha=0.6, log=True)
     ny, binsy, fooy = plt.hist(objectyerr[~objectyerr.mask], bins=100, label='Y',
-                               color='b', alpha=0.3)
+                               color='b', alpha=0.3, log=True)
     maxhist = 1.1*max([max(nx), max(ny)])
     plt.plot([0,0], [0, maxhist], 'r-', alpha=0.3)
     plt.ylim(0, maxhist)
@@ -186,41 +256,19 @@ def plot_cube_stats(file, plotfile=None, start=None, end=None):
 ##-------------------------------------------------------------------------
 def generate_cube_gif(file, giffile):
     log.info('Generating animation')
-#     hdul = fits.open(file)
     t, metadata, cube = read_file(file)
+    if t is None: return
 
-#     date_beg = hdul[0].header.get('DATE-BEG')
     start = datetime.fromisoformat(metadata['DATE-BEG'])
-#     date_end = hdul[0].header.get('DATE-END')
     end = datetime.fromisoformat(metadata['DATE-END'])
     duration = (end - start).total_seconds()
-
     fps = metadata['FPS']
-
-#     cube_ext = None
-#     table_ext = None
-#     for i,ext in enumerate(hdul):
-#         if ext.name == 'guider_cube_origins':
-#             table_ext = i
-#         if ext.name == 'guider_cube':
-#             cube_ext = i
-# 
-#     if cube_ext is None:
-#         return
-
-#     cube = hdul[cube_ext].data
-#     t = Table(hdul[table_ext].data)
     nf, ny, nx = cube.shape
     norm = vis.ImageNormalize(cube,
                           interval=vis.AsymmetricPercentileInterval(1.5,99.99),
                           stretch=vis.LogStretch())
 
-    # ims is a list of lists, each row is a list of artists to draw in the
-    # current frame; here we are just animating one artist, the image, in
-    # each frame
-    
     fig = plt.figure(figsize=(8,8))
-
     fps = 10
     if sys.platform == 'darwin':
 #         writer = animation.ImageMagickWriter(fps=fps)
@@ -230,7 +278,9 @@ def generate_cube_gif(file, giffile):
     else:
         writer = animation.ImageMagickWriter(fps=fps)
 
-
+    # ims is a list of lists, each row is a list of artists to draw in the
+    # current frame; here we are just animating one artist, the image, in
+    # each frame
     log.info('Building individual frames')
     ims = []
     for j,im in enumerate(cube):
@@ -247,8 +297,6 @@ def generate_cube_gif(file, giffile):
             lines = plt.plot(xpix, ypix, 'r+')
         newim = [im] + [frametext] + lines + tlines
         ims.append(newim)
-#         if j%100 == 0:
-#             log.info(f"Processed frame {j}/{nf}")
 
     log.info('Building animation')
     ani = animation.ArtistAnimation(fig, ims, interval=1000/fps, blit=True,
@@ -260,94 +308,21 @@ def generate_cube_gif(file, giffile):
     log.info('Done')
 
 
-def generate_cube_gif_old(file, giffile):
-    import imageio
-
-    log.info('Generating animated gif')
-    hdul = fits.open(file)
-    cube = hdul[1].data
-    t = Table(hdul[2].data)
-    nf, ny, nx = cube.shape
-    norm = vis.ImageNormalize(cube,
-                          interval=vis.AsymmetricPercentileInterval(1.5,99.99),
-                          stretch=vis.LogStretch())
-
-    plotdir = Path('~/tmp/cubefiles').expanduser()
-    if plotdir.exists() is False:
-        plotdir.mkdir(parents=True)
-    png_filenames = []
-
-    log.info("  Generating individual png file for each frame")
-    for j,im in enumerate(cube):
-        plotfile = plotdir / f"cubeslice_{j:04d}.png"
-        png_filenames.append(plotfile)
-        if plotfile.exists() is True: plotfile.unlink()
-
-        plt.figure(figsize=(8,8))
-        plt.title(f"{file.name}: frame {j:04d}")
-        plt.imshow(im, origin='lower', cmap='gray', norm=norm)
-
-        if t[j]['object1_x'] > 0 and t[j]['object1_y'] > 0:
-            xpix = t[j]['object1_x'] - (t[j]['target_x'] - nx/2)
-            ypix = t[j]['object1_y'] - (t[j]['target_y'] - ny/2)
-            plt.plot(xpix, ypix, 'r+')
-
-        plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.10)
-        plt.close()
-
-    log.info("  Assembling animated GIF")
-    with imageio.get_writer(giffile, mode='I') as writer:
-        for filename in png_filenames:
-            image = imageio.imread(filename)
-            writer.append_data(image)
-    log.info('Done.')
-
-
-def read_file(file):
-    '''Read the file on disk, either the L0 file or the kpfguide_cube file.
-    
-    Return an astropy.table.Table of telemetry, the image cube (if present),
-    and a dictionary with selected metadata.
-    '''
-    hdul = fits.open(file)
-    # print(hdul.info())
-    guider_cube = None
-    guide_origins_hdu = None
-    guide_cube_header_hdu = fits.PrimaryHDU()
-    L0_header_hdu = fits.PrimaryHDU()
-    for hdu in hdul:
-        if hdu.name == 'guider_cube_origins':
-            guide_origins_hdu = hdu
-        if hdu.name == 'guider_avg':
-            guide_cube_header_hdu = hdu
-        if hdu.name == 'PRIMARY':
-            L0_header_hdu = hdu
-        if hdu.name == 'guider_cube':
-            guider_cube = hdu.data
-    # Assemble metadata
-    metadata = {'FPS': guide_cube_header_hdu.header.get('FPS', None),
-                'DATE-BEG': guide_cube_header_hdu.header.get('DATE-BEG', None),
-                'DATE-END': guide_cube_header_hdu.header.get('DATE-END', None),
-                'IMTYPE': L0_header_hdu.header.get('IMTYPE', None),
-                'Gmag': L0_header_hdu.header.get('GAIAMAG', None),
-               }
-    if metadata['FPS'] is None:
-        # Assume 100 FPS
-        metadata['FPS'] = 100
-    if metadata['DATE-BEG'] is None:
-        metadata['DATE-BEG'] = L0_header_hdu.header.get('DATE-BEG', None)
-    if metadata['DATE-END'] is None:
-        metadata['DATE-END'] = L0_header_hdu.header.get('DATE-END', None)
-    if guide_origins_hdu is not None:
-        return Table(guide_origins_hdu.data), metadata, guider_cube
-    else:
-        return None, metadata, guider_cube
+def find_viewer_command(args):
+    viewer_command = None
+    if args.get('view', False) is True:
+        viewer_commands = ['eog', 'open']
+        for cmd in viewer_commands:
+            rtn = subprocess.call(['which', cmd])
+            if rtn == 0:
+                viewer_command = cmd
+    return viewer_command
 
 
 ##-------------------------------------------------------------------------
-## AnalyzeGuideCube
+## AnalyzeTipTiltPerformance
 ##-------------------------------------------------------------------------
-class AnalyzeGuideCube(KPFTranslatorFunction):
+class AnalyzeTipTiltPerformance(KPFTranslatorFunction):
     '''
     ARGS:
     '''
@@ -357,24 +332,16 @@ class AnalyzeGuideCube(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        viewer_command = find_viewer_command(args)
         for file in args.get('files'):
             file = Path(file).expanduser()
             if file.exists() is False:
                 log.error(f"Could not find file {args.get('file')}")
-
-            viewer_command = None
-            if args.get('view') is True:
-                viewer_commands = ['eog', 'open']
-                for cmd in viewer_commands:
-                    rtn = subprocess.call(['which', cmd])
-                    if rtn == 0:
-                        viewer_command = cmd
-
             plotfile = Path(str(file.name).replace('.fits', '.png'))
-            plot_cube_stats(file, plotfile=plotfile,
-                            start=args.get('start', None),
-                            end=args.get('end', None),
-                            )
+            plot_tiptilt_stats(file, plotfile=plotfile,
+                               start=args.get('start', None),
+                               end=args.get('end', None),
+                               )
 
             if viewer_command is not None:
                 log.info(f"Opening {plotfile} using {viewer_command}")
@@ -397,22 +364,18 @@ class AnalyzeGuideCube(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('files', type=str, nargs='*',
-            help="The cube files to analyze")
+            help="The FITS files to analyze")
         parser.add_argument("-g", "--gif", dest="gif",
             default=False, action="store_true",
             help="Generate the animated GIF of frames (computationally expensive)")
         parser.add_argument("--view", dest="view",
             default=False, action="store_true",
             help="Open a viewer once the file is generated")
-        parser.add_argument("-v", "--verbose", dest="verbose",
-            default=False, action="store_true",
-            help="Be verbose")
         parser.add_argument("--start", dest="start", type=float,
             help="Zoom the plot in to this start time (in seconds).")
         parser.add_argument("--end", dest="end", type=float,
             help="Zoom the plot in to this end time (in seconds).")
         return super().add_cmdline_args(parser, cfg)
-
 
 
 ##-------------------------------------------------------------------------
@@ -428,37 +391,26 @@ if __name__ == '__main__':
     ''')
     ## add arguments
     p.add_argument('files', type=str, nargs='*',
-                   help="The cube files to analyze")
+                   help="The FITS files to analyze")
     p.add_argument("-g", "--gif", dest="gif",
         default=False, action="store_true",
         help="Generate the animated GIF of frames (computationally expensive)")
     p.add_argument("--view", dest="view",
         default=False, action="store_true",
         help="Open a viewer once the file is generated")
-    p.add_argument("-v", "--verbose", dest="verbose",
-        default=False, action="store_true",
-        help="Be verbose")
     p.add_argument("--start", dest="start", type=float,
         help="Zoom the plot in to this start time (in seconds).")
     p.add_argument("--end", dest="end", type=float,
         help="Zoom the plot in to this end time (in seconds).")
     args = p.parse_args()
 
+    viewer_command = find_viewer_command(args)
     for file in args.files:
         file = Path(file).expanduser()
         if file.exists() is False:
             log.error(f"Could not find file {args.file}")
-
-        viewer_command = None
-        if args.view is True:
-            viewer_commands = ['eog', 'open']
-            for cmd in viewer_commands:
-                rtn = subprocess.call(['which', cmd])
-                if rtn == 0:
-                    viewer_command = cmd
-
         plotfile = Path(str(file.name).replace('.fits', '.png'))
-        plot_cube_stats(file, plotfile=plotfile)
+        plot_tiptilt_stats(file, plotfile=plotfile)
 
         if viewer_command is not None:
             log.info(f"Opening {plotfile} using {viewer_command}")

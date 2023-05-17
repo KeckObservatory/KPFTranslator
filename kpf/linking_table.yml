@@ -6,8 +6,8 @@ links:
     # Analysis
     AnalyzeGridSearch:
         cmd: analysis.AnalyzeGridSearch.AnalyzeGridSearch
-    AnalyzeGuideCube:
-        cmd: analysis.AnalyzeGuideCube.AnalyzeGuideCube
+    AnalyzeTipTiltPerformance:
+        cmd: analysis.AnalyzeTipTiltPerformance.AnalyzeTipTiltPerformance
     Fit2DGridSearch:
         cmd: analysis.Fit2DGridSearch.Fit2DGridSearch
     # AO
