@@ -16,6 +16,7 @@ class PredictFVCParameters(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'camera', allowed_values=['SCI', 'CAHK']])
         check_input(args, 'Gmag', allowed_types=[int, float])
 
     @classmethod
