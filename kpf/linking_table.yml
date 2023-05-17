@@ -104,6 +104,8 @@ links:
     # FVCs
     FVCPower:
         cmd: fvc.FVCPower.FVCPower
+    PredictFVCParameters:
+        cmd: fvc.PredictFVCParameters.PredictFVCParameters
     TakeFVCContinuous:
         cmd: fvc.TakeFVCContinuous.TakeFVCContinuous
     TakeFVCExposure:
