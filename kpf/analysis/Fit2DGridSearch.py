@@ -162,7 +162,7 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
             color = cm.bwr(i*cstep)
         plt.plot([xc], [yc], marker='o', linestyle='',
                  color=color,
-                 label=f'{wc:.0f} nm',
+                 label=f'{wc:.0f} nm ({xc:.1f}, {yc:.1f})',
                  markersize=15, alpha=0.7)
         if np.isclose(wc, 550, atol=0.001):
             arrow_length = 1
