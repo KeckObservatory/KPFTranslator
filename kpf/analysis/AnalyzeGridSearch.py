@@ -233,8 +233,8 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     wavs = np.array(wavs)
 #     wavbin_centers = [475, 525, 575, 625, 675, 725, 775, 825]
 #     delta_w = 25
-    wavbin_centers = np.arange(470,830,40)
     delta_w = 20
+    wavbin_centers = np.arange(470,830,2*delta_w)
     color_images = np.zeros((len(wavbin_centers),ny,nx))
     for widx,wav_center in enumerate(wavbin_centers):
         w = np.where((wavs > wav_center-delta_w) & (wavs < wav_center+delta_w))[0]
@@ -242,7 +242,6 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
         flux = np.sum(color_images[widx,:,:])
         log.info(f"  For {wav_center} nm, found {len(w)} bins with {flux:.1e} counts")
         fluxcubehdu.header.set(f'Layer{widx+1}', f'{wavbin_centers[widx]}nm')
-
 
     color_cube = np.zeros((2,ny,nx))
     color_cube[0,:,:] = color_images[0,:,:]/color_images[1,:,:]
