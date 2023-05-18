@@ -3,6 +3,7 @@
 ## Import General Tools
 import sys
 import os
+import yaml
 from pathlib import Path
 import logging
 import subprocess
@@ -91,6 +92,7 @@ def read_file(file):
 ## plot_tiptilt_stats
 ##-------------------------------------------------------------------------
 def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
+    results = {'file': f"{file}"}
     ps = 56 # mas/pix
     log.info(f'Reading file: {file}')
     t, metadata, _ = read_file(file)
@@ -100,6 +102,11 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     Gmag = metadata['Gmag']
     Jmag = metadata['Jmag']
     targname = metadata['TARGNAME']
+
+    results['FPS'] = fps
+    results['Gmag'] = Gmag
+    results['Jmag'] = Jmag
+    results['TARGNAME'] = targname
 
     # Examine timestamps for consistency
     line0 = models.Linear1D()
@@ -111,6 +118,8 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     maxtimedeltas = max([max(timedeltas)*1000,abs(mintimedeltas)])
     rmstimedeltas = np.std(timedeltas)*1000
     meantimedeltas = np.mean(timedeltas)*1000
+
+    results['RMS of Time Deltas (ms)'] = float(rmstimedeltas)
 
     # Examine position statistics
     log.debug(f"  Generating objectvals")
@@ -135,6 +144,9 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     xbias = objectxerr.mean()
     ybias = objectyerr.mean()
     rbias = (xbias**2 + ybias**2)**0.5
+
+    results['Position Error RMS (mas)'] = float(rrms*ps)
+    results['Position Error Bias (mas)'] = float(rbias*ps)
 
     # Examine stellar motion statistics
     log.debug(f"  Generating deltas")
@@ -161,6 +173,31 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     fwhm *= ps/1000
     mean_fwhm = np.mean(fwhm)
 
+    results['FWHM (arcsec)'] = float(mean_fwhm)
+
+    # Mean Flux
+    flux_kcounts = t['object1_flux'] / 1000
+    mean_flux = np.mean(t['object1_flux'][~objectxerr.mask])
+
+    results['Flux (ADU)'] = float(mean_flux)
+
+    # Count number of stars
+    nstars = []
+    for entry in t:
+        star_count = 0
+        for i in [1,2,3]:
+            if entry[f'object{i}_x'] > -998:
+                star_count +=1
+        nstars.append(star_count)
+    nstars = np.array(nstars, dtype=int)
+    median_nstars = int(np.median(nstars))
+    w_nstars_off = np.where(nstars != median_nstars)[0]
+    nframes_with_incorrect_nstars = len(w_nstars_off)
+
+    results['Nframes'] = int(len(nstars))
+    results['Median Nstars'] = int(median_nstars)
+    results['Frames with Incorrect Nstars'] = int(nframes_with_incorrect_nstars)
+
     plt.figure(figsize=(16,8))
 
     log.debug(f"  Generating Flux Plot")
@@ -170,7 +207,6 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     if metadata['Gmag'] is not None:
         title_line2 += f"{targname}: Gmag={Gmag}, Jmag={Jmag}, FWHM={mean_fwhm:.2f}"
     plt.title(f"{title_line1}\n{title_line2}")
-    flux_kcounts = t['object1_flux'] / 1000
     flux_line = plt.plot(times[~objectxerr.mask],
                          flux_kcounts[~objectxerr.mask],
                          'k-', alpha=0.5, drawstyle='steps-mid', label=f'flux')
@@ -182,14 +218,15 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     plt.ylabel('Flux (kADU)')
     plt.ylim(0,1.1*max(flux_kcounts[~objectxerr.mask]))
 
-    ax2 = plt.gca().twinx()  # instantiate a second axes that shares the same x-axis
+    ax2 = plt.gca().twinx()
     fwhm_line = ax2.plot(times[~maskall], fwhm[~maskall], 'g-',
-                         alpha=0.5, drawstyle='steps-mid', label=f'FWHM')
-    ax2.set_ylim(0,2)
-    ax2.set_yticks(np.arange(0,2,0.2))
+                         alpha=0.5, drawstyle='steps-mid', label=f'FWHM ({mean_fwhm:.1f} arcsec)')
+    nstars_line = ax2.plot(times, nstars, 'ro',
+                         alpha=0.3, markersize=2, label=f'Nstars')
+    ax2.set_yticks(np.arange(0,3.2,0.5))
+    ax2.set_ylim(0,3.1)
     plt.ylabel('FWHM (arcsec)')
-    plt.legend(handles=[flux_line[0], fwhm_line[0]], loc='lower center')
-#     plt.grid()
+    plt.legend(handles=[flux_line[0], fwhm_line[0], nstars_line[0]], loc='lower center')
 
     log.debug(f"  Generating PSD Plot")
     plt.subplot(2,2,2)
@@ -211,12 +248,10 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     plt.plot(times[~objectxerr.mask], objectxerr[~objectxerr.mask], 'g-',
              alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
     for badt in times[objectxerr.mask]:
-        print(badt)
         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
     plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
              alpha=0.5, drawstyle='steps-mid', label=f'Ypos-Ytarg')
     for badt in times[objectyerr.mask]:
-        print(badt)
         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
     plt.legend(loc='best')
     plt.ylabel('delta pix')
@@ -237,15 +272,20 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
                                color='b', alpha=0.3, log=True)
     maxhist = 1.1*max([max(nx), max(ny)])
     plt.plot([0,0], [0, maxhist], 'r-', alpha=0.3)
-    plt.ylim(0, maxhist)
+    plt.ylim(0.1, maxhist)
     plt.legend(loc='best')
     plt.xlabel('Position Error')
     plt.ylabel('N frames')
 
-
     if plotfile is not None:
         log.debug(f"  Saving Plot File")
         plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.1)
+        log.debug(f"  Saving Results File")
+        results_file_name = plotfile.name.replace('.png', '.txt')
+        results_file = plotfile.parent / results_file_name
+        if results_file.exists(): results_file.unlink()
+        with open(results_file, 'w') as f:
+            f.write(yaml.dump(results))
     else:
         plt.show()
     log.info('Done.')
