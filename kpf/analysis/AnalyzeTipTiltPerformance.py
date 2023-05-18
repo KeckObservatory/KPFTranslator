@@ -221,7 +221,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     ax2 = plt.gca().twinx()
     fwhm_line = ax2.plot(times[~maskall], fwhm[~maskall], 'g-',
                          alpha=0.5, drawstyle='steps-mid', label=f'FWHM ({mean_fwhm:.1f} arcsec)')
-    nstars_line = ax2.plot(times, nstars, 'ro',
+    nstars_line = ax2.plot(times, nstars, 'r-',
                          alpha=0.3, markersize=2, label=f'Nstars')
     ax2.set_yticks(np.arange(0,3.2,0.5))
     ax2.set_ylim(0,3.1)
