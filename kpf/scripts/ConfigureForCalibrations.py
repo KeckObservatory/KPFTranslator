@@ -59,7 +59,10 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
                             'BrdbandFiber', 'WideFlat']:
                     CalLampPower.execute({'lamp': lamp, 'power': 'on'})
                 if lamp == 'LFCFiber':
-                    SetLFCtoAstroComb.execute({})
+                    try:
+                        SetLFCtoAstroComb.execute({})
+                    except FailedPostCondition as e:
+                        log.error('Failed to set LFC to AstroComb')
 
         log.debug(f"Ensuring back illumination LEDs are off")
         CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})

@@ -110,6 +110,19 @@ class ExecuteCal(KPFTranslatorFunction):
             if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
                 WaitForLampWarm.execute(args)
                 TakeIntensityReading.execute({})
+            if calsource == 'LFCFiber':
+                # Check menlo heatbeat
+                heartbeat = ktl.cache('kpfmon', 'NE_HB_MENLO')
+                heartbeat_ok = heartbeat.waitFor('== "OK"', timeout=3)
+                if heartbeat_ok is not True:
+                    log.error('Menlo heartbeat not Ok. Skipping LFC.')
+                    return
+                # Check LFCREADYSTA
+                LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
+                LFCready_ok = LFCready.waitFor('== "OK"', timeout=3)
+                if LFCready_ok is not True:
+                    log.error('LFCREADYSTA not Ok. Skipping LFC.')
+                    return
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
