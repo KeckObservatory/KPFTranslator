@@ -41,7 +41,7 @@ class IsCalSourceEnabled(KPFTranslatorFunction):
         if lamp_enabled is True:
             log.debug(f"Cal source {calsource} is enabled")
         else:
-            log.error(f"Cal source {calsource} is disabled")
+            log.warning(f"Cal source {calsource} is disabled")
         return lamp_enabled
 
     @classmethod
