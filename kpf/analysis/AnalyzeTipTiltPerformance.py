@@ -11,9 +11,11 @@ from datetime import datetime, timedelta
 
 import numpy as np
 from astropy.io import fits
-from astropy.table import Table
+from astropy import nddata
+from astropy.table import Table, Column
 from astropy import visualization as vis
 from astropy.modeling import models, fitting
+import sep
 
 from matplotlib import animation
 from matplotlib import pyplot as plt
@@ -32,6 +34,10 @@ LogConsoleHandler.setLevel(logging.INFO)
 LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
 LogConsoleHandler.setFormatter(LogFormat)
 log.addHandler(LogConsoleHandler)
+
+
+
+
 
 
 ##-------------------------------------------------------------------------
@@ -61,7 +67,7 @@ def read_file(file):
             L0_header_hdu = hdu
         if hdu.name == 'guider_cube':
             log.info(f"Found: {hdu.name}")
-            guider_cube = hdu.data
+            guider_cube = nddata.CCDData(hdu.data, unit='adu')
     # Assemble metadata
     metadata = {'FPS': guide_cube_header_hdu.header.get('FPS', None),
                 'DATE-BEG': guide_cube_header_hdu.header.get('DATE-BEG', None),
@@ -88,16 +94,60 @@ def read_file(file):
         return Table(guide_origins_hdu.data), metadata, guider_cube
 
 
+def add_parameters(t):
+    n_frames = len(t)
+    coef = 2*np.sqrt(2*np.log(2))
+    for obj in [1,2,3]:
+        good = np.where(t[f'object{obj}_x'] > -998)[0]
+        # FWHM
+        fwhm = np.zeros(len(t))
+        fwhm[good] = np.sqrt((coef*t[f'object{obj}_a'][good])**2 + (coef*t[f'object{obj}_b'][good])**2)
+        t.add_column(Column(data=fwhm.data, name=f'object{obj}_fwhm', dtype=float))
+        # ellipticity
+        ellipticities = np.zeros(len(t))
+        ellipticities[good] = t[f'object{obj}_a'][good]/t[f'object{obj}_b'][good]
+        t.add_column(Column(data=ellipticities.data, name=f'object{obj}_ellipticity', dtype=float))
+
+    # Count frames with no stars
+    nostars = t[t['object1_x'] < -998]
+    n_no_stars = len(nostars)
+    frac_no_stars = n_no_stars / n_frames
+    log.info(f"  {n_no_stars}/{n_frames} frames have no detected stars ({frac_no_stars:.1%})")
+
+    # Count frames with multiple stars
+    multiple_stars = t[t['object2_x'] > -998]
+    n_multiple_stars = len(multiple_stars)
+    frac_multiple = n_multiple_stars/n_frames
+    log.info(f"  {n_multiple_stars}/{n_frames} frames have multiple stars ({frac_multiple:.1%})")
+
+    return t, n_no_stars, n_multiple_stars, n_frames
+
+
 ##-------------------------------------------------------------------------
 ## plot_tiptilt_stats
 ##-------------------------------------------------------------------------
-def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
+def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
+                       snr=None, minarea=None,
+                       deblend_nthresh=None, deblend_cont=None):
     results = {'file': f"{file}"}
     ps = 56 # mas/pix
     log.info(f'Reading file: {file}')
-    t, metadata, _ = read_file(file)
+    t, metadata, cube = read_file(file)
+    # If requested, run additional SEP
+    new = None
+    if snr or minarea or deblend_nthresh or deblend_cont:
+        if cube is not None:
+            log.info('Running Source Extractor on cube with new parameters')
+            new = run_new_sep_parameters(cube, t, snr=snr, minarea=minarea,
+                                         deblend_nthresh=deblend_nthresh,
+                                         deblend_cont=deblend_cont)
+
     if t is None: return
-    log.info('Processing telemetry table')
+    log.info('Adding calculated parameters')
+    t, n_no_stars, n_multiple_stars, n_frames = add_parameters(t)
+    if new is not None:
+        log.info('Adding calculated parameters to new source extractor table')
+        new, new_n_no_stars, new_n_multiple_stars, n_frames = add_parameters(new)
     fps = metadata['FPS']
     Gmag = metadata['Gmag']
     Jmag = metadata['Jmag']
@@ -166,18 +216,13 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
              if np.isnan(val) == False]
 
     # Calculate FWHM
-    objectavals = np.ma.MaskedArray(t['object1_a'], mask=maskall)
-    objectbvals = np.ma.MaskedArray(t['object1_b'], mask=maskall)
-    coef = 2*np.sqrt(2*np.log(2))
-    fwhm = np.sqrt((coef*objectavals)**2 + (coef*objectbvals)**2)
-    fwhm *= ps/1000
+    fwhm = t['object1_fwhm']*ps/1000
     mean_fwhm = np.mean(fwhm)
 
     results['FWHM (arcsec)'] = float(mean_fwhm)
 
     # Mean Flux
-    flux_kcounts = t['object1_flux'] / 1000
-    mean_flux = np.mean(t['object1_flux'][~objectxerr.mask])
+    mean_flux = np.nanmean(t['object1_flux'][~maskall])
 
     results['Flux (ADU)'] = float(mean_flux)
 
@@ -191,42 +236,57 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
         nstars.append(star_count)
     nstars = np.array(nstars, dtype=int)
     median_nstars = int(np.median(nstars))
-    w_nstars_off = np.where(nstars != median_nstars)[0]
-    nframes_with_incorrect_nstars = len(w_nstars_off)
+    w_extra_detections = np.where(nstars > median_nstars)[0]
+    nframes_extra_detections = len(w_extra_detections)
+    w_fewer_detections = np.where(nstars < median_nstars)[0]
+    nframes_fewer_detections = len(w_fewer_detections)
 
     results['Nframes'] = int(len(nstars))
     results['Median Nstars'] = int(median_nstars)
-    results['Frames with Incorrect Nstars'] = int(nframes_with_incorrect_nstars)
+    results['Nframes extra detections'] = int(nframes_extra_detections)
+    results['Nframes fewer detections'] = int(nframes_fewer_detections)
 
     plt.figure(figsize=(16,8))
 
     log.debug(f"  Generating Flux Plot")
     plt.subplot(2,2,1)
-    title_line1 = f"{file.name} ({len(xerrs)}/{len(t)} frames)"
+#     title_line1 = f"{file.name} ({len(xerrs)}/{len(t)} frames)"
+    title_line1 = f"{len(t)} frames: {nframes_extra_detections} frames w/ extra stars, {nframes_fewer_detections} frames w/ fewer"
     title_line2 = ''
     if metadata['Gmag'] is not None:
         title_line2 += f"{targname}: Gmag={Gmag}, Jmag={Jmag}, FWHM={mean_fwhm:.2f}"
     plt.title(f"{title_line1}\n{title_line2}")
-    flux_line = plt.plot(times[~objectxerr.mask],
-                         flux_kcounts[~objectxerr.mask],
-                         'k-', alpha=0.5, drawstyle='steps-mid', label=f'flux')
-    plt.plot(times, np.ones(len(times))*5, 'r-', alpha=0.1, label='Too Dim')
+    plt.fill_between([0, times[-1]], [0,0], [5000,5000],
+                     color='r', alpha=0.2, linewidth=0)
+    plt.fill_between([0, times[-1]], [5000,5000], [10000,10000],
+                     color='y', alpha=0.2, linewidth=0)
+    flux_line = plt.plot(times[~maskall],
+                         t['object1_flux'][~maskall],
+                         'k-', alpha=0.5, drawstyle='steps-mid',
+                         label=f'flux ({mean_flux:.1e})')
     if start is not None and end is not None:
         plt.xlim(start, end)
     else:
         plt.xlim(0,times[-1])
-    plt.ylabel('Flux (kADU)')
-    plt.ylim(0,1.1*max(flux_kcounts[~objectxerr.mask]))
+    plt.ylabel('Flux (ADU)')
+    try:
+        flux_plot_max = 1.1*max(t['object1_flux'][~maskall])
+    except ValueError:
+        flux_plot_max = 20000
+    plt.ylim(0,flux_plot_max)
 
     ax2 = plt.gca().twinx()
     fwhm_line = ax2.plot(times[~maskall], fwhm[~maskall], 'g-',
-                         alpha=0.5, drawstyle='steps-mid', label=f'FWHM ({mean_fwhm:.1f} arcsec)')
-    nstars_line = ax2.plot(times, nstars, 'r-',
-                         alpha=0.3, markersize=2, label=f'Nstars')
+                         alpha=0.5, drawstyle='steps-mid',
+                         label=f'FWHM ({mean_fwhm:.1f} arcsec)')
+    for instance in w_extra_detections:
+        plt.plot([times[instance], times[instance]], [0,3.1], 'r-', alpha=0.2)
+    for instance in w_fewer_detections:
+        plt.plot([times[instance], times[instance]], [0,3.1], 'b-', alpha=0.2)
     ax2.set_yticks(np.arange(0,3.2,0.5))
-    ax2.set_ylim(0,3.1)
+    ax2.set_ylim(0,2.1)
     plt.ylabel('FWHM (arcsec)')
-    plt.legend(handles=[flux_line[0], fwhm_line[0], nstars_line[0]], loc='lower center')
+    plt.legend(handles=[flux_line[0], fwhm_line[0]], loc='lower center')
 
     log.debug(f"  Generating PSD Plot")
     plt.subplot(2,2,2)
@@ -241,38 +301,120 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None):
     plt.ylim(-70,10)
     plt.xlim(0,fps/4)
 
+    if new is not None:
+        log.debug(f"  Generating Flux Plot for New Source Extractor Results")
 
-    log.debug(f"  Generating Positional Error Plot")
-    plt.subplot(2,2,3)
-    plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
-    plt.plot(times[~objectxerr.mask], objectxerr[~objectxerr.mask], 'g-',
-             alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
-    for badt in times[objectxerr.mask]:
-        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
-    plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
-             alpha=0.5, drawstyle='steps-mid', label=f'Ypos-Ytarg')
-    for badt in times[objectyerr.mask]:
-        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
-    plt.legend(loc='best')
-    plt.ylabel('delta pix')
-    plt.ylim(plotylim)
-    plt.grid()
-    if start is not None and end is not None:
-        plt.xlim(start, end)
+        maskx = new['object1_x']<-998
+        masky = new['object1_y']<-998
+        maskall = maskx | masky
+
+        # Count number of stars
+        nstars = []
+        for entry in new:
+            star_count = 0
+            for i in [1,2,3]:
+                if entry[f'object{i}_x'] > -998:
+                    star_count +=1
+            nstars.append(star_count)
+        nstars = np.array(nstars, dtype=int)
+        median_nstars = int(np.median(nstars))
+        w_extra_detections = np.where(nstars > median_nstars)[0]
+        nframes_extra_detections = len(w_extra_detections)
+        w_fewer_detections = np.where(nstars < median_nstars)[0]
+        nframes_fewer_detections = len(w_fewer_detections)
+
+        plt.subplot(2,2,3)
+        
+        title_line1_parts = []
+        if snr is not None: title_line1_parts.append(f"snr={snr:.0f}")
+        if minarea is not None: title_line1_parts.append(f"minarea={minarea:.0f}")
+        if deblend_nthresh is not None: title_line1_parts.append(f"deblend_nthresh={deblend_nthresh:.0f}")
+        if deblend_cont is not None: title_line1_parts.append(f"deblend_cont={deblend_cont:.2f}")
+        title_line1 = ",".join(title_line1_parts)
+        title_line2 = f"{len(t)} frames: {nframes_extra_detections} frames w/ extra stars, {nframes_fewer_detections} frames w/ fewer"
+        plt.title(f"{title_line1}\n{title_line2}")
+        mean_flux = np.nanmean(new['object1_flux'][~maskall])
+        plt.fill_between([0, times[-1]], [0,0], [5000,5000],
+                         color='r', alpha=0.2, linewidth=0)
+        plt.fill_between([0, times[-1]], [5000,5000], [10000,10000],
+                         color='y', alpha=0.2, linewidth=0)
+        flux_line = plt.plot(times[~maskall],
+                             new['object1_flux'][~maskall],
+                             'k-', alpha=0.5, drawstyle='steps-mid',
+                             label=f'flux ({mean_flux:.1e})')
+        if start is not None and end is not None:
+            plt.xlim(start, end)
+        else:
+            plt.xlim(0,times[-1])
+        plt.ylabel('Flux (ADU)')
+
+        try:
+            new_flux_plot_max = 1.1*max(new['object1_flux'][~maskall])
+            if max(new['object1_flux'][~maskall]) > flux_plot_max:
+                flux_plot_max = 1.1*max(new['object1_flux'][~maskall])
+        except ValueError:
+            pass
+        plt.ylim(0,flux_plot_max)
+
+        ax2 = plt.gca().twinx()
+        fwhm = new['object1_fwhm']*ps/1000
+        mean_fwhm = np.mean(fwhm)
+        fwhm_line = ax2.plot(times[~maskall], fwhm[~maskall], 'g-',
+                             alpha=0.5, drawstyle='steps-mid',
+                             label=f'FWHM ({mean_fwhm:.1f} arcsec)')
+        for instance in w_extra_detections:
+            plt.plot([times[instance], times[instance]], [0,3.1], 'r-', alpha=0.2)
+        for instance in w_fewer_detections:
+            plt.plot([times[instance], times[instance]], [0,3.1], 'b-', alpha=0.2)
+        ax2.set_yticks(np.arange(0,3.2,0.5))
+        ax2.set_ylim(0,2.1)
+        plt.ylabel('FWHM (arcsec)')
+        plt.legend(handles=[flux_line[0], fwhm_line[0]], loc='lower center')
+
+        log.debug(f"  Generating PSD Plot")
+        plt.subplot(2,2,2)
+        plt.title(f"Stellar Motion Power Spectral Distribution: FPS={fps}")
+        if len(xerrs) > 0:
+            plt.psd(xdeltas, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
+                    label='X F2F')
+            plt.psd(ydeltas, Fs=fps, color='b', drawstyle='steps-mid', alpha=0.6,
+                    label='Y F2F')
+            plt.legend(loc='best')
+        plt.yticks([v for v in np.arange(-70,20,10)])
+        plt.ylim(-70,10)
+        plt.xlim(0,fps/4)
     else:
-        plt.xlim(0,times[-1])
-    plt.xlabel('Time (s)')
+        log.debug(f"  Generating Positional Error Plot")
+        plt.subplot(2,2,3)
+        plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
+        plt.plot(times[~maskall], objectxerr[~maskall], 'g-',
+                 alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
+        for badt in times[maskall]:
+            plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+        plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
+                 alpha=0.5, drawstyle='steps-mid', label=f'Ypos-Ytarg')
+        for badt in times[objectyerr.mask]:
+            plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+        plt.legend(loc='best')
+        plt.ylabel('delta pix')
+        plt.ylim(plotylim)
+        plt.grid()
+        if start is not None and end is not None:
+            plt.xlim(start, end)
+        else:
+            plt.xlim(0,times[-1])
+        plt.xlabel('Time (s)')
 
     log.debug(f"  Generating Positional Error Histogram")
     plt.subplot(2,2,4)
 #     plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
-    nx, binsx, foox = plt.hist(objectxerr[~objectxerr.mask], bins=100, label='X',
+    nx, binsx, foox = plt.hist(objectxerr[~maskall], bins=100, label='X',
                                color='g', alpha=0.6, log=True)
     ny, binsy, fooy = plt.hist(objectyerr[~objectyerr.mask], bins=100, label='Y',
                                color='b', alpha=0.3, log=True)
     maxhist = 1.1*max([max(nx), max(ny)])
     plt.plot([0,0], [0, maxhist], 'r-', alpha=0.3)
-    plt.ylim(0.1, maxhist)
+    plt.ylim(0.5, max([maxhist,1]))
     plt.legend(loc='best')
     plt.xlabel('Position Error')
     plt.ylabel('N frames')
@@ -359,6 +501,115 @@ def find_viewer_command(args):
     return viewer_command
 
 
+def run_new_sep_parameters(cube, original, snr=5, minarea=50, binning=1,
+                           deblend_nthresh=32, deblend_cont=0.005):
+    if snr is None: snr = 5
+    if minarea is None: minarea = 50
+    if deblend_nthresh is None: deblend_nthresh = 32
+    if deblend_cont is None: deblend_cont = 0.005
+    if binning is None: binning = 1
+
+    new = Table(names=original.keys(), dtype=original.dtype)
+    subframes = []
+    objectids = []
+    objectcount = []
+    background_rms = []
+    target_x = []
+    target_y = []
+    plotcount = 0
+    n_no_stars = 0
+    for s,subframe in enumerate(cube.data):
+        subframe = nddata.block_reduce(subframe, binning)
+        subframe = np.array(subframe, dtype=float)
+        # Default background parameters: bw=64, bh=64, fw=3, fh=3, fthresh=0.0
+        background = sep.Background(subframe)
+        subtracted = subframe - background
+        objects = sep.extract(subtracted, snr, minarea=minarea,
+                              err=background.globalrms,
+                              deblend_nthresh=deblend_nthresh, # default is 32
+                              deblend_cont=deblend_cont,
+                              # Minimum contrast ratio used for object deblending.
+                              # Default is 0.005. To entirely disable deblending, set to 1.0.
+                              )
+        objects = Table(objects)
+        sep_result = {'subframe_id': s}
+        if len(objects) > 0:
+            sep_result['object1_flux'] = objects[0]['flux']
+            sep_result['object1_tnpix'] = objects[0]['tnpix']
+            sep_result['object1_npix'] = objects[0]['npix']
+            sep_result['object1_peak'] = objects[0]['peak']
+            sep_result['object1_x'] = objects[0]['x']
+            sep_result['object1_y'] = objects[0]['y']
+            sep_result['object1_a'] = objects[0]['a']
+            sep_result['object1_b'] = objects[0]['b']
+            sep_result['object1_theta'] = objects[0]['theta']
+            sep_result['object1_errxy'] = objects[0]['errxy']
+            sep_result['object1_thresh'] = objects[0]['thresh']
+        else:
+            sep_result['object1_flux'] = -999
+            sep_result['object1_tnpix'] = -999
+            sep_result['object1_npix'] = -999
+            sep_result['object1_peak'] = -999
+            sep_result['object1_x'] = -999
+            sep_result['object1_y'] = -999
+            sep_result['object1_a'] = -999
+            sep_result['object1_b'] = -999
+            sep_result['object1_theta'] = -999
+            sep_result['object1_errxy'] = -999
+            sep_result['object1_thresh'] = -999
+        if len(objects) > 1:
+            sep_result['object2_flux'] = objects[1]['flux']
+            sep_result['object2_tnpix'] = objects[1]['tnpix']
+            sep_result['object2_npix'] = objects[1]['npix']
+            sep_result['object2_peak'] = objects[1]['peak']
+            sep_result['object2_x'] = objects[1]['x']
+            sep_result['object2_y'] = objects[1]['y']
+            sep_result['object2_a'] = objects[1]['a']
+            sep_result['object2_b'] = objects[1]['b']
+            sep_result['object2_theta'] = objects[1]['theta']
+            sep_result['object2_errxy'] = objects[1]['errxy']
+            sep_result['object2_thresh'] = objects[1]['thresh']
+        else:
+            sep_result['object2_flux'] = -999
+            sep_result['object2_tnpix'] = -999
+            sep_result['object2_npix'] = -999
+            sep_result['object2_peak'] = -999
+            sep_result['object2_x'] = -999
+            sep_result['object2_y'] = -999
+            sep_result['object2_a'] = -999
+            sep_result['object2_b'] = -999
+            sep_result['object2_theta'] = -999
+            sep_result['object2_errxy'] = -999
+            sep_result['object2_thresh'] = -999
+        if len(objects) > 2:
+            sep_result['object3_flux'] = objects[2]['flux']
+            sep_result['object3_tnpix'] = objects[2]['tnpix']
+            sep_result['object3_npix'] = objects[2]['npix']
+            sep_result['object3_peak'] = objects[2]['peak']
+            sep_result['object3_x'] = objects[2]['x']
+            sep_result['object3_y'] = objects[2]['y']
+            sep_result['object3_a'] = objects[2]['a']
+            sep_result['object3_b'] = objects[2]['b']
+            sep_result['object3_theta'] = objects[2]['theta']
+            sep_result['object3_errxy'] = objects[2]['errxy']
+            sep_result['object3_thresh'] = objects[2]['thresh']
+        else:
+            sep_result['object3_flux'] = -999
+            sep_result['object3_tnpix'] = -999
+            sep_result['object3_npix'] = -999
+            sep_result['object3_peak'] = -999
+            sep_result['object3_x'] = -999
+            sep_result['object3_y'] = -999
+            sep_result['object3_a'] = -999
+            sep_result['object3_b'] = -999
+            sep_result['object3_theta'] = -999
+            sep_result['object3_errxy'] = -999
+            sep_result['object3_thresh'] = -999
+        new.add_row(sep_result)
+
+    return new
+
+
 ##-------------------------------------------------------------------------
 ## AnalyzeTipTiltPerformance
 ##-------------------------------------------------------------------------
@@ -381,6 +632,10 @@ class AnalyzeTipTiltPerformance(KPFTranslatorFunction):
             plot_tiptilt_stats(file, plotfile=plotfile,
                                start=args.get('start', None),
                                end=args.get('end', None),
+                               snr=args.get('snr', None),
+                               minarea=args.get('minarea', None),
+                               deblend_nthresh=args.get('deblend_nthresh', None),
+                               deblend_cont=args.get('deblend_cont', None),
                                )
 
             if viewer_command is not None:
@@ -415,51 +670,12 @@ class AnalyzeTipTiltPerformance(KPFTranslatorFunction):
             help="Zoom the plot in to this start time (in seconds).")
         parser.add_argument("--end", dest="end", type=float,
             help="Zoom the plot in to this end time (in seconds).")
+        parser.add_argument("--snr", dest="snr", type=float,
+            help="Run source extractor again with this SNR threshold")
+        parser.add_argument("--minarea", dest="minarea", type=float,
+            help="Run source extractor again with this minarea parameter")
+        parser.add_argument("--deblend_nthresh", dest="deblend_nthresh", type=float,
+            help="Run source extractor again with this deblend_nthresh")
+        parser.add_argument("--deblend_cont", dest="deblend_cont", type=float,
+            help="Run source extractor again with this deblend_cont parameter")
         return super().add_cmdline_args(parser, cfg)
-
-
-##-------------------------------------------------------------------------
-## if __name__ == '__main__':
-##-------------------------------------------------------------------------
-if __name__ == '__main__':
-    ##-------------------------------------------------------------------------
-    ## Parse Command Line Arguments
-    ##-------------------------------------------------------------------------
-    ## create a parser object for understanding command-line arguments
-    import argparse
-    p = argparse.ArgumentParser(description='''
-    ''')
-    ## add arguments
-    p.add_argument('files', type=str, nargs='*',
-                   help="The FITS files to analyze")
-    p.add_argument("-g", "--gif", dest="gif",
-        default=False, action="store_true",
-        help="Generate the animated GIF of frames (computationally expensive)")
-    p.add_argument("--view", dest="view",
-        default=False, action="store_true",
-        help="Open a viewer once the file is generated")
-    p.add_argument("--start", dest="start", type=float,
-        help="Zoom the plot in to this start time (in seconds).")
-    p.add_argument("--end", dest="end", type=float,
-        help="Zoom the plot in to this end time (in seconds).")
-    args = p.parse_args()
-
-    viewer_command = find_viewer_command(args)
-    for file in args.files:
-        file = Path(file).expanduser()
-        if file.exists() is False:
-            log.error(f"Could not find file {args.file}")
-        plotfile = Path(str(file.name).replace('.fits', '.png'))
-        plot_tiptilt_stats(file, plotfile=plotfile)
-
-        if viewer_command is not None:
-            log.info(f"Opening {plotfile} using {viewer_command}")
-            proc = subprocess.Popen([viewer_command, f"{plotfile}"])
-
-        if args.gif is True:
-            giffile = Path(str(file.name).replace('.fits', '.gif'))
-            generate_cube_gif(file, giffile)
-
-            if viewer_command is not None:
-                log.info(f"Opening {giffile} using {viewer_command}")
-                proc = subprocess.Popen([viewer_command, f"{giffile}"])
