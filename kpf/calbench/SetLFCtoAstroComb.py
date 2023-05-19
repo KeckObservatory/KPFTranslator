@@ -32,10 +32,21 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        '''Verifies that kpfmon shows no errors.
         '''
+        '''
+        # Check kpfmon.LFCREADY
         LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
         timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
         success = LFCready.waitFor('== "OK"', timeout=timeout)
         if success is not True:
             raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
+        # Check kpfcal.WOBBLE
+        wobble = ktl.cache('kpfcal', 'WOBBLE')
+        success = wobble.waitFor('== "False"', timeout=timeout)
+        if success is not True:
+            raise FailedPostCondition('kpfcal.WOBBLE is not False')
+        # Check kpfcal.OPERATIONMODE
+        lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE')
+        success = lfc_mode.waitFor('== "AstroComb"', timeout=timeout)
+        if success is not True:
+            raise FailedPostCondition('kpfcal.OPERATIONMODE is not AstroComb')
