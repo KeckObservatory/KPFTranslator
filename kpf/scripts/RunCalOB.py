@@ -1,6 +1,7 @@
 from time import sleep
 from pathlib import Path
 import os
+import traceback
 
 import ktl
 
@@ -68,9 +69,10 @@ class RunCalOB(KPFTranslatorFunction):
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
             # Email error to kpf_info
+            traceback_text = traceback.format_exc()
             try:
                 SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
-                                   'Message': f'{type(e)}: {e}'})
+                                   'Message': f'{type(e)}: {traceback_text}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -102,9 +104,10 @@ class RunCalOB(KPFTranslatorFunction):
             log.error(e)
             clear_script_keywords()
             # Email error to kpf_info
+            traceback_text = traceback.format_exc()
             try:
                 SendEmail.execute({'Subject': 'ExecuteDarks Failed',
-                                   'Message': f'{type(e)}: {e}'})
+                                   'Message': f'{type(e)}: {traceback_text}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -127,9 +130,10 @@ class RunCalOB(KPFTranslatorFunction):
             log.error(e)
             clear_script_keywords()
             # Email error to kpf_info
+            traceback_text = traceback.format_exc()
             try:
                 SendEmail.execute({'Subject': 'ExecuteCals Failed',
-                                   'Message': f'{type(e)}: {e}'})
+                                   'Message': f'{type(e)}: {traceback_text}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
@@ -146,9 +150,10 @@ class RunCalOB(KPFTranslatorFunction):
             log.error("CleanupAfterCalibrations failed:")
             log.error(e)
             # Email error to kpf_info
+            traceback_text = traceback.format_exc()
             try:
                 SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
-                                   'Message': f'{type(e)}: {e}'})
+                                   'Message': f'{type(e)}: {traceback_text}'})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
