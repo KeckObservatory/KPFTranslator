@@ -185,6 +185,10 @@ links:
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
     # Spectrograph
+    ResetGreenDetector:
+        cmd: spectrograph.ResetDetectors.ResetGreenDetector
+    ResetRedDetector:
+        cmd: spectrograph.ResetDetectors.ResetRedDetector
     ResetDetectors:
         cmd: spectrograph.ResetDetectors.ResetDetectors
     SetExptime:
