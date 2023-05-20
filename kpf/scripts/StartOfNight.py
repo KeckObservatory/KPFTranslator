@@ -72,6 +72,7 @@ class StartOfNight(KPFTranslatorFunction):
         # Power on Simulcal lamp
         kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
+        log.info(f"Simultaneous calibration sournce for tonight is {calsource}")
         if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
             CalLampPower.execute({'lamp': calsource, 'power': 'on'})
 
