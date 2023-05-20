@@ -10,6 +10,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetND1 import SetND1
 from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.WaitForCalSource import WaitForCalSource
@@ -56,15 +57,19 @@ class ExecuteSlewCal(KPFTranslatorFunction):
             log.debug(f"  {key}: {args[key]}")
         log.info('-------------------------')
 
+        kpfconfig = ktl.cache('kpfconfig')
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+
+        # Skip this lamp if it is not enabled
+        if IsCalSourceEnabled.execute({'CalSource': calsource}) == False:
+            return
+
         ## ----------------------------------------------------------------
         ## First, configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
         log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
-
-        kpfconfig = ktl.cache('kpfconfig')
-        calsource = kpfconfig['SIMULCALSOURCE'].read()
-        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
 
         check_scriptstop() # Stop here if requested
 
