@@ -61,7 +61,7 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
                 if lamp == 'LFCFiber':
                     try:
                         SetLFCtoAstroComb.execute({})
-                    except FailedPostCondition as e:
+                    except:
                         log.error('Failed to set LFC to AstroComb')
 
         log.debug(f"Ensuring back illumination LEDs are off")
