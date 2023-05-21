@@ -112,7 +112,19 @@ class StartOfNight(KPFTranslatorFunction):
         SetOutdirs.execute({})
         # Set progname and observer
         SetObserverFromSchedule.execute({})
-
+        # Summarize Detector Disabled States
+        cahk_enabled = kpfconfig['CA_HK_ENABLED'].read(binary=True)
+        if cahk_enabled is False:
+            log.warning(f"The CA_HK detector is disabled tonight")
+        green_enabled = kpfconfig['GREEN_ENABLED'].read(binary=True)
+        if green_enabled is False:
+            log.warning(f"The Green detector is disabled tonight")
+        red_enabled = kpfconfig['RED_ENABLED'].read(binary=True)
+        if red_enabled is False:
+            log.warning(f"The Red detector is disabled tonight")
+        expmeter_enabled = kpfconfig['EXPMETER_ENABLED'].read(binary=True)
+        if expmeter_enabled is False:
+            log.warning(f"The ExpMeter detector is disabled tonight")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
