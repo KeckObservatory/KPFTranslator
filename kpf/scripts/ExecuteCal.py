@@ -112,7 +112,7 @@ class ExecuteCal(KPFTranslatorFunction):
                 TakeIntensityReading.execute({})
             if calsource == 'LFCFiber':
                 # Check menlo heatbeat
-                heartbeat = ktl.cache('kpfmon', 'NE_HB_MENLO')
+                heartbeat = ktl.cache('kpfmon', 'HB_MENLOSTA')
                 heartbeat_ok = heartbeat.waitFor('== "OK"', timeout=3)
                 if heartbeat_ok is not True:
                     log.error('Menlo heartbeat not Ok. Skipping LFC.')

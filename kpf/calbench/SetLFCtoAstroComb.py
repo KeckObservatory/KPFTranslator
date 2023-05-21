@@ -17,7 +17,7 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        heartbeat = ktl.cache('kpfmon', 'NE_HB_MENLO')
+        heartbeat = ktl.cache('kpfmon', 'HB_MENLOSTA')
         success = heartbeat.waitFor('== "OK"', timeout=3)
         if success is False:
             raise FailedPreCondition(f"Menlo heartbeat is not OK: {heartbeat.read()}")
