@@ -14,6 +14,8 @@ from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
+from kpf.calbench.SetLFCtoAstroComb import SetLFCtoAstroComb
+from kpf.calbench.SetLFCtoStandbyHigh import SetLFCtoStandbyHigh
 from kpf.calbench.SetND1 import SetND1
 from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.TakeIntensityReading import TakeIntensityReading
@@ -93,6 +95,14 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForCalSource.execute({'CalSource': 'Home'})
             WaitForFlatFieldFiberPos.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
+        ## If we're using the LFC, set it to AstroComb
+        ## If that fails, skip this calibration
+        elif calsource == 'LFCFiber':
+            try:
+                SetLFCtoAstroComb.execute({})
+            except:
+                log.error('Failed to set LFC to AstroComb')
+                return
         ## Setup Octagon Lamps and LFCFiber
         elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
                            'Th_gold', 'LFCFiber', 'EtalonFiber']:
@@ -219,8 +229,12 @@ class ExecuteCal(KPFTranslatorFunction):
                 StopAgitator.execute({})
             if calsource in ['LFCFiber', 'EtalonFiber']:
                 ZeroOutSlewCalTime.execute({})
+        ## If we used WideFlat, set FF_FiberPos back to blank at end
         if calsource == 'WideFlat':
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
+        ## If we're using the LFC, set it back to StandbyHigh
+        if calsource == 'LFCFiber':
+            SetLFCtoStandbyHigh.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

@@ -13,7 +13,6 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
-from kpf.calbench.SetLFCtoAstroComb import SetLFCtoAstroComb
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.WaitForReady import WaitForReady
@@ -58,11 +57,6 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
                 if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                             'BrdbandFiber', 'WideFlat']:
                     CalLampPower.execute({'lamp': lamp, 'power': 'on'})
-                if lamp == 'LFCFiber':
-                    try:
-                        SetLFCtoAstroComb.execute({})
-                    except:
-                        log.error('Failed to set LFC to AstroComb')
 
         log.debug(f"Ensuring back illumination LEDs are off")
         CalLampPower.execute({'lamp': 'ExpMeterLED', 'power': 'off'})
