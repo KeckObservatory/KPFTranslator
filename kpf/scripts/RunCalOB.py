@@ -69,15 +69,17 @@ class RunCalOB(KPFTranslatorFunction):
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
             # Email error to kpf_info
-            traceback_text = traceback.format_exc()
             try:
+                msg = [f'{type(e)}',
+                       f'{traceback.format_exc()}',
+                       '',
+                       f'{OB}']
                 SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
-                                   'Message': f'{type(e)}: {traceback_text}'})
+                                   'Message': '\n'.join(msg)})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
-
-            raise(e)
+            raise e
 
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
@@ -104,16 +106,19 @@ class RunCalOB(KPFTranslatorFunction):
             log.error(e)
             clear_script_keywords()
             # Email error to kpf_info
-            traceback_text = traceback.format_exc()
             try:
+                msg = [f'{type(e)}',
+                       f'{traceback.format_exc()}',
+                       '',
+                       f'{OB}']
                 SendEmail.execute({'Subject': 'ExecuteDarks Failed',
-                                   'Message': f'{type(e)}: {traceback_text}'})
+                                   'Message': '\n'.join(msg)})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
             # Cleanup
             CleanupAfterCalibrations.execute(OB)
-            raise(e)
+            raise e
 
         # Execute the Cal Sequence
         try:
@@ -132,14 +137,18 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             traceback_text = traceback.format_exc()
             try:
+                msg = [f'{type(e)}',
+                       f'{traceback.format_exc()}',
+                       '',
+                       f'{OB}']
                 SendEmail.execute({'Subject': 'ExecuteCals Failed',
-                                   'Message': f'{type(e)}: {traceback_text}'})
+                                   'Message': '\n'.join(msg)})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
             # Cleanup
             CleanupAfterCalibrations.execute(OB)
-            raise(e)
+            raise e
 
         clear_script_keywords()
 
@@ -152,12 +161,16 @@ class RunCalOB(KPFTranslatorFunction):
             # Email error to kpf_info
             traceback_text = traceback.format_exc()
             try:
+                msg = [f'{type(e)}',
+                       f'{traceback.format_exc()}',
+                       '',
+                       f'{OB}']
                 SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
-                                   'Message': f'{type(e)}: {traceback_text}'})
+                                   'Message': '\n'.join(msg)})
             except Exception as email_err:
                 log.error(f'Sending email failed')
                 log.error(email_err)
-            raise(e)
+            raise e
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
