@@ -12,7 +12,7 @@ import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+                 FailedToReachDestination, check_input, ScriptStopTriggered)
 
 
 ##-----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ def check_scriptstop():
         log.warning("SCRIPTSTOP requested. Resetting SCRIPTSTOP and exiting")
         scriptstop.write('No')
         clear_script_keywords()
-        raise KPFException("SCRIPTSTOP triggered")
+        raise ScriptStopTriggered("SCRIPTSTOP triggered")
     if scriptpause.read() == 'Yes':
         log.warning("SCRIPTPAUSE requested. Waiting for SCRIPTPAUSE=No.")
         expr = f"($kpfconfig.SCRIPTPAUSE == 'No')"

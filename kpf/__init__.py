@@ -66,6 +66,7 @@ class FailedToReachDestination(FailedPostCondition):
 
 
 LostTipTiltStar = KPFException
+ScriptStopTriggered = KPFException
 
 
 ##-------------------------------------------------------------------------
