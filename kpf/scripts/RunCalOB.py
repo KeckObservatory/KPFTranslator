@@ -7,7 +7,7 @@ import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+                 FailedToReachDestination, check_input, ScriptStopTriggered)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
@@ -66,19 +66,22 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error('ConfigureForCalibrations Failed')
             log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
+            # Email error to kpf_info
+            if not isinstance(e, ScriptStopTriggered):
+                try:
+                    msg = [f'{type(e)}',
+                           f'{traceback_text}',
+                           '',
+                           f'{OB}']
+                    SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            # Email error to kpf_info
-            try:
-                msg = [f'{type(e)}',
-                       f'{traceback.format_exc()}',
-                       '',
-                       f'{OB}']
-                SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
-                                   'Message': '\n'.join(msg)})
-            except Exception as email_err:
-                log.error(f'Sending email failed')
-                log.error(email_err)
             raise e
 
         check_script_running()
@@ -104,19 +107,23 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("ExecuteDarks failed:")
             log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
             clear_script_keywords()
             # Email error to kpf_info
-            try:
-                msg = [f'{type(e)}',
-                       f'{traceback.format_exc()}',
-                       '',
-                       f'{OB}']
-                SendEmail.execute({'Subject': 'ExecuteDarks Failed',
-                                   'Message': '\n'.join(msg)})
-            except Exception as email_err:
-                log.error(f'Sending email failed')
-                log.error(email_err)
+            if not isinstance(e, ScriptStopTriggered):
+                try:
+                    msg = [f'{type(e)}',
+                           f'{traceback_text}',
+                           '',
+                           f'{OB}']
+                    SendEmail.execute({'Subject': 'ExecuteDarks Failed',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
             # Cleanup
+            log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
             raise e
 
@@ -133,20 +140,23 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("ExecuteCal failed:")
             log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
             clear_script_keywords()
             # Email error to kpf_info
-            traceback_text = traceback.format_exc()
-            try:
-                msg = [f'{type(e)}',
-                       f'{traceback.format_exc()}',
-                       '',
-                       f'{OB}']
-                SendEmail.execute({'Subject': 'ExecuteCals Failed',
-                                   'Message': '\n'.join(msg)})
-            except Exception as email_err:
-                log.error(f'Sending email failed')
-                log.error(email_err)
+            if not isinstance(e, ScriptStopTriggered):
+                try:
+                    msg = [f'{type(e)}',
+                           f'{traceback.format_exc()}',
+                           '',
+                           f'{OB}']
+                    SendEmail.execute({'Subject': 'ExecuteCals Failed',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
             # Cleanup
+            log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
             raise e
 
@@ -158,18 +168,20 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("CleanupAfterCalibrations failed:")
             log.error(e)
-            # Email error to kpf_info
             traceback_text = traceback.format_exc()
-            try:
-                msg = [f'{type(e)}',
-                       f'{traceback.format_exc()}',
-                       '',
-                       f'{OB}']
-                SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
-                                   'Message': '\n'.join(msg)})
-            except Exception as email_err:
-                log.error(f'Sending email failed')
-                log.error(email_err)
+            log.error(traceback_text)
+            # Email error to kpf_info
+            if not isinstance(e, ScriptStopTriggered):
+                try:
+                    msg = [f'{type(e)}',
+                           f'{traceback_text}',
+                           '',
+                           f'{OB}']
+                    SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
             raise e
 
     @classmethod
