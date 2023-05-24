@@ -95,14 +95,6 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForCalSource.execute({'CalSource': 'Home'})
             WaitForFlatFieldFiberPos.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
-        ## If we're using the LFC, set it to AstroComb
-        ## If that fails, skip this calibration
-        elif calsource == 'LFCFiber':
-            try:
-                SetLFCtoAstroComb.execute({})
-            except:
-                log.error('Failed to set LFC to AstroComb')
-                return
         ## Setup Octagon Lamps and LFCFiber
         elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
                            'Th_gold', 'LFCFiber', 'EtalonFiber']:
@@ -117,10 +109,14 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForCalSource.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Take intensity monitor reading
-            if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
-                WaitForLampWarm.execute(args)
-                TakeIntensityReading.execute({})
             if calsource == 'LFCFiber':
+                ## If we're using the LFC, set it to AstroComb
+                ## If that fails, skip this calibration
+                try:
+                    SetLFCtoAstroComb.execute({})
+                except:
+                    log.error('Failed to set LFC to AstroComb')
+                    return
                 # Check menlo heatbeat
                 heartbeat = ktl.cache('kpfmon', 'HB_MENLOSTA')
                 heartbeat_ok = heartbeat.waitFor('== "OK"', timeout=3)
@@ -133,6 +129,9 @@ class ExecuteCal(KPFTranslatorFunction):
                 if LFCready_ok is not True:
                     log.error('LFCREADYSTA not Ok. Skipping LFC.')
                     return
+            if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
+                WaitForLampWarm.execute(args)
+                TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
