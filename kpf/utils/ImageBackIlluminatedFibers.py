@@ -47,19 +47,41 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
                     }
         kpffvc = ktl.cache('kpffvc')
         kpfpower = ktl.cache('kpfpower')
+        kpffiu = ktl.cache('kpffiu')
 
         def take_back_illuminated_image(camera, LEDname):
             log.info(f"Taking back illuminated image of {LEDname} fiber with {camera} FVC")
-            FVCPower.execute({'camera': camera, 'power': 'on'})
-            # Take image with Science LED on
+
+            camnum = {'SCI': 1, 'CAHK': 2}[camera]
+            powerkw = ktl.cache('kpfpower', f'KPFFVC{camnum}')
+            if powerkw.read() == 'Off':
+                FVCPower.execute({'camera': camera, 'power': 'on'})
+                # Time shim to let FVC service connect to camera after power up
+                time.sleep(10)
+
+            # Set ADC to Null
+            if camera == 'SCI':
+                kpffiu['ADC1NAM'].write('Null')
+                kpffiu['ADC2NAM'].write('Null')
+                success1 = kpffiu['ADC1NAM'].waitFor("=='Null'", timeout=30)
+                success2 = kpffiu['ADC2NAM'].waitFor("=='Null'", timeout=30)
+                if success1 is False or success2 is False:
+                    raise KPFException('Failed to reach Null position on science ADC')
+            elif camera == 'CAHK':
+                kpffiu['HKXNAM'].write('Null')
+                kpffiu['HKYNAM'].write('Null')
+                success1 = kpffiu['HKXNAM'].waitFor("=='Null'", timeout=30)
+                success2 = kpffiu['HKYNAM'].waitFor("=='Null'", timeout=30)
+                if success1 is False or success2 is False:
+                    raise KPFException('Failed to reach Null position on HK ADC')
+
+            # Turn LED on
             outlet = LEDoutlets[LEDname]
             if LEDnames[LEDname] != kpfpower[f"OUTLET_{outlet}_NAME"].read():
                 raise KPFException(f"Expected outlet {outlet} to have name {LEDnames[LEDname]}")
             log.debug('Turning LED on')
             kpfpower[f"OUTLET_{outlet}"].write('On')
-
-            # Time shim to let FVC service connect to camera after power up
-            time.sleep(10)
+            # Take FVC Image
             SetFVCExpTime.execute({'camera': camera,
                                    'exptime': exptimes[camera][LEDname]})
             lastfile = TakeFVCExposure.execute({'camera': camera})
