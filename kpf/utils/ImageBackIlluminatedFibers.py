@@ -27,14 +27,11 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         this_file_name = Path(__file__).name.replace('.py', '')
-        utnow = datetime.utcnow()
-        now_str = utnow.strftime('%Y%m%dat%H%M%S')
-        date_str = (utnow-timedelta(days=1)).strftime('%Y%b%d').lower()
-        log_path = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}')
-        images_file = log_path / Path(f'{this_file_name}_images_{now_str}.txt')
-        images = Table(names=('file', 'camera', 'LED'),
-                       dtype=('a90',  'a10',    'a10'))
-
+        log_path = Path(f'/s/sdata1701/KPFTranslator_logs/')
+        images_file = log_path / Path(f'{this_file_name}_images.txt')
+        hstnow = datetime.now()
+        now_str = hstnow.strftime('%Y-%m-%d %H:%M:%S')
+        
         LEDoutlets = {'Science': 'E7',
                       'Sky': 'E8',
                       'CaHK': 'J7',
@@ -67,12 +64,16 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
             log.info(f'  LASTFILE: {lastfile}')
             log.debug('Turning LED off')
             kpfpower[f"OUTLET_{outlet}"].write('Off')
-            images.add_row({'file': lastfile,
-                            'camera': camera,
-                            'LED': LEDname})
-            if images_file.exists():
-                images_file.unlink()
-            images.write(images_file, format='ascii.csv')
+
+            # Append to images file
+            if images_file.exists() is False:
+                # Write header line
+                header = f"# HST date, camera, LED, file\n"
+                with open(images_file, 'w') as f:
+                    f.write(header)
+            row = f"{now_str}, {camera:4s}, {LEDname:8s}, {lastfile}\n"
+            with open(images_file, 'a') as f:
+                f.write(row)
 
         if args.get('SCI', False) is True:
             take_back_illuminated_image('SCI', 'Science')
