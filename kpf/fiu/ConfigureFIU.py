@@ -3,7 +3,7 @@ import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input, KPFQuietException)
+                 FailedToReachDestination, check_input)
 from kpf.fiu.ConfigureFIUOnce import ConfigureFIUOnce
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 
