@@ -32,7 +32,7 @@
      <rect>
       <x>10</x>
       <y>80</y>
-      <width>301</width>
+      <width>308</width>
       <height>81</height>
      </rect>
     </property>
@@ -43,45 +43,6 @@
      <property name="verticalSpacing">
       <number>6</number>
      </property>
-     <item row="2" column="1">
-      <widget class="QLabel" name="scriptstop_value">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>_</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="scriptpause_value">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>_</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Request Script Pause:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="font">
@@ -94,35 +55,6 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Request Script Stop:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="scriptpause_btn">
-       <property name="text">
-        <string>Pause</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QPushButton" name="scriptstop_btn">
-       <property name="text">
-        <string>STOP</string>
        </property>
       </widget>
      </item>
@@ -144,6 +76,32 @@
        </property>
        <property name="text">
         <string>scriptname.yaml</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="scriptstop_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>_</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QPushButton" name="scriptstop_btn">
+       <property name="text">
+        <string>Request STOP After Exposure</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="2">
+      <widget class="QPushButton" name="fullstop_btn">
+       <property name="text">
+        <string>Immediate STOP Exposure and Script</string>
        </property>
       </widget>
      </item>
@@ -282,7 +240,7 @@
         </font>
        </property>
        <property name="text">
-        <string/>
+        <string>Disabled Detectors:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -333,6 +291,18 @@
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="slewcalfile_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>_</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="disabled_detectors_value">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
