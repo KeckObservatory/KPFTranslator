@@ -57,7 +57,9 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
                 raise KPFException(f"Expected outlet {outlet} to have name {LEDnames[LEDname]}")
             log.debug('Turning LED on')
             kpfpower[f"OUTLET_{outlet}"].write('On')
-            time.sleep(3)
+
+            # Time shim to let FVC service connect to camera after power up
+            time.sleep(10)
             SetFVCExpTime.execute({'camera': camera,
                                    'exptime': exptimes[camera][LEDname]})
             lastfile = TakeFVCExposure.execute({'camera': camera})
