@@ -1,4 +1,4 @@
-
+import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
@@ -31,7 +31,7 @@ class Run2DGridSearch(KPFTranslatorFunction):
         pass
 
     @classmethod
-    def perform(cls, OB, logger, cfg):
+    def perform(cls, args, logger, cfg):
         Gmag = args.get('Gmag')
         additional_text = args.get('comment', '')
         em_parameters = PredictExpMeterParameters.execute({'Gmag': Gmag})
