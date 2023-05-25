@@ -673,7 +673,7 @@ class MainWindow(QMainWindow):
         elif key == 'GuideMode':
             self.GuideMode.setCurrentText(value)
             self.GuideCamGain.setEnabled((value not in ['auto', 'off']))
-            self.GuideFPS.setEnabled((value != 'auto'))
+            self.GuideFPS.setEnabled((value not in ['auto', 'off']))
         elif key == 'GuideCamGain':
             self.GuideCamGain.setCurrentText(value)
         elif key == 'GuideFPS':
