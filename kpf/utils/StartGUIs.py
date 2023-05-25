@@ -22,7 +22,7 @@ GUI_list = [
             {'name': 'KPF TipTilt GUI',
              'cmd': ['kpf', 'start', 'tt_gui'],
              'display': 'control0',
-             'position': '0,800,50,-1,-1'},
+             'position': '0,1000,50,-1,-1'},
             # Control1
             #   To do: add Spectrograph GUI
             {'name': 'KPF Fiber Injection Unit (FIU)',
@@ -41,29 +41,25 @@ GUI_list = [
             {'name': 'Kpf eventsounds',
              'cmd':  ['eventsounds', '-a', 'kpf'],
              'display': 'control2',
-             'position': '0,250,75,-1,-1'},
+             'position': '0,250,20,-1,-1'},
             {'name': 'SAOImage kpfds9',
              'cmd':  ['kpf', 'start', 'kpfds9'],
              'display': 'control2',
              'position': '0,1,55,1800,900'},
             # Telstatus
             #   To do: add Tip Tilt GUI
-            {'name': 'xshow_TipTilt',
-             'cmd':  ['/kroot/rel/default/bin/xshow_tiptilt'],
-             'display': 'telstatus',
-             'position': '0,1020,5,200,310'},
-            {'name': 'KECK 1 FACSUM',
-             'cmd':  ['xterm', '-T', 'xterm KECK 1 FACSUM', '-e', 'ssh', '-X', 'k1ruts@vm-k1obs', 'Facsum', '-k1'],
-             'display': 'telstatus',
-             'position': None},#'0,250,10,-1,-1'},
-            {'name': 'KECK 1 MET',
-             'cmd':  ['xterm', '-T', 'xterm KECK 1 MET', '-e', 'ssh', '-X', 'k1ruts@vm-k1obs', 'Met', '-k1'],
-             'display': 'telstatus',
-             'position': None},#'0,250,535,-1,-1'},
             {'name': 'MAGIQ - Observer UI',
-             'cmd':  ['xterm', '-T', 'xterm MAGIQ - Observer UI', '-e', 'ssh', '-X', 'k1ruts@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
+             'cmd':  ['ssh', '-X', 'k1ruts@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
              'display': 'telstatus',
-             'position': None},#'0,500,15,-1,-1'},
+             'position': '0,1225,10,-1,-1'},
+            {'name': 'KECK 1 FACSUM',
+             'cmd':  ['ssh', '-X', 'k1ruts@vm-k1obs', 'Facsum', '-k1'],
+             'display': 'telstatus',
+             'position': '0,250,10,-1,-1'},
+            {'name': 'KECK 1 MET',
+             'cmd':  ['ssh', '-X', 'k1ruts@vm-k1obs', 'Met', '-k1'],
+             'display': 'telstatus',
+             'position': '0,250,535,-1,-1'},
             ]
 
 
@@ -129,16 +125,22 @@ class StartGUIs(KPFTranslatorFunction):
             env['DISPLAY'] = f"kpf{display[GUI['display']]}"
             window_names = get_window_list(env=env)
             GUIname = GUI['name']
-            if GUIname not in window_names:
+            if GUIname not in window_names and args.get('position_only', False) is False:
                 log.info(f"Starting '{GUIname}' GUI")
                 gui_proc = subprocess.Popen(GUI['cmd'], env=env,
                                             stdout=subprocess.PIPE,
                                             stderr=subprocess.PIPE)
                 success = waitfor_window_to_appear(GUIname, env=env)
+                if success is False:
+                    log.error(f'{GUIname} did not come up')
+                    stdout, stderr = gui_proc.communicate()
+                    log.error(f"STDERR: {stderr.decode()}")
+                    log.error(f"STDOUT: {stdout.decode()}")
             else:
                 log.info(f"Existing '{GUIname}' window found")
+                success = True
             time.sleep(2)
-            if GUI.get('position', None) is not None:
+            if GUI.get('position', None) is not None and success is True:
                 log.info(f"Positioning '{GUIname}' GUI")
                 wmctrl_cmd = ['wmctrl', '-r', f'"{GUIname}"', '-e', GUI['position']]
                 log.debug(f"  Running: {' '.join(wmctrl_cmd)}")
@@ -153,3 +155,13 @@ class StartGUIs(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument("--position", "-p",
+                            dest="position_only",
+                            default=False, action="store_true",
+                            help="Only position the GUIs, do not start")
+        return super().add_cmdline_args(parser, cfg)
