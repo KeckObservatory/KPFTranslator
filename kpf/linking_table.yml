@@ -164,8 +164,8 @@ links:
         cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
     GridSearch:
         cmd: scripts.GridSearch.GridSearch
-    FiberGridSearch:
-        cmd: scripts.FiberGridSearch.FiberGridSearch
+    Run2DGridSearch:
+        cmd: scripts.Run2DGridSearch.Run2DGridSearch
     RunCalOB:
         cmd: scripts.RunCalOB.RunCalOB
     RunSciOB:

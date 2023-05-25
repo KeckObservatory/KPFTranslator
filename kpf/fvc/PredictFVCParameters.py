@@ -16,13 +16,11 @@ class PredictFVCParameters(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'camera', allowed_values=['SCI', 'CAHK']])
         check_input(args, 'Gmag', allowed_types=[int, float])
 
     @classmethod
     def perform(cls, args, logger, cfg):
         Gmag = args.get('Gmag')
-        camera = args.get('camera')
         delta_mag = 4 - Gmag
         flux_ratio = 10**(delta_mag/2.5)
         if flux_ratio > 10:
@@ -43,10 +41,12 @@ class PredictFVCParameters(KPFTranslatorFunction):
         elif flux_ratio > 0.05:
             exptime = {'SCI': 10,
                        'CAHK': 15}
-        result = {'camera': camera, 'exptime': exptime[camera]}
+        result = {'SCIFVC_exptime': exptime['SCI'],
+                  'CAHKFVC_exptime': exptime['CAHK']}
         print(result)
         if args.get('set', False):
-            SetFVCExpTime.execute(result)
+            SetFVCExpTime.execute({'camera': 'SCI', 'exptime': exptime['SCI']})
+            SetFVCExpTime.execute({'camera': 'CAHK', 'exptime': exptime['CAHK']})
         return result
 
     @classmethod
@@ -55,8 +55,6 @@ class PredictFVCParameters(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        parser.add_argument('camera', type=str,
-                            help='The FVC camera (SCI, CAHK)')
         parser.add_argument('Gmag', type=float,
                             help="The G magnitude of the target")
         parser.add_argument("--set", dest="set",
