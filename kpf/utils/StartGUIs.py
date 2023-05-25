@@ -24,7 +24,6 @@ GUI_list = [
              'display': 'control0',
              'position': '0,1000,50,-1,-1'},
             # Control1
-            #   To do: add Spectrograph GUI
             {'name': 'KPF Fiber Injection Unit (FIU)',
              'cmd': ['kpf', 'start', 'fiu_gui'],
              'display': 'control1',
@@ -47,7 +46,6 @@ GUI_list = [
              'display': 'control2',
              'position': '0,1,55,1800,900'},
             # Telstatus
-            #   To do: add Tip Tilt GUI
             {'name': 'MAGIQ - Observer UI',
              'cmd':  ['ssh', '-X', 'k1ruts@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
              'display': 'telstatus',
