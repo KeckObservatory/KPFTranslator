@@ -33,6 +33,7 @@ class Run2DGridSearch(KPFTranslatorFunction):
     @classmethod
     def perform(cls, OB, logger, cfg):
         Gmag = args.get('Gmag')
+        additional_text = args.get('comment', '')
         em_parameters = PredictExpMeterParameters.execute({'Gmag': Gmag})
         fvc_parameters = PredictFVCParameters.execute({'Gmag': Gmag})
         dcs = ktl.cache('dcs')
@@ -54,13 +55,13 @@ class Run2DGridSearch(KPFTranslatorFunction):
                 'FVCs': 'SCI,CAHK',
                 }
         args.update(fvc_parameters)
-        x_args = {'comment': f'1D in X {targname}',
+        x_args = {'comment': f'1D in X {targname}: {additional_text}',
                   'nx': 15,
                   'ny': 1,
                   }
         args.update(x_args)
         GridSearch.execute(args)
-        y_args = {'comment': f'1D in Y {targname}',
+        y_args = {'comment': f'1D in Y {targname}: {additional_text}',
                   'nx': 1,
                   'ny': 15,
                   }
@@ -75,4 +76,7 @@ class Run2DGridSearch(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         parser.add_argument('Gmag', type=float,
                             help="The G magnitude of the target")
+        parser.add_argument("--comment", dest="comment", type=str,
+            default='',
+            help="Additional comment text")
         return super().add_cmdline_args(parser, cfg)
