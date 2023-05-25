@@ -240,7 +240,7 @@ class MainWindow(QMainWindow):
 
         # Guider Setup
         self.GuideMode = self.findChild(QComboBox, 'GuideMode')
-        self.GuideMode.addItems(["auto", "manual"])
+        self.GuideMode.addItems(["auto", "manual", "off"])
         self.update_OB('GuideMode', self.OB['GuideMode'])
         self.GuideMode.currentTextChanged.connect(self.set_guide_mode)
         
