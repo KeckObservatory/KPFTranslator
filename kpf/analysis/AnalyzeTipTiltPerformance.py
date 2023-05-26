@@ -1,6 +1,5 @@
 #!python3
 
-## Import General Tools
 import sys
 import os
 import yaml
@@ -212,7 +211,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
 
     # Calculate FWHM
     fwhm = t['object1_fwhm']*ps/1000
-    mean_fwhm = np.mean(fwhm)
+    mean_fwhm = np.nanmedian(fwhm)
 
     results['FWHM (arcsec)'] = float(mean_fwhm)
 
@@ -450,61 +449,6 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     log.info('Done.')
 
 
-##-------------------------------------------------------------------------
-## generate_cube_gif
-##-------------------------------------------------------------------------
-def generate_cube_gif(file, giffile):
-    log.info('Generating animation')
-    t, metadata, cube = read_file(file)
-    if t is None: return
-
-    start = datetime.fromisoformat(metadata['DATE-BEG'])
-    end = datetime.fromisoformat(metadata['DATE-END'])
-    duration = (end - start).total_seconds()
-    fps = metadata['FPS']
-    nf, ny, nx = cube.shape
-    norm = vis.ImageNormalize(cube,
-                          interval=vis.AsymmetricPercentileInterval(1.5,99.99),
-                          stretch=vis.LogStretch())
-
-    fig = plt.figure(figsize=(8,8))
-    fps = 10
-    if sys.platform == 'darwin':
-#         writer = animation.ImageMagickWriter(fps=fps)
-#         writer = animation.ImageMagickFileWriter(fps=fps)
-        writer = animation.FFMpegWriter(fps=fps)
-#         writer = animation.PillowWriter(fps=fps)
-    else:
-        writer = animation.ImageMagickWriter(fps=fps)
-
-    # ims is a list of lists, each row is a list of artists to draw in the
-    # current frame; here we are just animating one artist, the image, in
-    # each frame
-    log.info('Building individual frames')
-    ims = []
-    for j,im in enumerate(cube):
-        plt.title(f"{file.name}: {duration:.1f} s, {nf:d} frames")
-        im = plt.imshow(im, origin='lower', cmap='gray', norm=norm, animated=True)
-        frametext = plt.text(nx-20, ny-5, f"{j:04d}/{nf:04d}", color='r')
-        xtpix = nx/2
-        ytpix = ny/2
-        tlines = plt.plot(xtpix, ytpix, 'bx')
-        lines = []
-        if t[j]['object1_x'] > 0 and t[j]['object1_y'] > 0:
-            xpix = t[j]['object1_x'] - (t[j]['target_x'] - nx/2)
-            ypix = t[j]['object1_y'] - (t[j]['target_y'] - ny/2)
-            lines = plt.plot(xpix, ypix, 'r+')
-        newim = [im] + [frametext] + lines + tlines
-        ims.append(newim)
-
-    log.info('Building animation')
-    ani = animation.ArtistAnimation(fig, ims, interval=1000/fps, blit=True,
-                                    repeat_delay=1000)
-    log.info(f'Writing {giffile} using {writer}')
-    p = Path(giffile)
-    if p.expanduser().exists(): p.unlink()
-    ani.save(f"{giffile}", writer)
-    log.info('Done')
 
 
 def find_viewer_command(args):
