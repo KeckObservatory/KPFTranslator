@@ -671,6 +671,7 @@ class MainWindow(QMainWindow):
         elif key == 'Teff':
             self.Teff.setText(f"{value}")
         elif key == 'GuideMode':
+            if value == False: value = 'off'
             self.GuideMode.setCurrentText(value)
             self.GuideCamGain.setEnabled((value not in ['auto', 'off']))
             self.GuideFPS.setEnabled((value not in ['auto', 'off']))
@@ -781,7 +782,7 @@ class MainWindow(QMainWindow):
         result = QFileDialog.getOpenFileName(self, "Open OB File",
                                              f"{self.file_path}",
                                              "OB Files (*yaml);;All Files (*)")
-        self.log.debug('  Got result: {result}')
+        self.log.debug(f'  Got result: {result}')
         if result:
             fname = result[0]
             if fname != '' and Path(fname).exists():
@@ -789,6 +790,7 @@ class MainWindow(QMainWindow):
                 with open(fname, 'r') as f:
                     contents = yaml.safe_load(f)
                 self.log.debug('  Read in YAML')
+                self.log.debug(contents)
                 for key in contents:
                     value = contents[key]
                     self.log.debug(f"  {key}: {value} ({type(value)})")
