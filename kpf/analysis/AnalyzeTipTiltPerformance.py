@@ -71,8 +71,9 @@ def read_file(file):
                 'IMTYPE': L0_header_hdu.header.get('IMTYPE', None),
                 'Gmag': L0_header_hdu.header.get('GAIAMAG', None),
                 'Jmag': L0_header_hdu.header.get('2MASSMAG', None),
-                'TARGNAME': L0_header_hdu.header.get('TARGNAME', None),
+                'TARGNAME': L0_header_hdu.header.get('FULLTARG', None),
                 'IMTYPE': L0_header_hdu.header.get('IMTYPE', None),
+                'GAIN': guide_cube_header_hdu.header.get('Gain', None)
                }
     if metadata['FPS'] is None:
         # Assume 100 FPS
@@ -148,11 +149,9 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     Gmag = metadata['Gmag']
     Jmag = metadata['Jmag']
     targname = metadata['TARGNAME']
+    gain = metadata['GAIN']
 
-    results['FPS'] = fps
-    results['Gmag'] = Gmag
-    results['Jmag'] = Jmag
-    results['TARGNAME'] = targname
+    results.update(metadata)
 
     # Examine timestamps for consistency
     line0 = models.Linear1D()
@@ -220,8 +219,13 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     # Mean Flux
     mean_flux = np.nanmean(t['object1_flux'][~maskall])
     mean_peak = np.nanmean(t['object1_peak'][~maskall])
+    max_peak = np.nanmax(t['object1_peak'][~maskall])
+    min_peak = np.nanmin(t['object1_peak'][~maskall])
 
-    results['Flux (ADU)'] = float(mean_flux)
+    results['Mean Flux (ADU)'] = float(mean_flux)
+    results['Mean Peak Flux (ADU)'] = float(mean_peak)
+    results['Max Peak Flux (ADU)'] = float(max_peak)
+    results['Min Peak Flux (ADU)'] = float(min_peak)
 
     # Count number of stars
     nstars = []
@@ -251,12 +255,12 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     title_line1 = f"{len(t)} frames: {nframes_extra_detections} frames w/ extra stars, {nframes_fewer_detections} frames w/ fewer"
     title_line2 = ''
     if metadata['Gmag'] is not None:
-        title_line2 += f"{targname}: Gmag={Gmag}, Jmag={Jmag}, FWHM={mean_fwhm:.2f}"
+        title_line2 += f"{targname}: Gmag={Gmag}, Jmag={Jmag}, FPS={fps:.1f}, gain={gain}"
     plt.title(f"{title_line1}\n{title_line2}")
-    plt.fill_between([0, times[-1]], [0,0], [5000,5000],
-                     color='r', alpha=0.2, linewidth=0)
-    plt.fill_between([0, times[-1]], [5000,5000], [10000,10000],
-                     color='y', alpha=0.2, linewidth=0)
+#     plt.fill_between([0, times[-1]], [0,0], [5000,5000],
+#                      color='r', alpha=0.2, linewidth=0)
+#     plt.fill_between([0, times[-1]], [5000,5000], [10000,10000],
+#                      color='y', alpha=0.2, linewidth=0)
     try:
         flux_plot_max = 1.1*max(t['object1_flux'][~maskall])
     except ValueError:
@@ -265,10 +269,10 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
         plt.plot([times[instance], times[instance]], [0,flux_plot_max], 'r-', alpha=0.05)
     for instance in w_fewer_detections:
         plt.plot([times[instance], times[instance]], [0,flux_plot_max], 'b-', alpha=0.05)
-    flux_line = plt.plot(times[~maskall],
-                         t['object1_flux'][~maskall],
-                         'k-', alpha=0.5, drawstyle='steps-mid',
-                         label=f'flux ({mean_flux:.1e})')
+#     flux_line = plt.plot(times[~maskall],
+#                          t['object1_flux'][~maskall],
+#                          'g-', alpha=0.5, drawstyle='steps-mid',
+#                          label=f'flux (mean={mean_flux:.1e})')
     if start is not None and end is not None:
         plt.xlim(start, end)
     else:
@@ -277,12 +281,16 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     plt.ylim(0,flux_plot_max)
 
     ax_peak = plt.gca().twinx()
+    plt.fill_between([0, times[-1]], [0.8*2**14,0.8*2**14], [2**14,2**14],
+                     color='r', alpha=0.2, linewidth=0)
     peak_line = ax_peak.plot(times[~maskall],
                              t['object1_peak'][~maskall],
-                             'g-', alpha=0.3, drawstyle='steps-mid',
-                             label=f'peak ({mean_peak:.1e})')
-    plt.ylabel('Peak (ADU)')
-    plt.legend(handles=[flux_line[0], peak_line[0]], loc='lower center')
+                             'k-', alpha=0.3, drawstyle='steps-mid',
+                             label=f'peak (max={max_peak/1000:.1f}k, mean={mean_peak/1000:.1f}k)')
+#     plt.ylabel('Peak (ADU)')
+    plt.ylim(0,2**14)
+#     plt.legend(handles=[flux_line[0], peak_line[0]], loc='lower center')
+    plt.legend(handles=[peak_line[0]], loc='lower center')
 
     # FWHM Plot
     plt.subplot(3,2,2)
