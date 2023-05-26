@@ -82,8 +82,8 @@ def read_file(file):
     if metadata['DATE-END'] is None:
         metadata['DATE-END'] = L0_header_hdu.header.get('DATE-END', None)
 
-    if metadata['IMTYPE'] not in [None, 'Object']:
-        return None, None, None
+#     if metadata['IMTYPE'] not in [None, 'Object']:
+#         return None, None, None
     if guide_origins_hdu is None:
         return None, metadata, guider_cube
     else:
