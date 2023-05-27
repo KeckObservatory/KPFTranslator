@@ -1,5 +1,4 @@
-import requests
-import json
+import time
 from datetime import datetime, timedelta
 
 import ktl
@@ -7,32 +6,9 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.utils.telsched import get_schedule
 from kpf.spectrograph.SetObserver import SetObserver
 from kpf.spectrograph.SetProgram import SetProgram
-
-
-##-----------------------------------------------------------------------------
-## Functions to interact with telescope DB
-##-----------------------------------------------------------------------------
-def querydb(req):
-    '''A simple wrapper to form a generic API level query to the telescope
-    schedule web API.  Returns a JSON object with the result of the query.
-    '''
-    url = f"https://www.keck.hawaii.edu/software/db_api/telSchedule.php?{req}"
-    r = requests.get(url)
-    return json.loads(r.text)
-
-
-def get_schedule(date, tel):
-    '''Use the querydb function and getSchedule of the telescope schedule web
-    API with arguments for date and telescope number.  Returns a JSON object
-    with the schedule result.
-    '''
-    if tel not in [1,2]:
-        raise KPFError(f"Telescope number in query must be 1 or 2")
-    req = f"cmd=getSchedule&date={date}&telnr={tel}"
-    result = querydb(req)
-    return result
 
 
 ##-----------------------------------------------------------------------------
@@ -56,6 +32,7 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
         log.debug(f"Found {nKPFprograms} KPF programs in schedule for tonight")
         project_codes = [p['ProjCode'] for p in KPF_programs]
 
+        # Look at the schedule to find programs scheduled for tonight
         if nKPFprograms == 0:
             log.warning(f"No KPF programs found on schedule")
             progname = None
@@ -69,25 +46,36 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
                 print(f"  Found {nKPFprograms} KPF programs for tonight:")
                 for project_code in project_codes:
                     print(f"    {project_code}")
-                print(f"  Please entry the program ID for your observations:")
+                print(f"  Please enter the program ID for your observations:")
                 print(f"########################################")
                 print()
                 progname = input()
                 if progname.strip() not in project_codes:
                     log.warning(f"Project code {progname} not on schedule")
+
+        # Set the program
         if progname is None:
-            log.warning(f"Not setting progname or observer values")
+            time.sleep(0.5) # try time shim for log line
+            print()
+            print(f"  Please enter the program ID for your observations:")
+            print()
+            progname = input()
+        if progname == '':
+            log.info('No progname specified')
         else:
-            this_program = [p for p in KPF_programs if p['ProjCode'] == progname]
-            log.debug(f"Found {len(this_program)} entries for {progname} in schedule for tonight")
-            if len(this_program) > 0:
-                observers = this_program[0]['Observers']
-                log.info(f"Setting PROGNAME={progname} and observer list based on telescope schedule:")
-                log.info(f"{observers}")
-                SetProgram.execute({'progname': progname})
-                SetObserver.execute({'observer': observers})
-            else:
-                log.error(f"Failed to set observers. Could not find this program on the schedule.")
+            SetProgram.execute({'progname': progname})
+
+        # Set Observers
+        this_program = [p for p in KPF_programs if p['ProjCode'] == progname]
+        if len(this_program) > 0:
+            observers = this_program[0]['Observers']
+        else:
+            print()
+            print(f"  Please enter the observer names:")
+            print()
+            observers = input()
+        log.info(f"Setting observer list: {observers}")
+        SetObserver.execute({'observer': observers})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

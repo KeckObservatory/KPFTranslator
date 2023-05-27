@@ -12,7 +12,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.calbench.CalLampPower import CalLampPower
-from kpf.calbench.SetLFCtoStandbyHigh import SetLFCtoStandbyHigh
+from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.WaitForReady import WaitForReady
@@ -56,11 +56,10 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
             sequence = OB.get('SEQ_Calibrations')
             lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
             for lamp in lamps:
-                if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                            'BrdbandFiber', 'WideFlat']:
-                    CalLampPower.execute({'lamp': lamp, 'power': 'off'})
-                if lamp == 'LFCFiber':
-                    SetLFCtoStandbyHigh.execute({})
+                if IsCalSourceEnabled.execute({'CalSource': lamp}) == True:
+                    if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
+                                'BrdbandFiber', 'WideFlat']:
+                        CalLampPower.execute({'lamp': lamp, 'power': 'off'})
 
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})

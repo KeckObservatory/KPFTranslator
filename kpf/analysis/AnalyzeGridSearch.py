@@ -2,7 +2,6 @@
 
 ## Import General Tools
 from pathlib import Path
-import argparse
 import logging
 import re
 
@@ -21,36 +20,7 @@ warnings.filterwarnings('ignore', category=astropy.wcs.FITSFixedWarning, append=
 from matplotlib import pyplot as plt
 from matplotlib.ticker import MultipleLocator, FixedLocator
 
-##-------------------------------------------------------------------------
-## Parse Command Line Arguments
-##-------------------------------------------------------------------------
-## create a parser object for understanding command-line arguments
-p = argparse.ArgumentParser(description='''
-''')
-## add arguments
-p.add_argument('logfile', type=str, nargs='*',
-               help="The logfile or files of the grid search runs to analyze")
-## add flags
-p.add_argument("-v", "--verbose", dest="verbose",
-    default=False, action="store_true",
-    help="Be verbose! (default = False)")
-p.add_argument("--cred2", dest="cred2",
-    default=False, action="store_true",
-    help="Generate CRED2 plots? (default = False)")
-## add options
-p.add_argument("--fiber", dest="fiber", type=str,
-    default='Science',
-    help="The fiber being examined (Science, Sky, or EMSky).")
-p.add_argument("--seeing", dest="seeing", type=float,
-    default=0.7,
-    help="The seeing model to overlay on the fiber coupling plot.")
-p.add_argument("--xfit", dest="xfit", type=float,
-    default=335.5,
-    help="The X pixel position to use as the center when overlaying the model.")
-p.add_argument("--yfit", dest="yfit", type=float,
-    default=258,
-    help="The X pixel position to use as the center when overlaying the model.")
-args = p.parse_args()
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 
 
 ##-------------------------------------------------------------------------
@@ -60,10 +30,7 @@ log = logging.getLogger('MyLogger')
 log.setLevel(logging.DEBUG)
 ## Set up console output
 LogConsoleHandler = logging.StreamHandler()
-if args.verbose is True:
-    LogConsoleHandler.setLevel(logging.DEBUG)
-else:
-    LogConsoleHandler.setLevel(logging.INFO)
+LogConsoleHandler.setLevel(logging.INFO)
 LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s',
                               datefmt='%Y-%m-%d %H:%M:%S')
 LogConsoleHandler.setFormatter(LogFormat)
@@ -254,11 +221,27 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
         norm_spec_cube[w,:,:] = spectral_slice / spectral_slice.mean()
 
     flux_map = np.sum(spec_cube, axis=0) / np.sum(spec_cube, axis=0).max()
-    npix = 30
-    color_images = np.zeros((3,ny,nx))
-    color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
-    color_images[1,:,:] = np.sum(spec_cube[index_550nm-npix:index_550nm+npix,:,:], axis=0)
-    color_images[2,:,:] = np.sum(spec_cube[index_650nm-npix:index_650nm+npix,:,:], axis=0)
+#     npix = 30
+#     color_images = np.zeros((3,ny,nx))
+#     color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
+#     color_images[1,:,:] = np.sum(spec_cube[index_550nm-npix:index_550nm+npix,:,:], axis=0)
+#     color_images[2,:,:] = np.sum(spec_cube[index_650nm-npix:index_650nm+npix,:,:], axis=0)
+
+    fluxcubehdu = fits.ImageHDU()
+    fluxcubehdu.header.set('Name', 'Three_Color_Cube')
+    fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
+    wavs = np.array(wavs)
+#     wavbin_centers = [475, 525, 575, 625, 675, 725, 775, 825]
+#     delta_w = 25
+    delta_w = 20
+    wavbin_centers = np.arange(470,830,2*delta_w)
+    color_images = np.zeros((len(wavbin_centers),ny,nx))
+    for widx,wav_center in enumerate(wavbin_centers):
+        w = np.where((wavs > wav_center-delta_w) & (wavs < wav_center+delta_w))[0]
+        color_images[widx,:,:] = np.sum(spec_cube[w,:,:], axis=0)
+        flux = np.sum(color_images[widx,:,:])
+        log.info(f"  For {wav_center} nm, found {len(w)} bins with {flux:.1e} counts")
+        fluxcubehdu.header.set(f'Layer{widx+1}', f'{wavbin_centers[widx]}nm')
 
     color_cube = np.zeros((2,ny,nx))
     color_cube[0,:,:] = color_images[0,:,:]/color_images[1,:,:]
@@ -278,12 +261,12 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     fluxmaphdu.header.set('Name', 'Normalized_Flux_Map')
     fluxmaphdu.header.set('OBJECT', 'Normalized_Flux_Map')
     fluxmaphdu.data = flux_map
-    fluxcubehdu = fits.ImageHDU()
-    fluxcubehdu.header.set('Name', 'Three_Color_Cube')
-    fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
-    fluxcubehdu.header.set('Layer1', '450nm')
-    fluxcubehdu.header.set('Layer2', '550nm')
-    fluxcubehdu.header.set('Layer3', '650nm')
+#     fluxcubehdu = fits.ImageHDU()
+#     fluxcubehdu.header.set('Name', 'Three_Color_Cube')
+#     fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
+#     fluxcubehdu.header.set('Layer1', '450nm')
+#     fluxcubehdu.header.set('Layer2', '550nm')
+#     fluxcubehdu.header.set('Layer3', '650nm')
     fluxcubehdu.data = color_images
     colormaphdu = fits.ImageHDU()
     colormaphdu.header.set('Name', 'Color_Map_Ratios')
@@ -337,6 +320,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
     va = hdul[0].header.get('VA')
     flux_map = hdul[5].data[4]
     color_maps = hdul[3].data
+    color_maps_colors = [hdul[3].header.get(f"Layer{i}") for i in [1,2,3]]
     snr_map = hdul[5].data[6]
     emcount_map = hdul[5].data[7]
     nlayers, ny, nx = hdul[5].data.shape
@@ -351,7 +335,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
 
     plt.figure(figsize=(15,15))
 
-    plt.subplot(5,1,(1,2))
+    plt.subplot(3,1,1)
     norm = viz.ImageNormalize(flux_map,
                               interval=viz.MinMaxInterval(),
                               stretch=viz.LinearStretch())
@@ -401,7 +385,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                       head_width=arrow_length/5, color='b')
 
 
-    ax1 = plt.subplot(5,1,(3,4))
+    ax1 = plt.subplot(3,1,2)
     ax1.set_xticks(xplot_values)
     ax1.set_xticklabels(xplot_strings)
     plt.ylim(0,flux_map.max()*1.15)
@@ -412,13 +396,16 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
     plt.xlim(xlim)
     plt.ylabel('Flux')
 
-    ax2 = plt.subplot(5,1,5)
+    ax2 = plt.subplot(3,1,3)
     ax2.set_xticks(xplot_values)
     ax2.set_xticklabels(xplot_strings)
-    plt.ylim(0,(emcount_map.max()+1)*1.15)
+    plt.ylim(0,flux_map.max()*1.15)
+    xpmin = xplot_values.min()
+    xpmax = xplot_values.max()
+    xlim = (xpmin-(xpmax-xpmin)*0.04,
+            xpmax+(xpmax-xpmin)*0.04)
     plt.xlim(xlim)
-    plt.ylabel('N ExpMeter')
-    plt.xlabel(f"{plot_axis_name} pixels")
+    plt.ylabel('Flux')
 
     for i in range(nplots):
         iterated_pix_value = iterated_pix_values[i]
@@ -432,9 +419,10 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
             color_maps_i = color_maps[:,:,i]
             snr_map_i = snr_map[:,i]
             emcount_map_i = emcount_map[:,i]
-        line = ax1.plot(xplot_values, flux_map_i,
-                 marker='o', ds='steps-mid', alpha=1,
-                 label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
+        if i == 0:
+            line = ax1.plot(xplot_values, flux_map_i,
+                     marker='o', color='k', ds='steps-mid', alpha=1,
+                     label=f'Flux {iterated_axis_name}={iterated_pix_value:.1f}')
 
         if nplots == 1:
             markers = {0: 'bx-', 1: 'g^-', 2: 'r+-'}
@@ -442,8 +430,9 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                 color_maps_il = color_maps_i[l,:]
                 color_maps_il /= color_maps_il.max()
                 color_maps_il *= flux_map_i.max()
-                lineb = ax1.plot(xplot_values, color_maps_il, f"{markers[l]}",
-                                 ds='steps-mid', alpha=0.5)
+                lineb = ax2.plot(xplot_values, color_maps_il, f"{markers[l]}",
+                                 ds='steps-mid', alpha=0.5,
+                                 label=f"{color_maps_colors[l]}")
 
         peak_index = np.argmax(flux_map_i)
         if mode == 'TipTilt':
@@ -457,16 +446,27 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
                     model_center = xplot_values[peak_index]
                 else:
                     model_center = yfit
-#             log.info(f"  Using model center = {model_center:.1f}")
             ax1.plot(model_pix+model_center, fit(model_pix)*flux_map_i[peak_index],
                      color=line[0].get_c(), linestyle=':', alpha=0.7,
                      label=f'Model, center={model_center:.1f}')
-        ax2.plot(xplot_values, emcount_map_i,
-                 marker='o', ds='steps-mid', alpha=1,
-                 label=f'SNR {iterated_axis_name}={iterated_pix_value:.1f}')
+            ax1.plot(model_pix+model_center, fit(model_pix+1)*flux_map_i[peak_index],
+                     color=line[0].get_c(), linestyle=':', alpha=0.3)
+            ax1.plot(model_pix+model_center, fit(model_pix-1)*flux_map_i[peak_index],
+                     color=line[0].get_c(), linestyle=':', alpha=0.3)
+
+            if nplots == 1:
+                ax2.plot(model_pix+model_center, fit(model_pix)*flux_map_i[peak_index],
+                         color=line[0].get_c(), linestyle=':', alpha=0.7,
+                         label=f'Model, center={model_center:.1f}')
+                ax2.plot(model_pix+model_center, fit(model_pix+1)*flux_map_i[peak_index],
+                         color=line[0].get_c(), linestyle=':', alpha=0.3)
+                ax2.plot(model_pix+model_center, fit(model_pix-1)*flux_map_i[peak_index],
+                         color=line[0].get_c(), linestyle=':', alpha=0.3)
+
     ax1.grid()
     ax1.legend(loc='best')
     ax2.grid()
+    ax2.legend(loc='best')
 
     log.info(f"  Saving: {ouput_cube_graphic}")
     plt.savefig(ouput_cube_graphic, bbox_inches='tight', pad_inches=0.10)
@@ -646,12 +646,13 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
 ##-------------------------------------------------------------------------
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
-def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7,
+def analyze_grid_search(logfile, fiber='Science', model_seeing='0.7',
                         xfit=None, yfit=None, applydar=False,
                         generate_cred2=False):
-    if f"{model_seeing:.2f}" not in ['0.50', '0.70', '0.90']:
+    if f"{float(model_seeing):.2f}" not in ['0.50', '0.70', '0.90']:
         print(f"Seeing models only available for 0.50, 0.70, and 0.90 arcsec")
         return
+    model_seeing = float(model_seeing)
     model = f"Fiber Coupling Model seeing {model_seeing:.2f} arcsec.csv"
     logfile = Path(logfile)
     assert logfile.exists()
@@ -777,7 +778,90 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing=0.7,
     return
 
 
+##-------------------------------------------------------------------------
+## AnalyzeGridSearch
+##-------------------------------------------------------------------------
+class AnalyzeGridSearch(KPFTranslatorFunction):
+    '''
+    ARGS:
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        for logfile in args.get('logfile'):
+            analyze_grid_search(logfile,
+                                fiber=args.get('fiber'),
+                                model_seeing=args.get('seeing'),
+                                xfit=args.get('xfit'), yfit=args.get('yfit'),
+                                generate_cred2=args.get('cred2'),
+                                )
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument('logfile', type=str, nargs='*',
+            help="The logfile or files of the grid search runs to analyze")
+        ## add flags
+        parser.add_argument("--cred2", dest="cred2",
+            default=False, action="store_true",
+            help="Generate CRED2 plots? (default = False)")
+        ## add options
+        parser.add_argument("--fiber", dest="fiber", type=str,
+            default='Science',
+            help="The fiber being examined (Science, Sky, or EMSky).")
+        parser.add_argument("--seeing", dest="seeing", type=str,
+            choices=['0.5', '0.7', '0.9'],
+            default='0.7',
+            help="The seeing model to overlay on the fiber coupling plot.")
+        parser.add_argument("--xfit", dest="xfit", type=float,
+            default=335.5,
+            help="The X pixel position to use as the center when overlaying the model.")
+        parser.add_argument("--yfit", dest="yfit", type=float,
+            default=258,
+            help="The X pixel position to use as the center when overlaying the model.")
+
+        return super().add_cmdline_args(parser, cfg)
+
+
 if __name__ == '__main__':
+    print('start')
+    ##-------------------------------------------------------------------------
+    ## Parse Command Line Arguments
+    ##-------------------------------------------------------------------------
+    ## create a parser object for understanding command-line arguments
+    import argparse
+    p = argparse.ArgumentParser(description='''
+    ''')
+    ## add arguments
+    p.add_argument('logfile', type=str, nargs='*',
+                   help="The logfile or files of the grid search runs to analyze")
+    ## add flags
+    p.add_argument("--cred2", dest="cred2",
+        default=False, action="store_true",
+        help="Generate CRED2 plots? (default = False)")
+    ## add options
+    p.add_argument("--fiber", dest="fiber", type=str,
+        default='Science',
+        help="The fiber being examined (Science, Sky, or EMSky).")
+    p.add_argument("--seeing", dest="seeing", type=float,
+        default=0.7,
+        help="The seeing model to overlay on the fiber coupling plot.")
+    p.add_argument("--xfit", dest="xfit", type=float,
+        default=335.5,
+        help="The X pixel position to use as the center when overlaying the model.")
+    p.add_argument("--yfit", dest="yfit", type=float,
+        default=258,
+        help="The X pixel position to use as the center when overlaying the model.")
+    args = p.parse_args()
+
     for logfile in args.logfile:
         analyze_grid_search(logfile,
                             fiber=args.fiber,

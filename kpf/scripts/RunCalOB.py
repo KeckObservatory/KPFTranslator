@@ -1,12 +1,13 @@
 from time import sleep
 from pathlib import Path
 import os
+import traceback
 
 import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+                 FailedToReachDestination, check_input, ScriptStopTriggered)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
@@ -65,17 +66,23 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error('ConfigureForCalibrations Failed')
             log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
+            # Email error to kpf_info
+            if not isinstance(e, ScriptStopTriggered):
+                try:
+                    msg = [f'{type(e)}',
+                           f'{traceback_text}',
+                           '',
+                           f'{OB}']
+                    SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            # Email error to kpf_info
-            try:
-                SendEmail.execute({'Subject': 'ConfigureForCalibrations Failed',
-                                   'Message': f'{type(e)}: {e}'})
-            except Exception as email_err:
-                log.error(f'Sending email failed')
-                log.error(email_err)
-
-            raise(e)
+            raise e
 
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
@@ -100,17 +107,25 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("ExecuteDarks failed:")
             log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
             clear_script_keywords()
             # Email error to kpf_info
-            try:
-                SendEmail.execute({'Subject': 'ExecuteDarks Failed',
-                                   'Message': f'{type(e)}: {e}'})
-            except Exception as email_err:
-                log.error(f'Sending email failed')
-                log.error(email_err)
+            if not isinstance(e, ScriptStopTriggered):
+                try:
+                    msg = [f'{type(e)}',
+                           f'{traceback_text}',
+                           '',
+                           f'{OB}']
+                    SendEmail.execute({'Subject': 'ExecuteDarks Failed',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
             # Cleanup
+            log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            raise(e)
+            raise e
 
         # Execute the Cal Sequence
         try:
@@ -125,17 +140,25 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("ExecuteCal failed:")
             log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
             clear_script_keywords()
             # Email error to kpf_info
-            try:
-                SendEmail.execute({'Subject': 'ExecuteCals Failed',
-                                   'Message': f'{type(e)}: {e}'})
-            except Exception as email_err:
-                log.error(f'Sending email failed')
-                log.error(email_err)
+            if not isinstance(e, ScriptStopTriggered):
+                try:
+                    msg = [f'{type(e)}',
+                           f'{traceback.format_exc()}',
+                           '',
+                           f'{OB}']
+                    SendEmail.execute({'Subject': 'ExecuteCals Failed',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
             # Cleanup
+            log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            raise(e)
+            raise e
 
         clear_script_keywords()
 
@@ -145,14 +168,21 @@ class RunCalOB(KPFTranslatorFunction):
         except Exception as e:
             log.error("CleanupAfterCalibrations failed:")
             log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
             # Email error to kpf_info
-            try:
-                SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
-                                   'Message': f'{type(e)}: {e}'})
-            except Exception as email_err:
-                log.error(f'Sending email failed')
-                log.error(email_err)
-            raise(e)
+            if not isinstance(e, ScriptStopTriggered):
+                try:
+                    msg = [f'{type(e)}',
+                           f'{traceback_text}',
+                           '',
+                           f'{OB}']
+                    SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
+            raise e
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
@@ -163,4 +193,7 @@ class RunCalOB(KPFTranslatorFunction):
         parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
                             default=False, action="store_true",
                             help='Leave the lamps on after cleanup phase?')
+        parser.add_argument('--nointensemon', dest="nointensemon",
+                            default=False, action="store_true",
+                            help='Skip the intensity monitor measurement?')
         return super().add_cmdline_args(parser, cfg)

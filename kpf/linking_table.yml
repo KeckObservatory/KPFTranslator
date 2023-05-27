@@ -4,6 +4,12 @@ common:
 
 links:
     # Analysis
+    AnalyzeGridSearch:
+        cmd: analysis.AnalyzeGridSearch.AnalyzeGridSearch
+    AnalyzeTipTiltPerformance:
+        cmd: analysis.AnalyzeTipTiltPerformance.AnalyzeTipTiltPerformance
+    Fit2DGridSearch:
+        cmd: analysis.Fit2DGridSearch.Fit2DGridSearch
     # AO
     ControlAOHatch:
         cmd: ao.ControlAOHatch.ControlAOHatch
@@ -25,6 +31,8 @@ links:
     # Cal Bench
     CalLampPower:
         cmd: calbench.CalLampPower.CalLampPower
+    IsCalSourceEnabled:
+        cmd: calbench.IsCalSourceEnabled.IsCalSourceEnabled
     SetCalSource:
         cmd: calbench.SetCalSource.SetCalSource
     SetFlatFieldFiberPos:
@@ -50,10 +58,14 @@ links:
     WaitForND2:
         cmd: calbench.WaitForND2.WaitForND2
     # ExpMeter
+    BuildMasterBias:
+        cmd: expmeter.BuildMasterBias.BuildMasterBias
     SetExpMeterExptime:
         cmd: expmeter.SetExpMeterExptime.SetExpMeterExptime
     PredictExpMeterParameters:
         cmd: expmeter.PredictExpMeterParameters.PredictExpMeterParameters
+    TakeExpMeterBiases:
+        cmd: expmeter.TakeExpMeterBiases.TakeExpMeterBiases
     # FIU
     ConfigureFIU:
         cmd: fiu.ConfigureFIU.ConfigureFIU
@@ -87,9 +99,13 @@ links:
         cmd: fiu.TestTipTiltMirrorRange.TestTipTiltMirrorRange
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
+    WaitForTipTilt:
+        cmd: fiu.WaitForTipTilt.WaitForTipTilt
     # FVCs
     FVCPower:
         cmd: fvc.FVCPower.FVCPower
+    PredictFVCParameters:
+        cmd: fvc.PredictFVCParameters.PredictFVCParameters
     TakeFVCContinuous:
         cmd: fvc.TakeFVCContinuous.TakeFVCContinuous
     TakeFVCExposure:
@@ -148,8 +164,8 @@ links:
         cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
     GridSearch:
         cmd: scripts.GridSearch.GridSearch
-    FiberGridSearch:
-        cmd: scripts.FiberGridSearch.FiberGridSearch
+    Run2DGridSearch:
+        cmd: scripts.Run2DGridSearch.Run2DGridSearch
     RunCalOB:
         cmd: scripts.RunCalOB.RunCalOB
     RunSciOB:
@@ -169,6 +185,10 @@ links:
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
     # Spectrograph
+    ResetGreenDetector:
+        cmd: spectrograph.ResetDetectors.ResetGreenDetector
+    ResetRedDetector:
+        cmd: spectrograph.ResetDetectors.ResetRedDetector
     ResetDetectors:
         cmd: spectrograph.ResetDetectors.ResetDetectors
     SetExptime:

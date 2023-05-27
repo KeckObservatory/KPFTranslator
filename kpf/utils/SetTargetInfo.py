@@ -26,9 +26,24 @@ class SetTargetInfo(KPFTranslatorFunction):
         kpfconfig['TARGET_2MASS'].write(OB.get('2MASSID', ''))
         kpfconfig['TARGET_GMAG'].write(OB.get('Gmag', ''))
         kpfconfig['TARGET_JMAG'].write(OB.get('Jmag', ''))
-        kpf_expmeter['TARGET_TEFF'].write(float(OB.get('Teff', 0)))
-        dcs['TARGPLAX'].write(OB.get('Parallax', 0))
-        dcs['TARGRADV'].write(OB.get('RadialVelocity', 0))
+
+        TARGET_TEFF = OB.get('Teff', 45000)
+        try:
+            kpf_expmeter['TARGET_TEFF'].write(float(TARGET_TEFF))
+        except:
+            log.warning(f"Unable to set kpf_expmeter.TARGET_TEFF to {TARGET_TEFF} ({type(TARGET_TEFF)})")
+
+        TARGPLAX = OB.get('Parallax', 0)
+        try:
+            dcs['TARGPLAX'].write(float(TARGPLAX))
+        except:
+            log.warning(f"Unable to set dcs.TARGPLAX to {TARGPLAX} ({type(TARGPLAX)})")
+
+        TARGRADV = OB.get('RadialVelocity', 0)
+        try:
+            dcs['TARGRADV'].write(float(TARGRADV))
+        except:
+            log.warning(f"Unable to set dcs.TARGRADV to {TARGRADV} ({type(TARGRADV)})")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

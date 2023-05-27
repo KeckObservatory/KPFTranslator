@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.fiu.ConfigureFIU import ConfigureFIUOnce
 
 
 ##-----------------------------------------------------------------------------
@@ -22,28 +23,29 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        pass
+        keyword = ktl.cache('kpffiu', 'MODE')
+        allowed_values = list(keyword._getEnumerators())
+        if 'None' in allowed_values:
+            allowed_values.pop(allowed_values.index('None'))
+        check_input(args, 'mode', allowed_values=allowed_values)
 
     @classmethod
     def perform(cls, args, logger, cfg):
         dest = args.get('mode')
-        kpffiu = ktl.cache('kpffiu')
-        modes = kpffiu['MODE'].read()
+        fiumode = ktl.cache('kpffiu', 'MODE')
+        modes = fiumode.read()
         start = datetime.utcnow()
         move_times = [cfg.getfloat('times', 'fiu_fold_mirror_move_time', fallback=40),
                       cfg.getfloat('times', 'fiu_hatch_move_time', fallback=2)]
         end = start + timedelta(seconds=max(move_times))
         while dest.lower() not in modes.lower().split(',') and datetime.utcnow() <= end:
             time.sleep(1)
-            modes = kpffiu['MODE'].read()
+            modes = fiumode.read()
+        return dest.lower() in modes.lower().split(',')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        dest = args.get('mode')
-        kpffiu = ktl.cache('kpffiu')
-        modes = kpffiu['MODE'].read()
-        if dest.lower() not in modes.lower().split(','):
-            raise FailedToReachDestination(modes, dest)
+        pass
 
 
 ##-----------------------------------------------------------------------------
@@ -70,14 +72,16 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         dest = args.get('mode')
-        try:
-            WaitForConfigureFIUOnce.execute({'mode': dest})
-        except FailedToReachDestination:
-            log.warning(f'FIU failed to reach destination. Retrying.')
-            shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=0.5)
-            time.sleep(shim_time)
-            from .ConfigureFIU import ConfigureFIUOnce
-            ConfigureFIUOnce.execute({'mode': dest, 'wait': True})
+        ntries = cfg.getint('retries', 'fiu_mode_tries', fallback=2)
+        shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=2)
+        for i in range(ntries):
+            ok = WaitForConfigureFIUOnce.execute({'mode': dest})
+            if ok is False:
+                log.warning(f'FIU move failed on attempt {i+1} of {ntries}')
+                time.sleep(shim_time)
+                ConfigureFIUOnce.execute({'mode': dest, 'wait': True})
+            else:
+                break
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

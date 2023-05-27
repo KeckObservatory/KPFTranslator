@@ -11,8 +11,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.calbench.CalLampPower import CalLampPower
+from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
+from kpf.calbench.SetLFCtoAstroComb import SetLFCtoAstroComb
+from kpf.calbench.SetLFCtoStandbyHigh import SetLFCtoStandbyHigh
 from kpf.calbench.SetND1 import SetND1
 from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.TakeIntensityReading import TakeIntensityReading
@@ -58,6 +61,11 @@ class ExecuteCal(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        log.info('-------------------------')
+        log.info(f"Running {cls.__name__}")
+        for key in args:
+            log.debug(f"  {key}: {args[key]}")
+        log.info('-------------------------')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         kpfconfig = ktl.cache('kpfconfig')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
@@ -67,6 +75,9 @@ class ExecuteCal(KPFTranslatorFunction):
                              fallback=2)
 
         calsource = args.get('CalSource')
+        # Skip this lamp if it is not enabled
+        if IsCalSourceEnabled.execute(args) == False:
+            return
         nd1 = args.get('CalND1')
         nd2 = args.get('CalND2')
         ## ----------------------------------------------------------------
@@ -98,24 +109,52 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForCalSource.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Take intensity monitor reading
-            if calsource != 'LFCFiber':
+            if calsource == 'LFCFiber':
+                ## If we're using the LFC, set it to AstroComb
+                ## If that fails, skip this calibration
+                try:
+                    SetLFCtoAstroComb.execute({})
+                except:
+                    log.error('Failed to set LFC to AstroComb')
+                    return
+                # Check menlo heatbeat
+                heartbeat = ktl.cache('kpfmon', 'HB_MENLOSTA')
+                heartbeat_ok = heartbeat.waitFor('== "OK"', timeout=3)
+                if heartbeat_ok is not True:
+                    log.error('Menlo heartbeat not Ok. Skipping LFC.')
+                    return
+                # Check LFCREADYSTA
+                LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
+                LFCready_ok = LFCready.waitFor('== "OK"', timeout=3)
+                if LFCready_ok is not True:
+                    log.error('LFCREADYSTA not Ok. Skipping LFC.')
+                    return
+            if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
                 WaitForLampWarm.execute(args)
                 TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
-            raise NotImplementedError()
-            # OCTAGON=SoCal-CalFib
-            # SSS_SoCalCal open, SSS_CalSciSky open
+            SetCalSource.execute({'CalSource': calsource, 'wait': False})
+            # Open SoCalCal Shutter
+            args['SSS_SoCalCal'] = True
         elif calsource in ['SoCal-SciSky']:
-            raise NotImplementedError()
-            # OCTAGON=simulcal source?
-            # Set ND1 and ND2
-            # SSS_SoCalSci open
+            # Set octagon to simulcal source
+            simulcalsource = kpfconfig['SIMULCALSOURCE'].read()
+            log.info(f"Setting cal source: {simulcalsource}")
+            SetCalSource.execute({'CalSource': simulcalsource, 'wait': False})
+            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
+            SetND1.execute({'CalND1': nd1, 'wait': False})
+            SetND2.execute({'CalND2': nd2, 'wait': False})
+            log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
+            WaitForND1.execute(args)
+            WaitForND2.execute(args)
+            WaitForCalSource.execute({'CalSource': simulcalsource})
+            WaitForConfigureFIU.execute({'mode': 'Calibration'})
+            # Open SoCalSci Shutter
+            args['SSS_SoCalSci'] = True
         # WTF!?
         else:
-            msg = f"CalSource {calsource} not recognized"
-            log.error(msg)
-            raise Exception(msg)
+            raise KPFException(f"CalSource {calsource} not recognized")
 
         ## ----------------------------------------------------------------
         ## Configure exposure meter
@@ -141,7 +180,12 @@ class ExecuteCal(KPFTranslatorFunction):
         SetExpTime.execute(args)
         log.info(f"Setting source select shutters")
         # No need to specify SSS_CalSciSky in OB/calibration
-        args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
+        if calsource in ['SoCal-SciSky']:
+            args['SSS_CalSciSky'] = False
+        elif calsource in ['SoCal-CalFib']:
+            args['SSS_CalSciSky'] = True
+        else:
+            args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
         log.debug(f"Automatically setting SSS_CalSciSky: {args['SSS_CalSciSky']}")
         SetSourceSelectShutters.execute(args)
 
@@ -184,9 +228,20 @@ class ExecuteCal(KPFTranslatorFunction):
                 StopAgitator.execute({})
             if calsource in ['LFCFiber', 'EtalonFiber']:
                 ZeroOutSlewCalTime.execute({})
+        ## If we used WideFlat, set FF_FiberPos back to blank at end
         if calsource == 'WideFlat':
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
+        ## If we're using the LFC, set it back to StandbyHigh
+        if calsource == 'LFCFiber':
+            SetLFCtoStandbyHigh.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('--nointensemon', dest="nointensemon",
+                            default=False, action="store_true",
+                            help='Skip the intensity monitor measurement?')
+        return super().add_cmdline_args(parser, cfg)

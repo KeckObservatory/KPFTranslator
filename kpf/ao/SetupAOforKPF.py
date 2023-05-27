@@ -50,11 +50,12 @@ class SetupAOforKPF(KPFTranslatorFunction):
         log.info('Turn K1 AO light source off')
         TurnLightSourceOff.execute({})
 
-        log.info('Move PCU to Home')
-        SendPCUtoHome.execute({})
-
-        log.info('Move PCU to KPF')
-        SendPCUtoKPF.execute({})
+        PCSstagekw = ktl.cache('ao', 'PCSFNAME')
+        if PCSstagekw.read() != 'kpf':
+            log.info('Move PCU to Home')
+            SendPCUtoHome.execute({})
+            log.info('Move PCU to KPF')
+            SendPCUtoKPF.execute({})
 
         log.info('Open AO hatch')
         ControlAOHatch.execute({'destination': 'open'})

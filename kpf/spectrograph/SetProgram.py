@@ -24,7 +24,7 @@ class SetProgram(KPFTranslatorFunction):
         progname = args.get('progname')
         log.debug('Waiting for kpfexpose to be ready')
         WaitForReady.execute({})
-        log.debug(f"Setting PROGNAME to '{progname}'")
+        log.info(f"Setting PROGNAME to '{progname}'")
         kpfexpose['PROGNAME'].write(progname)
         time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         time.sleep(time_shim)

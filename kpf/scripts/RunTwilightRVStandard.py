@@ -3,6 +3,7 @@ import time
 from pathlib import Path
 import yaml
 import subprocess
+import traceback
 
 from astropy.time import Time
 from astropy.coordinates import EarthLocation
@@ -118,62 +119,68 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         SetProgram.execute({'progname': 'E310'})
         SetObserver.execute({'observer': 'OA'})
 
-        log.info(f"Configuring for Acquisition")
-        ConfigureForAcquisition.execute(sciOB)
+        # Wrap operations in try/except to ensure we get to end of night
+        try:
+            log.info(f"Configuring for Acquisition")
+            ConfigureForAcquisition.execute(sciOB)
 
-        # ---------------------------------
-        # OA Focus
-        # ---------------------------------
-        msg = ["",
-               "-------------------------------------------------------------",
-               "The instrument is being configured now, please begin slewing",
-               "to the target. Once you are on target:",
-               " - Focus on target using autfoc",
-               " - Then place the target on the KPF PO",
-               "When those steps are done, press Enter to continue.",
-               "-------------------------------------------------------------",
-               "",
-               ]
-        for line in msg:
-            print(line)
-        user_input = input()
+            # ---------------------------------
+            # OA Focus
+            # ---------------------------------
+            msg = ["",
+                   "-------------------------------------------------------------",
+                   "The instrument is being configured now, please begin slewing",
+                   "to the target. Once you are on target:",
+                   " - Focus on target using autfoc",
+                   " - Then place the target on the KPF PO",
+                   "When those steps are done, press Enter to continue.",
+                   "-------------------------------------------------------------",
+                   "",
+                   ]
+            for line in msg:
+                print(line)
+            user_input = input()
 
-        # Open an xshow for exposure status
-        cmd = ['xshow', '-s', 'kpfexpose', 'EXPOSE', 'ELAPSED', 'EXPOSURE']
-        xshow_proc = subprocess.Popen(cmd,
-                                      stdout=subprocess.PIPE,
-                                      stderr=subprocess.PIPE)
+            # Open an xshow for exposure status
+            cmd = ['xshow', '-s', 'kpfexpose', 'EXPOSE', 'ELAPSED', 'EXPOSURE']
+            xshow_proc = subprocess.Popen(cmd,
+                                          stdout=subprocess.PIPE,
+                                          stderr=subprocess.PIPE)
 
-        # ---------------------------------
-        # Execute Observation
-        # ---------------------------------
-        WaitForConfigureAcquisition.execute(sciOB)
-        log.info(f"Configuring for Science")
-        ConfigureForScience.execute(sciOB)
-        WaitForConfigureScience.execute(sciOB)
+            # ---------------------------------
+            # Execute Observation
+            # ---------------------------------
+            WaitForConfigureAcquisition.execute(sciOB)
+            log.info(f"Configuring for Science")
+            ConfigureForScience.execute(sciOB)
+            WaitForConfigureScience.execute(sciOB)
 
-        # Execute Sequences
-        check_script_running()
-        set_script_keywords(Path(__file__).name, os.getpid())
-        # Execute the Cal Sequence
-        observations = sciOB.get('SEQ_Observations', [])
-        for observation in observations:
-            observation['Template_Name'] = 'kpf_sci'
-            observation['Template_Version'] = sciOB['Template_Version']
-            observation['Gmag'] = sciOB['Gmag']
-            log.debug(f"Automatically setting TimedShutter_CaHK: {sciOB['TriggerCaHK']}")
-            observation['TimedShutter_CaHK'] = sciOB['TriggerCaHK']
-            observation['TriggerCaHK'] = sciOB['TriggerCaHK']
-            observation['TriggerGreen'] = sciOB['TriggerGreen']
-            observation['TriggerRed'] = sciOB['TriggerRed']
-            observation['TriggerGuide'] = (sciOB.get('GuideMode', 'off') != 'off')
-            # Wrap in try/except so that cleanup happens
-            try:
-                ExecuteSci.execute(observation)
-            except Exception as e:
-                log.error("ExecuteSci failed:")
-                log.error(e)
-        clear_script_keywords()
+            # Execute Sequences
+            check_script_running()
+            set_script_keywords(Path(__file__).name, os.getpid())
+            # Execute the Cal Sequence
+            observations = sciOB.get('SEQ_Observations', [])
+            for observation in observations:
+                observation['Template_Name'] = 'kpf_sci'
+                observation['Template_Version'] = sciOB['Template_Version']
+                observation['Gmag'] = sciOB['Gmag']
+                log.debug(f"Automatically setting TimedShutter_CaHK: {sciOB['TriggerCaHK']}")
+                observation['TimedShutter_CaHK'] = sciOB['TriggerCaHK']
+                observation['TriggerCaHK'] = sciOB['TriggerCaHK']
+                observation['TriggerGreen'] = sciOB['TriggerGreen']
+                observation['TriggerRed'] = sciOB['TriggerRed']
+                observation['TriggerGuide'] = (sciOB.get('GuideMode', 'off') != 'off')
+                # Wrap in try/except so that cleanup happens
+                try:
+                    ExecuteSci.execute(observation)
+                except Exception as e:
+                    log.error("ExecuteSci failed:")
+                    log.error(e)
+            clear_script_keywords()
+        except Exception as e:
+            log.error(f'Encountered exception during operations')
+            log.error(e)
+            log.error(traceback.format_exc())
 
         # Cleanup
         CleanupAfterScience.execute(sciOB)

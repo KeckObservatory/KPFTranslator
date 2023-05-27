@@ -17,7 +17,10 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        pass
+        heartbeat = ktl.cache('kpfmon', 'HB_MENLOSTA')
+        success = heartbeat.waitFor('== "OK"', timeout=3)
+        if success is False:
+            raise FailedPreCondition(f"Menlo heartbeat is not OK: {heartbeat.read()}")
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -31,8 +34,8 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         '''Verifies that kpfmon shows no errors.
         '''
-        expr = f"($kpfmon.LFCREADYSTA == 'OK')"
+        LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
         timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
-        success = ktl.waitFor(expr, timeout=timeout)
+        success = LFCready.waitFor('== "OK"', timeout=timeout)
         if success is not True:
             raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')

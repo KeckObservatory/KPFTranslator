@@ -70,6 +70,7 @@ class MainWindow(QMainWindow):
         self.target_names = None
         self.twomass_params = None
         self.gaia_params = None
+        self.disabled_detectors = []
         self.OB = {
                    'TriggerCaHK': True,
                    'TriggerGreen': True,
@@ -123,12 +124,12 @@ class MainWindow(QMainWindow):
         scriptname_kw.stringCallback.connect(self.update_scriptname_value)
 
         # script pause
-        self.scriptpause_value = self.findChild(QLabel, 'scriptpause_value')
-        scriptpause_kw = kPyQt.kFactory(self.kpfconfig['SCRIPTPAUSE'])
-        scriptpause_kw.stringCallback.connect(self.update_scriptpause_value)
+#         self.scriptpause_value = self.findChild(QLabel, 'scriptpause_value')
+#         scriptpause_kw = kPyQt.kFactory(self.kpfconfig['SCRIPTPAUSE'])
+#         scriptpause_kw.stringCallback.connect(self.update_scriptpause_value)
 
-        self.scriptpause_btn = self.findChild(QPushButton, 'scriptpause_btn')
-        self.scriptpause_btn.clicked.connect(self.set_scriptpause)
+#         self.scriptpause_btn = self.findChild(QPushButton, 'scriptpause_btn')
+#         self.scriptpause_btn.clicked.connect(self.set_scriptpause)
 
         # script stop
         self.scriptstop_value = self.findChild(QLabel, 'scriptstop_value')
@@ -137,6 +138,10 @@ class MainWindow(QMainWindow):
 
         self.scriptstop_btn = self.findChild(QPushButton, 'scriptstop_btn')
         self.scriptstop_btn.clicked.connect(self.set_scriptstop)
+
+        # full stop
+        self.fullstop_btn = self.findChild(QPushButton, 'fullstop_btn')
+        self.fullstop_btn.clicked.connect(self.do_fullstop)
 
         # expose status
         self.expose_status_value = self.findChild(QLabel, 'expose_status_value')
@@ -159,14 +164,22 @@ class MainWindow(QMainWindow):
         slewcaltime_kw.stringCallback.connect(self.update_slewcaltime_value)
 
         # request slew cal
-        self.slewcalreq_value = self.findChild(QLabel, 'slewcalreq_value')
-        slewcalreq_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALREQ'])
-        slewcalreq_kw.stringCallback.connect(self.update_slewcalreq_value)
+#         self.slewcalreq_value = self.findChild(QLabel, 'slewcalreq_value')
+#         slewcalreq_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALREQ'])
+#         slewcalreq_kw.stringCallback.connect(self.update_slewcalreq_value)
 
         # slew cal file
         self.slewcalfile_value = self.findChild(QLabel, 'slewcalfile_value')
         slewcalfile_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALFILE'])
         slewcalfile_kw.stringCallback.connect(self.update_slewcalfile_value)
+
+        self.disabled_detectors_value = self.findChild(QLabel, 'disabled_detectors_value')
+        cahk_enabled_kw = kPyQt.kFactory(self.kpfconfig['CA_HK_ENABLED'])
+        cahk_enabled_kw.stringCallback.connect(self.update_ca_hk_enabled)
+        green_enabled_kw = kPyQt.kFactory(self.kpfconfig['GREEN_ENABLED'])
+        green_enabled_kw.stringCallback.connect(self.update_green_enabled)
+        red_enabled_kw = kPyQt.kFactory(self.kpfconfig['RED_ENABLED'])
+        red_enabled_kw.stringCallback.connect(self.update_red_enabled)
 
         ##----------------------
         ## Construct OB
@@ -227,7 +240,7 @@ class MainWindow(QMainWindow):
 
         # Guider Setup
         self.GuideMode = self.findChild(QComboBox, 'GuideMode')
-        self.GuideMode.addItems(["auto", "manual"])
+        self.GuideMode.addItems(["auto", "manual", "off"])
         self.update_OB('GuideMode', self.OB['GuideMode'])
         self.GuideMode.currentTextChanged.connect(self.set_guide_mode)
         
@@ -336,26 +349,26 @@ class MainWindow(QMainWindow):
             self.expose_status_value.setStyleSheet("color:orange")
 
     # SCRIPTPAUSE
-    def update_scriptpause_value(self, value):
-        '''Set label text and set color'''
-        self.log.debug(f"update_scriptpause_value: {value}")
-        self.scriptpause_value.setText(value)
-        if value == 'Yes':
-            self.scriptpause_value.setStyleSheet("color:orange")
-            self.scriptpause_btn.setText('RESUME')
-        elif value == 'No':
-            self.scriptpause_value.setStyleSheet("color:green")
-            self.scriptpause_btn.setText('PAUSE')
+#     def update_scriptpause_value(self, value):
+#         '''Set label text and set color'''
+#         self.log.debug(f"update_scriptpause_value: {value}")
+#         self.scriptpause_value.setText(value)
+#         if value == 'Yes':
+#             self.scriptpause_value.setStyleSheet("color:orange")
+#             self.scriptpause_btn.setText('RESUME')
+#         elif value == 'No':
+#             self.scriptpause_value.setStyleSheet("color:green")
+#             self.scriptpause_btn.setText('PAUSE')
 
-    def set_scriptpause(self, value):
-        self.log.debug(f'set_scriptpause: {value}')
-        current_kw_value = self.kpfconfig['SCRIPTPAUSE'].read()
-        if current_kw_value == 'Yes':
-            self.kpfconfig['SCRIPTPAUSE'].write('No')
-            self.scriptpause_btn.setText('PAUSE')
-        elif current_kw_value == 'No':
-            self.kpfconfig['SCRIPTPAUSE'].write('Yes')
-            self.scriptpause_btn.setText('RESUME')
+#     def set_scriptpause(self, value):
+#         self.log.debug(f'set_scriptpause: {value}')
+#         current_kw_value = self.kpfconfig['SCRIPTPAUSE'].read()
+#         if current_kw_value == 'Yes':
+#             self.kpfconfig['SCRIPTPAUSE'].write('No')
+#             self.scriptpause_btn.setText('PAUSE')
+#         elif current_kw_value == 'No':
+#             self.kpfconfig['SCRIPTPAUSE'].write('Yes')
+#             self.scriptpause_btn.setText('RESUME')
 
     # SCRIPTSTOP
     def update_scriptstop_value(self, value):
@@ -367,7 +380,7 @@ class MainWindow(QMainWindow):
             self.scriptstop_btn.setText('CLEAR STOP')
         elif value == 'No':
             self.scriptstop_value.setStyleSheet("color:green")
-            self.scriptstop_btn.setText('STOP')
+            self.scriptstop_btn.setText('Request STOP After Exposure')
 
     def set_scriptstop(self, value):
         self.log.debug(f'set_scriptstop: {value}')
@@ -377,12 +390,42 @@ class MainWindow(QMainWindow):
             self.scriptstop_btn.setText('CLEAR STOP')
         elif current_kw_value == 'No':
             self.kpfconfig['SCRIPTSTOP'].write('Yes')
-            self.scriptstop_btn.setText('STOP')
+            self.scriptstop_btn.setText('Request STOP After Exposure')
+
+    def do_fullstop(self, value):
+        self.log.warning(f"do_fullstop: {value}")
+        fullstop_popup = QMessageBox()
+        fullstop_popup.setWindowTitle('Full Stop Confirmation')
+        msg = ["Do you wish to stop the current exposure and script?",
+               "",
+               "The current exposure will read out then script cleanup will take place."]
+        fullstop_popup.setText("\n".join(msg))
+        fullstop_popup.setIcon(QMessageBox.Critical)
+        fullstop_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
+        fullstop_popup.buttonClicked.connect(self.fullstop_popup_clicked)
+        fullstop_popup.exec_()
+
+    def fullstop_popup_clicked(self, i):
+        self.log.debug(f"fullstop_popup_clicked: {i.text()}")
+        if i.text() == '&Yes':
+            # Stop current exposure
+            if self.kpfexpose['EXPOSE'].read() == 'InProgress':
+                self.kpfexpose['EXPOSE'].write('End')
+                self.log.warning(f"Sent kpfexpose.EXPOSE=End")
+                self.log.debug('Waiting for kpfexpose.EXPOSE to be Readout')
+                readout = self.kpfexpose['EXPOSE'].waitFor("=='Readout'", timeout=10)
+                self.log.debug(f"Reached readout? {readout}")
+            # Set SCRIPTSTOP
+            self.kpfconfig['SCRIPTSTOP'].write('Yes')
+            self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
+            self.scriptstop_btn.setText('Request STOP After Exposure')
+        else:
+            self.log.debug('Confirmation is no, not stopping script')
 
     # Slew Cal Timer
     def update_slewcaltime_value(self, value):
         '''Updates value in QLabel and sets color'''
-        self.log.debug(f'update_slewcaltime_value: {value}')
+#         self.log.debug(f'update_slewcaltime_value: {value}')
         value = float(value)
         self.slewcaltime_value.setText(f"{value:.1f} hrs")
         if value < self.good_slew_cal_time:
@@ -405,7 +448,50 @@ class MainWindow(QMainWindow):
     # Slew cal file
     def update_slewcalfile_value(self, value):
         self.log.debug(f'update_slewcalfile_value: {value}')
-        self.slewcalfile_value.setText(f"{Path(value).name}")
+        output_text = f"{Path(value).name}"
+        match_expected = re.match('SlewCal_(.+)\.yaml', output_text)
+        if match_expected is not None:
+            output_text = match_expected.group(1)
+        self.slewcalfile_value.setText(output_text)
+
+    def update_ca_hk_enabled(self, value):
+        self.log.debug(f"update_ca_hk_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'Ca_HK' in self.disabled_detectors:
+                self.disabled_detectors.pop('Ca_HK')
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'Ca_HK' not in self.disabled_detectors:
+                self.disabled_detectors.append('Ca_HK')
+                self.update_disabled_detectors_value()
+
+    def update_green_enabled(self, value):
+        self.log.debug(f"update_green_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'Green' in self.disabled_detectors:
+                self.disabled_detectors.pop('Green')
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'Green' not in self.disabled_detectors:
+                self.disabled_detectors.append('Green')
+                self.update_disabled_detectors_value()
+
+    def update_red_enabled(self, value):
+        self.log.debug(f"update_red_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'Red' in self.disabled_detectors:
+                self.disabled_detectors.pop('Red')
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'Red' not in self.disabled_detectors:
+                self.disabled_detectors.append('Red')
+                self.update_disabled_detectors_value()
+
+    def update_disabled_detectors_value(self):
+        self.log.debug(f"update_disabled_detectors_value")
+        if len(self.disabled_detectors) > 0:
+            self.disabled_detectors_value.setText(",".join(self.disabled_detectors))
+            self.disabled_detectors_value.setStyleSheet("color:red")
 
     ##-------------------------------------------
     ## Methods relating modifying OB fields
@@ -447,11 +533,17 @@ class MainWindow(QMainWindow):
         if len(gaiaid.split(' ')) == 2:
             gaiaid = gaiaid.split(' ')[1]
         self.target_names = BuildOBfromQuery.get_names_from_gaiaid(gaiaid)
-        if self.target_names is not None:
+        if self.target_names is None:
+            self.log.error(f'Failed to retrieve target names using {gaiaid}')
+            self.GaiaID.setToolTip(f'Failed to retrieve target names using {gaiaid}')
+            return
+        else:
             for key in ['TargetName', '2MASSID']:
                 self.update_OB(key, self.target_names[key])
             self.log.debug(f"other names: {self.target_names['all']}")
             self.other_names.setText(', '.join(self.target_names['all']))
+            self.TargetName.setToolTip(', '.join(self.target_names['all']))
+            self.GaiaID.setToolTip(', '.join(self.target_names['all']))
         self.twomass_params = BuildOBfromQuery.get_Jmag(self.target_names['2MASSID'])
         if self.twomass_params is not None:
             for key in self.twomass_params:
@@ -579,9 +671,10 @@ class MainWindow(QMainWindow):
         elif key == 'Teff':
             self.Teff.setText(f"{value}")
         elif key == 'GuideMode':
+            if value == False: value = 'off'
             self.GuideMode.setCurrentText(value)
-            self.GuideCamGain.setEnabled((value != 'auto'))
-            self.GuideFPS.setEnabled((value != 'auto'))
+            self.GuideCamGain.setEnabled((value not in ['auto', 'off']))
+            self.GuideFPS.setEnabled((value not in ['auto', 'off']))
         elif key == 'GuideCamGain':
             self.GuideCamGain.setCurrentText(value)
         elif key == 'GuideFPS':
@@ -689,7 +782,7 @@ class MainWindow(QMainWindow):
         result = QFileDialog.getOpenFileName(self, "Open OB File",
                                              f"{self.file_path}",
                                              "OB Files (*yaml);;All Files (*)")
-        self.log.debug('  Got result: {result}')
+        self.log.debug(f'  Got result: {result}')
         if result:
             fname = result[0]
             if fname != '' and Path(fname).exists():
@@ -697,6 +790,7 @@ class MainWindow(QMainWindow):
                 with open(fname, 'r') as f:
                     contents = yaml.safe_load(f)
                 self.log.debug('  Read in YAML')
+                self.log.debug(contents)
                 for key in contents:
                     value = contents[key]
                     self.log.debug(f"  {key}: {value} ({type(value)})")
@@ -709,6 +803,11 @@ class MainWindow(QMainWindow):
                             self.update_OB(seq_key, seq_value)
                     else:
                         self.update_OB(key, value)
+                # Re-run this last to make sure ND filters get greyed out or not properly
+                if 'TakeSimulCal' in contents['SEQ_Observations'][0].keys():
+                    self.update_OB('TakeSimulCal', contents['SEQ_Observations'][0]['TakeSimulCal'])
+                if 'AutoExpMeter' in contents['SEQ_Observations'][0].keys():
+                    self.update_OB('AutoExpMeter', contents['SEQ_Observations'][0]['AutoExpMeter'])
                 # save fname as path to use in future
                 self.file_path = Path(fname).parent
                 # Clear other names and star list line
@@ -770,8 +869,7 @@ class MainWindow(QMainWindow):
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
         date = utnow-datetime.timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
-        tmp_file = Path(f'~/kpflogs/{date_str}/executedOB_{now_str}.yaml').expanduser()
-        print(tmp_file)
+        tmp_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/executedOB_{now_str}.yaml').expanduser()
         self.write_to_this_file(tmp_file)
 
 #         RunSciOB_cmd = 'echo "Hello World" ; sleep 10'

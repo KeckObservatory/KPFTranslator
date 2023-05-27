@@ -23,7 +23,7 @@ from kpf.calbench.SetND1 import SetND1
 from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
-from kpf.expmeter.PredictExpMeterParameters import predict_expmeter_parameters
+from kpf.expmeter.PredictExpMeterParameters import PredictExpMeterParameters
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 
 
@@ -64,7 +64,7 @@ class ExecuteSci(KPFTranslatorFunction):
             log.warning(f"ExpMeterMode {EM_mode} is not available")
 
         if args.get('AutoExpMeter', False) in [True, 'True']:
-            em_params = predict_expmeter_parameters(args.get('Gmag'))
+            em_params = PredictExpMeterParameters.execute(args)
             EM_ExpTime = em_params.get('ExpMeterExpTime', None)
             log.debug(f'Automatically setting EM ExpTime')
             args['ExpMeterExpTime'] = EM_ExpTime

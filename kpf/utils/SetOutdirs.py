@@ -24,7 +24,7 @@ class SetOutdirs(KPFTranslatorFunction):
         date = utnow-timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
         outdir = Path(f"/s/sdata1701/{os.getlogin()}/{date_str}")
-        magiq_outdir = Path(f"/s/sdata1701/kpfguide")
+        magiq_outdir = Path(f"/s/sdata1701/kpfguide/{date_str}")
         log.debug(f"base outdir: {outdir}")
         log.debug(f"magiq outdir: {magiq_outdir}")
 

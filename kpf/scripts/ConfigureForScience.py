@@ -17,6 +17,7 @@ from kpf.calbench.SetCalSource import SetCalSource
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.fiu.SetCurrentBase import SetCurrentBase
 from kpf.fiu.StartTipTilt import StartTipTilt
+from kpf.fiu.WaitForTipTilt import WaitForTipTilt
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.WaitForReady import WaitForReady
@@ -25,8 +26,10 @@ from kpf.spectrograph.WaitForReady import WaitForReady
 class ConfigureForScience(KPFTranslatorFunction):
     '''Script which configures the instrument for Science observations.
 
+    - If needed, start tip tilt loops
     - Sets octagon / simulcal source
     - Sets source select shutters
+    - Set triggered detectors
 
     This must have arguments as input, either from a file using the `-f` command
     line tool, or passed in from the execution engine.
@@ -62,7 +65,6 @@ class ConfigureForScience(KPFTranslatorFunction):
             log.info(f"Starting tip tilt loops")
             SetCurrentBase.execute(OB)
             StartTipTilt.execute({})
-            tick = datetime.now()
         elif OB['GuideMode'] in ['off', 'telescope']:
             log.info('GuideMode in OB is "off", not starting tip tilt loops')
 
@@ -94,13 +96,7 @@ class ConfigureForScience(KPFTranslatorFunction):
 
         # Make sure tip tilt loops have had time to close
         if OB['GuideMode'] in ['manual', 'auto']:
-            tock = datetime.now()
-            time_passed = (tock - tick).total_seconds()
-            tt_close_time = cfg.getfloat('times', 'tip_tilt_close_time', fallback=3)
-            sleep_time = tt_close_time - time_passed
-            if sleep_time > 0:
-                log.info(f"Sleeping {sleep_time:.1f} seconds to allow loops to close")
-                time.sleep(sleep_time)
+            WaitForTipTilt.execute({})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

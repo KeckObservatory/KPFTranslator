@@ -23,15 +23,28 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        kpfconfig = ktl.cache('kpfconfig')
         detector_list = []
         if args.get('TriggerRed', False) is True:
-            detector_list.append('Red')
+            if kpfconfig['RED_ENABLED'].read(binary=True) == False:
+                log.warning(f'Red detector is not enabled')
+            else:
+                detector_list.append('Red')
         if args.get('TriggerGreen', False) is True:
-            detector_list.append('Green')
+            if kpfconfig['GREEN_ENABLED'].read(binary=True) == False:
+                log.warning(f'Green detector is not enabled')
+            else:
+                detector_list.append('Green')
         if args.get('TriggerCaHK', False) is True:
-            detector_list.append('Ca_HK')
+            if kpfconfig['CA_HK_ENABLED'].read(binary=True) == False:
+                log.warning(f'Ca HK detector is not enabled')
+            else:
+                detector_list.append('Ca_HK')
         if args.get('TriggerExpMeter', False) is True:
-            detector_list.append('ExpMeter')
+            if kpfconfig['EXPMETER_ENABLED'].read(binary=True) == False:
+                log.warning(f'ExpMeter detector is not enabled')
+            else:
+                detector_list.append('ExpMeter')
         if args.get('TriggerGuide', False) is True:
             detector_list.append('Guide')
 
@@ -44,21 +57,23 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        kpfconfig = ktl.cache('kpfconfig')
         kpfexpose = ktl.cache('kpfexpose')
-        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
+        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         sleep(timeshim)
         detectors = kpfexpose['TRIG_TARG'].read()
         detector_list = detectors.split(',')
-
         detector_names = [('Red', 'TriggerRed'),
                           ('Green', 'TriggerGreen'),
                           ('Ca_HK', 'TriggerCaHK'),
                           ('ExpMeter', 'TriggerExpMeter'),
-                          ('Guide', 'TriggerGuide'),
+#                           ('Guide', 'TriggerGuide'),
                           ]
+        # Don't check on guide because there is no enabled keyword for it
         for detector in detector_names:
             detector_status = detector[0] in detector_list
-            detector_target = args.get(detector[1], False)
+            enabled = kpfconfig[f'{detector[0].upper()}_ENABLED'].read(binary=True)
+            detector_target = args.get(detector[1], False) and enabled
             if detector_target != detector_status:
                 raise FailedToReachDestination(detector_status, detector_target)
 

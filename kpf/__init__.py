@@ -38,13 +38,6 @@ log = create_KPF_log()
 ##-------------------------------------------------------------------------
 ## Define some exceptions
 ##-------------------------------------------------------------------------
-class KPFQuietException(Exception):
-    def __init__(self, message=""):
-        self.message = message
-        log.warning(self.message)
-        super().__init__(self.message)
-
-
 class KPFException(Exception):
     def __init__(self, message=""):
         self.message = message
@@ -70,6 +63,10 @@ class FailedToReachDestination(FailedPostCondition):
         self.value = value
         msg = f"Current value ({value}) != destination ({destination})"
         super().__init__(msg)
+
+
+LostTipTiltStar = KPFException
+ScriptStopTriggered = KPFException
 
 
 ##-------------------------------------------------------------------------

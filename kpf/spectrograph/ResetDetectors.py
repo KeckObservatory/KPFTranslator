@@ -6,6 +6,58 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
+class ResetGreenDetector(KPFTranslatorFunction):
+    '''Resets the kpfgreen detector
+
+    ARGS: None
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        expose = ktl.cache('kpfgreen', 'EXPOSE')
+        log.warning(f"Resetting: kpfgreen.EXPOSE = Reset")
+        expose.write('Reset')
+        log.debug('Reset command sent')
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        expose = ktl.cache('kpfgreen', 'EXPOSE')
+        timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
+        log.warning(f"Waiting for kpfgreen to be Ready")
+        success = expose.waitFor('=="Ready"', timeout=timeout)
+        if success is not True:
+            raise FailedToReachDestination(expose.read(), 'Ready')
+
+
+class ResetRedDetector(KPFTranslatorFunction):
+    '''Resets the kpfred detector
+
+    ARGS: None
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        expose = ktl.cache('kpfred', 'EXPOSE')
+        log.warning(f"Resetting: kpfred.EXPOSE = Reset")
+        expose.write('Reset')
+        log.debug('Reset command sent')
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        expose = ktl.cache('kpfred', 'EXPOSE')
+        timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
+        log.warning(f"Waiting for kpfred to be Ready")
+        success = expose.waitFor('=="Ready"', timeout=timeout)
+        if success is not True:
+            raise FailedToReachDestination(expose.read(), 'Ready')
+
+
 class ResetDetectors(KPFTranslatorFunction):
     '''Resets the kpfexpose service by setting kpfexpose.EXPOSE = Reset
 

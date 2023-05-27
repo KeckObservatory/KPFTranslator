@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
+
 import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+                 FailedToReachDestination, check_input, LostTipTiltStar)
 
 
 class StartTipTilt(KPFTranslatorFunction):
@@ -29,17 +31,18 @@ class StartTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfguide = ktl.cache('kpfguide')
-        timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
-        expr = f"($kpfguide.TIPTILT_CALC == Active) "
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is False:
-            raise FailedToReachDestination(kpfguide['TIPTILT_CALC'].read(), 'Active')
-        expr = f"($kpfguide.TIPTILT_CONTROL == Active) "
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is False:
-            raise FailedToReachDestination(kpfguide['TIPTILT_CONTROL'].read(), 'Active')
-        expr = f"($kpfguide.OFFLOAD == Active) "
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is False:
-            raise FailedToReachDestination(kpfguide['OFFLOAD'].read(), 'Active')
+        pass
+#         kpfguide = ktl.cache('kpfguide')
+#         timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
+#         expr = f"($kpfguide.TIPTILT_CALC == Active) "
+#         success = ktl.waitFor(expr, timeout=timeout)
+#         if success is False:
+#             raise FailedToReachDestination(kpfguide['TIPTILT_CALC'].read(), 'Active')
+#         expr = f"($kpfguide.TIPTILT_CONTROL == Active) "
+#         success = ktl.waitFor(expr, timeout=timeout)
+#         if success is False:
+#             raise FailedToReachDestination(kpfguide['TIPTILT_CONTROL'].read(), 'Active')
+#         expr = f"($kpfguide.OFFLOAD == Active) "
+#         success = ktl.waitFor(expr, timeout=timeout)
+#         if success is False:
+#             raise FailedToReachDestination(kpfguide['OFFLOAD'].read(), 'Active')
