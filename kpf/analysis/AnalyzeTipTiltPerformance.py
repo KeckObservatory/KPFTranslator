@@ -217,6 +217,8 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
 
     # Mean Flux
     mean_flux = np.nanmean(t['object1_flux'][~maskall])
+    max_flux = np.nanmax(t['object1_flux'][~maskall])
+    min_flux = np.nanmin(t['object1_flux'][~maskall])
     mean_peak = np.nanmean(t['object1_peak'][~maskall])
     max_peak = np.nanmax(t['object1_peak'][~maskall])
     min_peak = np.nanmin(t['object1_peak'][~maskall])
@@ -268,10 +270,10 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
         plt.plot([times[instance], times[instance]], [0,flux_plot_max], 'r-', alpha=0.05)
     for instance in w_fewer_detections:
         plt.plot([times[instance], times[instance]], [0,flux_plot_max], 'b-', alpha=0.05)
-#     flux_line = plt.plot(times[~maskall],
-#                          t['object1_flux'][~maskall],
-#                          'g-', alpha=0.5, drawstyle='steps-mid',
-#                          label=f'flux (mean={mean_flux:.1e})')
+    flux_line = plt.plot(times[~maskall],
+                         t['object1_flux'][~maskall],
+                         'g-', alpha=0.5, drawstyle='steps-mid',
+                         label=f'flux (max={max_flux/1000:.1f}k, mean={mean_flux/1000:.1f}k)')
     if start is not None and end is not None:
         plt.xlim(start, end)
     else:
@@ -286,10 +288,11 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
                              t['object1_peak'][~maskall],
                              'k-', alpha=0.3, drawstyle='steps-mid',
                              label=f'peak (max={max_peak/1000:.1f}k, mean={mean_peak/1000:.1f}k)')
-#     plt.ylabel('Peak (ADU)')
-    plt.ylim(0,2**14)
-#     plt.legend(handles=[flux_line[0], peak_line[0]], loc='lower center')
-    plt.legend(handles=[peak_line[0]], loc='lower center')
+    ax_peak.set_ylabel('Peak (ADU)')
+#     ax_peak.set_ylim(0,2**14)
+    ax_peak.set_ylim(0,min([2**14, 1.5*max_peak]))
+    plt.legend(handles=[flux_line[0], peak_line[0]], loc='lower center')
+#     plt.legend(handles=[peak_line[0]], loc='lower center')
 
     # FWHM Plot
     plt.subplot(3,2,2)
