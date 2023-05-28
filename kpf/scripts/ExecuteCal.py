@@ -22,6 +22,7 @@ from kpf.calbench.TakeIntensityReading import TakeIntensityReading
 from kpf.calbench.WaitForCalSource import WaitForCalSource
 from kpf.calbench.WaitForFlatFieldFiberPos import WaitForFlatFieldFiberPos
 from kpf.calbench.WaitForLampWarm import WaitForLampWarm
+from kpf.calbench.WaitForLFCReady import WaitForLFCReady
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
 from kpf.fvc.FVCPower import FVCPower
@@ -108,7 +109,6 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForND2.execute(args)
             WaitForCalSource.execute(args)
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
-            # Take intensity monitor reading
             if calsource == 'LFCFiber':
                 ## If we're using the LFC, set it to AstroComb
                 ## If that fails, skip this calibration
@@ -117,18 +117,7 @@ class ExecuteCal(KPFTranslatorFunction):
                 except:
                     log.error('Failed to set LFC to AstroComb')
                     return
-                # Check menlo heatbeat
-                heartbeat = ktl.cache('kpfmon', 'HB_MENLOSTA')
-                heartbeat_ok = heartbeat.waitFor('== "OK"', timeout=3)
-                if heartbeat_ok is not True:
-                    log.error('Menlo heartbeat not Ok. Skipping LFC.')
-                    return
-                # Check LFCREADYSTA
-                LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
-                LFCready_ok = LFCready.waitFor('== "OK"', timeout=3)
-                if LFCready_ok is not True:
-                    log.error('LFCREADYSTA not Ok. Skipping LFC.')
-                    return
+            # Take intensity monitor reading
             if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
                 WaitForLampWarm.execute(args)
                 TakeIntensityReading.execute({})
@@ -217,6 +206,13 @@ class ExecuteCal(KPFTranslatorFunction):
                 log.info(f"Readout complete")
                 sleep(archon_time_shim)
                 check_scriptstop() # Stop here if requested
+            # Check LFC if it is the source
+            if calsource == 'LFCFiber':
+                LFCready = WaitForLFCReady.execute({})
+                if LFCready is False:
+                    log.error('LFC is not ready, skipping remaining LFC frames')
+                    SetLFCtoStandbyHigh.execute({})
+                    return
             # Start next exposure
             if runagitator is True:
                 StartAgitator.execute({})

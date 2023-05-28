@@ -53,6 +53,8 @@ links:
         cmd: calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos
     WaitForLampWarm:
         cmd: calbench.WaitForLampWarm.WaitForLampWarm
+    WaitForLFCReady:
+        cmd: calbench.WaitForLFCReady.WaitForLFCReady
     WaitForND1:
         cmd: calbench.WaitForND1.WaitForND1
     WaitForND2:
