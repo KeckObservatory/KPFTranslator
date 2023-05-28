@@ -15,6 +15,7 @@ from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.spectrograph.SetObject import SetObject
+from kpf.spectrograph.StopAgitator import StopAgitator
 from kpf.spectrograph.WaitForReady import WaitForReady
 
 
@@ -60,6 +61,8 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
                     if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                                 'BrdbandFiber', 'WideFlat']:
                         CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+
+        StopAgitator.execute({})
 
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})
