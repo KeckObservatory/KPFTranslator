@@ -216,12 +216,13 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     results['FWHM (arcsec)'] = float(mean_fwhm)
 
     # Mean Flux
-    mean_flux = np.nanmean(t['object1_flux'][~maskall])
-    max_flux = np.nanmax(t['object1_flux'][~maskall])
-    min_flux = np.nanmin(t['object1_flux'][~maskall])
-    mean_peak = np.nanmean(t['object1_peak'][~maskall])
-    max_peak = np.nanmax(t['object1_peak'][~maskall])
-    min_peak = np.nanmin(t['object1_peak'][~maskall])
+    none_detected = np.all(maskall)
+    mean_flux = 0 if none_detected else np.nanmean(t['object1_flux'][~maskall])
+    max_flux = 0 if none_detected else np.nanmax(t['object1_flux'][~maskall])
+    min_flux = 0 if none_detected else np.nanmin(t['object1_flux'][~maskall])
+    mean_peak = 0 if none_detected else np.nanmean(t['object1_peak'][~maskall])
+    max_peak = 0 if none_detected else np.nanmax(t['object1_peak'][~maskall])
+    min_peak = 0 if none_detected else np.nanmin(t['object1_peak'][~maskall])
 
     results['Mean Flux (ADU)'] = float(mean_flux)
     results['Mean Peak Flux (ADU)'] = float(mean_peak)
@@ -263,7 +264,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
 #     plt.fill_between([0, times[-1]], [5000,5000], [10000,10000],
 #                      color='y', alpha=0.2, linewidth=0)
     try:
-        flux_plot_max = 1.1*max(t['object1_flux'][~maskall])
+        flux_plot_max = 1.3*max(t['object1_flux'][~maskall])
     except ValueError:
         flux_plot_max = 20000
     for instance in w_extra_detections:
@@ -280,6 +281,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
         plt.xlim(0,times[-1])
     plt.ylabel('Flux (ADU)')
     plt.ylim(0,flux_plot_max)
+    plt.grid()
 
     ax_peak = plt.gca().twinx()
     plt.fill_between([0, times[-1]], [0.8*2**14,0.8*2**14], [2**14,2**14],
@@ -290,9 +292,9 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
                              label=f'peak (max={max_peak/1000:.1f}k, mean={mean_peak/1000:.1f}k)')
     ax_peak.set_ylabel('Peak (ADU)')
 #     ax_peak.set_ylim(0,2**14)
-    ax_peak.set_ylim(0,min([2**14, 1.5*max_peak]))
-    plt.legend(handles=[flux_line[0], peak_line[0]], loc='lower center')
-#     plt.legend(handles=[peak_line[0]], loc='lower center')
+    ax_peak.set_ylim(0,min([2**14, 1.3*max_peak]))
+    plt.legend(handles=[flux_line[0], peak_line[0]], loc='best')
+#     plt.legend(handles=[peak_line[0]], loc='best')
 
     # FWHM Plot
     plt.subplot(3,2,2)
@@ -317,10 +319,19 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
         plt.xlim(0,times[-1])
     plt.yticks(np.arange(0,3.2,0.5))
     plt.ylim(0,1.6)
+    plt.grid()
     plt.ylabel('FWHM (arcsec)')
 
     # Re-analysis Flux and Peak
-    if new is not None:
+    if new is None:
+        log.debug(f"  Generating Target Pixel Plot")
+        plt.subplot(3,2,3)
+        plt.title('Evolution of Target Pixel')
+        plt.plot(times, t['target_x']-t['target_x'][0], 'g-', label='Target dX')
+        plt.plot(times, t['target_y']-t['target_y'][0], 'b-', label='Target dY')
+        plt.ylabel('Pixels')
+        plt.grid()
+    else:
         log.debug(f"  Generating Flux Plot for New Source Extractor Results")
         plt.subplot(3,2,3)
 
@@ -384,7 +395,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
                                  'g-', alpha=0.3, drawstyle='steps-mid',
                                  label=f'peak ({mean_peak:.1e})')
         plt.ylabel('Peak (ADU)')
-        plt.legend(handles=[flux_line[0], peak_line[0]], loc='lower center')
+        plt.legend(handles=[flux_line[0], peak_line[0]], loc='best')
 
 
     # Position Error Plot
@@ -439,11 +450,11 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     plt.ylabel('N frames')
 
     if plotfile is not None:
-        log.debug(f"  Saving Plot File")
+        log.debug(f"  Saving Plot File: {plotfile.name}")
         plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.1)
-        log.debug(f"  Saving Results File")
         results_file_name = plotfile.name.replace('.png', '.txt')
         results_file = plotfile.parent / results_file_name
+        log.debug(f"  Saving Results File: {results_file_name}")
         if results_file.exists(): results_file.unlink()
         with open(results_file, 'w') as f:
             f.write(yaml.dump(results))
