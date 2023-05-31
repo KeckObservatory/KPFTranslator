@@ -214,6 +214,13 @@ class MainWindow(QMainWindow):
         self.executeOB_slewcal = self.findChild(QPushButton, 'executeOB_slewcal')
         self.executeOB_slewcal.clicked.connect(self.run_executeOB_slewcal)
 
+        self.collect_guider_cube = self.findChild(QPushButton, 'collect_guider_cube')
+        self.collect_guider_cube.clicked.connect(self.run_collect_guider_cube)
+
+        self.execute_slewcal_only = self.findChild(QPushButton, 'execute_slewcal_only')
+        self.execute_slewcal_only.clicked.connect(self.run_execute_slewcal_only)
+
+
         ##----------------------
         ## OB Contents
         ##----------------------
@@ -816,7 +823,7 @@ class MainWindow(QMainWindow):
                 self.star_list_line.setText(msg)
 
     ##-------------------------------------------
-    ## Methods relating to executing an OB
+    ## Execute an OB (with or without slewcal)
     ##-------------------------------------------
     def run_executeOB(self):
         self.log.debug(f"run_executeOB")
@@ -878,6 +885,75 @@ class MainWindow(QMainWindow):
         cmd = ['xterm', '-title', 'RunSciOB', '-name', 'RunSciOB',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
                '-e', f'{RunSciOB_cmd}']
+        proc = subprocess.Popen(cmd)
+
+    ##-------------------------------------------
+    ## Execute a Slewcal Only
+    ##-------------------------------------------
+    def run_execute_slewcal_only(self):
+        self.log.debug(f"run_executeOB")
+        run_execute_slewcal_only_popup = QMessageBox()
+        run_execute_slewcal_only_popup.setWindowTitle('Run Slew Cal Confirmation')
+        msg = ["Do you really want to run a slew cal?",
+               "",
+               "This will take approximately a few minutes to complete",
+               "and will block other operations during that time."]
+        run_execute_slewcal_only_popup.setText("\n".join(msg))
+        run_execute_slewcal_only_popup.setIcon(QMessageBox.Critical)
+        run_execute_slewcal_only_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
+        run_execute_slewcal_only_popup.buttonClicked.connect(self.run_execute_slewcal_only_popup_clicked)
+        run_execute_slewcal_only_popup.exec_()
+
+    def run_execute_slewcal_only_popup_clicked(self, i):
+        self.log.debug(f"run_execute_slewcal_only_popup_clicked: {i.text()}")
+        if i.text() == '&Yes':
+            self.log.info('Beginning slew cal')
+            self.execute_slewcal_only()
+        else:
+            self.log.debug('Not executing guide cube collection')
+
+    def execute_slewcal_only(self):
+        self.log.debug(f"execute_slewcal_only")
+#         collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 30 ; echo "Done!" ; sleep 10'
+#         # Pop up an xterm with the script running
+#         cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
+#                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+#                '-e', f'{collect_guider_cube_cmd}']
+#         proc = subprocess.Popen(cmd)
+
+
+    ##-------------------------------------------
+    ## Collect a Guider Cube
+    ##-------------------------------------------
+    def run_collect_guider_cube(self):
+        self.log.debug(f"run_collect_guider_cube")
+        run_collect_guider_cube_popup = QMessageBox()
+        run_collect_guider_cube_popup.setWindowTitle('Run Collect Guider Cube Confirmation')
+        msg = ["Do you really want to collect a guider cube?",
+               "",
+               "This will take approximately 1 minute to complete",
+               "and will block other operations during that time."]
+        run_collect_guider_cube_popup.setText("\n".join(msg))
+        run_collect_guider_cube_popup.setIcon(QMessageBox.Critical)
+        run_collect_guider_cube_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
+        run_collect_guider_cube_popup.buttonClicked.connect(self.run_collect_guider_cube_popup_clicked)
+        run_collect_guider_cube_popup.exec_()
+
+    def run_collect_guider_cube_popup_clicked(self, i):
+        self.log.debug(f"run_collect_guider_cube_popup_clicked: {i.text()}")
+        if i.text() == '&Yes':
+            self.log.info('Beginning guide cube collection')
+            self.do_collect_guider_cube()
+        else:
+            self.log.debug('Not executing guide cube collection')
+
+    def do_collect_guider_cube(self):
+        self.log.debug(f"collect_guider_cube")
+        collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 30 ; echo "Done!" ; sleep 10'
+        # Pop up an xterm with the script running
+        cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
+               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+               '-e', f'{collect_guider_cube_cmd}']
         proc = subprocess.Popen(cmd)
 
 
