@@ -19,6 +19,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
 
 from kpf.utils import BuildOBfromQuery, SetObserverFromSchedule
 from kpf.spectrograph import SetProgram
+from kpf.utils import SendEmail
 
 
 ##-------------------------------------------------------------------------
@@ -955,7 +956,10 @@ class MainWindow(QMainWindow):
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
                '-e', f'{collect_guider_cube_cmd}']
         proc = subprocess.Popen(cmd)
-
+        targname = kpt.cache('dcs1', 'TARGNAME')
+        SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
+                           'Subject': f"TakeGuiderCube executed",
+                           'Message': f"TARGNAME={targname.read()}"})
 
 # end of class MainWindow
 
