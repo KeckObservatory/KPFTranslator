@@ -915,12 +915,12 @@ class MainWindow(QMainWindow):
 
     def execute_slewcal_only(self):
         self.log.debug(f"execute_slewcal_only")
-#         collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 30 ; echo "Done!" ; sleep 10'
-#         # Pop up an xterm with the script running
-#         cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
-#                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-#                '-e', f'{collect_guider_cube_cmd}']
-#         proc = subprocess.Popen(cmd)
+        execute_slewcal_only_cmd = f'kpfdo ExecuteSlewCal ; echo "Done!" ; sleep 20'
+        # Pop up an xterm with the script running
+        cmd = ['xterm', '-title', 'ExecuteSlewCal', '-name', 'ExecuteSlewCal',
+               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+               '-e', f'{execute_slewcal_only_cmd}']
+        proc = subprocess.Popen(cmd)
 
 
     ##-------------------------------------------
