@@ -377,7 +377,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Build from Query&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Get Target Info from Query&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -416,6 +416,9 @@
        </item>
        <item row="4" column="2">
         <widget class="QPushButton" name="query_gaia_btn">
+         <property name="toolTip">
+          <string extracomment="Fills Target Info section of the OB from a Vizier query of the Gaia DR3 catalog."/>
+         </property>
          <property name="text">
           <string>Query Gaia ID</string>
          </property>
@@ -427,30 +430,47 @@
       <property name="geometry">
        <rect>
         <x>450</x>
-        <y>100</y>
+        <y>80</y>
         <width>401</width>
-        <height>71</height>
+        <height>91</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="execute_layout">
+       <item row="2" column="2">
+        <widget class="QPushButton" name="execute_slewcal_only">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Execute Slew Cal Only</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="1" colspan="2">
         <widget class="QLabel" name="label_11">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Execute This OB&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Execute Observations&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" rowspan="2">
-        <widget class="QPushButton" name="executeOB">
-         <property name="text">
-          <string>Execute This OB</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2" rowspan="2">
+       <item row="2" column="1">
         <widget class="QPushButton" name="executeOB_slewcal">
          <property name="text">
           <string>Execute Slew Cal then OB</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="collect_guider_cube">
+         <property name="text">
+          <string>Collect Guider Image Cube</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="executeOB">
+         <property name="text">
+          <string>Execute This OB</string>
          </property>
         </widget>
        </item>
