@@ -164,6 +164,8 @@ links:
         cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
     ExecuteSciSequence:
         cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
+    ExecuteSlewCal:
+        cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
     GridSearch:
         cmd: scripts.GridSearch.GridSearch
     Run2DGridSearch:
