@@ -909,13 +909,15 @@ class MainWindow(QMainWindow):
         self.log.debug(f"run_execute_slewcal_only_popup_clicked: {i.text()}")
         if i.text() == '&Yes':
             self.log.info('Beginning slew cal')
-            self.execute_slewcal_only()
+            self.do_execute_slewcal_only()
         else:
             self.log.debug('Not executing guide cube collection')
 
-    def execute_slewcal_only(self):
+    def do_execute_slewcal_only(self):
         self.log.debug(f"execute_slewcal_only")
-        execute_slewcal_only_cmd = f'kpfdo ExecuteSlewCal ; echo "Done!" ; sleep 20'
+        slewcal_file = self.kpfconfig['SLEWCALFILE'].read()
+        execute_slewcal_only_cmd = f'kpfdo ExecuteSlewCal -f {slewcal_file} ; echo "Done!" ; sleep 20'
+        self.log.debug(f'Executing: {execute_slewcal_only_cmd}')
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'ExecuteSlewCal', '-name', 'ExecuteSlewCal',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
