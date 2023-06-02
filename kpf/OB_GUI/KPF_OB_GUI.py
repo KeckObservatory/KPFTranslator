@@ -1,5 +1,6 @@
 #!/kroot/rel/default/bin/kpython3
 import sys
+import traceback
 import time
 from pathlib import Path
 import logging
@@ -63,7 +64,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, *args, **kwargs)
         ui_file = Path(__file__).parent / 'KPF_OB_GUI.ui'
         uic.loadUi(f"{ui_file}", self)
-        self.log = create_GUI_log()
+        self.log = log
         self.log.debug('Initializing MainWindow')
         # Initial OB settings
         self.name_query_text = ''
@@ -911,7 +912,7 @@ class MainWindow(QMainWindow):
             self.log.info('Beginning slew cal')
             self.do_execute_slewcal_only()
         else:
-            self.log.debug('Not executing guide cube collection')
+            self.log.debug('Not executing slew cal')
 
     def do_execute_slewcal_only(self):
         self.log.debug(f"execute_slewcal_only")
@@ -967,5 +968,11 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
+    log = create_GUI_log()
+    log.info(f"Starting KPF OB GUI")
     status = main()
+    log.info(f"Exiting KPF OB GUI: Status={status}")
+    if status != 0:
+        log.error(traceback.format_exc())
     sys.exit(status)
+
