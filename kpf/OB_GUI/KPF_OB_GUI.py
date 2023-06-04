@@ -417,6 +417,10 @@ class MainWindow(QMainWindow):
     def fullstop_popup_clicked(self, i):
         self.log.debug(f"fullstop_popup_clicked: {i.text()}")
         if i.text() == '&Yes':
+            # Set SCRIPTSTOP
+            self.kpfconfig['SCRIPTSTOP'].write('Yes')
+            self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
+            self.scriptstop_btn.setText('Request STOP After Exposure')
             # Stop current exposure
             if self.kpfexpose['EXPOSE'].read() == 'InProgress':
                 self.kpfexpose['EXPOSE'].write('End')
@@ -424,10 +428,6 @@ class MainWindow(QMainWindow):
                 self.log.debug('Waiting for kpfexpose.EXPOSE to be Readout')
                 readout = self.kpfexpose['EXPOSE'].waitFor("=='Readout'", timeout=10)
                 self.log.debug(f"Reached readout? {readout}")
-            # Set SCRIPTSTOP
-            self.kpfconfig['SCRIPTSTOP'].write('Yes')
-            self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
-            self.scriptstop_btn.setText('Request STOP After Exposure')
         else:
             self.log.debug('Confirmation is no, not stopping script')
 
