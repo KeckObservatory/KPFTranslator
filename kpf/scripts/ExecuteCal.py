@@ -37,6 +37,7 @@ from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.WaitForReadout import WaitForReadout
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
+from kpf.utils.SetTargetInfo import SetTargetInfo
 from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 
@@ -126,6 +127,14 @@ class ExecuteCal(KPFTranslatorFunction):
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
             # Open SoCalCal Shutter
             args['SSS_SoCalCal'] = True
+            # Set target info
+            SetTargetInfo.execute({'TargetName': 'Sun',
+                                   'GaiaID': '',
+                                   '2MASSID': '',
+                                   'Gmag': '-26.9',
+                                   'Jmag': '-27.9',
+                                   'Teff': '5772',
+                                   })
         elif calsource in ['SoCal-SciSky']:
             # Set octagon to simulcal source
             simulcalsource = kpfconfig['SIMULCALSOURCE'].read()
@@ -141,6 +150,14 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Open SoCalSci Shutter
             args['SSS_SoCalSci'] = True
+            # Set target info
+            SetTargetInfo.execute({'TargetName': 'Sun',
+                                   'GaiaID': '',
+                                   '2MASSID': '',
+                                   'Gmag': '-26.9',
+                                   'Jmag': '-27.9',
+                                   'Teff': '5772',
+                                   })
         # WTF!?
         else:
             raise KPFException(f"CalSource {calsource} not recognized")
