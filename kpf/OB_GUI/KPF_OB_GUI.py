@@ -392,7 +392,7 @@ class MainWindow(QMainWindow):
             self.scriptstop_btn.setText('Request STOP After Exposure')
 
     def set_scriptstop(self, value):
-        self.log.debug(f'set_scriptstop: {value}')
+        self.log.debug(f'button clicked set_scriptstop: {value}')
         current_kw_value = self.kpfconfig['SCRIPTSTOP'].read()
         if current_kw_value == 'Yes':
             self.kpfconfig['SCRIPTSTOP'].write('No')
@@ -402,7 +402,7 @@ class MainWindow(QMainWindow):
             self.scriptstop_btn.setText('Request STOP After Exposure')
 
     def do_fullstop(self, value):
-        self.log.warning(f"do_fullstop: {value}")
+        self.log.warning(f"button clicked do_fullstop: {value}")
         fullstop_popup = QMessageBox()
         fullstop_popup.setWindowTitle('Full Stop Confirmation')
         msg = ["Do you wish to stop the current exposure and script?",
@@ -420,7 +420,6 @@ class MainWindow(QMainWindow):
             # Set SCRIPTSTOP
             self.kpfconfig['SCRIPTSTOP'].write('Yes')
             self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
-            self.scriptstop_btn.setText('Request STOP After Exposure')
             # Stop current exposure
             if self.kpfexpose['EXPOSE'].read() == 'InProgress':
                 self.kpfexpose['EXPOSE'].write('End')
