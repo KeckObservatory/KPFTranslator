@@ -53,6 +53,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        set_script_keywords(Path(__file__).name, os.getpid())
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         for key in args:
@@ -171,6 +172,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
 
         log.info(f'Setting PROGNAME back to {original_progname}')
         SetProgram.execute({'progname': original_progname})
+        clear_script_keywords()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
