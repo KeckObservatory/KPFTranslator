@@ -10,6 +10,8 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.scripts import (set_script_keywords, clear_script_keywords,
+                         check_script_running, check_scriptstop)
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.SetND1 import SetND1
