@@ -50,6 +50,8 @@ class RunSciOB(KPFTranslatorFunction):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
+        check_scriptstop()
+
         # Configure: 
         log.info(f"Configuring for Acquisition")
         ConfigureForAcquisition.execute(OB)

@@ -60,6 +60,8 @@ class RunCalOB(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        check_scriptstop()
+
         # Configure: Turn on Lamps
         try:
             ConfigureForCalibrations.execute(OB)
