@@ -94,10 +94,10 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             ExecuteSlewCal.execute(slewcal_args)
             log.info('Slew cal complete. Resetting SLEWCALREQ')
             kpfconfig['SLEWCALREQ'].write('No')
-
-        # Set FIU Mode
-        log.info('Setting FIU mode to Observing')
-        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+        else:
+            # Set FIU Mode (this is done in ExecuteSlewCal if that is chosen)
+            log.info('Setting FIU mode to Observing')
+            ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
         # Set Target Parameters from OB
         SetTargetInfo.execute(OB)

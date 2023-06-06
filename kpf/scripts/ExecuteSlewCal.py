@@ -172,6 +172,10 @@ class ExecuteSlewCal(KPFTranslatorFunction):
                 StopAgitator.execute({})
             ZeroOutSlewCalTime.execute({})
 
+        # Set FIU Mode
+        log.info('Setting FIU mode to Observing')
+        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+        # Set PROGNAME
         log.info(f'Setting PROGNAME back to {original_progname}')
         SetProgram.execute({'progname': original_progname})
         clear_script_keywords()
