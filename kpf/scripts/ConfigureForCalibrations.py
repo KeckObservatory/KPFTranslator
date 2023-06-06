@@ -49,6 +49,8 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        check_scriptstop()
+
         # Power up needed lamps
         sequence = OB.get('SEQ_Calibrations')
         lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
