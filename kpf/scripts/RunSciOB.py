@@ -57,6 +57,9 @@ class RunSciOB(KPFTranslatorFunction):
         ConfigureForAcquisition.execute(OB)
         WaitForConfigureAcquisition.execute(OB)
 
+        check_scriptstop()
+
+        log.debug('Asking for user input')
         print()
         print("########################################")
         print("Before continuing, please ensure that:")
@@ -67,6 +70,7 @@ class RunSciOB(KPFTranslatorFunction):
         print("########################################")
         print()
         user_input = input()
+        log.debug(f'response: "{user_input}"')
 
         check_scriptstop()
 

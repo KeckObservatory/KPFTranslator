@@ -48,6 +48,12 @@ class ExecuteSci(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        log.info('-------------------------')
+        log.info(f"Running {cls.__name__}")
+        for key in args:
+            log.debug(f"  {key}: {args[key]}")
+        log.info('-------------------------')
+
         kpfconfig = ktl.cache('kpfconfig')
         kpfguide = ktl.cache('kpfguide')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')

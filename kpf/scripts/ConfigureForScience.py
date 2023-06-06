@@ -60,6 +60,8 @@ class ConfigureForScience(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
+        check_scriptstop()
+
         # Start tip tilt loops
         if OB['GuideMode'] in ['manual', 'auto']:
             log.info(f"Starting tip tilt loops")
@@ -77,6 +79,8 @@ class ConfigureForScience(KPFTranslatorFunction):
             log.info(f"Set CalSource/Octagon: {calsource}")
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
+        check_scriptstop()
+
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         if exposestatus.read() != 'Ready':
             log.info(f"Waiting for kpfexpose to be Ready")
@@ -93,6 +97,8 @@ class ConfigureForScience(KPFTranslatorFunction):
         # Set Triggered Detectors
         OB['TriggerGuide'] = (OB.get('GuideMode', 'off') != 'off')
         SetTriggeredDetectors.execute(OB)
+
+        check_scriptstop()
 
         # Make sure tip tilt loops have had time to close
         if OB['GuideMode'] in ['manual', 'auto']:
