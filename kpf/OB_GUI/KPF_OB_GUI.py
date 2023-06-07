@@ -487,7 +487,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_ca_hk_enabled: {value}")
         if value in ['Yes', True]:
             if 'Ca_HK' in self.disabled_detectors:
-                self.disabled_detectors.pop('Ca_HK')
+                self.disabled_detectors.pop(self.disabled_detectors.index('Ca_HK'))
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'Ca_HK' not in self.disabled_detectors:
@@ -498,7 +498,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_green_enabled: {value}")
         if value in ['Yes', True]:
             if 'Green' in self.disabled_detectors:
-                self.disabled_detectors.pop('Green')
+                self.disabled_detectors.pop(self.disabled_detectors.index('Green'))
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'Green' not in self.disabled_detectors:
@@ -509,7 +509,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_red_enabled: {value}")
         if value in ['Yes', True]:
             if 'Red' in self.disabled_detectors:
-                self.disabled_detectors.pop('Red')
+                self.disabled_detectors.pop(self.disabled_detectors.index('Red'))
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'Red' not in self.disabled_detectors:
@@ -520,7 +520,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_expmeter_enabled: {value}")
         if value in ['Yes', True]:
             if 'ExpMeter' in self.disabled_detectors:
-                self.disabled_detectors.pop('ExpMeter')
+                self.disabled_detectors.pop(self.disabled_detectors.index('ExpMeter'))
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'ExpMeter' not in self.disabled_detectors:
