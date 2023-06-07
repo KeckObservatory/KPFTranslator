@@ -213,15 +213,21 @@ class MainWindow(QMainWindow):
         self.write_to_file_btn.clicked.connect(self.run_write_to_file)
 
         self.executeOB = self.findChild(QPushButton, 'executeOB')
+        self.executeOB_tooltip = "Execute the OB as defined in the fields below"
+        self.executeOB.setToolTip(self.executeOB_tooltip)
         self.executeOB.clicked.connect(self.run_executeOB)
 
         self.executeOB_slewcal = self.findChild(QPushButton, 'executeOB_slewcal')
+        self.executeOB_slewcal_tooltip = "Execute a quick calibration, then the OB as defined in the fields below"
+        self.executeOB_slewcal.setToolTip(self.executeOB_slewcal_tooltip)
         self.executeOB_slewcal.clicked.connect(self.run_executeOB_slewcal)
 
         self.collect_guider_cube = self.findChild(QPushButton, 'collect_guider_cube')
         self.collect_guider_cube.clicked.connect(self.run_collect_guider_cube)
 
         self.execute_slewcal_only = self.findChild(QPushButton, 'execute_slewcal_only')
+        self.execute_slewcal_only_tooltip = "Execute a quick calibration without triggering OB"
+        self.execute_slewcal_only.setToolTip(self.execute_slewcal_only_tooltip)
         self.execute_slewcal_only.clicked.connect(self.run_execute_slewcal_only)
 
 
@@ -389,15 +395,22 @@ class MainWindow(QMainWindow):
         if value == 'Yes':
             self.scriptstop_value.setStyleSheet("color:red")
             self.scriptstop_btn.setText('CLEAR STOP')
+            msg = 'Disabled because STOP has been requested.'
             self.executeOB.setEnabled(False)
+            self.executeOB.setToolTip(msg)
             self.executeOB_slewcal.setEnabled(False)
+            self.executeOB_slewcal.setToolTip(msg)
             self.execute_slewcal_only.setEnabled(False)
+            self.execute_slewcal_only.setToolTip(msg)
         elif value == 'No':
             self.scriptstop_value.setStyleSheet("color:green")
             self.scriptstop_btn.setText('Request Script STOP')
             self.executeOB.setEnabled(True)
+            self.executeOB.setToolTip(self.executeOB_tooltip)
             self.executeOB_slewcal.setEnabled(True)
+            self.executeOB_slewcal.setToolTip(self.executeOB_slewcal_tooltip)
             self.execute_slewcal_only.setEnabled(True)
+            self.execute_slewcal_only.setToolTip(self.execute_slewcal_only_tooltip)
 
     def set_scriptstop(self, value):
         self.log.debug(f'button clicked set_scriptstop: {value}')
