@@ -147,10 +147,10 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
     ncolors = len(Xcenters)-1
     cstep = int(np.floor(256/ncolors))
     
-    fig = plt.figure()
+    fig = plt.figure(figsize=(8,8))
     title = f"{ut_string} UT\n{targname}: EL={altaz.alt.deg:.1f} deg, VA={va:.1f} deg"
     plt.title(title)
-    plt.plot([xcent, xcent], [ycent-2,ycent+2], 'k-')
+    plt.plot([xcent, xcent], [ycent-3,ycent+3], 'k-')
     plt.plot([xcent-3, xcent+3], [ycent,ycent], 'k-')
 
     for i,center in enumerate(zip(Xcenters, Ycenters, wavs)):
@@ -174,8 +174,8 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
     plt.grid()
     plt.xlabel('X pix')
     plt.ylabel('Y pix')
-    plt.ylim(ycent-2,ycent+2)
-    plt.yticks(np.arange(ycent-2,ycent+2,1))
+    plt.ylim(ycent-3,ycent+3)
+    plt.yticks(np.arange(ycent-3,ycent+3,1))
     plt.xlim(xcent-3,xcent+3)
     plt.xticks(np.arange(xcent-3,xcent+3,1))
     fig.gca().set_aspect('equal', 'box')
