@@ -389,9 +389,15 @@ class MainWindow(QMainWindow):
         if value == 'Yes':
             self.scriptstop_value.setStyleSheet("color:red")
             self.scriptstop_btn.setText('CLEAR STOP')
+            self.executeOB.setEnabled(False)
+            self.executeOB_slewcal.setEnabled(False)
+            self.execute_slewcal_only.setEnabled(False)
         elif value == 'No':
             self.scriptstop_value.setStyleSheet("color:green")
             self.scriptstop_btn.setText('Request Script STOP')
+            self.executeOB.setEnabled(True)
+            self.executeOB_slewcal.setEnabled(True)
+            self.execute_slewcal_only.setEnabled(True)
 
     def set_scriptstop(self, value):
         self.log.debug(f'button clicked set_scriptstop: {value}')
