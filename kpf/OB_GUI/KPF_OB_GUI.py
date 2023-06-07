@@ -182,6 +182,8 @@ class MainWindow(QMainWindow):
         green_enabled_kw.stringCallback.connect(self.update_green_enabled)
         red_enabled_kw = kPyQt.kFactory(self.kpfconfig['RED_ENABLED'])
         red_enabled_kw.stringCallback.connect(self.update_red_enabled)
+        expmeter_enabled_kw = kPyQt.kFactory(self.kpfconfig['EXPMETER_ENABLED'])
+        expmeter_enabled_kw.stringCallback.connect(self.update_expmeter_enabled)
 
         ##----------------------
         ## Construct OB
@@ -493,6 +495,17 @@ class MainWindow(QMainWindow):
         elif value in ['No', False]:
             if 'Red' not in self.disabled_detectors:
                 self.disabled_detectors.append('Red')
+                self.update_disabled_detectors_value()
+
+    def update_expmeter_enabled(self, value):
+        self.log.debug(f"update_expmeter_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'ExpMeter' in self.disabled_detectors:
+                self.disabled_detectors.pop('ExpMeter')
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'ExpMeter' not in self.disabled_detectors:
+                self.disabled_detectors.append('ExpMeter')
                 self.update_disabled_detectors_value()
 
     def update_disabled_detectors_value(self):
