@@ -389,7 +389,7 @@ class MainWindow(QMainWindow):
             self.scriptstop_btn.setText('CLEAR STOP')
         elif value == 'No':
             self.scriptstop_value.setStyleSheet("color:green")
-            self.scriptstop_btn.setText('Request STOP After Exposure')
+            self.scriptstop_btn.setText('Request Script STOP')
 
     def set_scriptstop(self, value):
         self.log.debug(f'button clicked set_scriptstop: {value}')
@@ -399,7 +399,7 @@ class MainWindow(QMainWindow):
             self.scriptstop_btn.setText('CLEAR STOP')
         elif current_kw_value == 'No':
             self.kpfconfig['SCRIPTSTOP'].write('Yes')
-            self.scriptstop_btn.setText('Request STOP After Exposure')
+            self.scriptstop_btn.setText('Request Script STOP')
 
     def do_fullstop(self, value):
         self.log.warning(f"button clicked do_fullstop: {value}")
