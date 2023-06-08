@@ -5,6 +5,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.calbench.WaitForLFCReady import WaitForLFCReady
 
 
 class SetLFCtoAstroComb(KPFTranslatorFunction):
@@ -34,19 +35,6 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         '''
         '''
-        # Check kpfmon.LFCREADY
-        LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
-        timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
-        success = LFCready.waitFor('== "OK"', timeout=timeout)
+        success = WaitForLFCReady.execute({})
         if success is not True:
-            raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
-        # Check kpfcal.WOBBLE
-        wobble = ktl.cache('kpfcal', 'WOBBLE')
-        success = wobble.waitFor('== "False"', timeout=timeout)
-        if success is not True:
-            raise FailedPostCondition('kpfcal.WOBBLE is not False')
-        # Check kpfcal.OPERATIONMODE
-        lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE')
-        success = lfc_mode.waitFor('== "AstroComb"', timeout=timeout)
-        if success is not True:
-            raise FailedPostCondition('kpfcal.OPERATIONMODE is not AstroComb')
+            raise FailedPostCondition('LFC did not reach expected state')

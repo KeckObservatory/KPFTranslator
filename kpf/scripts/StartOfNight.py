@@ -69,13 +69,6 @@ class StartOfNight(KPFTranslatorFunction):
         kpfconfig = ktl.cache('kpfconfig')
         kpfconfig['ALLOWSCHEDULEDCALS'].write('No')
 
-        # Power on Simulcal lamp
-        kpfconfig = ktl.cache('kpfconfig')
-        calsource = kpfconfig['SIMULCALSOURCE'].read()
-        log.info(f"Simultaneous calibration sournce for tonight is {calsource}")
-        if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
-            CalLampPower.execute({'lamp': calsource, 'power': 'on'})
-
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
@@ -100,6 +93,9 @@ class StartOfNight(KPFTranslatorFunction):
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         log.info(f"Setting simultaneous CalSource/Octagon: {calsource}")
         SetCalSource.execute({'CalSource': calsource, 'wait': True})
+        # Power on Simulcal lamp if needed
+        if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
+            CalLampPower.execute({'lamp': calsource, 'power': 'on'})
         # Set tip tilt loop gain
         tip_tilt_gain = cfg.getfloat('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
         log.info(f"Setting default tip tilt loop gain of {tip_tilt_gain}")

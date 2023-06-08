@@ -19,7 +19,7 @@ GUI_list = [
              'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/OB_GUI/KPF_OB_GUI.py'],
              'display': 'control0',
              'position': '0,5,50,-1,-1'},
-            {'name': 'KPF TipTilt GUI',
+            {'name': 'KPF Tip Tilt GUI',
              'cmd': ['kpf', 'start', 'tt_gui'],
              'display': 'control0',
              'position': '0,1000,50,-1,-1'},
@@ -86,6 +86,8 @@ def waitfor_window_to_appear(name, env=None, timeout=20):
         log.debug(f"Waiting for '{name}' to appear")
         time.sleep(3)
         window_names = get_window_list(env=env)
+    if name not in window_names:
+        log.debug(f"{window_names}")
     return name in window_names
 
 

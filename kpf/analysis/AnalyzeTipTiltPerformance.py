@@ -85,9 +85,9 @@ def read_file(file):
 #     if metadata['IMTYPE'] not in [None, 'Object']:
 #         return None, None, None
     if guide_origins_hdu is None:
-        return None, metadata, guider_cube
+        return None, metadata, guider_cube, guide_cube_header_hdu.data
     else:
-        return Table(guide_origins_hdu.data), metadata, guider_cube
+        return Table(guide_origins_hdu.data), metadata, guider_cube, guide_cube_header_hdu.data
 
 
 def add_parameters(t):
@@ -128,7 +128,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     results = {'file': f"{file}"}
     ps = 56 # mas/pix
     log.info(f'Reading file: {file}')
-    t, metadata, cube = read_file(file)
+    t, metadata, cube, im = read_file(file)
     # If requested, run additional SEP
     new = None
     if snr or minarea or deblend_nthresh or deblend_cont:
@@ -216,12 +216,13 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     results['FWHM (arcsec)'] = float(mean_fwhm)
 
     # Mean Flux
-    mean_flux = np.nanmean(t['object1_flux'][~maskall])
-    max_flux = np.nanmax(t['object1_flux'][~maskall])
-    min_flux = np.nanmin(t['object1_flux'][~maskall])
-    mean_peak = np.nanmean(t['object1_peak'][~maskall])
-    max_peak = np.nanmax(t['object1_peak'][~maskall])
-    min_peak = np.nanmin(t['object1_peak'][~maskall])
+    none_detected = np.all(maskall)
+    mean_flux = 0 if none_detected else np.nanmean(t['object1_flux'][~maskall])
+    max_flux = 0 if none_detected else np.nanmax(t['object1_flux'][~maskall])
+    min_flux = 0 if none_detected else np.nanmin(t['object1_flux'][~maskall])
+    mean_peak = 0 if none_detected else np.nanmean(t['object1_peak'][~maskall])
+    max_peak = 0 if none_detected else np.nanmax(t['object1_peak'][~maskall])
+    min_peak = 0 if none_detected else np.nanmin(t['object1_peak'][~maskall])
 
     results['Mean Flux (ADU)'] = float(mean_flux)
     results['Mean Peak Flux (ADU)'] = float(mean_peak)
@@ -250,9 +251,77 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
 
     plt.figure(figsize=(16,12))
 
-    # Flux and Peak Plot
-    log.debug(f"  Generating Flux Plot")
     plt.subplot(3,2,1)
+    ##------------------------------------------
+    ## Display image
+    vis.imshow_norm(im, origin='lower', cmap='gray',
+                    interval=vis.MinMaxInterval(),
+                    stretch=vis.LogStretch())
+    plt.gca().set_xticks([])
+    plt.gca().set_yticks([])
+
+    plt.plot(t['object1_x'][~maskall], t['object1_y'][~maskall], 'bx',
+             alpha=0.05, label='Object1')
+    maskobj2 = t['object2_x']<-998
+    plt.plot(t['object2_x'][~maskobj2], t['object2_y'][~maskobj2], 'gx',
+             alpha=0.05, label='Object2')
+    maskobj3 = t['object3_x']<-998
+    plt.plot(t['object3_x'][~maskobj3], t['object3_y'][~maskobj3], 'yx',
+             alpha=0.05, label='Object3')
+    dx = 110
+    dy = 50
+    tx0 = t['target_x'][0]
+    ty0 = t['target_y'][0]
+    plt.plot(tx0, ty0, 'r+', markersize=20, alpha=0.5)
+    plt.xlim(tx0-dx,tx0+dx)
+    plt.ylim(ty0-dy,ty0+dy)
+
+    plt.subplot(3,2,2)
+    ##------------------------------------------
+    ## PSD Plot
+    log.debug(f"  Generating PSD Plot")
+    plt.title(f"Stellar Motion Power Spectral Distribution: FPS={fps}")
+    if len(xerrs) > 0:
+        plt.psd(xdeltas, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
+                label='X F2F')
+        plt.psd(ydeltas, Fs=fps, color='b', drawstyle='steps-mid', alpha=0.6,
+                label='Y F2F')
+        plt.legend(loc='best')
+    plt.yticks([v for v in np.arange(-70,20,10)])
+    plt.ylim(-70,10)
+    plt.xlim(0,fps/4)
+
+    # FWHM Plot
+#     log.debug('Generating FWHM Plot')
+#     log.debug(f"  Mean FWHM = {mean_fwhm:.1f} arcsec")
+#     fwhm_line = plt.plot(times[~maskall], fwhm[~maskall], 'k-',
+#                          alpha=0.5, drawstyle='steps-mid',
+#                          label=f'FWHM ({mean_fwhm:.1f} arcsec)')
+#     if new is not None:
+#         newfwhm = new['object1_fwhm']*ps/1000
+#         newmean_fwhm = np.mean(fwhm)
+#         log.debug(f"  Mean New FWHM = {newmean_fwhm:.1f} arcsec")
+#         newfwhm_line = plt.plot(times[~maskall], newfwhm[~maskall], 'g-',
+#                                 alpha=0.5, drawstyle='steps-mid',
+#                                 label=f'new FWHM ({newmean_fwhm:.1f} arcsec)')
+#         plt.legend(handles=[fwhm_line[0], newfwhm_line[0]], loc='best')
+#     else:
+#         plt.legend(loc='best')
+#     if start is not None and end is not None:
+#         plt.xlim(start, end)
+#     else:
+#         plt.xlim(0,times[-1])
+#     plt.yticks(np.arange(0,3.2,0.5))
+#     plt.ylim(0,1.6)
+#     plt.grid()
+#     plt.ylabel('FWHM (arcsec)')
+
+
+    plt.subplot(3,2,3)
+    ##------------------------------------------
+    ##------------------------------------------
+    ## Flux and Peak Plot
+    log.debug(f"  Generating Flux Plot")
     title_line1 = f"{len(t)} frames: {nframes_extra_detections} frames w/ extra stars, {nframes_fewer_detections} frames w/ fewer"
     title_line2 = ''
     if metadata['Gmag'] is not None:
@@ -263,7 +332,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
 #     plt.fill_between([0, times[-1]], [5000,5000], [10000,10000],
 #                      color='y', alpha=0.2, linewidth=0)
     try:
-        flux_plot_max = 1.1*max(t['object1_flux'][~maskall])
+        flux_plot_max = 1.3*max(t['object1_flux'][~maskall])
     except ValueError:
         flux_plot_max = 20000
     for instance in w_extra_detections:
@@ -280,6 +349,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
         plt.xlim(0,times[-1])
     plt.ylabel('Flux (ADU)')
     plt.ylim(0,flux_plot_max)
+    plt.grid()
 
     ax_peak = plt.gca().twinx()
     plt.fill_between([0, times[-1]], [0.8*2**14,0.8*2**14], [2**14,2**14],
@@ -290,44 +360,41 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
                              label=f'peak (max={max_peak/1000:.1f}k, mean={mean_peak/1000:.1f}k)')
     ax_peak.set_ylabel('Peak (ADU)')
 #     ax_peak.set_ylim(0,2**14)
-    ax_peak.set_ylim(0,min([2**14, 1.5*max_peak]))
-    plt.legend(handles=[flux_line[0], peak_line[0]], loc='lower center')
-#     plt.legend(handles=[peak_line[0]], loc='lower center')
+    ax_peak.set_ylim(0,min([2**14, 1.3*max_peak]))
+    plt.legend(handles=[flux_line[0], peak_line[0]], loc='best')
+#     plt.legend(handles=[peak_line[0]], loc='best')
 
-    # FWHM Plot
-    plt.subplot(3,2,2)
-    log.debug('Generating FWHM Plot')
-    log.debug(f"  Mean FWHM = {mean_fwhm:.1f} arcsec")
-    fwhm_line = plt.plot(times[~maskall], fwhm[~maskall], 'k-',
-                         alpha=0.5, drawstyle='steps-mid',
-                         label=f'FWHM ({mean_fwhm:.1f} arcsec)')
-    if new is not None:
-        newfwhm = new['object1_fwhm']*ps/1000
-        newmean_fwhm = np.mean(fwhm)
-        log.debug(f"  Mean New FWHM = {newmean_fwhm:.1f} arcsec")
-        newfwhm_line = plt.plot(times[~maskall], newfwhm[~maskall], 'g-',
-                                alpha=0.5, drawstyle='steps-mid',
-                                label=f'new FWHM ({newmean_fwhm:.1f} arcsec)')
-        plt.legend(handles=[fwhm_line[0], newfwhm_line[0]], loc='best')
-    else:
-        plt.legend(loc='best')
+    plt.subplot(3,2,4)
+    ##------------------------------------------
+    ## Position Error Plot
+    log.debug(f"  Generating Positional Error Plot")
+    plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
+    plt.plot(times[~maskall], objectxerr[~maskall], 'g-',
+             alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
+    for badt in times[maskall]:
+        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+    plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
+             alpha=0.5, drawstyle='steps-mid', label=f'Ypos-Ytarg')
+    for badt in times[objectyerr.mask]:
+        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+    plt.legend(loc='best')
+    plt.ylabel('delta pix')
+    plt.ylim(plotylim)
+    plt.grid()
     if start is not None and end is not None:
         plt.xlim(start, end)
     else:
         plt.xlim(0,times[-1])
-    plt.yticks(np.arange(0,3.2,0.5))
-    plt.ylim(0,1.6)
-    plt.ylabel('FWHM (arcsec)')
+    plt.xlabel('Time (s)')
 
-    # Re-analysis Flux and Peak
+    ##------------------------------------------
+    ## Re-analysis Flux and Peak
     if new is not None:
+        plt.subplot(3,2,5)
         log.debug(f"  Generating Flux Plot for New Source Extractor Results")
-        plt.subplot(3,2,3)
-
         maskx = new['object1_x']<-998
         masky = new['object1_y']<-998
         maskall = maskx | masky
-
         # Count number of stars
         nstars = []
         for entry in new:
@@ -384,49 +451,12 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
                                  'g-', alpha=0.3, drawstyle='steps-mid',
                                  label=f'peak ({mean_peak:.1e})')
         plt.ylabel('Peak (ADU)')
-        plt.legend(handles=[flux_line[0], peak_line[0]], loc='lower center')
+        plt.legend(handles=[flux_line[0], peak_line[0]], loc='best')
 
-
-    # Position Error Plot
-    log.debug(f"  Generating Positional Error Plot")
-    plt.subplot(3,2,5)
-    plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
-    plt.plot(times[~maskall], objectxerr[~maskall], 'g-',
-             alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
-    for badt in times[maskall]:
-        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
-    plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
-             alpha=0.5, drawstyle='steps-mid', label=f'Ypos-Ytarg')
-    for badt in times[objectyerr.mask]:
-        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
-    plt.legend(loc='best')
-    plt.ylabel('delta pix')
-    plt.ylim(plotylim)
-    plt.grid()
-    if start is not None and end is not None:
-        plt.xlim(start, end)
-    else:
-        plt.xlim(0,times[-1])
-    plt.xlabel('Time (s)')
-
-    # PSD Plot
-    log.debug(f"  Generating PSD Plot")
-    plt.subplot(3,2,4)
-    plt.title(f"Stellar Motion Power Spectral Distribution: FPS={fps}")
-    if len(xerrs) > 0:
-        plt.psd(xdeltas, Fs=fps, color='g', drawstyle='steps-mid', alpha=0.6,
-                label='X F2F')
-        plt.psd(ydeltas, Fs=fps, color='b', drawstyle='steps-mid', alpha=0.6,
-                label='Y F2F')
-        plt.legend(loc='best')
-    plt.yticks([v for v in np.arange(-70,20,10)])
-    plt.ylim(-70,10)
-    plt.xlim(0,fps/4)
-
+    plt.subplot(3,2,6)
+    ##------------------------------------------
     # Position Error Histogram
     log.debug(f"  Generating Positional Error Histogram")
-    plt.subplot(3,2,6)
-#     plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
     nx, binsx, foox = plt.hist(objectxerr[~maskall], bins=100, label='X',
                                color='g', alpha=0.6, log=True)
     ny, binsy, fooy = plt.hist(objectyerr[~objectyerr.mask], bins=100, label='Y',
@@ -439,11 +469,11 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     plt.ylabel('N frames')
 
     if plotfile is not None:
-        log.debug(f"  Saving Plot File")
+        log.debug(f"  Saving Plot File: {plotfile.name}")
         plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.1)
-        log.debug(f"  Saving Results File")
         results_file_name = plotfile.name.replace('.png', '.txt')
         results_file = plotfile.parent / results_file_name
+        log.debug(f"  Saving Results File: {results_file_name}")
         if results_file.exists(): results_file.unlink()
         with open(results_file, 'w') as f:
             f.write(yaml.dump(results))

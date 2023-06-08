@@ -53,6 +53,8 @@ links:
         cmd: calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos
     WaitForLampWarm:
         cmd: calbench.WaitForLampWarm.WaitForLampWarm
+    WaitForLFCReady:
+        cmd: calbench.WaitForLFCReady.WaitForLFCReady
     WaitForND1:
         cmd: calbench.WaitForND1.WaitForND1
     WaitForND2:
@@ -162,6 +164,8 @@ links:
         cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
     ExecuteSciSequence:
         cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
+    ExecuteSlewCal:
+        cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
     GridSearch:
         cmd: scripts.GridSearch.GridSearch
     Run2DGridSearch:

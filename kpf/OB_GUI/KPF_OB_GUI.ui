@@ -86,6 +86,9 @@
          <pointsize>11</pointsize>
         </font>
        </property>
+       <property name="toolTip">
+        <string>Value of the kpfconfig.SCRIPTSTOP keyword. If this is yes, the running script will stop at the next opportunity.</string>
+       </property>
        <property name="text">
         <string>_</string>
        </property>
@@ -93,15 +96,30 @@
      </item>
      <item row="1" column="0" colspan="2">
       <widget class="QPushButton" name="scriptstop_btn">
+       <property name="toolTip">
+        <string>Request that the currently running script halt and clean up at the next opportunity.</string>
+       </property>
+       <property name="toolTipDuration">
+        <number>-1</number>
+       </property>
+       <property name="statusTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
        <property name="text">
-        <string>Request STOP After Exposure</string>
+        <string>Request Script STOP</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0" colspan="2">
       <widget class="QPushButton" name="fullstop_btn">
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
        <property name="text">
-        <string>Immediate STOP Exposure and Script</string>
+        <string>STOP Exposure and Script</string>
        </property>
       </widget>
      </item>
@@ -361,9 +379,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>80</y>
+        <y>100</y>
         <width>381</width>
-        <height>91</height>
+        <height>81</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="construct_layout">
@@ -377,7 +395,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Build from Query&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Get Target Info from Query&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -416,6 +434,9 @@
        </item>
        <item row="4" column="2">
         <widget class="QPushButton" name="query_gaia_btn">
+         <property name="toolTip">
+          <string>Fills Target Info section of the OB from a Vizier query of the Gaia DR3 catalog.</string>
+         </property>
          <property name="text">
           <string>Query Gaia ID</string>
          </property>
@@ -427,30 +448,59 @@
       <property name="geometry">
        <rect>
         <x>450</x>
-        <y>100</y>
+        <y>70</y>
         <width>401</width>
-        <height>71</height>
+        <height>111</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="execute_layout">
-       <item row="0" column="1" colspan="2">
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Execute This OB&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" rowspan="2">
+       <item row="1" column="1">
         <widget class="QPushButton" name="executeOB">
+         <property name="toolTip">
+          <string>Execute the OB as defined in the fields below.</string>
+         </property>
          <property name="text">
           <string>Execute This OB</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="2" rowspan="2">
-        <widget class="QPushButton" name="executeOB_slewcal">
+       <item row="2" column="1">
+        <widget class="QPushButton" name="execute_slewcal_only">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string>Execute a quick calibration without triggering a science OB.</string>
+         </property>
          <property name="text">
-          <string>Execute Slew Cal then OB</string>
+          <string>Execute Slew Cal Only</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="executeOB_slewcal">
+         <property name="toolTip">
+          <string>Execute a quick calibration, then execute the OB as defined in the fields below.</string>
+         </property>
+         <property name="text">
+          <string>Execute OB with Slew Cal</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Execute Observations&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="collect_guider_cube">
+         <property name="toolTip">
+          <string>Collect 30s of full frame rate images from the guider for later analysis.</string>
+         </property>
+         <property name="text">
+          <string>Collect Guider Image Cube</string>
          </property>
         </widget>
        </item>
@@ -460,9 +510,9 @@
       <property name="geometry">
        <rect>
         <x>430</x>
-        <y>80</y>
+        <y>50</y>
         <width>20</width>
-        <height>91</height>
+        <height>121</height>
        </rect>
       </property>
       <property name="orientation">
@@ -499,7 +549,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>180</y>
+        <y>190</y>
         <width>921</width>
         <height>16</height>
        </rect>
@@ -512,7 +562,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>190</y>
+        <y>200</y>
         <width>381</width>
         <height>31</height>
        </rect>
@@ -525,7 +575,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>220</y>
+        <y>230</y>
         <width>421</width>
         <height>351</height>
        </rect>
@@ -762,7 +812,7 @@
       <property name="geometry">
        <rect>
         <x>450</x>
-        <y>220</y>
+        <y>230</y>
         <width>481</width>
         <height>351</height>
        </rect>
@@ -958,7 +1008,7 @@
       <property name="geometry">
        <rect>
         <x>430</x>
-        <y>220</y>
+        <y>230</y>
         <width>20</width>
         <height>351</height>
        </rect>
@@ -1013,7 +1063,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>580</y>
+        <y>590</y>
         <width>141</width>
         <height>16</height>
        </rect>
@@ -1048,7 +1098,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>570</y>
+        <y>580</y>
         <width>921</width>
         <height>16</height>
        </rect>

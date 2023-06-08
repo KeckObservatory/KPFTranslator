@@ -10,7 +10,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.scripts import (set_script_keywords, clear_script_keywords,
+                         check_script_running, check_scriptstop)
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
+from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.SetND1 import SetND1
 from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.WaitForCalSource import WaitForCalSource
@@ -18,6 +21,7 @@ from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.SetExpTime import SetExpTime
+from kpf.spectrograph.SetProgram import SetProgram
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.spectrograph.SetTimedShutters import SetTimedShutters
 from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
@@ -51,6 +55,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        set_script_keywords(Path(__file__).name, os.getpid())
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         for key in args:
@@ -61,9 +66,25 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
 
+        # Fill in args in case this is not called by configure for acquisition
+        if args.get('TriggerCaHK', None) is None: args['TriggerCaHK'] = False
+        if args.get('TriggerGreen', None) is None: args['TriggerGreen'] = True
+        if args.get('TriggerRed', None) is None: args['TriggerRed'] = True
+
         # Skip this lamp if it is not enabled
         if IsCalSourceEnabled.execute({'CalSource': calsource}) == False:
             return
+
+        # Set Octagon
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        octagon = ktl.cache('kpfcal', 'OCTAGON').read()
+        log.debug(f"Current OCTAGON = {octagon}, desired = {calsource}")
+        if octagon != calsource:
+            log.info(f"Set CalSource/Octagon: {calsource}")
+            SetCalSource.execute({'CalSource': calsource, 'wait': False})
+
+        progname = ktl.cache('kpfexpose', 'PROGNAME')
+        original_progname = progname.read()
 
         ## ----------------------------------------------------------------
         ## First, configure lamps and cal bench (may happen during readout)
@@ -111,7 +132,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         args['TimedShutter_Scrambler'] = True
         log.debug(f"Automatically setting TimedShutter_Scrambler: {args['TimedShutter_Scrambler']}")
         # No need to specify TimedShutter_CaHK
-        args['TimedShutter_CaHK'] = args['TriggerCaHK']
+        args['TimedShutter_CaHK'] = args.get('TriggerCaHK', False)
         log.debug(f"Automatically setting TimedShutter_CaHK: {args['TimedShutter_CaHK']}")
         # No need to specify TimedShutter_FlatField
         args['TimedShutter_FlatField'] = False
@@ -125,6 +146,8 @@ class ExecuteSlewCal(KPFTranslatorFunction):
                        'Parallax': 0, 'RadialVelocity': 0,
                        'Gmag': '', 'Jmag': '', 'Teff': 45000}
         SetTargetInfo.execute(target_info)
+        log.info('Setting PROGNAME to ENG')
+        SetProgram.execute({'progname': 'ENG'})
 
         ## ----------------------------------------------------------------
         ## Third, take actual exposures
@@ -148,6 +171,14 @@ class ExecuteSlewCal(KPFTranslatorFunction):
             if runagitator is True:
                 StopAgitator.execute({})
             ZeroOutSlewCalTime.execute({})
+
+        # Set FIU Mode
+        log.info('Setting FIU mode to Observing')
+        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+        # Set PROGNAME
+        log.info(f'Setting PROGNAME back to {original_progname}')
+        SetProgram.execute({'progname': original_progname})
+        clear_script_keywords()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

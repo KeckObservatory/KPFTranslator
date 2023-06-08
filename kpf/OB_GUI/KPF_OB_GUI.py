@@ -1,5 +1,6 @@
 #!/kroot/rel/default/bin/kpython3
 import sys
+import traceback
 import time
 from pathlib import Path
 import logging
@@ -19,6 +20,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
 
 from kpf.utils import BuildOBfromQuery, SetObserverFromSchedule
 from kpf.spectrograph import SetProgram
+from kpf.utils import SendEmail
 
 
 ##-------------------------------------------------------------------------
@@ -62,7 +64,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, *args, **kwargs)
         ui_file = Path(__file__).parent / 'KPF_OB_GUI.ui'
         uic.loadUi(f"{ui_file}", self)
-        self.log = create_GUI_log()
+        self.log = log
         self.log.debug('Initializing MainWindow')
         # Initial OB settings
         self.name_query_text = ''
@@ -180,6 +182,8 @@ class MainWindow(QMainWindow):
         green_enabled_kw.stringCallback.connect(self.update_green_enabled)
         red_enabled_kw = kPyQt.kFactory(self.kpfconfig['RED_ENABLED'])
         red_enabled_kw.stringCallback.connect(self.update_red_enabled)
+        expmeter_enabled_kw = kPyQt.kFactory(self.kpfconfig['EXPMETER_ENABLED'])
+        expmeter_enabled_kw.stringCallback.connect(self.update_expmeter_enabled)
 
         ##----------------------
         ## Construct OB
@@ -209,10 +213,23 @@ class MainWindow(QMainWindow):
         self.write_to_file_btn.clicked.connect(self.run_write_to_file)
 
         self.executeOB = self.findChild(QPushButton, 'executeOB')
+        self.executeOB_tooltip = "Execute the OB as defined in the fields below"
+        self.executeOB.setToolTip(self.executeOB_tooltip)
         self.executeOB.clicked.connect(self.run_executeOB)
 
         self.executeOB_slewcal = self.findChild(QPushButton, 'executeOB_slewcal')
+        self.executeOB_slewcal_tooltip = "Execute a quick calibration, then the OB as defined in the fields below"
+        self.executeOB_slewcal.setToolTip(self.executeOB_slewcal_tooltip)
         self.executeOB_slewcal.clicked.connect(self.run_executeOB_slewcal)
+
+        self.collect_guider_cube = self.findChild(QPushButton, 'collect_guider_cube')
+        self.collect_guider_cube.clicked.connect(self.run_collect_guider_cube)
+
+        self.execute_slewcal_only = self.findChild(QPushButton, 'execute_slewcal_only')
+        self.execute_slewcal_only_tooltip = "Execute a quick calibration without triggering OB"
+        self.execute_slewcal_only.setToolTip(self.execute_slewcal_only_tooltip)
+        self.execute_slewcal_only.clicked.connect(self.run_execute_slewcal_only)
+
 
         ##----------------------
         ## OB Contents
@@ -378,22 +395,35 @@ class MainWindow(QMainWindow):
         if value == 'Yes':
             self.scriptstop_value.setStyleSheet("color:red")
             self.scriptstop_btn.setText('CLEAR STOP')
+            msg = 'Disabled because STOP has been requested.'
+            self.executeOB.setEnabled(False)
+            self.executeOB.setToolTip(msg)
+            self.executeOB_slewcal.setEnabled(False)
+            self.executeOB_slewcal.setToolTip(msg)
+            self.execute_slewcal_only.setEnabled(False)
+            self.execute_slewcal_only.setToolTip(msg)
         elif value == 'No':
             self.scriptstop_value.setStyleSheet("color:green")
-            self.scriptstop_btn.setText('Request STOP After Exposure')
+            self.scriptstop_btn.setText('Request Script STOP')
+            self.executeOB.setEnabled(True)
+            self.executeOB.setToolTip(self.executeOB_tooltip)
+            self.executeOB_slewcal.setEnabled(True)
+            self.executeOB_slewcal.setToolTip(self.executeOB_slewcal_tooltip)
+            self.execute_slewcal_only.setEnabled(True)
+            self.execute_slewcal_only.setToolTip(self.execute_slewcal_only_tooltip)
 
     def set_scriptstop(self, value):
-        self.log.debug(f'set_scriptstop: {value}')
+        self.log.debug(f'button clicked set_scriptstop: {value}')
         current_kw_value = self.kpfconfig['SCRIPTSTOP'].read()
         if current_kw_value == 'Yes':
             self.kpfconfig['SCRIPTSTOP'].write('No')
             self.scriptstop_btn.setText('CLEAR STOP')
         elif current_kw_value == 'No':
             self.kpfconfig['SCRIPTSTOP'].write('Yes')
-            self.scriptstop_btn.setText('Request STOP After Exposure')
+            self.scriptstop_btn.setText('Request Script STOP')
 
     def do_fullstop(self, value):
-        self.log.warning(f"do_fullstop: {value}")
+        self.log.warning(f"button clicked do_fullstop: {value}")
         fullstop_popup = QMessageBox()
         fullstop_popup.setWindowTitle('Full Stop Confirmation')
         msg = ["Do you wish to stop the current exposure and script?",
@@ -408,6 +438,9 @@ class MainWindow(QMainWindow):
     def fullstop_popup_clicked(self, i):
         self.log.debug(f"fullstop_popup_clicked: {i.text()}")
         if i.text() == '&Yes':
+            # Set SCRIPTSTOP
+            self.kpfconfig['SCRIPTSTOP'].write('Yes')
+            self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
             # Stop current exposure
             if self.kpfexpose['EXPOSE'].read() == 'InProgress':
                 self.kpfexpose['EXPOSE'].write('End')
@@ -415,10 +448,6 @@ class MainWindow(QMainWindow):
                 self.log.debug('Waiting for kpfexpose.EXPOSE to be Readout')
                 readout = self.kpfexpose['EXPOSE'].waitFor("=='Readout'", timeout=10)
                 self.log.debug(f"Reached readout? {readout}")
-            # Set SCRIPTSTOP
-            self.kpfconfig['SCRIPTSTOP'].write('Yes')
-            self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
-            self.scriptstop_btn.setText('Request STOP After Exposure')
         else:
             self.log.debug('Confirmation is no, not stopping script')
 
@@ -458,7 +487,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_ca_hk_enabled: {value}")
         if value in ['Yes', True]:
             if 'Ca_HK' in self.disabled_detectors:
-                self.disabled_detectors.pop('Ca_HK')
+                self.disabled_detectors.pop(self.disabled_detectors.index('Ca_HK'))
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'Ca_HK' not in self.disabled_detectors:
@@ -469,7 +498,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_green_enabled: {value}")
         if value in ['Yes', True]:
             if 'Green' in self.disabled_detectors:
-                self.disabled_detectors.pop('Green')
+                self.disabled_detectors.pop(self.disabled_detectors.index('Green'))
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'Green' not in self.disabled_detectors:
@@ -480,11 +509,22 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_red_enabled: {value}")
         if value in ['Yes', True]:
             if 'Red' in self.disabled_detectors:
-                self.disabled_detectors.pop('Red')
+                self.disabled_detectors.pop(self.disabled_detectors.index('Red'))
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'Red' not in self.disabled_detectors:
                 self.disabled_detectors.append('Red')
+                self.update_disabled_detectors_value()
+
+    def update_expmeter_enabled(self, value):
+        self.log.debug(f"update_expmeter_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'ExpMeter' in self.disabled_detectors:
+                self.disabled_detectors.pop(self.disabled_detectors.index('ExpMeter'))
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'ExpMeter' not in self.disabled_detectors:
+                self.disabled_detectors.append('ExpMeter')
                 self.update_disabled_detectors_value()
 
     def update_disabled_detectors_value(self):
@@ -816,7 +856,7 @@ class MainWindow(QMainWindow):
                 self.star_list_line.setText(msg)
 
     ##-------------------------------------------
-    ## Methods relating to executing an OB
+    ## Execute an OB (with or without slewcal)
     ##-------------------------------------------
     def run_executeOB(self):
         self.log.debug(f"run_executeOB")
@@ -880,10 +920,90 @@ class MainWindow(QMainWindow):
                '-e', f'{RunSciOB_cmd}']
         proc = subprocess.Popen(cmd)
 
+    ##-------------------------------------------
+    ## Execute a Slewcal Only
+    ##-------------------------------------------
+    def run_execute_slewcal_only(self):
+        self.log.debug(f"run_executeOB")
+        run_execute_slewcal_only_popup = QMessageBox()
+        run_execute_slewcal_only_popup.setWindowTitle('Run Slew Cal Confirmation')
+        msg = ["Do you really want to run a slew cal?",
+               "",
+               "This will take approximately a few minutes to complete",
+               "and will block other operations during that time."]
+        run_execute_slewcal_only_popup.setText("\n".join(msg))
+        run_execute_slewcal_only_popup.setIcon(QMessageBox.Critical)
+        run_execute_slewcal_only_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
+        run_execute_slewcal_only_popup.buttonClicked.connect(self.run_execute_slewcal_only_popup_clicked)
+        run_execute_slewcal_only_popup.exec_()
+
+    def run_execute_slewcal_only_popup_clicked(self, i):
+        self.log.debug(f"run_execute_slewcal_only_popup_clicked: {i.text()}")
+        if i.text() == '&Yes':
+            self.log.info('Beginning slew cal')
+            self.do_execute_slewcal_only()
+        else:
+            self.log.debug('Not executing slew cal')
+
+    def do_execute_slewcal_only(self):
+        self.log.debug(f"execute_slewcal_only")
+        slewcal_file = self.kpfconfig['SLEWCALFILE'].read()
+        execute_slewcal_only_cmd = f'kpfdo ExecuteSlewCal -f {slewcal_file} ; echo "Done!" ; sleep 20'
+        self.log.debug(f'Executing: {execute_slewcal_only_cmd}')
+        # Pop up an xterm with the script running
+        cmd = ['xterm', '-title', 'ExecuteSlewCal', '-name', 'ExecuteSlewCal',
+               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+               '-e', f'{execute_slewcal_only_cmd}']
+        proc = subprocess.Popen(cmd)
+
+
+    ##-------------------------------------------
+    ## Collect a Guider Cube
+    ##-------------------------------------------
+    def run_collect_guider_cube(self):
+        self.log.debug(f"run_collect_guider_cube")
+        run_collect_guider_cube_popup = QMessageBox()
+        run_collect_guider_cube_popup.setWindowTitle('Run Collect Guider Cube Confirmation')
+        msg = ["Do you really want to collect a guider cube?",
+               "",
+               "This will take approximately 1 minute to complete",
+               "and will block other operations during that time."]
+        run_collect_guider_cube_popup.setText("\n".join(msg))
+        run_collect_guider_cube_popup.setIcon(QMessageBox.Critical)
+        run_collect_guider_cube_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
+        run_collect_guider_cube_popup.buttonClicked.connect(self.run_collect_guider_cube_popup_clicked)
+        run_collect_guider_cube_popup.exec_()
+
+    def run_collect_guider_cube_popup_clicked(self, i):
+        self.log.debug(f"run_collect_guider_cube_popup_clicked: {i.text()}")
+        if i.text() == '&Yes':
+            self.log.info('Beginning guide cube collection')
+            self.do_collect_guider_cube()
+        else:
+            self.log.debug('Not executing guide cube collection')
+
+    def do_collect_guider_cube(self):
+        self.log.debug(f"collect_guider_cube")
+        collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 30 ; echo "Done!" ; sleep 10'
+        # Pop up an xterm with the script running
+        cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
+               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+               '-e', f'{collect_guider_cube_cmd}']
+        proc = subprocess.Popen(cmd)
+        targname = kpt.cache('dcs1', 'TARGNAME')
+        SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
+                           'Subject': f"TakeGuiderCube executed",
+                           'Message': f"TARGNAME={targname.read()}"})
 
 # end of class MainWindow
 
 
 if __name__ == '__main__':
+    log = create_GUI_log()
+    log.info(f"Starting KPF OB GUI")
     status = main()
+    log.info(f"Exiting KPF OB GUI: Status={status}")
+    if status != 0:
+        log.error(traceback.format_exc())
     sys.exit(status)
+
