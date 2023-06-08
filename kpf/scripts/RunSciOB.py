@@ -57,9 +57,6 @@ class RunSciOB(KPFTranslatorFunction):
         ConfigureForAcquisition.execute(OB)
         WaitForConfigureAcquisition.execute(OB)
 
-        check_script_running()
-        set_script_keywords(Path(__file__).name, os.getpid())
-
         check_scriptstop()
 
         log.debug('Asking for user input')
@@ -80,6 +77,9 @@ class RunSciOB(KPFTranslatorFunction):
         log.info(f"Configuring for Science")
         ConfigureForScience.execute(OB)
         WaitForConfigureScience.execute(OB)
+
+        check_script_running()
+        set_script_keywords(Path(__file__).name, os.getpid())
 
         # Execute the Cal Sequence
         #   Wrap in try/except so that cleanup happens
