@@ -175,8 +175,10 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
         hdul = fits.open(onedspecfile)
         onedspec_table = Table(hdul[1].data)
         if wavs is None:
-            wavs_strings = [k for k in onedspec_table.keys() if k not in ['Date-Beg', 'Date-End']]
-            wavs = [float(k) for k in onedspec_table.keys() if k not in ['Date-Beg', 'Date-End']]
+            wavs_strings = [k for k in onedspec_table.keys() if re.match('[\d\.]+', k.strip()) is not None]
+#             wavs_strings = [k for k in onedspec_table.keys() if k not in ['Date-Beg', 'Date-End']]
+#             wavs = [float(k) for k in onedspec_table.keys() if k not in ['Date-Beg', 'Date-End']]
+            wavs = [float(k) for k in wavs_strings]
             dwav = [wav-wavs[i-1] for i,wav in enumerate(wavs) if i>0]
             nwav = len(wavs)
             spec_cube = np.zeros((nwav,ny,nx))
