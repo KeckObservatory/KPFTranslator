@@ -117,6 +117,8 @@ class ExecuteCal(KPFTranslatorFunction):
                     SetLFCtoAstroComb.execute({})
                 except:
                     log.error('Failed to set LFC to AstroComb')
+                    log.info('Commanding LFC back to Standby High')
+                    SetLFCtoStandbyHigh.execute({})
                     return
             # Take intensity monitor reading
             if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
