@@ -75,7 +75,7 @@ class CalculateDAR(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        dcs = ktl.cache('dcs')
+        dcs = ktl.cache('dcs1')
         EL = dcs['EL'].read(binary=True)*180/np.pi
         DARarcsec = calculate_DAR_arcsec(EL)
         log.info(f"Calculated DAR for {EL:.1f} EL = {DARarcsec:.3f} arcsec")

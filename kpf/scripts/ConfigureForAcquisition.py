@@ -68,7 +68,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        dcs = ktl.cache('dcs')
         kpfconfig = ktl.cache('kpfconfig')
         kpf_expmeter = ktl.cache('kpf_expmeter')
 

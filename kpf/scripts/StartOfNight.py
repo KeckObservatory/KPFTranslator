@@ -73,7 +73,7 @@ class StartOfNight(KPFTranslatorFunction):
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
         # Set DCS rotator parameters
-        dcs = ktl.cache('dcs')
+        dcs = ktl.cache('dcs1')
         inst = dcs['INSTRUME'].read()
         if inst == 'KPF':
             log.info(f"Setting dcs.ROTDEST = 0")
