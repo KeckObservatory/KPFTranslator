@@ -215,7 +215,7 @@ class ExecuteCal(KPFTranslatorFunction):
         ## Take actual exposures
         ## ----------------------------------------------------------------
         WaitForLampWarm.execute(args)
-        nexp = args.get('nExp', 1)
+        nexp = int(args.get('nExp', 1))
         for j in range(nexp):
             check_scriptstop() # Stop here if requested
             # Wait for current exposure to readout
