@@ -61,7 +61,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         now = Time.now()
         now.location = keck
         lst = now.sidereal_time('apparent')
-	if lst.value > 0.0 and lst.value < 23.99:
+    if lst.value > 0.0 and lst.value < 23.99:
             targname = "3651"
        # if lst.value > 14.3 and lst.value < 20.3:
        #     targname = "157347"
