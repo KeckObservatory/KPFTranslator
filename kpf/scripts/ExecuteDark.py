@@ -51,13 +51,13 @@ class ExecuteDark(KPFTranslatorFunction):
             log.info(f"Waiting for kpfexpose to be Ready")
             WaitForReady.execute({})
             log.info(f"Readout complete")
-            sleep(archon_time_shim)
         check_scriptstop() # Stop here if requested
         log.info(f"Setting OBJECT: {args.get('Object')}")
         SetObject.execute(args)
         log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
         SetExpTime.execute(args)
         nexp = args.get('nExp', 1)
+        exptime = float(args.get('ExpTime'))
         for j in range(nexp):
             check_scriptstop() # Stop here if requested
             # Wait for current exposure to readout
@@ -65,7 +65,9 @@ class ExecuteDark(KPFTranslatorFunction):
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
-                sleep(archon_time_shim)
+                if exptime < 2:
+                    log.debug(f'Sleep {archon_time_shim:.1f}s for temperature reading')
+                    sleep(archon_time_shim)
                 check_scriptstop() # Stop here if requested
             # Start next exposure
             log.info(f"Starting exposure {j+1}/{nexp} ({args.get('Object')})")

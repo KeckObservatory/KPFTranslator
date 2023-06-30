@@ -182,7 +182,6 @@ class ExecuteCal(KPFTranslatorFunction):
             log.info(f"Waiting for kpfexpose to be Ready")
             WaitForReady.execute({})
             log.info(f"Readout complete")
-            sleep(archon_time_shim)
             check_scriptstop() # Stop here if requested
         log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
         SetExpTime.execute(args)
@@ -216,6 +215,7 @@ class ExecuteCal(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         WaitForLampWarm.execute(args)
         nexp = int(args.get('nExp', 1))
+        exptime = float(args.get('ExpTime'))
         for j in range(nexp):
             check_scriptstop() # Stop here if requested
             # Wait for current exposure to readout
@@ -223,7 +223,9 @@ class ExecuteCal(KPFTranslatorFunction):
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
-                sleep(archon_time_shim)
+                if exptime < 2:
+                    log.debug(f'Sleep {archon_time_shim:.1f}s for temperature reading')
+                    sleep(archon_time_shim)
                 check_scriptstop() # Stop here if requested
             # Check LFC if it is the source
             if calsource == 'LFCFiber':

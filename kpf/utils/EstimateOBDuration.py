@@ -98,7 +98,7 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
                     print(f"  {lamp} warm up {warm_up_wait/60:.0f} min")
                     duration += warm_up_wait
                 lamps_that_need_warmup.pop(lamps_that_need_warmup.index(lamp))
-            duration += cal['nExp']*cal['ExpTime']
+            duration += cal['nExp']*max([cal['ExpTime'], archon_time_shim])
             duration += cal['nExp']*readout
 
         print(f"{duration/60:.0f} min")
