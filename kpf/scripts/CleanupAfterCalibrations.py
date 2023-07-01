@@ -63,6 +63,7 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
                                 'BrdbandFiber', 'WideFlat']:
                         CalLampPower.execute({'lamp': lamp, 'power': 'off'})
 
+        kpfconfig = ktl.cache('kpfconfig')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         if runagitator is True:
             StopAgitator.execute({})
