@@ -54,8 +54,9 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         if OB.get('leave_lamps_on', False) == True:
             log.info('Not turning lamps off because command line option was invoked')
         else:
-            sequence = OB.get('SEQ_Calibrations')
-            lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
+            sequence = OB.get('SEQ_Calibrations', None)
+            lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])\
+                    if sequence is not None else []
             for lamp in lamps:
                 if IsCalSourceEnabled.execute({'CalSource': lamp}) == True:
                     if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
