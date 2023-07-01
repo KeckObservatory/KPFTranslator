@@ -63,7 +63,9 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
                                 'BrdbandFiber', 'WideFlat']:
                         CalLampPower.execute({'lamp': lamp, 'power': 'off'})
 
-        StopAgitator.execute({})
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        if runagitator is True:
+            StopAgitator.execute({})
 
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})

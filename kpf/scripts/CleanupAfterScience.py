@@ -29,9 +29,11 @@ class CleanupAfterScience(KPFTranslatorFunction):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
-        # Turn off tip tilt
         StopTipTilt.execute({})
-        StopAgitator.execute({})
+
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        if runagitator is True:
+            StopAgitator.execute({})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
