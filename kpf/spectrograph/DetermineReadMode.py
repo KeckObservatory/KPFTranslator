@@ -15,10 +15,12 @@ class DetermineReadMode(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        kpgreen = ktl.cache('kpfgreen')
+        kpfgreen = ktl.cache('kpfgreen')
         kpfred = ktl.cache('kpfred')
         green_ACF = kpfgreen['ACF'].read()
         red_ACF = kpfred['ACF'].read()
+        log.debug(f"Green ACF File: {green_ACF}")
+        log.debug(f"Red ACF File: {red_ACF}")
 
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')
@@ -32,6 +34,7 @@ class DetermineReadMode(KPFTranslatorFunction):
         else:
             mode = 'unknown'
 
+        log.info(f"Read mode is {mode}")
         return mode
 
     @classmethod
