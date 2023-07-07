@@ -27,6 +27,16 @@ class EstimateOBDuration(KPFTranslatorFunction):
     def post_condition(cls, OB, logger, cfg):
         pass
 
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument('--fast', '--fastread',
+                            dest="fast",
+                            default=False, action="store_true",
+                            help='Use fast readout mode times for estimate?')
+        return super().add_cmdline_args(parser, cfg)
+
 
 ##-----------------------------------------------------------------------------
 ## EstimateCalOBDuration
@@ -41,11 +51,13 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, OB, logger, cfg):
+        fast = '' if OB.get('fast', False) is False else '_fast'
+
         duration = 0
         readout_red = 0 if OB['TriggerRed'] == False else\
-                      cfg.getfloat('time_estimates', 'readout_red', fallback=60)
+                      cfg.getfloat('time_estimates', f'readout_red{fast}', fallback=60)
         readout_green = 0 if OB['TriggerGreen'] == False else\
-                        cfg.getfloat('time_estimates', 'readout_green', fallback=60)
+                        cfg.getfloat('time_estimates', f'readout_green{fast}', fallback=60)
         readout_cahk = 0 if OB['TriggerCaHK'] == False else\
                        cfg.getfloat('time_estimates', 'readout_cahk', fallback=1)
         readout = max([readout_red, readout_green, readout_cahk])
@@ -122,10 +134,12 @@ class EstimateSciOBDuration(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, OB, logger, cfg):
+        fast = '' if OB.get('fast', False) is False else '_fast'
+
         readout_red = 0 if OB['TriggerRed'] == False else\
-                      cfg.getfloat('time_estimates', 'readout_red', fallback=60)
+                      cfg.getfloat('time_estimates', f'readout_red{fast}', fallback=60)
         readout_green = 0 if OB['TriggerGreen'] == False else\
-                        cfg.getfloat('time_estimates', 'readout_green', fallback=60)
+                        cfg.getfloat('time_estimates', f'readout_green{fast}', fallback=60)
         readout_cahk = 0 if OB['TriggerCaHK'] == False else\
                        cfg.getfloat('time_estimates', 'readout_cahk', fallback=1)
         readout = max([readout_red, readout_green, readout_cahk])
