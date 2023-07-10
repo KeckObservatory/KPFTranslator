@@ -19,7 +19,6 @@ class QueryFastReadMode(KPFTranslatorFunction):
         kpfred = ktl.cache('kpfred')
         green_ACF = kpfgreen['ACF'].read()
         red_ACF = kpfred['ACF'].read()
-        log.debug(f"Green/Red ACF Files: {green_ACF}/{red_ACF}")
 
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')
@@ -33,7 +32,7 @@ class QueryFastReadMode(KPFTranslatorFunction):
         else:
             mode = 'unknown'
 
-        log.debug(f"Read mode is {mode}")
+        log.debug(f"ACF Files: {green_ACF}/{red_ACF} mode is {mode}")
         return mode == 'fast'
 
     @classmethod
