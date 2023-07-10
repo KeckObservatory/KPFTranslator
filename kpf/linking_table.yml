@@ -189,8 +189,8 @@ links:
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
     # Spectrograph
-    DetermineReadMode:
-        cmd: spectrograph.DetermineReadMode.DetermineReadMode
+    QueryFastReadMode:
+        cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
     ResetGreenDetector:
         cmd: spectrograph.ResetDetectors.ResetGreenDetector
     ResetRedDetector:

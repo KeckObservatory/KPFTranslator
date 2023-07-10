@@ -6,7 +6,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class DetermineReadMode(KPFTranslatorFunction):
+class QueryFastReadMode(KPFTranslatorFunction):
     '''
     '''
     @classmethod
@@ -19,8 +19,7 @@ class DetermineReadMode(KPFTranslatorFunction):
         kpfred = ktl.cache('kpfred')
         green_ACF = kpfgreen['ACF'].read()
         red_ACF = kpfred['ACF'].read()
-        log.debug(f"Green ACF File: {green_ACF}")
-        log.debug(f"Red ACF File: {red_ACF}")
+        log.debug(f"Green/Red ACF Files: {green_ACF}/{red_ACF}")
 
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')
@@ -34,8 +33,8 @@ class DetermineReadMode(KPFTranslatorFunction):
         else:
             mode = 'unknown'
 
-        log.info(f"Read mode is {mode}")
-        return mode
+        log.debug(f"Read mode is {mode}")
+        return mode == 'fast'
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
