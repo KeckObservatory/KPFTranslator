@@ -17,6 +17,7 @@ from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.StopAgitator import StopAgitator
 from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.utils.SetTargetInfo import SetTargetInfo
 
 
 class CleanupAfterCalibrations(KPFTranslatorFunction):
@@ -75,6 +76,9 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         log.info('Waiting for readout to finish')
         WaitForReady.execute({})
         SetObject.execute({'Object': ''})
+
+        # Clear target info
+        SetTargetInfo.execute({})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

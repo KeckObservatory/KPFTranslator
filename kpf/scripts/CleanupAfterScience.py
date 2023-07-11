@@ -9,6 +9,7 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.fiu.StopTipTilt import StopTipTilt
 from kpf.spectrograph.StopAgitator import StopAgitator
+from kpf.utils.SetTargetInfo import SetTargetInfo
 
 
 class CleanupAfterScience(KPFTranslatorFunction):
@@ -37,6 +38,9 @@ class CleanupAfterScience(KPFTranslatorFunction):
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         if runagitator is True:
             StopAgitator.execute({})
+
+        # Clear target info
+        SetTargetInfo.execute({})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
