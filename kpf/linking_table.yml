@@ -205,6 +205,10 @@ links:
         cmd: spectrograph.SetObserver.SetObserver
     SetProgram:
         cmd: spectrograph.SetProgram.SetProgram
+    SetReadModeFast:
+        cmd: spectrograph.SetReadModeFast.SetReadModeFast
+    SetReadModeNormal:
+        cmd: spectrograph.SetReadModeNormal.SetReadModeNormal
     SetSourceSelectShutters:
         cmd: spectrograph.SetSourceSelectShutters.SetSourceSelectShutters
     SetTimedShutters:
