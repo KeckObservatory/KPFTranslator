@@ -47,7 +47,7 @@ GUI_list = [
              'position': '0,1,55,1800,900'},
             # Telstatus
             {'name': 'MAGIQ - Observer UI',
-             'cmd':  ['ssh', '-X', 'k1ruts@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
+             'cmd':  ['ssh', '-X', 'k1obstcs@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
              'display': 'telstatus',
              'position': '0,1225,10,-1,-1'},
             {'name': 'KECK 1 FACSUM',
