@@ -93,6 +93,7 @@ class ExecuteCal(KPFTranslatorFunction):
             FF_FiberPos = args.get('FF_FiberPos', None)
             SetFlatFieldFiberPos.execute({'FF_FiberPos': FF_FiberPos,
                                           'wait': False})
+            SetTargetInfo.execute({})
             log.info(f"Waiting for Octagon/CalSource, FF_FiberPos, FIU")
             WaitForCalSource.execute({'CalSource': 'Home'})
             WaitForFlatFieldFiberPos.execute(args)
@@ -105,6 +106,7 @@ class ExecuteCal(KPFTranslatorFunction):
             log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
             SetND1.execute({'CalND1': nd1, 'wait': False})
             SetND2.execute({'CalND2': nd2, 'wait': False})
+            SetTargetInfo.execute({})
             log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
             WaitForND1.execute(args)
             WaitForND2.execute(args)
