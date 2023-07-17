@@ -6,6 +6,32 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
+class ResetCaHKDetector(KPFTranslatorFunction):
+    '''Resets the Ca HK detector by aborting the exposure
+
+    ARGS: None
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        expose = ktl.cache('kpf_hk', 'EXPOSE')
+        log.warning(f"Resetting/Aborting: kpf_hk.EXPOSE = abort")
+        expose.write('abort')
+        log.debug('Reset/abort command sent')
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        expstate = ktl.cache('kpf_hk', 'EXPSTATE')
+        timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
+        log.warning(f"Waiting for kpf_hk to be Ready")
+        success = expstate.waitFor('=="Ready"', timeout=timeout)
+        if success is not True:
+            raise FailedToReachDestination(expstate.read(), 'Ready')
+
+
 class ResetGreenDetector(KPFTranslatorFunction):
     '''Resets the kpfgreen detector
 

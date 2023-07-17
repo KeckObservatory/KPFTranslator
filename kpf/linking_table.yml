@@ -191,6 +191,8 @@ links:
     # Spectrograph
     QueryFastReadMode:
         cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
+    ResetCaHKDetector:
+        cmd: spectrograph.ResetDetectors.ResetCaHKDetector
     ResetGreenDetector:
         cmd: spectrograph.ResetDetectors.ResetGreenDetector
     ResetRedDetector:
