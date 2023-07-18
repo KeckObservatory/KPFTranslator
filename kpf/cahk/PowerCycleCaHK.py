@@ -6,6 +6,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input, LostTipTiltStar)
+from kpf.spectrograph.ResetCaHKDetector import ResetCaHKDetector
 
 
 class PowerCycleCaHK(KPFTranslatorFunction):
@@ -57,6 +58,10 @@ class PowerCycleCaHK(KPFTranslatorFunction):
         log.debug(f"  STDERR: {result.stderr.decode()}")
         if result.returncode != 0:
             raise FailedPostCondition(f"The kpf restart kpf_hk command appears to have failed")
+        time.sleep(10)
+
+        log.warning('Resetting Ca HK')
+        ResetCaHKDetector.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
