@@ -47,7 +47,7 @@ class PowerCycleCaHK(KPFTranslatorFunction):
             kpfpower[f'OUTLET_{outlet_id}'].write('On')
         time.sleep(10)
 
-        log.warning('Resarting kpf_hk keyword service')
+        log.warning('Restarting kpf_hk keyword service')
         cmd = ['kpf', 'restart', 'kpf_hk']
         result = subprocess.run(cmd, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
