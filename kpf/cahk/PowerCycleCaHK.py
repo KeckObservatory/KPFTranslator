@@ -39,11 +39,11 @@ class PowerCycleCaHK(KPFTranslatorFunction):
                    ('J5', 'Andor Newton PS'),
                    ]
         for outlet_id, outlet_name in outlets:
-            log.debug(f"Powering off {outlet_id}: {outlet_name}")
+            log.info(f"Powering off {outlet_id}: {outlet_name}")
             kpfpower[f'OUTLET_{outlet_id}'].write('Off')
         time.sleep(10)
         for outlet_id, outlet_name in outlets:
-            log.debug(f"Powering on {outlet_id}: {outlet_name}")
+            log.info(f"Powering on {outlet_id}: {outlet_name}")
             kpfpower[f'OUTLET_{outlet_id}'].write('On')
         time.sleep(10)
 
