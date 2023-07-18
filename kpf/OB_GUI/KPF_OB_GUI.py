@@ -262,6 +262,7 @@ class MainWindow(QMainWindow):
         self.execute_slewcal_only.setToolTip(self.execute_slewcal_only_tooltip)
         self.execute_slewcal_only.clicked.connect(self.run_execute_slewcal_only)
 
+        self.OBDuration = self.findChild(QLabel, 'OBDuration')
 
         ##----------------------
         ## Science OB Tab
@@ -901,16 +902,21 @@ class MainWindow(QMainWindow):
             self.GuideFPS.setText(f"{value}")
         elif key == 'TriggerCaHK':
             self.TriggerCaHK.setChecked(value)
+            self.estimate_OB_duration()
         elif key == 'TriggerGreen':
             self.TriggerGreen.setChecked(value)
+            self.estimate_OB_duration()
         elif key == 'TriggerRed':
             self.TriggerRed.setChecked(value)
+            self.estimate_OB_duration()
         elif key == 'Object':
             self.ObjectEdit.setText(f"{value}")
         elif key == 'nExp':
             self.nExpEdit.setText(f"{value}")
+            self.estimate_OB_duration()
         elif key == 'ExpTime':
             self.ExpTimeEdit.setText(f"{value}")
+            self.estimate_OB_duration()
         elif key == 'ExpMeterMode':
             self.ExpMeterMode.setCurrentText(value)
         elif key == 'AutoExpMeter':
@@ -1034,6 +1040,22 @@ class MainWindow(QMainWindow):
                 self.other_names.setText('')
                 msg = 'Unable to form star list line without Gaia coordinates'
                 self.star_list_line.setText(msg)
+
+    def estimate_OB_duration(self):
+        log.debug(f"Estimating OB duration")
+        OB_for_calc = deepcopy(self.OB)
+        OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
+        OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
+#         if len(OB_for_calc['SEQ_Darks']) > 2:
+#             OB_for_calc['SEQ_Darks'] = OB_for_calc['SEQ_Darks'][:2]
+#         if self.dark_seq2_enabled is False and len(OB_for_calc['SEQ_Darks']) == 2:
+#             OB_for_calc['SEQ_Darks'].pop(1)
+#         if self.dark_seq1_enabled is False and len(OB_for_calc['SEQ_Darks']) >= 1:
+#             OB_for_calc['SEQ_Darks'].pop(0)
+#         if self.cal_seq1_enabled is False and len(OB_for_calc['SEQ_Calibrations']) >= 1:
+#             OB_for_calc['SEQ_Calibrations'].pop(0)
+        duration = EstimateSciOBDuration.execute(OB_for_calc)
+        self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
 
     ##-------------------------------------------
     ## Execute an OB (with or without slewcal)
@@ -1431,8 +1453,7 @@ class MainWindow(QMainWindow):
         if self.cal_seq1_enabled is False and len(OB_for_calc['SEQ_Calibrations']) >= 1:
             OB_for_calc['SEQ_Calibrations'].pop(0)
         duration = EstimateCalOBDuration.execute(OB_for_calc)
-        self.CalOBDuration.setText(f"{duration/60:.0f} min")
-
+        self.CalOBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
 
     def calOB_to_lines(self):
         lines = [f"# Built using KPF OB GUI tool",
