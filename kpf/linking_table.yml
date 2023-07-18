@@ -28,6 +28,8 @@ links:
     TurnHepaOn:
         cmd: ao.TurnHepaOn.TurnHepaOn
     # CaHK
+    PowerCycleCaHK:
+        cmd: cahk.PowerCycleCaHK.PowerCycleCaHK
     # Cal Bench
     CalLampPower:
         cmd: calbench.CalLampPower.CalLampPower
