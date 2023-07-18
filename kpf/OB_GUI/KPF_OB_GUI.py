@@ -1421,14 +1421,12 @@ class MainWindow(QMainWindow):
 
     def estimate_calOB_duration(self):
         log.debug(f"Estimating OB duration")
-        print(self.calOB)
-        print(self.dark_seq1_enabled, self.dark_seq2_enabled, self.cal_seq1_enabled)
         OB_for_calc = deepcopy(self.calOB)
         if len(OB_for_calc['SEQ_Darks']) > 2:
             OB_for_calc['SEQ_Darks'] = OB_for_calc['SEQ_Darks'][:2]
         if self.dark_seq2_enabled is False and len(OB_for_calc['SEQ_Darks']) == 2:
             OB_for_calc['SEQ_Darks'].pop(1)
-        if self.dark_seq2_enabled is False and len(OB_for_calc['SEQ_Darks']) >= 1:
+        if self.dark_seq1_enabled is False and len(OB_for_calc['SEQ_Darks']) >= 1:
             OB_for_calc['SEQ_Darks'].pop(0)
         if self.cal_seq1_enabled is False and len(OB_for_calc['SEQ_Calibrations']) >= 1:
             OB_for_calc['SEQ_Calibrations'].pop(0)
