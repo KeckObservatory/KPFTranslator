@@ -97,15 +97,15 @@ class MainWindow(QMainWindow):
                       'TriggerRed': True,
                       'TriggerExpMeter': False,
                       'SEQ_Darks': [
-                          {'Object': '',
+                          {'Object': 'bias',
                            'nExp': 1,
                            'ExpTime': 0},
-                          {'Object': '',
+                          {'Object': 'dark',
                            'nExp': 1,
-                           'ExpTime': 0},
+                           'ExpTime': 300},
                        ],
                       'SEQ_Calibrations': [
-                          {'CalSource': None,
+                          {'CalSource': 'EtalonFiber',
                            'Object': '',
                            'CalND1': 'OD 0.1',
                            'CalND2': 'OD 0.1',
@@ -118,9 +118,9 @@ class MainWindow(QMainWindow):
                            'ExpMeterExpTime': 1},
                        ],
                       }
-        self.cal_seq1_enabled = True
         self.dark_seq1_enabled = True
         self.dark_seq2_enabled = False
+        self.cal_seq1_enabled = True
         # Keywords
         self.log.debug('Cacheing keyword services')
         self.kpfconfig = ktl.cache('kpfconfig')
@@ -360,6 +360,13 @@ class MainWindow(QMainWindow):
         ##----------------------
         ## Calibration OB Tab
         ##----------------------
+        ## Export or Execute Cal OB
+        self.write_calOB_to_file = self.findChild(QPushButton, 'write_to_file_btn_for_cal')
+        self.write_calOB_to_file.clicked.connect(self.run_write_calOB_to_file)
+        self.load_calOB_from_file_btn = self.findChild(QPushButton, 'load_from_file_btn_for_cal')
+        self.load_calOB_from_file_btn.clicked.connect(self.run_load_calOB_from_file)
+
+        ## Build Cal OB
         self.TriggerCaHK_cal = self.findChild(QCheckBox, 'TriggerCaHK_cal')
         self.update_calOB('TriggerCaHK', self.calOB.get('TriggerCaHK'))
         self.TriggerCaHK_cal.stateChanged.connect(self.TriggerCaHK_cal_state_change)
@@ -466,16 +473,16 @@ class MainWindow(QMainWindow):
         self.ExpTime_cal_seq1_note = self.findChild(QLabel, 'ExpTime_cal_seq1_note')
 
         self.SSS_Science_cal_seq1 = self.findChild(QCheckBox, 'SSS_Science_cal_seq1')
-        self.update_calOB('cal1_SSS_Science', self.calOB['SEQ_Calibrations'][0]['SSS_Science'])
         self.SSS_Science_cal_seq1.stateChanged.connect(self.SSS_Science_cal_seq1_state_change)
+        self.update_calOB('cal1_SSS_Science', self.calOB['SEQ_Calibrations'][0]['SSS_Science'])
 
         self.SSS_Sky_cal_seq1 = self.findChild(QCheckBox, 'SSS_Sky_cal_seq1')
-        self.update_calOB('cal1_SSS_Sky', self.calOB['SEQ_Calibrations'][0]['SSS_Sky'])
         self.SSS_Sky_cal_seq1.stateChanged.connect(self.SSS_Sky_cal_seq1_state_change)
+        self.update_calOB('cal1_SSS_Sky', self.calOB['SEQ_Calibrations'][0]['SSS_Sky'])
 
         self.TakeSimulCal_cal_seq1 = self.findChild(QCheckBox, 'TakeSimulCal_cal_seq1')
-        self.update_calOB('cal1_TakeSimulCal', self.calOB['SEQ_Calibrations'][0]['TakeSimulCal'])
         self.TakeSimulCal_cal_seq1.stateChanged.connect(self.TakeSimulCal_cal_seq1_state_change)
+        self.update_calOB('cal1_TakeSimulCal', self.calOB['SEQ_Calibrations'][0]['TakeSimulCal'])
 
         self.FF_FiberPos_cal_seq1 = self.findChild(QComboBox, 'FF_FiberPos_cal_seq1')
         self.FF_FiberPos_cal_seq1.addItems(["Blank", "6 mm f/5", "7.5 mm f/4",
@@ -483,6 +490,8 @@ class MainWindow(QMainWindow):
         self.FF_FiberPos_cal_seq1.currentTextChanged.connect(self.set_FF_FiberPos_cal_seq1)
         self.update_calOB('cal1_FF_FiberPos', self.calOB['SEQ_Calibrations'][0]['FF_FiberPos'])
         self.FF_FiberPos_cal_seq1_label = self.findChild(QLabel, 'FF_FiberPos_cal_seq1_label')
+        self.FF_FiberPos_cal_seq1.setEnabled(self.calOB['SEQ_Calibrations'][0]['CalSource'] == 'WideFlat')
+        self.FF_FiberPos_cal_seq1_label.setEnabled(self.calOB['SEQ_Calibrations'][0]['CalSource'] == 'WideFlat')
 
         self.ExpMeterExpTime_cal_seq1 = self.findChild(QLineEdit, 'ExpMeterExpTime_cal_seq1')
         self.ExpMeterExpTime_cal_seq1.textChanged.connect(self.set_ExpMeterExpTime_cal_seq1)
@@ -1177,6 +1186,7 @@ class MainWindow(QMainWindow):
     def enable_dark_seq1_state_change(self, value):
         self.log.debug(f"enable_dark_seq1_state_change: {value} {type(value)}")
         self.dark_seq1_enabled = (int(value) == 2)
+        self.enable_dark_seq1.setChecked(self.dark_seq1_enabled)
         self.Object_dark_seq1.setEnabled(int(value) == 2)
         self.Object_dark_seq1_label.setEnabled(int(value) == 2)
         self.Object_dark_seq1_note.setEnabled(int(value) == 2)
@@ -1202,6 +1212,7 @@ class MainWindow(QMainWindow):
     def enable_dark_seq2_state_change(self, value):
         self.log.debug(f"enable_dark_seq2_state_change: {value} {type(value)}")
         self.dark_seq2_enabled = (int(value) == 2)
+        self.enable_dark_seq2.setChecked(self.dark_seq2_enabled)
         self.Object_dark_seq2.setEnabled(int(value) == 2)
         self.Object_dark_seq2_label.setEnabled(int(value) == 2)
         self.Object_dark_seq2_note.setEnabled(int(value) == 2)
@@ -1227,6 +1238,7 @@ class MainWindow(QMainWindow):
     def enable_cal_seq1_state_change(self, value):
         self.log.debug(f"enable_cal_seq1_state_change: {value} {type(value)}")
         self.cal_seq1_enabled = (int(value) == 2)
+        self.enable_cal_seq1.setChecked(self.cal_seq1_enabled)
         self.Object_cal_seq1.setEnabled(int(value) == 2)
         self.Object_cal_seq1_label.setEnabled(int(value) == 2)
         self.Object_cal_seq1_note.setEnabled(int(value) == 2)
@@ -1305,33 +1317,12 @@ class MainWindow(QMainWindow):
                         'cal1_CalND2', 'cal1_nExp', 'cal1_ExpTime',
                         'cal1_SSS_Science', 'cal1_SSS_Sky', 'cal1_TakeSimulCal',
                         'cal1_FF_FiberPos', 'cal1_ExpMeterExpTime']
-        if key in cal_seq_keys:
-            keyid = int(key[3])
-            calkey = key[5:]
-            self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
-            if keyid == 1 and calkey == 'Object':
-                self.Object_cal_seq1.setText(f"{value}")
-            elif keyid == 1 and calkey == 'CalSource':
-                self.CalSource_cal_seq1.setCurrentText(f"{value}")
-            elif keyid == 1 and calkey == 'CalND1':
-                self.CalND1_cal_seq1.setCurrentText(f"{value}")
-            elif keyid == 1 and calkey == 'CalND2':
-                self.CalND2_cal_seq1.setCurrentText(f"{value}")
-            elif keyid == 1 and calkey == 'nExp':
-                self.nExp_cal_seq1.setText(f"{value}")
-            elif keyid == 1 and calkey == 'ExpTime':
-                self.ExpTime_cal_seq1.setText(f"{value}")
-            elif keyid == 1 and calkey == 'SSS_Science':
-                self.SSS_Science_cal_seq1.setText(f"{value == 2}")
-            elif keyid == 1 and calkey == 'SSS_Sky':
-                self.SSS_Sky_cal_seq1.setText(f"{value == 2}")
-            elif keyid == 1 and calkey == 'TakeSimulCal':
-                self.TakeSimulCal_cal_seq1.setText(f"{value == 2}")
-            elif keyid == 1 and calkey == 'ExpMeterExpTime':
-                self.ExpMeterExpTime_cal_seq1.setText(f"{value}")
         if key in dark_seq_keys:
             keyid = int(key[4])
             darkkey = key[6:]
+            self.log.debug(f"  SEQ_Darks[{keyid-1}]: {darkkey} = {value}")
+            if len(self.calOB['SEQ_Darks']) < keyid+1:
+                self.calOB['SEQ_Darks'].append({})
             self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
             if keyid == 1 and darkkey == 'Object':
                 self.Object_dark_seq1.setText(f"{value}")
@@ -1345,6 +1336,36 @@ class MainWindow(QMainWindow):
                 self.nExp_dark_seq2.setText(f"{value}")
             elif keyid == 2 and darkkey == 'ExpTime':
                 self.ExpTime_dark_seq2.setText(f"{value}")
+        elif key in cal_seq_keys:
+            keyid = int(key[3])
+            calkey = key[5:]
+            self.log.debug(f"  SEQ_Calibrations[{keyid-1}]: {calkey} = {value}")
+            self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
+            if keyid == 1 and calkey == 'Object':
+                self.Object_cal_seq1.setText(f"{value}")
+            elif keyid == 1 and calkey == 'CalSource':
+                self.CalSource_cal_seq1.setCurrentText(f"{value}")
+                self.FF_FiberPos_cal_seq1.setEnabled(value == 'WideFlat')
+                self.FF_FiberPos_cal_seq1_label.setEnabled(value == 'WideFlat')
+            elif keyid == 1 and calkey == 'CalND1':
+                self.CalND1_cal_seq1.setCurrentText(f"{value}")
+            elif keyid == 1 and calkey == 'CalND2':
+                self.CalND2_cal_seq1.setCurrentText(f"{value}")
+            elif keyid == 1 and calkey == 'nExp':
+                self.nExp_cal_seq1.setText(f"{value}")
+            elif keyid == 1 and calkey == 'ExpTime':
+                self.ExpTime_cal_seq1.setText(f"{value}")
+            elif keyid == 1 and calkey == 'SSS_Science':
+                self.SSS_Science_cal_seq1.setChecked(value)
+                self.SSS_Science_cal_seq1.setText(f"{(value in [2, True])}")
+            elif keyid == 1 and calkey == 'SSS_Sky':
+                self.SSS_Sky_cal_seq1.setChecked(value)
+                self.SSS_Sky_cal_seq1.setText(f"{(value in [2, True])}")
+            elif keyid == 1 and calkey == 'TakeSimulCal':
+                self.TakeSimulCal_cal_seq1.setChecked(value)
+                self.TakeSimulCal_cal_seq1.setText(f"{(value in [2, True])}")
+            elif keyid == 1 and calkey == 'ExpMeterExpTime':
+                self.ExpMeterExpTime_cal_seq1.setText(f"{value}")
         else:
             self.calOB[key] = value
 
@@ -1356,8 +1377,164 @@ class MainWindow(QMainWindow):
             self.TriggerRed_cal.setChecked(value)
         elif key == 'TriggerExpMeter':
             self.TriggerExpMeter_cal.setChecked(value)
+            self.ExpMeterExpTime_cal_seq1.setEnabled(value)
+            self.ExpMeterExpTime_cal_seq1_label.setEnabled(value)
+            self.ExpMeterExpTime_cal_seq1_note.setEnabled(value)
 
-        print(self.calOB)
+    def calOB_to_lines(self):
+        lines = [f"# Built using KPF OB GUI tool",
+                 f"Template_Name: kpf_cal",
+                 f"Template_Version: 0.6",
+                 f"",
+                 f"TriggerCaHK: {self.calOB.get('TriggerCaHK')}",
+                 f"TriggerGreen: {self.calOB.get('TriggerGreen')}",
+                 f"TriggerRed: {self.calOB.get('TriggerRed')}",
+                 f"TriggerExpMeter: {self.calOB.get('TriggerExpMeter')}"]
+        if self.dark_seq1_enabled or self.dark_seq2_enabled:
+            lines.append("SEQ_Darks:")
+        if self.dark_seq1_enabled and 'SEQ_Darks' in self.calOB.keys():
+            if len(self.calOB['SEQ_Darks']) > 0:
+                print(self.calOB['SEQ_Darks'][0])
+                lines.append(f"- Object: {self.calOB['SEQ_Darks'][0].get('Object')}")
+                lines.append(f"  nExp: {self.calOB['SEQ_Darks'][0].get('nExp')}")
+                lines.append(f"  ExpTime: {self.calOB['SEQ_Darks'][0].get('ExpTime')}")
+        if self.dark_seq2_enabled and 'SEQ_Darks' in self.calOB.keys():
+            print(len(self.calOB['SEQ_Darks']))
+            if len(self.calOB['SEQ_Darks']) > 1:
+                print(self.calOB['SEQ_Darks'][1])
+                lines.append(f"- Object: {self.calOB['SEQ_Darks'][1].get('Object')}")
+                lines.append(f"  nExp: {self.calOB['SEQ_Darks'][1].get('nExp')}")
+                lines.append(f"  ExpTime: {self.calOB['SEQ_Darks'][1].get('ExpTime')}")
+        if self.cal_seq1_enabled and 'SEQ_Calibrations' in self.calOB.keys():
+            if len(self.calOB['SEQ_Calibrations']) > 0:
+                cal_seq = [f"SEQ_Calibrations:",
+                           f"- CalSource: {self.calOB['SEQ_Calibrations'][0].get('CalSource')}",
+                           f"  Object: {self.calOB['SEQ_Calibrations'][0].get('Object')}",
+                           f"  CalND1: {self.calOB['SEQ_Calibrations'][0].get('CalND1')}",
+                           f"  CalND2: {self.calOB['SEQ_Calibrations'][0].get('CalND2')}",
+                           f"  nExp: {self.calOB['SEQ_Calibrations'][0].get('nExp')}",
+                           f"  ExpTime: {self.calOB['SEQ_Calibrations'][0].get('ExpTime')}",
+                           f"  SSS_Science: {self.calOB['SEQ_Calibrations'][0].get('SSS_Science')}",
+                           f"  SSS_Sky: {self.calOB['SEQ_Calibrations'][0].get('SSS_Sky')}",
+                           f"  TakeSimulCal: {self.calOB['SEQ_Calibrations'][0].get('TakeSimulCal')}",
+                           f"  FF_FiberPos: {self.calOB['SEQ_Calibrations'][0].get('FF_FiberPos')}",
+                           f"  ExpMeterExpTime: {self.calOB['SEQ_Calibrations'][0].get('ExpMeterExpTime')}",
+                           ]
+                lines.extend(cal_seq)
+        for line in lines:
+            print(line)
+        return lines
+
+    def run_write_calOB_to_file(self):
+        self.log.debug(f"run_write_calOB_to_file")
+        result = QFileDialog.getSaveFileName(self, 'Save File',
+                                             f"{self.file_path}",
+                                             "OB Files (*yaml);;All Files (*)")
+        if result:
+            save_file = result[0]
+            if save_file != '':
+                # save fname as path to use in future
+                self.file_path = Path(save_file).parent
+                self.write_calOB_to_this_file(save_file)
+
+    def write_calOB_to_this_file(self, save_file):
+        self.log.debug(f"write_to_this_file: {save_file}")
+        lines = self.calOB_to_lines()
+        with open(save_file, 'w') as f:
+            for line in lines:
+                f.write(line+'\n')
+
+    def run_load_calOB_from_file(self):
+        self.log.debug(f"run_load_calOB_from_file")
+        result = QFileDialog.getOpenFileName(self, "Open Cal OB File",
+                                             f"{self.file_path}",
+                                             "OB Files (*yaml);;All Files (*)")
+        self.log.debug(f'  Got result: {result}')
+        if result:
+            fname = result[0]
+            if fname != '' and Path(fname).exists():
+                self.log.debug(f"  Opening: {fname}")
+                with open(fname, 'r') as f:
+                    contents = yaml.safe_load(f)
+                self.log.debug('  Read in YAML')
+                self.log.debug(contents)
+                if 'SEQ_Darks' in contents.keys():
+                    nDark = len(contents['SEQ_Darks'])
+                    self.enable_dark_seq1_state_change(2 if nDark > 0 else 0)
+                    self.enable_dark_seq2_state_change(2 if nDark > 1 else 0)
+                if 'SEQ_Calibrations' in contents.keys():
+                    nCal = len(contents['SEQ_Calibrations'])
+                    self.enable_cal_seq1_state_change(2 if nCal > 0 else 0)
+                for key in contents:
+                    value = contents[key]
+                    self.log.debug(f"  {key}: {value} ({type(value)})")
+                    if key == 'SEQ_Darks':
+                        if nDark == 1:
+                            for seq_key in value[0]:
+                                seq_value = value[0][seq_key]
+                                self.log.debug(f"  SEQ_Darks1: {seq_key}: {seq_value} ({type(seq_value)})")
+                                self.update_calOB(f"dark1_{seq_key}", seq_value)
+                            
+                        if nDark == 2:
+                            for seq_key in value[1]:
+                                seq_value = value[1][seq_key]
+                                self.log.debug(f"  SEQ_Darks2: {seq_key}: {seq_value} ({type(seq_value)})")
+                                self.update_calOB(f"dark2_{seq_key}", seq_value)
+                        
+                    if key == 'SEQ_Calibrations':
+                        if nCal > 0:
+                            self.cal_seq1_enabled = True
+                            for cal_key in value[0]:
+                                cal_value = value[0][cal_key]
+                                self.log.debug(f"  SEQ_Calibrations: {cal_key}: {cal_value} ({type(cal_value)})")
+                                self.update_calOB(f"cal1_{cal_key}", cal_value)
+                    else:
+                        self.update_calOB(key, value)
+                # Re-run this last to make sure ND filters get greyed out or not properly
+#                 if 'TakeSimulCal' in contents['SEQ_Observations'][0].keys():
+#                     self.update_OB('TakeSimulCal', contents['SEQ_Observations'][0]['TakeSimulCal'])
+#                 if 'AutoExpMeter' in contents['SEQ_Observations'][0].keys():
+#                     self.update_OB('AutoExpMeter', contents['SEQ_Observations'][0]['AutoExpMeter'])
+                # save fname as path to use in future
+                self.file_path = Path(fname).parent
+                self.calOB_to_lines()
+
+
+    def run_executecalOB(self):
+        self.log.debug(f"run_executecalOB")
+        run_executecalOB_popup = QMessageBox()
+        run_executecalOB_popup.setWindowTitle('Run Calibration OB Confirmation')
+        run_executecalOB_popup.setText("Do you really want to execute the current OB?")
+        run_executecalOB_popup.setIcon(QMessageBox.Critical)
+        run_executecalOB_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
+        run_executecalOB_popup.buttonClicked.connect(self.run_executecalOB_popup_clicked)
+        run_executecalOB_popup.exec_()
+
+    def run_executecalOB_popup_clicked(self, i):
+        self.log.debug(f"run_executecalOB_popup_clicked: {i.text()}")
+        if i.text() == '&Yes':
+            print(f'Triggering RunCalOB')
+            self.RunCalOB()
+        else:
+            print('Not executing OB')
+
+    def RunCalOB(self):
+        self.log.debug(f"RunCalOB")
+
+        # Write to temporary file
+        utnow = datetime.datetime.utcnow()
+        now_str = utnow.strftime('%Y%m%dat%H%M%S')
+        date = utnow-datetime.timedelta(days=1)
+        date_str = date.strftime('%Y%b%d').lower()
+        tmp_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/executedOB_{now_str}.yaml').expanduser()
+        self.write_calOB_to_this_file(tmp_file)
+
+        RunCalOB_cmd = f'kpfdo RunCalOB -f {tmp_file} ; echo "Done!" ; sleep 30'
+        # Pop up an xterm with the script running
+        cmd = ['xterm', '-title', 'RunCalOB', '-name', 'RunCalOB',
+               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+               '-e', f'{RunCalOB_cmd}']
+        proc = subprocess.Popen(cmd)
 
 
 # end of class MainWindow
