@@ -9,6 +9,7 @@ import re
 import subprocess
 import yaml
 import datetime
+from copy import deepcopy
 from astropy.coordinates import SkyCoord
 
 import ktl                      # provided by kroot/ktl/keyword/python
@@ -18,10 +19,9 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
                              QLabel, QPushButton, QLineEdit, QComboBox,
                              QCheckBox, QMessageBox, QFileDialog)
 
-from kpf.utils import BuildOBfromQuery, SetObserverFromSchedule
-from kpf.spectrograph import SetProgram
+from kpf.utils import BuildOBfromQuery
 from kpf.utils import SendEmail
-
+from kpf.utils.EstimateOBDuration import EstimateCalOBDuration, EstimateSciOBDuration
 
 ##-------------------------------------------------------------------------
 ## Create logger object
@@ -73,7 +73,9 @@ class MainWindow(QMainWindow):
         self.twomass_params = None
         self.gaia_params = None
         self.disabled_detectors = []
-        self.OB = {'TriggerCaHK': True,
+        self.OB = {'Template_Name': 'kpf_sci',
+                   'Template_Version': 0.6,
+                   'TriggerCaHK': True,
                    'TriggerGreen': True,
                    'TriggerRed': True,
                    'GuideMode': 'auto',
@@ -92,7 +94,9 @@ class MainWindow(QMainWindow):
                          'CalND2': 'OD 0.1'},
                     ]
                    }
-        self.calOB = {'TriggerCaHK': True,
+        self.calOB = {'Template_Name': 'kpf_cal',
+                      'Template_Version': 0.6,
+                      'TriggerCaHK': True,
                       'TriggerGreen': True,
                       'TriggerRed': True,
                       'TriggerExpMeter': False,
@@ -365,6 +369,13 @@ class MainWindow(QMainWindow):
         self.write_calOB_to_file.clicked.connect(self.run_write_calOB_to_file)
         self.load_calOB_from_file_btn = self.findChild(QPushButton, 'load_from_file_btn_for_cal')
         self.load_calOB_from_file_btn.clicked.connect(self.run_load_calOB_from_file)
+
+        self.executecalOB = self.findChild(QPushButton, 'executeOB_for_cal')
+        self.executecalOB_tooltip = "Execute the Cal OB as defined in the fields below"
+        self.executecalOB.setToolTip(self.executecalOB_tooltip)
+        self.executecalOB.clicked.connect(self.run_executecalOB)
+
+        self.CalOBDuration = self.findChild(QLabel, 'CalOBDuration')
 
         ## Build Cal OB
         self.TriggerCaHK_cal = self.findChild(QCheckBox, 'TriggerCaHK_cal')
@@ -1196,6 +1207,7 @@ class MainWindow(QMainWindow):
         self.ExpTime_dark_seq1.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq1_label.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq1_note.setEnabled(int(value) == 2)
+        self.estimate_calOB_duration()
 
     def set_Object_dark_seq1(self, value):
         self.log.debug(f"set_Object_dark_seq1: {value}")
@@ -1222,6 +1234,7 @@ class MainWindow(QMainWindow):
         self.ExpTime_dark_seq2.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq2_label.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq2_note.setEnabled(int(value) == 2)
+        self.estimate_calOB_duration()
 
     def set_Object_dark_seq2(self, value):
         self.log.debug(f"set_Object_dark_seq2: {value}")
@@ -1264,6 +1277,7 @@ class MainWindow(QMainWindow):
         self.FF_FiberPos_cal_seq1_label.setEnabled(int(value) == 2)
         self.ExpMeterExpTime_cal_seq1.setEnabled(int(value) == 2)
         self.ExpMeterExpTime_cal_seq1_label.setEnabled(int(value) == 2)
+        self.estimate_calOB_duration()
 
     def set_Object_cal_seq1(self, value):
         self.log.debug(f"set_Object_cal_seq1: {value}")
@@ -1323,49 +1337,67 @@ class MainWindow(QMainWindow):
             self.log.debug(f"  SEQ_Darks[{keyid-1}]: {darkkey} = {value}")
             if len(self.calOB['SEQ_Darks']) < keyid+1:
                 self.calOB['SEQ_Darks'].append({})
-            self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
             if keyid == 1 and darkkey == 'Object':
                 self.Object_dark_seq1.setText(f"{value}")
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
             elif keyid == 1 and darkkey == 'nExp':
                 self.nExp_dark_seq1.setText(f"{value}")
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = int(value)
             elif keyid == 1 and darkkey == 'ExpTime':
                 self.ExpTime_dark_seq1.setText(f"{value}")
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = float(value)
             elif keyid == 2 and darkkey == 'Object':
                 self.Object_dark_seq2.setText(f"{value}")
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
             elif keyid == 2 and darkkey == 'nExp':
                 self.nExp_dark_seq2.setText(f"{value}")
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = int(value)
             elif keyid == 2 and darkkey == 'ExpTime':
                 self.ExpTime_dark_seq2.setText(f"{value}")
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = float(value)
+            else:
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
         elif key in cal_seq_keys:
             keyid = int(key[3])
             calkey = key[5:]
             self.log.debug(f"  SEQ_Calibrations[{keyid-1}]: {calkey} = {value}")
-            self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             if keyid == 1 and calkey == 'Object':
                 self.Object_cal_seq1.setText(f"{value}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'CalSource':
                 self.CalSource_cal_seq1.setCurrentText(f"{value}")
                 self.FF_FiberPos_cal_seq1.setEnabled(value == 'WideFlat')
                 self.FF_FiberPos_cal_seq1_label.setEnabled(value == 'WideFlat')
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'CalND1':
                 self.CalND1_cal_seq1.setCurrentText(f"{value}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'CalND2':
                 self.CalND2_cal_seq1.setCurrentText(f"{value}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'nExp':
                 self.nExp_cal_seq1.setText(f"{value}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = int(value)
             elif keyid == 1 and calkey == 'ExpTime':
                 self.ExpTime_cal_seq1.setText(f"{value}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = float(value)
             elif keyid == 1 and calkey == 'SSS_Science':
                 self.SSS_Science_cal_seq1.setChecked(value)
                 self.SSS_Science_cal_seq1.setText(f"{(value in [2, True])}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'SSS_Sky':
                 self.SSS_Sky_cal_seq1.setChecked(value)
                 self.SSS_Sky_cal_seq1.setText(f"{(value in [2, True])}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'TakeSimulCal':
                 self.TakeSimulCal_cal_seq1.setChecked(value)
                 self.TakeSimulCal_cal_seq1.setText(f"{(value in [2, True])}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'ExpMeterExpTime':
                 self.ExpMeterExpTime_cal_seq1.setText(f"{value}")
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = float(value)
+            else:
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
         else:
             self.calOB[key] = value
 
@@ -1380,6 +1412,29 @@ class MainWindow(QMainWindow):
             self.ExpMeterExpTime_cal_seq1.setEnabled(value)
             self.ExpMeterExpTime_cal_seq1_label.setEnabled(value)
             self.ExpMeterExpTime_cal_seq1_note.setEnabled(value)
+
+        if key not in ['dark1_Object', 'dark2_Object', 'cal1_Object',
+                       'cal1_CalND1', 'cal1_CalND2', 'cal1_FF_FiberPos',
+                       'cal1_ExpMeterExpTime', 'cal1_SSS_Science',
+                       'cal1_SSS_Sky', 'cal1_TakeSimulCal']:
+            self.estimate_calOB_duration()
+
+    def estimate_calOB_duration(self):
+        log.debug(f"Estimating OB duration")
+        print(self.calOB)
+        print(self.dark_seq1_enabled, self.dark_seq2_enabled, self.cal_seq1_enabled)
+        OB_for_calc = deepcopy(self.calOB)
+        if len(OB_for_calc['SEQ_Darks']) > 2:
+            OB_for_calc['SEQ_Darks'] = OB_for_calc['SEQ_Darks'][:2]
+        if self.dark_seq2_enabled is False and len(OB_for_calc['SEQ_Darks']) == 2:
+            OB_for_calc['SEQ_Darks'].pop(1)
+        if self.dark_seq2_enabled is False and len(OB_for_calc['SEQ_Darks']) >= 1:
+            OB_for_calc['SEQ_Darks'].pop(0)
+        if self.cal_seq1_enabled is False and len(OB_for_calc['SEQ_Calibrations']) >= 1:
+            OB_for_calc['SEQ_Calibrations'].pop(0)
+        duration = EstimateCalOBDuration.execute(OB_for_calc)
+        self.CalOBDuration.setText(f"{duration/60:.0f} min")
+
 
     def calOB_to_lines(self):
         lines = [f"# Built using KPF OB GUI tool",
@@ -1535,6 +1590,8 @@ class MainWindow(QMainWindow):
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
                '-e', f'{RunCalOB_cmd}']
         proc = subprocess.Popen(cmd)
+
+
 
 
 # end of class MainWindow
