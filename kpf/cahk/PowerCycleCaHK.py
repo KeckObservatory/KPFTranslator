@@ -45,6 +45,7 @@ class PowerCycleCaHK(KPFTranslatorFunction):
         for outlet_id, outlet_name in outlets:
             log.debug(f"Powering on {outlet_id}: {outlet_name}")
             kpfpower[f'OUTLET_{outlet_id}'].write('On')
+        time.sleep(10)
 
         log.warning('Resarting kpf_hk keyword service')
         cmd = ['kpf', 'restart', 'kpf_hk']
