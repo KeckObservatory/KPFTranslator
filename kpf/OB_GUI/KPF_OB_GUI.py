@@ -73,8 +73,7 @@ class MainWindow(QMainWindow):
         self.twomass_params = None
         self.gaia_params = None
         self.disabled_detectors = []
-        self.OB = {
-                   'TriggerCaHK': True,
+        self.OB = {'TriggerCaHK': True,
                    'TriggerGreen': True,
                    'TriggerRed': True,
                    'GuideMode': 'auto',
@@ -93,6 +92,34 @@ class MainWindow(QMainWindow):
                          'CalND2': 'OD 0.1'},
                     ]
                    }
+        self.calOB = {'TriggerCaHK': True,
+                      'TriggerGreen': True,
+                      'TriggerRed': True,
+                      'TriggerExpMeter': True,
+                      'SEQ_Darks': [
+                          {'Object': '',
+                           'nExp': 1,
+                           'ExpTime': 0},
+                          {'Object': '',
+                           'nExp': 1,
+                           'ExpTime': 0},
+                       ],
+                      'SEQ_Calibrations': [
+                          {'CalSource': None,
+                           'Object': '',
+                           'CalND1': 'OD 0.1',
+                           'CalND2': 'OD 0.1',
+                           'nExp': 1,
+                           'ExpTime': 1,
+                           'SSS_Science': True,
+                           'SSS_Sky': True,
+                           'TakeSimulCal': True,
+                           'FF_FiberPos': 'Blank',
+                           'ExpMeterExpTime': 1},
+                       ],
+                      }
+        self.dark_seq1_enabled = True
+        self.dark_seq2_enabled = False
         # Keywords
         self.log.debug('Cacheing keyword services')
         self.kpfconfig = ktl.cache('kpfconfig')
@@ -232,7 +259,7 @@ class MainWindow(QMainWindow):
 
 
         ##----------------------
-        ## OB Contents
+        ## Science OB Tab
         ##----------------------
         # Star List
         self.star_list_line = self.findChild(QLabel, 'star_list_line')
@@ -328,6 +355,41 @@ class MainWindow(QMainWindow):
         self.update_OB('TakeSimulCal', self.OB['SEQ_Observations'][0]['TakeSimulCal'])
 
         self.other_names = self.findChild(QLabel, 'other_names')
+
+        ##----------------------
+        ## Calibration OB Tab
+        ##----------------------
+        self.TriggerCaHK_cal = self.findChild(QCheckBox, 'TriggerCaHK_cal')
+        self.update_calOB('TriggerCaHK', self.calOB.get('TriggerCaHK'))
+        self.TriggerCaHK_cal.stateChanged.connect(self.TriggerCaHK_cal_state_change)
+        self.TriggerGreen_cal = self.findChild(QCheckBox, 'TriggerGreen_cal')
+        self.update_calOB('TriggerGreen', self.calOB.get('TriggerGreen'))
+        self.TriggerGreen_cal.stateChanged.connect(self.TriggerGreen_cal_state_change)
+        self.TriggerRed_cal = self.findChild(QCheckBox, 'TriggerRed_cal')
+        self.update_calOB('TriggerRed', self.calOB.get('TriggerRed'))
+        self.TriggerRed_cal.stateChanged.connect(self.TriggerRed_cal_state_change)
+        self.TriggerExpMeter_cal = self.findChild(QCheckBox, 'TriggerExpMeter_cal')
+        self.update_calOB('TriggerExpMeter', self.calOB.get('TriggerExpMeter'))
+        self.TriggerExpMeter_cal.stateChanged.connect(self.TriggerExpMeter_cal_state_change)
+
+        # Dark Sequence 1
+        self.enable_dark_seq1 = self.findChild(QCheckBox, 'enable_dark_seq1')
+        self.enable_dark_seq1.stateChanged.connect(self.enable_dark_seq1_state_change)
+
+        self.Object_dark_seq1 = self.findChild(QLineEdit, 'Object_dark_seq1')
+        self.Object_dark_seq1.textChanged.connect(self.set_Object_dark_seq1)
+        self.update_OB('dark1_Object', self.calOB['SEQ_Darks'][0]['Object'])
+
+        self.nExp_dark_seq1 = self.findChild(QLineEdit, 'nExp_dark_seq1')
+        self.nExp_dark_seq1.textChanged.connect(self.set_nExp_dark_seq1)
+        self.update_OB('dark1_nExp', self.calOB['SEQ_Darks'][0]['nExp'])
+
+        self.ExpTime_dark_seq1 = self.findChild(QLineEdit, 'ExpTime_dark_seq1')
+        self.ExpTime_dark_seq1.textChanged.connect(self.set_ExpTime_dark_seq1)
+        self.update_OB('dark1_ExpTime', self.calOB['SEQ_Darks'][0]['ExpTime'])
+
+        self.enable_dark_seq1_state_change(2 if self.dark_seq1_enabled else 0)
+
 
 
     ##-------------------------------------------
@@ -994,6 +1056,80 @@ class MainWindow(QMainWindow):
         SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
                            'Subject': f"TakeGuiderCube executed",
                            'Message': f"TARGNAME={targname.read()}"})
+
+    ##----------------------
+    ## Methods related to Calibration OB tab
+    ##----------------------
+    def TriggerCaHK_cal_state_change(self, value):
+        self.log.debug(f"TriggerCaHK_cal_state_change: {value}")
+        self.update_calOB('TriggerCaHK', (value == 2))
+
+    def TriggerGreen_cal_state_change(self, value):
+        self.log.debug(f"TriggerGreen_cal_state_change: {value}")
+        self.update_calOB('TriggerGreen', (value == 2))
+
+    def TriggerRed_cal_state_change(self, value):
+        self.log.debug(f"TriggerRed_cal_state_change: {value}")
+        self.update_calOB('TriggerRed', (value == 2))
+
+    def TriggerExpMeter_cal_state_change(self, value):
+        self.log.debug(f"TriggerExpMeter_cal_state_change: {value}")
+        self.update_calOB('TriggerExpMeter', (value == 2))
+
+    def enable_dark_seq1_state_change(self, value):
+        self.log.debug(f"enable_dark_seq1_state_change: {value}")
+        self.dark_seq1_enabled = (value == 2)
+        self.Object_dark_seq1.setEnabled(value)
+        self.Object_dark_seq1_label.setEnabled(value)
+        self.Object_dark_seq1_note.setEnabled(value)
+        self.nExp_dark_seq1.setEnabled(value)
+        self.nExp_dark_seq1_label.setEnabled(value)
+        self.nExp_dark_seq1_note.setEnabled(value)
+        self.ExpTime_dark_seq1.setEnabled(value)
+        self.ExpTime_dark_seq1_label.setEnabled(value)
+        self.ExpTime_dark_seq1_note.setEnabled(value)
+
+    def set_Object_dark_seq1(self, value):
+        self.log.debug(f"set_Object_dark_seq1: {value}")
+        self.update_calOB('dark1_Object', value)
+
+    def set_nExp_dark_seq1(self, value):
+        self.log.debug(f"set_nExp_dark_seq1: {value}")
+        self.update_calOB('dark1_nExp', value)
+
+    def set_ExpTime_dark_seq1(self, value):
+        self.log.debug(f"set_ExpTime_dark_seq1: {value}")
+        self.update_calOB('dark1_ExpTime', value)
+
+
+
+    def update_calOB(self, key, value):
+        self.log.debug(f"update_calOB: {key} = {value}")
+        dark_seq_keys = ['dark1_Object', 'dark1_nExp', 'dark1_ExpTime',
+                         'dark2_Object', 'dark2_nExp', 'dark2_ExpTime']
+        cal_seq_keys = ['CalSource', 'Object', 'CalND1', 'CalND2', 'nExp',
+                        'ExpTime', 'SSS_Science', 'SSS_Sky', 'TakeSimulCal',
+                        'FF_FiberPos', 'ExpMeterExpTime']
+        if key in cal_seq_keys:
+            self.calOB['SEQ_Calibrations'][0][key] = value
+        if key in dark_seq_keys:
+            keyid = int(key[4])
+            darkkey = key[6:]
+            self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
+        else:
+            self.calOB[key] = value
+
+        if key == 'TriggerCaHK':
+            self.TriggerCaHK_cal.setChecked(value)
+        elif key == 'TriggerGreen':
+            self.TriggerGreen_cal.setChecked(value)
+        elif key == 'TriggerRed':
+            self.TriggerRed_cal.setChecked(value)
+        elif key == 'TriggerExpMeter':
+            self.TriggerExpMeter_cal.setChecked(value)
+
+        print(self.calOB)
+
 
 # end of class MainWindow
 

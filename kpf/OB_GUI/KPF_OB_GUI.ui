@@ -369,7 +369,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="ScienceOB">
      <attribute name="title">
@@ -1110,12 +1110,15 @@
     </widget>
     <widget class="QWidget" name="CalibrationOB">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <attribute name="title">
       <string>Calibration OB</string>
      </attribute>
      <widget class="QLabel" name="label_56">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1128,12 +1131,12 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h2 style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Construct a Calibration OB&lt;/span&gt;&lt;/h2&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="load_from_file_btn_2">
+     <widget class="QPushButton" name="load_from_file_btn_for_cal">
       <property name="geometry">
        <rect>
-        <x>540</x>
+        <x>490</x>
         <y>10</y>
-        <width>399</width>
+        <width>221</width>
         <height>23</height>
        </rect>
       </property>
@@ -1141,29 +1144,16 @@
        <string>Load OB from File</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_57">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>40</y>
-        <width>341</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>&lt;h1&gt;Not Yet Implemented&lt;/h1&gt;</string>
-      </property>
-     </widget>
      <widget class="QWidget" name="gridLayoutWidget_4">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>120</y>
+        <y>40</y>
         <width>460</width>
         <height>31</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="detector_triggers_layout">
        <item row="0" column="2">
         <widget class="QCheckBox" name="TriggerRed_cal">
          <property name="text">
@@ -1173,6 +1163,9 @@
        </item>
        <item row="0" column="1">
         <widget class="QCheckBox" name="TriggerGreen_cal">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Trigger Green</string>
          </property>
@@ -1180,6 +1173,9 @@
        </item>
        <item row="0" column="0">
         <widget class="QCheckBox" name="TriggerCaHK_cal">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Trigger CaHK</string>
          </property>
@@ -1198,7 +1194,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>160</y>
+        <y>80</y>
         <width>369</width>
         <height>111</height>
        </rect>
@@ -1212,7 +1208,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit"/>
+        <widget class="QLineEdit" name="Object_dark_seq1"/>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_61">
@@ -1222,10 +1218,10 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_2"/>
+        <widget class="QLineEdit" name="nExp_dark_seq1"/>
        </item>
        <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEdit_3"/>
+        <widget class="QLineEdit" name="ExpTime_dark_seq1"/>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_60">
@@ -1256,7 +1252,7 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QCheckBox" name="checkBox">
+        <widget class="QCheckBox" name="cb_enable_dark_seq1">
          <property name="text">
           <string>Enable?</string>
          </property>
@@ -1274,13 +1270,13 @@
      <widget class="QWidget" name="gridLayoutWidget_10">
       <property name="geometry">
        <rect>
-        <x>390</x>
-        <y>160</y>
+        <x>10</x>
+        <y>200</y>
         <width>369</width>
         <height>111</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="dark_seq_1_layout_2">
+      <layout class="QGridLayout" name="dark_seq_2_layout">
        <item row="1" column="0">
         <widget class="QLabel" name="label_65">
          <property name="text">
@@ -1289,7 +1285,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_4"/>
+        <widget class="QLineEdit" name="Object_dark_seq2"/>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_66">
@@ -1299,10 +1295,10 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_5"/>
+        <widget class="QLineEdit" name="nExp_dark_seq2"/>
        </item>
        <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEdit_6"/>
+        <widget class="QLineEdit" name="ExpTime_dark_seq2"/>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_67">
@@ -1333,7 +1329,7 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QCheckBox" name="checkBox_2">
+        <widget class="QCheckBox" name="cb_enable_dark_seq2">
          <property name="text">
           <string>Enable?</string>
          </property>
@@ -1352,12 +1348,12 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>280</y>
+        <y>320</y>
         <width>369</width>
         <height>341</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="dark_seq_1_layout_3">
+      <layout class="QGridLayout" name="cal_seq_layout">
        <item row="10" column="0">
         <widget class="QLabel" name="label_85">
          <property name="text">
@@ -1401,7 +1397,7 @@
         </widget>
        </item>
        <item row="6" column="1">
-        <widget class="QLineEdit" name="lineEdit_9"/>
+        <widget class="QLineEdit" name="ExpTime_cal_seq"/>
        </item>
        <item row="6" column="0">
         <widget class="QLabel" name="label_73">
@@ -1411,7 +1407,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_7"/>
+        <widget class="QLineEdit" name="Object_cal_seq"/>
        </item>
        <item row="6" column="2">
         <widget class="QLabel" name="label_77">
@@ -1456,7 +1452,7 @@
         </widget>
        </item>
        <item row="5" column="1">
-        <widget class="QLineEdit" name="lineEdit_8"/>
+        <widget class="QLineEdit" name="nExp_cal_seq"/>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_72">
@@ -1479,7 +1475,75 @@
          </property>
         </widget>
        </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="CalSource_cal_seq"/>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="CalND1_cal_seq"/>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="CalND2_cal_seq"/>
+       </item>
+       <item row="7" column="1">
+        <widget class="QCheckBox" name="SSS_Science_cal_seq">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QCheckBox" name="SSS_Sky_cal_seq">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QCheckBox" name="TakeSimulCal_cal_seq">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QComboBox" name="FF_FIberPos_cal_seq"/>
+       </item>
+       <item row="11" column="1">
+        <widget class="QLineEdit" name="ExpMeterExpTime_cal_seq"/>
+       </item>
       </layout>
+     </widget>
+     <widget class="QPushButton" name="executeOB_for_cal">
+      <property name="geometry">
+       <rect>
+        <x>490</x>
+        <y>40</y>
+        <width>197</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Execute the OB as defined in the fields below.</string>
+      </property>
+      <property name="text">
+       <string>Execute This OB</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="write_to_file_btn_for_cal">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>10</y>
+        <width>221</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Write OB to File</string>
+      </property>
      </widget>
     </widget>
    </widget>
