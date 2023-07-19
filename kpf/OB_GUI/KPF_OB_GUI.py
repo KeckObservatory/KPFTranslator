@@ -384,7 +384,7 @@ class MainWindow(QMainWindow):
         self.executecalOB.setToolTip(calOB_tooltip)
 
         self.CalOBDuration = self.findChild(QLabel, 'CalOBDuration')
-        self.OBDuration.setToolTip(duration_tooltip)
+        self.CalOBDuration.setToolTip(duration_tooltip)
 
         ## Build Cal OB
         self.TriggerCaHK_cal = self.findChild(QCheckBox, 'TriggerCaHK_cal')
