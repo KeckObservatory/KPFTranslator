@@ -208,6 +208,7 @@ class MainWindow(QMainWindow):
         slewcalfile_kw.stringCallback.connect(self.update_slewcalfile_value)
 
         self.disabled_detectors_value = self.findChild(QLabel, 'disabled_detectors_value')
+        self.disabled_detectors_value.setText('')
         cahk_enabled_kw = kPyQt.kFactory(self.kpfconfig['CA_HK_ENABLED'])
         cahk_enabled_kw.stringCallback.connect(self.update_ca_hk_enabled)
         green_enabled_kw = kPyQt.kFactory(self.kpfconfig['GREEN_ENABLED'])
