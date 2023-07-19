@@ -263,6 +263,10 @@ class MainWindow(QMainWindow):
         self.execute_slewcal_only.clicked.connect(self.run_execute_slewcal_only)
 
         self.OBDuration = self.findChild(QLabel, 'OBDuration')
+        duration_tooltip = ('Duration is an estimate and assumes nothing about '
+                            'the current instrument state. As a result, many '
+                            'OBs will take slightly less time than the estimate.')
+        self.OBDuration.setToolTip(duration_tooltip)
 
         ##----------------------
         ## Science OB Tab
@@ -375,8 +379,12 @@ class MainWindow(QMainWindow):
         self.executecalOB_tooltip = "Execute the Cal OB as defined in the fields below"
         self.executecalOB.setToolTip(self.executecalOB_tooltip)
         self.executecalOB.clicked.connect(self.run_executecalOB)
+        calOB_tooltip = ('OB will be executed without an intensity monitor '
+                         'measurement. If one is needed, use the command line.')
+        self.executecalOB.setToolTip(calOB_tooltip)
 
         self.CalOBDuration = self.findChild(QLabel, 'CalOBDuration')
+        self.OBDuration.setToolTip(duration_tooltip)
 
         ## Build Cal OB
         self.TriggerCaHK_cal = self.findChild(QCheckBox, 'TriggerCaHK_cal')
@@ -1603,7 +1611,7 @@ class MainWindow(QMainWindow):
         tmp_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/executedOB_{now_str}.yaml').expanduser()
         self.write_calOB_to_this_file(tmp_file)
 
-        RunCalOB_cmd = f'kpfdo RunCalOB -f {tmp_file} ; echo "Done!" ; sleep 30'
+        RunCalOB_cmd = f'kpfdo RunCalOB -f {tmp_file} --nointensemon ; echo "Done!" ; sleep 30'
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'RunCalOB', '-name', 'RunCalOB',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
