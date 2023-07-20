@@ -1021,34 +1021,44 @@ class MainWindow(QMainWindow):
         if result:
             fname = result[0]
             if fname != '' and Path(fname).exists():
-                self.log.debug(f"  Opening: {fname}")
-                with open(fname, 'r') as f:
-                    contents = yaml.safe_load(f)
-                self.log.debug('  Read in YAML')
-                self.log.debug(contents)
-                for key in contents:
-                    value = contents[key]
-                    self.log.debug(f"  {key}: {value} ({type(value)})")
-                    if key == 'GaiaID':
-                        self.set_gaia_id(value)
-                    elif key == 'SEQ_Observations':
-                        for seq_key in value[0]:
-                            seq_value = value[0][seq_key]
-                            self.log.debug(f"  SEQ_Observations: {seq_key}: {seq_value} ({type(seq_value)})")
-                            self.update_OB(seq_key, seq_value)
-                    else:
-                        self.update_OB(key, value)
-                # Re-run this last to make sure ND filters get greyed out or not properly
-                if 'TakeSimulCal' in contents['SEQ_Observations'][0].keys():
-                    self.update_OB('TakeSimulCal', contents['SEQ_Observations'][0]['TakeSimulCal'])
-                if 'AutoExpMeter' in contents['SEQ_Observations'][0].keys():
-                    self.update_OB('AutoExpMeter', contents['SEQ_Observations'][0]['AutoExpMeter'])
-                # save fname as path to use in future
-                self.file_path = Path(fname).parent
-                # Clear other names and star list line
-                self.other_names.setText('')
-                msg = 'Unable to form star list line without Gaia coordinates'
-                self.star_list_line.setText(msg)
+                try:
+                    self.log.debug(f"  Opening: {fname}")
+                    with open(fname, 'r') as f:
+                        contents = yaml.safe_load(f)
+                    self.log.debug('  Read in YAML')
+                    self.log.debug(contents)
+                    for key in contents:
+                        value = contents[key]
+                        self.log.debug(f"  {key}: {value} ({type(value)})")
+                        if key == 'GaiaID':
+                            self.set_gaia_id(value)
+                        elif key == 'SEQ_Observations':
+                            for seq_key in value[0]:
+                                seq_value = value[0][seq_key]
+                                self.log.debug(f"  SEQ_Observations: {seq_key}: {seq_value} ({type(seq_value)})")
+                                self.update_OB(seq_key, seq_value)
+                        else:
+                            self.update_OB(key, value)
+                    # Re-run this last to make sure ND filters get greyed out or not properly
+                    if 'TakeSimulCal' in contents['SEQ_Observations'][0].keys():
+                        self.update_OB('TakeSimulCal', contents['SEQ_Observations'][0]['TakeSimulCal'])
+                    if 'AutoExpMeter' in contents['SEQ_Observations'][0].keys():
+                        self.update_OB('AutoExpMeter', contents['SEQ_Observations'][0]['AutoExpMeter'])
+                    # save fname as path to use in future
+                    self.file_path = Path(fname).parent
+                    # Clear other names and star list line
+                    self.other_names.setText('')
+                    msg = 'Unable to form star list line without Gaia coordinates'
+                    self.star_list_line.setText(msg)
+                except Exception as e:
+                    log.error(f"Unable to load file: {fname}")
+                    log.error(f"{e}")
+                    load_failed_popup = QMessageBox()
+                    load_failed_popup.setWindowTitle('Unable to load file')
+                    load_failed_popup.setText(f"Unable to load file\n{fname}")
+                    load_failed_popup.setIcon(QMessageBox.Critical)
+                    load_failed_popup.setStandardButtons(QMessageBox.Ok) 
+                    load_failed_popup.exec_()
 
     def estimate_OB_duration(self):
         log.debug(f"Estimating OB duration")
@@ -1536,51 +1546,61 @@ class MainWindow(QMainWindow):
         if result:
             fname = result[0]
             if fname != '' and Path(fname).exists():
-                self.log.debug(f"  Opening: {fname}")
-                with open(fname, 'r') as f:
-                    contents = yaml.safe_load(f)
-                self.log.debug('  Read in YAML')
-                self.log.debug(contents)
-                if 'SEQ_Darks' in contents.keys():
-                    nDark = len(contents['SEQ_Darks'])
-                    self.enable_dark_seq1_state_change(2 if nDark > 0 else 0)
-                    self.enable_dark_seq2_state_change(2 if nDark > 1 else 0)
-                if 'SEQ_Calibrations' in contents.keys():
-                    nCal = len(contents['SEQ_Calibrations'])
-                    self.enable_cal_seq1_state_change(2 if nCal > 0 else 0)
-                for key in contents:
-                    value = contents[key]
-                    self.log.debug(f"  {key}: {value} ({type(value)})")
-                    if key == 'SEQ_Darks':
-                        if nDark == 1:
-                            for seq_key in value[0]:
-                                seq_value = value[0][seq_key]
-                                self.log.debug(f"  SEQ_Darks1: {seq_key}: {seq_value} ({type(seq_value)})")
-                                self.update_calOB(f"dark1_{seq_key}", seq_value)
+                try:
+                    self.log.debug(f"  Opening: {fname}")
+                    with open(fname, 'r') as f:
+                        contents = yaml.safe_load(f)
+                    self.log.debug('  Read in YAML')
+                    self.log.debug(contents)
+                    if 'SEQ_Darks' in contents.keys():
+                        nDark = len(contents['SEQ_Darks'])
+                        self.enable_dark_seq1_state_change(2 if nDark > 0 else 0)
+                        self.enable_dark_seq2_state_change(2 if nDark > 1 else 0)
+                    if 'SEQ_Calibrations' in contents.keys():
+                        nCal = len(contents['SEQ_Calibrations'])
+                        self.enable_cal_seq1_state_change(2 if nCal > 0 else 0)
+                    for key in contents:
+                        value = contents[key]
+                        self.log.debug(f"  {key}: {value} ({type(value)})")
+                        if key == 'SEQ_Darks':
+                            if nDark == 1:
+                                for seq_key in value[0]:
+                                    seq_value = value[0][seq_key]
+                                    self.log.debug(f"  SEQ_Darks1: {seq_key}: {seq_value} ({type(seq_value)})")
+                                    self.update_calOB(f"dark1_{seq_key}", seq_value)
                             
-                        if nDark == 2:
-                            for seq_key in value[1]:
-                                seq_value = value[1][seq_key]
-                                self.log.debug(f"  SEQ_Darks2: {seq_key}: {seq_value} ({type(seq_value)})")
-                                self.update_calOB(f"dark2_{seq_key}", seq_value)
+                            if nDark == 2:
+                                for seq_key in value[1]:
+                                    seq_value = value[1][seq_key]
+                                    self.log.debug(f"  SEQ_Darks2: {seq_key}: {seq_value} ({type(seq_value)})")
+                                    self.update_calOB(f"dark2_{seq_key}", seq_value)
                         
-                    if key == 'SEQ_Calibrations':
-                        if nCal > 0:
-                            self.cal_seq1_enabled = True
-                            for cal_key in value[0]:
-                                cal_value = value[0][cal_key]
-                                self.log.debug(f"  SEQ_Calibrations: {cal_key}: {cal_value} ({type(cal_value)})")
-                                self.update_calOB(f"cal1_{cal_key}", cal_value)
-                    else:
-                        self.update_calOB(key, value)
-                # Re-run this last to make sure ND filters get greyed out or not properly
-#                 if 'TakeSimulCal' in contents['SEQ_Observations'][0].keys():
-#                     self.update_OB('TakeSimulCal', contents['SEQ_Observations'][0]['TakeSimulCal'])
-#                 if 'AutoExpMeter' in contents['SEQ_Observations'][0].keys():
-#                     self.update_OB('AutoExpMeter', contents['SEQ_Observations'][0]['AutoExpMeter'])
-                # save fname as path to use in future
-                self.file_path = Path(fname).parent
-                self.calOB_to_lines()
+                        if key == 'SEQ_Calibrations':
+                            if nCal > 0:
+                                self.cal_seq1_enabled = True
+                                for cal_key in value[0]:
+                                    cal_value = value[0][cal_key]
+                                    self.log.debug(f"  SEQ_Calibrations: {cal_key}: {cal_value} ({type(cal_value)})")
+                                    self.update_calOB(f"cal1_{cal_key}", cal_value)
+                        else:
+                            self.update_calOB(key, value)
+                    # Re-run this last to make sure ND filters get greyed out or not properly
+    #                 if 'TakeSimulCal' in contents['SEQ_Observations'][0].keys():
+    #                     self.update_OB('TakeSimulCal', contents['SEQ_Observations'][0]['TakeSimulCal'])
+    #                 if 'AutoExpMeter' in contents['SEQ_Observations'][0].keys():
+    #                     self.update_OB('AutoExpMeter', contents['SEQ_Observations'][0]['AutoExpMeter'])
+                    # save fname as path to use in future
+                    self.file_path = Path(fname).parent
+#                     self.calOB_to_lines()
+                except Exception as e:
+                    log.error(f"Unable to load file: {fname}")
+                    log.error(f"{e}")
+                    load_failed_popup = QMessageBox()
+                    load_failed_popup.setWindowTitle('Unable to load file')
+                    load_failed_popup.setText(f"Unable to load file\n{fname}")
+                    load_failed_popup.setIcon(QMessageBox.Critical)
+                    load_failed_popup.setStandardButtons(QMessageBox.Ok) 
+                    load_failed_popup.exec_()
 
 
     def run_executecalOB(self):
