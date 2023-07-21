@@ -5,7 +5,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
-from kpf.spectrograph.ResetDetectors import ResetDetectors
+from kpf.spectrograph import ResetDetectors
 
 
 class WaitForReadout(KPFTranslatorFunction):
@@ -55,23 +55,28 @@ class WaitForReadout(KPFTranslatorFunction):
                 nextfile = ktl.cache('kpfred', 'NEXTFILE')
                 log.debug(f"Red nextfile: {nextfile.read()}")
         else:
+            log.warning('WaitForReadout failed to reach expected state')
             log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
             log.debug(f'kpfexpose EXPLAINR = {kpfexpose["EXPLAINR"].read()}')
-            errors = []
+            log.debug(f'kpfexpose EXPLAINNR = {kpfexpose["EXPLAINNR"].read()}')
             if 'Red' in detector_list:
                 kpfred = ktl.cache('kpfred')
                 redexpstate = kpfred['EXPSTATE'].read()
-                if redexpstate in ['Error', 'PowerOff']:
+                if redexpstate in ['Error', 'PowerOff', 'Start']:
                     log.error(f"kpfred.EXPSTATE = {redexpstate}")
-                    errors.append('Red')
+                    ResetDetectors.ResetRedDetector.execute({})
             if 'Green' in detector_list:
                 kpfgreen = ktl.cache('kpfgreen')
                 greenexpstate = kpfgreen['EXPSTATE'].read()
-                if greenexpstate in ['Error', 'PowerOff']:
+                if greenexpstate in ['Error', 'PowerOff', 'Start']:
                     log.error(f"kpfgreen.EXPSTATE = {greenexpstate}")
-                    errors.append('Green')
-            if len(errors) > 0:
-                ResetDetectors.execute({})
+                    ResetDetectors.ResetGreenDetector.execute({})
+            if 'Ca_HK' in detector_list:
+                kpf_hk = ktl.cache('kpf_hk')
+                hkexpstate = kpf_hk['EXPSTATE'].read()
+                if hkexpstate in ['Error', 'Start', 'Unknown']:
+                    log.error(f"kpf_hk.EXPSTATE = {hkexpstate}")
+                    ResetDetectors.ResetCaHKDetector.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
