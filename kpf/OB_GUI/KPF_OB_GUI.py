@@ -96,7 +96,7 @@ class MainWindow(QMainWindow):
                    }
         self.calOB = {'Template_Name': 'kpf_cal',
                       'Template_Version': 0.6,
-                      'TriggerCaHK': True,
+                      'TriggerCaHK': False,
                       'TriggerGreen': True,
                       'TriggerRed': True,
                       'TriggerExpMeter': False,
