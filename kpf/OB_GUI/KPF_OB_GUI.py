@@ -1383,19 +1383,35 @@ class MainWindow(QMainWindow):
                 self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
             elif keyid == 1 and darkkey == 'nExp':
                 self.nExp_dark_seq1.setText(f"{value}")
-                self.calOB['SEQ_Darks'][keyid-1][darkkey] = int(value)
+                try:
+                    int_val = int(value)
+                except:
+                    int_val = 0
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = int_val
             elif keyid == 1 and darkkey == 'ExpTime':
                 self.ExpTime_dark_seq1.setText(f"{value}")
-                self.calOB['SEQ_Darks'][keyid-1][darkkey] = float(value)
+                try:
+                    float_val = float(value)
+                except:
+                    float_val = 0
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = float_val
             elif keyid == 2 and darkkey == 'Object':
                 self.Object_dark_seq2.setText(f"{value}")
                 self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
             elif keyid == 2 and darkkey == 'nExp':
                 self.nExp_dark_seq2.setText(f"{value}")
-                self.calOB['SEQ_Darks'][keyid-1][darkkey] = int(value)
+                try:
+                    int_val = int(value)
+                except:
+                    int_val = 0
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = int_val
             elif keyid == 2 and darkkey == 'ExpTime':
                 self.ExpTime_dark_seq2.setText(f"{value}")
-                self.calOB['SEQ_Darks'][keyid-1][darkkey] = float(value)
+                try:
+                    float_val = float(value)
+                except:
+                    float_val = 0
+                self.calOB['SEQ_Darks'][keyid-1][darkkey] = float_val
             else:
                 self.calOB['SEQ_Darks'][keyid-1][darkkey] = value
         elif key in cal_seq_keys:
@@ -1418,10 +1434,18 @@ class MainWindow(QMainWindow):
                 self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'nExp':
                 self.nExp_cal_seq1.setText(f"{value}")
-                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = int(value)
+                try:
+                    int_val = int(value)
+                except:
+                    int_val = 0
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = int_val
             elif keyid == 1 and calkey == 'ExpTime':
                 self.ExpTime_cal_seq1.setText(f"{value}")
-                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = float(value)
+                try:
+                    float_val = float(value)
+                except:
+                    float_val = 0
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = float_val
             elif keyid == 1 and calkey == 'SSS_Science':
                 self.SSS_Science_cal_seq1.setChecked(value)
                 self.SSS_Science_cal_seq1.setText(f"{(value in [2, True])}")
@@ -1436,7 +1460,11 @@ class MainWindow(QMainWindow):
                 self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'ExpMeterExpTime':
                 self.ExpMeterExpTime_cal_seq1.setText(f"{value}")
-                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = float(value)
+                try:
+                    float_val = float(value)
+                except:
+                    float_val = 0
+                self.calOB['SEQ_Calibrations'][keyid-1][calkey] = float_val
             else:
                 self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
         else:
