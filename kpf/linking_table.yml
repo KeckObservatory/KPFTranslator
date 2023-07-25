@@ -234,6 +234,8 @@ links:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
     CalculateDAR:
         cmd: utils.CalculateDAR.CalculateDAR
+    CheckDewarWeights:
+        cmd: utils.CheckDewarWeights.CheckDewarWeights
     CorrectDAR:
         cmd: utils.CorrectDAR.CorrectDAR
     EstimateOBDuration:
