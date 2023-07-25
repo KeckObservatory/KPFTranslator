@@ -12,6 +12,7 @@ from kpf.fiu.SetTipTiltGain import SetTipTiltGain
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.CalLampPower import CalLampPower
+from kpf.guider.SetGuiderGain import SetGuiderGain
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.utils.SetOutdirs import SetOutdirs
@@ -106,6 +107,8 @@ class StartOfNight(KPFTranslatorFunction):
             log.info('Waiting for kpfexpose to be Ready')
             WaitForReady.execute({})
         SetOutdirs.execute({})
+        # Set guider gain to high for initial acquisition and focus
+        SetGuiderGain.execute({'GuideCamGain': 'high'})
         # Set progname and observer
         SetObserverFromSchedule.execute({})
         # Summarize Detector Disabled States
