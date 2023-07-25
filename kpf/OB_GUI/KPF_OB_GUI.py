@@ -125,6 +125,8 @@ class MainWindow(QMainWindow):
         self.dark_seq1_enabled = True
         self.dark_seq2_enabled = False
         self.cal_seq1_enabled = True
+        self.lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
+                                       'TH_GOLD', 'U_DAILY', 'U_GOLD']
         # Keywords
         self.log.debug('Cacheing keyword services')
         self.kpfconfig = ktl.cache('kpfconfig')
@@ -468,6 +470,8 @@ class MainWindow(QMainWindow):
         self.CalSource_cal_seq1.currentTextChanged.connect(self.set_CalSource_cal_seq1)
         self.update_calOB('cal1_CalSource', self.calOB['SEQ_Calibrations'][0]['CalSource'])
         self.CalSource_cal_seq1_label = self.findChild(QLabel, 'CalSource_cal_seq1_label')
+
+        self.warm_up_warning = self.findChild(QLabel, 'warm_up_warning')
 
         self.CalND1_cal_seq1 = self.findChild(QComboBox, 'CalND1_cal_seq1')
         self.CalND1_cal_seq1.addItems(["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"])
@@ -1425,6 +1429,12 @@ class MainWindow(QMainWindow):
                 self.CalSource_cal_seq1.setCurrentText(f"{value}")
                 self.FF_FiberPos_cal_seq1.setEnabled(value == 'WideFlat')
                 self.FF_FiberPos_cal_seq1_label.setEnabled(value == 'WideFlat')
+                if value.upper() in self.lamps_that_need_warmup:
+                    self.warm_up_warning.setText('Requires warm up')
+                    self.warm_up_warning.setStyleSheet("color:orange")
+                else:
+                    self.warm_up_warning.setText('')
+                    self.warm_up_warning.setStyleSheet("color:black")
                 self.calOB['SEQ_Calibrations'][keyid-1][calkey] = value
             elif keyid == 1 and calkey == 'CalND1':
                 self.CalND1_cal_seq1.setCurrentText(f"{value}")

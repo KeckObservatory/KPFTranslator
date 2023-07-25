@@ -379,8 +379,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>100</y>
-        <width>381</width>
+        <y>70</y>
+        <width>411</width>
         <height>81</height>
        </rect>
       </property>
@@ -447,8 +447,8 @@
      <widget class="QWidget" name="gridLayoutWidget_5">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>70</y>
+        <x>530</x>
+        <y>30</y>
         <width>401</width>
         <height>111</height>
        </rect>
@@ -516,10 +516,10 @@
      <widget class="Line" name="line_3">
       <property name="geometry">
        <rect>
-        <x>430</x>
-        <y>50</y>
+        <x>500</x>
+        <y>20</y>
         <width>20</width>
-        <height>121</height>
+        <height>141</height>
        </rect>
       </property>
       <property name="orientation">
@@ -530,7 +530,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>40</y>
+        <y>640</y>
         <width>171</width>
         <height>23</height>
        </rect>
@@ -543,7 +543,7 @@
       <property name="geometry">
        <rect>
         <x>190</x>
-        <y>40</y>
+        <y>640</y>
         <width>741</width>
         <height>21</height>
        </rect>
@@ -556,7 +556,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>190</y>
+        <y>160</y>
         <width>921</width>
         <height>16</height>
        </rect>
@@ -569,7 +569,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>200</y>
+        <y>170</y>
         <width>381</width>
         <height>31</height>
        </rect>
@@ -582,7 +582,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>230</y>
+        <y>200</y>
         <width>421</width>
         <height>351</height>
        </rect>
@@ -819,7 +819,7 @@
       <property name="geometry">
        <rect>
         <x>450</x>
-        <y>230</y>
+        <y>200</y>
         <width>481</width>
         <height>351</height>
        </rect>
@@ -1015,7 +1015,7 @@
       <property name="geometry">
        <rect>
         <x>430</x>
-        <y>230</y>
+        <y>200</y>
         <width>20</width>
         <height>351</height>
        </rect>
@@ -1040,9 +1040,9 @@
      <widget class="QPushButton" name="load_from_file_btn">
       <property name="geometry">
        <rect>
-        <x>490</x>
-        <y>10</y>
-        <width>221</width>
+        <x>10</x>
+        <y>40</y>
+        <width>201</width>
         <height>23</height>
        </rect>
       </property>
@@ -1056,9 +1056,9 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>720</x>
-        <y>10</y>
-        <width>221</width>
+        <x>220</x>
+        <y>40</y>
+        <width>201</width>
         <height>23</height>
        </rect>
       </property>
@@ -1070,7 +1070,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>590</y>
+        <y>560</y>
         <width>141</width>
         <height>16</height>
        </rect>
@@ -1086,7 +1086,7 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>580</y>
+        <y>560</y>
         <width>781</width>
         <height>81</height>
        </rect>
@@ -1105,7 +1105,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>580</y>
+        <y>550</y>
         <width>921</width>
         <height>16</height>
        </rect>
@@ -1141,9 +1141,9 @@
      <widget class="QPushButton" name="load_from_file_btn_for_cal">
       <property name="geometry">
        <rect>
-        <x>490</x>
-        <y>10</y>
-        <width>221</width>
+        <x>10</x>
+        <y>40</y>
+        <width>201</width>
         <height>23</height>
        </rect>
       </property>
@@ -1155,8 +1155,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>40</y>
-        <width>460</width>
+        <y>120</y>
+        <width>511</width>
         <height>31</height>
        </rect>
       </property>
@@ -1201,7 +1201,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>80</y>
+        <y>170</y>
         <width>369</width>
         <height>111</height>
        </rect>
@@ -1277,8 +1277,8 @@
      <widget class="QWidget" name="gridLayoutWidget_10">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>200</y>
+        <x>420</x>
+        <y>170</y>
         <width>369</width>
         <height>111</height>
        </rect>
@@ -1355,7 +1355,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>320</y>
+        <y>300</y>
         <width>369</width>
         <height>341</height>
        </rect>
@@ -1525,23 +1525,14 @@
          </property>
         </widget>
        </item>
+       <item row="2" column="2">
+        <widget class="QLabel" name="warm_up_warning">
+         <property name="text">
+          <string>warm up?</string>
+         </property>
+        </widget>
+       </item>
       </layout>
-     </widget>
-     <widget class="QPushButton" name="executeOB_for_cal">
-      <property name="geometry">
-       <rect>
-        <x>490</x>
-        <y>40</y>
-        <width>221</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>Execute the OB as defined in the fields below.</string>
-      </property>
-      <property name="text">
-       <string>Execute This OB</string>
-      </property>
      </widget>
      <widget class="QPushButton" name="write_to_file_btn_for_cal">
       <property name="enabled">
@@ -1549,9 +1540,9 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>720</x>
-        <y>10</y>
-        <width>221</width>
+        <x>220</x>
+        <y>40</y>
+        <width>201</width>
         <height>23</height>
        </rect>
       </property>
@@ -1559,17 +1550,105 @@
        <string>Write OB to File</string>
       </property>
      </widget>
-     <widget class="QLabel" name="CalOBDuration">
+     <widget class="QWidget" name="gridLayoutWidget_12">
       <property name="geometry">
        <rect>
-        <x>720</x>
-        <y>40</y>
-        <width>221</width>
-        <height>21</height>
+        <x>490</x>
+        <y>10</y>
+        <width>311</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="execute_layout_2">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_57">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Execute Calibrations&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="CalOBDuration">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QPushButton" name="executeOB_for_cal">
+         <property name="toolTip">
+          <string>Execute the OB as defined in the fields below.</string>
+         </property>
+         <property name="text">
+          <string>Execute This OB</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="Line" name="line_9">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>921</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_59">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>381</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>-</string>
+       <string>&lt;h2&gt;OB Contents&lt;/h2&gt;</string>
+      </property>
+     </widget>
+     <widget class="Line" name="line_10">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>170</y>
+        <width>20</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+     <widget class="Line" name="line_11">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>921</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="Line" name="line_12">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>280</y>
+        <width>921</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </widget>
