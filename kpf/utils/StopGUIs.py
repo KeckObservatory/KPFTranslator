@@ -2,6 +2,7 @@ import os
 import time
 import subprocess
 import re
+import socket
 
 import ktl
 
@@ -9,6 +10,39 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.utils.StartGUIs import GUI_list
+
+
+def find_process(process, server='kpf'):
+    if isinstance(process, list):
+        process = ' '.join(process)
+    prefix_cmd = []
+    if socket.gethostname() != server:
+        prefix_cmd = ['ssh', server]
+    psout = subprocess.run(prefix_cmd + ['ps', '-ef'], stdout=subprocess.PIPE)
+    psout = psout.stdout.decode().split('\n')
+    process_id = None
+    for line in psout:
+        if line.find(process) > 0:
+            process_id = line.split()[1]
+            break
+    if process_id is None:
+        log.debug(f'Could not find process: {process}')
+    return process_id
+
+
+def kill_process(process, server='kpf'):
+    if isinstance(process, list):
+        process = ' '.join(process)
+    prefix_cmd = []
+    if socket.gethostname() != server:
+        prefix_cmd = ['ssh', server]
+    process_id = find_process(process, server=server)
+    if process_id is not None:
+        kill_cmd = prefix_cmd + ['kill', process_id]
+        log.debug(f'Running: {" ".join(kill_cmd)}')
+        killout = subprocess.run(kill_cmd, stdout=subprocess.PIPE)
+        if killout.returncode > 0:
+            log.warning(f'{" ".join(kill_cmd)} failed')
 
 
 class StopGUIs(KPFTranslatorFunction):
@@ -43,6 +77,8 @@ class StopGUIs(KPFTranslatorFunction):
                 else:
                     log.info(f"{GUIname} is not running")
                     log.debug(f"{stdout}")
+            else:
+                kill_process(GUI['cmd'], server='kpf')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
