@@ -39,7 +39,9 @@ class ResetGreenDetector(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        pass
+        expstate = ktl.cache('kpfgreen', 'EXPSTATE')
+        if expstate.read() == 'Resetting':
+            raise FailedPreCondition('Reset already in progress')
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -65,7 +67,9 @@ class ResetRedDetector(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        pass
+        expstate = ktl.cache('kpfred', 'EXPSTATE')
+        if expstate.read() == 'Resetting':
+            raise FailedPreCondition('Reset already in progress')
 
     @classmethod
     def perform(cls, args, logger, cfg):
