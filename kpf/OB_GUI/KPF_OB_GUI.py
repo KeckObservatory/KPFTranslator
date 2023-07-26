@@ -1594,9 +1594,14 @@ class MainWindow(QMainWindow):
                         nDark = len(contents['SEQ_Darks'])
                         self.enable_dark_seq1_state_change(2 if nDark > 0 else 0)
                         self.enable_dark_seq2_state_change(2 if nDark > 1 else 0)
+                    else:
+                        self.enable_dark_seq1_state_change(0)
+                        self.enable_dark_seq2_state_change(0)
                     if 'SEQ_Calibrations' in contents.keys():
                         nCal = len(contents['SEQ_Calibrations'])
                         self.enable_cal_seq1_state_change(2 if nCal > 0 else 0)
+                    else:
+                        self.enable_cal_seq1_state_change(0)
                     for key in contents:
                         value = contents[key]
                         self.log.debug(f"  {key}: {value} ({type(value)})")
