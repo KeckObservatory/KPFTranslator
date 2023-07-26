@@ -71,9 +71,12 @@ class StopGUIs(KPFTranslatorFunction):
                     stop_cmd = GUI['cmd']
                     stop_cmd[1] = 'stop'
                     log.info(f"Stopping '{GUIname}' GUI")
-                    gui_proc = subprocess.Popen(stop_cmd,
-                                                stdout=subprocess.PIPE,
-                                                stderr=subprocess.PIPE)
+                    stopout = subprocess.run(stop_cmd,
+                                             stdout=subprocess.PIPE,
+                                             stderr=subprocess.PIPE)
+                    log.debug(f"{stopout.returncode}")
+                    log.debug(f"{stopout.stdout.decode()}")
+                    log.debug(f"{stopout.stderr.decode()}")
                 else:
                     log.info(f"{GUIname} is not running")
                     log.debug(f"{stdout}")
