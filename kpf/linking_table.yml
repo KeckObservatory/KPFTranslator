@@ -10,6 +10,8 @@ links:
         cmd: analysis.AnalyzeTipTiltPerformance.AnalyzeTipTiltPerformance
     Fit2DGridSearch:
         cmd: analysis.Fit2DGridSearch.Fit2DGridSearch
+    CountCameraErrors:
+        cmd: analysis.CountCameraErrors.CountCameraErrors
     # AO
     ControlAOHatch:
         cmd: ao.ControlAOHatch.ControlAOHatch

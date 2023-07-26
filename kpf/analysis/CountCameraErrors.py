@@ -51,27 +51,33 @@ class CountCameraErrors(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        
-        start = datetime.strptime('2023-05-01', '%Y-%m-%d')
+        output_file = Path('/s/sdata1701/KPFTranslator_logs/camera_errors.txt')
+        if output_file.exists(): output_file.unlink()
+        date = datetime.strptime('2023-06-01', '%Y-%m-%d')
+        total_green_errors = 0
+        total_green_starts = 0
+        total_red_errors = 0
+        total_red_starts = 0
+        print(f"From {date.strftime('%Y-%m-%d')}")
+        with open(output_file, 'w') as f:
+            while date < datetime.utcnow() - timedelta(days=1):
+                date_str = date.strftime('%Y-%m-%d')
+                ng_starts, nr_starts = count_start_state_instances(date=date_str)
+                ng_errs, nr_errs = count_start_state_errors(date=date_str)
+                total_green_errors += ng_errs
+                total_green_starts += ng_starts
+                total_red_errors += nr_errs
+                total_red_starts += nr_starts
+                line = f"{date_str}, {ng_errs}, {ng_starts}, {nr_errs}, {nr_starts}"
+#                 print(line)
+                f.write(f"{line}\n")
+                date += timedelta(days=1)
+        print(f"Through {date.strftime('%Y-%m-%d')}")
+        green_error_rate = total_green_errors/total_green_starts
+        print(f"Green error rate = {green_error_rate:.2%} ({total_green_errors}/{total_green_starts})")
+        red_error_rate = total_red_errors/total_red_starts
+        print(f"Red error rate = {red_error_rate:.2%} ({total_red_errors}/{total_red_starts})")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        parser.add_argument('fgs_cube_fileX', type=str,
-            help="The FGS FITS cube for the X pixel scan")
-        parser.add_argument('fgs_cube_fileY', type=str,
-            help="The FGS FITS cube for the Y pixel scan")
-        parser.add_argument('targname', type=str,
-            help="The target name")
-        parser.add_argument("--xfit", dest="xfit", type=float,
-            default=335.5,
-            help="The X pixel position to use as the center when overlaying the model.")
-        parser.add_argument("--yfit", dest="yfit", type=float,
-            default=258,
-            help="The X pixel position to use as the center when overlaying the model.")
-        return super().add_cmdline_args(parser, cfg)
