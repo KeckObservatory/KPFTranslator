@@ -1155,7 +1155,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>120</y>
+        <y>140</y>
         <width>511</width>
         <height>31</height>
        </rect>
@@ -1201,7 +1201,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>170</y>
+        <y>190</y>
         <width>369</width>
         <height>111</height>
        </rect>
@@ -1278,7 +1278,7 @@
       <property name="geometry">
        <rect>
         <x>420</x>
-        <y>170</y>
+        <y>190</y>
         <width>369</width>
         <height>111</height>
        </rect>
@@ -1355,7 +1355,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>300</y>
+        <y>320</y>
         <width>369</width>
         <height>341</height>
        </rect>
@@ -1590,7 +1590,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>80</y>
+        <y>100</y>
         <width>921</width>
         <height>16</height>
        </rect>
@@ -1603,7 +1603,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>90</y>
+        <y>110</y>
         <width>381</width>
         <height>31</height>
        </rect>
@@ -1616,7 +1616,7 @@
       <property name="geometry">
        <rect>
         <x>390</x>
-        <y>170</y>
+        <y>190</y>
         <width>20</width>
         <height>111</height>
        </rect>
@@ -1629,7 +1629,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>150</y>
+        <y>170</y>
         <width>921</width>
         <height>16</height>
        </rect>
@@ -1642,13 +1642,26 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>280</y>
+        <y>300</y>
         <width>921</width>
         <height>16</height>
        </rect>
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="load_slewcal_btn">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>201</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load Standard Slew Cal</string>
       </property>
      </widget>
     </widget>

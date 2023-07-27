@@ -377,6 +377,8 @@ class MainWindow(QMainWindow):
         self.write_calOB_to_file.clicked.connect(self.run_write_calOB_to_file)
         self.load_calOB_from_file_btn = self.findChild(QPushButton, 'load_from_file_btn_for_cal')
         self.load_calOB_from_file_btn.clicked.connect(self.run_load_calOB_from_file)
+        self.load_slewcal_btn = self.findChild(QPushButton, 'load_slewcal_btn')
+        self.load_slewcal_btn.clicked.connect(self.run_load_slewcalOB)
 
         self.executecalOB = self.findChild(QPushButton, 'executeOB_for_cal')
         self.executecalOB_tooltip = "Execute the Cal OB as defined in the fields below"
@@ -1645,6 +1647,31 @@ class MainWindow(QMainWindow):
                     load_failed_popup.setStandardButtons(QMessageBox.Ok) 
                     load_failed_popup.exec_()
 
+    def run_load_slewcalOB(self):
+        fname = self.kpfconfig['SLEWCALFILE'].read()
+        self.log.debug(f"run_load_slewcalOB: {fname}")
+        if fname != '' and Path(fname).exists():
+            try:
+                self.log.debug(f"  Opening: {fname}")
+                with open(fname, 'r') as f:
+                    contents = yaml.safe_load(f)
+                self.log.debug('  Read in YAML')
+                self.log.debug(contents)
+                self.enable_dark_seq1_state_change(0)
+                self.enable_dark_seq2_state_change(0)
+                self.enable_cal_seq1_state_change(2)
+                self.update_calOB('cal1_CalSource', self.kpfconfig['SIMULCALSOURCE'].read())
+                self.update_calOB('cal1_Object', contents.get('Object', 'slewcal'))
+                self.update_calOB('cal1_CalND1', contents.get('CalND1', 'OD 0.1'))
+                self.update_calOB('cal1_CalND2', contents.get('CalND1', 'OD 0.1'))
+                self.update_calOB('cal1_nExp', contents.get('nExp', 1))
+                self.update_calOB('cal1_ExpTime', contents.get('ExpTime', 0))
+                self.update_calOB('cal1_SSS_Science', contents.get('SSS_Science', True))
+                self.update_calOB('cal1_SSS_Sky', contents.get('SSS_Sky', True))
+                self.update_calOB('cal1_TakeSimulCal', contents.get('TimedShutter_SimulCal', True))
+            except Exception as e:
+                self.log.warning('Unable to load slew cal data')
+                self.log.debug(e)
 
     def run_executecalOB(self):
         self.log.debug(f"run_executecalOB")
