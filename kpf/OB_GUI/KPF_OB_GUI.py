@@ -19,6 +19,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
                              QLabel, QPushButton, QLineEdit, QComboBox,
                              QCheckBox, QMessageBox, QFileDialog)
 
+from kpf.OBs import ScienceOB, CalibrationOB
 from kpf.utils import BuildOBfromQuery
 from kpf.utils import SendEmail
 from kpf.utils.EstimateOBDuration import EstimateCalOBDuration, EstimateSciOBDuration
@@ -73,7 +74,7 @@ class MainWindow(QMainWindow):
         self.twomass_params = None
         self.gaia_params = None
         self.disabled_detectors = []
-        self.OB = {'Template_Name': 'kpf_sci',
+        self.OB = ScienceOB({'Template_Name': 'kpf_sci',
                    'Template_Version': 0.6,
                    'TriggerCaHK': True,
                    'TriggerGreen': True,
@@ -93,7 +94,7 @@ class MainWindow(QMainWindow):
                          'CalND1': 'OD 0.1',
                          'CalND2': 'OD 0.1'},
                     ]
-                   }
+                   })
         self.calOB = {'Template_Name': 'kpf_cal',
                       'Template_Version': 0.6,
                       'TriggerCaHK': False,
@@ -298,17 +299,17 @@ class MainWindow(QMainWindow):
         # Guider Setup
         self.GuideMode = self.findChild(QComboBox, 'GuideMode')
         self.GuideMode.addItems(["auto", "manual", "off"])
-        self.update_OB('GuideMode', self.OB['GuideMode'])
+        self.update_OB('GuideMode', self.OB.get('GuideMode'))
         self.GuideMode.currentTextChanged.connect(self.set_guide_mode)
         
         self.GuideCamGain = self.findChild(QComboBox, 'GuideCamGain')
         self.GuideCamGain.addItems(["high", "medium", "low"])
-        self.update_OB('GuideCamGain', self.OB['GuideCamGain'])
+        self.update_OB('GuideCamGain', self.OB.get('GuideCamGain'))
         self.GuideCamGain.currentTextChanged.connect(self.set_guide_gain)
         self.GuideFPS = self.findChild(QLineEdit, 'GuideFPS')
-        self.update_OB('GuideFPS', self.OB['GuideFPS'])
+        self.update_OB('GuideFPS', self.OB.get('GuideFPS'))
         self.GuideFPS.textChanged.connect(self.set_fps)
-        if self.OB['GuideMode'] == 'auto':
+        if self.OB.get('GuideMode') == 'auto':
             self.GuideFPS.setEnabled(False)
 
         # Spectrograph Setup
@@ -325,24 +326,24 @@ class MainWindow(QMainWindow):
         # First Observation Sequence Setup
         self.ObjectEdit = self.findChild(QLineEdit, 'ObjectEdit')
         self.ObjectEdit.textChanged.connect(self.set_object)
-        self.update_OB('Object', self.OB['SEQ_Observations'][0]['Object'])
+        self.update_OB('Object', self.OB.get('SEQ_Observations')[0]['Object'])
 
         self.nExpEdit = self.findChild(QLineEdit, 'nExpEdit')
         self.nExpEdit.textChanged.connect(self.set_nExp)
-        self.update_OB('nExp', self.OB['SEQ_Observations'][0]['nExp'])
+        self.update_OB('nExp', self.OB.get('SEQ_Observations')[0]['nExp'])
 
         self.ExpTimeEdit = self.findChild(QLineEdit, 'ExpTimeEdit')
         self.ExpTimeEdit.textChanged.connect(self.set_exptime)
-        self.update_OB('ExpTime', self.OB['SEQ_Observations'][0]['ExpTime'])
+        self.update_OB('ExpTime', self.OB.get('SEQ_Observations')[0]['ExpTime'])
 
         self.ExpMeterMode = self.findChild(QComboBox, 'ExpMeterMode')
         self.ExpMeterMode.addItems(["monitor"])
-        self.update_OB('ExpMeterMode', self.OB['SEQ_Observations'][0]['ExpMeterMode'])
+        self.update_OB('ExpMeterMode', self.OB.get('SEQ_Observations')[0]['ExpMeterMode'])
         self.ExpMeterMode.currentTextChanged.connect(self.set_expmeter_mode)
 
         self.ExpMeterExpTimeEdit = self.findChild(QLineEdit, 'ExpMeterExpTimeEdit')
         self.ExpMeterExpTimeEdit.textChanged.connect(self.set_expmeter_exptime)
-        self.update_OB('ExpMeterExpTime', self.OB['SEQ_Observations'][0]['ExpMeterExpTime'])
+        self.update_OB('ExpMeterExpTime', self.OB.get('SEQ_Observations')[0]['ExpMeterExpTime'])
 
         self.AutoEMExpTime = self.findChild(QCheckBox, 'AutoEMExpTime')
         self.AutoEMExpTime.stateChanged.connect(self.AutoEMExpTime_state_change)
@@ -352,20 +353,20 @@ class MainWindow(QMainWindow):
 
         self.CalND1 = self.findChild(QComboBox, 'CalND1')
         self.CalND1.addItems(["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"])
-        self.update_OB('CalND1', self.OB['SEQ_Observations'][0]['CalND1'])
+        self.update_OB('CalND1', self.OB.get('SEQ_Observations')[0]['CalND1'])
         self.CalND1.currentTextChanged.connect(self.set_CalND1)
 
         self.CalND2 = self.findChild(QComboBox, 'CalND2')
         self.CalND2.addItems(["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"])
-        self.update_OB('CalND2', self.OB['SEQ_Observations'][0]['CalND2'])
+        self.update_OB('CalND2', self.OB.get('SEQ_Observations')[0]['CalND2'])
         self.CalND2.currentTextChanged.connect(self.set_CalND2)
 
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
-        self.update_OB('AutoNDFilters', self.OB['SEQ_Observations'][0]['AutoNDFilters'])
+        self.update_OB('AutoNDFilters', self.OB.get('SEQ_Observations')[0]['AutoNDFilters'])
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
 
         # Do this after the CalND and AutoNDFilters objects have been created
-        self.update_OB('TakeSimulCal', self.OB['SEQ_Observations'][0]['TakeSimulCal'])
+        self.update_OB('TakeSimulCal', self.OB.get('SEQ_Observations')[0]['TakeSimulCal'])
 
         self.other_names = self.findChild(QLabel, 'other_names')
 
@@ -740,7 +741,7 @@ class MainWindow(QMainWindow):
         # Will this query overwrite any values?
         target_OB_keys = ['2MASSID', 'Parallax', 'RadialVelocity',
                           'Gmag', 'Jmag', 'Teff']
-        currently_used = [v for v in target_OB_keys if v in self.OB.keys()]
+        currently_used = [v for v in target_OB_keys if v in self.OB.OB.keys()]
         if len(currently_used) > 0:
             overwrite_popup = QMessageBox()
             overwrite_popup.setWindowTitle('OB Data Overwrite Confirmation')
@@ -884,12 +885,12 @@ class MainWindow(QMainWindow):
                     'AutoExpMeter', 'ExpMeterExpTime', 'TakeSimulCal',
                     'AutoNDFilters', 'CalND1', 'CalND2']
         if key in seq_keys:
-            self.OB['SEQ_Observations'][0][key] = value
+            self.OB.set(key, value, seq='SEQ_Observations')
         else:
-            self.OB[key] = value
+            self.OB.set(key, value)
 
         if key == 'TargetName':
-            self.OB[key] = f"{value}"
+            self.OB.set(key, f"{value}")
             self.TargetName.setText(f"{value}")
             self.form_star_list_line()
         elif key == 'GaiaID':
@@ -941,7 +942,7 @@ class MainWindow(QMainWindow):
         elif key == 'TakeSimulCal':
             self.TakeSimulCal.setChecked(value)
             self.TakeSimulCal.setText(f"{value}")
-            auto_nd = self.OB['SEQ_Observations'][0].get('AutoNDFilters', False)
+            auto_nd = self.OB.get('SEQ_Observations')[0].get('AutoNDFilters', False)
             self.CalND1.setEnabled(value and not auto_nd)
             self.CalND2.setEnabled(value and not auto_nd)
         elif key == 'AutoNDFilters':
@@ -981,10 +982,10 @@ class MainWindow(QMainWindow):
     def form_star_list_line(self):
         self.log.debug(f"form_star_list_line")
         if self.gaia_params is not None:
-            starlist = BuildOBfromQuery.form_starlist_line(self.OB['TargetName'],
+            starlist = BuildOBfromQuery.form_starlist_line(self.OB.get('TargetName'_,
                                                            self.gaia_params['RA_ICRS'],
                                                            self.gaia_params['DE_ICRS'],
-                                                           vmag=self.OB['Gmag']
+                                                           vmag=self.OB.get('Gmag'),
                                                            )
             self.star_list_line.setText(starlist)
             return starlist

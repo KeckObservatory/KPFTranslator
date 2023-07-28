@@ -4,6 +4,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import datetime
 from packaging import version
+import yaml
 
 
 ##-------------------------------------------------------------------------
