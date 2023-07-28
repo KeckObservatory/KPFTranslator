@@ -24,6 +24,8 @@ class BaseOB(object):
         else:
             if self.OBdict.get(seq, None) is None:
                 self.OBdict[seq] = [{}]
+            if len(self.OBdict.get(seq)) < seqindex-1:
+                self.OBdict[seq].append({})
             self.OBdict[seq][seqindex][keyword] = value
         self.to_lines()
 
