@@ -14,6 +14,10 @@ class BaseOB(object):
         self.lines = []
         self.OBtype = None
         self.OBversion = None
+        self.strings = []
+        self.booleans = []
+        self.ints = []
+        self.floats = []
 
     def get(self, *args):
         return self.OBdict.get(*args)
@@ -26,8 +30,37 @@ class BaseOB(object):
                 self.OBdict[seq] = [{}]
             if len(self.OBdict.get(seq)) < seqindex-1:
                 self.OBdict[seq].append({})
-            self.OBdict[seq][seqindex][keyword] = value
+            self.OBdict[seq][seqindex][keyword] = self.enforce_type(keyword, value)
         self.to_lines()
+
+    def set_seq(self, seq, SEQdict, seqindex=0):
+        if seq not in self.OBdict.keys():
+            self.OBdict[seq] = []
+        nseq = len(self.OBdict[seq])
+        if nseq >= seqindex+1:
+            self.OBdict[seq][seqindex] = SEQdict
+        else:
+            self.OBdict[seq].append(SEQdict)
+
+    def enforce_type(self, keyword, value):
+        if keyword in self.strings:
+            return f"{value}"
+        elif keyword in self.booleans:
+            return f"{value}"
+        elif keyword in self.ints:
+            try:
+                intval = int(value)
+            except:
+                intval = 1
+            return intval
+        elif keyword in self.floats:
+            try:
+                floatval = float(value)
+            except:
+                floatval = 0
+            return floatval
+        else:
+            return value
 
     @classmethod
     def load_from_file(self, fname):
@@ -133,6 +166,13 @@ class CalibrationOB(BaseOB):
         super().__init__(OBdict)
         self.OBtype = 'kpf_cal'
         self.OBversion = '0.6'
+        self.strings = ['Template_Name', 'Template_Version', 'Object',
+                        'CalSource', 'CalND1', 'CalND2', 'FF_FiberPos']
+        self.booleans = ['TriggerCaHK', 'TriggerGreen', 'TriggerRed',
+                         'TriggerExpMeter', 'SSS_Science', 'SSS_Sky',
+                         'TakeSimulCal']
+        self.ints = ['nExp']
+        self.floats = ['ExpTime', 'ExpMeterExpTime']
 
     def to_lines(self):
         self.lines = [f"Template_Name: {self.OBtype}"]

@@ -123,9 +123,9 @@ class MainWindow(QMainWindow):
                            'ExpMeterExpTime': 1},
                        ],
                       })
-        self.dark_seq1_enabled = True
-        self.dark_seq2_enabled = False
-        self.cal_seq1_enabled = True
+#         self.dark_seq1_enabled = True
+#         self.dark_seq2_enabled = False
+#         self.cal_seq1_enabled = True
         self.lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
                                        'TH_GOLD', 'U_DAILY', 'U_GOLD']
         # Keywords
@@ -408,7 +408,7 @@ class MainWindow(QMainWindow):
 
         # Dark Sequence 1
         self.enable_dark_seq1 = self.findChild(QCheckBox, 'enable_dark_seq1')
-        self.enable_dark_seq1.setChecked(self.dark_seq1_enabled)
+        self.enable_dark_seq1.setChecked(len(self.calOB.get('SEQ_Darks', [])) >= 1)
         self.enable_dark_seq1.stateChanged.connect(self.enable_dark_seq1_state_change)
 
         self.Object_dark_seq1 = self.findChild(QLineEdit, 'Object_dark_seq1')
@@ -431,7 +431,7 @@ class MainWindow(QMainWindow):
 
         # Dark Sequence 2
         self.enable_dark_seq2 = self.findChild(QCheckBox, 'enable_dark_seq2')
-        self.enable_dark_seq2.setChecked(self.dark_seq2_enabled)
+        self.enable_dark_seq2.setChecked(len(self.calOB.get('SEQ_Darks', [])) >= 2)
         self.enable_dark_seq2.stateChanged.connect(self.enable_dark_seq2_state_change)
 
         self.Object_dark_seq2 = self.findChild(QLineEdit, 'Object_dark_seq2')
@@ -452,11 +452,9 @@ class MainWindow(QMainWindow):
         self.ExpTime_dark_seq2_label = self.findChild(QLabel, 'ExpTime_dark_seq2_label')
         self.ExpTime_dark_seq2_note = self.findChild(QLabel, 'ExpTime_dark_seq2_note')
 
-        self.enable_dark_seq2_state_change(2 if self.dark_seq2_enabled is True else 0)
-
         # Cal Sequence 1
         self.enable_cal_seq1 = self.findChild(QCheckBox, 'enable_cal_seq1')
-        self.enable_cal_seq1.setChecked(self.cal_seq1_enabled)
+        self.enable_cal_seq1.setChecked(self.calOB.get('SEQ_Calibrations', None) is not None)
         self.enable_cal_seq1.stateChanged.connect(self.enable_cal_seq1_state_change)
 
         self.Object_cal_seq1 = self.findChild(QLineEdit, 'Object_cal_seq1')
@@ -1021,9 +1019,15 @@ class MainWindow(QMainWindow):
             if fname != '' and Path(fname).exists():
                 try:
                     self.OB = ScienceOB.load_from_file(fname)
+                    for key in self.OB.OBdict.keys():
+                        if key != 'SEQ_Observations':
+                            self.update_OB(key, self.OB.get(key))
+                        else:
+                            for seqkey in self.OB.get('SEQ_Observations')[0].keys():
+                                self.update_OB(seqkey, self.OB.get('SEQ_Observations')[0].get(seqkey))
                 except Exception as e:
-                    log.error(f"Unable to load file: {fname}")
-                    log.error(f"{e}")
+                    self.log.error(f"Unable to load file: {fname}")
+                    self.log.error(f"{e}")
                     load_failed_popup = QMessageBox()
                     load_failed_popup.setWindowTitle('Unable to load file')
                     load_failed_popup.setText(f"Unable to load file\n{fname}")
@@ -1210,6 +1214,18 @@ class MainWindow(QMainWindow):
         self.ExpTime_dark_seq1.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq1_label.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq1_note.setEnabled(int(value) == 2)
+        self.calOB.set_seq('SEQ_Darks', {}, seqindex=0)
+        if int(value) == 2:
+            # Adding a seq to the OB
+            self.update_calOB('dark1_Object', self.Object_dark_seq1.text())
+            try:
+                self.update_calOB('dark1_nExp', int(self.nExp_dark_seq1.text()))
+            except:
+                self.update_calOB('dark1_nExp', 1)
+            try:
+                self.update_calOB('dark1_ExpTime', float(self.ExpTime_dark_seq1.text()))
+            except:
+                self.update_calOB('dark1_ExpTime', 0)
         self.estimate_calOB_duration()
 
     def set_Object_dark_seq1(self, value):
@@ -1237,6 +1253,18 @@ class MainWindow(QMainWindow):
         self.ExpTime_dark_seq2.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq2_label.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq2_note.setEnabled(int(value) == 2)
+        self.calOB.set_seq('SEQ_Darks', {}, seqindex=1)
+        if int(value) == 2:
+            # Adding a seq to the OB
+            self.update_calOB('dark2_Object', self.Object_dark_seq2.text())
+            try:
+                self.update_calOB('dark2_nExp', int(self.nExp_dark_seq2.text()))
+            except:
+                self.update_calOB('dark2_nExp', 1)
+            try:
+                self.update_calOB('dark2_ExpTime', float(self.ExpTime_dark_seq2.text()))
+            except:
+                self.update_calOB('dark2_ExpTime', 0)
         self.estimate_calOB_duration()
 
     def set_Object_dark_seq2(self, value):
@@ -1326,6 +1354,88 @@ class MainWindow(QMainWindow):
         self.log.debug(f"set_ExpMeterExpTime_cal_seq1: {value}")
         self.update_calOB('cal1_ExpMeterExpTime', value)
 
+    def refresh_calOB_view(self):
+        self.log.debug('refresh_calOB_view')
+        # Triggers
+        self.TriggerCaHK_cal.setChecked(self.calOB.get('TriggerCaHK') in ['True', True])
+        self.TriggerGreen_cal.setChecked(self.calOB.get('TriggerGreen') in ['True', True])
+        self.TriggerRed_cal.setChecked(self.calOB.get('TriggerRed') in ['True', True])
+        self.TriggerExpMeter_cal.setChecked(self.calOB.get('TriggerExpMeter') in ['True', True])
+        # Dark Seq 1
+        ndarkseq = len(self.calOB.get('SEQ_Darks', []))
+        self.log.debug(f"ndarkseq = {ndarkseq}")
+        self.enable_dark_seq1.setChecked(ndarkseq >= 1)
+        self.Object_dark_seq1.setEnabled(ndarkseq >= 1)
+        self.Object_dark_seq1_label.setEnabled(ndarkseq >= 1)
+        self.Object_dark_seq1_note.setEnabled(ndarkseq >= 1)
+        self.nExp_dark_seq1.setEnabled(ndarkseq >= 1)
+        self.nExp_dark_seq1_label.setEnabled(ndarkseq >= 1)
+        self.nExp_dark_seq1_note.setEnabled(ndarkseq >= 1)
+        self.ExpTime_dark_seq1.setEnabled(ndarkseq >= 1)
+        self.ExpTime_dark_seq1_label.setEnabled(ndarkseq >= 1)
+        self.ExpTime_dark_seq1_note.setEnabled(ndarkseq >= 1)
+        if ndarkseq >= 1:
+            self.Object_dark_seq1.setText(f"{self.calOB.get('SEQ_Darks')[0].get('Object')}")
+            self.nExp_dark_seq1.setText(f"{self.calOB.get('SEQ_Darks')[0].get('nExp')}")
+            self.ExpTime_dark_seq1.setText(f"{self.calOB.get('SEQ_Darks')[0].get('ExpTime')}")
+        # Dark Seq 2
+        self.enable_dark_seq2.setChecked(ndarkseq >= 2)
+        self.Object_dark_seq2.setEnabled(ndarkseq >= 2)
+        self.Object_dark_seq2_label.setEnabled(ndarkseq >= 2)
+        self.Object_dark_seq2_note.setEnabled(ndarkseq >= 2)
+        self.nExp_dark_seq2.setEnabled(ndarkseq >= 2)
+        self.nExp_dark_seq2_label.setEnabled(ndarkseq >= 2)
+        self.nExp_dark_seq2_note.setEnabled(ndarkseq >= 2)
+        self.ExpTime_dark_seq2.setEnabled(ndarkseq >= 2)
+        self.ExpTime_dark_seq2_label.setEnabled(ndarkseq >= 2)
+        self.ExpTime_dark_seq2_note.setEnabled(ndarkseq >= 2)
+        if ndarkseq >= 2:
+            self.Object_dark_seq2.setText(f"{self.calOB.get('SEQ_Darks')[1].get('Object')}")
+            self.nExp_dark_seq2.setText(f"{self.calOB.get('SEQ_Darks')[1].get('nExp')}")
+            self.ExpTime_dark_seq2.setText(f"{self.calOB.get('SEQ_Darks')[1].get('ExpTime')}")
+        # Cal Seq
+        calseq = self.calOB.get('SEQ_Calibrations', None)
+        self.log.debug(f"calseq = {calseq}")
+        self.enable_cal_seq1.setChecked(calseq is not None)
+        self.Object_cal_seq1.setEnabled(calseq is not None)
+        self.Object_cal_seq1_label.setEnabled(calseq is not None)
+        self.Object_cal_seq1_note.setEnabled(calseq is not None)
+        self.CalSource_cal_seq1.setEnabled(calseq is not None)
+        self.CalSource_cal_seq1_label.setEnabled(calseq is not None)
+        self.CalND1_cal_seq1.setEnabled(calseq is not None)
+        self.CalND1_cal_seq1_label.setEnabled(calseq is not None)
+        self.CalND2_cal_seq1.setEnabled(calseq is not None)
+        self.CalND2_cal_seq1_label.setEnabled(calseq is not None)
+        self.nExp_cal_seq1.setEnabled(calseq is not None)
+        self.nExp_cal_seq1_label.setEnabled(calseq is not None)
+        self.nExp_cal_seq1_note.setEnabled(calseq is not None)
+        self.ExpTime_cal_seq1.setEnabled(calseq is not None)
+        self.ExpTime_cal_seq1_label.setEnabled(calseq is not None)
+        self.ExpTime_cal_seq1_note.setEnabled(calseq is not None)
+        self.SSS_Science_cal_seq1.setEnabled(calseq is not None)
+        self.SSS_Science_cal_seq1_label.setEnabled(calseq is not None)
+        self.SSS_Sky_cal_seq1.setEnabled(calseq is not None)
+        self.SSS_Sky_cal_seq1_label.setEnabled(calseq is not None)
+        self.TakeSimulCal_cal_seq1.setEnabled(calseq is not None)
+        self.TakeSimulCal_cal_seq1_label.setEnabled(calseq is not None)
+        self.FF_FiberPos_cal_seq1.setEnabled(calseq is not None)
+        self.FF_FiberPos_cal_seq1_label.setEnabled(calseq is not None)
+        self.ExpMeterExpTime_cal_seq1.setEnabled(calseq is not None)
+        self.ExpMeterExpTime_cal_seq1_label.setEnabled(calseq is not None)
+        if calseq is not None:
+            self.Object_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('Object')}")
+            self.CalSource_cal_seq1.setCurrentText(f"{self.calOB.get('SEQ_Calibrations')[0].get('CalSource')}")
+            self.CalND1_cal_seq1.setCurrentText(f"{self.calOB.get('SEQ_Calibrations')[0].get('CalND1')}")
+            self.CalND2_cal_seq1.setCurrentText(f"{self.calOB.get('SEQ_Calibrations')[0].get('CalDN2')}")
+            self.nExp_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('nExp')}")
+            self.ExpTime_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('ExpTime')}")
+            self.SSS_Science_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('SSS_Science')}")
+            self.SSS_Sky_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('SSS_Sky')}")
+            self.TakeSimulCal_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('TakeSimulCal')}")
+            self.FF_FiberPos_cal_seq1.setCurrentText(f"{self.calOB.get('SEQ_Calibrations')[0].get('FF_FiberPos')}")
+            self.ExpMeterExpTime_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('ExpMeterExpTime')}")
+
+
     def update_calOB(self, key, value):
         self.log.debug(f"update_calOB: {key} = {value}")
         dark_seq_keys = ['dark1_Object', 'dark1_nExp', 'dark1_ExpTime',
@@ -1338,135 +1448,40 @@ class MainWindow(QMainWindow):
             keyid = int(key[4])
             darkkey = key[6:]
             self.log.debug(f"  SEQ_Darks[{keyid-1}]: {darkkey} = {value}")
-            if keyid == 1 and darkkey == 'Object':
-                self.Object_dark_seq1.setText(f"{value}")
-                self.calOB.set(darkkey, value, seq='SEQ_Darks', seqindex=keyid-1)
-            elif keyid == 1 and darkkey == 'nExp':
-                self.nExp_dark_seq1.setText(f"{value}")
-                try:
-                    int_val = int(value)
-                except:
-                    int_val = 0
-                self.calOB.set(darkkey, int_val, seq='SEQ_Darks', seqindex=keyid-1)
-            elif keyid == 1 and darkkey == 'ExpTime':
-                self.ExpTime_dark_seq1.setText(f"{value}")
-                try:
-                    float_val = float(value)
-                except:
-                    float_val = 0
-                self.calOB.set(darkkey, float_val, seq='SEQ_Darks', seqindex=keyid-1)
-            elif keyid == 2 and darkkey == 'Object':
-                self.Object_dark_seq2.setText(f"{value}")
-                self.calOB.set(darkkey, value, seq='SEQ_Darks', seqindex=keyid-1)
-            elif keyid == 2 and darkkey == 'nExp':
-                self.nExp_dark_seq2.setText(f"{value}")
-                try:
-                    int_val = int(value)
-                except:
-                    int_val = 0
-                self.calOB.set(darkkey, int_val, seq='SEQ_Darks', seqindex=keyid-1)
-            elif keyid == 2 and darkkey == 'ExpTime':
-                self.ExpTime_dark_seq2.setText(f"{value}")
-                try:
-                    float_val = float(value)
-                except:
-                    float_val = 0
-                self.calOB.set(darkkey, float_val, seq='SEQ_Darks', seqindex=keyid-1)
-            else:
-                self.calOB.set(darkkey, value, seq='SEQ_Darks', seqindex=keyid-1)
+            self.calOB.set(darkkey, value, seq='SEQ_Darks', seqindex=keyid-1)
         elif key in cal_seq_keys:
             keyid = int(key[3])
             calkey = key[5:]
             self.log.debug(f"  SEQ_Calibrations[{keyid-1}]: {calkey} = {value}")
-            if keyid == 1 and calkey == 'Object':
-                self.Object_cal_seq1.setText(f"{value}")
-                self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'CalSource':
-                self.CalSource_cal_seq1.setCurrentText(f"{value}")
-                self.FF_FiberPos_cal_seq1.setEnabled(value == 'WideFlat')
-                self.FF_FiberPos_cal_seq1_label.setEnabled(value == 'WideFlat')
-                if value.upper() in self.lamps_that_need_warmup:
-                    self.warm_up_warning.setText('Requires warm up')
-                    self.warm_up_warning.setStyleSheet("color:orange")
-                else:
-                    self.warm_up_warning.setText('')
-                    self.warm_up_warning.setStyleSheet("color:black")
-                self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'CalND1':
-                self.CalND1_cal_seq1.setCurrentText(f"{value}")
-                self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'CalND2':
-                self.CalND2_cal_seq1.setCurrentText(f"{value}")
-                self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'nExp':
-                self.nExp_cal_seq1.setText(f"{value}")
-                try:
-                    int_val = int(value)
-                except:
-                    int_val = 0
-                self.calOB.set(calkey, int_val, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'ExpTime':
-                self.ExpTime_cal_seq1.setText(f"{value}")
-                try:
-                    float_val = float(value)
-                except:
-                    float_val = 0
-                self.calOB.set(calkey, float_val, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'SSS_Science':
-                self.SSS_Science_cal_seq1.setChecked(value)
-                self.SSS_Science_cal_seq1.setText(f"{(value in [2, True])}")
-                self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'SSS_Sky':
-                self.SSS_Sky_cal_seq1.setChecked(value)
-                self.SSS_Sky_cal_seq1.setText(f"{(value in [2, True])}")
-                self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'TakeSimulCal':
-                self.TakeSimulCal_cal_seq1.setChecked(value)
-                self.TakeSimulCal_cal_seq1.setText(f"{(value in [2, True])}")
-                self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
-            elif keyid == 1 and calkey == 'ExpMeterExpTime':
-                self.ExpMeterExpTime_cal_seq1.setText(f"{value}")
-                try:
-                    float_val = float(value)
-                except:
-                    float_val = 0
-                self.calOB.set(calkey, float_val, seq='SEQ_Calibrations', seqindex=keyid-1)
-            else:
-                self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
+            self.calOB.set(calkey, value, seq='SEQ_Calibrations', seqindex=keyid-1)
         else:
             self.calOB.set(key, value)
-
-        if key == 'TriggerCaHK':
-            self.TriggerCaHK_cal.setChecked(value)
-        elif key == 'TriggerGreen':
-            self.TriggerGreen_cal.setChecked(value)
-        elif key == 'TriggerRed':
-            self.TriggerRed_cal.setChecked(value)
-        elif key == 'TriggerExpMeter':
-            self.TriggerExpMeter_cal.setChecked(value)
-            self.ExpMeterExpTime_cal_seq1.setEnabled(value)
-            self.ExpMeterExpTime_cal_seq1_label.setEnabled(value)
-            self.ExpMeterExpTime_cal_seq1_note.setEnabled(value)
-
+        self.refresh_calOB_view()
         if key not in ['dark1_Object', 'dark2_Object', 'cal1_Object',
                        'cal1_CalND1', 'cal1_CalND2', 'cal1_FF_FiberPos',
                        'cal1_ExpMeterExpTime', 'cal1_SSS_Science',
                        'cal1_SSS_Sky', 'cal1_TakeSimulCal']:
             self.estimate_calOB_duration()
+        print(self.calOB.OBdict)
+        print(self.calOB)
+
 
     def estimate_calOB_duration(self):
-        log.debug(f"Estimating OB duration")
-        OB_for_calc = deepcopy(self.calOB.OBdict)
-        if len(OB_for_calc['SEQ_Darks']) > 2:
-            OB_for_calc['SEQ_Darks'] = OB_for_calc['SEQ_Darks'][:2]
-        if self.dark_seq2_enabled is False and len(OB_for_calc['SEQ_Darks']) == 2:
-            OB_for_calc['SEQ_Darks'].pop(1)
-        if self.dark_seq1_enabled is False and len(OB_for_calc['SEQ_Darks']) >= 1:
-            OB_for_calc['SEQ_Darks'].pop(0)
-        if self.cal_seq1_enabled is False and len(OB_for_calc['SEQ_Calibrations']) >= 1:
-            OB_for_calc['SEQ_Calibrations'].pop(0)
-        duration = EstimateCalOBDuration.execute(OB_for_calc)
-        self.CalOBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+        try:
+            log.debug(f"Estimating OB duration")
+            OB_for_calc = deepcopy(self.calOB.OBdict)
+            if len(OB_for_calc['SEQ_Darks']) > 2:
+                OB_for_calc['SEQ_Darks'] = OB_for_calc['SEQ_Darks'][:2]
+            if self.dark_seq2_enabled is False and len(OB_for_calc['SEQ_Darks']) == 2:
+                OB_for_calc['SEQ_Darks'].pop(1)
+            if self.dark_seq1_enabled is False and len(OB_for_calc['SEQ_Darks']) >= 1:
+                OB_for_calc['SEQ_Darks'].pop(0)
+            if self.cal_seq1_enabled is False and len(OB_for_calc['SEQ_Calibrations']) >= 1:
+                OB_for_calc['SEQ_Calibrations'].pop(0)
+            duration = EstimateCalOBDuration.execute(OB_for_calc)
+            self.CalOBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+        except:
+            self.CalOBDuration.setText(f"Estimated Duration: unknown min")
 
     def calOB_to_lines(self):
         lines = [f"# Built using KPF OB GUI tool",
@@ -1532,9 +1547,25 @@ class MainWindow(QMainWindow):
             if fname != '' and Path(fname).exists():
                 try:
                     self.calOB = CalibrationOB.load_from_file(fname)
+
+                    for key in self.calOB.OBdict.keys():
+                        if key == 'SEQ_Calibrations':
+                            if len(self.calOB.get('SEQ_Calibrations')) >= 1:
+                                for seqkey in self.calOB.get('SEQ_Calibrations')[0].keys():
+                                    self.update_calOB(f"cal1_{seqkey}", self.calOB.get('SEQ_Calibrations')[0].get(seqkey))
+                        elif key == 'SEQ_Darks':
+                            if len(self.calOB.get('SEQ_Darks')) >= 1:
+                                for seqkey in self.calOB.get('SEQ_Darks')[0].keys():
+                                    self.update_calOB(f"dark1_{seqkey}", self.calOB.get('SEQ_Darks')[0].get(seqkey))
+                            if len(self.calOB.get('SEQ_Darks')) >= 2:
+                                for seqkey in self.calOB.get('SEQ_Darks')[1].keys():
+                                    self.update_calOB(f"dark2_{seqkey}", self.calOB.get('SEQ_Darks')[1].get(seqkey))
+                        else:
+                            self.update_calOB(key, self.calOB.get(key))
                 except Exception as e:
-                    log.error(f"Unable to load file: {fname}")
-                    log.error(f"{e}")
+                    self.log.error(f"Unable to load file: {fname}")
+                    self.log.error(f"{e}")
+                    self.log.error(traceback.format_exc())
                     load_failed_popup = QMessageBox()
                     load_failed_popup.setWindowTitle('Unable to load file')
                     load_failed_popup.setText(f"Unable to load file\n{fname}")
@@ -1615,12 +1646,9 @@ if __name__ == '__main__':
     log = create_GUI_log()
     log.info(f"Starting KPF OB GUI")
     try:
-        status = main()
+        main()
     except Exception as e:
         log.error(e)
         log.error(traceback.format_exc())
-    log.info(f"Exiting KPF OB GUI: Status={status}")
-    if status != 0:
-        log.error(traceback.format_exc())
-    sys.exit(status)
+    log.info(f"Exiting KPF OB GUI")
 
