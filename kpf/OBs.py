@@ -19,9 +19,11 @@ class BaseOB(object):
         return self.OBdict.get(*args)
 
     def set(self, keyword, value, seq=None, seqindex=0):
-        if seq=None:
+        if seq==None:
             self.OBdict[keyword] = value
         else:
+            if self.OBdict.get(seq, None) is None:
+                self.OBdict[seq] = [{}]
             self.OBdict[seq][seqindex][keyword] = value
         self.to_lines()
 

@@ -982,7 +982,7 @@ class MainWindow(QMainWindow):
     def form_star_list_line(self):
         self.log.debug(f"form_star_list_line")
         if self.gaia_params is not None:
-            starlist = BuildOBfromQuery.form_starlist_line(self.OB.get('TargetName'_,
+            starlist = BuildOBfromQuery.form_starlist_line(self.OB.get('TargetName'),
                                                            self.gaia_params['RA_ICRS'],
                                                            self.gaia_params['DE_ICRS'],
                                                            vmag=self.OB.get('Gmag'),
