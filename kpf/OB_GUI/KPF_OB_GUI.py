@@ -1071,14 +1071,6 @@ class MainWindow(QMainWindow):
         OB_for_calc = deepcopy(self.OB)
         OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
         OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
-#         if len(OB_for_calc['SEQ_Darks']) > 2:
-#             OB_for_calc['SEQ_Darks'] = OB_for_calc['SEQ_Darks'][:2]
-#         if self.dark_seq2_enabled is False and len(OB_for_calc['SEQ_Darks']) == 2:
-#             OB_for_calc['SEQ_Darks'].pop(1)
-#         if self.dark_seq1_enabled is False and len(OB_for_calc['SEQ_Darks']) >= 1:
-#             OB_for_calc['SEQ_Darks'].pop(0)
-#         if self.cal_seq1_enabled is False and len(OB_for_calc['SEQ_Calibrations']) >= 1:
-#             OB_for_calc['SEQ_Calibrations'].pop(0)
         duration = EstimateSciOBDuration.execute(OB_for_calc)
         self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
 
@@ -1718,7 +1710,11 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     log = create_GUI_log()
     log.info(f"Starting KPF OB GUI")
-    status = main()
+    try:
+        status = main()
+    except Exception as e:
+        log.error(e)
+        log.error(traceback.format_exc())
     log.info(f"Exiting KPF OB GUI: Status={status}")
     if status != 0:
         log.error(traceback.format_exc())
