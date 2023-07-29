@@ -533,19 +533,19 @@ class MainWindow(QMainWindow):
     def update_progname_value(self, value):
         value = str(value).strip()
         self.log.debug(f'update_progname_value: {value}')
-        self.progID.setText(value)
+        self.progID.setText(f"{value}")
 
     # Observer
     def update_observer_value(self, value):
         value = str(value).strip()
         self.log.debug(f'update_observer_value: {value}')
-        self.Observer.setText(value)
+        self.Observer.setText(f"{value}")
 
     # Script Name
     def update_scriptname_value(self, value):
         '''Set label text and set color'''
         self.log.debug(f'update_scriptname_value: {value}')
-        self.scriptname_value.setText(value)
+        self.scriptname_value.setText(f"{value.strip('.py')}")
         if value in ['None', '']:
             self.scriptname_value.setStyleSheet("color:green")
         else:
@@ -555,7 +555,7 @@ class MainWindow(QMainWindow):
     def update_expose_status_value(self, value):
         '''Set label text and set color'''
         self.log.debug(f'update_expose_status_value: {value}')
-        self.expose_status_value.setText(value)
+        self.expose_status_value.setText(f"{value}")
         if value == 'Ready':
             self.expose_status_value.setStyleSheet("color:green")
         elif value in ['Start', 'InProgress', 'Readout']:
@@ -587,7 +587,7 @@ class MainWindow(QMainWindow):
     def update_scriptstop_value(self, value):
         '''Set label text and set color'''
         self.log.debug(f'update_scriptstop_value: {value}')
-        self.scriptstop_value.setText(value)
+        self.scriptstop_value.setText(f"{value}")
         if value == 'Yes':
             self.scriptstop_value.setStyleSheet("color:red")
             self.scriptstop_btn.setText('CLEAR STOP')
@@ -664,7 +664,7 @@ class MainWindow(QMainWindow):
     def update_slewcalreq_value(self, value):
         '''Set label text and set color'''
         self.log.debug(f'update_slewcalreq_value: {value}')
-        self.slewcalreq_value.setText(value)
+        self.slewcalreq_value.setText(f"{value}")
         if value == 'Yes':
             self.slewcalreq_value.setStyleSheet("color:orange")
         elif value == 'No':
@@ -1067,12 +1067,15 @@ class MainWindow(QMainWindow):
                     load_failed_popup.exec_()
 
     def estimate_OB_duration(self):
-        log.debug(f"Estimating OB duration")
-        OB_for_calc = deepcopy(self.OB)
-        OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
-        OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
-        duration = EstimateSciOBDuration.execute(OB_for_calc)
-        self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+        try:
+            log.debug(f"Estimating OB duration")
+            OB_for_calc = deepcopy(self.OB)
+            OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
+            OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
+            duration = EstimateSciOBDuration.execute(OB_for_calc)
+            self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+        except:
+            self.OBDuration.setText(f"Estimated Duration: unknown")
 
     ##-------------------------------------------
     ## Execute an OB (with or without slewcal)
@@ -1711,12 +1714,9 @@ if __name__ == '__main__':
     log = create_GUI_log()
     log.info(f"Starting KPF OB GUI")
     try:
-        status = main()
+        main()
     except Exception as e:
         log.error(e)
         log.error(traceback.format_exc())
-    log.info(f"Exiting KPF OB GUI: Status={status}")
-    if status != 0:
-        log.error(traceback.format_exc())
-    sys.exit(status)
+    log.info(f"Exiting KPF OB GUI")
 
