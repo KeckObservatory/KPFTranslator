@@ -10,7 +10,7 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
-                         add_script_log)
+                         add_script_log, clear_script_keywords)
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetLFCtoStandbyHigh import SetLFCtoStandbyHigh
@@ -82,6 +82,8 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
 
         # Clear target info
         SetTargetInfo.execute({})
+
+        clear_script_keywords()
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
