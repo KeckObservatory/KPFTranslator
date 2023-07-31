@@ -24,54 +24,44 @@ class TestTipTiltMirrorRange(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        # Verify with user if it is OK to proceed
-        msg = ["",
-               "--------------------------------------------------------------",
-               "This script will move the tip tilt mirror.",
-               "Observations should not be in progress and the AO bench should",
-               "be clear of personnel.",
-               "Do you wish to to continue? [Y/n]",
-               "--------------------------------------------------------------",
-               "",
-               ]
-        for line in msg:
-            print(line)
-        user_input = input()
-        if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
-            return
-
         # Measure tip tilt ranges
-        log.info('Beginning TestTipTiltMirrorRange')
+        log.info('Beginning MeasureTipTiltMirrorRange')
         InitializeTipTilt.execute({})
 
-        nsamples = 9
         movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
+        tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
+
+        kpffiu = ktl.cache('kpffiu')
+        kpfguide = ktl.cache('kpfguide')
 
         axis = ['X', 'Y']
-        for ax in axis:
-            vals = {'-2900': [], '+2900': []}
-            TTVAL = ktl.cache('kpffiu', f'TT{ax}VAL')
-            for val in vals.keys():
-                log.debug(f'Moving {ax} to {val}')
-                TTVAL.write(int(val))
-                time.sleep(10*movetime)
-                results = []
-                for i in range(nsamples):
-                    reading = float(TTVAL.read())
-                    log.debug(f'  TT{ax}VAL = {reading:.1f}')
-                    results.append(reading)
-                    time.sleep(movetime)
-                # Analyze Results
-                meanresult = np.mean(np.array(results))
-                stdresult = np.std(np.array(results))
-                delta = meanresult - float(val)
-                frac = meanresult/float(val)
-                vals[val] = [meanresult, stdresult, delta, frac]
-                log.info(f"  TT{ax}VAL={val}: mean={meanresult:.1f} (stddev={stdresult:.1f})")
-            log.info(f"TipTilt Range {ax}: {-vals['-2900'][3]:.0%} to {vals['+2900'][3]:.0%}")
+        for i,ax in enumerate(axis):
+            nominal_range = kpfguide[f'TIPTILT_{ax}RANGE'].read(binary=True)
+            home = kpfguide['TIPTILT_HOME'].read(binary=True)[i]
 
+            commanded_position = home-nominal_range
+            log.info(f"Sending TT{ax}VAX to {commanded_position}")
+            kpffiu[f'TT{ax}VAX'].write(commanded_position)
+            time.sleep(movetime*100)
+            current_position = kpffiu[f'TT{ax}VAX'].read(binary=True)
+            if abs(current_position-commanded_position) < tol:
+                log.info(f"{ax} reached nominal range: {commanded_position}")
+            else:
+                log.error(f"{ax} failed to reach {commanded_position}: {current_position}")
+
+            commanded_position = home+nominal_range
+            log.info(f"Sending TT{ax}VAX to {commanded_position}")
+            kpffiu[f'TT{ax}VAX'].write(commanded_position)
+            time.sleep(movetime*100)
+            current_position = kpffiu[f'TT{ax}VAX'].read(binary=True)
+            if abs(current_position-commanded_position) < tol:
+                log.info(f"{ax} reached nominal range: {commanded_position}")
+            else:
+                log.error(f"{ax} failed to reach {commanded_position}: {current_position}")
+
+            time.sleep(movetime*100)
             InitializeTipTilt.execute({})
-            time.sleep(10*movetime)
+            time.sleep(movetime*100)
 
         ShutdownTipTilt.execute({})
 
