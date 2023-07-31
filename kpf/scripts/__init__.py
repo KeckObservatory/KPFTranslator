@@ -73,6 +73,8 @@ def clear_script_keywords():
     kpfconfig['SCRIPTNAME'].write('None')
     kpfconfig['SCRIPTPID'].write(-1)
     kpfconfig['SCRIPTHOST'].write('')
+    kpfconfig['SCRIPTSTOP'].write('No')
+    kpfconfig['SCRIPTPAUSE'].write('No')
 
 
 def check_script_running():
