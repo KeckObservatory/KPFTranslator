@@ -140,6 +140,7 @@ class ExecuteSci(KPFTranslatorFunction):
             log.info(f"Readout has begun")
             if runagitator is True:
                 StopAgitator.execute({})
+        check_scriptstop() # Stop here if requested
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
