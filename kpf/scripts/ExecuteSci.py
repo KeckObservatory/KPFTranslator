@@ -10,6 +10,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.SetExpTime import SetExpTime
 from kpf.spectrograph.SetTimedShutters import SetTimedShutters
@@ -58,6 +59,7 @@ class ExecuteSci(KPFTranslatorFunction):
         kpfguide = ktl.cache('kpfguide')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        fast_read_mode = QueryFastReadMode.execute({})
 
         ## ----------------------------------------------------------------
         ## Setup exposure meter
@@ -123,6 +125,9 @@ class ExecuteSci(KPFTranslatorFunction):
         ## Take actual exposures
         ## ----------------------------------------------------------------
         nexp = int(args.get('nExp', 1))
+        # If we are in fast read mode, turn on agitator once
+        if runagitator and fast_read_mode:
+            StartAgitator.execute({})
         for j in range(nexp):
             check_scriptstop() # Stop here if requested
             # Wait for current exposure to readout
@@ -132,15 +137,17 @@ class ExecuteSci(KPFTranslatorFunction):
                 log.info(f"Readout complete")
                 check_scriptstop() # Stop here if requested
             # Start next exposure
-            if runagitator is True:
+            if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
             log.info(f"Starting {args.get('ExpTime')} s expoure {j+1}/{nexp} ({args.get('Object')})")
             StartExposure.execute({})
             WaitForReadout.execute({})
             log.info(f"Readout has begun")
-            if runagitator is True:
+            if runagitator and not fast_read_mode:
                 StopAgitator.execute({})
-        check_scriptstop() # Stop here if requested
+        # If we are in fast read mode, turn off agitator at end
+        if runagitator and fast_read_mode:
+            StopAgitator.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
