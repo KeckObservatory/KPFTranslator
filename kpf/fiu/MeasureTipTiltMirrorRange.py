@@ -79,6 +79,9 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         log.info(f"Measured X range: {measured_range['X']}")
         log.info(f"Measured Y range: {measured_range['Y']}")
 
+        if update_ax['Y'] is True or update_ax['X'] is True:
+            new_home = [np.mean(measured_range['X']), np.mean(measured_range['Y'])]
+            print(f"modify -s kpfguide TIPTILT_HOME='{new_home[0]:.1f} {new_home[1]:.1f}'")
         if update_ax['X'] is True:
             xrange = (max(measured_range['X']) - min(measured_range['X']))/2
             print(f"modify -s kpfguide TIPTILT_XRANGE={xrange:.1f}")
@@ -89,9 +92,6 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
             print(f"modify -s kpfguide TIPTILT_YRANGE={yrange:.1f}")
             new_RON = np.mean(rawvals['Y'])
             print(f"modify -s kpffiu TTYRON='|{new_RON:.0f}|0|Home'")
-        if update_ax['Y'] is True or update_ax['X'] is True:
-            new_home = [np.mean(measured_range['X']), np.mean(measured_range['Y'])]
-            print(f"modify -s kpfguide TIPTILT_HOME='{new_home[0]:.1f} {new_home[1]:.1f}'")
 
         return measured_range
 
