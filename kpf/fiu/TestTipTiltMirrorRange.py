@@ -25,7 +25,7 @@ class TestTipTiltMirrorRange(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         # Measure tip tilt ranges
-        log.info('Beginning MeasureTipTiltMirrorRange')
+        log.info('Beginning TestTipTiltMirrorRange')
         InitializeTipTilt.execute({})
 
         movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)

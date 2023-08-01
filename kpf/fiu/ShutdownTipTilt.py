@@ -28,7 +28,7 @@ class ShutdownTipTilt(KPFTranslatorFunction):
         log.debug(f'Sending Tip tilt mirror to home: {home[0]} {home[1]}')
         kpffiu['TTXVAX'].write(home[0])
         kpffiu['TTYVAX'].write(home[1])
-        log.info('Opening tip tilt mirror servo loops')
+        log.debug('Opening tip tilt mirror servo loops')
         kpffiu['TTXSRV'].write('open')
         kpffiu['TTYSRV'].write('open')
 

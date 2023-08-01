@@ -21,7 +21,7 @@ class InitializeTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        log.info(f"Initializing tip tilt mirror")
+        log.debug(f"Initializing tip tilt mirror")
         kpffiu = ktl.cache('kpffiu')
         tthome = ktl.cache('kpfguide', 'TIPTILT_HOME')
         home = tthome.read(binary=True)
