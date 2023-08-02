@@ -58,7 +58,8 @@ def find_new_limit(ax, commanded_position, n=5,
         delta_sign = -1 if min(deltas) < 0 else 1
         delta = min([abs(d)-margin for d in deltas])
         new_limit = home-delta_sign*delta
-        log.warning(f"New limit = {new_limit:.1f} (margin={margin:.1f})")
+        delta_sign_str = {-1: '+', 1: '-'}[delta_sign]
+        log.warning(f"New limit for {delta_sign_str}{ax} = {new_limit:.1f} (margin={margin:.1f})")
         return new_limit
 
 
@@ -80,7 +81,7 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         InitializeTipTilt.execute({})
 
         movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
-        sleeptime = movetime*30
+        sleeptime = movetime*50
         tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
 
         kpffiu = ktl.cache('kpffiu')
