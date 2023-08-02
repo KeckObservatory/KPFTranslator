@@ -21,10 +21,11 @@ def check_move(ax, commanded_position, sleeptime=1, tol=0.1):
     time.sleep(sleeptime)
     current_position = kpffiu[f'TT{ax}VAX'].read(binary=True)
     if abs(current_position-commanded_position) < tol:
+        log.info(f"  TT{ax}VAX reached {commanded_position:.2f}")
         return None
     else:
-        new_limit = -np.floor(abs(current_position)*10)/10
-        return new_limit 
+        log.info(f"  TT{ax}VAX only reached {current_position:.2f}")
+        return current_position 
 
 
 def find_new_limit(ax, commanded_position, n=5,
@@ -37,28 +38,31 @@ def find_new_limit(ax, commanded_position, n=5,
     deltas = []
     log.info(f'Finding move limit for TT{ax}VAX toward {commanded_position:.1f}')
     for i in range(n):
-        log.debug(f"Commanding TT{ax}VAX to {commanded_position:.1f} ({i+1}/{n})")
+        log.info(f"  Commanding TT{ax}VAX to {commanded_position:.2f} ({i+1}/{n})")
         measured_limit = check_move(ax, commanded_position)
         if measured_limit is not None:
-            log.debug(f"  TT{ax}VAX reached {measured_limit:.1f}")
             limits.append(measured_limit)
             deltas.append(home-measured_limit)
         # Send home
-        result = check_move(ax, home)
-        if result is not None:
-            result = check_move(ax, home)
-            if result is not None:
-                log.error(f'Could not move {ax} to home: {home:.1f}')
+        try:
+            kpffiu[f'TT{ax}VAX'].write(home)
+        except:
+            time.sleep(sleeptime)
+            kpffiu[f'TT{ax}VAX'].write(home)
         time.sleep(sleeptime)
 
     if len(limits) == 0:
         return None
     else:
-        log.warning(f"Move failed on {len(limits)}/{n} tries")
+        log.info(f"Move failed on {len(limits)}/{n} moves")
+        print(commanded_position)
+        print(limits)
+        print(deltas)
         delta_sign = -1 if min(deltas) < 0 else 1
         delta = min([abs(d)-margin for d in deltas])
         new_limit = home-delta_sign*delta
         delta_sign_str = {-1: '+', 1: '-'}[delta_sign]
+        print(new_limit, delta, delta_sign, delta_sign_str)
         log.warning(f"New limit for {delta_sign_str}{ax} = {new_limit:.1f} (margin={margin:.1f})")
         return new_limit
 
@@ -80,9 +84,10 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         log.info('Beginning MeasureTipTiltMirrorRange')
         InitializeTipTilt.execute({})
 
-        movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
-        sleeptime = movetime*50
+        movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.01)
+        sleeptime = movetime*500
         tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
+        n = 3
 
         kpffiu = ktl.cache('kpffiu')
 
@@ -91,21 +96,24 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         rawvals = {}
         update_ax = {'X': False, 'Y': False}
         for i,ax in enumerate(axis):
-            nominal_range = {'X': 15.9, 'Y': 24.6}[ax]
+#             nominal_range = {'X': 15.9, 'Y': 24.6}[ax]
+            nominal_range = {'X': 15.0, 'Y': 20.0}[ax]
             home = 0
             measured_range[ax] = [-nominal_range, nominal_range]
             rawvals[ax] = [None, None]
 
+            # Negative side
             commanded_position = home-nominal_range
             new_limit = find_new_limit(ax, commanded_position,
-                                       sleeptime=sleeptime, tol=tol, n=5)
+                                       sleeptime=sleeptime, tol=tol, n=n)
             if new_limit is not None:
                 update_ax[ax] = True
                 measured_range[ax][0] = new_limit
 
+            # Positive side
             commanded_position = home+nominal_range
             new_limit = find_new_limit(ax, commanded_position,
-                                       sleeptime=sleeptime, tol=tol, n=5)
+                                       sleeptime=sleeptime, tol=tol, n=n)
             if new_limit is not None:
                 update_ax[ax] = True
                 measured_range[ax][1] = new_limit
