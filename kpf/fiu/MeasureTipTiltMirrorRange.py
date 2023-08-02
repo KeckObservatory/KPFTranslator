@@ -55,14 +55,14 @@ def find_new_limit(ax, commanded_position, n=5,
         return None
     else:
         log.info(f"Move failed on {len(limits)}/{n} moves")
-        print(commanded_position)
-        print(limits)
-        print(deltas)
+#         print(commanded_position)
+#         print(limits)
+#         print(deltas)
         delta_sign = -1 if min(deltas) < 0 else 1
         delta = min([abs(d)-margin for d in deltas])
         new_limit = home-delta_sign*delta
         delta_sign_str = {-1: '+', 1: '-'}[delta_sign]
-        print(new_limit, delta, delta_sign, delta_sign_str)
+#         print(new_limit, delta, delta_sign, delta_sign_str)
         log.warning(f"New limit for {delta_sign_str}{ax} = {new_limit:.1f} (margin={margin:.1f})")
         return new_limit
 
