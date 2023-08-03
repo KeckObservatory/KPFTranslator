@@ -19,7 +19,7 @@ def check_move(ax, commanded_position, sleeptime=1, tol=0.1):
         time.sleep(sleeptime)
         kpffiu[f'TT{ax}VAX'].write(commanded_position)
     time.sleep(sleeptime)
-    current_position = kpffiu[f'TT{ax}VAX'].read(binary=True)
+    current_position = kpffiu[f'TT{ax}MEX'].read(binary=True)
     if abs(current_position-commanded_position) < tol:
         log.info(f"  TT{ax}VAX reached {commanded_position:.2f}")
         return None
@@ -39,7 +39,8 @@ def find_new_limit(ax, commanded_position, n=5,
     log.info(f'Finding move limit for TT{ax}VAX toward {commanded_position:.1f}')
     for i in range(n):
         log.info(f"  Commanding TT{ax}VAX to {commanded_position:.2f} ({i+1}/{n})")
-        measured_limit = check_move(ax, commanded_position)
+        measured_limit = check_move(ax, commanded_position,
+                                    sleeptime=sleeptime, tol=tol)
         if measured_limit is not None:
             limits.append(measured_limit)
             deltas.append(home-measured_limit)
@@ -58,11 +59,11 @@ def find_new_limit(ax, commanded_position, n=5,
 #         print(commanded_position)
 #         print(limits)
 #         print(deltas)
-        delta_sign = -1 if min(deltas) < 0 else 1
-        delta = min([abs(d)-margin for d in deltas])
-        new_limit = home-delta_sign*delta
-        delta_sign_str = {-1: '+', 1: '-'}[delta_sign]
-#         print(new_limit, delta, delta_sign, delta_sign_str)
+        delta_sign = -1 if commanded_position < 0 else 1
+        delta = min([abs(d) for d in deltas])
+        new_limit = home+delta_sign*(delta-margin)
+        delta_sign_str = {-1: '-', 1: '+'}[delta_sign]
+#         print(home, delta_sign, delta_sign_str, delta, margin)
         log.warning(f"New limit for {delta_sign_str}{ax} = {new_limit:.1f} (margin={margin:.1f})")
         return new_limit
 
@@ -84,10 +85,10 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         log.info('Beginning MeasureTipTiltMirrorRange')
         InitializeTipTilt.execute({})
 
-        movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.01)
-        sleeptime = movetime*500
+        sleeptime = 10 # Set by the 5 second time in the %MEX and %MEV keywords
+                       # Need to account for worst case
         tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
-        n = 5
+        n = 3
 
         kpffiu = ktl.cache('kpffiu')
 
@@ -96,8 +97,7 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         rawvals = {}
         update_ax = {'X': False, 'Y': False}
         for i,ax in enumerate(axis):
-#             nominal_range = {'X': 15.9, 'Y': 24.6}[ax]
-            nominal_range = {'X': 15.0, 'Y': 20.0}[ax]
+            nominal_range = {'X': 15.9, 'Y': 24.6}[ax]
             home = 0
             measured_range[ax] = [-nominal_range, nominal_range]
             rawvals[ax] = [None, None]
@@ -135,14 +135,14 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
 
             kpffiu[f'TT{ax}VAX'].write(new_home[0])
             time.sleep(sleeptime)
-            new_RON = kpffiu[f'TT{ax}RAW'].read()
+            new_RON = kpffiu[f'TT{ax}MED'].read()
             print(f"modify -s kpffiu TT{ax}RON='|{new_RON}|0|Home'")
         if update_ax['Y'] is True:
             yrange = (max(measured_range['Y']) - min(measured_range['Y']))/2
             print(f"modify -s kpfguide TIPTILT_YRANGE={yrange:.1f}")
             kpffiu[f'TT{ax}VAX'].write(new_home[1])
             time.sleep(sleeptime)
-            new_RON = kpffiu[f'TT{ax}RAW'].read()
+            new_RON = kpffiu[f'TT{ax}MED'].read()
             print(f"modify -s kpffiu TT{ax}RON='|{new_RON}|0|Home'")
 
         ShutdownTipTilt.execute({})
