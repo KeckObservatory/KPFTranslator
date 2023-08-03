@@ -29,7 +29,7 @@ def check_move(ax, commanded_position, sleeptime=1, tol=0.1):
 
 
 def find_new_limit(ax, commanded_position, n=5,
-                   sleeptime=1, tol=0.1, margin=1):
+                   sleeptime=1, tol=0.1, margin=0.2):
     kpffiu = ktl.cache('kpffiu')
     tthome = ktl.cache('kpfguide', 'TIPTILT_HOME')
     axid = {'X': 0, 'Y': 1}[ax]
@@ -87,7 +87,7 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.01)
         sleeptime = movetime*500
         tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
-        n = 3
+        n = 5
 
         kpffiu = ktl.cache('kpffiu')
 
