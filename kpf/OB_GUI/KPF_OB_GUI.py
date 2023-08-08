@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
                              QLabel, QPushButton, QLineEdit, QComboBox,
                              QCheckBox, QMessageBox, QFileDialog)
 
-from kpf.OBs import ScienceOB, CalibrationOB
+from kpf.OB_GUI.OBs import ScienceOB, CalibrationOB
 from kpf.utils import BuildOBfromQuery
 from kpf.utils import SendEmail
 from kpf.utils.EstimateOBDuration import EstimateCalOBDuration, EstimateSciOBDuration
@@ -123,9 +123,6 @@ class MainWindow(QMainWindow):
                            'ExpMeterExpTime': 1},
                        ],
                       })
-#         self.dark_seq1_enabled = True
-#         self.dark_seq2_enabled = False
-#         self.cal_seq1_enabled = True
         self.lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
                                        'TH_GOLD', 'U_DAILY', 'U_GOLD']
         # Keywords
@@ -326,24 +323,24 @@ class MainWindow(QMainWindow):
         # First Observation Sequence Setup
         self.ObjectEdit = self.findChild(QLineEdit, 'ObjectEdit')
         self.ObjectEdit.textChanged.connect(self.set_object)
-        self.update_OB('Object', self.OB.get('SEQ_Observations')[0]['Object'])
+        self.update_OB('Object', self.OB.SEQ_Observations.get('Object'))
 
         self.nExpEdit = self.findChild(QLineEdit, 'nExpEdit')
         self.nExpEdit.textChanged.connect(self.set_nExp)
-        self.update_OB('nExp', self.OB.get('SEQ_Observations')[0]['nExp'])
+        self.update_OB('nExp', self.OB.SEQ_Observations.get('nExp'))
 
         self.ExpTimeEdit = self.findChild(QLineEdit, 'ExpTimeEdit')
         self.ExpTimeEdit.textChanged.connect(self.set_exptime)
-        self.update_OB('ExpTime', self.OB.get('SEQ_Observations')[0]['ExpTime'])
+        self.update_OB('ExpTime', self.OB.SEQ_Observations.get('ExpTime'))
 
         self.ExpMeterMode = self.findChild(QComboBox, 'ExpMeterMode')
         self.ExpMeterMode.addItems(["monitor"])
-        self.update_OB('ExpMeterMode', self.OB.get('SEQ_Observations')[0]['ExpMeterMode'])
+        self.update_OB('ExpMeterMode', self.OB.SEQ_Observations.get('ExpMeterMode'))
         self.ExpMeterMode.currentTextChanged.connect(self.set_expmeter_mode)
 
         self.ExpMeterExpTimeEdit = self.findChild(QLineEdit, 'ExpMeterExpTimeEdit')
         self.ExpMeterExpTimeEdit.textChanged.connect(self.set_expmeter_exptime)
-        self.update_OB('ExpMeterExpTime', self.OB.get('SEQ_Observations')[0]['ExpMeterExpTime'])
+        self.update_OB('ExpMeterExpTime', self.OB.SEQ_Observations.get('ExpMeterExpTime'))
 
         self.AutoEMExpTime = self.findChild(QCheckBox, 'AutoEMExpTime')
         self.AutoEMExpTime.stateChanged.connect(self.AutoEMExpTime_state_change)
@@ -353,20 +350,20 @@ class MainWindow(QMainWindow):
 
         self.CalND1 = self.findChild(QComboBox, 'CalND1')
         self.CalND1.addItems(["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"])
-        self.update_OB('CalND1', self.OB.get('SEQ_Observations')[0]['CalND1'])
+        self.update_OB('CalND1', self.OB.SEQ_Observations.get('CalND1'))
         self.CalND1.currentTextChanged.connect(self.set_CalND1)
 
         self.CalND2 = self.findChild(QComboBox, 'CalND2')
         self.CalND2.addItems(["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"])
-        self.update_OB('CalND2', self.OB.get('SEQ_Observations')[0]['CalND2'])
+        self.update_OB('CalND2', self.OB.SEQ_Observations.get('CalND2'))
         self.CalND2.currentTextChanged.connect(self.set_CalND2)
 
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
-        self.update_OB('AutoNDFilters', self.OB.get('SEQ_Observations')[0]['AutoNDFilters'])
+        self.update_OB('AutoNDFilters', self.OB.SEQ_Observations.get('AutoNDFilters'))
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
 
         # Do this after the CalND and AutoNDFilters objects have been created
-        self.update_OB('TakeSimulCal', self.OB.get('SEQ_Observations')[0]['TakeSimulCal'])
+        self.update_OB('TakeSimulCal', self.OB.SEQ_Observations.get('TakeSimulCal'))
 
         self.other_names = self.findChild(QLabel, 'other_names')
 
@@ -883,7 +880,7 @@ class MainWindow(QMainWindow):
                     'AutoExpMeter', 'ExpMeterExpTime', 'TakeSimulCal',
                     'AutoNDFilters', 'CalND1', 'CalND2']
         if key in seq_keys:
-            self.OB.set(key, value, seq='SEQ_Observations')
+            self.OB.SEQ_Observations.set(key, value)
         else:
             self.OB.set(key, value)
 
@@ -940,7 +937,7 @@ class MainWindow(QMainWindow):
         elif key == 'TakeSimulCal':
             self.TakeSimulCal.setChecked(value)
             self.TakeSimulCal.setText(f"{value}")
-            auto_nd = self.OB.get('SEQ_Observations')[0].get('AutoNDFilters', False)
+            auto_nd = self.OB.SEQ_Observations.get('AutoNDFilters', False)
             self.CalND1.setEnabled(value and not auto_nd)
             self.CalND2.setEnabled(value and not auto_nd)
         elif key == 'AutoNDFilters':
@@ -1019,9 +1016,11 @@ class MainWindow(QMainWindow):
             if fname != '' and Path(fname).exists():
                 try:
                     self.OB = ScienceOB.load_from_file(fname)
-                    for key in self.OB.OBdict.keys():
+                    for key in self.OB._dict.keys():
                         if key != 'SEQ_Observations':
                             self.update_OB(key, self.OB.get(key))
+                    for key in self.OB.SEQ_Observations._dict.keys():
+                            
                         else:
                             for seqkey in self.OB.get('SEQ_Observations')[0].keys():
                                 self.update_OB(seqkey, self.OB.get('SEQ_Observations')[0].get(seqkey))
