@@ -171,6 +171,29 @@ class ExecuteCal(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Configure exposure meter
         ## ----------------------------------------------------------------
+        EM_mode = args.get('ExpMeterMode', 'monitor')
+        kpf_expmeter = ktl.cache('kpf_expmeter')
+        if EM_mode == 'monitor':
+            kpf_expmeter['USETHRESHOLD'].write('No')
+        elif EM_mode == 'control':
+            kpf_expmeter['USETHRESHOLD'].write('Yes')
+            # Set flux threshold
+            threshold = args.get('ExpMeterThreshold', None)
+            if threshold is None:
+                log.error('No exposure meter threshold defined')
+                kpf_expmeter['USETHRESHOLD'].write('No')
+            else:
+                kpf_expmeter['THRESHOLD'].write(threshold)
+            # Set bin for flux threshold
+            thresholdbin = args.get('ExpMeterBin', None)
+            if thresholdbin is None:
+                log.error('No bin for exposure meter threshold defined')
+                kpf_expmeter['USETHRESHOLD'].write('No')
+            else:
+                kpf_expmeter['THRESHOLDBIN'].write(thresholdbin)
+        else:
+            log.warning(f"ExpMeterMode {EM_mode} is not available")
+
         if args.get('AutoExpMeter', False) == True:
             raise KPFException('AutoExpMeter is not supported for calibrations')
         if args.get('ExpMeterExpTime', None) is not None:
