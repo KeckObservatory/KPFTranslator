@@ -29,7 +29,7 @@ class StartExposure(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        expr = f"(kpfexpose.EXPOSE != Start or kpfmon.CAMSTATESTA != ERROR)"
+        expr = f"(kpfexpose.EXPOSE != Start or kpfmon.CAMSTATESTA == ERROR)"
         timeout = 7 # This is to allow 5s for kpfmon.CAMSTATESTA to work
         error_or_exposure_inprogress = ktl.waitFor(expr, timeout=timeout)
         if error_or_exposure_inprogress == True:
