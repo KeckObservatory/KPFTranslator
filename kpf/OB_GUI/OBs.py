@@ -32,23 +32,23 @@ class BaseOB(object):
         thisOBproperty = getattr(self, name)
         thisOBproperty.set(value)
 
-#     @classmethod
-#     def load_from_file(self, fname):
-#         try:
-#             with open(fname, 'r') as f:
-#                 OBdict = yaml.safe_load(f)
-#             if OBdict.get('Template_Name', None) == 'kpf_sci':
-#                 OB = ScienceOB(OBdict)
-#                 if OBdict.get('star_list_line', None) is not None:
-#                     OB.star_list_line = OBdict.get('star_list_line')
-#                 else:
-#                     OB.star_list_line = ''
-#             elif OBdict.get('Template_Name', None) == 'kpf_cal':
-#                 OB = CalibrationOB(OBdict)
-#         except Exception as e:
-#             pass
-#         OB.to_lines()
-#         return OB
+    @classmethod
+    def load_from_file(self, fname):
+        try:
+            with open(fname, 'r') as f:
+                OBdict = yaml.safe_load(f)
+            if OBdict.get('Template_Name', None) == 'kpf_sci':
+                OB = ScienceOB(OBdict)
+                if OBdict.get('star_list_line', None) is not None:
+                    OB.star_list_line = OBdict.get('star_list_line')
+                else:
+                    OB.star_list_line = ''
+            elif OBdict.get('Template_Name', None) == 'kpf_cal':
+                OB = CalibrationOB(OBdict)
+            OB.to_lines()
+        except Exception as e:
+            OB = None
+        return OB
 
     def to_lines():
         pass
@@ -75,6 +75,7 @@ class BaseOB(object):
 
 class SEQ_Observations(BaseOB):
     def __init__(self, input_dict):
+        super().__init__()
         self.OBtype = 'SEQ_Observations'
         self.Object = OBProperty('Object', input_dict.get('Object', ''), str)
         self.nExp = OBProperty('nExp', input_dict.get('nExp', 1), int)
@@ -86,6 +87,7 @@ class SEQ_Observations(BaseOB):
         self.AutoNDFilters = OBProperty('AutoNDFilters', input_dict.get('AutoNDFilters', False), bool)
         self.CalND1 = OBProperty('CalND1', input_dict.get('CalND1', 'OD 0.1'), str)
         self.CalND2 = OBProperty('CalND2', input_dict.get('CalND2', 'OD 0.1'), str)
+        self.to_lines()
 
     def to_lines(self):
         self.lines = []
@@ -107,10 +109,12 @@ class SEQ_Observations(BaseOB):
 
 class SEQ_Darks(BaseOB):
     def __init__(self, input_dict):
+        super().__init__()
         self.OBtype = 'SEQ_Darks'
         self.Object = OBProperty('Object', input_dict.get('Object', ''), str)
         self.nExp = OBProperty('nExp', input_dict.get('nExp', 1), int)
         self.ExpTime = OBProperty('ExpTime', input_dict.get('ExpTime', 1), float)
+        self.to_lines()
 
     def to_lines(self):
         self.lines = []
@@ -122,6 +126,7 @@ class SEQ_Darks(BaseOB):
 
 class SEQ_Calibrations(BaseOB):
     def __init__(self, input_dict):
+        super().__init__()
         self.OBtype = 'SEQ_Calibrations'
         self.Object = OBProperty('Object', input_dict.get('Object', ''), str)
         self.CalSource = OBProperty('CalSource', input_dict.get('CalSource', 'EtalonFiber'), str)
@@ -134,6 +139,7 @@ class SEQ_Calibrations(BaseOB):
         self.TakeSimulCal = OBProperty('TakeSimulCal', input_dict.get('TakeSimulCal', True), bool)
         self.ExpMeterExpTime = OBProperty('ExpMeterExpTime', input_dict.get('ExpMeterExpTime', 1), float)
         self.FF_FiberPos = OBProperty('FF_FiberPos', input_dict.get('FF_FiberPos', 'Blank'), str)
+        self.to_lines()
 
     def to_lines(self):
         self.lines = []
@@ -172,7 +178,12 @@ class ScienceOB(BaseOB):
         self.TriggerCaHK = OBProperty('TriggerCaHK', OBdict.get('TriggerCaHK', True), bool)
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
-        self.SEQ_Observations = SEQ_Observations(OBdict.get('SEQ_Observations', {}))
+        self.SEQ_Observations1 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}, {}])[1])
+        if len(OBdict.get('SEQ_Observations', [{}, {}])) > 1:
+            self.SEQ_Observations2 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}, {}])[1])
+        else:
+            self.SEQ_Observations2 = None
+        self.to_lines()
 
     def to_lines(self):
         self.lines = [f"Template_Name: {self.OBtype}"]
@@ -200,7 +211,10 @@ class ScienceOB(BaseOB):
         self.lines += [f"TriggerRed: {self.get('TriggerRed')}"]
         self.lines += [f"# Observations"]
         self.lines += [f"SEQ_Observations:"]
-        self.lines.extend(self.SEQ_Observations.to_lines())
+        self.lines.extend(self.SEQ_Observations1.to_lines())
+        if self.SEQ_Observations2 is not None:
+            self.lines.extend(self.SEQ_Observations2.to_lines())
+
         if len(self.star_list_line) > 0:
             self.lines += [f""]
             self.lines += [f"star_list_line: {self.star_list_line}"]
@@ -215,9 +229,19 @@ class CalibrationOB(BaseOB):
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
         self.TriggerExpMeter = OBProperty('TriggerExpMeter', OBdict.get('TriggerExpMeter', False), bool)
+        # SEQ_Darks
         self.SEQ_Darks1 = SEQ_Darks(OBdict.get('SEQ_Darks', [{}, {}])[0])
-        self.SEQ_Darks2 = SEQ_Darks(OBdict.get('SEQ_Darks', [{}, {}])[1])
-        self.SEQ_Calibrations = SEQ_Darks(OBdict.get('SEQ_Calibrations', {}))
+        if len(OBdict.get('SEQ_Darks', [{}, {}])) > 1:
+            self.SEQ_Darks2 = SEQ_Darks(OBdict.get('SEQ_Darks', [{}, {}])[1])
+        else:
+            self.SEQ_Darks2 = None
+        # SEQ_Calibrations
+        self.SEQ_Calibrations1 = SEQ_Calibrations(OBdict.get('SEQ_Calibrations', [{}, {}])[0])
+        if len(OBdict.get('SEQ_Calibrations', [{}, {}])) > 1:
+            self.SEQ_Calibrations2 = SEQ_Calibrations(OBdict.get('SEQ_Calibrations', [{}, {}])[1])
+        else:
+            self.SEQ_Calibrations2 = None
+        self.to_lines()
 
     def to_lines(self):
         self.lines = [f"Template_Name: {self.OBtype}"]
@@ -234,4 +258,6 @@ class CalibrationOB(BaseOB):
         self.lines.extend(self.SEQ_Darks2.to_lines())
         self.lines += [f"# Calibrations"]
         self.lines += [f"SEQ_Calibrations:"]
-        self.lines.extend(self.SEQ_Calibrations.to_lines())
+        self.lines.extend(self.SEQ_Calibrations1.to_lines())
+        if self.SEQ_Calibrations2 is not None:
+            self.lines.extend(self.SEQ_Calibrations2.to_lines())
