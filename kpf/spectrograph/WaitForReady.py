@@ -57,7 +57,7 @@ class WaitForReady(KPFTranslatorFunction):
             log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
             log.debug(f'kpfexpose EXPLAINR = {kpfexpose["EXPLAINR"].read()}')
             log.debug(f'kpfexpose EXPLAINNR = {kpfexpose["EXPLAINNR"].read()}')
-            ResetDetectors.execute({})
+            RecoverDetectors.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
