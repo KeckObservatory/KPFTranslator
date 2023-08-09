@@ -189,6 +189,7 @@ class RecoverDetectors(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        expose = ktl.cache('kpfexpose', 'EXPOSE')
         ready = expose.waitFor("== 'Ready'", timeout=timeout)
         if ready is False:
             raise FailedToReachDestination(expose.read(), 'Ready')
