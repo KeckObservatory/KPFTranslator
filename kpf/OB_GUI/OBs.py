@@ -3,7 +3,7 @@ import yaml
 
 
 ##-------------------------------------------------------------------------
-## OB Data Model
+## OB Data Model Components
 ##-------------------------------------------------------------------------
 class OBProperty(object):
     def __init__(self, name, value, valuetype):
@@ -57,7 +57,7 @@ class BaseOB(object):
         file = Path(file)
         if file.exists() is True: file.unlink()
         with open(file, 'w') as f:
-            for line in self.lines:
+            for line in self.to_lines():
                 f.write(line+'\n')
 
     def __str__(self):
@@ -72,7 +72,9 @@ class BaseOB(object):
             output += line+'\n'
         return output
 
-
+##-------------------------------------------------------------------------
+## Science OB Components
+##-------------------------------------------------------------------------
 class SEQ_Observations(BaseOB):
     def __init__(self, input_dict):
         super().__init__()
@@ -119,56 +121,6 @@ class SEQ_Observations(BaseOB):
                    'CalND2': self.get('CalND2'),
                    }
         return seqdict
-
-
-class SEQ_Darks(BaseOB):
-    def __init__(self, input_dict):
-        super().__init__()
-        self.OBtype = 'SEQ_Darks'
-        self.Object = OBProperty('Object', input_dict.get('Object', ''), str)
-        self.nExp = OBProperty('nExp', input_dict.get('nExp', 1), int)
-        self.ExpTime = OBProperty('ExpTime', input_dict.get('ExpTime', 1), float)
-        self.to_lines()
-
-    def to_lines(self):
-        self.lines = []
-        self.lines += [f" - Object: {self.get('Object')}"]
-        self.lines += [f"   nExp: {self.get('nExp')}"]
-        self.lines += [f"   ExpTime: {self.get('ExpTime')}"]
-        return self.lines
-
-
-class SEQ_Calibrations(BaseOB):
-    def __init__(self, input_dict):
-        super().__init__()
-        self.OBtype = 'SEQ_Calibrations'
-        self.Object = OBProperty('Object', input_dict.get('Object', ''), str)
-        self.CalSource = OBProperty('CalSource', input_dict.get('CalSource', 'EtalonFiber'), str)
-        self.CalND1 = OBProperty('CalND1', input_dict.get('CalND1', 'OD 0.1'), str)
-        self.CalND2 = OBProperty('CalND2', input_dict.get('CalND2', 'OD 0.1'), str)
-        self.nExp = OBProperty('nExp', input_dict.get('nExp', 1), int)
-        self.ExpTime = OBProperty('ExpTime', input_dict.get('ExpTime', 1), float)
-        self.SSS_Science = OBProperty('SSS_Science', input_dict.get('SSS_Science', True), bool)
-        self.SSS_Sky = OBProperty('SSS_Sky', input_dict.get('SSS_Sky', True), bool)
-        self.TakeSimulCal = OBProperty('TakeSimulCal', input_dict.get('TakeSimulCal', True), bool)
-        self.ExpMeterExpTime = OBProperty('ExpMeterExpTime', input_dict.get('ExpMeterExpTime', 1), float)
-        self.FF_FiberPos = OBProperty('FF_FiberPos', input_dict.get('FF_FiberPos', 'Blank'), str)
-        self.to_lines()
-
-    def to_lines(self):
-        self.lines = []
-        self.lines += [f" - Object: {self.get('Object')}"]
-        self.lines += [f"   CalSource: {self.get('CalSource')}"]
-        self.lines += [f"   CalND1: {self.get('CalND1')}"]
-        self.lines += [f"   CalND2: {self.get('CalND2')}"]
-        self.lines += [f"   nExp: {self.get('nExp')}"]
-        self.lines += [f"   ExpTime: {self.get('ExpTime')}"]
-        self.lines += [f"   SSS_Science: {self.get('SSS_Science')}"]
-        self.lines += [f"   SSS_Sky: {self.get('SSS_Sky')}"]
-        self.lines += [f"   TakeSimulCal: {self.get('TakeSimulCal')}"]
-        self.lines += [f"   ExpMeterExpTime: {self.get('ExpMeterExpTime')}"]
-        self.lines += [f"   FF_FiberPos: {self.get('FF_FiberPos')}"]
-        return self.lines
 
 
 class ScienceOB(BaseOB):
@@ -256,6 +208,60 @@ class ScienceOB(BaseOB):
         if self.SEQ_Observations2 is not None:
             OBdict['SEQ_Observations'].append(self.SEQ_Observations2.to_dict())
         return OBdict
+
+
+##-------------------------------------------------------------------------
+## Calibration OB Components
+##-------------------------------------------------------------------------
+class SEQ_Darks(BaseOB):
+    def __init__(self, input_dict):
+        super().__init__()
+        self.OBtype = 'SEQ_Darks'
+        self.Object = OBProperty('Object', input_dict.get('Object', ''), str)
+        self.nExp = OBProperty('nExp', input_dict.get('nExp', 1), int)
+        self.ExpTime = OBProperty('ExpTime', input_dict.get('ExpTime', 1), float)
+        self.to_lines()
+
+    def to_lines(self):
+        self.lines = []
+        self.lines += [f" - Object: {self.get('Object')}"]
+        self.lines += [f"   nExp: {self.get('nExp')}"]
+        self.lines += [f"   ExpTime: {self.get('ExpTime')}"]
+        return self.lines
+
+
+class SEQ_Calibrations(BaseOB):
+    def __init__(self, input_dict):
+        super().__init__()
+        self.OBtype = 'SEQ_Calibrations'
+        self.Object = OBProperty('Object', input_dict.get('Object', ''), str)
+        self.CalSource = OBProperty('CalSource', input_dict.get('CalSource', 'EtalonFiber'), str)
+        self.CalND1 = OBProperty('CalND1', input_dict.get('CalND1', 'OD 0.1'), str)
+        self.CalND2 = OBProperty('CalND2', input_dict.get('CalND2', 'OD 0.1'), str)
+        self.nExp = OBProperty('nExp', input_dict.get('nExp', 1), int)
+        self.ExpTime = OBProperty('ExpTime', input_dict.get('ExpTime', 1), float)
+        self.SSS_Science = OBProperty('SSS_Science', input_dict.get('SSS_Science', True), bool)
+        self.SSS_Sky = OBProperty('SSS_Sky', input_dict.get('SSS_Sky', True), bool)
+        self.TakeSimulCal = OBProperty('TakeSimulCal', input_dict.get('TakeSimulCal', True), bool)
+        self.ExpMeterExpTime = OBProperty('ExpMeterExpTime', input_dict.get('ExpMeterExpTime', 1), float)
+        self.FF_FiberPos = OBProperty('FF_FiberPos', input_dict.get('FF_FiberPos', 'Blank'), str)
+        self.to_lines()
+
+    def to_lines(self):
+        self.lines = []
+        self.lines += [f" - Object: {self.get('Object')}"]
+        self.lines += [f"   CalSource: {self.get('CalSource')}"]
+        self.lines += [f"   CalND1: {self.get('CalND1')}"]
+        self.lines += [f"   CalND2: {self.get('CalND2')}"]
+        self.lines += [f"   nExp: {self.get('nExp')}"]
+        self.lines += [f"   ExpTime: {self.get('ExpTime')}"]
+        self.lines += [f"   SSS_Science: {self.get('SSS_Science')}"]
+        self.lines += [f"   SSS_Sky: {self.get('SSS_Sky')}"]
+        self.lines += [f"   TakeSimulCal: {self.get('TakeSimulCal')}"]
+        self.lines += [f"   ExpMeterExpTime: {self.get('ExpMeterExpTime')}"]
+        self.lines += [f"   FF_FiberPos: {self.get('FF_FiberPos')}"]
+        return self.lines
+
 
 class CalibrationOB(BaseOB):
     def __init__(self, OBdict):
