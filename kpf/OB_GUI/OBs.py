@@ -106,6 +106,20 @@ class SEQ_Observations(BaseOB):
                 self.lines += [f"   CalND2: {self.get('CalND2')}"]
         return self.lines
 
+    def to_dict(self):
+        seqdict = {'Object': self.get('Object'),
+                   'nExp': self.get('nExp'),
+                   'ExpTime': self.get('ExpTime'),
+                   'ExpMeterMode': self.get('ExpMeterMode'),
+                   'AutoExpMeter': self.get('AutoExpMeter'),
+                   'ExpMeterExpTime': self.get('ExpMeterExpTime'),
+                   'TakeSimulCal': self.get('TakeSimulCal'),
+                   'AutoNDFilters': self.get('AutoNDFilters'),
+                   'CalND1': self.get('CalND1'),
+                   'CalND2': self.get('CalND2'),
+                   }
+        return seqdict
+
 
 class SEQ_Darks(BaseOB):
     def __init__(self, input_dict):
@@ -218,7 +232,30 @@ class ScienceOB(BaseOB):
         if len(self.star_list_line) > 0:
             self.lines += [f""]
             self.lines += [f"star_list_line: {self.star_list_line}"]
+        return self.lines
 
+    def to_dict(self):
+        OBdict = {'Template_Name': self.OBtype,
+                  'Template_Version': self.OBversion,
+                  'TargetName': self.get('TargetName'),
+                  'GaiaID': self.get('GaiaID'),
+                  '2MASSID': self.get('twoMASSID'),
+                  'Parallax': self.get('Parallax'),
+                  'RadialVelocity': self.get('RadialVelocity'),
+                  'Gmag': self.get('Gmag'),
+                  'Jmag': self.get('Jmag'),
+                  'Teff': self.get('Teff'),
+                  'GuideMode': self.get('GuideMode'),
+                  'GuideCamGain': self.get('GuideCamGain'),
+                  'GuideFPS': self.get('GuideFPS'),
+                  'TriggerCaHK': self.get('TriggerCaHK'),
+                  'TriggerGreen': self.get('TriggerGreen'),
+                  'TriggerRed': self.get('TriggerRed'),
+                  'SEQ_Observations': [self.SEQ_Observations1.to_dict()],
+                 }
+        if self.SEQ_Observations2 is not None:
+            OBdict['SEQ_Observations'].append(self.SEQ_Observations2.to_dict())
+        return OBdict
 
 class CalibrationOB(BaseOB):
     def __init__(self, OBdict):
@@ -261,3 +298,6 @@ class CalibrationOB(BaseOB):
         self.lines.extend(self.SEQ_Calibrations1.to_lines())
         if self.SEQ_Calibrations2 is not None:
             self.lines.extend(self.SEQ_Calibrations2.to_lines())
+        return self.lines
+
+        

@@ -881,10 +881,13 @@ class MainWindow(QMainWindow):
         self.GuideFPS.setText(f"{self.OB.get('GuideFPS')}")
         # TriggerCaHK
         self.TriggerCaHK.setText(f"{self.OB.get('TriggerCaHK')}")
+        self.TriggerCaHK.setChecked(self.OB.get('TriggerCaHK'))
         # TriggerGreen
         self.TriggerGreen.setText(f"{self.OB.get('TriggerGreen')}")
+        self.TriggerGreen.setChecked(self.OB.get('TriggerGreen'))
         # TriggerRed
         self.TriggerRed.setText(f"{self.OB.get('TriggerRed')}")
+        self.TriggerRed.setChecked(self.OB.get('TriggerRed'))
         # SEQ_Observations: Object
         self.ObjectEdit.setText(f"{self.OB.SEQ_Observations1.get('Object')}")
         # SEQ_Observations: nExp
@@ -898,15 +901,13 @@ class MainWindow(QMainWindow):
         self.ExpMeterExpTimeEdit.setEnabled(not self.OB.SEQ_Observations1.get('AutoExpMeter'))
         # SEQ_Observations: ExpMeterExpTime
         self.ExpMeterExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterExpTime')}")
-        # SEQ_Observations: TakeSimulCal
+        # SEQ_Observations: TakeSimulCal and AutoNDFilters
         self.TakeSimulCal.setChecked(self.OB.SEQ_Observations1.get('TakeSimulCal'))
         self.TakeSimulCal.setText(f"{self.OB.SEQ_Observations1.get('TakeSimulCal')}")
+        take_simulcal = self.OB.SEQ_Observations1.get('TakeSimulCal')
         auto_nd = self.OB.SEQ_Observations1.get('AutoNDFilters')
-        self.CalND1.setEnabled(self.OB.SEQ_Observations1.get('TakeSimulCal') and not auto_nd)
-        self.CalND2.setEnabled(self.OB.SEQ_Observations1.get('TakeSimulCal') and not auto_nd)
-        # SEQ_Observations: AutoNDFilters
-        self.CalND1.setEnabled(self.OB.SEQ_Observations1.get('AutoNDFilters'))
-        self.CalND2.setEnabled(self.OB.SEQ_Observations1.get('AutoNDFilters'))
+        self.CalND1.setEnabled(take_simulcal and not auto_nd)
+        self.CalND2.setEnabled(take_simulcal and not auto_nd)
         # SEQ_Observations: CalND1
         self.CalND1.setCurrentText(f"{self.OB.SEQ_Observations1.get('CalND1')}")
         # SEQ_Observations: CalND2
@@ -995,11 +996,11 @@ class MainWindow(QMainWindow):
 
     def estimate_OB_duration(self):
         log.debug(f"Estimating OB duration")
-#         OB_for_calc = deepcopy(self.OB.OBdict)
-#         OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
-#         OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
-#         duration = EstimateSciOBDuration.execute(OB_for_calc)
-#         self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+        OB_for_calc = self.OB.to_dict()
+        OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
+        OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
+        duration = EstimateSciOBDuration.execute(OB_for_calc)
+        self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
 
     ##-------------------------------------------
     ## Execute an OB (with or without slewcal)
