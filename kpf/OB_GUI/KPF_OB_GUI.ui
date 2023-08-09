@@ -832,7 +832,7 @@
         <widget class="QLineEdit" name="nExpEdit"/>
        </item>
        <item row="7" column="1">
-        <widget class="QLabel" name="label_47">
+        <widget class="QLabel" name="ExpTimeLabel">
          <property name="text">
           <string>ExpTime:</string>
          </property>
@@ -856,7 +856,7 @@
         </widget>
        </item>
        <item row="12" column="1">
-        <widget class="QLabel" name="label_52">
+        <widget class="QLabel" name="CalND2Label">
          <property name="text">
           <string>CalND2:</string>
          </property>
@@ -866,21 +866,21 @@
         <widget class="QComboBox" name="ExpMeterMode"/>
        </item>
        <item row="5" column="3">
-        <widget class="QLabel" name="label_53">
+        <widget class="QLabel" name="ObjectNote">
          <property name="text">
           <string>OBJECT for FITS header</string>
          </property>
         </widget>
        </item>
        <item row="11" column="1">
-        <widget class="QLabel" name="label_51">
+        <widget class="QLabel" name="CalND1Label">
          <property name="text">
           <string>CalND1:</string>
          </property>
         </widget>
        </item>
        <item row="5" column="1">
-        <widget class="QLabel" name="label_45">
+        <widget class="QLabel" name="ObjectLabel">
          <property name="text">
           <string>Object:</string>
          </property>
@@ -920,14 +920,14 @@
         <widget class="QComboBox" name="CalND1"/>
        </item>
        <item row="9" column="1">
-        <widget class="QLabel" name="label_49">
+        <widget class="QLabel" name="ExpMeterExpTimeLabel">
          <property name="text">
           <string>ExpMeterExpTime:</string>
          </property>
         </widget>
        </item>
        <item row="6" column="1">
-        <widget class="QLabel" name="label_46">
+        <widget class="QLabel" name="nExpLabel">
          <property name="text">
           <string>nExp:</string>
          </property>
@@ -958,14 +958,14 @@
         </widget>
        </item>
        <item row="10" column="1">
-        <widget class="QLabel" name="label_50">
+        <widget class="QLabel" name="TakeSimulCalLabel">
          <property name="text">
           <string>TakeSimulCal:</string>
          </property>
         </widget>
        </item>
        <item row="6" column="3">
-        <widget class="QLabel" name="label_54">
+        <widget class="QLabel" name="nExpNote">
          <property name="text">
           <string>number of exposures</string>
          </property>
@@ -982,14 +982,14 @@
         <widget class="QComboBox" name="CalND2"/>
        </item>
        <item row="7" column="3">
-        <widget class="QLabel" name="label_55">
+        <widget class="QLabel" name="ExpTimeNote">
          <property name="text">
           <string>exposure time in seconds</string>
          </property>
         </widget>
        </item>
        <item row="8" column="1">
-        <widget class="QLabel" name="label_48">
+        <widget class="QLabel" name="ExpMeterModeLabel">
          <property name="text">
           <string>ExpMeterMode:</string>
          </property>
@@ -1006,13 +1006,6 @@
         <widget class="QLabel" name="label_38">
          <property name="text">
           <string>TriggerGreen:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="3">
-        <widget class="QCheckBox" name="enable_obs_seq1">
-         <property name="text">
-          <string>Enable?</string>
          </property>
         </widget>
        </item>

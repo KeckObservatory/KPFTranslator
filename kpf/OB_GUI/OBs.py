@@ -144,11 +144,7 @@ class ScienceOB(BaseOB):
         self.TriggerCaHK = OBProperty('TriggerCaHK', OBdict.get('TriggerCaHK', True), bool)
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
-        self.SEQ_Observations1 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}, {}])[0])
-        if len(OBdict.get('SEQ_Observations', [{}, {}])) > 1:
-            self.SEQ_Observations2 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}, {}])[1])
-        else:
-            self.SEQ_Observations2 = None
+        self.SEQ_Observations1 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}])[0])
         self.to_lines()
 
     def to_lines(self):
@@ -178,8 +174,6 @@ class ScienceOB(BaseOB):
         self.lines += [f"# Observations"]
         self.lines += [f"SEQ_Observations:"]
         self.lines.extend(self.SEQ_Observations1.to_lines())
-        if self.SEQ_Observations2 is not None:
-            self.lines.extend(self.SEQ_Observations2.to_lines())
 
         if len(self.star_list_line) > 0:
             self.lines += [f""]
@@ -203,10 +197,9 @@ class ScienceOB(BaseOB):
                   'TriggerCaHK': self.get('TriggerCaHK'),
                   'TriggerGreen': self.get('TriggerGreen'),
                   'TriggerRed': self.get('TriggerRed'),
-                  'SEQ_Observations': [self.SEQ_Observations1.to_dict()],
                  }
-        if self.SEQ_Observations2 is not None:
-            OBdict['SEQ_Observations'].append(self.SEQ_Observations2.to_dict())
+        if self.SEQ_Observations1 is not None:
+            OBdict['SEQ_Observations'] = [self.SEQ_Observations1.to_dict()]
         return OBdict
 
 
@@ -228,6 +221,13 @@ class SEQ_Darks(BaseOB):
         self.lines += [f"   nExp: {self.get('nExp')}"]
         self.lines += [f"   ExpTime: {self.get('ExpTime')}"]
         return self.lines
+
+    def to_dict(self):
+        seqdict = {'Object': self.get('Object'),
+                   'nExp': self.get('nExp'),
+                   'ExpTime': self.get('ExpTime'),
+                   }
+        return seqdict
 
 
 class SEQ_Calibrations(BaseOB):
@@ -261,6 +261,21 @@ class SEQ_Calibrations(BaseOB):
         self.lines += [f"   ExpMeterExpTime: {self.get('ExpMeterExpTime')}"]
         self.lines += [f"   FF_FiberPos: {self.get('FF_FiberPos')}"]
         return self.lines
+
+    def to_dict(self):
+        seqdict = {'Object': self.get('Object'),
+                   'CalSource': self.get('CalSource'),
+                   'CalND1': self.get('CalND1'),
+                   'CalND2': self.get('CalND2'),
+                   'nExp': self.get('nExp'),
+                   'ExpTime': self.get('ExpTime'),
+                   'SSS_Science': self.get('SSS_Science'),
+                   'SSS_Sky': self.get('SSS_Sky'),
+                   'TakeSimulCal': self.get('TakeSimulCal'),
+                   'ExpMeterExpTime': self.get('ExpMeterExpTime'),
+                   'FF_FiberPos': self.get('FF_FiberPos'),
+                   }
+        return seqdict
 
 
 class CalibrationOB(BaseOB):
@@ -305,5 +320,22 @@ class CalibrationOB(BaseOB):
         if self.SEQ_Calibrations2 is not None:
             self.lines.extend(self.SEQ_Calibrations2.to_lines())
         return self.lines
+
+    def to_dict(self):
+        OBdict = {'Template_Name': self.OBtype,
+                  'Template_Version': self.OBversion,
+                  'TriggerCaHK': self.get('TriggerCaHK'),
+                  'TriggerGreen': self.get('TriggerGreen'),
+                  'TriggerRed': self.get('TriggerRed'),
+                  'TriggerExpMeter': self.get('TriggerExpMeter'),
+                 }
+        if self.SEQ_Darks1 is not None:
+            OBdict['SEQ_Darks'] = [self.SEQ_Darks1.to_dict()]
+        if self.SEQ_Darks2 is not None:
+            if OBdict.get('SEQ_Darks', None) is None:
+                OBdict['SEQ_Darks'] = [self.SEQ_Darks2.to_dict()]
+            else:
+                OBdict['SEQ_Darks'].append(self.SEQ_Darks2.to_dict())
+        return OBdict
 
         
