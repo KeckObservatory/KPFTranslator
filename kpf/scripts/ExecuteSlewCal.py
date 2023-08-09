@@ -145,7 +145,6 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         SetObject.execute(args)
         log.info(f"Clearing stellar parameters")
         SetTargetInfo.execute({})
-        log.info('Setting PROGNAME to ENG')
         SetProgram.execute({'progname': 'ENG'})
 
         ## ----------------------------------------------------------------
