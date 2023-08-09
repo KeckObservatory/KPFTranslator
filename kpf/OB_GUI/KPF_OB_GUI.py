@@ -1249,33 +1249,48 @@ class MainWindow(QMainWindow):
 
     def enable_cal_seq1_state_change(self, value):
         self.log.debug(f"enable_cal_seq1_state_change: {value} {type(value)}")
-        self.cal_seq1_enabled = (int(value) == 2)
-        self.enable_cal_seq1.setChecked(self.cal_seq1_enabled)
-        self.Object_cal_seq1.setEnabled(int(value) == 2)
-        self.Object_cal_seq1_label.setEnabled(int(value) == 2)
-        self.Object_cal_seq1_note.setEnabled(int(value) == 2)
-        self.CalSource_cal_seq1.setEnabled(int(value) == 2)
-        self.CalSource_cal_seq1_label.setEnabled(int(value) == 2)
-        self.CalND1_cal_seq1.setEnabled(int(value) == 2)
-        self.CalND1_cal_seq1_label.setEnabled(int(value) == 2)
-        self.CalND2_cal_seq1.setEnabled(int(value) == 2)
-        self.CalND2_cal_seq1_label.setEnabled(int(value) == 2)
-        self.nExp_cal_seq1.setEnabled(int(value) == 2)
-        self.nExp_cal_seq1_label.setEnabled(int(value) == 2)
-        self.nExp_cal_seq1_note.setEnabled(int(value) == 2)
-        self.ExpTime_cal_seq1.setEnabled(int(value) == 2)
-        self.ExpTime_cal_seq1_label.setEnabled(int(value) == 2)
-        self.ExpTime_cal_seq1_note.setEnabled(int(value) == 2)
-        self.SSS_Science_cal_seq1.setEnabled(int(value) == 2)
-        self.SSS_Science_cal_seq1_label.setEnabled(int(value) == 2)
-        self.SSS_Sky_cal_seq1.setEnabled(int(value) == 2)
-        self.SSS_Sky_cal_seq1_label.setEnabled(int(value) == 2)
-        self.TakeSimulCal_cal_seq1.setEnabled(int(value) == 2)
-        self.TakeSimulCal_cal_seq1_label.setEnabled(int(value) == 2)
-        self.FF_FiberPos_cal_seq1.setEnabled(int(value) == 2)
-        self.FF_FiberPos_cal_seq1_label.setEnabled(int(value) == 2)
-        self.ExpMeterExpTime_cal_seq1.setEnabled(int(value) == 2)
-        self.ExpMeterExpTime_cal_seq1_label.setEnabled(int(value) == 2)
+        enabled = (int(value) == 2)
+        if enabled is False:
+            self.calOB.SEQ_Calibrations1 = None
+        else:
+            self.calOB.SEQ_Calibrations1 = SEQ_Calibrations({'Object': self.Object_cal_seq1.text(),
+                                                             'CalSource': self.CalSource_cal_seq1.text(),
+                                                             'CalND1': self.CalND1_cal_seq1.text(),
+                                                             'CalND2': self.CalND2_cal_seq1.text(),
+                                                             'nExp': self.nExp_cal_seq1.text(),
+                                                             'ExpTime': self.ExpTime_cal_seq1.text(),
+                                                             'SSS_Science': self.SSS_Science_cal_seq1.text(),
+                                                             'SSS_Sky': self.SSS_Sky_cal_seq1.text(),
+                                                             'TakeSimulCal': self.TakeSimulCal_cal_seq1.text(),
+                                                             'FF_FiberPos': self.FF_FiberPos_cal_seq1.text(),
+                                                             'ExpMeterExpTime': self.ExpMeterExpTime_cal_seq1.text(),
+                                                             })
+        self.enable_cal_seq1.setChecked(enabled)
+        self.Object_cal_seq1.setEnabled(enabled)
+        self.Object_cal_seq1_label.setEnabled(enabled)
+        self.Object_cal_seq1_note.setEnabled(enabled)
+        self.CalSource_cal_seq1.setEnabled(enabled)
+        self.CalSource_cal_seq1_label.setEnabled(enabled)
+        self.CalND1_cal_seq1.setEnabled(enabled)
+        self.CalND1_cal_seq1_label.setEnabled(enabled)
+        self.CalND2_cal_seq1.setEnabled(enabled)
+        self.CalND2_cal_seq1_label.setEnabled(enabled)
+        self.nExp_cal_seq1.setEnabled(enabled)
+        self.nExp_cal_seq1_label.setEnabled(enabled)
+        self.nExp_cal_seq1_note.setEnabled(enabled)
+        self.ExpTime_cal_seq1.setEnabled(enabled)
+        self.ExpTime_cal_seq1_label.setEnabled(enabled)
+        self.ExpTime_cal_seq1_note.setEnabled(enabled)
+        self.SSS_Science_cal_seq1.setEnabled(enabled)
+        self.SSS_Science_cal_seq1_label.setEnabled(enabled)
+        self.SSS_Sky_cal_seq1.setEnabled(enabled)
+        self.SSS_Sky_cal_seq1_label.setEnabled(enabled)
+        self.TakeSimulCal_cal_seq1.setEnabled(enabled)
+        self.TakeSimulCal_cal_seq1_label.setEnabled(enabled)
+        self.FF_FiberPos_cal_seq1.setEnabled(enabled)
+        self.FF_FiberPos_cal_seq1_label.setEnabled(enabled)
+        self.ExpMeterExpTime_cal_seq1.setEnabled(enabled)
+        self.ExpMeterExpTime_cal_seq1_label.setEnabled(enabled)
         self.estimate_calOB_duration()
 
     def set_Object_cal_seq1(self, value):
@@ -1504,21 +1519,7 @@ class MainWindow(QMainWindow):
             if fname != '' and Path(fname).exists():
                 try:
                     self.calOB = CalibrationOB.load_from_file(fname)
-
-                    for key in self.calOB.OBdict.keys():
-                        if key == 'SEQ_Calibrations':
-                            if len(self.calOB.get('SEQ_Calibrations')) >= 1:
-                                for seqkey in self.calOB.get('SEQ_Calibrations')[0].keys():
-                                    self.update_calOB(f"cal1_{seqkey}", self.calOB.get('SEQ_Calibrations')[0].get(seqkey))
-                        elif key == 'SEQ_Darks':
-                            if len(self.calOB.get('SEQ_Darks')) >= 1:
-                                for seqkey in self.calOB.get('SEQ_Darks')[0].keys():
-                                    self.update_calOB(f"dark1_{seqkey}", self.calOB.get('SEQ_Darks')[0].get(seqkey))
-                            if len(self.calOB.get('SEQ_Darks')) >= 2:
-                                for seqkey in self.calOB.get('SEQ_Darks')[1].keys():
-                                    self.update_calOB(f"dark2_{seqkey}", self.calOB.get('SEQ_Darks')[1].get(seqkey))
-                        else:
-                            self.update_calOB(key, self.calOB.get(key))
+                    self.refresh_calOB_view()
                 except Exception as e:
                     self.log.error(f"Unable to load file: {fname}")
                     self.log.error(f"{e}")
