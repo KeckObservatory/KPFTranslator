@@ -6,7 +6,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input, LostTipTiltStar)
-from kpf.spectrograph.ResetCaHKDetector import ResetCaHKDetector
+from kpf.spectrograph.ResetDetectors import ResetCaHKDetector
 
 
 class PowerCycleCaHK(KPFTranslatorFunction):
