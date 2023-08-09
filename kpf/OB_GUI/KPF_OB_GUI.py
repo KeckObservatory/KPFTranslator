@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
                              QLabel, QPushButton, QLineEdit, QComboBox,
                              QCheckBox, QMessageBox, QFileDialog)
 
-from kpf.OB_GUI.OBs import ScienceOB, CalibrationOB
+from kpf.OB_GUI.OBs import *
 from kpf.utils import BuildOBfromQuery
 from kpf.utils import SendEmail
 from kpf.utils.EstimateOBDuration import EstimateCalOBDuration, EstimateSciOBDuration
@@ -1160,19 +1160,24 @@ class MainWindow(QMainWindow):
 
     def enable_dark_seq1_state_change(self, value):
         self.log.debug(f"enable_dark_seq1_state_change: {value} {type(value)}")
-        self.dark_seq1_enabled = (int(value) == 2)
-        self.enable_dark_seq1.setChecked(self.dark_seq1_enabled)
-        self.Object_dark_seq1.setEnabled(int(value) == 2)
-        self.Object_dark_seq1_label.setEnabled(int(value) == 2)
-        self.Object_dark_seq1_note.setEnabled(int(value) == 2)
-        self.nExp_dark_seq1.setEnabled(int(value) == 2)
-        self.nExp_dark_seq1_label.setEnabled(int(value) == 2)
-        self.nExp_dark_seq1_note.setEnabled(int(value) == 2)
-        self.ExpTime_dark_seq1.setEnabled(int(value) == 2)
-        self.ExpTime_dark_seq1_label.setEnabled(int(value) == 2)
-        self.ExpTime_dark_seq1_note.setEnabled(int(value) == 2)
-#         self.calOB.set_seq('', {}, seqindex=0)
-        if int(value) == 2:
+        enabled = (int(value) == 2)
+        if enabled is False:
+            self.calOB.SEQ_Darks1 = None
+        else:
+            self.calOB.SEQ_Darks1 = SEQ_Darks({'Object': self.Object_dark_seq1.text(),
+                                               'nExp': self.nExp_dark_seq1.text(),
+                                               'ExpTime': self.ExpTime_dark_seq1.text()})
+        self.enable_dark_seq1.setChecked(enabled)
+        self.Object_dark_seq1.setEnabled(enabled)
+        self.Object_dark_seq1_label.setEnabled(enabled)
+        self.Object_dark_seq1_note.setEnabled(enabled)
+        self.nExp_dark_seq1.setEnabled(enabled)
+        self.nExp_dark_seq1_label.setEnabled(enabled)
+        self.nExp_dark_seq1_note.setEnabled(enabled)
+        self.ExpTime_dark_seq1.setEnabled(enabled)
+        self.ExpTime_dark_seq1_label.setEnabled(enabled)
+        self.ExpTime_dark_seq1_note.setEnabled(enabled)
+        if enabled:
             # Adding a seq to the OB
             self.update_calOB('dark1_Object', self.Object_dark_seq1.text())
             try:
@@ -1197,21 +1202,27 @@ class MainWindow(QMainWindow):
         self.log.debug(f"set_ExpTime_dark_seq1: {value}")
         self.update_calOB('dark1_ExpTime', value)
 
+
     def enable_dark_seq2_state_change(self, value):
         self.log.debug(f"enable_dark_seq2_state_change: {value} {type(value)}")
-        self.dark_seq2_enabled = (int(value) == 2)
-        self.enable_dark_seq2.setChecked(self.dark_seq2_enabled)
-        self.Object_dark_seq2.setEnabled(int(value) == 2)
-        self.Object_dark_seq2_label.setEnabled(int(value) == 2)
-        self.Object_dark_seq2_note.setEnabled(int(value) == 2)
-        self.nExp_dark_seq2.setEnabled(int(value) == 2)
-        self.nExp_dark_seq2_label.setEnabled(int(value) == 2)
-        self.nExp_dark_seq2_note.setEnabled(int(value) == 2)
-        self.ExpTime_dark_seq2.setEnabled(int(value) == 2)
-        self.ExpTime_dark_seq2_label.setEnabled(int(value) == 2)
-        self.ExpTime_dark_seq2_note.setEnabled(int(value) == 2)
-        self.calOB.set_seq('SEQ_Darks', {}, seqindex=1)
-        if int(value) == 2:
+        enabled = (int(value) == 2)
+        if enabled is False:
+            self.calOB.SEQ_Darks2 = None
+        else:
+            self.calOB.SEQ_Darks2 = SEQ_Darks({'Object': self.Object_dark_seq2.text(),
+                                               'nExp': self.nExp_dark_seq2.text(),
+                                               'ExpTime': self.ExpTime_dark_seq2.text()})
+        self.enable_dark_seq2.setChecked(enabled)
+        self.Object_dark_seq2.setEnabled(enabled)
+        self.Object_dark_seq2_label.setEnabled(enabled)
+        self.Object_dark_seq2_note.setEnabled(enabled)
+        self.nExp_dark_seq2.setEnabled(enabled)
+        self.nExp_dark_seq2_label.setEnabled(enabled)
+        self.nExp_dark_seq2_note.setEnabled(enabled)
+        self.ExpTime_dark_seq2.setEnabled(enabled)
+        self.ExpTime_dark_seq2_label.setEnabled(enabled)
+        self.ExpTime_dark_seq2_note.setEnabled(enabled)
+        if enabled:
             # Adding a seq to the OB
             self.update_calOB('dark2_Object', self.Object_dark_seq2.text())
             try:

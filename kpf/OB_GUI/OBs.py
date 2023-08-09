@@ -310,10 +310,14 @@ class CalibrationOB(BaseOB):
         self.lines += [f"TriggerRed: {self.get('TriggerRed')}"]
         self.lines += [f"TriggerExpMeter: {self.get('TriggerExpMeter')}"]
         self.lines += [f""]
-        self.lines += [f"# Darks"]
-        self.lines += [f"SEQ_Darks:"]
-        self.lines.extend(self.SEQ_Darks1.to_lines())
-        self.lines.extend(self.SEQ_Darks2.to_lines())
+
+        if self.SEQ_Darks1 is not None or self.SEQ_Darks2 is not None:
+            self.lines += [f"# Darks"]
+            self.lines += [f"SEQ_Darks:"]
+        if self.SEQ_Darks1 is not None:
+            self.lines.extend(self.SEQ_Darks1.to_lines())
+        if self.SEQ_Darks2 is not None:
+            self.lines.extend(self.SEQ_Darks2.to_lines())
         self.lines += [f"# Calibrations"]
         self.lines += [f"SEQ_Calibrations:"]
         self.lines.extend(self.SEQ_Calibrations1.to_lines())
