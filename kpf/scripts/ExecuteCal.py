@@ -173,7 +173,10 @@ class ExecuteCal(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         EM_mode = args.get('ExpMeterMode', 'monitor')
         kpf_expmeter = ktl.cache('kpf_expmeter')
-        if EM_mode == 'monitor':
+        usethreshold = kpf_expmeter['USETHRESHOLD'].read()
+        if EM_mode == 'monitor' and usethreshold == 'No':
+            pass
+        elif EM_mode == 'monitor' and usethreshold == 'Yes':
             kpf_expmeter['USETHRESHOLD'].write('No')
         elif EM_mode == 'control':
             kpf_expmeter['USETHRESHOLD'].write('Yes')
