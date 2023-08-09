@@ -167,7 +167,7 @@ class ScienceOB(BaseOB):
         self.TargetName = OBProperty('TargetName', OBdict.get('TargetName', ''), str)
         self.GaiaID = OBProperty('GaiaID', OBdict.get('GaiaID', ''), str)
         self.twoMASSID = OBProperty('2MASSID', OBdict.get('2MASSID', ''), str)
-        self.Parallax = OBProperty('Parallax', OBdict.get('Parallax', 0), float)
+        self.Parallax = OBProperty('Parallax', OBdict.get('Parallax', 0.), float)
         self.RadialVelocity = OBProperty('RadialVelocity', OBdict.get('RadialVelocity', 0), float)
         self.Gmag = OBProperty('Gmag', OBdict.get('Gmag', ''), str)
         self.Jmag = OBProperty('Jmag', OBdict.get('Jmag', ''), str)
@@ -178,7 +178,7 @@ class ScienceOB(BaseOB):
         self.TriggerCaHK = OBProperty('TriggerCaHK', OBdict.get('TriggerCaHK', True), bool)
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
-        self.SEQ_Observations1 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}, {}])[1])
+        self.SEQ_Observations1 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}, {}])[0])
         if len(OBdict.get('SEQ_Observations', [{}, {}])) > 1:
             self.SEQ_Observations2 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}, {}])[1])
         else:

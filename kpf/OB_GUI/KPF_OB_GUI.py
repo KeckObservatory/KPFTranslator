@@ -24,6 +24,7 @@ from kpf.utils import BuildOBfromQuery
 from kpf.utils import SendEmail
 from kpf.utils.EstimateOBDuration import EstimateCalOBDuration, EstimateSciOBDuration
 
+
 ##-------------------------------------------------------------------------
 ## Create logger object
 ##-------------------------------------------------------------------------
@@ -157,14 +158,6 @@ class MainWindow(QMainWindow):
         scriptname_kw = kPyQt.kFactory(self.kpfconfig['SCRIPTNAME'])
         scriptname_kw.stringCallback.connect(self.update_scriptname_value)
 
-        # script pause
-#         self.scriptpause_value = self.findChild(QLabel, 'scriptpause_value')
-#         scriptpause_kw = kPyQt.kFactory(self.kpfconfig['SCRIPTPAUSE'])
-#         scriptpause_kw.stringCallback.connect(self.update_scriptpause_value)
-
-#         self.scriptpause_btn = self.findChild(QPushButton, 'scriptpause_btn')
-#         self.scriptpause_btn.clicked.connect(self.set_scriptpause)
-
         # script stop
         self.scriptstop_value = self.findChild(QLabel, 'scriptstop_value')
         scriptstop_kw = kPyQt.kFactory(self.kpfconfig['SCRIPTSTOP'])
@@ -197,16 +190,12 @@ class MainWindow(QMainWindow):
         slewcaltime_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALTIME'])
         slewcaltime_kw.stringCallback.connect(self.update_slewcaltime_value)
 
-        # request slew cal
-#         self.slewcalreq_value = self.findChild(QLabel, 'slewcalreq_value')
-#         slewcalreq_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALREQ'])
-#         slewcalreq_kw.stringCallback.connect(self.update_slewcalreq_value)
-
         # slew cal file
         self.slewcalfile_value = self.findChild(QLabel, 'slewcalfile_value')
         slewcalfile_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALFILE'])
         slewcalfile_kw.stringCallback.connect(self.update_slewcalfile_value)
 
+        # disabled detectors
         self.disabled_detectors_value = self.findChild(QLabel, 'disabled_detectors_value')
         self.disabled_detectors_value.setText('')
         cahk_enabled_kw = kPyQt.kFactory(self.kpfconfig['CA_HK_ENABLED'])
@@ -323,24 +312,24 @@ class MainWindow(QMainWindow):
         # First Observation Sequence Setup
         self.ObjectEdit = self.findChild(QLineEdit, 'ObjectEdit')
         self.ObjectEdit.textChanged.connect(self.set_object)
-        self.update_OB('Object', self.OB.SEQ_Observations.get('Object'))
+        self.update_OB('Object', self.OB.SEQ_Observations1.get('Object'))
 
         self.nExpEdit = self.findChild(QLineEdit, 'nExpEdit')
         self.nExpEdit.textChanged.connect(self.set_nExp)
-        self.update_OB('nExp', self.OB.SEQ_Observations.get('nExp'))
+        self.update_OB('nExp', self.OB.SEQ_Observations1.get('nExp'))
 
         self.ExpTimeEdit = self.findChild(QLineEdit, 'ExpTimeEdit')
         self.ExpTimeEdit.textChanged.connect(self.set_exptime)
-        self.update_OB('ExpTime', self.OB.SEQ_Observations.get('ExpTime'))
+        self.update_OB('ExpTime', self.OB.SEQ_Observations1.get('ExpTime'))
 
         self.ExpMeterMode = self.findChild(QComboBox, 'ExpMeterMode')
         self.ExpMeterMode.addItems(["monitor"])
-        self.update_OB('ExpMeterMode', self.OB.SEQ_Observations.get('ExpMeterMode'))
+        self.update_OB('ExpMeterMode', self.OB.SEQ_Observations1.get('ExpMeterMode'))
         self.ExpMeterMode.currentTextChanged.connect(self.set_expmeter_mode)
 
         self.ExpMeterExpTimeEdit = self.findChild(QLineEdit, 'ExpMeterExpTimeEdit')
         self.ExpMeterExpTimeEdit.textChanged.connect(self.set_expmeter_exptime)
-        self.update_OB('ExpMeterExpTime', self.OB.SEQ_Observations.get('ExpMeterExpTime'))
+        self.update_OB('ExpMeterExpTime', self.OB.SEQ_Observations1.get('ExpMeterExpTime'))
 
         self.AutoEMExpTime = self.findChild(QCheckBox, 'AutoEMExpTime')
         self.AutoEMExpTime.stateChanged.connect(self.AutoEMExpTime_state_change)
@@ -350,20 +339,20 @@ class MainWindow(QMainWindow):
 
         self.CalND1 = self.findChild(QComboBox, 'CalND1')
         self.CalND1.addItems(["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"])
-        self.update_OB('CalND1', self.OB.SEQ_Observations.get('CalND1'))
+        self.update_OB('CalND1', self.OB.SEQ_Observations1.get('CalND1'))
         self.CalND1.currentTextChanged.connect(self.set_CalND1)
 
         self.CalND2 = self.findChild(QComboBox, 'CalND2')
         self.CalND2.addItems(["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"])
-        self.update_OB('CalND2', self.OB.SEQ_Observations.get('CalND2'))
+        self.update_OB('CalND2', self.OB.SEQ_Observations1.get('CalND2'))
         self.CalND2.currentTextChanged.connect(self.set_CalND2)
 
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
-        self.update_OB('AutoNDFilters', self.OB.SEQ_Observations.get('AutoNDFilters'))
+        self.update_OB('AutoNDFilters', self.OB.SEQ_Observations1.get('AutoNDFilters'))
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
 
         # Do this after the CalND and AutoNDFilters objects have been created
-        self.update_OB('TakeSimulCal', self.OB.SEQ_Observations.get('TakeSimulCal'))
+        self.update_OB('TakeSimulCal', self.OB.SEQ_Observations1.get('TakeSimulCal'))
 
         self.other_names = self.findChild(QLabel, 'other_names')
 
@@ -556,28 +545,6 @@ class MainWindow(QMainWindow):
             self.expose_status_value.setStyleSheet("color:green")
         elif value in ['Start', 'InProgress', 'Readout']:
             self.expose_status_value.setStyleSheet("color:orange")
-
-    # SCRIPTPAUSE
-#     def update_scriptpause_value(self, value):
-#         '''Set label text and set color'''
-#         self.log.debug(f"update_scriptpause_value: {value}")
-#         self.scriptpause_value.setText(value)
-#         if value == 'Yes':
-#             self.scriptpause_value.setStyleSheet("color:orange")
-#             self.scriptpause_btn.setText('RESUME')
-#         elif value == 'No':
-#             self.scriptpause_value.setStyleSheet("color:green")
-#             self.scriptpause_btn.setText('PAUSE')
-
-#     def set_scriptpause(self, value):
-#         self.log.debug(f'set_scriptpause: {value}')
-#         current_kw_value = self.kpfconfig['SCRIPTPAUSE'].read()
-#         if current_kw_value == 'Yes':
-#             self.kpfconfig['SCRIPTPAUSE'].write('No')
-#             self.scriptpause_btn.setText('PAUSE')
-#         elif current_kw_value == 'No':
-#             self.kpfconfig['SCRIPTPAUSE'].write('Yes')
-#             self.scriptpause_btn.setText('RESUME')
 
     # SCRIPTSTOP
     def update_scriptstop_value(self, value):
@@ -880,73 +847,70 @@ class MainWindow(QMainWindow):
                     'AutoExpMeter', 'ExpMeterExpTime', 'TakeSimulCal',
                     'AutoNDFilters', 'CalND1', 'CalND2']
         if key in seq_keys:
-            self.OB.SEQ_Observations.set(key, value)
+            self.OB.SEQ_Observations1.set(key, value)
         else:
             self.OB.set(key, value)
 
-        if key == 'TargetName':
-            self.OB.set(key, f"{value}")
-            self.TargetName.setText(f"{value}")
-            self.form_star_list_line()
-        elif key == 'GaiaID':
-            self.GaiaID.setText(f"{value}")
-        elif key == '2MASSID':
-            self.twoMASSID.setText(f"{value}")
-        elif key == 'Parallax':
-            self.Parallax.setText(f"{value}")
-        elif key == 'RadialVelocity':
-            self.RadialVelocity.setText(f"{value}")
-        elif key == 'Gmag':
-            self.Gmag.setText(f"{value}")
-        elif key == 'Jmag':
-            self.Jmag.setText(f"{value}")
-        elif key == 'Teff':
-            self.Teff.setText(f"{value}")
-        elif key == 'GuideMode':
-            if value == False: value = 'off'
-            self.GuideMode.setCurrentText(value)
-            self.GuideCamGain.setEnabled((value not in ['auto', 'off']))
-            self.GuideFPS.setEnabled((value not in ['auto', 'off']))
-        elif key == 'GuideCamGain':
-            self.GuideCamGain.setCurrentText(value)
-        elif key == 'GuideFPS':
-            self.GuideFPS.setText(f"{value}")
-        elif key == 'TriggerCaHK':
-            self.TriggerCaHK.setChecked(value)
-            self.estimate_OB_duration()
-        elif key == 'TriggerGreen':
-            self.TriggerGreen.setChecked(value)
-            self.estimate_OB_duration()
-        elif key == 'TriggerRed':
-            self.TriggerRed.setChecked(value)
-            self.estimate_OB_duration()
-        elif key == 'Object':
-            self.ObjectEdit.setText(f"{value}")
-        elif key == 'nExp':
-            self.nExpEdit.setText(f"{value}")
-            self.estimate_OB_duration()
-        elif key == 'ExpTime':
-            self.ExpTimeEdit.setText(f"{value}")
-            self.estimate_OB_duration()
-        elif key == 'ExpMeterMode':
-            self.ExpMeterMode.setCurrentText(value)
-        elif key == 'AutoExpMeter':
-            self.ExpMeterExpTimeEdit.setEnabled(not value)
-        elif key == 'ExpMeterExpTime':
-            self.ExpMeterExpTimeEdit.setText(f"{float(value):.1f}")
-        elif key == 'TakeSimulCal':
-            self.TakeSimulCal.setChecked(value)
-            self.TakeSimulCal.setText(f"{value}")
-            auto_nd = self.OB.SEQ_Observations.get('AutoNDFilters', False)
-            self.CalND1.setEnabled(value and not auto_nd)
-            self.CalND2.setEnabled(value and not auto_nd)
-        elif key == 'AutoNDFilters':
-            self.CalND1.setEnabled(value)
-            self.CalND2.setEnabled(value)
-        elif key == 'CalND1':
-            self.CalND1.setCurrentText(value)
-        elif key == 'CalND2':
-            self.CalND2.setCurrentText(value)
+        # Render all values in OB
+        # TargetName
+        self.TargetName.setText(f"{self.OB.get('TargetName')}")
+        self.form_star_list_line()
+        # GaiaID
+        self.GaiaID.setText(f"{self.OB.get('GaiaID')}")
+        # 2MASSID
+        self.twoMASSID.setText(f"{self.OB.get('twoMASSID')}")
+        # Parallax
+        self.Parallax.setText(f"{self.OB.get('Parallax')}")
+        # RadialVelocity
+        self.RadialVelocity.setText(f"{self.OB.get('RadialVelocity')}")
+        # Gmag
+        self.Gmag.setText(f"{self.OB.get('Gmag')}")
+        # Jmag
+        self.Jmag.setText(f"{self.OB.get('Jmag')}")
+        # Teff
+        self.Teff.setText(f"{self.OB.get('Teff')}")
+        # GuideMode
+        self.GuideMode.setCurrentText(f"{self.OB.get('GuideMode')}")
+        self.GuideCamGain.setEnabled(self.OB.get('GuideMode') not in ['auto', 'off'])
+        self.GuideFPS.setEnabled(self.OB.get('GuideMode') not in ['auto', 'off'])
+        # GuideCamGain
+        self.GuideCamGain.setCurrentText(f"{self.OB.get('GuideCamGain')}")
+        # GuideFPS
+        self.GuideFPS.setText(f"{self.OB.get('GuideFPS')}")
+        # TriggerCaHK
+        self.TriggerCaHK.setText(f"{self.OB.get('TriggerCaHK')}")
+        # TriggerGreen
+        self.TriggerGreen.setText(f"{self.OB.get('TriggerGreen')}")
+        # TriggerRed
+        self.TriggerRed.setText(f"{self.OB.get('TriggerRed')}")
+        # SEQ_Observations: Object
+        self.ObjectEdit.setText(f"{self.OB.SEQ_Observations1.get('Object')}")
+        # SEQ_Observations: nExp
+        self.nExpEdit.setText(f"{self.OB.SEQ_Observations1.get('nExp')}")
+        # SEQ_Observations: ExpTime
+        self.ExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpTime')}")
+        # SEQ_Observations: ExpMeterMode
+        self.ExpMeterMode.setCurrentText(f"{self.OB.SEQ_Observations1.get('ExpMeterMode')}")
+        # SEQ_Observations: AutoExpMeter
+#         self.AutoEMExpTime = 
+        self.ExpMeterExpTimeEdit.setEnabled(not self.OB.SEQ_Observations1.get('AutoExpMeter'))
+        # SEQ_Observations: ExpMeterExpTime
+        self.ExpMeterExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterExpTime')}")
+        # SEQ_Observations: TakeSimulCal
+        self.TakeSimulCal.setChecked(self.OB.SEQ_Observations1.get('TakeSimulCal'))
+        self.TakeSimulCal.setText(f"{self.OB.SEQ_Observations1.get('TakeSimulCal')}")
+        auto_nd = self.OB.SEQ_Observations1.get('AutoNDFilters')
+        self.CalND1.setEnabled(self.OB.SEQ_Observations1.get('TakeSimulCal') and not auto_nd)
+        self.CalND2.setEnabled(self.OB.SEQ_Observations1.get('TakeSimulCal') and not auto_nd)
+        # SEQ_Observations: AutoNDFilters
+        self.CalND1.setEnabled(self.OB.SEQ_Observations1.get('AutoNDFilters'))
+        self.CalND2.setEnabled(self.OB.SEQ_Observations1.get('AutoNDFilters'))
+        # SEQ_Observations: CalND1
+        self.CalND1.setCurrentText(f"{self.OB.SEQ_Observations1.get('CalND1')}")
+        # SEQ_Observations: CalND2
+        self.CalND2.setCurrentText(f"{self.OB.SEQ_Observations1.get('CalND2')}")
+
+        self.estimate_OB_duration()
 
 
     ##-------------------------------------------
@@ -1016,14 +980,7 @@ class MainWindow(QMainWindow):
             if fname != '' and Path(fname).exists():
                 try:
                     self.OB = ScienceOB.load_from_file(fname)
-                    for key in self.OB._dict.keys():
-                        if key != 'SEQ_Observations':
-                            self.update_OB(key, self.OB.get(key))
-                    for key in self.OB.SEQ_Observations._dict.keys():
-                            
-                        else:
-                            for seqkey in self.OB.get('SEQ_Observations')[0].keys():
-                                self.update_OB(seqkey, self.OB.get('SEQ_Observations')[0].get(seqkey))
+
                 except Exception as e:
                     self.log.error(f"Unable to load file: {fname}")
                     self.log.error(f"{e}")
@@ -1036,11 +993,11 @@ class MainWindow(QMainWindow):
 
     def estimate_OB_duration(self):
         log.debug(f"Estimating OB duration")
-        OB_for_calc = deepcopy(self.OB.OBdict)
-        OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
-        OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
-        duration = EstimateSciOBDuration.execute(OB_for_calc)
-        self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+#         OB_for_calc = deepcopy(self.OB.OBdict)
+#         OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
+#         OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
+#         duration = EstimateSciOBDuration.execute(OB_for_calc)
+#         self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
 
     ##-------------------------------------------
     ## Execute an OB (with or without slewcal)
