@@ -360,156 +360,156 @@ class MainWindow(QMainWindow):
         ## Calibration OB Tab
         ##----------------------
         ## Export or Execute Cal OB
-        self.write_calOB_to_file = self.findChild(QPushButton, 'write_to_file_btn_for_cal')
-        self.write_calOB_to_file.clicked.connect(self.run_write_calOB_to_file)
-        self.load_calOB_from_file_btn = self.findChild(QPushButton, 'load_from_file_btn_for_cal')
-        self.load_calOB_from_file_btn.clicked.connect(self.run_load_calOB_from_file)
-        self.load_slewcal_btn = self.findChild(QPushButton, 'load_slewcal_btn')
-        self.load_slewcal_btn.clicked.connect(self.run_load_slewcalOB)
-
-        self.executecalOB = self.findChild(QPushButton, 'executeOB_for_cal')
-        self.executecalOB_tooltip = "Execute the Cal OB as defined in the fields below"
-        self.executecalOB.setToolTip(self.executecalOB_tooltip)
-        self.executecalOB.clicked.connect(self.run_executecalOB)
-        calOB_tooltip = ('OB will be executed without an intensity monitor '
-                         'measurement. If one is needed, use the command line.')
-        self.executecalOB.setToolTip(calOB_tooltip)
-
-        self.CalOBDuration = self.findChild(QLabel, 'CalOBDuration')
-        self.CalOBDuration.setToolTip(duration_tooltip)
+#         self.write_calOB_to_file = self.findChild(QPushButton, 'write_to_file_btn_for_cal')
+#         self.write_calOB_to_file.clicked.connect(self.run_write_calOB_to_file)
+#         self.load_calOB_from_file_btn = self.findChild(QPushButton, 'load_from_file_btn_for_cal')
+#         self.load_calOB_from_file_btn.clicked.connect(self.run_load_calOB_from_file)
+#         self.load_slewcal_btn = self.findChild(QPushButton, 'load_slewcal_btn')
+#         self.load_slewcal_btn.clicked.connect(self.run_load_slewcalOB)
+# 
+#         self.executecalOB = self.findChild(QPushButton, 'executeOB_for_cal')
+#         self.executecalOB_tooltip = "Execute the Cal OB as defined in the fields below"
+#         self.executecalOB.setToolTip(self.executecalOB_tooltip)
+#         self.executecalOB.clicked.connect(self.run_executecalOB)
+#         calOB_tooltip = ('OB will be executed without an intensity monitor '
+#                          'measurement. If one is needed, use the command line.')
+#         self.executecalOB.setToolTip(calOB_tooltip)
+# 
+#         self.CalOBDuration = self.findChild(QLabel, 'CalOBDuration')
+#         self.CalOBDuration.setToolTip(duration_tooltip)
 
         ## Build Cal OB
-        self.TriggerCaHK_cal = self.findChild(QCheckBox, 'TriggerCaHK_cal')
-        self.update_calOB('TriggerCaHK', self.calOB.get('TriggerCaHK'))
-        self.TriggerCaHK_cal.stateChanged.connect(self.TriggerCaHK_cal_state_change)
-        self.TriggerGreen_cal = self.findChild(QCheckBox, 'TriggerGreen_cal')
-        self.update_calOB('TriggerGreen', self.calOB.get('TriggerGreen'))
-        self.TriggerGreen_cal.stateChanged.connect(self.TriggerGreen_cal_state_change)
-        self.TriggerRed_cal = self.findChild(QCheckBox, 'TriggerRed_cal')
-        self.update_calOB('TriggerRed', self.calOB.get('TriggerRed'))
-        self.TriggerRed_cal.stateChanged.connect(self.TriggerRed_cal_state_change)
-        self.TriggerExpMeter_cal = self.findChild(QCheckBox, 'TriggerExpMeter_cal')
-        self.update_calOB('TriggerExpMeter', self.calOB.get('TriggerExpMeter'))
-        self.TriggerExpMeter_cal.stateChanged.connect(self.TriggerExpMeter_cal_state_change)
+#         self.TriggerCaHK_cal = self.findChild(QCheckBox, 'TriggerCaHK_cal')
+#         self.update_calOB('TriggerCaHK', self.calOB.get('TriggerCaHK'))
+#         self.TriggerCaHK_cal.stateChanged.connect(self.TriggerCaHK_cal_state_change)
+#         self.TriggerGreen_cal = self.findChild(QCheckBox, 'TriggerGreen_cal')
+#         self.update_calOB('TriggerGreen', self.calOB.get('TriggerGreen'))
+#         self.TriggerGreen_cal.stateChanged.connect(self.TriggerGreen_cal_state_change)
+#         self.TriggerRed_cal = self.findChild(QCheckBox, 'TriggerRed_cal')
+#         self.update_calOB('TriggerRed', self.calOB.get('TriggerRed'))
+#         self.TriggerRed_cal.stateChanged.connect(self.TriggerRed_cal_state_change)
+#         self.TriggerExpMeter_cal = self.findChild(QCheckBox, 'TriggerExpMeter_cal')
+#         self.update_calOB('TriggerExpMeter', self.calOB.get('TriggerExpMeter'))
+#         self.TriggerExpMeter_cal.stateChanged.connect(self.TriggerExpMeter_cal_state_change)
 
         # Dark Sequence 1
-        self.enable_dark_seq1 = self.findChild(QCheckBox, 'enable_dark_seq1')
-        self.enable_dark_seq1.setChecked(len(self.calOB.get('SEQ_Darks', [])) >= 1)
-        self.enable_dark_seq1.stateChanged.connect(self.enable_dark_seq1_state_change)
-
-        self.Object_dark_seq1 = self.findChild(QLineEdit, 'Object_dark_seq1')
-        self.Object_dark_seq1.textChanged.connect(self.set_Object_dark_seq1)
-        self.update_calOB('dark1_Object', self.calOB.get('SEQ_Darks')[0]['Object'])
-        self.Object_dark_seq1_label = self.findChild(QLabel, 'Object_dark_seq1_label')
-        self.Object_dark_seq1_note = self.findChild(QLabel, 'Object_dark_seq1_note')
-
-        self.nExp_dark_seq1 = self.findChild(QLineEdit, 'nExp_dark_seq1')
-        self.nExp_dark_seq1.textChanged.connect(self.set_nExp_dark_seq1)
-        self.update_calOB('dark1_nExp', self.calOB.get('SEQ_Darks')[0]['nExp'])
-        self.nExp_dark_seq1_label = self.findChild(QLabel, 'nExp_dark_seq1_label')
-        self.nExp_dark_seq1_note = self.findChild(QLabel, 'nExp_dark_seq1_note')
-
-        self.ExpTime_dark_seq1 = self.findChild(QLineEdit, 'ExpTime_dark_seq1')
-        self.ExpTime_dark_seq1.textChanged.connect(self.set_ExpTime_dark_seq1)
-        self.update_calOB('dark1_ExpTime', self.calOB.get('SEQ_Darks')[0]['ExpTime'])
-        self.ExpTime_dark_seq1_label = self.findChild(QLabel, 'ExpTime_dark_seq1_label')
-        self.ExpTime_dark_seq1_note = self.findChild(QLabel, 'ExpTime_dark_seq1_note')
+#         self.enable_dark_seq1 = self.findChild(QCheckBox, 'enable_dark_seq1')
+#         self.enable_dark_seq1.setChecked(self.calOB.SEQ_Darks1 is not None)
+#         self.enable_dark_seq1.stateChanged.connect(self.enable_dark_seq1_state_change)
+# 
+#         self.Object_dark_seq1 = self.findChild(QLineEdit, 'Object_dark_seq1')
+#         self.Object_dark_seq1.textChanged.connect(self.set_Object_dark_seq1)
+#         self.update_calOB('dark1_Object', self.calOB.SEQ_Darks1.get('Object'))
+#         self.Object_dark_seq1_label = self.findChild(QLabel, 'Object_dark_seq1_label')
+#         self.Object_dark_seq1_note = self.findChild(QLabel, 'Object_dark_seq1_note')
+# 
+#         self.nExp_dark_seq1 = self.findChild(QLineEdit, 'nExp_dark_seq1')
+#         self.nExp_dark_seq1.textChanged.connect(self.set_nExp_dark_seq1)
+#         self.update_calOB('dark1_nExp', self.calOB.SEQ_Darks1.get('nExp'))
+#         self.nExp_dark_seq1_label = self.findChild(QLabel, 'nExp_dark_seq1_label')
+#         self.nExp_dark_seq1_note = self.findChild(QLabel, 'nExp_dark_seq1_note')
+# 
+#         self.ExpTime_dark_seq1 = self.findChild(QLineEdit, 'ExpTime_dark_seq1')
+#         self.ExpTime_dark_seq1.textChanged.connect(self.set_ExpTime_dark_seq1)
+#         self.update_calOB('dark1_ExpTime', self.calOB.SEQ_Darks1.get('ExpTime'))
+#         self.ExpTime_dark_seq1_label = self.findChild(QLabel, 'ExpTime_dark_seq1_label')
+#         self.ExpTime_dark_seq1_note = self.findChild(QLabel, 'ExpTime_dark_seq1_note')
 
         # Dark Sequence 2
-        self.enable_dark_seq2 = self.findChild(QCheckBox, 'enable_dark_seq2')
-        self.enable_dark_seq2.setChecked(len(self.calOB.get('SEQ_Darks', [])) >= 2)
-        self.enable_dark_seq2.stateChanged.connect(self.enable_dark_seq2_state_change)
-
-        self.Object_dark_seq2 = self.findChild(QLineEdit, 'Object_dark_seq2')
-        self.Object_dark_seq2.textChanged.connect(self.set_Object_dark_seq2)
-        self.update_calOB('dark2_Object', self.calOB.get('SEQ_Darks')[1]['Object'])
-        self.Object_dark_seq2_label = self.findChild(QLabel, 'Object_dark_seq2_label')
-        self.Object_dark_seq2_note = self.findChild(QLabel, 'Object_dark_seq2_note')
-
-        self.nExp_dark_seq2 = self.findChild(QLineEdit, 'nExp_dark_seq2')
-        self.nExp_dark_seq2.textChanged.connect(self.set_nExp_dark_seq2)
-        self.update_calOB('dark2_nExp', self.calOB.get('SEQ_Darks')[1]['nExp'])
-        self.nExp_dark_seq2_label = self.findChild(QLabel, 'nExp_dark_seq2_label')
-        self.nExp_dark_seq2_note = self.findChild(QLabel, 'nExp_dark_seq2_note')
-
-        self.ExpTime_dark_seq2 = self.findChild(QLineEdit, 'ExpTime_dark_seq2')
-        self.ExpTime_dark_seq2.textChanged.connect(self.set_ExpTime_dark_seq2)
-        self.update_calOB('dark2_ExpTime', self.calOB.get('SEQ_Darks')[1]['ExpTime'])
-        self.ExpTime_dark_seq2_label = self.findChild(QLabel, 'ExpTime_dark_seq2_label')
-        self.ExpTime_dark_seq2_note = self.findChild(QLabel, 'ExpTime_dark_seq2_note')
+#         self.enable_dark_seq2 = self.findChild(QCheckBox, 'enable_dark_seq2')
+#         self.enable_dark_seq2.setChecked(self.calOB.SEQ_Darks2 is not None)
+#         self.enable_dark_seq2.stateChanged.connect(self.enable_dark_seq2_state_change)
+# 
+#         self.Object_dark_seq2 = self.findChild(QLineEdit, 'Object_dark_seq2')
+#         self.Object_dark_seq2.textChanged.connect(self.set_Object_dark_seq2)
+#         self.update_calOB('dark2_Object', self.calOB.SEQ_Darks2.get('Object'))
+#         self.Object_dark_seq2_label = self.findChild(QLabel, 'Object_dark_seq2_label')
+#         self.Object_dark_seq2_note = self.findChild(QLabel, 'Object_dark_seq2_note')
+# 
+#         self.nExp_dark_seq2 = self.findChild(QLineEdit, 'nExp_dark_seq2')
+#         self.nExp_dark_seq2.textChanged.connect(self.set_nExp_dark_seq2)
+#         self.update_calOB('dark2_nExp', self.calOB.SEQ_Darks2.get('nExp'))
+#         self.nExp_dark_seq2_label = self.findChild(QLabel, 'nExp_dark_seq2_label')
+#         self.nExp_dark_seq2_note = self.findChild(QLabel, 'nExp_dark_seq2_note')
+# 
+#         self.ExpTime_dark_seq2 = self.findChild(QLineEdit, 'ExpTime_dark_seq2')
+#         self.ExpTime_dark_seq2.textChanged.connect(self.set_ExpTime_dark_seq2)
+#         self.update_calOB('dark2_ExpTime', self.calOB.SEQ_Darks2.get('ExpTime'))
+#         self.ExpTime_dark_seq2_label = self.findChild(QLabel, 'ExpTime_dark_seq2_label')
+#         self.ExpTime_dark_seq2_note = self.findChild(QLabel, 'ExpTime_dark_seq2_note')
 
         # Cal Sequence 1
-        self.enable_cal_seq1 = self.findChild(QCheckBox, 'enable_cal_seq1')
-        self.enable_cal_seq1.setChecked(self.calOB.get('SEQ_Calibrations', None) is not None)
-        self.enable_cal_seq1.stateChanged.connect(self.enable_cal_seq1_state_change)
-
-        self.Object_cal_seq1 = self.findChild(QLineEdit, 'Object_cal_seq1')
-        self.Object_cal_seq1.textChanged.connect(self.set_Object_cal_seq1)
-        self.update_calOB('cal1_Object', self.calOB.get('SEQ_Calibrations')[0]['Object'])
-        self.Object_cal_seq1_label = self.findChild(QLabel, 'Object_cal_seq1_label')
-        self.Object_cal_seq1_note = self.findChild(QLabel, 'Object_cal_seq1_note')
-
-        self.CalSource_cal_seq1 = self.findChild(QComboBox, 'CalSource_cal_seq1')
-        self.CalSource_cal_seq1.addItems(['WideFlat', 'BrdbandFiber', 'U_gold',
-                                          'U_daily', 'Th_daily', 'Th_gold',
-                                          'LFCFiber', 'EtalonFiber',
-                                          'SoCal-CalFib', 'SoCal-SciSky'])
-        self.CalSource_cal_seq1.currentTextChanged.connect(self.set_CalSource_cal_seq1)
-        self.update_calOB('cal1_CalSource', self.calOB.get('SEQ_Calibrations')[0]['CalSource'])
-        self.CalSource_cal_seq1_label = self.findChild(QLabel, 'CalSource_cal_seq1_label')
-
-        self.warm_up_warning = self.findChild(QLabel, 'warm_up_warning')
-
-        self.CalND1_cal_seq1 = self.findChild(QComboBox, 'CalND1_cal_seq1')
-        self.CalND1_cal_seq1.addItems(["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"])
-        self.CalND1_cal_seq1.currentTextChanged.connect(self.set_CalND1_cal_seq1)
-        self.update_calOB('cal1_CalND1', self.calOB.get('SEQ_Calibrations')[0]['CalND1'])
-        self.CalND1_cal_seq1_label = self.findChild(QLabel, 'CalND1_cal_seq1_label')
-
-        self.CalND2_cal_seq1 = self.findChild(QComboBox, 'CalND2_cal_seq1')
-        self.CalND2_cal_seq1.addItems(["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"])
-        self.CalND2_cal_seq1.currentTextChanged.connect(self.set_CalND2_cal_seq1)
-        self.update_calOB('cal1_CalND2', self.calOB.get('SEQ_Calibrations')[0]['CalND2'])
-        self.CalND2_cal_seq1_label = self.findChild(QLabel, 'CalND2_cal_seq1_label')
-
-        self.nExp_cal_seq1 = self.findChild(QLineEdit, 'nExp_cal_seq1')
-        self.nExp_cal_seq1.textChanged.connect(self.set_nExp_cal_seq1)
-        self.update_calOB('cal1_nExp', self.calOB.get('SEQ_Calibrations')[0]['nExp'])
-        self.nExp_cal_seq1_label = self.findChild(QLabel, 'nExp_cal_seq1_label')
-        self.nExp_cal_seq1_note = self.findChild(QLabel, 'nExp_cal_seq1_note')
-
-        self.ExpTime_cal_seq1 = self.findChild(QLineEdit, 'ExpTime_cal_seq1')
-        self.ExpTime_cal_seq1.textChanged.connect(self.set_ExpTime_cal_seq1)
-        self.update_calOB('cal1_ExpTime', self.calOB.get('SEQ_Calibrations')[0]['ExpTime'])
-        self.ExpTime_cal_seq1_label = self.findChild(QLabel, 'ExpTime_cal_seq1_label')
-        self.ExpTime_cal_seq1_note = self.findChild(QLabel, 'ExpTime_cal_seq1_note')
-
-        self.SSS_Science_cal_seq1 = self.findChild(QCheckBox, 'SSS_Science_cal_seq1')
-        self.SSS_Science_cal_seq1.stateChanged.connect(self.SSS_Science_cal_seq1_state_change)
-        self.update_calOB('cal1_SSS_Science', self.calOB.get('SEQ_Calibrations')[0]['SSS_Science'])
-
-        self.SSS_Sky_cal_seq1 = self.findChild(QCheckBox, 'SSS_Sky_cal_seq1')
-        self.SSS_Sky_cal_seq1.stateChanged.connect(self.SSS_Sky_cal_seq1_state_change)
-        self.update_calOB('cal1_SSS_Sky', self.calOB.get('SEQ_Calibrations')[0]['SSS_Sky'])
-
-        self.TakeSimulCal_cal_seq1 = self.findChild(QCheckBox, 'TakeSimulCal_cal_seq1')
-        self.TakeSimulCal_cal_seq1.stateChanged.connect(self.TakeSimulCal_cal_seq1_state_change)
-        self.update_calOB('cal1_TakeSimulCal', self.calOB.get('SEQ_Calibrations')[0]['TakeSimulCal'])
-
-        self.FF_FiberPos_cal_seq1 = self.findChild(QComboBox, 'FF_FiberPos_cal_seq1')
-        self.FF_FiberPos_cal_seq1.addItems(["Blank", "6 mm f/5", "7.5 mm f/4",
-                                            "10 mm f/3", "13.2 mm f/2.3", "Open"])
-        self.FF_FiberPos_cal_seq1.currentTextChanged.connect(self.set_FF_FiberPos_cal_seq1)
-        self.update_calOB('cal1_FF_FiberPos', self.calOB.get('SEQ_Calibrations')[0]['FF_FiberPos'])
-        self.FF_FiberPos_cal_seq1_label = self.findChild(QLabel, 'FF_FiberPos_cal_seq1_label')
-        self.FF_FiberPos_cal_seq1.setEnabled(self.calOB.get('SEQ_Calibrations')[0]['CalSource'] == 'WideFlat')
-        self.FF_FiberPos_cal_seq1_label.setEnabled(self.calOB.get('SEQ_Calibrations')[0]['CalSource'] == 'WideFlat')
-
-        self.ExpMeterExpTime_cal_seq1 = self.findChild(QLineEdit, 'ExpMeterExpTime_cal_seq1')
-        self.ExpMeterExpTime_cal_seq1.textChanged.connect(self.set_ExpMeterExpTime_cal_seq1)
-        self.update_calOB('cal1_ExpMeterExpTime', self.calOB.get('SEQ_Calibrations')[0]['ExpMeterExpTime'])
-        self.ExpMeterExpTime_cal_seq1_label = self.findChild(QLabel, 'ExpMeterExpTime_cal_seq1_label')
-        self.ExpMeterExpTime_cal_seq1_note = self.findChild(QLabel, 'ExpMeterExpTime_cal_seq1_note')
+#         self.enable_cal_seq1 = self.findChild(QCheckBox, 'enable_cal_seq1')
+#         self.enable_cal_seq1.setChecked(self.calOB.SEQ_Calibrations1 is not None)
+#         self.enable_cal_seq1.stateChanged.connect(self.enable_cal_seq1_state_change)
+# 
+#         self.Object_cal_seq1 = self.findChild(QLineEdit, 'Object_cal_seq1')
+#         self.Object_cal_seq1.textChanged.connect(self.set_Object_cal_seq1)
+#         self.update_calOB('cal1_Object', self.calOB.SEQ_Calibrations1.get('Object'))
+#         self.Object_cal_seq1_label = self.findChild(QLabel, 'Object_cal_seq1_label')
+#         self.Object_cal_seq1_note = self.findChild(QLabel, 'Object_cal_seq1_note')
+# 
+#         self.CalSource_cal_seq1 = self.findChild(QComboBox, 'CalSource_cal_seq1')
+#         self.CalSource_cal_seq1.addItems(['WideFlat', 'BrdbandFiber', 'U_gold',
+#                                           'U_daily', 'Th_daily', 'Th_gold',
+#                                           'LFCFiber', 'EtalonFiber',
+#                                           'SoCal-CalFib', 'SoCal-SciSky'])
+#         self.CalSource_cal_seq1.currentTextChanged.connect(self.set_CalSource_cal_seq1)
+#         self.update_calOB('cal1_CalSource', self.calOB.SEQ_Calibrations1.get('CalSource'))
+#         self.CalSource_cal_seq1_label = self.findChild(QLabel, 'CalSource_cal_seq1_label')
+# 
+#         self.warm_up_warning = self.findChild(QLabel, 'warm_up_warning')
+# 
+#         self.CalND1_cal_seq1 = self.findChild(QComboBox, 'CalND1_cal_seq1')
+#         self.CalND1_cal_seq1.addItems(["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"])
+#         self.CalND1_cal_seq1.currentTextChanged.connect(self.set_CalND1_cal_seq1)
+#         self.update_calOB('cal1_CalND1', self.calOB.SEQ_Calibrations1.get('CalND1'))
+#         self.CalND1_cal_seq1_label = self.findChild(QLabel, 'CalND1_cal_seq1_label')
+# 
+#         self.CalND2_cal_seq1 = self.findChild(QComboBox, 'CalND2_cal_seq1')
+#         self.CalND2_cal_seq1.addItems(["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"])
+#         self.CalND2_cal_seq1.currentTextChanged.connect(self.set_CalND2_cal_seq1)
+#         self.update_calOB('cal1_CalND2', self.calOB.SEQ_Calibrations1.get('CalND2'))
+#         self.CalND2_cal_seq1_label = self.findChild(QLabel, 'CalND2_cal_seq1_label')
+# 
+#         self.nExp_cal_seq1 = self.findChild(QLineEdit, 'nExp_cal_seq1')
+#         self.nExp_cal_seq1.textChanged.connect(self.set_nExp_cal_seq1)
+#         self.update_calOB('cal1_nExp', self.calOB.SEQ_Calibrations1.get('nExp'))
+#         self.nExp_cal_seq1_label = self.findChild(QLabel, 'nExp_cal_seq1_label')
+#         self.nExp_cal_seq1_note = self.findChild(QLabel, 'nExp_cal_seq1_note')
+# 
+#         self.ExpTime_cal_seq1 = self.findChild(QLineEdit, 'ExpTime_cal_seq1')
+#         self.ExpTime_cal_seq1.textChanged.connect(self.set_ExpTime_cal_seq1)
+#         self.update_calOB('cal1_ExpTime', self.calOB.SEQ_Calibrations1.get('ExpTime'))
+#         self.ExpTime_cal_seq1_label = self.findChild(QLabel, 'ExpTime_cal_seq1_label')
+#         self.ExpTime_cal_seq1_note = self.findChild(QLabel, 'ExpTime_cal_seq1_note')
+# 
+#         self.SSS_Science_cal_seq1 = self.findChild(QCheckBox, 'SSS_Science_cal_seq1')
+#         self.SSS_Science_cal_seq1.stateChanged.connect(self.SSS_Science_cal_seq1_state_change)
+#         self.update_calOB('cal1_SSS_Science', self.calOB.SEQ_Calibrations1.get('SSS_Science'))
+# 
+#         self.SSS_Sky_cal_seq1 = self.findChild(QCheckBox, 'SSS_Sky_cal_seq1')
+#         self.SSS_Sky_cal_seq1.stateChanged.connect(self.SSS_Sky_cal_seq1_state_change)
+#         self.update_calOB('cal1_SSS_Sky', self.calOB.SEQ_Calibrations1.get('SSS_Sky'))
+# 
+#         self.TakeSimulCal_cal_seq1 = self.findChild(QCheckBox, 'TakeSimulCal_cal_seq1')
+#         self.TakeSimulCal_cal_seq1.stateChanged.connect(self.TakeSimulCal_cal_seq1_state_change)
+#         self.update_calOB('cal1_TakeSimulCal', self.calOB.SEQ_Calibrations1.get('TakeSimulCal'))
+# 
+#         self.FF_FiberPos_cal_seq1 = self.findChild(QComboBox, 'FF_FiberPos_cal_seq1')
+#         self.FF_FiberPos_cal_seq1.addItems(["Blank", "6 mm f/5", "7.5 mm f/4",
+#                                             "10 mm f/3", "13.2 mm f/2.3", "Open"])
+#         self.FF_FiberPos_cal_seq1.currentTextChanged.connect(self.set_FF_FiberPos_cal_seq1)
+#         self.update_calOB('cal1_FF_FiberPos', self.calOB.SEQ_Calibrations1.get('FF_FiberPos'))
+#         self.FF_FiberPos_cal_seq1_label = self.findChild(QLabel, 'FF_FiberPos_cal_seq1_label')
+#         self.FF_FiberPos_cal_seq1.setEnabled(self.calOB.SEQ_Calibrations1.get('CalSource') == 'WideFlat')
+#         self.FF_FiberPos_cal_seq1_label.setEnabled(self.calOB.SEQ_Calibrations1.get('CalSource') == 'WideFlat')
+# 
+#         self.ExpMeterExpTime_cal_seq1 = self.findChild(QLineEdit, 'ExpMeterExpTime_cal_seq1')
+#         self.ExpMeterExpTime_cal_seq1.textChanged.connect(self.set_ExpMeterExpTime_cal_seq1)
+#         self.update_calOB('cal1_ExpMeterExpTime', self.calOB.SEQ_Calibrations1.get('ExpMeterExpTime'))
+#         self.ExpMeterExpTime_cal_seq1_label = self.findChild(QLabel, 'ExpMeterExpTime_cal_seq1_label')
+#         self.ExpMeterExpTime_cal_seq1_note = self.findChild(QLabel, 'ExpMeterExpTime_cal_seq1_note')
 
     ##-------------------------------------------
     ## Methods relating to updates from keywords
@@ -850,8 +850,10 @@ class MainWindow(QMainWindow):
             self.OB.SEQ_Observations1.set(key, value)
         else:
             self.OB.set(key, value)
+        self.render_OB()
 
-        # Render all values in OB
+    def render_OB(self):
+        self.log.debug('Render all values in OB')
         # TargetName
         self.TargetName.setText(f"{self.OB.get('TargetName')}")
         self.form_star_list_line()
@@ -980,7 +982,7 @@ class MainWindow(QMainWindow):
             if fname != '' and Path(fname).exists():
                 try:
                     self.OB = ScienceOB.load_from_file(fname)
-
+                    self.render_OB()
                 except Exception as e:
                     self.log.error(f"Unable to load file: {fname}")
                     self.log.error(f"{e}")
@@ -1170,7 +1172,7 @@ class MainWindow(QMainWindow):
         self.ExpTime_dark_seq1.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq1_label.setEnabled(int(value) == 2)
         self.ExpTime_dark_seq1_note.setEnabled(int(value) == 2)
-        self.calOB.set_seq('SEQ_Darks', {}, seqindex=0)
+#         self.calOB.set_seq('', {}, seqindex=0)
         if int(value) == 2:
             # Adding a seq to the OB
             self.update_calOB('dark1_Object', self.Object_dark_seq1.text())
