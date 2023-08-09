@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>971</width>
-    <height>902</height>
+    <width>903</width>
+    <height>864</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>160</y>
-      <width>951</width>
+      <width>891</width>
       <height>16</height>
      </rect>
     </property>
@@ -32,7 +32,7 @@
      <rect>
       <x>10</x>
       <y>80</y>
-      <width>308</width>
+      <width>301</width>
       <height>81</height>
      </rect>
     </property>
@@ -51,7 +51,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Current Script Name:</string>
+        <string>Current Script:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -143,7 +143,7 @@
      <rect>
       <x>330</x>
       <y>80</y>
-      <width>311</width>
+      <width>281</width>
       <height>81</height>
      </rect>
     </property>
@@ -240,9 +240,9 @@
    <widget class="QWidget" name="gridLayoutWidget_8">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>630</x>
       <y>80</y>
-      <width>301</width>
+      <width>271</width>
       <height>81</height>
      </rect>
     </property>
@@ -349,7 +349,7 @@
    <widget class="Line" name="line_6">
     <property name="geometry">
      <rect>
-      <x>640</x>
+      <x>610</x>
       <y>80</y>
       <width>20</width>
       <height>81</height>
@@ -364,8 +364,8 @@
      <rect>
       <x>10</x>
       <y>180</y>
-      <width>951</width>
-      <height>701</height>
+      <width>891</width>
+      <height>681</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -447,7 +447,7 @@
      <widget class="QWidget" name="gridLayoutWidget_5">
       <property name="geometry">
        <rect>
-        <x>530</x>
+        <x>480</x>
         <y>30</y>
         <width>401</width>
         <height>111</height>
@@ -516,7 +516,7 @@
      <widget class="Line" name="line_3">
       <property name="geometry">
        <rect>
-        <x>500</x>
+        <x>430</x>
         <y>20</y>
         <width>20</width>
         <height>141</height>
@@ -530,7 +530,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>640</y>
+        <y>620</y>
         <width>171</width>
         <height>23</height>
        </rect>
@@ -543,8 +543,8 @@
       <property name="geometry">
        <rect>
         <x>190</x>
-        <y>640</y>
-        <width>741</width>
+        <y>620</y>
+        <width>691</width>
         <height>21</height>
        </rect>
       </property>
@@ -557,7 +557,7 @@
        <rect>
         <x>10</x>
         <y>160</y>
-        <width>921</width>
+        <width>871</width>
         <height>16</height>
        </rect>
       </property>
@@ -820,7 +820,7 @@
        <rect>
         <x>450</x>
         <y>200</y>
-        <width>481</width>
+        <width>431</width>
         <height>351</height>
        </rect>
       </property>
@@ -851,7 +851,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Set ND filters automatically</string>
+          <string>Set filters automatically</string>
          </property>
         </widget>
        </item>
@@ -868,7 +868,7 @@
        <item row="5" column="3">
         <widget class="QLabel" name="label_53">
          <property name="text">
-          <string>OBJECT value for FITS header</string>
+          <string>OBJECT for FITS header</string>
          </property>
         </widget>
        </item>
@@ -998,7 +998,7 @@
        <item row="9" column="3">
         <widget class="QCheckBox" name="AutoEMExpTime">
          <property name="text">
-          <string>Set exptime automatically?</string>
+          <string>Set automatically?</string>
          </property>
         </widget>
        </item>
@@ -1006,6 +1006,13 @@
         <widget class="QLabel" name="label_38">
          <property name="text">
           <string>TriggerGreen:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3">
+        <widget class="QCheckBox" name="enable_obs_seq1">
+         <property name="text">
+          <string>Enable?</string>
          </property>
         </widget>
        </item>
@@ -1087,8 +1094,8 @@
        <rect>
         <x>150</x>
         <y>560</y>
-        <width>781</width>
-        <height>81</height>
+        <width>731</width>
+        <height>51</height>
        </rect>
       </property>
       <property name="text">
@@ -1106,7 +1113,7 @@
        <rect>
         <x>10</x>
         <y>550</y>
-        <width>921</width>
+        <width>871</width>
         <height>16</height>
        </rect>
       </property>
@@ -1356,22 +1363,18 @@
        <rect>
         <x>10</x>
         <y>320</y>
-        <width>369</width>
-        <height>341</height>
+        <width>561</width>
+        <height>321</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="cal_seq_layout">
-       <item row="3" column="0">
-        <widget class="QLabel" name="CalND1_cal_seq1_label">
-         <property name="text">
-          <string>CalND1:</string>
-         </property>
-        </widget>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="CalND2_cal_seq1"/>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="CalSource_cal_seq1_label">
+       <item row="2" column="4">
+        <widget class="QLabel" name="FF_FiberPos_cal_seq1_label">
          <property name="text">
-          <string>CalSource:</string>
+          <string>FF_FiberPos:</string>
          </property>
         </widget>
        </item>
@@ -1382,51 +1385,63 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
-        <widget class="QCheckBox" name="SSS_Science_cal_seq1">
-         <property name="text">
-          <string>-</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1">
         <widget class="QComboBox" name="CalSource_cal_seq1"/>
        </item>
-       <item row="5" column="2">
-        <widget class="QLabel" name="nExp_cal_seq1_note">
-         <property name="text">
-          <string>number of exposures</string>
-         </property>
-        </widget>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="Object_cal_seq1"/>
        </item>
-       <item row="6" column="1">
-        <widget class="QLineEdit" name="ExpTime_cal_seq1"/>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="Object_cal_seq1_note">
-         <property name="text">
-          <string>for FITS header</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QCheckBox" name="SSS_Sky_cal_seq1">
-         <property name="text">
-          <string>-</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QCheckBox" name="enable_cal_seq1">
-         <property name="text">
-          <string>Enable?</string>
-         </property>
-        </widget>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="CalND1_cal_seq1"/>
        </item>
        <item row="0" column="0" colspan="2">
         <widget class="QLabel" name="label_78">
          <property name="text">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h3 style=&quot; margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;Cal Sequence 1&lt;/span&gt;&lt;/h3&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QLineEdit" name="ExpMeterExpTime_cal_seq1"/>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="ExpTime_cal_seq1"/>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="ExpTime_cal_seq1_label">
+         <property name="text">
+          <string>ExpTime:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="CalSource_cal_seq1_label">
+         <property name="text">
+          <string>CalSource:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="Object_cal_seq1_label">
+         <property name="text">
+          <string>Object:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5">
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="1">
+          <widget class="QComboBox" name="FF_FiberPos_cal_seq1"/>
+         </item>
+        </layout>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="nExp_cal_seq1"/>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="SSS_Sky_cal_seq1_label">
+         <property name="text">
+          <string>SSS_Sky:</string>
          </property>
         </widget>
        </item>
@@ -1437,41 +1452,17 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="ExpTime_cal_seq1_label">
+       <item row="1" column="2">
+        <widget class="QLabel" name="Object_cal_seq1_note">
          <property name="text">
-          <string>ExpTime:</string>
+          <string>for FITS header</string>
          </property>
         </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QLabel" name="FF_FiberPos_cal_seq1_label">
-         <property name="text">
-          <string>FF_FiberPos:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="1">
-        <widget class="QComboBox" name="FF_FiberPos_cal_seq1"/>
        </item>
        <item row="7" column="0">
         <widget class="QLabel" name="SSS_Science_cal_seq1_label">
          <property name="text">
           <string>SSS_Science:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="nExp_cal_seq1_label">
-         <property name="text">
-          <string>nExp:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="SSS_Sky_cal_seq1_label">
-         <property name="text">
-          <string>SSS_Sky:</string>
          </property>
         </widget>
        </item>
@@ -1482,31 +1473,19 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="CalND2_cal_seq1_label">
+       <item row="0" column="2">
+        <widget class="QCheckBox" name="enable_cal_seq1">
          <property name="text">
-          <string>CalND2:</string>
+          <string>Enable?</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="CalND1_cal_seq1"/>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="nExp_cal_seq1"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="Object_cal_seq1_label">
+       <item row="5" column="0">
+        <widget class="QLabel" name="nExp_cal_seq1_label">
          <property name="text">
-          <string>Object:</string>
+          <string>nExp:</string>
          </property>
         </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="Object_cal_seq1"/>
-       </item>
-       <item row="4" column="1">
-        <widget class="QComboBox" name="CalND2_cal_seq1"/>
        </item>
        <item row="9" column="1">
         <widget class="QCheckBox" name="TakeSimulCal_cal_seq1">
@@ -1515,8 +1494,40 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="1">
-        <widget class="QLineEdit" name="ExpMeterExpTime_cal_seq1"/>
+       <item row="5" column="2">
+        <widget class="QLabel" name="nExp_cal_seq1_note">
+         <property name="text">
+          <string>number of exposures</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="CalND1_cal_seq1_label">
+         <property name="text">
+          <string>CalND1:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="CalND2_cal_seq1_label">
+         <property name="text">
+          <string>CalND2:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QCheckBox" name="SSS_Science_cal_seq1">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QCheckBox" name="SSS_Sky_cal_seq1">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
        </item>
        <item row="11" column="2">
         <widget class="QLabel" name="ExpMeterExpTime_cal_seq1_note">
@@ -1529,6 +1540,13 @@
         <widget class="QLabel" name="warm_up_warning">
          <property name="text">
           <string>warm up?</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="Line" name="line_13">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
@@ -1591,7 +1609,7 @@
        <rect>
         <x>10</x>
         <y>100</y>
-        <width>921</width>
+        <width>791</width>
         <height>16</height>
        </rect>
       </property>
@@ -1630,7 +1648,7 @@
        <rect>
         <x>10</x>
         <y>170</y>
-        <width>921</width>
+        <width>791</width>
         <height>16</height>
        </rect>
       </property>
@@ -1643,7 +1661,7 @@
        <rect>
         <x>10</x>
         <y>300</y>
-        <width>921</width>
+        <width>791</width>
         <height>16</height>
        </rect>
       </property>
@@ -1707,7 +1725,7 @@
      <rect>
       <x>260</x>
       <y>40</y>
-      <width>701</width>
+      <width>591</width>
       <height>21</height>
      </rect>
     </property>
@@ -1725,7 +1743,7 @@
      <rect>
       <x>10</x>
       <y>60</y>
-      <width>951</width>
+      <width>891</width>
       <height>16</height>
      </rect>
     </property>
@@ -1752,7 +1770,6 @@
     </property>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
