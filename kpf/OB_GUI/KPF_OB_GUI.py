@@ -1056,9 +1056,7 @@ class MainWindow(QMainWindow):
         date = utnow-datetime.timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
         tmp_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/executedOB_{now_str}.yaml').expanduser()
-        self.write_to_this_file(tmp_file)
-
-#         RunSciOB_cmd = 'echo "Hello World" ; sleep 10'
+        self.OB.write_to_file(tmp_file)
         RunSciOB_cmd = f'kpfdo RunSciOB -f {tmp_file} ; echo "Done!" ; sleep 30'
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'RunSciOB', '-name', 'RunSciOB',
