@@ -18,7 +18,8 @@ def find_process(process, server='kpf'):
     prefix_cmd = []
     if socket.gethostname() != server:
         prefix_cmd = ['ssh', server]
-    psout = subprocess.run(prefix_cmd + ['ps', '-ef'], stdout=subprocess.PIPE)
+    pscmd = prefix_cmd + ['ps', '-u', f'{os.getlogin()}', '-f', '--width', '200']
+    psout = subprocess.run(pscmd, stdout=subprocess.PIPE)
     psout = psout.stdout.decode().split('\n')
     process_id = None
     for line in psout:
@@ -56,8 +57,8 @@ class StopGUIs(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
 
         for GUI in GUI_list:
+            GUIname = GUI['name']
             if GUI['cmd'][0] == 'kpf':
-                GUIname = GUI['name']
                 GUIscriptname = GUI['cmd'][2]
                 status_cmd = GUI['cmd']
                 status_cmd[1] = 'status'
@@ -80,7 +81,15 @@ class StopGUIs(KPFTranslatorFunction):
                 else:
                     log.info(f"{GUIname} is not running")
                     log.debug(f"{stdout}")
+            elif GUIname == 'MAGIQ - Observer UI':
+                log.info(f"Stopping '{GUIname}' GUI")
+                stop_cmd = GUI['cmd']
+                stop_cmd[4] = 'stop'
+                gui_proc = subprocess.Popen(stop_cmd,
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE)
             else:
+                log.info(f"Stopping '{GUIname}' GUI")
                 kill_process(GUI['cmd'], server='kpf')
 
     @classmethod
