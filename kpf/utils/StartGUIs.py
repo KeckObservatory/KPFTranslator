@@ -162,6 +162,7 @@ class StartGUIs(KPFTranslatorFunction):
                         xpa_proc = subprocess.Popen(xpaset_cmd,
                                                     stdout=subprocess.PIPE,
                                                     stderr=subprocess.PIPE)
+                        time.sleep(1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
