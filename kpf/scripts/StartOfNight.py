@@ -125,8 +125,6 @@ class StartOfNight(KPFTranslatorFunction):
         expmeter_enabled = kpfconfig['EXPMETER_ENABLED'].read(binary=True)
         if expmeter_enabled is False:
             log.warning(f"The ExpMeter detector is disabled tonight")
-        # Verify tip tilt mirror can reach keyword specified range
-        TestTipTiltMirrorRange.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
