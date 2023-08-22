@@ -78,12 +78,19 @@ class ResetGreenDetector(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        expose = ktl.cache('kpfgreen', 'EXPOSE')
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
-        log.warning(f"Waiting for kpfgreen to be Ready")
-        success = expose.waitFor('=="Ready"', timeout=timeout)
+        log.warning(f"Waiting for kpfgreen to be Readout or Ready")
+        expr = f"($kpfgreen.EXPOSE == 'Ready') or ($kpfgreen.EXPOSE == 'Readout')"
+        success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            raise FailedToReachDestination(expose.read(), 'Ready')
+            expose = ktl.cache('kpfgreen', 'EXPOSE')
+            raise FailedToReachDestination(expose.read(), 'Ready or Readout')
+        else:
+            kpfexpose = ktl.cache('kpfexpose')
+            log.info(f"ResetGreenDetector done")
+            log.info(f"kpfexpose.EXPOSE = {kpfexpose['EXPOSE'].read()}")
+            log.info(f"kpfexpose.EXPLAINR = {kpfexpose['EXPLAINR'].read()}")
+            log.info(f"kpfexpose.EXPLAINNR = {kpfexpose['EXPLAINNR'].read()}")
 
 
 class ResetRedDetector(KPFTranslatorFunction):
@@ -106,12 +113,19 @@ class ResetRedDetector(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        expose = ktl.cache('kpfred', 'EXPOSE')
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
-        log.warning(f"Waiting for kpfred to be Ready")
-        success = expose.waitFor('=="Ready"', timeout=timeout)
+        log.warning(f"Waiting for kpfred to be Readout or Ready")
+        expr = f"($kpfred.EXPOSE == 'Ready') or ($kpfred.EXPOSE == 'Readout')"
+        success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            raise FailedToReachDestination(expose.read(), 'Ready')
+            expose = ktl.cache('kpfred', 'EXPOSE')
+            raise FailedToReachDestination(expose.read(), 'Ready or Readout')
+        else:
+            kpfexpose = ktl.cache('kpfexpose')
+            log.info(f"ResetRedDetector done")
+            log.info(f"kpfexpose.EXPOSE = {kpfexpose['EXPOSE'].read()}")
+            log.info(f"kpfexpose.EXPLAINR = {kpfexpose['EXPLAINR'].read()}")
+            log.info(f"kpfexpose.EXPLAINNR = {kpfexpose['EXPLAINNR'].read()}")
 
 
 class ResetDetectors(KPFTranslatorFunction):
@@ -139,7 +153,7 @@ class ResetDetectors(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
-        log.debug(f'Waiting {timeout:.1f} s for EXPOSE to be Ready')
+        log.debug(f'Waiting {timeout:.1f} s for EXPOSE to be Readout or Ready')
         expr = f"($kpfexpose.EXPOSE == 'Ready') or ($kpfexpose.EXPOSE == 'Readout')"
         log.warning(f"Waiting for kpfexpose to be Ready or Readout")
         success = ktl.waitFor(expr, timeout=timeout)
@@ -151,6 +165,7 @@ class ResetDetectors(KPFTranslatorFunction):
             log.info(f"Reset detectors done")
             log.info(f"kpfexpose.EXPOSE = {kpfexpose['EXPOSE'].read()}")
             log.info(f"kpfexpose.EXPLAINR = {kpfexpose['EXPLAINR'].read()}")
+            log.info(f"kpfexpose.EXPLAINNR = {kpfexpose['EXPLAINNR'].read()}")
 
 
 class RecoverDetectors(KPFTranslatorFunction):
@@ -189,8 +204,20 @@ class RecoverDetectors(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        expose = ktl.cache('kpfexpose', 'EXPOSE')
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
-        ready = expose.waitFor("== 'Ready'", timeout=timeout)
-        if ready is False:
-            raise FailedToReachDestination(expose.read(), 'Ready')
+        log.debug(f'Waiting {timeout:.1f} s for EXPOSE to be Readout or Ready')
+        expr = f"($kpfexpose.EXPOSE == 'Ready') or ($kpfexpose.EXPOSE == 'Readout')"
+        log.warning(f"Waiting for kpfexpose to be Ready or Readout")
+        success = ktl.waitFor(expr, timeout=timeout)
+        if success is not True:
+            kpfexposeexpose = ktl.cache('kpfexpose', 'EXPOSE')
+            raise FailedToReachDestination(kpfexposeexpose.read(), 'Ready or Readout')
+        else:
+            kpfexpose = ktl.cache('kpfexpose')
+            log.info(f"Reset detectors done")
+            log.info(f"kpfexpose.EXPOSE = {kpfexpose['EXPOSE'].read()}")
+            log.info(f"kpfexpose.EXPLAINR = {kpfexpose['EXPLAINR'].read()}")
+            log.info(f"kpfexpose.EXPLAINNR = {kpfexpose['EXPLAINNR'].read()}")
+
+
+
