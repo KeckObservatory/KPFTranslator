@@ -733,6 +733,9 @@ class MainWindow(QMainWindow):
         if len(self.disabled_detectors) > 0:
             self.disabled_detectors_value.setText(",".join(self.disabled_detectors))
             self.disabled_detectors_value.setStyleSheet("color:red")
+        else:
+            self.disabled_detectors_value.setText('')
+            self.disabled_detectors_value.setStyleSheet("color:black")
 
     ##-------------------------------------------
     ## Methods relating modifying OB fields
