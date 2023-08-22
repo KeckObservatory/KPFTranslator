@@ -730,12 +730,17 @@ class MainWindow(QMainWindow):
 
     def update_disabled_detectors_value(self):
         self.log.debug(f"update_disabled_detectors_value")
-        if len(self.disabled_detectors) > 0:
-            self.disabled_detectors_value.setText(",".join(self.disabled_detectors))
-            self.disabled_detectors_value.setStyleSheet("color:red")
+        self.log.debug(f"  disabled detector list: {self.disabled_detectors}")
+        if isinstance(self.disabled_detectors, list) is True:
+            if len(self.disabled_detectors) > 0:
+                self.disabled_detectors_value.setText(",".join(self.disabled_detectors))
+                self.disabled_detectors_value.setStyleSheet("color:red")
+            else:
+                self.disabled_detectors_value.setText('')
+                self.disabled_detectors_value.setStyleSheet("color:black")
         else:
             self.disabled_detectors_value.setText('')
-            self.disabled_detectors_value.setStyleSheet("color:black")
+            self.disabled_detectors_value.setStyleSheet("color:red")
 
     ##-------------------------------------------
     ## Methods relating modifying OB fields
