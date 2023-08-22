@@ -683,7 +683,12 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_ca_hk_enabled: {value}")
         if value in ['Yes', True]:
             if 'Ca_HK' in self.disabled_detectors:
-                self.disabled_detectors.pop(self.disabled_detectors.index('Ca_HK'))
+                self.log.debug(f"Removing Ca HK from disbaled detectors")
+                id = self.disabled_detectors.index('Ca_HK')
+                self.log.debug(f"  List index = {id}")
+                self.log.debug(f"  {self.disabled_detectors}")
+                self.disabled_detectors.pop(id)
+                self.log.debug(f"  {self.disabled_detectors}")
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'Ca_HK' not in self.disabled_detectors:
