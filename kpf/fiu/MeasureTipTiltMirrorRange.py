@@ -88,7 +88,7 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         sleeptime = 10 # Set by the 5 second time in the %MEX and %MEV keywords
                        # Need to account for worst case
         tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
-        n = 3
+        n = 1
 
         kpffiu = ktl.cache('kpffiu')
 
