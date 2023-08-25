@@ -29,7 +29,7 @@ def check_move(ax, commanded_position, sleeptime=1, tol=0.1):
 
 
 def find_new_limit(ax, commanded_position, n=5,
-                   sleeptime=1, tol=0.1, margin=0.2):
+                   sleeptime=1, tol=0.1, margin=0):
     kpffiu = ktl.cache('kpffiu')
     tthome = ktl.cache('kpfguide', 'TIPTILT_HOME')
     axid = {'X': 0, 'Y': 1}[ax]
@@ -55,15 +55,11 @@ def find_new_limit(ax, commanded_position, n=5,
     if len(limits) == 0:
         return None
     else:
-        log.info(f"Move failed on {len(limits)}/{n} moves")
-#         print(commanded_position)
-#         print(limits)
-#         print(deltas)
+        log.info(f"  Move failed on {len(limits)}/{n} moves")
         delta_sign = -1 if commanded_position < 0 else 1
         delta = min([abs(d) for d in deltas])
         new_limit = home+delta_sign*(delta-margin)
         delta_sign_str = {-1: '-', 1: '+'}[delta_sign]
-#         print(home, delta_sign, delta_sign_str, delta, margin)
         log.warning(f"New limit for {delta_sign_str}{ax} = {new_limit:.1f} (margin={margin:.1f})")
         return new_limit
 
@@ -88,9 +84,10 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         sleeptime = 10 # Set by the 5 second time in the %MEX and %MEV keywords
                        # Need to account for worst case
         tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
-        n = 1
+        n = args.get('repeats')
 
         kpffiu = ktl.cache('kpffiu')
+        kpfguide = ktl.cache('kpfguide')
 
         measured_range = {}
         axis = ['X', 'Y']
@@ -125,29 +122,32 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
         log.info(f"Measured X range: {measured_range['X']}")
         log.info(f"Measured Y range: {measured_range['Y']}")
 
-        if update_ax['Y'] is True or update_ax['X'] is True:
-            new_home = [np.mean(measured_range['X']), np.mean(measured_range['Y'])]
+        new_home = [np.mean(measured_range['X']), np.mean(measured_range['Y'])]
+        current_home = kpfguide['TIPTILT_HOME'].read(binary=True)
+        if np.isclose(current_home[0], new_home[0]) and np.isclose(current_home[1], new_home[1]):
+            print(f'TIPTILT_HOME OK: gshow -s kpfguide TIPTILT_HOME matches {new_home}')
+        else:
             print(f"modify -s kpfguide TIPTILT_HOME='{new_home[0]:.1f} {new_home[1]:.1f}'")
 
-        if update_ax['X'] is True:
-            xrange = (max(measured_range['X']) - min(measured_range['X']))/2
-            print(f"modify -s kpfguide TIPTILT_XRANGE={xrange:.1f}")
-
-            kpffiu[f'TT{ax}VAX'].write(new_home[0])
+        for i,ax in enumerate(axis):
+            print()
+            range = (max(measured_range[ax]) - min(measured_range[ax]))/2
+            print(f"modify -s kpfguide TIPTILT_{ax}RANGE={range:.1f}")
+            print(f"  Sending {ax} to home")
+            kpffiu[f'TT{ax}VAX'].write(new_home[i])
             time.sleep(sleeptime)
             new_RON = kpffiu[f'TT{ax}MED'].read()
             print(f"modify -s kpffiu TT{ax}RON='|{new_RON}|0|Home'")
-        if update_ax['Y'] is True:
-            yrange = (max(measured_range['Y']) - min(measured_range['Y']))/2
-            print(f"modify -s kpfguide TIPTILT_YRANGE={yrange:.1f}")
-            kpffiu[f'TT{ax}VAX'].write(new_home[1])
-            time.sleep(sleeptime)
-            new_RON = kpffiu[f'TT{ax}MED'].read()
-            print(f"modify -s kpffiu TT{ax}RON='|{new_RON}|0|Home'")
-
-        # ShutdownTipTilt.execute({})
 
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument('--repeats', type=int, default=1,
+                            help="The number of iterations to use in the calculation")
+        return super().add_cmdline_args(parser, cfg)
