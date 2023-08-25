@@ -145,7 +145,7 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
             new_RON = kpffiu[f'TT{ax}MED'].read()
             print(f"modify -s kpffiu TT{ax}RON='|{new_RON}|0|Home'")
 
-        ShutdownTipTilt.execute({})
+        # ShutdownTipTilt.execute({})
 
 
     @classmethod
