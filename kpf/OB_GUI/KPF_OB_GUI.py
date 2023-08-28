@@ -1219,7 +1219,7 @@ class MainWindow(QMainWindow):
 
     def do_collect_guider_cube(self):
         self.log.debug(f"collect_guider_cube")
-        collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 30 ; echo "Done!" ; sleep 10'
+        collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 15 ; echo "Done!" ; sleep 10'
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
