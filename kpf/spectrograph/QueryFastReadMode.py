@@ -33,6 +33,7 @@ class QueryFastReadMode(KPFTranslatorFunction):
             mode = 'unknown'
 
         log.debug(f"ACF Files: {green_ACF}/{red_ACF} mode is {mode}")
+        print(f"ACF Files: {green_ACF}/{red_ACF} mode is {mode}")
         return mode == 'fast'
 
     @classmethod
