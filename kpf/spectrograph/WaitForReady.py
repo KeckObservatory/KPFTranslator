@@ -57,7 +57,12 @@ class WaitForReady(KPFTranslatorFunction):
             log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
             log.debug(f'kpfexpose EXPLAINR = {kpfexpose["EXPLAINR"].read()}')
             log.debug(f'kpfexpose EXPLAINNR = {kpfexpose["EXPLAINNR"].read()}')
-            RecoverDetectors.execute({})
+            if kpfexpose['EXPOSE'].read() == 'Readout':
+                # Readout errors are handled in kpfred and kpfgreen services.
+                # Just wait some extra time for that to recover the system.
+                success = ktl.waitFor(wait_logic, timeout=wait_time)
+            else:
+                RecoverDetectors.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
