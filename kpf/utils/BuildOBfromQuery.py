@@ -10,8 +10,8 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 def get_names_from_gaiaid(gaiaid):
     # Using Gaia ID, query for HD number and query for 2MASS ID
-    hdnumber = '?'
-    twomassid = '?'
+    hdnumber = ''
+    twomassid = ''
     names = Simbad.query_objectids(f"Gaia DR3 {gaiaid}")
     if names is None:
         return None
@@ -31,13 +31,13 @@ def get_Jmag(twomassid):
     cols = ['2MASS', 'Jmag', 'RAJ2000', 'DEJ2000', '_r']
     result = Vizier(catalog=cat, columns=cols).query_object(twomassid)
     if len(result) == 0:
-        return {'Jmag': '?'}
+        return {'Jmag': ''}
     table = result[0]
     table.sort('_r')
     if float(table['_r'][0]) > 1: # find better threshold
-        return {'Jmag': '?'}
+        return {'Jmag': ''}
     if table['Jmag'].mask[0] == True:
-        return {'Jmag': '?'}
+        return {'Jmag': ''}
     Jmag = f"{table['Jmag'][0]:.2f}"
     return {'Jmag': Jmag}
 
@@ -48,7 +48,7 @@ def get_gaia_parameters(gaiaid):
     r = Vizier(catalog=cat, columns=cols).query_constraints(Source=gaiaid)[0]
     plx = f"{float(r['Plx']):.2f}" if r['Plx'].mask[0] == False else '0'
     rv = f"{float(r['RVDR2']):.2f}" if r['RVDR2'].mask[0] == False else '0'
-    Gmag = f"{float(r['Gmag']):.2f}" if r['Gmag'].mask[0] == False else '?'
+    Gmag = f"{float(r['Gmag']):.2f}" if r['Gmag'].mask[0] == False else ''
     Teff = f"{float(r['Tefftemp']):.0f}" if r['Tefftemp'].mask[0] == False else '45000'
     gaia_params = {'Parallax': plx,
                    'RadialVelocity': rv,
@@ -67,53 +67,56 @@ def OBdict_to_lines(OB):
              f"Template_Version: 0.6",
              f"",
              f"# Target Info",
-             f"TargetName: {OB.get('TargetName', '?')}",
-             f"GaiaID: {OB.get('GaiaID', '?')}",
-             f"2MASSID: {OB.get('2MASSID', '?')}",
-             f"Parallax: {OB.get('Parallax', '?')}",
-             f"RadialVelocity: {OB.get('RadialVelocity', '?')}",
-             f"Gmag: {OB.get('Gmag', '?')}",
-             f"Jmag: {OB.get('Jmag', '?')}",
-             f"Teff: {OB.get('Teff', '?')}",
-             f"",
-             f"# Guider Setup",
-             f"GuideMode: {OB.get('GuideMode', '?')}"]
+             f"TargetName: {OB.get('TargetName', '')}",
+             f"GaiaID: {OB.get('GaiaID', '')}",
+             f"2MASSID: {OB.get('2MASSID', '')}"]
+    if OB.get('Parallax', None) is not None:
+        lines.append(f"Parallax: {OB.get('Parallax')}")
+    if OB.get('RadialVelocity', None) is not None:
+        lines.append(f"RadialVelocity: {OB.get('RadialVelocity')}")
+    lines.append(f"Gmag: {OB.get('Gmag', '')}")
+    lines.append(f"Jmag: {OB.get('Jmag', '')}")
+    if OB.get('Teff', None) is not None:
+        lines.append(f"Teff: {OB.get('Teff')}")
+    lines.append(f"")
+    lines.append(f"# Guider Setup")
+    lines.append(f"GuideMode: {OB.get('GuideMode', 'auto')}")
     if OB.get('GuideMode', None) != 'auto':
         lines.extend([
-          f"GuideCamGain: {OB.get('GuideCamGain', '?')}",
-          f"GuideFPS: {OB.get('GuideFPS', '?')}",
+          f"GuideCamGain: {OB.get('GuideCamGain', 'high')}",
+          f"GuideFPS: {OB.get('GuideFPS', '100')}",
           ])
     lines.extend([
           f"",
           f"# Spectrograph Setup",
-          f"TriggerCaHK: {OB.get('TriggerCaHK', '?')}",
-          f"TriggerGreen: {OB.get('TriggerGreen', '?')}",
-          f"TriggerRed: {OB.get('TriggerRed', '?')}",
+          f"TriggerCaHK: {OB.get('TriggerCaHK', 'True')}",
+          f"TriggerGreen: {OB.get('TriggerGreen', 'True')}",
+          f"TriggerRed: {OB.get('TriggerRed', 'True')}",
           f"",
           f"# Observations (repeat the indented block below to take multiple observations,",
           f"SEQ_Observations:",
-          f" - Object: {obs.get('Object', '?')}",
-          f"   nExp: {obs.get('nExp', '?')}",
-          f"   ExpTime: {obs.get('ExpTime', '?')}",
-          f"   ExpMeterMode: {obs.get('ExpMeterMode', '?')}",
-          f"   AutoExpMeter: {obs.get('AutoExpMeter', '?')}",
+          f" - Object: {obs.get('Object', '')}",
+          f"   nExp: {obs.get('nExp', 1)}",
+          f"   ExpTime: {obs.get('ExpTime', 1)}",
+          f"   ExpMeterMode: {obs.get('ExpMeterMode', 'monitor')}",
+          f"   AutoExpMeter: {obs.get('AutoExpMeter', 'True')}",
           ])
     if obs.get('AutoExpMeter', False) not in [True, 'True']:
         lines.extend([
-          f"   ExpMeterExpTime: {obs.get('ExpMeterExpTime', '?')}",
+          f"   ExpMeterExpTime: {obs.get('ExpMeterExpTime', '1')}",
           ])
     lines.extend([
-          f"   TakeSimulCal: {obs.get('TakeSimulCal', '?')}",
+          f"   TakeSimulCal: {obs.get('TakeSimulCal', 'True')}",
           ])
     if obs.get('TakeSimulCal', None) in [True, 'True']:
         if obs.get('AutoNDFilters', None) is not None:
             lines.extend([
-              f"   AutoNDFilters: {obs.get('AutoNDFilters', '?')}",
+              f"   AutoNDFilters: {obs.get('AutoNDFilters', 'False')}",
               ])
         if obs.get('AutoNDFilters', None) not in [True, 'True']:
             lines.extend([
-              f"   CalND1: {obs.get('CalND1', '?')}",
-              f"   CalND2: {obs.get('CalND2', '?')}",
+              f"   CalND1: {obs.get('CalND1', 'OD 0.1')}",
+              f"   CalND2: {obs.get('CalND2', 'OD 0.1')}",
               ])
 
     if OB.get('starlist_entry', None) is not None:

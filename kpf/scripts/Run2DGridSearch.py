@@ -36,7 +36,7 @@ class Run2DGridSearch(KPFTranslatorFunction):
         additional_text = args.get('comment', '')
         em_parameters = PredictExpMeterParameters.execute({'Gmag': Gmag})
         fvc_parameters = PredictFVCParameters.execute({'Gmag': Gmag})
-        dcs = ktl.cache('dcs')
+        dcs = ktl.cache('dcs1')
         targname = dcs['TARGNAME'].read()
         args = {'Template_Name': 'kpf_eng_grid', 'Template_Version': 0.4,
                 'Grid': 'TipTilt',

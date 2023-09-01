@@ -19,7 +19,7 @@ class KPFTranslatorFunction(TranslatorModuleFunction):
         cfg_path_base = os.path.dirname(os.path.abspath(__file__))
 
         inst = 'kpf'
-        cfg = f"{cfg_path_base}/ddoi_configurations/{inst}_inst_config.ini"
+        cfg = f"{cfg_path_base}/{inst}_inst_config.ini"
         config_files = [cfg]
 
         return config_files

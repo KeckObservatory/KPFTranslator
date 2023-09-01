@@ -22,7 +22,6 @@ class SetCurrentBase(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
-#         poname = ktl.cache('dcs', 'PONAME').read()
         poname = args.get('PO', 'KPF')
         basename = {'KPF': 'SCIENCE_BASE',
                     'SKY': 'SKY_BASE'}[poname]

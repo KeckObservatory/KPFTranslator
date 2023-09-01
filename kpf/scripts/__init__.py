@@ -73,6 +73,8 @@ def clear_script_keywords():
     kpfconfig['SCRIPTNAME'].write('None')
     kpfconfig['SCRIPTPID'].write(-1)
     kpfconfig['SCRIPTHOST'].write('')
+    kpfconfig['SCRIPTSTOP'].write('No')
+    kpfconfig['SCRIPTPAUSE'].write('No')
 
 
 def check_script_running():
@@ -104,7 +106,7 @@ def check_scriptstop():
     if scriptpause.read() == 'Yes':
         log.warning("SCRIPTPAUSE requested. Waiting for SCRIPTPAUSE=No.")
         expr = f"($kpfconfig.SCRIPTPAUSE == 'No')"
-        timeout = cfg.getfloat('times', 'scriptpause_timeout', fallback=600)
+        timeout = 600
         success = ktl.waitFor(expr, timeout=timeout)
         if success == False:
             log.error(f"Timed out waiting {timeout:.0f} s for SCRIPTPAUSE to resume")

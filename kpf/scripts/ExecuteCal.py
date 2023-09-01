@@ -26,6 +26,7 @@ from kpf.calbench.WaitForLFCReady import WaitForLFCReady
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
 from kpf.fvc.FVCPower import FVCPower
+from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.SetExpTime import SetExpTime
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
@@ -71,6 +72,7 @@ class ExecuteCal(KPFTranslatorFunction):
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         kpfconfig = ktl.cache('kpfconfig')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        fast_read_mode = QueryFastReadMode.execute({})
         # This is a time shim to insert a pause between exposures so that the
         # temperature of the CCDs can be measured by the archons
         archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
@@ -93,6 +95,7 @@ class ExecuteCal(KPFTranslatorFunction):
             FF_FiberPos = args.get('FF_FiberPos', None)
             SetFlatFieldFiberPos.execute({'FF_FiberPos': FF_FiberPos,
                                           'wait': False})
+            SetTargetInfo.execute({})
             log.info(f"Waiting for Octagon/CalSource, FF_FiberPos, FIU")
             WaitForCalSource.execute({'CalSource': 'Home'})
             WaitForFlatFieldFiberPos.execute(args)
@@ -105,6 +108,7 @@ class ExecuteCal(KPFTranslatorFunction):
             log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
             SetND1.execute({'CalND1': nd1, 'wait': False})
             SetND2.execute({'CalND2': nd2, 'wait': False})
+            SetTargetInfo.execute({})
             log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
             WaitForND1.execute(args)
             WaitForND2.execute(args)
@@ -117,6 +121,8 @@ class ExecuteCal(KPFTranslatorFunction):
                     SetLFCtoAstroComb.execute({})
                 except:
                     log.error('Failed to set LFC to AstroComb')
+                    log.info('Commanding LFC back to Standby High')
+                    SetLFCtoStandbyHigh.execute({})
                     return
             # Take intensity monitor reading
             if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
@@ -165,6 +171,32 @@ class ExecuteCal(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Configure exposure meter
         ## ----------------------------------------------------------------
+        EM_mode = args.get('ExpMeterMode', 'monitor')
+        kpf_expmeter = ktl.cache('kpf_expmeter')
+        usethreshold = kpf_expmeter['USETHRESHOLD'].read()
+        if EM_mode == 'monitor' and usethreshold == 'No':
+            pass
+        elif EM_mode == 'monitor' and usethreshold == 'Yes':
+            kpf_expmeter['USETHRESHOLD'].write('No')
+        elif EM_mode == 'control':
+            kpf_expmeter['USETHRESHOLD'].write('Yes')
+            # Set flux threshold
+            threshold = args.get('ExpMeterThreshold', None)
+            if threshold is None:
+                log.error('No exposure meter threshold defined')
+                kpf_expmeter['USETHRESHOLD'].write('No')
+            else:
+                kpf_expmeter['THRESHOLD'].write(threshold)
+            # Set bin for flux threshold
+            thresholdbin = args.get('ExpMeterBin', None)
+            if thresholdbin is None:
+                log.error('No bin for exposure meter threshold defined')
+                kpf_expmeter['USETHRESHOLD'].write('No')
+            else:
+                kpf_expmeter['THRESHOLDBIN'].write(thresholdbin)
+        else:
+            log.warning(f"ExpMeterMode {EM_mode} is not available")
+
         if args.get('AutoExpMeter', False) == True:
             raise KPFException('AutoExpMeter is not supported for calibrations')
         if args.get('ExpMeterExpTime', None) is not None:
@@ -180,7 +212,6 @@ class ExecuteCal(KPFTranslatorFunction):
             log.info(f"Waiting for kpfexpose to be Ready")
             WaitForReady.execute({})
             log.info(f"Readout complete")
-            sleep(archon_time_shim)
             check_scriptstop() # Stop here if requested
         log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
         SetExpTime.execute(args)
@@ -213,7 +244,12 @@ class ExecuteCal(KPFTranslatorFunction):
         ## Take actual exposures
         ## ----------------------------------------------------------------
         WaitForLampWarm.execute(args)
-        nexp = args.get('nExp', 1)
+        nexp = int(args.get('nExp', 1))
+        exptime = float(args.get('ExpTime'))
+        # If we are in fast read mode, turn on agitator once
+        if runagitator and fast_read_mode:
+            StartAgitator.execute({})
+        # Loop over exposures
         for j in range(nexp):
             check_scriptstop() # Stop here if requested
             # Wait for current exposure to readout
@@ -221,7 +257,9 @@ class ExecuteCal(KPFTranslatorFunction):
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
-                sleep(archon_time_shim)
+                if exptime < 2:
+                    log.debug(f'Sleep {archon_time_shim:.1f}s for temperature reading')
+                    sleep(archon_time_shim)
                 check_scriptstop() # Stop here if requested
             # Check LFC if it is the source
             if calsource == 'LFCFiber':
@@ -230,17 +268,22 @@ class ExecuteCal(KPFTranslatorFunction):
                     log.error('LFC is not ready, skipping remaining LFC frames')
                     SetLFCtoStandbyHigh.execute({})
                     return
-            # Start next exposure
-            if runagitator is True:
+            # Start agitator for each exposure if we are in normal read mode
+            if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
+            # Start next exposure
             log.info(f"Starting expoure {j+1}/{nexp} ({args.get('Object')})")
             StartExposure.execute({})
             WaitForReadout.execute({})
             log.info(f"Readout has begun")
-            if runagitator is True:
+            # Stop agitator after each exposure if we are in normal read mode
+            if runagitator and not fast_read_mode:
                 StopAgitator.execute({})
             if calsource in ['LFCFiber', 'EtalonFiber']:
                 ZeroOutSlewCalTime.execute({})
+        # If we are in fast read mode, turn off agitator at end
+        if runagitator and fast_read_mode:
+            StopAgitator.execute({})
         ## If we used WideFlat, set FF_FiberPos back to blank at end
         if calsource == 'WideFlat':
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})

@@ -10,8 +10,10 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
 from kpf.ao.SetupAOforKPF import SetupAOforKPF
 from kpf.fiu.SetTipTiltGain import SetTipTiltGain
 from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.fiu.TestTipTiltMirrorRange import TestTipTiltMirrorRange
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.CalLampPower import CalLampPower
+from kpf.guider.SetGuiderGain import SetGuiderGain
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.utils.SetOutdirs import SetOutdirs
@@ -73,7 +75,7 @@ class StartOfNight(KPFTranslatorFunction):
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
         # Set DCS rotator parameters
-        dcs = ktl.cache('dcs')
+        dcs = ktl.cache('dcs1')
         inst = dcs['INSTRUME'].read()
         if inst == 'KPF':
             log.info(f"Setting dcs.ROTDEST = 0")
@@ -106,6 +108,8 @@ class StartOfNight(KPFTranslatorFunction):
             log.info('Waiting for kpfexpose to be Ready')
             WaitForReady.execute({})
         SetOutdirs.execute({})
+        # Set guider gain to high for initial acquisition and focus
+        SetGuiderGain.execute({'GuideCamGain': 'high'})
         # Set progname and observer
         SetObserverFromSchedule.execute({})
         # Summarize Detector Disabled States

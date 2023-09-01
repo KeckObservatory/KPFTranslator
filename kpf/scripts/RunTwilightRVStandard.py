@@ -4,9 +4,12 @@ from pathlib import Path
 import yaml
 import subprocess
 import traceback
+import re
 
 from astropy.time import Time
-from astropy.coordinates import EarthLocation
+from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy import units as u
+from astropy.time import Time
 
 import ktl
 
@@ -27,6 +30,82 @@ from kpf.scripts.RunCalOB import RunCalOB
 from kpf.utils.SendEmail import SendEmail
 from kpf.spectrograph.SetProgram import SetProgram
 from kpf.spectrograph.SetObserver import SetObserver
+
+
+class TwilightTarget():
+    '''A class to hold each possible twilight target
+    '''
+    def __init__(self, targname='', coord=None, priority=1, comment=''):
+        self.targname = targname
+        self.coord = coord
+        self.priority = priority
+        self.comment = comment
+        self.star_list_line = None
+
+    def alt(self, time=Time.now(), loc=EarthLocation.of_site('keck')):
+        altaz = self.coord.transform_to(AltAz(obstime=time,location=loc))
+        return altaz.alt.deg * u.deg
+        
+    def str(self):
+        return f"{self.targname}: priority={self.priority}"
+
+    def repr(self):
+        return f"{self.targname}: priority={self.priority}"
+
+    @classmethod
+    def from_starlist_line(self, line):
+        t = TwilightTarget()
+        matchline = re.match('([\w\d\s]{16})(.+)\n', line)
+        if matchline is None:
+            return None
+        else:
+            t.star_list_line = line.strip('\n')
+            t.targname = matchline.group(1).strip()
+            targinfo = matchline.group(2)
+            comment_i = targinfo.find('#')
+            if comment_i > 0:
+                components = targinfo[:comment_i].split(' ')
+                t.comment = targinfo[comment_i:].strip()
+                matchpriority = re.search('priority=([\d\.]+).*', t.comment)
+                if matchpriority is not None:
+                    t.priority = float(matchpriority.group(1))
+                else:
+                    t.priority = 1
+            else:
+                components = targinfo.split(' ')
+                t.comment = ''
+                t.priority = 1
+            remove = -1
+            while remove is not None:
+                try:
+                    remove = components.index('')
+                    components.pop(remove)
+                except:
+                    remove = None
+            t.comment += ' '
+            t.comment += ':'.join(components[7:])
+            t.coord = SkyCoord(':'.join(components[0:3]), ':'.join(components[3:6]), unit=(u.hourangle, u.deg))
+            return t
+
+
+def rank_targets(starlist_file, horizon=30*u.deg):
+    log.debug(f"Selecting Twilght Targets from {starlist_file}")
+    with open(starlist_file) as f:
+        lines = f.readlines()
+    all_targets = []
+    starlist_dir = Path(starlist_file).parent
+    for line in lines:
+        targ = TwilightTarget.from_starlist_line(line)
+        OB_file = starlist_dir / f"{targ.targname}.yaml"
+        if OB_file.exists() is False:
+            log.debug(f"  Could not find OB file for {targ.targname}")
+        elif targ.alt() > horizon:
+            log.debug(f"  {targ.targname} at EL={targ.alt():.1f} is available, priority={targ.priority}")
+            all_targets.append(targ)
+        else:
+            log.debug(f"  {targ.targname} at EL={targ.alt():.1f} is below configured horizon")
+    all_targets = sorted(all_targets, key=lambda x: x.priority, reverse=True)
+    return all_targets
 
 
 ##-------------------------------------------------------------------------
@@ -57,25 +136,15 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # ---------------------------------
         # Select Target
         # ---------------------------------
-        keck = EarthLocation.of_site('keck')
-        now = Time.now()
-        now.location = keck
-        lst = now.sidereal_time('apparent')
-	if lst.value > 0.0 and lst.value < 23.99:
-            targname = "3651"
-       # if lst.value > 14.3 and lst.value < 20.3:
-       #     targname = "157347"
-       # elif lst.value > 3.5 and lst.value < 10.5:
-       #     targname = '55575'
-       # elif lst.value > 3.5 and lst.value < 10.5:
-       #     targname = "52711"
-       # elif lst.value > 2.0 and lst.value < 9.0:
-       #     targname = "37008"
-
-        sciOBfile = Path(f'/s/starlists/000000_kpftwilight/{targname}.yaml')
-        if sciOBfile.exists() is False:
-            log.error(f"Could not load OB file: {sciOBfile}")
+        horizon = 30*u.deg
+        starlist_file = Path(f'/s/starlists/000000_kpftwilight/starlist.txt')
+        all_targets = rank_targets(starlist_file, horizon=horizon)
+        if len(all_targets) == 0:
+            log.error(f'No targets available above horizon ({horizon:.1f})')
             return
+
+        targname = all_targets[0].targname
+        sciOBfile = starlist_file.parent / f'{targname}.yaml'
         with open(sciOBfile, 'r') as f:
             sciOB = yaml.safe_load(f)
 
@@ -85,6 +154,13 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
             return
         with open(calOBfile, 'r') as f:
             calOB = yaml.safe_load(f)
+
+        log_string = f"Selected: {targname} at {all_targets[0].alt():.1f}, "\
+                     f"priority={all_targets[0].priority}"
+        log.debug(log_string)
+        if args.get('test_only', False) is True:
+            print(log_string)
+            return
 
         # ---------------------------------
         # Start Of Night
@@ -97,7 +173,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
                "    Josh Walawender: 808-990-4294 (cell)",
                "",
                "Please load the starlist at",
-               "/s/starlists/000000_kpftwilight/starlist.txt",
+               f"{starlist_file}",
                "",
                f"Our target will be:",
                f"  {targname}",
@@ -230,3 +306,12 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument('--test', dest="test_only",
+                            default=False, action="store_true",
+                            help='Only execute the target selection code')
+        return super().add_cmdline_args(parser, cfg)

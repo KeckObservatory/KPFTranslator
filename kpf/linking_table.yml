@@ -10,6 +10,8 @@ links:
         cmd: analysis.AnalyzeTipTiltPerformance.AnalyzeTipTiltPerformance
     Fit2DGridSearch:
         cmd: analysis.Fit2DGridSearch.Fit2DGridSearch
+    CountCameraErrors:
+        cmd: analysis.CountCameraErrors.CountCameraErrors
     # AO
     ControlAOHatch:
         cmd: ao.ControlAOHatch.ControlAOHatch
@@ -28,6 +30,8 @@ links:
     TurnHepaOn:
         cmd: ao.TurnHepaOn.TurnHepaOn
     # CaHK
+    PowerCycleCaHK:
+        cmd: cahk.PowerCycleCaHK.PowerCycleCaHK
     # Cal Bench
     CalLampPower:
         cmd: calbench.CalLampPower.CalLampPower
@@ -77,6 +81,8 @@ links:
         cmd: fiu.ControlHatch.ControlHatch
     InitializeTipTilt:
         cmd: fiu.InitializeTipTilt.InitializeTipTilt
+    MeasureTipTiltMirrorRange:
+        cmd: fiu.MeasureTipTiltMirrorRange.MeasureTipTiltMirrorRange
     SetADCAngles:
         cmd: fiu.SetADCAngles.SetADCAngles
     SetTipTiltCalculations:
@@ -189,6 +195,12 @@ links:
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
     # Spectrograph
+    QueryFastReadMode:
+        cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
+    RecoverDetectors:
+        cmd: spectrograph.ResetDetectors.RecoverDetectors
+    ResetCaHKDetector:
+        cmd: spectrograph.ResetDetectors.ResetCaHKDetector
     ResetGreenDetector:
         cmd: spectrograph.ResetDetectors.ResetGreenDetector
     ResetRedDetector:
@@ -203,6 +215,10 @@ links:
         cmd: spectrograph.SetObserver.SetObserver
     SetProgram:
         cmd: spectrograph.SetProgram.SetProgram
+    SetReadModeFast:
+        cmd: spectrograph.SetReadModeFast.SetReadModeFast
+    SetReadModeNormal:
+        cmd: spectrograph.SetReadModeNormal.SetReadModeNormal
     SetSourceSelectShutters:
         cmd: spectrograph.SetSourceSelectShutters.SetSourceSelectShutters
     SetTimedShutters:
@@ -224,6 +240,8 @@ links:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
     CalculateDAR:
         cmd: utils.CalculateDAR.CalculateDAR
+    CheckDewarWeights:
+        cmd: utils.CheckDewarWeights.CheckDewarWeights
     CorrectDAR:
         cmd: utils.CorrectDAR.CorrectDAR
     EstimateOBDuration:

@@ -1,12 +1,15 @@
 from pathlib import Path
 
+import ktl
+
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
-                         add_script_log)
+                         add_script_log, clear_script_keywords)
 from kpf.fiu.StopTipTilt import StopTipTilt
 from kpf.spectrograph.StopAgitator import StopAgitator
+from kpf.utils.SetTargetInfo import SetTargetInfo
 
 
 class CleanupAfterScience(KPFTranslatorFunction):
@@ -29,9 +32,17 @@ class CleanupAfterScience(KPFTranslatorFunction):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
-        # Turn off tip tilt
         StopTipTilt.execute({})
-        StopAgitator.execute({})
+
+        kpfconfig = ktl.cache('kpfconfig')
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        if runagitator is True:
+            StopAgitator.execute({})
+
+        # Clear target info
+        SetTargetInfo.execute({})
+
+        clear_script_keywords()
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

@@ -33,7 +33,7 @@ class ConfigureFIU(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         dest = args.get('mode')
         wait = args.get('wait', True)
-        log.info(f"Configuring FIU for to {dest}")
+        log.info(f"Configuring FIU for {dest}")
         ConfigureFIUOnce.execute({'mode': dest, 'wait': wait})
         if wait == True:
             WaitForConfigureFIU.execute({'mode': dest})

@@ -136,6 +136,7 @@ class RunCalOB(KPFTranslatorFunction):
                 log.debug(f"Automatically setting TimedShutter_CaHK: {cal['TimedShutter_CaHK']}")
                 cal['Template_Name'] = 'kpf_lamp'
                 cal['Template_Version'] = OB['Template_Version']
+                cal['nointensemon'] = OB['nointensemon']
                 ExecuteCal.execute(cal)
         except Exception as e:
             log.error("ExecuteCal failed:")

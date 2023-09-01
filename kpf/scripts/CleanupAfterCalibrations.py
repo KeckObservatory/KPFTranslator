@@ -10,13 +10,15 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
-                         add_script_log)
+                         add_script_log, clear_script_keywords)
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
+from kpf.calbench.SetLFCtoStandbyHigh import SetLFCtoStandbyHigh
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.StopAgitator import StopAgitator
 from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.utils.SetTargetInfo import SetTargetInfo
 
 
 class CleanupAfterCalibrations(KPFTranslatorFunction):
@@ -54,15 +56,21 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         if OB.get('leave_lamps_on', False) == True:
             log.info('Not turning lamps off because command line option was invoked')
         else:
-            sequence = OB.get('SEQ_Calibrations')
-            lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
+            sequence = OB.get('SEQ_Calibrations', None)
+            lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])\
+                    if sequence is not None else []
             for lamp in lamps:
                 if IsCalSourceEnabled.execute({'CalSource': lamp}) == True:
                     if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                                 'BrdbandFiber', 'WideFlat']:
                         CalLampPower.execute({'lamp': lamp, 'power': 'off'})
+                    if lamp == 'LFCFiber':
+                        SetLFCtoStandbyHigh.execute({})
 
-        StopAgitator.execute({})
+        kpfconfig = ktl.cache('kpfconfig')
+        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        if runagitator is True:
+            StopAgitator.execute({})
 
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})
@@ -71,6 +79,11 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         log.info('Waiting for readout to finish')
         WaitForReady.execute({})
         SetObject.execute({'Object': ''})
+
+        # Clear target info
+        SetTargetInfo.execute({})
+
+        clear_script_keywords()
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

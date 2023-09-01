@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timedelta
 
 import ktl
@@ -23,6 +24,16 @@ class StartTipTilt(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        expr = "($kpffiu.TTXSRV == 'Closed') and ($kpffiu.TTYSRV == 'Closed')"
+        servo_loops_closed = ktl.waitFor(expr, timeout=0.5)
+        if not servo_loops_closed:
+            kpffiu = ktl.cache('kpffiu')
+            log.info('Closing servo loops')
+            kpffiu['TTXSRV'].write('Closed')
+            kpffiu['TTYSRV'].write('Closed')
+            movetime = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
+            time.sleep(10*movetime)
+
         kpfguide = ktl.cache('kpfguide')
         log.debug(f'Ensuring kpfguide.DAR_ENABLE is yes')
         kpfguide['DAR_ENABLE'].write('Yes')

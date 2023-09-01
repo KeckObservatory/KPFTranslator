@@ -6,7 +6,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
-from kpf.spectrograph.ResetDetectors import ResetDetectors
+from kpf.spectrograph.ResetDetectors import *
 
 
 class WaitForReady(KPFTranslatorFunction):
@@ -24,79 +24,51 @@ class WaitForReady(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfexpose['EXPOSURE'].read(binary=True)
+        starting_status = kpfexpose['EXPOSE'].read(binary=True)
 
         detectors = kpfexpose['TRIG_TARG'].read()
         detector_list = detectors.split(',')
 
-        starting_status = kpfexpose['EXPOSE'].read(binary=True)
-
         buffer_time = cfg.getfloat('times', 'readout_buffer_time', fallback=10)
-        slowest_read = cfg.getfloat('times', 'slowest_readout_time', fallback=120)
+        read_times = [cfg.getfloat('time_estimates', 'readout_red', fallback=60),
+                      cfg.getfloat('time_estimates', 'readout_green', fallback=60),
+                      cfg.getfloat('time_estimates', 'readout_cahk', fallback=1),
+                      cfg.getfloat('time_estimates', 'readout_expmeter', fallback=1),
+                      ]
+        slowest_read = max(read_times)
 
         wait_time = exptime+slowest_read+buffer_time if starting_status < 3 else slowest_read+buffer_time
 
-        wait_logic = ''
+        wait_logic_steps = ['($kpfexpose.EXPOSE == 0)']
         if 'Green' in detector_list:
-            wait_logic += '(($kpfgreen.EXPSTATE == 0) or ($kpfgreen.EXPSTATE == 1))'
+            wait_logic_steps.append("($kpfgreen.EXPSTATE == 0)")
         if 'Red' in detector_list:
-            if len(wait_logic) > 0: 
-                wait_logic +=' and '
-            wait_logic += '(($kpfred.EXPSTATE == 0) or ($kpfred.EXPSTATE == 1))'
+            wait_logic_steps.append("($kpfred.EXPSTATE == 0)")
         if 'Ca_HK' in detector_list:
-            if len(wait_logic) > 0: 
-                wait_logic +=' and '
-            wait_logic += '(($kpf_hk.EXPSTATE == 0) or ($kpf_hk.EXPSTATE == 1))'
-        if len(wait_logic) > 0: 
-            wait_logic +=' and '
-        wait_logic += '($kpfexpose.EXPOSE == 0)'
+            wait_logic_steps.append("($kpf_hk.EXPSTATE == 0)")
+        wait_logic = ' and '.join(wait_logic_steps)
         log.debug(f"Waiting ({wait_time:.0f}s max) for detectors to be ready")
         success = ktl.waitFor(wait_logic, timeout=wait_time)
 
         if success is True:
             log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
         else:
+            log.warning('WaitForReady failed to reach expected state')
             log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
             log.debug(f'kpfexpose EXPLAINR = {kpfexpose["EXPLAINR"].read()}')
-            errors = []
-            if 'Red' in detector_list:
-                kpfred = ktl.cache('kpfred')
-                redexpstate = kpfred['EXPSTATE'].read()
-                if redexpstate in ['Error', 'PowerOff']:
-                    log.error(f"kpfred.EXPSTATE = {redexpstate}")
-                    errors.append('Red')
-            if 'Green' in detector_list:
-                kpfgreen = ktl.cache('kpfgreen')
-                greenexpstate = kpfgreen['EXPSTATE'].read()
-                if greenexpstate in ['Error', 'PowerOff']:
-                    log.error(f"kpfgreen.EXPSTATE = {greenexpstate}")
-                    errors.append('Green')
-            if len(errors) > 0:
-                ResetDetectors.execute({})
+            log.debug(f'kpfexpose EXPLAINNR = {kpfexpose["EXPLAINNR"].read()}')
+            if kpfexpose['EXPOSE'].read() == 'Readout':
+                # Readout errors are handled in kpfred and kpfgreen services.
+                # Just wait some extra time for that to recover the system.
+                success = ktl.waitFor(wait_logic, timeout=wait_time)
+            else:
+                RecoverDetectors.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
-        detectors = kpfexpose['TRIG_TARG'].read()
-        detector_list = detectors.split(',')
-        expose = kpfexpose['EXPOSE']
-        status = expose.read()
-
-        notok = [(status != 'Ready')]
-        msg = f"Final detector state mismatch: {status} != Ready ("
-        if 'Green' in detector_list:
-            greenexpstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
-            notok.append(greenexpstate == 'Error')
-            msg += f"kpfgreen.EXPSTATE = {greenexpstate} "
-        if 'Red' in detector_list:
-            redexpstate = ktl.cache('kpfred', 'EXPSTATE').read()
-            notok.append(redexpstate == 'Error')
-            msg += f"kpfred.EXPSTATE = {redexpstate} "
-        if 'Ca_HK' in detector_list:
-            cahkexpstate = ktl.cache('kpf_hk', 'EXPSTATE').read()
-            notok.append(cahkexpstate == 'Error')
-            msg += f"kpf_hk.EXPSTATE = {cahkexpstate} "
-        msg += ')'
-        notok = np.array(notok)
-
-        if np.any(notok):
-            raise FailedPostCondition(msg)
+        expr = "($kpfexpose.EXPOSE == 'Ready')"
+        timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
+        ok = ktl.waitFor(expr, timeout=timeout)
+        if ok is not True:
+            expose = ktl.cache('kpfexpose', 'EXPOSE')
+            raise FailedPostCondition(f"kpfexpose.EXPOSE={expose.read()} is not Ready")

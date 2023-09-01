@@ -68,7 +68,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
                     log.debug(f"    {entry}")
         log.info('-------------------------')
 
-        dcs = ktl.cache('dcs')
         kpfconfig = ktl.cache('kpfconfig')
         kpf_expmeter = ktl.cache('kpf_expmeter')
 
@@ -113,6 +112,8 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             guider_parameters = PredictGuiderParameters.execute(OB)
             SetGuiderGain.execute(guider_parameters)
             SetGuiderFPS.execute(guider_parameters)
+        elif guide_mode == 'off':
+            log.info(f"GuideMode is off, no guider parameters set")
         else:
             log.error(f"Guide mode '{guide_mode}' is not supported.")
             log.error(f"Not setting guider parameters.")
