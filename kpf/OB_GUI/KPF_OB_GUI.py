@@ -23,6 +23,7 @@ from kpf.OB_GUI.OBs import *
 from kpf.utils import BuildOBfromQuery
 from kpf.utils import SendEmail
 from kpf.utils.EstimateOBDuration import EstimateCalOBDuration, EstimateSciOBDuration
+from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 
 
 ##-------------------------------------------------------------------------
@@ -131,6 +132,8 @@ class MainWindow(QMainWindow):
         self.kpfconfig = ktl.cache('kpfconfig')
         self.kpflamps = ktl.cache('kpflamps')
         self.kpfexpose = ktl.cache('kpfexpose')
+        self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
+        self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Slew Cal Time Colors/Warnings
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
@@ -191,9 +194,12 @@ class MainWindow(QMainWindow):
         slewcaltime_kw.stringCallback.connect(self.update_slewcaltime_value)
 
         # slew cal file
-        self.slewcalfile_value = self.findChild(QLabel, 'slewcalfile_value')
-        slewcalfile_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALFILE'])
-        slewcalfile_kw.stringCallback.connect(self.update_slewcalfile_value)
+#         self.slewcalfile_value = self.findChild(QLabel, 'slewcalfile_value')
+#         slewcalfile_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALFILE'])
+#         slewcalfile_kw.stringCallback.connect(self.update_slewcalfile_value)
+        self.read_mode = self.findChild(QLabel, 'readout_mode_value')
+        self.red_acf_file_kw.stringCallback.connect(self.update_acffile)
+        self.green_acf_file_kw.stringCallback.connect(self.update_acffile)
 
         # disabled detectors
         self.disabled_detectors_value = self.findChild(QLabel, 'disabled_detectors_value')
@@ -641,6 +647,16 @@ class MainWindow(QMainWindow):
         if match_expected is not None:
             output_text = match_expected.group(1)
         self.slewcalfile_value.setText(output_text)
+
+    # ACF File
+    def update_acffile(self, value):
+        fast = QueryFastReadMode.execute({})
+        if fast is True:
+            self.read_mode.setText('Fast')
+            self.read_mode.setStyleSheet("color:orange")
+        else:
+            self.read_mode.setText('Normal')
+            self.read_mode.setStyleSheet("color:green")
 
     def update_ca_hk_enabled(self, value):
         self.log.debug(f"update_ca_hk_enabled: {value}")
@@ -1217,7 +1233,6 @@ class MainWindow(QMainWindow):
     def set_ExpTime_dark_seq1(self, value):
         self.log.debug(f"set_ExpTime_dark_seq1: {value}")
         self.update_calOB('dark1_ExpTime', value)
-
 
     def enable_dark_seq2_state_change(self, value):
         self.log.debug(f"enable_dark_seq2_state_change: {value} {type(value)}")
