@@ -21,34 +21,35 @@ from kpf.guider.TakeGuiderCube import TakeGuiderCube
 def comira(command, message):
     pass
 
-notes = '''From kpfMias.sh
+notes = '''
+Thoughts:
+* During acquisition have TIPTILT_CALC on to see flux, can we automatically
+adjust guide camera settings (gain & FPS) to ensure good measurement?  This
+would allow OAs a lot of freedom to choose a Mira star and would be able to use
+first science target on many nights.
+* No need to preserve KPF camera settings, will be configured by OB or by the
+GUI for next target.
 
-# Big picture sequence (skipping details)
-miasLock
-initOnce = saveOldValues
-cleanUp
-greeting
-initCheck
-requestParameters
-
-# Positive PMFM images
-getSeriesNumber
-setITime
-setACSPmfm
-takeImage
-askUser (whether to continue)
-requestParameters
-#Optional additional images at +PMFM
-takeImage
-
-# Negative PMFM images
-setACSPmfm
-takeImage (take multiple images)
-
-restoreValues
-setACSPmfm 0
-analyze
-restoreValues
+Outline:
+- miasLock (generate symbolic link)
+- greeting (just some simple message echos)
+- initCheck (check for DCS simulate mode and debug mode)
+- requestParameters <-- replace with automation
+- Positive PMFM image
+    - getSeriesNumber
+    - removeAll
+    - set PMFM (include sleep and check)
+    - collect image
+- Confirm continue?
+- Negative PMFM image
+    - getSeriesNumber
+    - removeAll
+    - set PMFM (include sleep and check)
+    - collect image
+- set PMFM to 0 (do not sleep or wait)
+- run analysis
+- check for PMFM=0
+- cleanup lock file
 '''
 
 

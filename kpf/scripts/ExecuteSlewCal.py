@@ -19,6 +19,7 @@ from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.WaitForCalSource import WaitForCalSource
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
+from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.SetExpTime import SetExpTime
 from kpf.spectrograph.SetProgram import SetProgram
@@ -65,6 +66,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        fast_read_mode = QueryFastReadMode.execute({})
 
         # Fill in args in case this is not called by configure for acquisition
         if args.get('TriggerCaHK', None) is None: args['TriggerCaHK'] = False
@@ -143,13 +145,15 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         SetObject.execute(args)
         log.info(f"Clearing stellar parameters")
         SetTargetInfo.execute({})
-        log.info('Setting PROGNAME to ENG')
         SetProgram.execute({'progname': 'ENG'})
 
         ## ----------------------------------------------------------------
         ## Third, take actual exposures
         ## ----------------------------------------------------------------
         nexp = args.get('nExp', 1)
+        # If we are in fast read mode, turn on agitator once
+        if runagitator and fast_read_mode:
+            StartAgitator.execute({})
         for j in range(nexp):
             check_scriptstop() # Stop here if requested
             # Wait for current exposure to readout
@@ -159,15 +163,18 @@ class ExecuteSlewCal(KPFTranslatorFunction):
                 log.info(f"Readout complete")
                 check_scriptstop() # Stop here if requested
             # Start next exposure
-            if runagitator is True:
+            if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
             log.info(f"Starting expoure {j+1}/{nexp} ({args.get('Object')})")
             StartExposure.execute({})
             WaitForReadout.execute({})
             log.info(f"Readout has begun")
-            if runagitator is True:
+            if runagitator and not fast_read_mode:
                 StopAgitator.execute({})
             ZeroOutSlewCalTime.execute({})
+        # If we are in fast read mode, turn off agitator at end
+        if runagitator and fast_read_mode:
+            StopAgitator.execute({})
 
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')

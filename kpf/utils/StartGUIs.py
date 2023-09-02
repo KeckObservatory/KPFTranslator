@@ -18,11 +18,11 @@ GUI_list = [
             {'name': 'KPF OB GUI',
              'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/OB_GUI/KPF_OB_GUI.py'],
              'display': 'control0',
-             'position': '0,5,50,-1,-1'},
+             'position': '0,5,120,-1,-1'},
             {'name': 'KPF Tip Tilt GUI',
              'cmd': ['kpf', 'start', 'tt_gui'],
              'display': 'control0',
-             'position': '0,1000,50,-1,-1'},
+             'position': '0,925,25,-1,-1'},
             # Control1
             {'name': 'KPF Fiber Injection Unit (FIU)',
              'cmd': ['kpf', 'start', 'fiu_gui'],
@@ -151,6 +151,18 @@ class StartGUIs(KPFTranslatorFunction):
                     log.info(f"Minimizing '{xterm_title}'")
                     wmctrl_cmd = ['wmctrl', '-r', xterm_title, '-b', 'add,hidden']
                     wmctrl_proc = subprocess.run(' '.join(wmctrl_cmd), env=env, shell=True)
+            if GUIname == 'SAOImage kpfds9':
+                # Configure ds9 initial color maps and scaling
+                cmaps = {'1': 'cool', '2': 'green', '3': 'heat'}
+                for frameno in cmaps.keys():
+                    xpaset_cmds = [['xpaset', '-p', 'kpfds9', 'frame', 'frameno', f'{frameno}'],
+                                   ['xpaset', '-p', 'kpfds9', 'cmap', f'{cmaps[frameno]}'],
+                                   ['xpaset', '-p', 'kpfds9', 'scale', '99.5']]
+                    for xpaset_cmd in xpaset_cmds:
+                        xpa_proc = subprocess.Popen(xpaset_cmd,
+                                                    stdout=subprocess.PIPE,
+                                                    stderr=subprocess.PIPE)
+                        time.sleep(1)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

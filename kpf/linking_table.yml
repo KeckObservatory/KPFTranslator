@@ -81,6 +81,8 @@ links:
         cmd: fiu.ControlHatch.ControlHatch
     InitializeTipTilt:
         cmd: fiu.InitializeTipTilt.InitializeTipTilt
+    MeasureTipTiltMirrorRange:
+        cmd: fiu.MeasureTipTiltMirrorRange.MeasureTipTiltMirrorRange
     SetADCAngles:
         cmd: fiu.SetADCAngles.SetADCAngles
     SetTipTiltCalculations:
@@ -195,6 +197,8 @@ links:
     # Spectrograph
     QueryFastReadMode:
         cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
+    RecoverDetectors:
+        cmd: spectrograph.ResetDetectors.RecoverDetectors
     ResetCaHKDetector:
         cmd: spectrograph.ResetDetectors.ResetCaHKDetector
     ResetGreenDetector:

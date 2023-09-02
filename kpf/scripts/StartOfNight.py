@@ -10,6 +10,7 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
 from kpf.ao.SetupAOforKPF import SetupAOforKPF
 from kpf.fiu.SetTipTiltGain import SetTipTiltGain
 from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.fiu.TestTipTiltMirrorRange import TestTipTiltMirrorRange
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.guider.SetGuiderGain import SetGuiderGain

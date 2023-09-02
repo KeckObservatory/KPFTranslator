@@ -6,7 +6,7 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
-                         add_script_log)
+                         add_script_log, clear_script_keywords)
 from kpf.fiu.StopTipTilt import StopTipTilt
 from kpf.spectrograph.StopAgitator import StopAgitator
 from kpf.utils.SetTargetInfo import SetTargetInfo
@@ -41,6 +41,8 @@ class CleanupAfterScience(KPFTranslatorFunction):
 
         # Clear target info
         SetTargetInfo.execute({})
+
+        clear_script_keywords()
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

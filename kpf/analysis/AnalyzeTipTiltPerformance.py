@@ -51,10 +51,10 @@ def read_file(file):
     guide_cube_header_hdu = fits.PrimaryHDU()
     L0_header_hdu = fits.PrimaryHDU()
     for hdu in hdul:
-        if hdu.name == 'guider_cube_origins':
+        if hdu.name.upper() == 'GUIDER_CUBE_ORIGINS':
             log.info(f"Found: {hdu.name}")
             guide_origins_hdu = hdu
-        if hdu.name == 'guider_avg':
+        if hdu.name.upper() == 'GUIDER_AVG':
             log.info(f"Found: {hdu.name}")
             guide_cube_header_hdu = hdu
         if hdu.name == 'PRIMARY':
@@ -137,7 +137,6 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
             new = run_new_sep_parameters(cube, t, snr=snr, minarea=minarea,
                                          deblend_nthresh=deblend_nthresh,
                                          deblend_cont=deblend_cont)
-
     if t is None: return
     log.info('Adding calculated parameters')
     t, n_no_stars, n_multiple_stars, n_frames = add_parameters(t)

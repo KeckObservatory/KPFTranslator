@@ -518,19 +518,19 @@ class MainWindow(QMainWindow):
     def update_progname_value(self, value):
         value = str(value).strip()
         self.log.debug(f'update_progname_value: {value}')
-        self.progID.setText(value)
+        self.progID.setText(f"{value}")
 
     # Observer
     def update_observer_value(self, value):
         value = str(value).strip()
         self.log.debug(f'update_observer_value: {value}')
-        self.Observer.setText(value)
+        self.Observer.setText(f"{value}")
 
     # Script Name
     def update_scriptname_value(self, value):
         '''Set label text and set color'''
         self.log.debug(f'update_scriptname_value: {value}')
-        self.scriptname_value.setText(value)
+        self.scriptname_value.setText(f"{value.strip('.py')}")
         if value in ['None', '']:
             self.scriptname_value.setStyleSheet("color:green")
         else:
@@ -540,7 +540,7 @@ class MainWindow(QMainWindow):
     def update_expose_status_value(self, value):
         '''Set label text and set color'''
         self.log.debug(f'update_expose_status_value: {value}')
-        self.expose_status_value.setText(value)
+        self.expose_status_value.setText(f"{value}")
         if value == 'Ready':
             self.expose_status_value.setStyleSheet("color:green")
         elif value in ['Start', 'InProgress', 'Readout']:
@@ -550,7 +550,7 @@ class MainWindow(QMainWindow):
     def update_scriptstop_value(self, value):
         '''Set label text and set color'''
         self.log.debug(f'update_scriptstop_value: {value}')
-        self.scriptstop_value.setText(value)
+        self.scriptstop_value.setText(f"{value}")
         if value == 'Yes':
             self.scriptstop_value.setStyleSheet("color:red")
             self.scriptstop_btn.setText('CLEAR STOP')
@@ -627,7 +627,7 @@ class MainWindow(QMainWindow):
     def update_slewcalreq_value(self, value):
         '''Set label text and set color'''
         self.log.debug(f'update_slewcalreq_value: {value}')
-        self.slewcalreq_value.setText(value)
+        self.slewcalreq_value.setText(f"{value}")
         if value == 'Yes':
             self.slewcalreq_value.setStyleSheet("color:orange")
         elif value == 'No':
@@ -646,7 +646,12 @@ class MainWindow(QMainWindow):
         self.log.debug(f"update_ca_hk_enabled: {value}")
         if value in ['Yes', True]:
             if 'Ca_HK' in self.disabled_detectors:
-                self.disabled_detectors.pop(self.disabled_detectors.index('Ca_HK'))
+                self.log.debug(f"Removing Ca HK from disbaled detectors")
+                id = self.disabled_detectors.index('Ca_HK')
+                self.log.debug(f"  List index = {id}")
+                self.log.debug(f"  {self.disabled_detectors}")
+                self.disabled_detectors.pop(id)
+                self.log.debug(f"  {self.disabled_detectors}")
                 self.update_disabled_detectors_value()
         elif value in ['No', False]:
             if 'Ca_HK' not in self.disabled_detectors:
@@ -688,8 +693,16 @@ class MainWindow(QMainWindow):
 
     def update_disabled_detectors_value(self):
         self.log.debug(f"update_disabled_detectors_value")
-        if len(self.disabled_detectors) > 0:
-            self.disabled_detectors_value.setText(",".join(self.disabled_detectors))
+        self.log.debug(f"  disabled detector list: {self.disabled_detectors}")
+        if isinstance(self.disabled_detectors, list) is True:
+            if len(self.disabled_detectors) > 0:
+                self.disabled_detectors_value.setText(",".join(self.disabled_detectors))
+                self.disabled_detectors_value.setStyleSheet("color:red")
+            else:
+                self.disabled_detectors_value.setText('')
+                self.disabled_detectors_value.setStyleSheet("color:black")
+        else:
+            self.disabled_detectors_value.setText('')
             self.disabled_detectors_value.setStyleSheet("color:red")
 
     ##-------------------------------------------
@@ -995,12 +1008,15 @@ class MainWindow(QMainWindow):
                     load_failed_popup.exec_()
 
     def estimate_OB_duration(self):
-        log.debug(f"Estimating OB duration")
-        OB_for_calc = self.OB.to_dict()
-        OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
-        OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
-        duration = EstimateSciOBDuration.execute(OB_for_calc)
-        self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+        try:
+            log.debug(f"Estimating OB duration")
+            OB_for_calc = deepcopy(self.OB)
+            OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
+            OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
+            duration = EstimateSciOBDuration.execute(OB_for_calc)
+            self.OBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+        except:
+            self.OBDuration.setText(f"Estimated Duration: unknown")
 
     ##-------------------------------------------
     ## Execute an OB (with or without slewcal)
@@ -1128,7 +1144,7 @@ class MainWindow(QMainWindow):
 
     def do_collect_guider_cube(self):
         self.log.debug(f"collect_guider_cube")
-        collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 30 ; echo "Done!" ; sleep 10'
+        collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 15 ; echo "Done!" ; sleep 10'
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
