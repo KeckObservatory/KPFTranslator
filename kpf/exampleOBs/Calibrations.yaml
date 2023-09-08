@@ -1,5 +1,5 @@
 Template_Name: kpf_cal
-Template_Version: 0.6
+Template_Version: 1.0
 
 TriggerCaHK: True
 TriggerGreen: True
@@ -23,4 +23,7 @@ SEQ_Calibrations:
   SSS_Sky: False
   TakeSimulCal: False
   FF_FiberPos: Blank       # This is only needed if CalSource = WideFlat
+  ExpMeterMode: control    # "monitor" or "control" (to terminate exposure based on flux)
   ExpMeterExpTime: 0.5     # This is only needed if TriggerExpMeter = True
+  ExpMeterBin: 3           # Exposure meter wavelength bin to use for stopping exposure
+  ExpMeterThreshold: 1e5   # Target science flux in e-/nm
