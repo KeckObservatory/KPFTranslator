@@ -25,6 +25,7 @@ from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
 from kpf.expmeter.PredictExpMeterParameters import PredictExpMeterParameters
+from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTerminationParameters
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 
 
@@ -70,23 +71,17 @@ class ExecuteSci(KPFTranslatorFunction):
         if EM_mode == 'monitor':
             kpf_expmeter['USETHRESHOLD'].write('No')
         elif EM_mode == 'control':
-            kpf_expmeter['USETHRESHOLD'].write('Yes')
-            # Set flux threshold
-            threshold = args.get('ExpMeterThreshold', None)
-            if threshold is None:
-                log.error('No exposure meter threshold defined')
+            try:
+                SetExpMeterTerminationParameters.execute(args)
+            except Exception as e:
+                log.error('SetExpMeterTerminationParameters failed')
+                log.error(e)
+                traceback_text = traceback.format_exc()
+                log.error(traceback_text)
                 kpf_expmeter['USETHRESHOLD'].write('No')
-            else:
-                kpf_expmeter['THRESHOLD'].write(threshold)
-            # Set bin for flux threshold
-            thresholdbin = args.get('ExpMeterBin', None)
-            if thresholdbin is None:
-                log.error('No bin for exposure meter threshold defined')
-                kpf_expmeter['USETHRESHOLD'].write('No')
-            else:
-                kpf_expmeter['THRESHOLDBIN'].write(thresholdbin)
         else:
             log.warning(f"ExpMeterMode {EM_mode} is not available")
+            kpf_expmeter['USETHRESHOLD'].write('No')
 
         if args.get('AutoExpMeter', False) in [True, 'True']:
             em_params = PredictExpMeterParameters.execute(args)
