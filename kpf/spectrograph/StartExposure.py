@@ -35,7 +35,8 @@ class StartExposure(KPFTranslatorFunction):
         if error_or_exposure_inprogress == True:
             # We didn't time out, so which state is it?
             kpfmon = ktl.cache('kpfmon')
-            if kpfmon['CAMSTATESTA'].read() == 'ERROR':
+            camstatesta = kpfmon['CAMSTATESTA'].read()
+            if camstatesta == 'ERROR':
                 log.error('kpfexpose.CAMSTATESTA is ERROR')
                 RecoverDetectors.execute({})
                 # Now we want to abort the current exposure and start again
@@ -46,7 +47,8 @@ class StartExposure(KPFTranslatorFunction):
                 StartExposure.execute(args)
             else:
                 # We must have transitioned properly
-                pass
+                expose = ktl.cache('kpfexpose', 'EXPOSE')
+                log.debug(f'Post condition succeeded: kpfmon.CAMSTATESTA={camstatesta}, kpfexpose.EXPOSE={expose.read()}')
         else:
             # We timed out, not sure what is going on
             msg = f"Neither kpfmon.CAMSTATESTA nor kpfexpose.EXPOSE transitioned as expected"

@@ -39,11 +39,10 @@ def create_GUI_log():
     logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
     if logdir.exists() is False:
         logdir.mkdir(mode=0o777, parents=True)
-    LogFileName = logdir / 'GUI.log'
-    LogFileHandler = TimedRotatingFileHandler(LogFileName,
-                                              when='D',
-                                              utc=True,  interval=30,
-                                              atTime=datetime.time(0, 0, 0))
+    LogFileName = logdir / 'OB_GUI.log'
+    LogFileHandler = RotatingFileHandler(LogFileName,
+                                         maxBytes=100*1024*1024, # 100 MB
+                                         backupCount=1000) # Keep old files
     LogFileHandler.setLevel(logging.DEBUG)
     LogFileHandler.setFormatter(LogFormat)
     log.addHandler(LogFileHandler)
