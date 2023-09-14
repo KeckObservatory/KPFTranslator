@@ -1,3 +1,4 @@
+import sys
 from time import sleep
 from pathlib import Path
 import os
@@ -109,7 +110,6 @@ class RunCalOB(KPFTranslatorFunction):
             log.error(e)
             traceback_text = traceback.format_exc()
             log.error(traceback_text)
-            clear_script_keywords()
             # Email error to kpf_info
             if not isinstance(e, ScriptStopTriggered):
                 try:
@@ -125,7 +125,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Cleanup
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            raise e
+            sys.exit(1)
 
         # Execute the Cal Sequence
         try:
@@ -143,7 +143,6 @@ class RunCalOB(KPFTranslatorFunction):
             log.error(e)
             traceback_text = traceback.format_exc()
             log.error(traceback_text)
-            clear_script_keywords()
             # Email error to kpf_info
             if not isinstance(e, ScriptStopTriggered):
                 try:
@@ -159,9 +158,7 @@ class RunCalOB(KPFTranslatorFunction):
             # Cleanup
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            raise e
-
-        clear_script_keywords()
+            sys.exit(1)
 
         # Cleanup: Turn off lamps
         try:
