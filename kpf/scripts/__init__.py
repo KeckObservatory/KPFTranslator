@@ -42,7 +42,7 @@ def remove_script_handler(this_file_name):
     log = logging.getLogger('KPFTranslator')
     script_handler_index = None
     for i,handler in enumerate(log.handlers):
-        if isinstance(handler, TimedRotatingFileHandler):
+        if isinstance(handler, RotatingFileHandler):
             filename = Path(handler.baseFilename).name
             if re.search(f"{this_file_name}_", filename) is not None:
                 ScriptLogFileHandler = handler
