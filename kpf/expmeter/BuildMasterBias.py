@@ -1,20 +1,28 @@
-import time
 from pathlib import Path
+import re
 from datetime import datetime, timedelta
 import numpy as np
-from astropy.io import fits
-from astropy import stats
+from astropy.nddata import CCDData
+import ccdproc
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+
+# Suppress warnings about DATE-BEG and DATE-END, for example:
+# WARNING: FITSFixedWarning: 'datfix' made the change 'Set MJD-BEG to 60199.135879 from DATE-BEG.
+# Set MJD-END to 60199.135882 from DATE-END'. [astropy.wcs.wcs]
+import warnings
+from astropy.wcs import FITSFixedWarning
+warnings.filterwarnings('ignore', category=FITSFixedWarning, append=True)
 
 
 class BuildMasterBias(KPFTranslatorFunction):
     '''
     Args:
     =====
-    :: 
+    :files: A list of files to combine.
+    :output: The output combined filename to write.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -22,33 +30,27 @@ class BuildMasterBias(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        biasfiles = args.get('files')
-        biasfiles = [Path(biasfile) for biasfile in biasfiles]
-        bias_hduls = [fits.open(f"{file}") for file in biasfiles]
-        biases = [hdul[0].data[:, 1:1069] for hdul in bias_hduls]
-        log.info(f"Combining {len(biasfiles)} ExpMeter bias frames")
-        for i,bias in enumerate(biases):
-            mean, med, std = stats.sigma_clipped_stats(bias, sigma=2, maxiters=5)
-            log.info(f"  {biasfiles[i].name}: mean, med, std = {mean:.1f}, {med:.1f}, {std:.1f}")
-        median = np.median(biases, axis=0)
-        mean, med, std = stats.sigma_clipped_stats(median, sigma=2, maxiters=5)
-        log.info(f"ExpMeter combined bias mean, med, std = {mean:.1f}, {med:.1f}, {std:.1f}")
+        biasfiles = [Path(biasfile) for biasfile in args.get('files')]
+        biases = [CCDData.read(file, unit="adu") for file in biasfiles]
 
-        if args.get('output', None) in [None, '']:
-            utnow = datetime.utcnow()
-            now_str = utnow.strftime('%Y%m%dat%H%M%S')
-            outputfile = Path(f'/s/sdata1701/ExpMeterMasterFiles/MasterBias_{now_str}.fits')
-        else:
+        combiner = ccdproc.Combiner(biases)
+        combiner.sigma_clipping(low_thresh=5, high_thresh=5)
+        combined_average = combiner.average_combine()
+
+        if args.get('output', None) not in [None, '']:
             outputfile = Path(args.get('output')).expanduser()
+        else:
+            match_fn = re.match('([\w\d_]+)(\d{6})\.(\d{3})\.fits', biasfiles[0].name)
+            if match_fn is not None:
+                frameno = match_fn.group(2)
+                outputfile = Path(f'/s/sdata1701/ExpMeterMasterFiles/MasterBias_{frameno}.fits')
+            else:
+                utnow = datetime.utcnow()
+                now_str = utnow.strftime('%Y%m%dat%H%M%S')
+                outputfile = Path(f'/s/sdata1701/ExpMeterMasterFiles/MasterBias_{now_str}.fits')
+
         log.info(f"Writing {outputfile}")
-        hdu = fits.PrimaryHDU(data=median)
-        hdu.header.set('COMBTYPE', 'median', 'Combine type')
-        hdu.header.set('NCOMBINE', len(biasfiles), 'No. of individual biases')
-        for i,biasfile in enumerate(biasfiles):
-            hdu.header.set(f"INPUTF{i+1:02d}", biasfile.name,
-                           'One of the input files')
-        hdul = fits.HDUList([hdu])
-        hdul.writeto(outputfile,overwrite =True)
+        combined_average.write(outputfile, overwrite=True)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
