@@ -7,10 +7,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 def expeter_flux_target(spectrograph_flux, band):
-    slope = {1:  4.569,
-             2: 11.125,
-             3: 10.026,
-             4: 12.446}[band]
+    slope = {'498.125':  4.569,
+             '604.375': 11.125,
+             '710.625': 10.026,
+             '816.875': 12.446}[band]
     expmeter_flux = slope*spectrograph_flux
     return expmeter_flux
 
@@ -38,15 +38,26 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'ExpMeterThreshold', allowed_types=[int, float],
                     value_min=0)
-        check_input(args, 'ExpMeterBin', allowed_types=[int],
-                    allowed_values=[1,2,3,4])
+        check_input(args, 'ExpMeterBin')
+        # Manually check ExpMeterBin inputs
+        band = args.get('ExpMeterBin')
+        tbin = ktl.cache('kpf_expmeter', 'THRESHOLDBIN')
+        allowed_values = list(tbin._getEnumerators())
+        if isinstance(band, float):
+            band = str(band)
+        if isinstance(band, str):
+            if band not in allowed_values:
+                raise FailedPreCondition(f"ExpMeterBin '{band}' not in {allowed_values}")
+        else:
+            raise FailedPreCondition(f"ExpMeterBin '{band}' could not be parsed")
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        band = str(args.get('ExpMeterBin'))
         spectrograph_flux = args.get('ExpMeterThreshold')
-        band = args.get('ExpMeterBin')
         expmeter_flux = expeter_flux_target(spectrograph_flux, band)
 
+        print(spectrograph_flux, band, expmeter_flux)
         kpf_expmeter = ktl.cache('kpf_expmeter')
         kpf_expmeter['THRESHOLDBIN'].write(band)
         kpf_expmeter['THRESHOLD'].write(expmeter_flux)
@@ -54,6 +65,7 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        pass
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
@@ -63,5 +75,5 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
                             choices=[1,2,3,4],
                             help="Which exposure meter band to use (1, 2, 3, or 4)")
         parser.add_argument('ExpMeterThreshold', type=float,
-                            help="Threshold flux in e-/nm in the main spectrograph",
+                            help="Threshold flux in e-/nm in the main spectrograph")
         return super().add_cmdline_args(parser, cfg)
