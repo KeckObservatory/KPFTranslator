@@ -25,7 +25,7 @@ from kpf.calbench.WaitForLampWarm import WaitForLampWarm
 from kpf.calbench.WaitForLFCReady import WaitForLFCReady
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
-from kpf.expemeter.SetExpMeterTerminationParameters import SetExpMeterTerminationParameters
+from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTerminationParameters
 from kpf.fvc.FVCPower import FVCPower
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObject import SetObject
