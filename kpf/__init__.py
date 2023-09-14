@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import logging
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler
 import datetime
 from packaging import version
 

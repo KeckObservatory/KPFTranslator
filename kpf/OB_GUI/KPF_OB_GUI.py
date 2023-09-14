@@ -4,7 +4,7 @@ import traceback
 import time
 from pathlib import Path
 import logging
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler
 import re
 import subprocess
 import yaml
