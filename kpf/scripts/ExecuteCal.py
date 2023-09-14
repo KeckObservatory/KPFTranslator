@@ -1,4 +1,5 @@
 import os
+import traceback
 from time import sleep
 from packaging import version
 from pathlib import Path
@@ -177,14 +178,7 @@ class ExecuteCal(KPFTranslatorFunction):
         if EM_mode == 'monitor':
             kpf_expmeter['USETHRESHOLD'].write('No')
         elif EM_mode == 'control':
-            try:
-                SetExpMeterTerminationParameters.execute(args)
-            except Exception as e:
-                log.error('SetExpMeterTerminationParameters failed')
-                log.error(e)
-                traceback_text = traceback.format_exc()
-                log.error(traceback_text)
-                kpf_expmeter['USETHRESHOLD'].write('No')
+            SetExpMeterTerminationParameters.execute(args)
         else:
             log.warning(f"ExpMeterMode {EM_mode} is not available")
             kpf_expmeter['USETHRESHOLD'].write('No')
