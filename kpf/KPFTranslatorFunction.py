@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 from logging import getLogger
+from argparse import Namespace, ArgumentTypeError
+import copy
 
 from ddoitranslatormodule.BaseFunction import TranslatorModuleFunction
 
