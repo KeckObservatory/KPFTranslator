@@ -160,6 +160,8 @@ class RunCalOB(KPFTranslatorFunction):
             CleanupAfterCalibrations.execute(OB)
             sys.exit(1)
 
+        clear_script_keywords()
+
         # Cleanup: Turn off lamps
         try:
             CleanupAfterCalibrations.execute(OB)

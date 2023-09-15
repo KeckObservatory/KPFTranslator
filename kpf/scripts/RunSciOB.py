@@ -108,6 +108,8 @@ class RunSciOB(KPFTranslatorFunction):
                 CleanupAfterScience.execute(OB)
                 sys.exit(1)
 
+        clear_script_keywords()
+
         # Cleanup
         CleanupAfterScience.execute(OB)
 
