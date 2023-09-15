@@ -195,10 +195,6 @@ class RecoverDetectors(KPFTranslatorFunction):
                 ResetCaHKDetector.execute({})
             if kpfmon['E_STATESTA'].read() == 'ERROR':
                 ResetExpMeterDetector.execute({})
-            expose = ktl.cache('kpfexpose', 'EXPOSE')
-            ready = expose.waitFor("== 'Ready'", timeout=timeout)
-            if ready is False:
-                expose.write('Reset')
         else:
             log.warning(f'kpfmon.CAMSTATESTA={camera_status}. No action taken.')
 
