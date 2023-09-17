@@ -132,11 +132,11 @@ class RunCalOB(KPFTranslatorFunction):
             cals = OB.get('SEQ_Calibrations', [])
             for cal in cals:
                 # No need to specify TimedShutter_CaHK in OB/calibration
-                cal['TimedShutter_CaHK'] = OB['TriggerCaHK']
+                cal['TimedShutter_CaHK'] = OB.get('TriggerCaHK', False)
                 log.debug(f"Automatically setting TimedShutter_CaHK: {cal['TimedShutter_CaHK']}")
                 cal['Template_Name'] = 'kpf_lamp'
                 cal['Template_Version'] = OB['Template_Version']
-                cal['nointensemon'] = OB['nointensemon']
+                cal['nointensemon'] = OB.get('nointensemon', False)
                 ExecuteCal.execute(cal)
         except Exception as e:
             log.error("ExecuteCal failed:")
