@@ -1,5 +1,7 @@
+import sys
 import time
 import os
+import traceback
 from pathlib import Path
 
 import ktl
@@ -99,9 +101,18 @@ class RunSciOB(KPFTranslatorFunction):
             except Exception as e:
                 log.error("ExecuteSci failed:")
                 log.error(e)
+                traceback_text = traceback.format_exc()
+                log.error(traceback_text)
+                # Cleanup
+                clear_script_keywords()
+                log.error('Running CleanupAfterScience and exiting')
+                CleanupAfterScience.execute(OB)
+                sys.exit(1)
+
+        # Clear script keywords so that cleanup can start successfully
         clear_script_keywords()
 
-        # Cleanup: 
+        # Cleanup
         CleanupAfterScience.execute(OB)
 
     @classmethod
