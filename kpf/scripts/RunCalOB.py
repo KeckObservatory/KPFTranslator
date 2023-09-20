@@ -123,6 +123,7 @@ class RunCalOB(KPFTranslatorFunction):
                     log.error(f'Sending email failed')
                     log.error(email_err)
             # Cleanup
+            clear_script_keywords()
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
             sys.exit(1)
@@ -156,6 +157,7 @@ class RunCalOB(KPFTranslatorFunction):
                     log.error(f'Sending email failed')
                     log.error(email_err)
             # Cleanup
+            clear_script_keywords()
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
             sys.exit(1)

@@ -104,6 +104,7 @@ class RunSciOB(KPFTranslatorFunction):
                 traceback_text = traceback.format_exc()
                 log.error(traceback_text)
                 # Cleanup
+                clear_script_keywords()
                 log.error('Running CleanupAfterScience and exiting')
                 CleanupAfterScience.execute(OB)
                 sys.exit(1)
