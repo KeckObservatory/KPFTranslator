@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>903</width>
-    <height>864</height>
+    <height>838</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -365,7 +365,7 @@
       <x>10</x>
       <y>180</y>
       <width>891</width>
-      <height>681</height>
+      <height>651</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -503,7 +503,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>620</y>
+        <y>590</y>
         <width>171</width>
         <height>23</height>
        </rect>
@@ -516,7 +516,7 @@
       <property name="geometry">
        <rect>
         <x>190</x>
-        <y>620</y>
+        <y>590</y>
         <width>691</width>
         <height>21</height>
        </rect>
@@ -1056,7 +1056,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>560</y>
+        <y>530</y>
         <width>141</width>
         <height>16</height>
        </rect>
@@ -1072,7 +1072,7 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>560</y>
+        <y>530</y>
         <width>731</width>
         <height>51</height>
        </rect>
@@ -1091,7 +1091,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>550</y>
+        <y>520</y>
         <width>871</width>
         <height>16</height>
        </rect>

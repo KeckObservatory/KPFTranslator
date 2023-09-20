@@ -343,8 +343,8 @@ class MainWindow(QMainWindow):
         self.ExpMeterBin.currentTextChanged.connect(self.set_expmeter_bin)
         self.update_OB('ExpMeterBin', self.OB.SEQ_Observations1.get('ExpMeterBin'))
 
-        self.ExpMeterThreshold = self.findChild(QLineEdit, 'ExpMeterThresholdEdit')
-        self.ExpMeterThreshold.textChanged.connect(self.set_expmeter_threshold)
+        self.ExpMeterThresholdEdit = self.findChild(QLineEdit, 'ExpMeterThresholdEdit')
+        self.ExpMeterThresholdEdit.textChanged.connect(self.set_expmeter_threshold)
         self.update_OB('ExpMeterThreshold', self.OB.SEQ_Observations1.get('ExpMeterThreshold'))
 
         self.TakeSimulCal = self.findChild(QCheckBox, 'TakeSimulCal')
@@ -943,6 +943,12 @@ class MainWindow(QMainWindow):
         self.ExpMeterExpTimeEdit.setEnabled(not self.OB.SEQ_Observations1.get('AutoExpMeter'))
         # SEQ_Observations: ExpMeterExpTime
         self.ExpMeterExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterExpTime')}")
+        # SEQ_Observations: ExpMeterBin
+        print(self.OB.SEQ_Observations1.get('ExpMeterBin'))
+        self.ExpMeterBin.setCurrentText(f"{self.OB.SEQ_Observations1.get('ExpMeterBin')}")
+        # SEQ_Observations: ExpMeterThreshold
+        print(self.OB.SEQ_Observations1.get('ExpMeterThreshold'))
+        self.ExpMeterThresholdEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterThreshold')}")
         # SEQ_Observations: TakeSimulCal and AutoNDFilters
         self.TakeSimulCal.setChecked(self.OB.SEQ_Observations1.get('TakeSimulCal'))
         self.TakeSimulCal.setText(f"{self.OB.SEQ_Observations1.get('TakeSimulCal')}")
