@@ -85,6 +85,8 @@ class SEQ_Observations(BaseOB):
         self.ExpMeterMode = OBProperty('ExpMeterMode', input_dict.get('ExpMeterMode', 'monitor'), str)
         self.ExpMeterExpTime = OBProperty('ExpMeterExpTime', input_dict.get('ExpMeterExpTime', 1), float)
         self.AutoExpMeter = OBProperty('AutoExpMeter', input_dict.get('AutoExpMeter', False), bool)
+        self.ExpMeterBin = OBProperty('ExpMeterBin', input_dict.get('ExpMeterBin', '710.625'), str)
+        self.ExpMeterThreshold = OBProperty('ExpMeterThreshold', input_dict.get('ExpMeterThreshold', 50000), float)
         self.TakeSimulCal = OBProperty('TakeSimulCal', input_dict.get('TakeSimulCal', True), bool)
         self.AutoNDFilters = OBProperty('AutoNDFilters', input_dict.get('AutoNDFilters', False), bool)
         self.CalND1 = OBProperty('CalND1', input_dict.get('CalND1', 'OD 0.1'), str)
@@ -100,6 +102,9 @@ class SEQ_Observations(BaseOB):
         self.lines += [f"   AutoExpMeter: {self.get('AutoExpMeter')}"]
         if not self.get('AutoExpMeter'):
             self.lines += [f"   ExpMeterExpTime: {self.get('ExpMeterExpTime')}"]
+        if self.get('ExpMeterMode') == 'control':
+            self.lines += [f"   ExpMeterBin: {self.get('ExpMeterBin')}"]
+            self.lines += [f"   ExpMeterThreshold: {self.get('ExpMeterThreshold')}"]
         self.lines += [f"   TakeSimulCal: {self.get('TakeSimulCal')}"]
         if self.get('TakeSimulCal'):
             self.lines += [f"   AutoNDFilters: {self.get('AutoNDFilters')}"]
@@ -115,6 +120,8 @@ class SEQ_Observations(BaseOB):
                    'ExpMeterMode': self.get('ExpMeterMode'),
                    'AutoExpMeter': self.get('AutoExpMeter'),
                    'ExpMeterExpTime': self.get('ExpMeterExpTime'),
+                   'ExpMeterBin': self.get('ExpMeterBin'),
+                   'ExpMeterThreshold': self.get('ExpMeterThreshold'),
                    'TakeSimulCal': self.get('TakeSimulCal'),
                    'AutoNDFilters': self.get('AutoNDFilters'),
                    'CalND1': self.get('CalND1'),

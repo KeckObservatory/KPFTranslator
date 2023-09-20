@@ -6,7 +6,7 @@ from astroquery.simbad import Simbad
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
-from kpf.OBs import ScienceOB
+from kpf.OB_GUI.OBs import ScienceOB
 
 
 def get_names_from_gaiaid(gaiaid):

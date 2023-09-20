@@ -381,14 +381,27 @@
         <x>10</x>
         <y>70</y>
         <width>411</width>
-        <height>81</height>
+        <height>51</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="construct_layout">
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="name_query_input">
-         <property name="enabled">
-          <bool>false</bool>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Gaia DR3 ID:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QPushButton" name="query_gaia_btn">
+         <property name="toolTip">
+          <string>Fills Target Info section of the OB from a Vizier query of the Gaia DR3 catalog.</string>
+         </property>
+         <property name="text">
+          <string>Query Gaia ID</string>
          </property>
         </widget>
        </item>
@@ -399,48 +412,8 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_10">
-         <property name="text">
-          <string>Generic Name:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Gaia DR3 ID:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
+       <item row="3" column="1">
         <widget class="QLineEdit" name="gaia_id_query_input"/>
-       </item>
-       <item row="3" column="2">
-        <widget class="QPushButton" name="query_name_btn">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Query Name</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QPushButton" name="query_gaia_btn">
-         <property name="toolTip">
-          <string>Fills Target Info section of the OB from a Vizier query of the Gaia DR3 catalog.</string>
-         </property>
-         <property name="text">
-          <string>Query Gaia ID</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>
@@ -448,7 +421,7 @@
       <property name="geometry">
        <rect>
         <x>480</x>
-        <y>30</y>
+        <y>10</y>
         <width>401</width>
         <height>111</height>
        </rect>
@@ -517,9 +490,9 @@
       <property name="geometry">
        <rect>
         <x>430</x>
-        <y>20</y>
+        <y>10</y>
         <width>20</width>
-        <height>141</height>
+        <height>111</height>
        </rect>
       </property>
       <property name="orientation">
@@ -556,7 +529,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>160</y>
+        <y>130</y>
         <width>871</width>
         <height>16</height>
        </rect>
@@ -569,7 +542,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>170</y>
+        <y>140</y>
         <width>381</width>
         <height>31</height>
        </rect>
@@ -582,7 +555,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>200</y>
+        <y>170</y>
         <width>421</width>
         <height>351</height>
        </rect>
@@ -819,52 +792,15 @@
       <property name="geometry">
        <rect>
         <x>450</x>
-        <y>200</y>
+        <y>170</y>
         <width>431</width>
-        <height>351</height>
+        <height>353</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="obs_seq_layout" columnstretch="0,0,0,0">
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
-       <item row="6" column="2">
-        <widget class="QLineEdit" name="nExpEdit"/>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLabel" name="ExpTimeLabel">
-         <property name="text">
-          <string>ExpTime:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="label_37">
-         <property name="text">
-          <string>TriggerRed:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="3" rowspan="2">
-        <widget class="QCheckBox" name="AutoNDFilters">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Set filters automatically</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="1">
-        <widget class="QLabel" name="CalND2Label">
-         <property name="text">
-          <string>CalND2:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="2">
-        <widget class="QComboBox" name="ExpMeterMode"/>
-       </item>
        <item row="5" column="3">
         <widget class="QLabel" name="ObjectNote">
          <property name="text">
@@ -872,10 +808,17 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="1">
-        <widget class="QLabel" name="CalND1Label">
+       <item row="1" column="3">
+        <widget class="QCheckBox" name="TriggerRed">
          <property name="text">
-          <string>CalND1:</string>
+          <string>Trigger Red</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLabel" name="ExpMeterModeLabel">
+         <property name="text">
+          <string>ExpMeterMode:</string>
          </property>
         </widget>
        </item>
@@ -886,17 +829,17 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
-        <widget class="QCheckBox" name="TriggerCaHK">
+       <item row="9" column="1">
+        <widget class="QLabel" name="ExpMeterExpTimeLabel">
          <property name="text">
-          <string/>
+          <string>ExpMeterExpTime:</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="2">
-        <widget class="QCheckBox" name="TakeSimulCal">
+       <item row="13" column="1">
+        <widget class="QLabel" name="CalND1Label">
          <property name="text">
-          <string>CheckBox</string>
+          <string>CalND1:</string>
          </property>
         </widget>
        </item>
@@ -910,88 +853,36 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="2">
-        <widget class="QLineEdit" name="ObjectEdit"/>
-       </item>
-       <item row="9" column="2">
-        <widget class="QLineEdit" name="ExpMeterExpTimeEdit"/>
-       </item>
-       <item row="11" column="2">
-        <widget class="QComboBox" name="CalND1"/>
-       </item>
-       <item row="9" column="1">
-        <widget class="QLabel" name="ExpMeterExpTimeLabel">
+       <item row="14" column="1">
+        <widget class="QLabel" name="CalND2Label">
          <property name="text">
-          <string>ExpMeterExpTime:</string>
+          <string>CalND2:</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="nExpLabel">
+       <item row="14" column="2">
+        <widget class="QComboBox" name="CalND2"/>
+       </item>
+       <item row="13" column="3" rowspan="2">
+        <widget class="QCheckBox" name="AutoNDFilters">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
-          <string>nExp:</string>
+          <string>Set filters automatically</string>
          </property>
         </widget>
        </item>
        <item row="7" column="2">
         <widget class="QLineEdit" name="ExpTimeEdit"/>
        </item>
-       <item row="3" column="2">
-        <widget class="QCheckBox" name="TriggerRed">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QCheckBox" name="TriggerGreen">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" colspan="2">
-        <widget class="QLabel" name="label_19">
-         <property name="text">
-          <string>&lt;h4&gt;Spectrograph Setup&lt;/h4&gt;</string>
-         </property>
-        </widget>
+       <item row="9" column="2">
+        <widget class="QLineEdit" name="ExpMeterExpTimeEdit"/>
        </item>
        <item row="10" column="1">
-        <widget class="QLabel" name="TakeSimulCalLabel">
+        <widget class="QLabel" name="ExpMeterBinLabel">
          <property name="text">
-          <string>TakeSimulCal:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="3">
-        <widget class="QLabel" name="nExpNote">
-         <property name="text">
-          <string>number of exposures</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="label_43">
-         <property name="text">
-          <string>TriggerCaHK:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="2">
-        <widget class="QComboBox" name="CalND2"/>
-       </item>
-       <item row="7" column="3">
-        <widget class="QLabel" name="ExpTimeNote">
-         <property name="text">
-          <string>exposure time in seconds</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QLabel" name="ExpMeterModeLabel">
-         <property name="text">
-          <string>ExpMeterMode:</string>
+          <string>ExpMeterBin:</string>
          </property>
         </widget>
        </item>
@@ -1002,12 +893,107 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="label_38">
+       <item row="1" column="2">
+        <widget class="QCheckBox" name="TriggerGreen">
          <property name="text">
-          <string>TriggerGreen:</string>
+          <string>Trigger Green</string>
          </property>
         </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLabel" name="nExpLabel">
+         <property name="text">
+          <string>nExp:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="TriggerCaHK">
+         <property name="text">
+          <string>Trigger CaHK</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>&lt;h4&gt;Spectrograph Setup&lt;/h4&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLabel" name="ExpTimeLabel">
+         <property name="text">
+          <string>ExpTime:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QLineEdit" name="ObjectEdit"/>
+       </item>
+       <item row="8" column="2">
+        <widget class="QComboBox" name="ExpMeterMode"/>
+       </item>
+       <item row="6" column="3">
+        <widget class="QLabel" name="nExpNote">
+         <property name="text">
+          <string>number of exposures</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="2">
+        <widget class="QCheckBox" name="TakeSimulCal">
+         <property name="text">
+          <string>CheckBox</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="2">
+        <widget class="QComboBox" name="CalND1"/>
+       </item>
+       <item row="12" column="1">
+        <widget class="QLabel" name="TakeSimulCalLabel">
+         <property name="text">
+          <string>TakeSimulCal:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="3">
+        <widget class="QLabel" name="ExpTimeNote">
+         <property name="text">
+          <string>exposure time in seconds</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QLineEdit" name="nExpEdit"/>
+       </item>
+       <item row="11" column="1">
+        <widget class="QLabel" name="ExpMeterThresholdLabel">
+         <property name="text">
+          <string>ExpMeterThreshold:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="3">
+        <widget class="QLabel" name="ExpMeterBinNote">
+         <property name="text">
+          <string>Wavelength (nm)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="3">
+        <widget class="QLabel" name="ExpMeterThresholdNote">
+         <property name="text">
+          <string>Flux (e-/nm) in sci detector</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="2">
+        <widget class="QLineEdit" name="ExpMeterThresholdEdit"/>
+       </item>
+       <item row="10" column="2">
+        <widget class="QComboBox" name="ExpMeterBin"/>
        </item>
       </layout>
      </widget>
@@ -1015,7 +1001,7 @@
       <property name="geometry">
        <rect>
         <x>430</x>
-        <y>200</y>
+        <y>170</y>
         <width>20</width>
         <height>351</height>
        </rect>

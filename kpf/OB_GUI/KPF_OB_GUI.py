@@ -90,7 +90,9 @@ class MainWindow(QMainWindow):
                          'ExpTime': '10',
                          'ExpMeterMode': 'monitor',
                          'AutoExpMeter': False,
-                         'ExpMeterExpTime': '0.5', 
+                         'ExpMeterExpTime': '0.5',
+                         'ExpMeterBin': '710.625',
+                         'ExpMeterThreshold': 50000,
                          'TakeSimulCal': True,
                          'AutoNDFilters': False,
                          'CalND1': 'OD 0.1',
@@ -132,6 +134,9 @@ class MainWindow(QMainWindow):
         self.kpfconfig = ktl.cache('kpfconfig')
         self.kpflamps = ktl.cache('kpflamps')
         self.kpfexpose = ktl.cache('kpfexpose')
+        self.kpf_expmeter = ktl.cache('kpf_expmeter')
+        self.expmeter_bins = list(self.kpf_expmeter['THRESHOLDBIN']._getEnumerators())
+        self.expmeter_bins.pop(self.expmeter_bins.index('All'))
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Slew Cal Time Colors/Warnings
@@ -219,13 +224,6 @@ class MainWindow(QMainWindow):
         # Load OB from File
         self.load_from_file_btn = self.findChild(QPushButton, 'load_from_file_btn')
         self.load_from_file_btn.clicked.connect(self.run_load_from_file)
-
-        # Generic Name Query
-        self.name_query_input = self.findChild(QLineEdit, 'name_query_input')
-        self.name_query_input.textChanged.connect(self.set_name_query_input)
-
-        self.query_name_btn = self.findChild(QPushButton, 'query_name_btn')
-        self.query_name_btn.clicked.connect(self.run_query_name)
 
         # Gaia DR3 Query
         self.gaia_query_input = self.findChild(QLineEdit, 'gaia_id_query_input')
@@ -329,8 +327,9 @@ class MainWindow(QMainWindow):
         self.update_OB('ExpTime', self.OB.SEQ_Observations1.get('ExpTime'))
 
         self.ExpMeterMode = self.findChild(QComboBox, 'ExpMeterMode')
-        self.ExpMeterMode.addItems(["monitor"])
-        self.update_OB('ExpMeterMode', self.OB.SEQ_Observations1.get('ExpMeterMode'))
+        self.ExpMeterMode.addItems(["monitor", "control"])
+        self.set_expmeter_mode(self.OB.SEQ_Observations1.get('ExpMeterMode'))
+#         self.update_OB('ExpMeterMode', self.OB.SEQ_Observations1.get('ExpMeterMode'))
         self.ExpMeterMode.currentTextChanged.connect(self.set_expmeter_mode)
 
         self.ExpMeterExpTimeEdit = self.findChild(QLineEdit, 'ExpMeterExpTimeEdit')
@@ -339,6 +338,15 @@ class MainWindow(QMainWindow):
 
         self.AutoEMExpTime = self.findChild(QCheckBox, 'AutoEMExpTime')
         self.AutoEMExpTime.stateChanged.connect(self.AutoEMExpTime_state_change)
+
+        self.ExpMeterBin = self.findChild(QComboBox, 'ExpMeterBin')
+        self.ExpMeterBin.addItems(self.expmeter_bins)
+        self.ExpMeterBin.currentTextChanged.connect(self.set_expmeter_bin)
+        self.update_OB('ExpMeterBin', self.OB.SEQ_Observations1.get('ExpMeterBin'))
+
+        self.ExpMeterThreshold = self.findChild(QLineEdit, 'ExpMeterThresholdEdit')
+        self.ExpMeterThreshold.textChanged.connect(self.set_expmeter_threshold)
+        self.update_OB('ExpMeterThreshold', self.OB.SEQ_Observations1.get('ExpMeterThreshold'))
 
         self.TakeSimulCal = self.findChild(QCheckBox, 'TakeSimulCal')
         self.TakeSimulCal.stateChanged.connect(self.TakeSimulCal_state_change)
@@ -724,9 +732,6 @@ class MainWindow(QMainWindow):
     ##-------------------------------------------
     ## Methods relating modifying OB fields
     ##-------------------------------------------
-    def run_query_name(self):
-        self.log.debug(f'run_query_name: {self.name_query_text}')
-
     def run_query_gaia(self):
         self.log.debug(f'run_query_gaia')
         # Will this query overwrite any values?
@@ -782,10 +787,6 @@ class MainWindow(QMainWindow):
                 self.update_OB(key, self.gaia_params[key])
         self.form_star_list_line()
 
-    def set_name_query_input(self, value):
-        value = value.strip()
-        self.name_query_input = value
-
     def set_gaia_query_input(self, value):
         value = value.strip()
         self.gaia_query_text = value
@@ -832,10 +833,25 @@ class MainWindow(QMainWindow):
     def set_expmeter_mode(self, value):
         self.log.debug(f"set_expmeter_mode: {value}")
         self.update_OB('ExpMeterMode', value)
+        control = (value == 'control')
+        self.ExpMeterBin.setEnabled(control)
+        self.ExpMeterBinLabel.setEnabled(control)
+        self.ExpMeterBinNote.setEnabled(control)
+        self.ExpMeterThresholdEdit.setEnabled(control)
+        self.ExpMeterThresholdLabel.setEnabled(control)
+        self.ExpMeterThresholdNote.setEnabled(control)
 
     def set_expmeter_exptime(self, value):
         self.log.debug(f"set_expmeter_exptime: {value}")
         self.update_OB('ExpMeterExpTime', value)
+
+    def set_expmeter_bin(self, value):
+        self.log.debug(f"set_expmeter_bin: {value}")
+        self.update_OB('ExpMeterBin', value)
+
+    def set_expmeter_threshold(self, value):
+        self.log.debug(f"set_expmeter_threshold: {value}")
+        self.update_OB('ExpMeterThreshold', value)
 
     def set_CalND1(self, value):
         self.log.debug(f"set_CalND1: {value}")
@@ -873,7 +889,8 @@ class MainWindow(QMainWindow):
     def update_OB(self, key, value):
         self.log.debug(f"update_OB: {key} = {value}")
         seq_keys = ['Object', 'nExp', 'ExpTime', 'ExpMeterMode',
-                    'AutoExpMeter', 'ExpMeterExpTime', 'TakeSimulCal',
+                    'AutoExpMeter', 'ExpMeterExpTime', 'ExpMeterBin',
+                    'ExpMeterThreshold', 'TakeSimulCal',
                     'AutoNDFilters', 'CalND1', 'CalND2']
         if key in seq_keys:
             self.OB.SEQ_Observations1.set(key, value)
@@ -909,13 +926,10 @@ class MainWindow(QMainWindow):
         # GuideFPS
         self.GuideFPS.setText(f"{self.OB.get('GuideFPS')}")
         # TriggerCaHK
-        self.TriggerCaHK.setText(f"{self.OB.get('TriggerCaHK')}")
         self.TriggerCaHK.setChecked(self.OB.get('TriggerCaHK'))
         # TriggerGreen
-        self.TriggerGreen.setText(f"{self.OB.get('TriggerGreen')}")
         self.TriggerGreen.setChecked(self.OB.get('TriggerGreen'))
         # TriggerRed
-        self.TriggerRed.setText(f"{self.OB.get('TriggerRed')}")
         self.TriggerRed.setChecked(self.OB.get('TriggerRed'))
         # SEQ_Observations: Object
         self.ObjectEdit.setText(f"{self.OB.SEQ_Observations1.get('Object')}")
@@ -1026,7 +1040,7 @@ class MainWindow(QMainWindow):
     def estimate_OB_duration(self):
         try:
             log.debug(f"Estimating OB duration")
-            OB_for_calc = deepcopy(self.OB)
+            OB_for_calc = self.OB.to_dict()
             OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
             OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
             duration = EstimateSciOBDuration.execute(OB_for_calc)
