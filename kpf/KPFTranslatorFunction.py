@@ -134,7 +134,7 @@ class KPFTranslatorFunction(TranslatorModuleFunction):
         except Exception as e:
             logger.error(f"Exception encountered in post-condition: {e}")
             logger.error(traceback.format_exc(), exc_info=True)
-            raise DDOIPostConditionFailed()
+            raise e
 
         args_diff = cls._diff_args(initial_args, args)
         if args_diff:
