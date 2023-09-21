@@ -251,6 +251,8 @@ class SEQ_Calibrations(BaseOB):
         self.SSS_Sky = OBProperty('SSS_Sky', input_dict.get('SSS_Sky', True), bool)
         self.TakeSimulCal = OBProperty('TakeSimulCal', input_dict.get('TakeSimulCal', True), bool)
         self.ExpMeterExpTime = OBProperty('ExpMeterExpTime', input_dict.get('ExpMeterExpTime', 1), float)
+        self.ExpMeterBin = OBProperty('ExpMeterBin', input_dict.get('ExpMeterBin', '710.625'), str)
+        self.ExpMeterThreshold = OBProperty('ExpMeterThreshold', input_dict.get('ExpMeterThreshold', 50000), float)
         self.FF_FiberPos = OBProperty('FF_FiberPos', input_dict.get('FF_FiberPos', 'Blank'), str)
         self.to_lines()
 
