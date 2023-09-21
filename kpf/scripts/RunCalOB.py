@@ -1,3 +1,4 @@
+import sys
 from time import sleep
 from pathlib import Path
 import os
@@ -109,7 +110,6 @@ class RunCalOB(KPFTranslatorFunction):
             log.error(e)
             traceback_text = traceback.format_exc()
             log.error(traceback_text)
-            clear_script_keywords()
             # Email error to kpf_info
             if not isinstance(e, ScriptStopTriggered):
                 try:
@@ -123,27 +123,27 @@ class RunCalOB(KPFTranslatorFunction):
                     log.error(f'Sending email failed')
                     log.error(email_err)
             # Cleanup
+            clear_script_keywords()
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            raise e
+            sys.exit(1)
 
         # Execute the Cal Sequence
         try:
             cals = OB.get('SEQ_Calibrations', [])
             for cal in cals:
                 # No need to specify TimedShutter_CaHK in OB/calibration
-                cal['TimedShutter_CaHK'] = OB['TriggerCaHK']
+                cal['TimedShutter_CaHK'] = OB.get('TriggerCaHK', False)
                 log.debug(f"Automatically setting TimedShutter_CaHK: {cal['TimedShutter_CaHK']}")
                 cal['Template_Name'] = 'kpf_lamp'
                 cal['Template_Version'] = OB['Template_Version']
-                cal['nointensemon'] = OB['nointensemon']
+                cal['nointensemon'] = OB.get('nointensemon', False)
                 ExecuteCal.execute(cal)
         except Exception as e:
             log.error("ExecuteCal failed:")
             log.error(e)
             traceback_text = traceback.format_exc()
             log.error(traceback_text)
-            clear_script_keywords()
             # Email error to kpf_info
             if not isinstance(e, ScriptStopTriggered):
                 try:
@@ -157,10 +157,12 @@ class RunCalOB(KPFTranslatorFunction):
                     log.error(f'Sending email failed')
                     log.error(email_err)
             # Cleanup
+            clear_script_keywords()
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
-            raise e
+            sys.exit(1)
 
+        # Clear script keywords so that cleanup can start successfully
         clear_script_keywords()
 
         # Cleanup: Turn off lamps

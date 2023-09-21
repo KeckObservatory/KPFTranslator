@@ -63,16 +63,17 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
         readout = max([readout_red, readout_green, readout_cahk])
 
         # ConfigureForCalibrations
-        sequence = OB.get('SEQ_Calibrations')
-        lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
-        for lamp in lamps:
-            if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
-                        'BrdbandFiber', 'WideFlat']:
-                duration += cfg.getfloat('time_estimates', 'power_on_cal_lamp',
-                                    fallback=1)
-            if lamp == 'LFCFiber':
-                duration += cfg.getfloat('time_estimates', 'LFC_to_AstroComb',
-                                    fallback=30)
+        sequence = OB.get('SEQ_Calibrations', [])
+        if len(sequence) > 0:
+            lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])
+            for lamp in lamps:
+                if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
+                            'BrdbandFiber', 'WideFlat']:
+                    duration += cfg.getfloat('time_estimates', 'power_on_cal_lamp',
+                                        fallback=1)
+                if lamp == 'LFCFiber':
+                    duration += cfg.getfloat('time_estimates', 'LFC_to_AstroComb',
+                                        fallback=30)
         # Configure FIU
         duration += cfg.getfloat('time_estimates', 'FIU_mode_change',
                             fallback=20)
