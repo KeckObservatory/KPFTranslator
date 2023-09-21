@@ -85,8 +85,8 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
             duration += cfg.getfloat('time_estimates', 'octagon_move',
                                 fallback=60)
         for dark in darks:
-            duration += dark['nExp']*dark['ExpTime']
-            duration += dark['nExp']*readout
+            duration += int(dark['nExp'])*float(dark['ExpTime'])
+            duration += int(dark['nExp'])*readout
 
         # Execute Cals
         cals = OB.get('SEQ_Calibrations', [])
@@ -111,8 +111,8 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
                     print(f"  {lamp} warm up {warm_up_wait/60:.0f} min")
                     duration += warm_up_wait
                 lamps_that_need_warmup.pop(lamps_that_need_warmup.index(lamp))
-            duration += cal['nExp']*max([cal['ExpTime'], archon_time_shim])
-            duration += cal['nExp']*readout
+            duration += int(cal['nExp'])*max([float(cal['ExpTime']), archon_time_shim])
+            duration += int(cal['nExp'])*readout
 
         print(f"{duration/60:.0f} min")
         return duration
