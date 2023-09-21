@@ -138,8 +138,8 @@ class MainWindow(QMainWindow):
         self.kpf_expmeter = ktl.cache('kpf_expmeter')
         self.expmeter_bins = list(self.kpf_expmeter['THRESHOLDBIN']._getEnumerators())
         self.expmeter_bins.pop(self.expmeter_bins.index('All'))
-#         self.expmeter_modes = ['off', 'monitor']
-        self.expmeter_modes = ['off', 'monitor', 'control']
+        self.expmeter_modes = ['off', 'monitor']
+#         self.expmeter_modes = ['off', 'monitor', 'control']
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Slew Cal Time Colors/Warnings
@@ -1341,6 +1341,10 @@ class MainWindow(QMainWindow):
         self.Object_cal_seq1_note.setEnabled(enabled)
         self.CalSource_cal_seq1.setEnabled(enabled)
         self.CalSource_cal_seq1_label.setEnabled(enabled)
+        if enabled is False:
+            self.warm_up_warning.setStyleSheet("color:black")
+        else:
+            self.set_warm_up_warning()
         self.warm_up_warning.setEnabled(enabled)
         self.CalND1_cal_seq1.setEnabled(enabled)
         self.CalND1_cal_seq1_label.setEnabled(enabled)
@@ -1361,6 +1365,8 @@ class MainWindow(QMainWindow):
         calsource_is_wideflat = self.CalSource_cal_seq1.currentText() == 'WideFlat'
         self.FF_FiberPos_cal_seq1.setEnabled(enabled and calsource_is_wideflat)
         self.FF_FiberPos_cal_seq1_label.setEnabled(enabled and calsource_is_wideflat)
+        self.ExpMeterMode_cal_seq1.setEnabled(enabled)
+        self.ExpMeterMode_cal_seq1_label.setEnabled(enabled)
         self.ExpMeterExpTime_cal_seq1.setEnabled(enabled)
         self.ExpMeterExpTime_cal_seq1_label.setEnabled(enabled)
         self.ExpMeterExpTime_cal_seq1_note.setEnabled(enabled)
@@ -1376,12 +1382,23 @@ class MainWindow(QMainWindow):
         self.log.debug(f"set_Object_cal_seq1: {value}")
         self.update_calOB('cal1_Object', value)
 
+    def set_warm_up_warning(self):
+        lamps_that_need_warmup = ['WideFlat', 'BrdbandFiber', 'Th_daily',
+                                  'Th_gold', 'U_daily', 'U_gold']
+        if self.CalSource_cal_seq1.currentText() in lamps_that_need_warmup:
+            self.warm_up_warning.setText('Warm up required')
+            self.warm_up_warning.setStyleSheet("color:orange")
+        else:
+            self.warm_up_warning.setText('No warm up')
+            self.warm_up_warning.setStyleSheet("color:black")
+
     def set_CalSource_cal_seq1(self, value):
         self.log.debug(f"set_CalSource_cal_seq1: {value}")
         self.update_calOB('cal1_CalSource', value)
         calsource_is_wideflat = self.CalSource_cal_seq1.currentText() == 'WideFlat'
         self.FF_FiberPos_cal_seq1.setEnabled(calsource_is_wideflat)
         self.FF_FiberPos_cal_seq1_label.setEnabled(calsource_is_wideflat)
+        self.set_warm_up_warning()
 
     def set_CalND1_cal_seq1(self, value):
         self.log.debug(f"set_CalND1_cal_seq1: {value}")
@@ -1502,23 +1519,23 @@ class MainWindow(QMainWindow):
         self.SSS_Sky_cal_seq1_label.setEnabled(calseq is not None)
         self.TakeSimulCal_cal_seq1.setEnabled(calseq is not None)
         self.TakeSimulCal_cal_seq1_label.setEnabled(calseq is not None)
-        if calseq.get('CalSource') == 'WideFlat':
-            self.FF_FiberPos_cal_seq1.setEnabled(calseq is not None)
-            self.FF_FiberPos_cal_seq1_label.setEnabled(calseq is not None)
         self.ExpMeterMode_cal_seq1.setEnabled(calseq is not None)
         self.ExpMeterMode_cal_seq1_label.setEnabled(calseq is not None)
-        if calseq.get('ExpMeterMode') != 'off':
-            self.ExpMeterExpTime_cal_seq1.setEnabled(calseq is not None)
-            self.ExpMeterExpTime_cal_seq1_label.setEnabled(calseq is not None)
-            self.ExpMeterExpTime_cal_seq1_note.setEnabled(calseq is not None)
-        if calseq.get('ExpMeterMode') == 'control':
-            self.ExpMeterBin_cal_seq1.setEnabled(calseq is not None)
-            self.ExpMeterBin_cal_seq1_label.setEnabled(calseq is not None)
-            self.ExpMeterBin_cal_seq1_note.setEnabled(calseq is not None)
-            self.ExpMeterThreshold_cal_seq1.setEnabled(calseq is not None)
-            self.ExpMeterThreshold_cal_seq1_label.setEnabled(calseq is not None)
-            self.ExpMeterThreshold_cal_seq1_note.setEnabled(calseq is not None)
         if calseq is not None:
+            if calseq.get('CalSource') == 'WideFlat':
+                self.FF_FiberPos_cal_seq1.setEnabled(calseq is not None)
+                self.FF_FiberPos_cal_seq1_label.setEnabled(calseq is not None)
+            if calseq.get('ExpMeterMode') != 'off':
+                self.ExpMeterExpTime_cal_seq1.setEnabled(calseq is not None)
+                self.ExpMeterExpTime_cal_seq1_label.setEnabled(calseq is not None)
+                self.ExpMeterExpTime_cal_seq1_note.setEnabled(calseq is not None)
+            if calseq.get('ExpMeterMode') == 'control':
+                self.ExpMeterBin_cal_seq1.setEnabled(calseq is not None)
+                self.ExpMeterBin_cal_seq1_label.setEnabled(calseq is not None)
+                self.ExpMeterBin_cal_seq1_note.setEnabled(calseq is not None)
+                self.ExpMeterThreshold_cal_seq1.setEnabled(calseq is not None)
+                self.ExpMeterThreshold_cal_seq1_label.setEnabled(calseq is not None)
+                self.ExpMeterThreshold_cal_seq1_note.setEnabled(calseq is not None)
             self.Object_cal_seq1.setText(f"{calseq.get('Object')}")
             self.CalSource_cal_seq1.setCurrentText(f"{calseq.get('CalSource')}")
             self.CalND1_cal_seq1.setCurrentText(f"{calseq.get('CalND1')}")
@@ -1562,18 +1579,16 @@ class MainWindow(QMainWindow):
                        'cal1_ExpMeterExpTime', 'cal1_SSS_Science',
                        'cal1_SSS_Sky', 'cal1_TakeSimulCal']:
             self.estimate_calOB_duration()
-#         print(self.calOB.to_dict())
 
 
     def estimate_calOB_duration(self):
-        pass
-#         try:
-#             log.debug(f"Estimating OB duration")
-#             OB_for_calc = self.calOB.to_dict()
-#             duration = EstimateCalOBDuration.execute(OB_for_calc)
-#             self.CalOBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
-#         except:
-#             self.CalOBDuration.setText(f"Estimated Duration: unknown min")
+        try:
+            log.debug(f"Estimating Cal OB duration")
+            OB_for_calc = self.calOB.to_dict()
+            duration = EstimateCalOBDuration.execute(OB_for_calc)
+            self.CalOBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+        except:
+            self.CalOBDuration.setText(f"Estimated Duration: unknown min")
 
     def calOB_to_lines(self):
         lines = [f"# Built using KPF OB GUI tool",

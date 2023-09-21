@@ -8,7 +8,7 @@ import yaml
 class OBProperty(object):
     def __init__(self, name, value, valuetype):
         self.name = name
-        self.value = value
+        self.value = valuetype(value)
         self.valuetype = valuetype
 
     def get(self):
@@ -355,7 +355,7 @@ class CalibrationOB(BaseOB):
             OBdict['SEQ_Darks'] = [self.SEQ_Darks1.to_dict()]
         elif self.SEQ_Darks1 is not None and self.SEQ_Darks2 is not None:
             OBdict['SEQ_Darks'] = [self.SEQ_Darks1.to_dict(),
-                                   self.SEQ_Darks1.to_dict()]
+                                   self.SEQ_Darks2.to_dict()]
         elif self.SEQ_Darks1 is None and self.SEQ_Darks2 is not None:
             OBdict['SEQ_Darks'] = [self.SEQ_Darks2.to_dict()]
 

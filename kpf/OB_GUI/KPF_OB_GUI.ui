@@ -1354,13 +1354,6 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
-        <widget class="QCheckBox" name="SSS_Science_cal_seq1">
-         <property name="text">
-          <string>-</string>
-         </property>
-        </widget>
-       </item>
        <item row="6" column="0">
         <widget class="QLabel" name="ExpTime_cal_seq1_label">
          <property name="text">
@@ -1443,13 +1436,6 @@
        <item row="6" column="1">
         <widget class="QLineEdit" name="ExpTime_cal_seq1"/>
        </item>
-       <item row="8" column="1">
-        <widget class="QCheckBox" name="SSS_Sky_cal_seq1">
-         <property name="text">
-          <string>-</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="2">
         <widget class="QLabel" name="Object_cal_seq1_note">
          <property name="text">
@@ -1480,10 +1466,24 @@
        <item row="5" column="1">
         <widget class="QLineEdit" name="nExp_cal_seq1"/>
        </item>
-       <item row="9" column="1">
+       <item row="7" column="1" colspan="2">
+        <widget class="QCheckBox" name="SSS_Science_cal_seq1">
+         <property name="text">
+          <string>Open Science Source Select Shutter?</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1" colspan="2">
+        <widget class="QCheckBox" name="SSS_Sky_cal_seq1">
+         <property name="text">
+          <string>Open Sky Source Select Shutter?</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1" colspan="2">
         <widget class="QCheckBox" name="TakeSimulCal_cal_seq1">
          <property name="text">
-          <string>-</string>
+          <string>Enable Simultaneous Calibration Fiber?</string>
          </property>
         </widget>
        </item>
