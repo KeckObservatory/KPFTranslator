@@ -69,8 +69,10 @@ class ExecuteSci(KPFTranslatorFunction):
         EM_mode = args.get('ExpMeterMode', 'monitor')
         kpf_expmeter = ktl.cache('kpf_expmeter')
         if EM_mode == 'monitor':
+            args['TriggerExpMeter'] = True
             kpf_expmeter['USETHRESHOLD'].write('No')
         elif EM_mode == 'control':
+            args['TriggerExpMeter'] = True
             try:
                 SetExpMeterTerminationParameters.execute(args)
             except Exception as e:
@@ -79,8 +81,11 @@ class ExecuteSci(KPFTranslatorFunction):
                 traceback_text = traceback.format_exc()
                 log.error(traceback_text)
                 kpf_expmeter['USETHRESHOLD'].write('No')
+        elif EM_mode == 'off':
+            args['TriggerExpMeter'] = False
         else:
             log.warning(f"ExpMeterMode {EM_mode} is not available")
+            args['TriggerExpMeter'] = False
             kpf_expmeter['USETHRESHOLD'].write('No')
 
         if args.get('AutoExpMeter', False) in [True, 'True']:
@@ -128,7 +133,6 @@ class ExecuteSci(KPFTranslatorFunction):
         args['TimedShutter_FlatField'] = False
         args['TimedShutter_SimulCal'] = args['TakeSimulCal']
         SetTimedShutters.execute(args)
-        args['TriggerExpMeter'] = (args.get('ExpMeterMode', 'monitor') != 'off')
         SetTriggeredDetectors.execute(args)
 
         check_scriptstop() # Stop here if requested

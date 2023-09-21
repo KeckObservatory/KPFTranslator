@@ -4,7 +4,7 @@ Template_Version: 1.0
 TriggerCaHK: True
 TriggerGreen: True
 TriggerRed: True
-TriggerExpMeter: False
+
 SEQ_Darks:
 - Object: bias
   nExp: 3
@@ -25,5 +25,5 @@ SEQ_Calibrations:
   FF_FiberPos: Blank       # This is only needed if CalSource = WideFlat
   ExpMeterMode: control    # "monitor" or "control" (to terminate exposure based on flux)
   ExpMeterExpTime: 0.5     # This is only needed if TriggerExpMeter = True
-  ExpMeterBin: 3           # Exposure meter wavelength bin to use for stopping exposure
-  ExpMeterThreshold: 1e5   # Target science flux in e-/nm
+  ExpMeterBin: 710.625     # Exposure meter wavelength bin to use for stopping exposure
+  ExpMeterThreshold: 50000 # Target science flux in e-/nm

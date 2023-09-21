@@ -177,8 +177,12 @@ class ExecuteCal(KPFTranslatorFunction):
         kpf_expmeter = ktl.cache('kpf_expmeter')
         if EM_mode == 'monitor':
             kpf_expmeter['USETHRESHOLD'].write('No')
+            args['TriggerExpMeter'] = True
         elif EM_mode == 'control':
             SetExpMeterTerminationParameters.execute(args)
+            args['TriggerExpMeter'] = True
+        elif EM_mode == 'off':
+            args['TriggerExpMeter'] = False
         else:
             log.warning(f"ExpMeterMode {EM_mode} is not available")
             kpf_expmeter['USETHRESHOLD'].write('No')
