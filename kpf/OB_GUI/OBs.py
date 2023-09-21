@@ -250,6 +250,7 @@ class SEQ_Calibrations(BaseOB):
         self.SSS_Science = OBProperty('SSS_Science', input_dict.get('SSS_Science', True), bool)
         self.SSS_Sky = OBProperty('SSS_Sky', input_dict.get('SSS_Sky', True), bool)
         self.TakeSimulCal = OBProperty('TakeSimulCal', input_dict.get('TakeSimulCal', True), bool)
+        self.ExpMeterMode = OBProperty('ExpMeterMode', input_dict.get('ExpMeterMode', 'monitor'), str)
         self.ExpMeterExpTime = OBProperty('ExpMeterExpTime', input_dict.get('ExpMeterExpTime', 1), float)
         self.ExpMeterBin = OBProperty('ExpMeterBin', input_dict.get('ExpMeterBin', '710.625'), str)
         self.ExpMeterThreshold = OBProperty('ExpMeterThreshold', input_dict.get('ExpMeterThreshold', 50000), float)
@@ -267,7 +268,11 @@ class SEQ_Calibrations(BaseOB):
         self.lines += [f"   SSS_Science: {self.get('SSS_Science')}"]
         self.lines += [f"   SSS_Sky: {self.get('SSS_Sky')}"]
         self.lines += [f"   TakeSimulCal: {self.get('TakeSimulCal')}"]
+        self.lines += [f"   ExpMeterMode: {self.get('ExpMeterMode')}"]
         self.lines += [f"   ExpMeterExpTime: {self.get('ExpMeterExpTime')}"]
+        if self.get('ExpMeterMode') == 'control':
+            self.lines += [f"   ExpMeterBin: {self.get('ExpMeterBin')}"]
+            self.lines += [f"   ExpMeterThreshold: {self.get('ExpMeterThreshold')}"]
         self.lines += [f"   FF_FiberPos: {self.get('FF_FiberPos')}"]
         return self.lines
 
@@ -281,7 +286,10 @@ class SEQ_Calibrations(BaseOB):
                    'SSS_Science': self.get('SSS_Science'),
                    'SSS_Sky': self.get('SSS_Sky'),
                    'TakeSimulCal': self.get('TakeSimulCal'),
+                   'ExpMeterMode': self.get('ExpMeterMode'),
                    'ExpMeterExpTime': self.get('ExpMeterExpTime'),
+                   'ExpMeterBin': self.get('ExpMeterBin'),
+                   'ExpMeterThreshold': self.get('ExpMeterThreshold'),
                    'FF_FiberPos': self.get('FF_FiberPos'),
                    }
         return seqdict
@@ -303,9 +311,10 @@ class CalibrationOB(BaseOB):
         else:
             self.SEQ_Darks2 = None
         # SEQ_Calibrations
-        self.SEQ_Calibrations1 = SEQ_Calibrations(OBdict.get('SEQ_Calibrations', [{}, {}])[0])
-        if len(OBdict.get('SEQ_Calibrations', [{}, {}])) > 1:
-            self.SEQ_Calibrations2 = SEQ_Calibrations(OBdict.get('SEQ_Calibrations', [{}, {}])[1])
+        seq_list = OBdict.get('SEQ_Calibrations', [{}, {}])
+        self.SEQ_Calibrations1 = SEQ_Calibrations(seq_list[0])
+        if len(seq_list) > 1:
+            self.SEQ_Calibrations2 = SEQ_Calibrations(seq_list[1])
         else:
             self.SEQ_Calibrations2 = None
         self.to_lines()
@@ -342,13 +351,22 @@ class CalibrationOB(BaseOB):
                   'TriggerRed': self.get('TriggerRed'),
                   'TriggerExpMeter': self.get('TriggerExpMeter'),
                  }
-        if self.SEQ_Darks1 is not None:
+        if self.SEQ_Darks1 is not None and self.SEQ_Darks2 is None:
             OBdict['SEQ_Darks'] = [self.SEQ_Darks1.to_dict()]
-        if self.SEQ_Darks2 is not None:
-            if OBdict.get('SEQ_Darks', None) is None:
-                OBdict['SEQ_Darks'] = [self.SEQ_Darks2.to_dict()]
-            else:
-                OBdict['SEQ_Darks'].append(self.SEQ_Darks2.to_dict())
+        elif self.SEQ_Darks1 is not None and self.SEQ_Darks2 is not None:
+            OBdict['SEQ_Darks'] = [self.SEQ_Darks1.to_dict(),
+                                   self.SEQ_Darks1.to_dict()]
+        elif self.SEQ_Darks1 is None and self.SEQ_Darks2 is not None:
+            OBdict['SEQ_Darks'] = [self.SEQ_Darks2.to_dict()]
+
+        if self.SEQ_Calibrations1 is not None and self.SEQ_Calibrations2 is None:
+            OBdict['SEQ_Calibrations'] = [self.SEQ_Calibrations1.to_dict()]
+        elif self.SEQ_Calibrations1 is not None and self.SEQ_Calibrations1 is not None:
+            OBdict['SEQ_Calibrations'] = [self.SEQ_Calibrations1.to_dict(),
+                                          self.SEQ_Calibrations2.to_dict()]
+        elif self.SEQ_Calibrations1 is None and self.SEQ_Calibrations2 is not None:
+            OBdict['SEQ_Calibrations'] = [self.SEQ_Calibrations2.to_dict()]
+
         return OBdict
 
         

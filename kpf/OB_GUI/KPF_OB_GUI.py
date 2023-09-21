@@ -76,7 +76,7 @@ class MainWindow(QMainWindow):
         self.gaia_params = None
         self.disabled_detectors = []
         self.OB = ScienceOB({'Template_Name': 'kpf_sci',
-                   'Template_Version': 0.6,
+                   'Template_Version': 1.0,
                    'TriggerCaHK': True,
                    'TriggerGreen': True,
                    'TriggerRed': True,
@@ -99,7 +99,7 @@ class MainWindow(QMainWindow):
                     ]
                    })
         self.calOB = CalibrationOB({'Template_Name': 'kpf_cal',
-                      'Template_Version': 0.6,
+                      'Template_Version': 1.0,
                       'TriggerCaHK': False,
                       'TriggerGreen': True,
                       'TriggerRed': True,
@@ -122,7 +122,10 @@ class MainWindow(QMainWindow):
                            'SSS_Sky': True,
                            'TakeSimulCal': True,
                            'FF_FiberPos': 'Blank',
-                           'ExpMeterExpTime': 1},
+                           'ExpMeterMode': 'monitor',
+                           'ExpMeterExpTime': '0.5',
+                           'ExpMeterBin': '710.625',
+                           'ExpMeterThreshold': 50000},
                        ],
                       })
         self.lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
@@ -135,6 +138,8 @@ class MainWindow(QMainWindow):
         self.kpf_expmeter = ktl.cache('kpf_expmeter')
         self.expmeter_bins = list(self.kpf_expmeter['THRESHOLDBIN']._getEnumerators())
         self.expmeter_bins.pop(self.expmeter_bins.index('All'))
+#         self.expmeter_modes = ['off', 'monitor']
+        self.expmeter_modes = ['off', 'monitor', 'control']
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Slew Cal Time Colors/Warnings
@@ -325,9 +330,8 @@ class MainWindow(QMainWindow):
         self.update_OB('ExpTime', self.OB.SEQ_Observations1.get('ExpTime'))
 
         self.ExpMeterMode = self.findChild(QComboBox, 'ExpMeterMode')
-        self.ExpMeterMode.addItems(["monitor", "control", "off"])
+        self.ExpMeterMode.addItems(self.expmeter_modes)
         self.set_expmeter_mode(self.OB.SEQ_Observations1.get('ExpMeterMode'))
-#         self.update_OB('ExpMeterMode', self.OB.SEQ_Observations1.get('ExpMeterMode'))
         self.ExpMeterMode.currentTextChanged.connect(self.set_expmeter_mode)
 
         self.ExpMeterExpTimeEdit = self.findChild(QLineEdit, 'ExpMeterExpTimeEdit')
@@ -464,7 +468,6 @@ class MainWindow(QMainWindow):
                                           'LFCFiber', 'EtalonFiber',
                                           'SoCal-CalFib', 'SoCal-SciSky'])
         self.CalSource_cal_seq1.currentTextChanged.connect(self.set_CalSource_cal_seq1)
-        self.update_calOB('cal1_CalSource', self.calOB.SEQ_Calibrations1.get('CalSource'))
         self.CalSource_cal_seq1_label = self.findChild(QLabel, 'CalSource_cal_seq1_label')
 
         self.warm_up_warning = self.findChild(QLabel, 'warm_up_warning')
@@ -514,6 +517,11 @@ class MainWindow(QMainWindow):
         self.FF_FiberPos_cal_seq1.setEnabled(self.calOB.SEQ_Calibrations1.get('CalSource') == 'WideFlat')
         self.FF_FiberPos_cal_seq1_label.setEnabled(self.calOB.SEQ_Calibrations1.get('CalSource') == 'WideFlat')
 
+        self.ExpMeterMode_cal_seq1 = self.findChild(QComboBox, 'ExpMeterMode_cal_seq1')
+        self.ExpMeterMode_cal_seq1.addItems(self.expmeter_modes)
+        self.ExpMeterMode_cal_seq1.currentTextChanged.connect(self.set_expmeter_mode_cal_seq1)
+        self.ExpMeterMode_cal_seq1_label = self.findChild(QLabel, 'ExpMeterMode_cal_seq1_label')
+
         self.ExpMeterExpTime_cal_seq1 = self.findChild(QLineEdit, 'ExpMeterExpTime_cal_seq1')
         self.ExpMeterExpTime_cal_seq1.textChanged.connect(self.set_ExpMeterExpTime_cal_seq1)
         self.update_calOB('cal1_ExpMeterExpTime', self.calOB.SEQ_Calibrations1.get('ExpMeterExpTime'))
@@ -521,12 +529,19 @@ class MainWindow(QMainWindow):
         self.ExpMeterExpTime_cal_seq1_note = self.findChild(QLabel, 'ExpMeterExpTime_cal_seq1_note')
 
         self.ExpMeterBin_cal_seq1 = self.findChild(QComboBox, 'ExpMeterBin_cal_seq1')
+        self.ExpMeterBin_cal_seq1.addItems(self.expmeter_bins)
+        self.ExpMeterBin_cal_seq1.currentTextChanged.connect(self.set_expmeter_bin_cal_seq1)
         self.ExpMeterBin_cal_seq1_label = self.findChild(QLabel, 'ExpMeterBin_cal_seq1_label')
         self.ExpMeterBin_cal_seq1_note = self.findChild(QLabel, 'ExpMeterBin_cal_seq1_note')
 
         self.ExpMeterThreshold_cal_seq1 = self.findChild(QLineEdit, 'ExpMeterThreshold_cal_seq1')
+        self.ExpMeterThreshold_cal_seq1.textChanged.connect(self.set_expmeter_threshold_cal_seq1)
         self.ExpMeterThreshold_cal_seq1_label = self.findChild(QLabel, 'ExpMeterThreshold_cal_seq1_label')
         self.ExpMeterThreshold_cal_seq1_note = self.findChild(QLabel, 'ExpMeterThreshold_cal_seq1_note')
+
+        self.set_CalSource_cal_seq1(self.calOB.SEQ_Calibrations1.get('CalSource'))
+        self.set_expmeter_mode_cal_seq1(self.calOB.SEQ_Calibrations1.get('ExpMeterMode'))
+#         self.ExpMeterMode_cal_seq1.setCurrentText(self.calOB.SEQ_Calibrations1.get('ExpMeterMode'))
 
     ##-------------------------------------------
     ## Methods relating to updates from keywords
@@ -952,10 +967,8 @@ class MainWindow(QMainWindow):
         # SEQ_Observations: ExpMeterExpTime
         self.ExpMeterExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterExpTime')}")
         # SEQ_Observations: ExpMeterBin
-        print(self.OB.SEQ_Observations1.get('ExpMeterBin'))
         self.ExpMeterBin.setCurrentText(f"{self.OB.SEQ_Observations1.get('ExpMeterBin')}")
         # SEQ_Observations: ExpMeterThreshold
-        print(self.OB.SEQ_Observations1.get('ExpMeterThreshold'))
         self.ExpMeterThresholdEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterThreshold')}")
         # SEQ_Observations: TakeSimulCal and AutoNDFilters
         self.TakeSimulCal.setChecked(self.OB.SEQ_Observations1.get('TakeSimulCal'))
@@ -1040,6 +1053,7 @@ class MainWindow(QMainWindow):
                 try:
                     self.OB = ScienceOB.load_from_file(fname)
                     self.render_OB()
+                    self.file_path = Path(fname).parent
                 except Exception as e:
                     self.log.error(f"Unable to load file: {fname}")
                     self.log.error(f"{e}")
@@ -1401,9 +1415,32 @@ class MainWindow(QMainWindow):
         self.log.debug(f"set_FF_FiberPos_cal_seq1: {value}")
         self.update_calOB('cal1_FF_FiberPos', value)
 
+    def set_expmeter_mode_cal_seq1(self, value):
+        self.log.debug(f"set_expmeter_mode_cal_seq1: {value}")
+        self.update_calOB('cal1_ExpMeterMode', value)
+        control = (value == 'control')
+        off = (value == 'off')
+        self.ExpMeterExpTime_cal_seq1.setEnabled(not off)
+        self.ExpMeterExpTime_cal_seq1_label.setEnabled(not off)
+        self.ExpMeterExpTime_cal_seq1_note.setEnabled(not off)
+        self.ExpMeterBin_cal_seq1.setEnabled(control)
+        self.ExpMeterBin_cal_seq1_label.setEnabled(control)
+        self.ExpMeterBin_cal_seq1_note.setEnabled(control)
+        self.ExpMeterThreshold_cal_seq1.setEnabled(control)
+        self.ExpMeterThreshold_cal_seq1_label.setEnabled(control)
+        self.ExpMeterThreshold_cal_seq1_note.setEnabled(control)
+
     def set_ExpMeterExpTime_cal_seq1(self, value):
         self.log.debug(f"set_ExpMeterExpTime_cal_seq1: {value}")
         self.update_calOB('cal1_ExpMeterExpTime', value)
+
+    def set_expmeter_bin_cal_seq1(self, value):
+        self.log.debug(f"set_expmeter_bin_cal_seq1: {value}")
+        self.update_calOB('cal1_ExpMeterBin', value)
+
+    def set_expmeter_threshold_cal_seq1(self, value):
+        self.log.debug(f"set_expmeter_threshold_cal_seq1: {value}")
+        self.update_calOB('cal1_ExpMeterThreshold', value)
 
     def refresh_calOB_view(self):
         self.log.debug('refresh_calOB_view')
@@ -1412,7 +1449,6 @@ class MainWindow(QMainWindow):
         self.TriggerGreen_cal.setChecked(self.calOB.get('TriggerGreen') in ['True', True])
         self.TriggerRed_cal.setChecked(self.calOB.get('TriggerRed') in ['True', True])
         # Dark Seq 1
-        
         self.enable_dark_seq1.setChecked(self.calOB.SEQ_Darks1 is not None)
         self.Object_dark_seq1.setEnabled(self.calOB.SEQ_Darks1 is not None)
         self.Object_dark_seq1_label.setEnabled(self.calOB.SEQ_Darks1 is not None)
@@ -1443,46 +1479,60 @@ class MainWindow(QMainWindow):
             self.nExp_dark_seq2.setText(f"{self.calOB.SEQ_Darks2.get('nExp')}")
             self.ExpTime_dark_seq2.setText(f"{self.calOB.SEQ_Darks2.get('ExpTime')}")
         # Cal Seq
-#         calseq = self.calOB.get('SEQ_Calibrations', None)
-#         self.log.debug(f"calseq = {calseq}")
-#         self.enable_cal_seq1.setChecked(calseq is not None)
-#         self.Object_cal_seq1.setEnabled(calseq is not None)
-#         self.Object_cal_seq1_label.setEnabled(calseq is not None)
-#         self.Object_cal_seq1_note.setEnabled(calseq is not None)
-#         self.CalSource_cal_seq1.setEnabled(calseq is not None)
-#         self.CalSource_cal_seq1_label.setEnabled(calseq is not None)
-#         self.CalND1_cal_seq1.setEnabled(calseq is not None)
-#         self.CalND1_cal_seq1_label.setEnabled(calseq is not None)
-#         self.CalND2_cal_seq1.setEnabled(calseq is not None)
-#         self.CalND2_cal_seq1_label.setEnabled(calseq is not None)
-#         self.nExp_cal_seq1.setEnabled(calseq is not None)
-#         self.nExp_cal_seq1_label.setEnabled(calseq is not None)
-#         self.nExp_cal_seq1_note.setEnabled(calseq is not None)
-#         self.ExpTime_cal_seq1.setEnabled(calseq is not None)
-#         self.ExpTime_cal_seq1_label.setEnabled(calseq is not None)
-#         self.ExpTime_cal_seq1_note.setEnabled(calseq is not None)
-#         self.SSS_Science_cal_seq1.setEnabled(calseq is not None)
-#         self.SSS_Science_cal_seq1_label.setEnabled(calseq is not None)
-#         self.SSS_Sky_cal_seq1.setEnabled(calseq is not None)
-#         self.SSS_Sky_cal_seq1_label.setEnabled(calseq is not None)
-#         self.TakeSimulCal_cal_seq1.setEnabled(calseq is not None)
-#         self.TakeSimulCal_cal_seq1_label.setEnabled(calseq is not None)
-#         self.FF_FiberPos_cal_seq1.setEnabled(calseq is not None)
-#         self.FF_FiberPos_cal_seq1_label.setEnabled(calseq is not None)
-#         self.ExpMeterExpTime_cal_seq1.setEnabled(calseq is not None)
-#         self.ExpMeterExpTime_cal_seq1_label.setEnabled(calseq is not None)
-#         if calseq is not None:
-#             self.Object_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('Object')}")
-#             self.CalSource_cal_seq1.setCurrentText(f"{self.calOB.get('SEQ_Calibrations')[0].get('CalSource')}")
-#             self.CalND1_cal_seq1.setCurrentText(f"{self.calOB.get('SEQ_Calibrations')[0].get('CalND1')}")
-#             self.CalND2_cal_seq1.setCurrentText(f"{self.calOB.get('SEQ_Calibrations')[0].get('CalDN2')}")
-#             self.nExp_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('nExp')}")
-#             self.ExpTime_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('ExpTime')}")
-#             self.SSS_Science_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('SSS_Science')}")
-#             self.SSS_Sky_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('SSS_Sky')}")
-#             self.TakeSimulCal_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('TakeSimulCal')}")
-#             self.FF_FiberPos_cal_seq1.setCurrentText(f"{self.calOB.get('SEQ_Calibrations')[0].get('FF_FiberPos')}")
-#             self.ExpMeterExpTime_cal_seq1.setText(f"{self.calOB.get('SEQ_Calibrations')[0].get('ExpMeterExpTime')}")
+        calseq = self.calOB.SEQ_Calibrations1
+        self.enable_cal_seq1.setChecked(calseq is not None)
+        self.Object_cal_seq1.setEnabled(calseq is not None)
+        self.Object_cal_seq1_label.setEnabled(calseq is not None)
+        self.Object_cal_seq1_note.setEnabled(calseq is not None)
+        self.CalSource_cal_seq1.setEnabled(calseq is not None)
+        self.CalSource_cal_seq1_label.setEnabled(calseq is not None)
+        self.CalND1_cal_seq1.setEnabled(calseq is not None)
+        self.CalND1_cal_seq1_label.setEnabled(calseq is not None)
+        self.CalND2_cal_seq1.setEnabled(calseq is not None)
+        self.CalND2_cal_seq1_label.setEnabled(calseq is not None)
+        self.nExp_cal_seq1.setEnabled(calseq is not None)
+        self.nExp_cal_seq1_label.setEnabled(calseq is not None)
+        self.nExp_cal_seq1_note.setEnabled(calseq is not None)
+        self.ExpTime_cal_seq1.setEnabled(calseq is not None)
+        self.ExpTime_cal_seq1_label.setEnabled(calseq is not None)
+        self.ExpTime_cal_seq1_note.setEnabled(calseq is not None)
+        self.SSS_Science_cal_seq1.setEnabled(calseq is not None)
+        self.SSS_Science_cal_seq1_label.setEnabled(calseq is not None)
+        self.SSS_Sky_cal_seq1.setEnabled(calseq is not None)
+        self.SSS_Sky_cal_seq1_label.setEnabled(calseq is not None)
+        self.TakeSimulCal_cal_seq1.setEnabled(calseq is not None)
+        self.TakeSimulCal_cal_seq1_label.setEnabled(calseq is not None)
+        if calseq.get('CalSource') == 'WideFlat':
+            self.FF_FiberPos_cal_seq1.setEnabled(calseq is not None)
+            self.FF_FiberPos_cal_seq1_label.setEnabled(calseq is not None)
+        self.ExpMeterMode_cal_seq1.setEnabled(calseq is not None)
+        self.ExpMeterMode_cal_seq1_label.setEnabled(calseq is not None)
+        if calseq.get('ExpMeterMode') != 'off':
+            self.ExpMeterExpTime_cal_seq1.setEnabled(calseq is not None)
+            self.ExpMeterExpTime_cal_seq1_label.setEnabled(calseq is not None)
+            self.ExpMeterExpTime_cal_seq1_note.setEnabled(calseq is not None)
+        if calseq.get('ExpMeterMode') == 'control':
+            self.ExpMeterBin_cal_seq1.setEnabled(calseq is not None)
+            self.ExpMeterBin_cal_seq1_label.setEnabled(calseq is not None)
+            self.ExpMeterBin_cal_seq1_note.setEnabled(calseq is not None)
+            self.ExpMeterThreshold_cal_seq1.setEnabled(calseq is not None)
+            self.ExpMeterThreshold_cal_seq1_label.setEnabled(calseq is not None)
+            self.ExpMeterThreshold_cal_seq1_note.setEnabled(calseq is not None)
+        if calseq is not None:
+            self.Object_cal_seq1.setText(f"{calseq.get('Object')}")
+            self.CalSource_cal_seq1.setCurrentText(f"{calseq.get('CalSource')}")
+            self.CalND1_cal_seq1.setCurrentText(f"{calseq.get('CalND1')}")
+            self.CalND2_cal_seq1.setCurrentText(f"{calseq.get('CalND2')}")
+            self.nExp_cal_seq1.setText(f"{calseq.get('nExp')}")
+            self.ExpTime_cal_seq1.setText(f"{calseq.get('ExpTime')}")
+            self.SSS_Science_cal_seq1.setChecked(calseq.get('SSS_Science'))
+            self.SSS_Sky_cal_seq1.setChecked(calseq.get('SSS_Sky'))
+            self.TakeSimulCal_cal_seq1.setChecked(calseq.get('TakeSimulCal'))
+            self.FF_FiberPos_cal_seq1.setCurrentText(f"{calseq.get('FF_FiberPos')}")
+            self.ExpMeterMode_cal_seq1.setCurrentText(f"{calseq.get('ExpMeterMode')}")
+            self.ExpMeterExpTime_cal_seq1.setText(f"{calseq.get('ExpMeterExpTime')}")
+            self.ExpMeterBin_cal_seq1.setCurrentText(f"{calseq.get('ExpMeterBin')}")
+            self.ExpMeterThreshold_cal_seq1.setText(f"{calseq.get('ExpMeterThreshold')}")
 
 
     def update_calOB(self, key, value):
@@ -1492,7 +1542,9 @@ class MainWindow(QMainWindow):
         cal_seq1_keys = ['cal1_CalSource', 'cal1_Object', 'cal1_CalND1',
                          'cal1_CalND2', 'cal1_nExp', 'cal1_ExpTime',
                          'cal1_SSS_Science', 'cal1_SSS_Sky', 'cal1_TakeSimulCal',
-                         'cal1_FF_FiberPos', 'cal1_ExpMeterExpTime']
+                         'cal1_FF_FiberPos', 'cal1_ExpMeterExpTime',
+                         'cal1_ExpMeterMode', 'cal1_ExpMeterBin',
+                         'cal1_ExpMeterThreshold']
         if key in dark_seq1_keys:
             darkkey = key[6:]
             self.calOB.SEQ_Darks1.set(darkkey, value)
@@ -1510,17 +1562,18 @@ class MainWindow(QMainWindow):
                        'cal1_ExpMeterExpTime', 'cal1_SSS_Science',
                        'cal1_SSS_Sky', 'cal1_TakeSimulCal']:
             self.estimate_calOB_duration()
-        print(self.calOB.to_dict())
+#         print(self.calOB.to_dict())
 
 
     def estimate_calOB_duration(self):
-        try:
-            log.debug(f"Estimating OB duration")
-            OB_for_calc = self.calOB.to_dict()
-            duration = EstimateCalOBDuration.execute(OB_for_calc)
-            self.CalOBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
-        except:
-            self.CalOBDuration.setText(f"Estimated Duration: unknown min")
+        pass
+#         try:
+#             log.debug(f"Estimating OB duration")
+#             OB_for_calc = self.calOB.to_dict()
+#             duration = EstimateCalOBDuration.execute(OB_for_calc)
+#             self.CalOBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
+#         except:
+#             self.CalOBDuration.setText(f"Estimated Duration: unknown min")
 
     def calOB_to_lines(self):
         lines = [f"# Built using KPF OB GUI tool",
@@ -1585,7 +1638,10 @@ class MainWindow(QMainWindow):
             if fname != '' and Path(fname).exists():
                 try:
                     self.calOB = CalibrationOB.load_from_file(fname)
+                    print(self.calOB)
+                    print(self.calOB.to_dict())
                     self.refresh_calOB_view()
+                    self.file_path = Path(fname).parent
                 except Exception as e:
                     self.log.error(f"Unable to load file: {fname}")
                     self.log.error(f"{e}")
