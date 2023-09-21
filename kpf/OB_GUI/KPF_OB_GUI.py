@@ -103,7 +103,6 @@ class MainWindow(QMainWindow):
                       'TriggerCaHK': False,
                       'TriggerGreen': True,
                       'TriggerRed': True,
-                      'TriggerExpMeter': False,
                       'SEQ_Darks': [
                           {'Object': 'bias',
                            'nExp': 1,
@@ -326,7 +325,7 @@ class MainWindow(QMainWindow):
         self.update_OB('ExpTime', self.OB.SEQ_Observations1.get('ExpTime'))
 
         self.ExpMeterMode = self.findChild(QComboBox, 'ExpMeterMode')
-        self.ExpMeterMode.addItems(["monitor", "control"])
+        self.ExpMeterMode.addItems(["monitor", "control", "off"])
         self.set_expmeter_mode(self.OB.SEQ_Observations1.get('ExpMeterMode'))
 #         self.update_OB('ExpMeterMode', self.OB.SEQ_Observations1.get('ExpMeterMode'))
         self.ExpMeterMode.currentTextChanged.connect(self.set_expmeter_mode)
@@ -401,10 +400,6 @@ class MainWindow(QMainWindow):
         self.TriggerRed_cal = self.findChild(QCheckBox, 'TriggerRed_cal')
         self.update_calOB('TriggerRed', self.calOB.get('TriggerRed'))
         self.TriggerRed_cal.stateChanged.connect(self.TriggerRed_cal_state_change)
-        self.TriggerExpMeter_cal = self.findChild(QCheckBox, 'TriggerExpMeter_cal')
-        self.update_calOB('TriggerExpMeter', self.calOB.get('TriggerExpMeter'))
-        self.TriggerExpMeter_cal_state_change(self.calOB.get('TriggerExpMeter'))
-        self.TriggerExpMeter_cal.stateChanged.connect(self.TriggerExpMeter_cal_state_change)
 
         # Dark Sequence 1
         self.enable_dark_seq1 = self.findChild(QCheckBox, 'enable_dark_seq1')
@@ -842,6 +837,10 @@ class MainWindow(QMainWindow):
         self.log.debug(f"set_expmeter_mode: {value}")
         self.update_OB('ExpMeterMode', value)
         control = (value == 'control')
+        off = (value == 'off')
+        self.ExpMeterExpTimeEdit.setEnabled(not off)
+        self.ExpMeterExpTimeLabel.setEnabled(not off)
+        self.AutoEMExpTime.setEnabled(not off)
         self.ExpMeterBin.setEnabled(control)
         self.ExpMeterBinLabel.setEnabled(control)
         self.ExpMeterBinNote.setEnabled(control)
@@ -1214,19 +1213,6 @@ class MainWindow(QMainWindow):
         self.log.debug(f"TriggerRed_cal_state_change: {value}")
         self.update_calOB('TriggerRed', (value == 2))
 
-    def TriggerExpMeter_cal_state_change(self, value):
-        self.log.debug(f"TriggerExpMeter_cal_state_change: {value}")
-        self.update_calOB('TriggerExpMeter', (value == 2))
-        self.ExpMeterExpTime_cal_seq1.setEnabled((value == 2))
-        self.ExpMeterExpTime_cal_seq1_label.setEnabled((value == 2))
-        self.ExpMeterExpTime_cal_seq1_note.setEnabled((value == 2))
-        self.ExpMeterBin_cal_seq1.setEnabled((value == 2))
-        self.ExpMeterBin_cal_seq1_label.setEnabled((value == 2))
-        self.ExpMeterBin_cal_seq1_note.setEnabled((value == 2))
-        self.ExpMeterThreshold_cal_seq1.setEnabled((value == 2))
-        self.ExpMeterThreshold_cal_seq1_label.setEnabled((value == 2))
-        self.ExpMeterThreshold_cal_seq1_note.setEnabled((value == 2))
-
     def enable_dark_seq1_state_change(self, value):
         self.log.debug(f"enable_dark_seq1_state_change: {value} {type(value)}")
         enabled = (int(value) == 2)
@@ -1425,7 +1411,6 @@ class MainWindow(QMainWindow):
         self.TriggerCaHK_cal.setChecked(self.calOB.get('TriggerCaHK') in ['True', True])
         self.TriggerGreen_cal.setChecked(self.calOB.get('TriggerGreen') in ['True', True])
         self.TriggerRed_cal.setChecked(self.calOB.get('TriggerRed') in ['True', True])
-        self.TriggerExpMeter_cal.setChecked(self.calOB.get('TriggerExpMeter') in ['True', True])
         # Dark Seq 1
         
         self.enable_dark_seq1.setChecked(self.calOB.SEQ_Darks1 is not None)
@@ -1544,8 +1529,7 @@ class MainWindow(QMainWindow):
                  f"",
                  f"TriggerCaHK: {self.calOB.get('TriggerCaHK')}",
                  f"TriggerGreen: {self.calOB.get('TriggerGreen')}",
-                 f"TriggerRed: {self.calOB.get('TriggerRed')}",
-                 f"TriggerExpMeter: {self.calOB.get('TriggerExpMeter')}"]
+                 f"TriggerRed: {self.calOB.get('TriggerRed')}"]
         if self.dark_seq1_enabled or self.dark_seq2_enabled:
             lines.append("SEQ_Darks:")
         if self.dark_seq1_enabled and 'SEQ_Darks' in self.calOB.OBdict.keys():

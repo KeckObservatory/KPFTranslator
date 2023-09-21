@@ -1142,15 +1142,18 @@
        <rect>
         <x>10</x>
         <y>110</y>
-        <width>511</width>
+        <width>421</width>
         <height>31</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="detector_triggers_layout">
-       <item row="0" column="2">
-        <widget class="QCheckBox" name="TriggerRed_cal">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="TriggerCaHK_cal">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
-          <string>Trigger Red</string>
+          <string>Trigger CaHK</string>
          </property>
         </widget>
        </item>
@@ -1164,20 +1167,10 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="TriggerCaHK_cal">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
+       <item row="0" column="2">
+        <widget class="QCheckBox" name="TriggerRed_cal">
          <property name="text">
-          <string>Trigger CaHK</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QCheckBox" name="TriggerExpMeter_cal">
-         <property name="text">
-          <string>Trigger ExpMeter</string>
+          <string>Trigger Red</string>
          </property>
         </widget>
        </item>
@@ -1632,36 +1625,26 @@
         <x>451</x>
         <y>350</y>
         <width>431</width>
-        <height>141</height>
+        <height>161</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="1">
-        <widget class="QComboBox" name="FF_FiberPos_cal_seq1"/>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="ExpMeterBin_cal_seq1_note">
-         <property name="text">
-          <string>Wavelength (nm)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="ExpMeterBin_cal_seq1_label">
          <property name="text">
           <string>ExpMeterBin:</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="ExpMeterBin_cal_seq1"/>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="ExpMeterExpTime_cal_seq1_note">
+       <item row="4" column="2">
+        <widget class="QLabel" name="ExpMeterThreshold_cal_seq1_note">
          <property name="text">
-          <string>EM Exp Time (s)</string>
+          <string>Flux (e-/nm) in sci detector</string>
          </property>
         </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="ExpMeterBin_cal_seq1"/>
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="FF_FiberPos_cal_seq1_label">
@@ -1670,32 +1653,52 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="ExpMeterThreshold_cal_seq1"/>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLabel" name="ExpMeterBin_cal_seq1_note">
+         <property name="text">
+          <string>Wavelength (nm)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="FF_FiberPos_cal_seq1"/>
+       </item>
+       <item row="2" column="0">
         <widget class="QLabel" name="ExpMeterExpTime_cal_seq1_label">
          <property name="text">
           <string>ExpMeterExpTime:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="ExpMeterExpTime_cal_seq1"/>
+       <item row="2" column="2">
+        <widget class="QLabel" name="ExpMeterExpTime_cal_seq1_note">
+         <property name="text">
+          <string>EM Exp Time (s)</string>
+         </property>
+        </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="ExpMeterThreshold_cal_seq1_label">
          <property name="text">
           <string>ExpMeterThreshold:</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="ExpMeterThreshold_cal_seq1"/>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="ExpMeterExpTime_cal_seq1"/>
        </item>
-       <item row="3" column="2">
-        <widget class="QLabel" name="ExpMeterThreshold_cal_seq1_note">
+       <item row="1" column="0">
+        <widget class="QLabel" name="ExpMeterMode_cal_seq1_label">
          <property name="text">
-          <string>Flux (e-/nm) in sci detector</string>
+          <string>ExpMeterMode:</string>
          </property>
         </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="ExpMeterMode_cal_seq1"/>
        </item>
       </layout>
      </widget>
