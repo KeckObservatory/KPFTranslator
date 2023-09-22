@@ -51,6 +51,9 @@ class BuildMasterBias(KPFTranslatorFunction):
 
         log.info(f"Writing {outputfile}")
         combined_average.write(outputfile, overwrite=True)
+        if args.get('update', False) is True:
+            bias_file = ktl.cache('kpf_expmeter', 'BIAS_FILE')
+            bias_file.write(f"{outputfile}")
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -65,4 +68,7 @@ class BuildMasterBias(KPFTranslatorFunction):
         parser.add_argument("--output", dest="output", type=str,
                             default='',
                             help="The output combined bias file.")
+        parser.add_argument("--update", dest="update",
+                            default=False, action="store_true",
+                            help="Update the bias file in use with the newly generated file?")
         return super().add_cmdline_args(parser, cfg)
