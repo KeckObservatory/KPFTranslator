@@ -38,38 +38,39 @@ class StartExposure(KPFTranslatorFunction):
             expr += ' and ($kpfred.EXPSTATE != Start)'
         if 'Ca_HK' in trig_targ:
             expr += ' and ($kpf_hk.EXPSTATE != Start)'
-        timeout = 5
+        exptime = kpfexpose['EXPOSURE'].read(binary=True)
+        timeout = 6
         left_start_state = ktl.waitFor(expr, timeout=timeout)
         if left_start_state is False:
             log.error(f'We are still in start state after {timeout} s')
             if 'Green' in trig_targ:
                 green_expstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
                 log.debug(f'kpfgreen.EXPSTATE = {green_expstate}')
-            if 'Red' in trig_targ:
-                red_expstate = ktl.cache('kpfred', 'EXPSTATE').read()
-                log.debug(f'kpfred.EXPSTATE = {red_expstate}')
-            if 'Ca_HK' in trig_targ:
-                cahk_expstate = ktl.cache('kpf_hk', 'EXPSTATE').read()
-                log.debug(f'kpf_hk.EXPSTATE = {cahk_expstate}')
-
-            # Now we want to abort the current exposure and start again
-            log.warning('Stopping current exposure (with read out)')
-            kpfexpose['EXPOSE'].write('End')
-            time.sleep(2) # Time shim, this time is a WAG
-
-            # This logic is based on the earlier reading of the state, before
-            # the exposure was ended
-            if 'Green' in trig_targ:
                 if green_expstate == 'Start':
                     ResetGreenDetector.execute({})
             if 'Red' in trig_targ:
+                red_expstate = ktl.cache('kpfred', 'EXPSTATE').read()
+                log.debug(f'kpfred.EXPSTATE = {red_expstate}')
                 if red_expstate == 'Start':
                     ResetRedDetector.execute({})
             if 'Ca_HK' in trig_targ:
+                cahk_expstate = ktl.cache('kpf_hk', 'EXPSTATE').read()
+                log.debug(f'kpf_hk.EXPSTATE = {cahk_expstate}')
                 if cahk_expstate == 'Start':
                     ResetCaHKDetector.execute({})
+            # Now we want to abort the current exposure and start again
+            elapsed = kpfexpose['ELAPSED'].read(binary=True)
+            remaining = exptime-elapsed
+            if remaining <= 10:
+                # Don't stop exposure, just wait it out
+                pass
+            else:
+                log.warning('Stopping current exposure (with read out)')
+                kpfexpose['EXPOSE'].write('End')
+                time.sleep(2) # Time shim, this time is a WAG
 
             WaitForReady.execute({})
+            log.warning('Restarting exposure')
             StartExposure.execute(args)
 
 #     @classmethod
