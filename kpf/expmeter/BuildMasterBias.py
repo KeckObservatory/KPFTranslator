@@ -5,6 +5,8 @@ import numpy as np
 from astropy.nddata import CCDData
 import ccdproc
 
+import ktl
+
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
