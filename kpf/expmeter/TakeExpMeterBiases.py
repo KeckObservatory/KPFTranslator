@@ -116,7 +116,8 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
 
         if args.get('combine', False) is True:
             BuildMasterBias.execute({'files': biases,
-                                     'output': args.get('output')})
+                                     'output': args.get('output'),
+                                     'update': args.get('update')})
 
         return biases
 
@@ -133,6 +134,9 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         parser.add_argument("-c", "--combine", dest="combine",
                             default=False, action="store_true",
                             help="Combine the files in to a master bias?")
+        parser.add_argument("--update", dest="update",
+                            default=False, action="store_true",
+                            help="Update the bias file in use with the newly generated file? (only used if --combine is used)")
         parser.add_argument("--output", dest="output", type=str,
                             default='',
                             help="The output combined bias file.")
