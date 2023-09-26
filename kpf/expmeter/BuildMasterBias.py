@@ -33,6 +33,9 @@ class BuildMasterBias(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         biasfiles = [Path(biasfile) for biasfile in args.get('files')]
+        log.debug(f"Combining {len(biasfiles)} bias frames:")
+        for biasfile in biasfiles:
+            log.debug(f"  {biasfile.name}")
         biases = [CCDData.read(file, unit="adu") for file in biasfiles]
 
         combiner = ccdproc.Combiner(biases)
