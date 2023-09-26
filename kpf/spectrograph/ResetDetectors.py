@@ -75,8 +75,8 @@ class ResetGreenDetector(KPFTranslatorFunction):
         if current_expstate == 'Resetting':
             return
         elif current_expstate == 'Exposing':
-            expstate.write('End')
-            expstate.waitFor('!= "Exposing"')
+            log.warning('Can not send reset during exposure')
+            return
         # Send the reset
         expose = ktl.cache('kpfgreen', 'EXPOSE')
         log.warning(f"Resetting: kpfgreen.EXPOSE = Reset")
@@ -117,8 +117,8 @@ class ResetRedDetector(KPFTranslatorFunction):
         if current_expstate == 'Resetting':
             return
         elif current_expstate == 'Exposing':
-            expstate.write('End')
-            expstate.waitFor('!= "Exposing"')
+            log.warning('Can not send reset during exposure')
+            return
         # Send the reset
         expose = ktl.cache('kpfred', 'EXPOSE')
         log.warning(f"Resetting: kpfred.EXPOSE = Reset")
