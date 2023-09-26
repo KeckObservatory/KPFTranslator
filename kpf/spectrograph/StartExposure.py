@@ -53,6 +53,7 @@ class StartExposure(KPFTranslatorFunction):
                 log.warning('Stopping current exposure (with read out)')
                 kpfexpose['EXPOSE'].write('End')
                 time.sleep(2) # Time shim, this time is a WAG
+            WaitForReadout.execute({})
             # Now reset the offending detector
             if 'Green' in trig_targ:
                 green_expstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
