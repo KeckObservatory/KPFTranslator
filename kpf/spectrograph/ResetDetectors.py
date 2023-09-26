@@ -71,13 +71,17 @@ class ResetGreenDetector(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         # Check if the auto reset is already doing this
         expstate = ktl.cache('kpfgreen', 'EXPSTATE')
-        if expstate.read() == 'Resetting':
+        current_expstate.read()
+        if current_expstate == 'Resetting':
             return
-        else:
-            expose = ktl.cache('kpfgreen', 'EXPOSE')
-            log.warning(f"Resetting: kpfgreen.EXPOSE = Reset")
-            expose.write('Reset')
-            log.debug('Reset command sent')
+        elif current_expstate == 'Exposing':
+            expstate.write('End')
+            expstate.waitFor('!= "Exposing"')
+        # Send the reset
+        expose = ktl.cache('kpfgreen', 'EXPOSE')
+        log.warning(f"Resetting: kpfgreen.EXPOSE = Reset")
+        expose.write('Reset')
+        log.debug('Reset command sent')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -109,13 +113,17 @@ class ResetRedDetector(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         # Check if the auto reset is already doing this
         expstate = ktl.cache('kpfred', 'EXPSTATE')
-        if expstate.read() == 'Resetting':
+        current_expstate.read()
+        if current_expstate == 'Resetting':
             return
-        else:
-            expose = ktl.cache('kpfred', 'EXPOSE')
-            log.warning(f"Resetting: kpfred.EXPOSE = Reset")
-            expose.write('Reset')
-            log.debug('Reset command sent')
+        elif current_expstate == 'Exposing':
+            expstate.write('End')
+            expstate.waitFor('!= "Exposing"')
+        # Send the reset
+        expose = ktl.cache('kpfred', 'EXPOSE')
+        log.warning(f"Resetting: kpfred.EXPOSE = Reset")
+        expose.write('Reset')
+        log.debug('Reset command sent')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
