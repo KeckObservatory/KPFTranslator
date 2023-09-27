@@ -64,7 +64,7 @@ def OBdict_to_lines(OB):
     obs = OB.get('SEQ_Observations')[0]
     lines = [f"# Built using KPF OB GUI tool",
              f"Template_Name: kpf_sci",
-             f"Template_Version: 0.6",
+             f"Template_Version: 1.0",
              f"",
              f"# Target Info",
              f"TargetName: {OB.get('TargetName', '')}",
@@ -100,6 +100,8 @@ def OBdict_to_lines(OB):
           f"   ExpTime: {obs.get('ExpTime', 1)}",
           f"   ExpMeterMode: {obs.get('ExpMeterMode', 'monitor')}",
           f"   AutoExpMeter: {obs.get('AutoExpMeter', 'True')}",
+          f"   ExpMeterBin: {obs.get('ExpMeterBin', '710.625')}",
+          f"   ExpMeterThreshold: {obs.get('ExpMeterThreshold', '50000')}",
           ])
     if obs.get('AutoExpMeter', False) not in [True, 'True']:
         lines.extend([
@@ -173,6 +175,8 @@ class BuildOBfromQuery(KPFTranslatorFunction):
         OB['TriggerRed'] = "True"
         OB['SEQ_Observations'][0]['ExpMeterMode'] = "monitor"
         OB['SEQ_Observations'][0]['AutoExpMeter'] = "False"
+        OB['SEQ_Observations'][0]['ExpMeterBin'] = "710.625"
+        OB['SEQ_Observations'][0]['ExpMeterThreshold'] = "50000"
         OB['SEQ_Observations'][0]['TakeSimulCal'] = "True"
 
         # Build Starlist line
