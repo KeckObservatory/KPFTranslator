@@ -3,7 +3,7 @@ import os
 import socket
 import functools
 import logging
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler
 from datetime import datetime, timedelta
 from pathlib import Path
 import re
@@ -21,7 +21,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 def add_script_handler(this_file_name):
     log = logging.getLogger('KPFTranslator')
     for handler in log.handlers:
-        if isinstance(handler, TimedRotatingFileHandler):
+        if isinstance(handler, RotatingFileHandler):
             kpflog_filehandler = handler
     ## Set up script log file
     utnow = datetime.utcnow()
@@ -42,7 +42,7 @@ def remove_script_handler(this_file_name):
     log = logging.getLogger('KPFTranslator')
     script_handler_index = None
     for i,handler in enumerate(log.handlers):
-        if isinstance(handler, TimedRotatingFileHandler):
+        if isinstance(handler, RotatingFileHandler):
             filename = Path(handler.baseFilename).name
             if re.search(f"{this_file_name}_", filename) is not None:
                 ScriptLogFileHandler = handler

@@ -65,12 +65,19 @@ class ResetGreenDetector(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        expstate = ktl.cache('kpfgreen', 'EXPSTATE')
-        if expstate.read() == 'Resetting':
-            raise FailedPreCondition('Reset already in progress')
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Check if the auto reset is already doing this
+        current_expstate  = ktl.cache('kpfgreen', 'EXPSTATE')
+        current_expstate.read()
+        if current_expstate == 'Resetting':
+            return
+        elif current_expstate == 'Exposing':
+            log.warning('Can not send reset during exposure')
+            return
+        # Send the reset
         expose = ktl.cache('kpfgreen', 'EXPOSE')
         log.warning(f"Resetting: kpfgreen.EXPOSE = Reset")
         expose.write('Reset')
@@ -100,12 +107,19 @@ class ResetRedDetector(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        expstate = ktl.cache('kpfred', 'EXPSTATE')
-        if expstate.read() == 'Resetting':
-            raise FailedPreCondition('Reset already in progress')
+        pass
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        # Check if the auto reset is already doing this
+        current_expstate = ktl.cache('kpfred', 'EXPSTATE')
+        current_expstate.read()
+        if current_expstate == 'Resetting':
+            return
+        elif current_expstate == 'Exposing':
+            log.warning('Can not send reset during exposure')
+            return
+        # Send the reset
         expose = ktl.cache('kpfred', 'EXPOSE')
         log.warning(f"Resetting: kpfred.EXPOSE = Reset")
         expose.write('Reset')
@@ -195,10 +209,6 @@ class RecoverDetectors(KPFTranslatorFunction):
                 ResetCaHKDetector.execute({})
             if kpfmon['E_STATESTA'].read() == 'ERROR':
                 ResetExpMeterDetector.execute({})
-            expose = ktl.cache('kpfexpose', 'EXPOSE')
-            ready = expose.waitFor("== 'Ready'", timeout=timeout)
-            if ready is False:
-                expose.write('Reset')
         else:
             log.warning(f'kpfmon.CAMSTATESTA={camera_status}. No action taken.')
 

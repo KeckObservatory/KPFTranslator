@@ -194,7 +194,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         else:
             StartOfNight.execute({})
 
-        SetProgram.execute({'progname': 'E310'})
+        SetProgram.execute({'progname': 'K444'})
         SetObserver.execute({'observer': 'OA'})
 
         # Wrap operations in try/except to ensure we get to end of night

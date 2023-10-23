@@ -1,4 +1,4 @@
-import numpy as np
+import time
 
 import ktl
 
@@ -29,25 +29,46 @@ class StartExposure(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        expr = f"(kpfexpose.EXPOSE != Start or kpfmon.CAMSTATESTA == ERROR)"
-        timeout = 7 # This is to allow 5s for kpfmon.CAMSTATESTA to work
-        error_or_exposure_inprogress = ktl.waitFor(expr, timeout=timeout)
-        if error_or_exposure_inprogress == True:
-            # We didn't time out, so which state is it?
-            kpfmon = ktl.cache('kpfmon')
-            if kpfmon['CAMSTATESTA'].read() == 'ERROR':
-                log.error('kpfexpose.CAMSTATESTA is ERROR')
-                RecoverDetectors.execute({})
-                # Now we want to abort the current exposure and start again
-                log.warning('Stopping current exposure (with read out)')
-                expose = ktl.cache('kpfexpose', 'EXPOSE')
-                expose.write('End')
-                WaitForReady.execute({})
-                StartExposure.execute(args)
+        expr = f"(kpfexpose.EXPOSE != Start)"
+        kpfexpose = ktl.cache('kpfexpose')
+        trig_targ = kpfexpose['TRIG_TARG'].read().split(',')
+        if 'Green' in trig_targ:
+            expr += ' and ($kpfgreen.EXPSTATE != Start)'
+        if 'Red' in trig_targ:
+            expr += ' and ($kpfred.EXPSTATE != Start)'
+        if 'Ca_HK' in trig_targ:
+            expr += ' and ($kpf_hk.EXPSTATE != Start)'
+        exptime = kpfexpose['EXPOSURE'].read(binary=True)
+        timeout = 6
+        left_start_state = ktl.waitFor(expr, timeout=timeout)
+        if left_start_state is False:
+            log.error(f'We are still in start state after {timeout} s')
+            # Figure out which detector is stuck in the start state?
+            green_expstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
+            log.debug(f'kpfgreen.EXPSTATE = {green_expstate}')
+            red_expstate = ktl.cache('kpfred', 'EXPSTATE').read()
+            log.debug(f'kpfred.EXPSTATE = {red_expstate}')
+            cahk_expstate = ktl.cache('kpf_hk', 'EXPSTATE').read()
+            log.debug(f'kpf_hk.EXPSTATE = {cahk_expstate}')
+            # Abort the current exposure
+            elapsed = kpfexpose['ELAPSED'].read(binary=True)
+            remaining = exptime-elapsed
+            if remaining <= 10:
+                # Don't stop exposure, just wait it out
+                log.debug(f'Waiting out remaining {remaining} s of exposure')
+                time.sleep(remaining+2)
             else:
-                # We must have transitioned properly
-                pass
-        else:
-            # We timed out, not sure what is going on
-            msg = f"Neither kpfmon.CAMSTATESTA nor kpfexpose.EXPOSE transitioned as expected"
-            raise KPFException(msg)
+                log.warning('Stopping current exposure (with read out)')
+                kpfexpose['EXPOSE'].write('End')
+                time.sleep(2) # Time shim, this time is a WAG
+            # Now reset the offending detector
+            if green_expstate == 'Start':
+                ResetGreenDetector.execute({})
+            if red_expstate == 'Start':
+                ResetRedDetector.execute({})
+            if cahk_expstate == 'Start':
+                ResetCaHKDetector.execute({})
+            # Now start a fresh exposure
+            WaitForReady.execute({})
+            log.warning('Restarting exposure')
+            StartExposure.execute(args)
