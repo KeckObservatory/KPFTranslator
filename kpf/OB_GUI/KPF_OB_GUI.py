@@ -138,7 +138,7 @@ class MainWindow(QMainWindow):
         self.kpf_expmeter = ktl.cache('kpf_expmeter')
         self.expmeter_bins = list(self.kpf_expmeter['THRESHOLDBIN']._getEnumerators())
         self.expmeter_bins.pop(self.expmeter_bins.index('All'))
-        self.expmeter_modes = ['off', 'monitor']
+        self.expmeter_modes = ['off', 'monitor', 'control']
 #         self.expmeter_modes = ['off', 'monitor', 'control']
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
@@ -853,8 +853,9 @@ class MainWindow(QMainWindow):
         self.update_OB('ExpMeterMode', value)
         control = (value == 'control')
         off = (value == 'off')
-        self.ExpMeterExpTimeEdit.setEnabled(not off)
-        self.ExpMeterExpTimeLabel.setEnabled(not off)
+        auto_exptime = self.OB.SEQ_Observations1.get('AutoExpMeter')
+        self.ExpMeterExpTimeEdit.setEnabled(not off and not auto_exptime)
+        self.ExpMeterExpTimeLabel.setEnabled(not off and not auto_exptime)
         self.AutoEMExpTime.setEnabled(not off)
         self.ExpMeterBin.setEnabled(control)
         self.ExpMeterBinLabel.setEnabled(control)
