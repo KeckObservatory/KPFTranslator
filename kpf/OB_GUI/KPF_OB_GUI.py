@@ -1724,7 +1724,8 @@ class MainWindow(QMainWindow):
         date = utnow-datetime.timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
         tmp_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/executedOB_{now_str}.yaml').expanduser()
-        self.write_calOB_to_this_file(tmp_file)
+#         self.write_calOB_to_this_file(tmp_file)
+        self.calOB.write_to_file(tmp_file)
 
         RunCalOB_cmd = f'kpfdo RunCalOB -f {tmp_file} --nointensemon ; echo "Done!" ; sleep 30'
         # Pop up an xterm with the script running
