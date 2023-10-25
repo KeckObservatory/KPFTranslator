@@ -325,7 +325,6 @@ class CalibrationOB(BaseOB):
         self.lines += [f"TriggerCaHK: {self.get('TriggerCaHK')}"]
         self.lines += [f"TriggerGreen: {self.get('TriggerGreen')}"]
         self.lines += [f"TriggerRed: {self.get('TriggerRed')}"]
-        self.lines += [f"TriggerExpMeter: {self.get('TriggerExpMeter')}"]
         self.lines += [f""]
 
         if self.SEQ_Darks1 is not None or self.SEQ_Darks2 is not None:
@@ -348,7 +347,6 @@ class CalibrationOB(BaseOB):
                   'TriggerCaHK': self.get('TriggerCaHK'),
                   'TriggerGreen': self.get('TriggerGreen'),
                   'TriggerRed': self.get('TriggerRed'),
-                  'TriggerExpMeter': self.get('TriggerExpMeter'),
                  }
         if self.SEQ_Darks1 is not None and self.SEQ_Darks2 is None:
             OBdict['SEQ_Darks'] = [self.SEQ_Darks1.to_dict()]
