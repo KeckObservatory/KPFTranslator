@@ -303,7 +303,6 @@ class CalibrationOB(BaseOB):
         self.TriggerCaHK = OBProperty('TriggerCaHK', OBdict.get('TriggerCaHK', True), bool)
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
-        self.TriggerExpMeter = OBProperty('TriggerExpMeter', OBdict.get('TriggerExpMeter', False), bool)
         # SEQ_Darks
         self.SEQ_Darks1 = SEQ_Darks(OBdict.get('SEQ_Darks', [{}, {}])[0])
         if len(OBdict.get('SEQ_Darks', [{}, {}])) > 1:
