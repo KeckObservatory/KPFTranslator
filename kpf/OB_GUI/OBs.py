@@ -134,7 +134,7 @@ class ScienceOB(BaseOB):
     def __init__(self, OBdict):
         super().__init__()
         self.OBtype = 'kpf_sci'
-        self.OBversion = '0.6'
+        self.OBversion = '1.0'
         self.star_list_line = ''
         # Properties
         self.TargetName = OBProperty('TargetName', OBdict.get('TargetName', ''), str)
@@ -299,7 +299,7 @@ class CalibrationOB(BaseOB):
     def __init__(self, OBdict):
         super().__init__()
         self.OBtype = 'kpf_cal'
-        self.OBversion = '0.6'
+        self.OBversion = '1.0'
         self.TriggerCaHK = OBProperty('TriggerCaHK', OBdict.get('TriggerCaHK', True), bool)
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
