@@ -33,6 +33,7 @@ from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.SetExpTime import SetExpTime
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.spectrograph.SetTimedShutters import SetTimedShutters
+from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.StartAgitator import StartAgitator
 from kpf.spectrograph.StartExposure import StartExposure
 from kpf.spectrograph.StopAgitator import StopAgitator
@@ -202,6 +203,7 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForReady.execute({})
             log.info(f"Readout complete")
             check_scriptstop() # Stop here if requested
+        SetTriggeredDetectors.execute(args)
         log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
         SetExpTime.execute(args)
         log.info(f"Setting source select shutters")
@@ -228,6 +230,7 @@ class ExecuteCal(KPFTranslatorFunction):
         SetTimedShutters.execute(args)
         log.info(f"Setting OBJECT: {args.get('Object')}")
         SetObject.execute(args)
+
 
         ## ----------------------------------------------------------------
         ## Take actual exposures
