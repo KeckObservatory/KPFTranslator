@@ -55,6 +55,8 @@ class BaseOB(object):
 
     def write_to_file(self, file):
         file = Path(file)
+        if file.parent.exists() is False:
+            file.parent.mkdir(mode=0o777, parents=True)
         if file.exists() is True: file.unlink()
         with open(file, 'w') as f:
             for line in self.to_lines():
