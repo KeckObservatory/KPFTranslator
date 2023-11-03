@@ -33,6 +33,27 @@ class PowerCycleCaHK(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+
+        log.warning('Stopping kpf_hk keyword service')
+        cmd = ['kpf', 'stop', 'kpf_hk']
+        result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        log.debug(f"  args: {result.args}")
+        log.debug(f"  rtncode: {result.returncode}")
+        log.debug(f"  STDOUT: {result.stdout.decode()}")
+        log.debug(f"  STDERR: {result.stderr.decode()}")
+        if result.returncode != 0:
+            raise FailedPostCondition(f"The kpf stop kpf_hk command appears to have failed")
+        time.sleep(2)
+        # Get status response for log
+        cmd = ['kpf', 'status', 'kpf_hk']
+        result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        log.debug(f"  args: {result.args}")
+        log.debug(f"  rtncode: {result.returncode}")
+        log.debug(f"  STDOUT: {result.stdout.decode()}")
+        log.debug(f"  STDERR: {result.stderr.decode()}")
+
         log.warning('Power cycling the Ca HK detector system')
         kpfpower = ktl.cache('kpfpower')
         outlets = [('J1', 'kpfexpose2 Galil RIO controller'),
