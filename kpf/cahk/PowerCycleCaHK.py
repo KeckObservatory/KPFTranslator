@@ -80,6 +80,14 @@ class PowerCycleCaHK(KPFTranslatorFunction):
         if result.returncode != 0:
             raise FailedPostCondition(f"The kpf restart kpf_hk command appears to have failed")
         time.sleep(10)
+        # Get status response for log
+        cmd = ['kpf', 'status', 'kpf_hk']
+        result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        log.debug(f"  args: {result.args}")
+        log.debug(f"  rtncode: {result.returncode}")
+        log.debug(f"  STDOUT: {result.stdout.decode()}")
+        log.debug(f"  STDERR: {result.stderr.decode()}")
 
         log.warning('Resetting Ca HK')
         ResetCaHKDetector.execute({})
