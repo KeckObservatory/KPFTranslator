@@ -41,6 +41,9 @@ class CleanupAfterScience(KPFTranslatorFunction):
 
         # Clear target info
         SetTargetInfo.execute({})
+        # Turn off exposure meter controlled exposure
+        kpf_expmeter = ktl.cache('kpf_expmeter')
+        kpf_expmeter['USETHRESHOLD'].write('No')
 
         clear_script_keywords()
 
