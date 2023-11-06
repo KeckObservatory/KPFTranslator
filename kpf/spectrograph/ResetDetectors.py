@@ -71,7 +71,7 @@ class ResetGreenDetector(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         # Check if the auto reset is already doing this
         expstate = ktl.cache('kpfgreen', 'EXPSTATE')
-        current_expstate.read()
+        current_expstate = expstate.read()
         if current_expstate == 'Resetting':
             return
         elif current_expstate == 'Exposing':
@@ -113,7 +113,7 @@ class ResetRedDetector(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         # Check if the auto reset is already doing this
         expstate = ktl.cache('kpfred', 'EXPSTATE')
-        current_expstate.read()
+        current_expstate = expstate.read()
         if current_expstate == 'Resetting':
             return
         elif current_expstate == 'Exposing':
