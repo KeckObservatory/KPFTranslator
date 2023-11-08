@@ -54,7 +54,7 @@ GUI_list = [
              'cmd':  ['ssh', '-X', 'k1ruts@vm-k1obs', 'Met', '-k1'],
              'display': 'telstatus',
              'position': '0,250,535,-1,-1'},
-            {'name': 'MAGIQ - Observer UI',
+            {'name': 'MAGIQ - Observer UI: KPF on Keck1',
              'cmd':  ['ssh', '-X', 'k1obstcs@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
              'display': 'telstatus',
              'position': '0,1225,10,-1,-1'},
