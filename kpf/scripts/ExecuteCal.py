@@ -26,7 +26,6 @@ from kpf.calbench.WaitForLampWarm import WaitForLampWarm
 from kpf.calbench.WaitForLFCReady import WaitForLFCReady
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
-from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTerminationParameters
 from kpf.fvc.FVCPower import FVCPower
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObject import SetObject
@@ -44,6 +43,7 @@ from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from kpf.utils.SetTargetInfo import SetTargetInfo
 from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
+from kpf.expmeter.SetupExpMeter import SetupExpMeter
 
 
 class ExecuteCal(KPFTranslatorFunction):
@@ -174,29 +174,7 @@ class ExecuteCal(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Configure exposure meter
         ## ----------------------------------------------------------------
-        EM_mode = args.get('ExpMeterMode', 'monitor')
-        kpf_expmeter = ktl.cache('kpf_expmeter')
-        EM_enabled = kpfconfig['EXPMETER_ENABLED'].read() == 'Yes'
-        if EM_mode == 'monitor' and EM_enabled:
-            kpf_expmeter['USETHRESHOLD'].write('No')
-            args['TriggerExpMeter'] = True
-        elif EM_mode == 'control' and EM_enabled:
-            args['TriggerExpMeter'] = True
-            try:
-                SetExpMeterTerminationParameters.execute(args)
-            except Exception as e:
-                log.error('SetExpMeterTerminationParameters failed')
-                log.error(e)
-                traceback_text = traceback.format_exc()
-                log.error(traceback_text)
-                kpf_expmeter['USETHRESHOLD'].write('No')
-        elif EM_mode == 'off':
-            args['TriggerExpMeter'] = False
-        elif EM_enabled == False:
-            log.warning('ExpMeter is disabled')
-        else:
-            log.warning(f"ExpMeterMode {EM_mode} is not available")
-            kpf_expmeter['USETHRESHOLD'].write('No')
+        args = SetupExpMeter.execute(args)
         if args.get('AutoExpMeter', False) == True:
             raise KPFException('AutoExpMeter is not supported for calibrations')
         if args.get('ExpMeterExpTime', None) is not None:

@@ -72,6 +72,8 @@ links:
         cmd: expmeter.PredictExpMeterParameters.PredictExpMeterParameters
     SetMasterBiasToDefault:
         cmd: expmeter.SetMasterBiasToDefault.SetMasterBiasToDefault
+    SetupExpMeter:
+        cmd: expmeter.SetupExpMeter.SetupExpMeter
     TakeExpMeterBiases:
         cmd: expmeter.TakeExpMeterBiases.TakeExpMeterBiases
     # FIU

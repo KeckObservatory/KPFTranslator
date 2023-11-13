@@ -26,8 +26,8 @@ from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
 from kpf.expmeter.PredictExpMeterParameters import PredictExpMeterParameters
-from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTerminationParameters
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
+from kpf.expmeter.SetupExpMeter import SetupExpMeter
 
 
 class ExecuteSci(KPFTranslatorFunction):
@@ -66,32 +66,7 @@ class ExecuteSci(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Setup exposure meter
         ## ----------------------------------------------------------------
-        log.debug('Setting up exposure meter')
-        EM_mode = args.get('ExpMeterMode', 'monitor')
-        kpf_expmeter = ktl.cache('kpf_expmeter')
-        EM_enabled = kpfconfig['EXPMETER_ENABLED'].read() == 'Yes'
-        if EM_mode == 'monitor' and EM_enabled:
-            args['TriggerExpMeter'] = True
-            kpf_expmeter['USETHRESHOLD'].write('No')
-        elif EM_mode == 'control' and EM_enabled:
-            args['TriggerExpMeter'] = True
-            try:
-                SetExpMeterTerminationParameters.execute(args)
-            except Exception as e:
-                log.error('SetExpMeterTerminationParameters failed')
-                log.error(e)
-                traceback_text = traceback.format_exc()
-                log.error(traceback_text)
-                kpf_expmeter['USETHRESHOLD'].write('No')
-        elif EM_mode == 'off':
-            args['TriggerExpMeter'] = False
-        elif EM_enabled == False:
-            log.warning('ExpMeter is disabled')
-        else:
-            log.warning(f"ExpMeterMode {EM_mode} is not available")
-            args['TriggerExpMeter'] = False
-            kpf_expmeter['USETHRESHOLD'].write('No')
-
+        args = SetupExpMeter.execute(args)
         if args.get('AutoExpMeter', False) in [True, 'True']:
             em_params = PredictExpMeterParameters.execute(args)
             EM_ExpTime = em_params.get('ExpMeterExpTime', None)
