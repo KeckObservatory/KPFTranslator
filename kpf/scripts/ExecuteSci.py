@@ -69,10 +69,11 @@ class ExecuteSci(KPFTranslatorFunction):
         log.debug('Setting up exposure meter')
         EM_mode = args.get('ExpMeterMode', 'monitor')
         kpf_expmeter = ktl.cache('kpf_expmeter')
-        if EM_mode == 'monitor':
+        EM_enabled = kpfconfig['EXPMETER_ENABLED'].read() == 'Yes'
+        if EM_mode == 'monitor' and EM_enabled:
             args['TriggerExpMeter'] = True
             kpf_expmeter['USETHRESHOLD'].write('No')
-        elif EM_mode == 'control':
+        elif EM_mode == 'control' and EM_enabled:
             args['TriggerExpMeter'] = True
             try:
                 SetExpMeterTerminationParameters.execute(args)
@@ -84,6 +85,8 @@ class ExecuteSci(KPFTranslatorFunction):
                 kpf_expmeter['USETHRESHOLD'].write('No')
         elif EM_mode == 'off':
             args['TriggerExpMeter'] = False
+        elif EM_enabled == False:
+            log.warning('ExpMeter is disabled')
         else:
             log.warning(f"ExpMeterMode {EM_mode} is not available")
             args['TriggerExpMeter'] = False
