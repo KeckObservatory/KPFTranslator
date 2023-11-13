@@ -336,9 +336,11 @@ class CalibrationOB(BaseOB):
             self.lines.extend(self.SEQ_Darks1.to_lines())
         if self.SEQ_Darks2 is not None:
             self.lines.extend(self.SEQ_Darks2.to_lines())
-        self.lines += [f"# Calibrations"]
-        self.lines += [f"SEQ_Calibrations:"]
-        self.lines.extend(self.SEQ_Calibrations1.to_lines())
+        if self.SEQ_Calibrations1 is not None or self.SEQ_Calibrations2 is not None:
+            self.lines += [f"# Calibrations"]
+            self.lines += [f"SEQ_Calibrations:"]
+        if self.SEQ_Calibrations1 is not None:
+            self.lines.extend(self.SEQ_Calibrations1.to_lines())
         if self.SEQ_Calibrations2 is not None:
             self.lines.extend(self.SEQ_Calibrations2.to_lines())
         return self.lines
