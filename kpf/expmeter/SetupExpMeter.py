@@ -5,6 +5,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTerminationParameters
 
 
 class SetupExpMeter(KPFTranslatorFunction):
