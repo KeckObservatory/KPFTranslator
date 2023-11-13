@@ -30,6 +30,11 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'nExp', allowed_types=[int])
         kpf_expmeter = ktl.cache('kpf_expmeter')
+        # Check exposure meter enabled
+        kpfconfig = ktl.cache('kpfconfig')
+        EM_enabled = kpfconfig['EXPMETER_ENABLED'].read() == 'Yes'
+        if EM_enabled == False:
+            raise FailedPreCondition('Exposure meter is not enabled')
         # Check on exposure meter detector status
         if kpf_expmeter['COOLING'].read(binary=True) != True:
             raise FailedPreCondition('Exposure meter cooling is not On')
