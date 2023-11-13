@@ -313,7 +313,10 @@ class CalibrationOB(BaseOB):
             self.SEQ_Darks2 = None
         # SEQ_Calibrations
         seq_list = OBdict.get('SEQ_Calibrations', [{}, {}])
-        self.SEQ_Calibrations1 = SEQ_Calibrations(seq_list[0])
+        if seq_list[0] == {}:
+            self.SEQ_Calibrations1 = None
+        else:
+            self.SEQ_Calibrations1 = SEQ_Calibrations(seq_list[0])
         if len(seq_list) > 1:
             self.SEQ_Calibrations2 = SEQ_Calibrations(seq_list[1])
         else:
