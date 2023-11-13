@@ -40,10 +40,16 @@ class CleanupAfterScience(KPFTranslatorFunction):
             StopAgitator.execute({})
 
         # Clear target info
+        log.debug('Clearing target info')
         SetTargetInfo.execute({})
         # Turn off exposure meter controlled exposure
+        log.debug('Clearing kpf_expmeter.USETHRESHOLD')
         kpf_expmeter = ktl.cache('kpf_expmeter')
         kpf_expmeter['USETHRESHOLD'].write('No')
+        # Set SKY_OFFSET back to 0 0
+        log.debug('Clearing kpfguide.SKY_OFFSET')
+        sky_offset = ktl.cache('kpfguide', 'SKY_OFFSET')
+        sky_offset.write('0 0')
 
         clear_script_keywords()
 
