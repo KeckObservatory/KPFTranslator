@@ -153,7 +153,16 @@ class ScienceOB(BaseOB):
         self.TriggerCaHK = OBProperty('TriggerCaHK', OBdict.get('TriggerCaHK', True), bool)
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
-        self.SEQ_Observations1 = SEQ_Observations(OBdict.get('SEQ_Observations', [{}])[0])
+        self.SEQ_Observations1 = None
+        observations = OBdict.get('SEQ_Observations', [])
+        for observation in observations:
+            try:
+                this_observation = SEQ_Observations(observation)
+            except:
+                this_observation = None
+            if this_observation is not None:
+                if self.SEQ_Observations1 == None:
+                    self.SEQ_Observations1 = this_observation
         self.to_lines()
 
     def to_lines(self):
