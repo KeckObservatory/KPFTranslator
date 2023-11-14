@@ -313,7 +313,10 @@ class CalibrationOB(BaseOB):
             self.SEQ_Darks2 = None
         # SEQ_Calibrations
         seq_list = OBdict.get('SEQ_Calibrations', [{}, {}])
-        self.SEQ_Calibrations1 = SEQ_Calibrations(seq_list[0])
+        if seq_list[0] == {}:
+            self.SEQ_Calibrations1 = None
+        else:
+            self.SEQ_Calibrations1 = SEQ_Calibrations(seq_list[0])
         if len(seq_list) > 1:
             self.SEQ_Calibrations2 = SEQ_Calibrations(seq_list[1])
         else:
@@ -336,9 +339,11 @@ class CalibrationOB(BaseOB):
             self.lines.extend(self.SEQ_Darks1.to_lines())
         if self.SEQ_Darks2 is not None:
             self.lines.extend(self.SEQ_Darks2.to_lines())
-        self.lines += [f"# Calibrations"]
-        self.lines += [f"SEQ_Calibrations:"]
-        self.lines.extend(self.SEQ_Calibrations1.to_lines())
+        if self.SEQ_Calibrations1 is not None or self.SEQ_Calibrations2 is not None:
+            self.lines += [f"# Calibrations"]
+            self.lines += [f"SEQ_Calibrations:"]
+        if self.SEQ_Calibrations1 is not None:
+            self.lines.extend(self.SEQ_Calibrations1.to_lines())
         if self.SEQ_Calibrations2 is not None:
             self.lines.extend(self.SEQ_Calibrations2.to_lines())
         return self.lines
