@@ -306,21 +306,34 @@ class CalibrationOB(BaseOB):
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
         # SEQ_Darks
-        self.SEQ_Darks1 = SEQ_Darks(OBdict.get('SEQ_Darks', [{}, {}])[0])
-        if len(OBdict.get('SEQ_Darks', [{}, {}])) > 1:
-            self.SEQ_Darks2 = SEQ_Darks(OBdict.get('SEQ_Darks', [{}, {}])[1])
-        else:
-            self.SEQ_Darks2 = None
+        self.SEQ_Darks1 = None
+        self.SEQ_Darks2 = None
+        dark_list = OBdict.get('SEQ_Darks', [])
+        for entry in dark_list:
+            try:
+                this_dark = SEQ_Darks(entry)
+            except:
+                this_dark = None
+            if this_dark is not None:
+                if self.SEQ_Darks1 == None:
+                    self.SEQ_Darks1 = this_dark
+                elif self.SEQ_Darks2 == None:
+                    self.SEQ_Darks2 = this_dark
         # SEQ_Calibrations
-        seq_list = OBdict.get('SEQ_Calibrations', [{}, {}])
-        if seq_list[0] == {}:
-            self.SEQ_Calibrations1 = None
-        else:
-            self.SEQ_Calibrations1 = SEQ_Calibrations(seq_list[0])
-        if len(seq_list) > 1:
-            self.SEQ_Calibrations2 = SEQ_Calibrations(seq_list[1])
-        else:
-            self.SEQ_Calibrations2 = None
+        self.SEQ_Calibrations1 = None
+        self.SEQ_Calibrations2 = None
+        seq_list = OBdict.get('SEQ_Calibrations', [])
+        for entry in seq_list:
+            try:
+                this_cal = SEQ_Calibrations(entry)
+            except:
+                this_cal = None
+            if this_cal is not None:
+                if self.SEQ_Calibrations1 == None:
+                    self.SEQ_Calibrations1 = this_cal
+                elif self.SEQ_Calibrations2 == None:
+                    self.SEQ_Calibrations2 = this_cal
+        # Render lines
         self.to_lines()
 
     def to_lines(self):
