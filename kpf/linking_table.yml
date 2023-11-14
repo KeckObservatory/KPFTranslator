@@ -203,6 +203,8 @@ links:
         cmd: spectrograph.ResetDetectors.RecoverDetectors
     ResetCaHKDetector:
         cmd: spectrograph.ResetDetectors.ResetCaHKDetector
+    ResetExpMeterDetector:
+        cmd: spectrograph.ResetDetectors.ResetExpMeterDetector
     ResetGreenDetector:
         cmd: spectrograph.ResetDetectors.ResetGreenDetector
     ResetRedDetector:
