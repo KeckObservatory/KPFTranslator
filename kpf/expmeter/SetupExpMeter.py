@@ -19,7 +19,7 @@ class SetupExpMeter(KPFTranslatorFunction):
 
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'Template_Name', allowed_values=['kpf_lamp'])
+        check_input(args, 'Template_Name', allowed_values=['kpf_lamp', 'kpf_sci'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.5')
 
     @classmethod
