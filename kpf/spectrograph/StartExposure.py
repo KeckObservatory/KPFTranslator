@@ -43,32 +43,31 @@ class StartExposure(KPFTranslatorFunction):
         left_start_state = ktl.waitFor(expr, timeout=timeout)
         if left_start_state is False:
             log.error(f'We are still in start state after {timeout} s')
+            # Figure out which detector is stuck in the start state?
+            green_expstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
+            log.debug(f'kpfgreen.EXPSTATE = {green_expstate}')
+            red_expstate = ktl.cache('kpfred', 'EXPSTATE').read()
+            log.debug(f'kpfred.EXPSTATE = {red_expstate}')
+            cahk_expstate = ktl.cache('kpf_hk', 'EXPSTATE').read()
+            log.debug(f'kpf_hk.EXPSTATE = {cahk_expstate}')
             # Abort the current exposure
             elapsed = kpfexpose['ELAPSED'].read(binary=True)
             remaining = exptime-elapsed
             if remaining <= 10:
                 # Don't stop exposure, just wait it out
-                pass
+                log.debug(f'Waiting out remaining {remaining} s of exposure')
+                time.sleep(remaining+2)
             else:
                 log.warning('Stopping current exposure (with read out)')
                 kpfexpose['EXPOSE'].write('End')
                 time.sleep(2) # Time shim, this time is a WAG
             # Now reset the offending detector
-            if 'Green' in trig_targ:
-                green_expstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
-                log.debug(f'kpfgreen.EXPSTATE = {green_expstate}')
-                if green_expstate == 'Start':
-                    ResetGreenDetector.execute({})
-            if 'Red' in trig_targ:
-                red_expstate = ktl.cache('kpfred', 'EXPSTATE').read()
-                log.debug(f'kpfred.EXPSTATE = {red_expstate}')
-                if red_expstate == 'Start':
-                    ResetRedDetector.execute({})
-            if 'Ca_HK' in trig_targ:
-                cahk_expstate = ktl.cache('kpf_hk', 'EXPSTATE').read()
-                log.debug(f'kpf_hk.EXPSTATE = {cahk_expstate}')
-                if cahk_expstate == 'Start':
-                    ResetCaHKDetector.execute({})
+            if green_expstate == 'Start':
+                ResetGreenDetector.execute({})
+            if red_expstate == 'Start':
+                ResetRedDetector.execute({})
+            if cahk_expstate == 'Start':
+                ResetCaHKDetector.execute({})
             # Now start a fresh exposure
             WaitForReady.execute({})
             log.warning('Restarting exposure')
