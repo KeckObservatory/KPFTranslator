@@ -7,10 +7,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 def expeter_flux_target(spectrograph_flux, band):
-    slope = {'498.125':  4.569,
-             '604.375': 11.125,
-             '710.625': 10.026,
-             '816.875': 12.446}[band]
+    slope = {'498.125': 1/4.569,
+             '604.375': 1/11.125,
+             '710.625': 1/10.026,
+             '816.875': 1/12.446}[band]
     expmeter_flux = slope*spectrograph_flux
     return expmeter_flux
 
