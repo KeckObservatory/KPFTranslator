@@ -100,10 +100,6 @@ class ConfigureForScience(KPFTranslatorFunction):
 
         check_scriptstop()
 
-        # Make sure tip tilt loops have had time to close
-        if OB['GuideMode'] in ['manual', 'auto']:
-            WaitForTipTilt.execute({})
-
     @classmethod
     def post_condition(cls, OB, logger, cfg):
         pass
