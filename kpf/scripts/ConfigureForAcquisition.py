@@ -101,7 +101,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         # Set Target Parameters from OB
         SetTargetInfo.execute(OB)
 
-        # Set guide camera parameters (only manual supported for now)
+        # Set guide camera parameters
         guide_mode = OB.get('GuideMode', 'auto')
         if guide_mode == 'manual':
             if OB.get('GuideCamGain', None) is not None:
