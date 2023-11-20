@@ -109,6 +109,8 @@ links:
         cmd: fiu.UpdateCurrentBase.UpdateCurrentBase
     TestTipTiltMirrorRange:
         cmd: fiu.TestTipTiltMirrorRange.TestTipTiltMirrorRange
+    VerifyCurrentBase:
+        cmd: fiu.VerifyCurrentBase.VerifyCurrentBase
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
     WaitForTipTilt:
