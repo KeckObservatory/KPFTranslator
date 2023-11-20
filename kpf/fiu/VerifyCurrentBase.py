@@ -29,22 +29,26 @@ class VerifyCurrentBase(KPFTranslatorFunction):
         science_base = kpfguide['SCIENCE_BASE'].read(binary=True)
         sky_base = kpfguide['SKY_BASE'].read(binary=True)
 
-        science_match = np.isclose(current_base, science_base, atol=0.01)
-        sky_match = np.isclose(current_base, sky_base, atol=0.01)
+        science_match = np.all(np.isclose(current_base, science_base, atol=0.01))
+        sky_match = np.all(np.isclose(current_base, sky_base, atol=0.01))
+        msg = f"CURRENT_BASE="
         if science_match:
             log.debug(f"CURRENT_BASE is science fiber, PO = {poname}")
+            msg += 'SCIENCE_BASE'
         elif sky_match:
             log.debug(f"CURRENT_BASE is sky fiber, PO = {poname}")
+            msg += 'SKY_BASE'
         else:
             log.debug(f"CURRENT_BASE is {current_base}, PO = {poname}")
+            msg += 'custom'
 
         poname_match = (science_match and poname == 'KPF')\
                        or (sky_match and poname == 'SKY')
         if poname_match:
-            msg = f"CURRENT_BASE for tip tilt is consistent with PONAME"
+            msg += f" which is consistent with PONAME={poname}"
             log.debug(msg)
         else:
-            msg = f"CURRENT_BASE for tip tilt is NOT consistent with PONAME"
+            msg += f" which is NOT consistent with PONAME={poname}"
             log.error(msg)
         print(msg)
 
