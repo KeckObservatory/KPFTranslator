@@ -33,6 +33,17 @@ class PowerCycleCaHK(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        log.warning('Stopping kpfexpose2 dispatcher')
+        cmd = ['kpf', 'stop', 'kpfexpose2']
+        result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        log.debug(f"  args: {result.args}")
+        log.debug(f"  rtncode: {result.returncode}")
+        log.debug(f"  STDOUT: {result.stdout.decode()}")
+        log.debug(f"  STDERR: {result.stderr.decode()}")
+        if result.returncode != 0:
+            raise FailedPostCondition(f"The kpf stop kpfexpose2 command appears to have failed")
+        time.sleep(2)
 
         log.warning('Stopping kpf_hk keyword service')
         cmd = ['kpf', 'stop', 'kpf_hk']
@@ -82,6 +93,26 @@ class PowerCycleCaHK(KPFTranslatorFunction):
         time.sleep(10)
         # Get status response for log
         cmd = ['kpf', 'status', 'kpf_hk']
+        result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        log.debug(f"  args: {result.args}")
+        log.debug(f"  rtncode: {result.returncode}")
+        log.debug(f"  STDOUT: {result.stdout.decode()}")
+        log.debug(f"  STDERR: {result.stderr.decode()}")
+
+        log.warning('Restarting kpfexpose2 keyword service')
+        cmd = ['kpf', 'restart', 'kpfexpose2']
+        result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        log.debug(f"  args: {result.args}")
+        log.debug(f"  rtncode: {result.returncode}")
+        log.debug(f"  STDOUT: {result.stdout.decode()}")
+        log.debug(f"  STDERR: {result.stderr.decode()}")
+        if result.returncode != 0:
+            raise FailedPostCondition(f"The kpf restart kpfexpose2 command appears to have failed")
+        time.sleep(10)
+        # Get status response for log
+        cmd = ['kpf', 'status', 'kpfexpose2']
         result = subprocess.run(cmd, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         log.debug(f"  args: {result.args}")
