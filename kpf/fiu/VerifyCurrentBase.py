@@ -38,7 +38,7 @@ class VerifyCurrentBase(KPFTranslatorFunction):
         else:
             log.debug(f"CURRENT_BASE is {current_base}, PO = {poname}")
 
-        poname_match = (science_match and poname == 'KPF')
+        poname_match = (science_match and poname == 'KPF')\
                        or (sky_match and poname == 'SKY')
         if poname_match:
             msg = f"CURRENT_BASE for tip tilt is consistent with PONAME"
