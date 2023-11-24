@@ -83,7 +83,11 @@ class BuildOBfromQuery(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         gaiaid = args.get('GaiaID')
-        OB = ScienceOB({'GaiaID': f"DR3 {gaiaid}"})
+        observation = {'ExpMeterMode': "monitor",
+                       'AutoExpMeter': "False",
+                       'TakeSimulCal': "True"}
+        OB = ScienceOB({'GaiaID': f"DR3 {gaiaid}",
+                        'SEQ_Observations': [observation]})
 
         # Get target name and 2MASS ID from Gaia ID
         names = get_names_from_gaiaid(gaiaid)
@@ -107,9 +111,6 @@ class BuildOBfromQuery(KPFTranslatorFunction):
         OB.set('TriggerCaHK', "True")
         OB.set('TriggerGreen', "True")
         OB.set('TriggerRed', "True")
-        OB.set('ExpMeterMode', "monitor", seq='SEQ_Observations')
-        OB.set('AutoExpMeter', "False", seq='SEQ_Observations')
-        OB.set('TakeSimulCal', "True", seq='SEQ_Observations')
 
         # Build Starlist line
         OB.star_list_line = form_starlist_line(names['TargetName'],
