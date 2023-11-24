@@ -29,6 +29,8 @@ class BaseOB(object):
         return thisOBproperty.value
 
     def set(self, name, value):
+        if name == '2MASSID':
+            name = 'twoMASSID'
         thisOBproperty = getattr(self, name)
         thisOBproperty.set(value)
 
@@ -189,9 +191,10 @@ class ScienceOB(BaseOB):
         self.lines += [f"TriggerCaHK: {self.get('TriggerCaHK')}"]
         self.lines += [f"TriggerGreen: {self.get('TriggerGreen')}"]
         self.lines += [f"TriggerRed: {self.get('TriggerRed')}"]
-        self.lines += [f"# Observations"]
-        self.lines += [f"SEQ_Observations:"]
-        self.lines.extend(self.SEQ_Observations1.to_lines())
+        if self.SEQ_Observations1 is not None:
+            self.lines += [f"# Observations"]
+            self.lines += [f"SEQ_Observations:"]
+            self.lines.extend(self.SEQ_Observations1.to_lines())
 
         if len(self.star_list_line) > 0:
             self.lines += [f""]
