@@ -31,8 +31,11 @@ class BaseOB(object):
     def set(self, name, value):
         if name == '2MASSID':
             name = 'twoMASSID'
-        thisOBproperty = getattr(self, name)
-        thisOBproperty.set(value)
+        try:
+            thisOBproperty = getattr(self, name)
+            thisOBproperty.set(value)
+        except AttributeError as e:
+            print(f"AttributeError setting {name}. skipping")
 
     @classmethod
     def load_from_file(self, fname):

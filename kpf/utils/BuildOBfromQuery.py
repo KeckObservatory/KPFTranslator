@@ -65,8 +65,11 @@ def form_starlist_line(name, ra, dec, vmag=None, frame='icrs', unit='deg'):
     coord = SkyCoord(float(ra), float(dec), frame=frame, unit=unit)
     coord_string = coord.to_string('hmsdms', sep=' ', precision=2)
     line = f"{name:15s} {coord_string} 2000.0"
-    if vmag is not None:
-        line += f" vmag={float(vmag):.2f}"
+    if vmag not in [None, '']:
+        try:
+            line += f" vmag={float(vmag):.2f}"
+        except:
+            pass
     return line
 
 

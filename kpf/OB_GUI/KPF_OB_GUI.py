@@ -755,7 +755,7 @@ class MainWindow(QMainWindow):
         # Will this query overwrite any values?
         target_OB_keys = ['2MASSID', 'Parallax', 'RadialVelocity',
                           'Gmag', 'Jmag', 'Teff']
-        currently_used = [v for v in target_OB_keys if v in self.OB.OBdict.keys()]
+        currently_used = [v for v in target_OB_keys if v in self.OB.to_dict().keys()]
         if len(currently_used) > 0:
             overwrite_popup = QMessageBox()
             overwrite_popup.setWindowTitle('OB Data Overwrite Confirmation')
@@ -1009,7 +1009,7 @@ class MainWindow(QMainWindow):
                                                            self.gaia_params['DE_ICRS'],
                                                            vmag=self.OB.get('Gmag'),
                                                            )
-            self.OB.star_list_line = star_list_line
+            self.OB.star_list_line = starlist
             self.star_list_line.setText(starlist)
             return starlist
         else:
