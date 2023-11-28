@@ -132,6 +132,9 @@ class RunCalOB(KPFTranslatorFunction):
         try:
             cals = OB.get('SEQ_Calibrations', [])
             for cal in cals:
+                cal['TriggerCaHK'] = OB['TriggerCaHK']
+                cal['TriggerGreen'] = OB['TriggerGreen']
+                cal['TriggerRed'] = OB['TriggerRed']
                 # No need to specify TimedShutter_CaHK in OB/calibration
                 cal['TimedShutter_CaHK'] = OB.get('TriggerCaHK', False)
                 log.debug(f"Automatically setting TimedShutter_CaHK: {cal['TimedShutter_CaHK']}")

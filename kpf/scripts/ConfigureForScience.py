@@ -62,13 +62,30 @@ class ConfigureForScience(KPFTranslatorFunction):
 
         check_scriptstop()
 
-        # Start tip tilt loops
-        if OB['GuideMode'] in ['manual', 'auto']:
-            log.info(f"Starting tip tilt loops")
-            SetCurrentBase.execute(OB)
-            StartTipTilt.execute({})
-        elif OB['GuideMode'] in ['off', 'telescope']:
-            log.info('GuideMode in OB is "off", not starting tip tilt loops')
+        # Check tip tilt loops
+        requested_mode = OB.get('GuideMode', 'auto')
+        kpfguide = ktl.cache('kpfguide')
+        all_loops = kpfguide['ALL_LOOPS'].read()
+        tt_control = kpfguide['TIPTILT_CONTROL'].read()
+        if (requested_mode in ['manual', 'auto'] and all_loops in ['Inactive', 'Mixed'])\
+            or (requested_mode in ['off', 'telescope'] and tt_control == 'Active'):
+                log.error(f'OB requesting {requested_mode}, but guide loops '
+                          f'are: {all_loops} ({tt_control})')
+                # Check with user
+                log.debug('Asking for user input')
+                print()
+                print("#####################################################")
+                print("The tip tilt loops are not in the expected state based")
+                print("on the OB. Do you wish to continue executing this OB")
+                print("(Y/n)? ")
+                print("#####################################################")
+                print()
+                user_input = input()
+                log.debug(f'response: "{user_input}"')
+                if user_input.lower().strip() in ['n', 'no', 'a', 'abort']:
+                    raise KPFException("User chose to halt execution")
+
+        check_scriptstop()
 
         # Set Octagon
         kpfconfig = ktl.cache('kpfconfig')
@@ -99,10 +116,6 @@ class ConfigureForScience(KPFTranslatorFunction):
         SetTriggeredDetectors.execute(OB)
 
         check_scriptstop()
-
-        # Make sure tip tilt loops have had time to close
-        if OB['GuideMode'] in ['manual', 'auto']:
-            WaitForTipTilt.execute({})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

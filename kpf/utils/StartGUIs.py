@@ -46,10 +46,6 @@ GUI_list = [
              'display': 'control2',
              'position': '0,1,55,1800,900'},
             # Telstatus
-            {'name': 'MAGIQ - Observer UI',
-             'cmd':  ['ssh', '-X', 'k1obstcs@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
-             'display': 'telstatus',
-             'position': '0,1225,10,-1,-1'},
             {'name': 'KECK 1 FACSUM',
              'cmd':  ['ssh', '-X', 'k1ruts@vm-k1obs', 'Facsum', '-k1'],
              'display': 'telstatus',
@@ -58,6 +54,10 @@ GUI_list = [
              'cmd':  ['ssh', '-X', 'k1ruts@vm-k1obs', 'Met', '-k1'],
              'display': 'telstatus',
              'position': '0,250,535,-1,-1'},
+            {'name': 'MAGIQ - Observer UI: KPF on Keck1',
+             'cmd':  ['ssh', '-X', 'k1obstcs@k1-magiq-server', 'magiq', 'start', 'ObserverUI'],
+             'display': 'telstatus',
+             'position': '0,1225,10,-1,-1'},
             ]
 
 
@@ -68,9 +68,9 @@ def get_window_list(env=None):
     else:
         wmctrl_proc = subprocess.run(wmctrl_cmd, stdout=subprocess.PIPE)
     wmctrl_list = wmctrl_proc.stdout.decode().strip('\n').split('\n')
-    patt = "(\w+)\s+([\+\-\d]+)\s+([\.\w\/]+)\s+([\w\s\-\(\)]+)"
+    patt = "(\w+)\s+([\+\-\d]+)\s+([\-\.\w\/]+)\s+([\w\d\s\-\(\):]+)"
     matches = [re.match(patt, line) for line in wmctrl_list]
-    window_names = [m.group(4 ) for m in matches if m is not None]
+    window_names = [m.group(4) for m in matches if m is not None]
     if len(wmctrl_list) > len(window_names):
         log.error(f"Unmatched window")
         log.error(wmctrl_proc.stdout.decode().strip('\n'))

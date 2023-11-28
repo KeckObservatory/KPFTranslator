@@ -72,6 +72,8 @@ links:
         cmd: expmeter.PredictExpMeterParameters.PredictExpMeterParameters
     SetMasterBiasToDefault:
         cmd: expmeter.SetMasterBiasToDefault.SetMasterBiasToDefault
+    SetupExpMeter:
+        cmd: expmeter.SetupExpMeter.SetupExpMeter
     TakeExpMeterBiases:
         cmd: expmeter.TakeExpMeterBiases.TakeExpMeterBiases
     # FIU
@@ -107,6 +109,8 @@ links:
         cmd: fiu.UpdateCurrentBase.UpdateCurrentBase
     TestTipTiltMirrorRange:
         cmd: fiu.TestTipTiltMirrorRange.TestTipTiltMirrorRange
+    VerifyCurrentBase:
+        cmd: fiu.VerifyCurrentBase.VerifyCurrentBase
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
     WaitForTipTilt:
@@ -203,6 +207,8 @@ links:
         cmd: spectrograph.ResetDetectors.RecoverDetectors
     ResetCaHKDetector:
         cmd: spectrograph.ResetDetectors.ResetCaHKDetector
+    ResetExpMeterDetector:
+        cmd: spectrograph.ResetDetectors.ResetExpMeterDetector
     ResetGreenDetector:
         cmd: spectrograph.ResetDetectors.ResetGreenDetector
     ResetRedDetector:

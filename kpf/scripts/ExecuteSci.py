@@ -27,6 +27,7 @@ from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
 from kpf.expmeter.PredictExpMeterParameters import PredictExpMeterParameters
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
+from kpf.expmeter.SetupExpMeter import SetupExpMeter
 
 
 class ExecuteSci(KPFTranslatorFunction):
@@ -65,30 +66,7 @@ class ExecuteSci(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Setup exposure meter
         ## ----------------------------------------------------------------
-        log.debug('Setting up exposure meter')
-        EM_mode = args.get('ExpMeterMode', 'monitor')
-        kpf_expmeter = ktl.cache('kpf_expmeter')
-        if EM_mode == 'monitor':
-            kpf_expmeter['USETHRESHOLD'].write('No')
-        elif EM_mode == 'control':
-            kpf_expmeter['USETHRESHOLD'].write('Yes')
-            # Set flux threshold
-            threshold = args.get('ExpMeterThreshold', None)
-            if threshold is None:
-                log.error('No exposure meter threshold defined')
-                kpf_expmeter['USETHRESHOLD'].write('No')
-            else:
-                kpf_expmeter['THRESHOLD'].write(threshold)
-            # Set bin for flux threshold
-            thresholdbin = args.get('ExpMeterBin', None)
-            if thresholdbin is None:
-                log.error('No bin for exposure meter threshold defined')
-                kpf_expmeter['USETHRESHOLD'].write('No')
-            else:
-                kpf_expmeter['THRESHOLDBIN'].write(thresholdbin)
-        else:
-            log.warning(f"ExpMeterMode {EM_mode} is not available")
-
+        args = SetupExpMeter.execute(args)
         if args.get('AutoExpMeter', False) in [True, 'True']:
             em_params = PredictExpMeterParameters.execute(args)
             EM_ExpTime = em_params.get('ExpMeterExpTime', None)
@@ -134,7 +112,6 @@ class ExecuteSci(KPFTranslatorFunction):
         args['TimedShutter_FlatField'] = False
         args['TimedShutter_SimulCal'] = args['TakeSimulCal']
         SetTimedShutters.execute(args)
-        args['TriggerExpMeter'] = (args.get('ExpMeterMode', 'monitor') != 'off')
         SetTriggeredDetectors.execute(args)
 
         check_scriptstop() # Stop here if requested

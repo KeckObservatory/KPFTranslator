@@ -32,6 +32,7 @@ from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.SetExpTime import SetExpTime
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.spectrograph.SetTimedShutters import SetTimedShutters
+from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.StartAgitator import StartAgitator
 from kpf.spectrograph.StartExposure import StartExposure
 from kpf.spectrograph.StopAgitator import StopAgitator
@@ -42,6 +43,7 @@ from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from kpf.utils.SetTargetInfo import SetTargetInfo
 from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
+from kpf.expmeter.SetupExpMeter import SetupExpMeter
 
 
 class ExecuteCal(KPFTranslatorFunction):
@@ -172,32 +174,7 @@ class ExecuteCal(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Configure exposure meter
         ## ----------------------------------------------------------------
-        EM_mode = args.get('ExpMeterMode', 'monitor')
-        kpf_expmeter = ktl.cache('kpf_expmeter')
-        usethreshold = kpf_expmeter['USETHRESHOLD'].read()
-        if EM_mode == 'monitor' and usethreshold == 'No':
-            pass
-        elif EM_mode == 'monitor' and usethreshold == 'Yes':
-            kpf_expmeter['USETHRESHOLD'].write('No')
-        elif EM_mode == 'control':
-            kpf_expmeter['USETHRESHOLD'].write('Yes')
-            # Set flux threshold
-            threshold = args.get('ExpMeterThreshold', None)
-            if threshold is None:
-                log.error('No exposure meter threshold defined')
-                kpf_expmeter['USETHRESHOLD'].write('No')
-            else:
-                kpf_expmeter['THRESHOLD'].write(threshold)
-            # Set bin for flux threshold
-            thresholdbin = args.get('ExpMeterBin', None)
-            if thresholdbin is None:
-                log.error('No bin for exposure meter threshold defined')
-                kpf_expmeter['USETHRESHOLD'].write('No')
-            else:
-                kpf_expmeter['THRESHOLDBIN'].write(thresholdbin)
-        else:
-            log.warning(f"ExpMeterMode {EM_mode} is not available")
-
+        args = SetupExpMeter.execute(args)
         if args.get('AutoExpMeter', False) == True:
             raise KPFException('AutoExpMeter is not supported for calibrations')
         if args.get('ExpMeterExpTime', None) is not None:
@@ -214,6 +191,7 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForReady.execute({})
             log.info(f"Readout complete")
             check_scriptstop() # Stop here if requested
+        SetTriggeredDetectors.execute(args)
         log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
         SetExpTime.execute(args)
         log.info(f"Setting source select shutters")
@@ -240,6 +218,7 @@ class ExecuteCal(KPFTranslatorFunction):
         SetTimedShutters.execute(args)
         log.info(f"Setting OBJECT: {args.get('Object')}")
         SetObject.execute(args)
+
 
         ## ----------------------------------------------------------------
         ## Take actual exposures
