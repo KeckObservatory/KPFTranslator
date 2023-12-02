@@ -20,17 +20,30 @@ class ShutdownTipTilt(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfguide = ktl.cache('kpfguide')
-        kpfguide['TIPTILT_CONTROL'].write('Inactive')
-        kpfguide['TIPTILT_CALC'].write('Inactive')
         kpffiu = ktl.cache('kpffiu')
-        tthome = ktl.cache('kpfguide', 'TIPTILT_HOME')
-        home = tthome.read(binary=True)
-        log.debug(f'Sending Tip tilt mirror to home: {home[0]} {home[1]}')
-        kpffiu['TTXVAX'].write(home[0])
-        kpffiu['TTYVAX'].write(home[1])
-        log.debug('Opening tip tilt mirror servo loops')
-        kpffiu['TTXSRV'].write('open')
-        kpffiu['TTYSRV'].write('open')
+        xopen = kpffiu['TTXSRV'].read() == 'Open'
+        yopen = kpffiu['TTYSRV'].read() == 'Open'
+        if xopen and yopen:
+            # No actions needed
+            return
+        elif xopen == False and yopen == False:
+            # Both axis are in closed loop mode
+            # Shut down tip tilt activity and park mirror before opening loops
+            kpfguide['TIPTILT_CONTROL'].write('Inactive')
+            kpfguide['TIPTILT_CALC'].write('Inactive')
+            tthome = ktl.cache('kpfguide', 'TIPTILT_HOME')
+            home = tthome.read(binary=True)
+            log.debug(f'Sending Tip tilt mirror to home: {home[0]} {home[1]}')
+            kpffiu['TTXVAX'].write(home[0])
+            kpffiu['TTYVAX'].write(home[1])
+            log.debug('Opening tip tilt mirror servo loops')
+            kpffiu['TTXSRV'].write('open')
+            kpffiu['TTYSRV'].write('open')
+        else:
+            # We're in a mixed state, just open the loops
+            log.debug('Opening tip tilt mirror servo loops')
+            kpffiu['TTXSRV'].write('open')
+            kpffiu['TTYSRV'].write('open')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -38,4 +51,4 @@ class ShutdownTipTilt(KPFTranslatorFunction):
         success1 = ktl.waitFor('($kpffiu.TTXSRV == open)', timeout=timeout)
         success2 = ktl.waitFor('($kpffiu.TTYSRV == open)', timeout=timeout)
         if success1 == False or success2 == False:
-            raise FailedPostCondition(f'TT{X,Y}SRV did not open')
+            raise FailedPostCondition(f'TT[X and/or Y]SRV did not open')
