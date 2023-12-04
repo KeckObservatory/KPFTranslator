@@ -794,7 +794,7 @@
         <x>450</x>
         <y>170</y>
         <width>431</width>
-        <height>353</height>
+        <height>359</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="obs_seq_layout" columnstretch="0,0,0,0">
@@ -994,6 +994,13 @@
        </item>
        <item row="10" column="2">
         <widget class="QComboBox" name="ExpMeterBin"/>
+       </item>
+       <item row="0" column="3">
+        <widget class="QCheckBox" name="BlockSky">
+         <property name="text">
+          <string>BlockSky</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

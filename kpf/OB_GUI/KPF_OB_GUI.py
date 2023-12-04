@@ -80,6 +80,7 @@ class MainWindow(QMainWindow):
                    'TriggerCaHK': True,
                    'TriggerGreen': True,
                    'TriggerRed': True,
+                   'BlockSky': False,
                    'GuideMode': 'auto',
                    'GuideCamGain': 'high',
                    'GuideFPS': 100,
@@ -315,6 +316,10 @@ class MainWindow(QMainWindow):
         self.TriggerRed = self.findChild(QCheckBox, 'TriggerRed')
         self.update_OB('TriggerRed', self.OB.get('TriggerRed'))
         self.TriggerRed.stateChanged.connect(self.TriggerRed_state_change)
+
+        self.BlockSky = self.findChild(QCheckBox, 'BlockSky')
+        self.update_OB('BlockSky', self.OB.get('BlockSky'))
+        self.BlockSky.stateChanged.connect(self.BlockSky_state_change)
 
         # First Observation Sequence Setup
         self.ObjectEdit = self.findChild(QLineEdit, 'ObjectEdit')
@@ -897,6 +902,10 @@ class MainWindow(QMainWindow):
         self.log.debug(f"TriggerRed_state_change: {value}")
         self.update_OB('TriggerRed', (value == 2))
 
+    def BlockSky_state_change(self, value):
+        self.log.debug(f"BlockSky_state_change: {value}")
+        self.update_OB('BlockSky', (value == 2))
+
     def AutoEMExpTime_state_change(self, value):
         self.log.debug(f"AutoEMExpTime_state_change: {value}")
         self.update_OB('AutoExpMeter', (value == 2))
@@ -954,6 +963,8 @@ class MainWindow(QMainWindow):
         self.TriggerGreen.setChecked(self.OB.get('TriggerGreen'))
         # TriggerRed
         self.TriggerRed.setChecked(self.OB.get('TriggerRed'))
+        # BlockSky
+        self.BlockSky.setChecked(self.OB.get('BlockSky'))
         # SEQ_Observations: Object
         self.ObjectEdit.setText(f"{self.OB.SEQ_Observations1.get('Object')}")
         # SEQ_Observations: nExp
