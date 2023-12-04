@@ -128,7 +128,7 @@ class ConfigureForScience(KPFTranslatorFunction):
         # Set source select shutters
         log.info(f"Set Source Select Shutters")
         SetSourceSelectShutters.execute({'SSS_Science': True,
-                                         'SSS_Sky': True,
+                                         'SSS_Sky': not OB.get('BlockSky', False),
                                          'SSS_SoCalSci': False,
                                          'SSS_SoCalCal': False,
                                          'SSS_CalSciSky': False})
