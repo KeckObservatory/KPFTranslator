@@ -905,6 +905,10 @@ class MainWindow(QMainWindow):
     def BlockSky_state_change(self, value):
         self.log.debug(f"BlockSky_state_change: {value}")
         self.update_OB('BlockSky', (value == 2))
+        if (value == 2):
+            self.BlockSky.setStyleSheet("color:red")
+        else:
+            self.BlockSky.setStyleSheet("color:black")
 
     def AutoEMExpTime_state_change(self, value):
         self.log.debug(f"AutoEMExpTime_state_change: {value}")
