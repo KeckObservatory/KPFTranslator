@@ -61,12 +61,12 @@ class ConfigureForScience(KPFTranslatorFunction):
         check_scriptstop()
 
         # Check tip tilt loops
-        requested_mode = OB.get('GuideMode', 'auto')
+        requested_mode = OB.get('GuideMode', 'off')
         kpfguide = ktl.cache('kpfguide')
         all_loops = kpfguide['ALL_LOOPS'].read()
         tt_control = kpfguide['TIPTILT_CONTROL'].read()
         if (requested_mode in ['manual', 'auto'] and all_loops in ['Inactive', 'Mixed'])\
-            or (requested_mode in ['off', 'telescope'] and tt_control == 'Active'):
+            or (requested_mode in ['off', 'telescope', False] and tt_control == 'Active'):
                 log.error(f'OB requesting {requested_mode}, but guide loops '
                           f'are: {all_loops} ({tt_control})')
                 # Check with user

@@ -94,7 +94,8 @@ class RunSciOB(KPFTranslatorFunction):
             observation['TriggerCaHK'] = OB['TriggerCaHK']
             observation['TriggerGreen'] = OB['TriggerGreen']
             observation['TriggerRed'] = OB['TriggerRed']
-            observation['TriggerGuide'] = (OB.get('GuideMode', 'off') != 'off')
+            # Note: pyyaml resolver currently converts off string to False boolean
+            observation['TriggerGuide'] = (OB.get('GuideMode', 'off') not in ['off', False])
             observation['Gmag'] = OB['Gmag']
             try:
                 ExecuteSci.execute(observation)
