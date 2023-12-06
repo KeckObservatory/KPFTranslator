@@ -46,7 +46,7 @@ class SetupExpMeter(KPFTranslatorFunction):
                 traceback_text = traceback.format_exc()
                 log.error(traceback_text)
                 kpf_expmeter['USETHRESHOLD'].write('No')
-        elif EM_mode == 'off':
+        elif EM_mode in ['off', False]: # pyyaml converts 'off' to False, so handle both
             args['TriggerExpMeter'] = False
         elif EM_enabled == False:
             log.warning('ExpMeter is disabled')

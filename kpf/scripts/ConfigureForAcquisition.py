@@ -112,7 +112,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             guider_parameters = PredictGuiderParameters.execute(OB)
             SetGuiderGain.execute(guider_parameters)
             SetGuiderFPS.execute(guider_parameters)
-        elif guide_mode == 'off':
+        elif guide_mode in ['off', False]: # pyyaml converts 'off' to False, so handle both
             log.info(f"GuideMode is off, no guider parameters set")
         else:
             log.error(f"Guide mode '{guide_mode}' is not supported.")
