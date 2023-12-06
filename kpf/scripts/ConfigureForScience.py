@@ -61,7 +61,7 @@ class ConfigureForScience(KPFTranslatorFunction):
         check_scriptstop()
 
         # Check tip tilt loops
-        requested_mode = OB.get('GuideMode', 'auto')
+        requested_mode = OB.get('GuideMode', 'off')
         kpfguide = ktl.cache('kpfguide')
         all_loops = kpfguide['ALL_LOOPS'].read()
         tt_control = kpfguide['TIPTILT_CONTROL'].read()
