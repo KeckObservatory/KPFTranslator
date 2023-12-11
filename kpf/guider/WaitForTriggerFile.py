@@ -26,6 +26,7 @@ class WaitForTriggerFile(KPFTranslatorFunction):
         success = ktl.waitFor(expr, timeout=20)
         cube_file = kpfguide['LASTTRIGFILE'].read()
         log.info(f"New cube file: {cube_file}")
+        return cube_file
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
