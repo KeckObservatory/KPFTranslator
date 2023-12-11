@@ -127,6 +127,8 @@ links:
     SetFVCExpTime:
         cmd: fvc.SetFVCExpTime.SetFVCExpTime
     # Guider
+    CollectGuiderDarkCubes:
+        cmd: guider.CollectGuiderDarkCubes.CollectGuiderDarkCubes
     DisplayGuiderContinuous:
         cmd: guider.DisplayGuiderContinuous.DisplayGuiderContinuous
     GetGaiaStars:
