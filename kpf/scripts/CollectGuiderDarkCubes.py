@@ -92,14 +92,3 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        parser.add_argument('duration', type=float,
-                            help='The duration in seconds')
-        parser.add_argument("--noTRIGCUBE", dest="ImageCube",
-                            default=True, action="store_false",
-                            help="Collect the full image cube?")
-        return super().add_cmdline_args(parser, cfg)
