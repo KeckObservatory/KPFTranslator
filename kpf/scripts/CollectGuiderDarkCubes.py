@@ -37,22 +37,29 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
     None
     '''
     @classmethod
+    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
-        check_script_running()
+        pass
 
     @classmethod
+    @register_script(Path(__file__).name, os.getpid())
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
-        set_script_keywords(Path(__file__).name, os.getpid())
-
-        output_file = Path('/s/sdata1701/KPFTranslator_logs/CRED2_dark_cubes.txt')
+        output_file = Path('/s/sdata1701/CRED2DarkCubes/CRED2_dark_cubes.txt')
+        OUTDIR = ktl.cache('kpfguide', 'OUTDIR')
+        original_OUTDIR = OUTDIR.read()
+        new_OUTDIR = str(output_file.parent)
+        log.debug(f'Setting OUTDIR to {new_OUTDIR}')
+        OUTDIR.write(new_OUTDIR)
         SENSORSETP = ktl.cache('kpfguide', 'SENSORSETP')
+        SENSORTEMP = ktl.cache('kpfguide', 'SENSORTEMP')
         try:
             log.info('Taking CRED2 dark cubes')
+            ConfigureFIU.execute({'mode': 'Stowed'})
             log.info('Cooling CRED2')
             SENSORSETP.write(-40)
-            ConfigureFIU.execute({'mode': 'Stowed'})
-            reached_temp = SENSORSETP.waitFor("<-39.9", timeout=600)
+            log.info('Waiting up to 10 minutes for detector to reach set point')
+            reached_temp = SENSORTEMP.waitFor("<-39.9", timeout=600)
             if reached_temp == False:
                 log.error('CRED2 failed to reach set point. Exiting.')
                 SENSORSETP.write(0)
@@ -86,6 +93,8 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
 
         log.info('Resetting CRED2 temperature set point to 0')
         SENSORSETP.write(0)
+        log.debug(f'Setting OUTDIR to {original_OUTDIR}')
+        OUTDIR.write(original_OUTDIR)
         clear_script_keywords()
 
 
