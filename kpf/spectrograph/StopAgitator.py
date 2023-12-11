@@ -22,7 +22,14 @@ class StopAgitator(KPFTranslatorFunction):
             log.debug('Agitator is stopped')
         else:
             log.debug('Stopping agitator')
-            agitator.write('Stop')
+            try:
+                agitator.write('Stop')
+            except Exception as e:
+                log.warning('Write to kpfmot.AGITATOR failed')
+                log.debug(e)
+                log.warning('Retrying')
+                time.sleep(1)
+                agitator.write('Stop')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
