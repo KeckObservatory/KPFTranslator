@@ -158,6 +158,7 @@ class ScienceOB(BaseOB):
         self.TriggerCaHK = OBProperty('TriggerCaHK', OBdict.get('TriggerCaHK', True), bool)
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
+        self.BlockSky = OBProperty('BlockSky', OBdict.get('BlockSky', False), bool)
         self.SEQ_Observations1 = None
         observations = OBdict.get('SEQ_Observations', [])
         for observation in observations:
@@ -194,6 +195,7 @@ class ScienceOB(BaseOB):
         self.lines += [f"TriggerCaHK: {self.get('TriggerCaHK')}"]
         self.lines += [f"TriggerGreen: {self.get('TriggerGreen')}"]
         self.lines += [f"TriggerRed: {self.get('TriggerRed')}"]
+        self.lines += [f"BlockSky: {self.get('BlockSky')}"]
         if self.SEQ_Observations1 is not None:
             self.lines += [f"# Observations"]
             self.lines += [f"SEQ_Observations:"]
@@ -221,6 +223,7 @@ class ScienceOB(BaseOB):
                   'TriggerCaHK': self.get('TriggerCaHK'),
                   'TriggerGreen': self.get('TriggerGreen'),
                   'TriggerRed': self.get('TriggerRed'),
+                  'BlockSky': self.get('BlockSky'),
                  }
         if self.SEQ_Observations1 is not None:
             OBdict['SEQ_Observations'] = [self.SEQ_Observations1.to_dict()]
