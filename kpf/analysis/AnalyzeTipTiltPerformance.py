@@ -87,7 +87,8 @@ def read_file(file):
     if guide_origins_hdu is None:
         return None, metadata, guider_cube, guide_cube_header_hdu.data
     else:
-        return Table(guide_origins_hdu.data), metadata, guider_cube, guide_cube_header_hdu.data
+        t = Table(guide_origins_hdu.data)
+        return t, metadata, guider_cube, guide_cube_header_hdu.data
 
 
 def add_parameters(t):
@@ -129,6 +130,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     ps = 56 # mas/pix
     log.info(f'Reading file: {file}')
     t, metadata, cube, im = read_file(file)
+    log.info(f'  GUIDER_CUBE_ORIGINS table has length {len(t)}')
     # If requested, run additional SEP
     new = None
     if snr or minarea or deblend_nthresh or deblend_cont:
