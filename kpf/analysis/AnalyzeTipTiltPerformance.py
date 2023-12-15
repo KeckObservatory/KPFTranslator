@@ -474,18 +474,23 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     ax = plt.subplot(3,2,5)
     ##------------------------------------------
     # List Offloads
-    x0 = 0.02
+    x0 = 0.01
     y0 = 0.95
     ydelta = 0.06
+    xdelta = 0.30
     i = 1
+    j = 0
     plt.title('Offloads to Telescope')
     plt.text(x0, y0, f"time: (xoffset, yoffset)")
     ax.set_axis_off()
     for offload in offloads:
         timestamp, dt, offxy = offload
-        if dt > 0:
-            plt.text(x0, y0-ydelta*i, f"{dt:5.1f}: {offxy}")
+        if dt > 0 and j <=2:
+            plt.text(x0+xdelta*j, y0-ydelta*i, f"{dt:5.1f}: {offxy}")
             i += 1
+            if i > 15:
+                i -= 15
+                j += 1
 
     ## Save figure
     if plotfile is not None:
