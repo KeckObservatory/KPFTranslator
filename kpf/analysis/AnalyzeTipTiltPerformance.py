@@ -131,6 +131,28 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     log.info(f'Reading file: {file}')
     t, metadata, cube, im = read_file(file)
     log.info(f'  GUIDER_CUBE_ORIGINS table has length {len(t)}')
+
+    # Get offload history
+    offloads = []
+    try:
+        import keygrabber
+        kws = {'kpfguide': ['OFFLOAD_LAST']}
+        begin = datetime.fromisoformat(metadata['DATE-BEG']) - timedelta(hours=10)
+        end = datetime.fromisoformat(metadata['DATE-END']) - timedelta(hours=10)
+        log.debug(f"  Retrieving keyword history for OFFLOAD_LAST")
+        log.debug(f"    Begin: {begin}")
+        log.debug(f"    End: {end}")
+        offload_history = keygrabber.retrieve(kws,
+                                     begin=begin.timestamp(),
+                                     end=end.timestamp())
+        log.debug(f"    Found {len(offload_history)} entries")
+        for k,entry in enumerate(offload_history):
+            timestamp = datetime.fromtimestamp(entry['time'])
+            dt = (timestamp - begin).total_seconds()
+            offloads.append((timestamp, dt, entry['binvalue']))
+    except:
+        pass
+
     # If requested, run additional SEP
     new = None
     if snr or minarea or deblend_nthresh or deblend_cont:
@@ -341,12 +363,18 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     plt.title(f"rms={rrms:.2f} pix ({rrms*ps:.1f} mas), bias={rbias:.2f} pix ({rbias*ps:.1f} mas)")
     plt.plot(times[~maskall], objectxerr[~maskall], 'g-',
              alpha=0.5, drawstyle='steps-mid', label=f'Xpos-Xtarg')
-    for badt in times[maskall]:
-        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+#     for badt in times[maskall]:
+#         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
     plt.plot(times[~objectyerr.mask], objectyerr[~objectyerr.mask], 'b-',
              alpha=0.5, drawstyle='steps-mid', label=f'Ypos-Ytarg')
-    for badt in times[objectyerr.mask]:
-        plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+#     for badt in times[objectyerr.mask]:
+#         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
+
+    for offload in offloads:
+        timestamp, dt, offxy = offload
+        if dt > 0:
+            plt.plot([dt,dt], plotylim, 'r-', alpha=0.5)
+
     plt.legend(loc='best')
     plt.ylabel('delta pix')
     plt.ylim(plotylim)
@@ -438,6 +466,23 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     plt.xlabel('Position Error')
     plt.ylabel('N frames')
 
+    ax = plt.subplot(3,2,5)
+    ##------------------------------------------
+    # List Offloads
+    x0 = 0.02
+    y0 = 0.95
+    ydelta = 0.06
+    i = 1
+    plt.title('Offloads to Telescope')
+    plt.text(x0, y0, f"time:  offset")
+    ax.set_axis_off()
+    for offload in offloads:
+        timestamp, dt, offxy = offload
+        if dt > 0:
+            plt.text(x0, y0-ydelta*i, f"{dt:5.1f}: {offxy}")
+            i += 1
+
+    ## Save figure
     if plotfile is not None:
         log.debug(f"  Saving Plot File: {plotfile.name}")
         plt.savefig(plotfile, bbox_inches='tight', pad_inches=0.1)
@@ -449,6 +494,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
             f.write(yaml.dump(results))
     else:
         plt.show()
+
     log.info('Done.')
 
 
