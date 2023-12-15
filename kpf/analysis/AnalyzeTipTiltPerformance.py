@@ -370,10 +370,15 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
 #     for badt in times[objectyerr.mask]:
 #         plt.plot([badt,badt], plotylim, 'r-', alpha=0.1)
 
+    count_offload_lines = 0
     for offload in offloads:
         timestamp, dt, offxy = offload
         if dt > 0:
-            plt.plot([dt,dt], plotylim, 'r-', alpha=0.5)
+            if count_offload_lines == 0:
+                plt.plot([dt,dt], plotylim, 'r-', alpha=0.5, label='Offload')
+            else:
+                plt.plot([dt,dt], plotylim, 'r-', alpha=0.5)
+            count_offload_lines += 1
 
     plt.legend(loc='best')
     plt.ylabel('delta pix')
@@ -474,7 +479,7 @@ def plot_tiptilt_stats(file, plotfile=None, start=None, end=None,
     ydelta = 0.06
     i = 1
     plt.title('Offloads to Telescope')
-    plt.text(x0, y0, f"time:  offset")
+    plt.text(x0, y0, f"time: (xoffset, yoffset)")
     ax.set_axis_off()
     for offload in offloads:
         timestamp, dt, offxy = offload
