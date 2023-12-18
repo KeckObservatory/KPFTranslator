@@ -47,11 +47,11 @@ class BuildMasterBias(KPFTranslatorFunction):
         combiner.sigma_clipping(low_thresh=5, high_thresh=5)
         combined_average = combiner.average_combine()
         for i,timestamp in enumerate(timestamps):
-            combined_average[0].header.set('DATEBEG{i:02d}', timestamp,
-                                           'DATE-BEG of file {i:02d}')
+            combined_average[0].header[f'DATEBEG{i:02d}'] = (timestamp,
+                                       'DATE-BEG of file {i:02d}')
         utnow = datetime.utcnow()
-        combined_average[0].header.set('DATEMADE', utnow.utnow.isoformat(),
-                                       'UT timestamp of file creation')
+        combined_average[0].header['DATEMADE'] = (utnow.isoformat(),
+                                   'UT timestamp of file creation')
 
         if args.get('output', None) not in [None, '']:
             outputfile = Path(args.get('output')).expanduser()
