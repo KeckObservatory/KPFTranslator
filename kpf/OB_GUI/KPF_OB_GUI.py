@@ -1217,16 +1217,25 @@ class MainWindow(QMainWindow):
 
     def do_collect_guider_cube(self):
         self.log.debug(f"collect_guider_cube")
-        collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 15 ; echo "Done!" ; sleep 10'
-        # Pop up an xterm with the script running
-        cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
-               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-               '-e', f'{collect_guider_cube_cmd}']
-        proc = subprocess.Popen(cmd)
-        targname = ktl.cache('dcs1', 'TARGNAME')
-        SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
-                           'Subject': f"TakeGuiderCube executed",
-                           'Message': f"TARGNAME={targname.read()}"})
+        try:
+            collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 15 ; echo "Done!" ; sleep 10'
+            # Pop up an xterm with the script running
+            cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
+                   '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+                   '-e', f'{collect_guider_cube_cmd}']
+            proc = subprocess.Popen(cmd)
+            targname = ktl.cache('dcs1', 'TARGNAME')
+            SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
+                               'Subject': f"TakeGuiderCube executed",
+                               'Message': f"TARGNAME={targname.read()}"})
+        except Exception as e:
+            self.log.error(f"collect_guider_cube failed")
+            self.log.error(e)
+            self.log.error(f"Sending email with error details")
+            SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
+                               'Subject': f"TakeGuiderCube failed",
+                               'Message': str(e)})
+
 
     ##----------------------
     ## Methods related to Calibration OB tab
