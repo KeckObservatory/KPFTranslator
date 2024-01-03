@@ -34,13 +34,24 @@ class BuildMasterBias(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         biasfiles = [Path(biasfile) for biasfile in args.get('files')]
         log.debug(f"Combining {len(biasfiles)} bias frames:")
+
+        biases = []
+        timestamps = []
         for biasfile in biasfiles:
             log.debug(f"  {biasfile.name}")
-        biases = [CCDData.read(file, unit="adu") for file in biasfiles]
+            this_bias = CCDData.read(biasfile, unit="adu")
+            biases.append(this_bias)
+            timestamps.append(this_bias[0].header.get('DATE-BEG'))
 
         combiner = ccdproc.Combiner(biases)
         combiner.sigma_clipping(low_thresh=5, high_thresh=5)
         combined_average = combiner.average_combine()
+        for i,timestamp in enumerate(timestamps):
+            combined_average[0].header[f'DATEBEG{i:02d}'] = (timestamp,
+                                       'DATE-BEG of file {i:02d}')
+        utnow = datetime.utcnow()
+        combined_average[0].header['DATEMADE'] = (utnow.isoformat(),
+                                   'UT timestamp of file creation')
 
         if args.get('output', None) not in [None, '']:
             outputfile = Path(args.get('output')).expanduser()
@@ -50,7 +61,6 @@ class BuildMasterBias(KPFTranslatorFunction):
                 frameno = match_fn.group(2)
                 outputfile = Path(f'/s/sdata1701/ExpMeterMasterFiles/MasterBias_{frameno}.fits')
             else:
-                utnow = datetime.utcnow()
                 now_str = utnow.strftime('%Y%m%dat%H%M%S')
                 outputfile = Path(f'/s/sdata1701/ExpMeterMasterFiles/MasterBias_{now_str}.fits')
 

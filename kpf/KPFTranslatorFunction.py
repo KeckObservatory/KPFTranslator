@@ -31,7 +31,7 @@ class KPFTranslatorFunction(TranslatorModuleFunction):
     @classmethod
     def abort_execution(cls, args, logger, cfg):
         if cls.abortable != True:
-            log.warning('Abort recieved, but this method is not aboratble.')
+            log.warning('Abort recieved, but this method is not abortable.')
             return False
         
         kpfconfig = ktl.cache('kpfconfig')

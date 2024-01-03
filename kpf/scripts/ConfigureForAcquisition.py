@@ -45,7 +45,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
         # Check guider parameters
-        guide_mode = OB.get('GuideMode', 'auto')
+        guide_mode = OB.get('GuideMode', 'off')
         if guide_mode == 'auto':
             check_input(OB, 'Jmag', allowed_types=[float, int])
         # Check Slewcals
@@ -102,7 +102,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         SetTargetInfo.execute(OB)
 
         # Set guide camera parameters
-        guide_mode = OB.get('GuideMode', 'auto')
+        guide_mode = OB.get('GuideMode', 'off')
         if guide_mode == 'manual':
             if OB.get('GuideCamGain', None) is not None:
                 SetGuiderGain.execute(OB)
@@ -112,7 +112,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             guider_parameters = PredictGuiderParameters.execute(OB)
             SetGuiderGain.execute(guider_parameters)
             SetGuiderFPS.execute(guider_parameters)
-        elif guide_mode == 'off':
+        elif guide_mode in ['off', False]: # pyyaml converts 'off' to False, so handle both
             log.info(f"GuideMode is off, no guider parameters set")
         else:
             log.error(f"Guide mode '{guide_mode}' is not supported.")

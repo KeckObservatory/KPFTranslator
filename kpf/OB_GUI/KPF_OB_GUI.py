@@ -80,6 +80,7 @@ class MainWindow(QMainWindow):
                    'TriggerCaHK': True,
                    'TriggerGreen': True,
                    'TriggerRed': True,
+                   'BlockSky': False,
                    'GuideMode': 'auto',
                    'GuideCamGain': 'high',
                    'GuideFPS': 100,
@@ -315,6 +316,10 @@ class MainWindow(QMainWindow):
         self.TriggerRed = self.findChild(QCheckBox, 'TriggerRed')
         self.update_OB('TriggerRed', self.OB.get('TriggerRed'))
         self.TriggerRed.stateChanged.connect(self.TriggerRed_state_change)
+
+        self.BlockSky = self.findChild(QCheckBox, 'BlockSky')
+        self.update_OB('BlockSky', self.OB.get('BlockSky'))
+        self.BlockSky.stateChanged.connect(self.BlockSky_state_change)
 
         # First Observation Sequence Setup
         self.ObjectEdit = self.findChild(QLineEdit, 'ObjectEdit')
@@ -897,6 +902,14 @@ class MainWindow(QMainWindow):
         self.log.debug(f"TriggerRed_state_change: {value}")
         self.update_OB('TriggerRed', (value == 2))
 
+    def BlockSky_state_change(self, value):
+        self.log.debug(f"BlockSky_state_change: {value}")
+        self.update_OB('BlockSky', (value == 2))
+        if (value == 2):
+            self.BlockSky.setStyleSheet("color:red")
+        else:
+            self.BlockSky.setStyleSheet("color:black")
+
     def AutoEMExpTime_state_change(self, value):
         self.log.debug(f"AutoEMExpTime_state_change: {value}")
         self.update_OB('AutoExpMeter', (value == 2))
@@ -954,6 +967,8 @@ class MainWindow(QMainWindow):
         self.TriggerGreen.setChecked(self.OB.get('TriggerGreen'))
         # TriggerRed
         self.TriggerRed.setChecked(self.OB.get('TriggerRed'))
+        # BlockSky
+        self.BlockSky.setChecked(self.OB.get('BlockSky'))
         # SEQ_Observations: Object
         self.ObjectEdit.setText(f"{self.OB.SEQ_Observations1.get('Object')}")
         # SEQ_Observations: nExp
@@ -1202,16 +1217,25 @@ class MainWindow(QMainWindow):
 
     def do_collect_guider_cube(self):
         self.log.debug(f"collect_guider_cube")
-        collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 15 ; echo "Done!" ; sleep 10'
-        # Pop up an xterm with the script running
-        cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
-               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-               '-e', f'{collect_guider_cube_cmd}']
-        proc = subprocess.Popen(cmd)
-        targname = kpt.cache('dcs1', 'TARGNAME')
-        SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
-                           'Subject': f"TakeGuiderCube executed",
-                           'Message': f"TARGNAME={targname.read()}"})
+        try:
+            collect_guider_cube_cmd = f'kpfdo TakeGuiderCube 15 ; echo "Done!" ; sleep 10'
+            # Pop up an xterm with the script running
+            cmd = ['xterm', '-title', 'TakeGuiderCube', '-name', 'TakeGuiderCube',
+                   '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+                   '-e', f'{collect_guider_cube_cmd}']
+            proc = subprocess.Popen(cmd)
+            targname = ktl.cache('dcs1', 'TARGNAME')
+            SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
+                               'Subject': f"TakeGuiderCube executed",
+                               'Message': f"TARGNAME={targname.read()}"})
+        except Exception as e:
+            self.log.error(f"collect_guider_cube failed")
+            self.log.error(e)
+            self.log.error(f"Sending email with error details")
+            SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
+                               'Subject': f"TakeGuiderCube failed",
+                               'Message': str(e)})
+
 
     ##----------------------
     ## Methods related to Calibration OB tab

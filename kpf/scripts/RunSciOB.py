@@ -63,13 +63,13 @@ class RunSciOB(KPFTranslatorFunction):
 
         log.debug('Asking for user input')
         print()
-        print("########################################")
-        print("Before continuing, please ensure that:")
-        print("  1) The OA has placed the star on the KPF PO")
-        print("  2) We are NOT guiding (you can verify on FACSUM)")
+        print("###############################################################")
+        print("    Before continuing, please ensure that the OA has placed")
+        print("    the star on the KPF PO and they have initiated tip tilt")
+        print("    corrections (if desired).")
         print()
-        print("If both of those are true, press 'Enter' to continue ...")
-        print("########################################")
+        print("    Press 'Enter' to begin science exposure(s) ...")
+        print("###############################################################")
         print()
         user_input = input()
         log.debug(f'response: "{user_input}"')
@@ -94,7 +94,8 @@ class RunSciOB(KPFTranslatorFunction):
             observation['TriggerCaHK'] = OB['TriggerCaHK']
             observation['TriggerGreen'] = OB['TriggerGreen']
             observation['TriggerRed'] = OB['TriggerRed']
-            observation['TriggerGuide'] = (OB.get('GuideMode', 'off') != 'off')
+            # Note: pyyaml resolver currently converts off string to False boolean
+            observation['TriggerGuide'] = (OB.get('GuideMode', 'off') not in ['off', False])
             observation['Gmag'] = OB['Gmag']
             try:
                 ExecuteSci.execute(observation)

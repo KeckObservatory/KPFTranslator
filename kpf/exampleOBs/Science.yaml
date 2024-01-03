@@ -18,6 +18,7 @@ GuideFPS: 100                   # Frames per second for guide camera (for tip-ti
 TriggerCaHK: False              # Include CaHK in exposure (True/False)
 TriggerGreen: True              # Include Green CCD in exposure (True/False)
 TriggerRed: True                # Include Red CCD in exposure (True/False)
+BlockSky: False                 # Close the sky fiber shutter during observations (True/False)
 # Observations
 SEQ_Observations:               # 
 - Object: 10700                 # User settable comment

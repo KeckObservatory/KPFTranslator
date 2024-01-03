@@ -15,9 +15,7 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.fiu.ConfigureFIU import ConfigureFIU
-from kpf.fiu.SetCurrentBase import SetCurrentBase
-from kpf.fiu.StartTipTilt import StartTipTilt
-from kpf.fiu.WaitForTipTilt import WaitForTipTilt
+from kpf.fiu.VerifyCurrentBase import VerifyCurrentBase
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.WaitForReady import WaitForReady
@@ -63,12 +61,12 @@ class ConfigureForScience(KPFTranslatorFunction):
         check_scriptstop()
 
         # Check tip tilt loops
-        requested_mode = OB.get('GuideMode', 'auto')
+        requested_mode = OB.get('GuideMode', 'off')
         kpfguide = ktl.cache('kpfguide')
         all_loops = kpfguide['ALL_LOOPS'].read()
         tt_control = kpfguide['TIPTILT_CONTROL'].read()
         if (requested_mode in ['manual', 'auto'] and all_loops in ['Inactive', 'Mixed'])\
-            or (requested_mode in ['off', 'telescope'] and tt_control == 'Active'):
+            or (requested_mode in ['off', 'telescope', False] and tt_control == 'Active'):
                 log.error(f'OB requesting {requested_mode}, but guide loops '
                           f'are: {all_loops} ({tt_control})')
                 # Check with user
@@ -76,7 +74,31 @@ class ConfigureForScience(KPFTranslatorFunction):
                 print()
                 print("#####################################################")
                 print("The tip tilt loops are not in the expected state based")
-                print("on the OB. Do you wish to continue executing this OB")
+                print("on the information in the OB.")
+                print()
+                print("Do you wish to continue executing this OB")
+                print("(Y/n)? ")
+                print("#####################################################")
+                print()
+                user_input = input()
+                log.debug(f'response: "{user_input}"')
+                if user_input.lower().strip() in ['n', 'no', 'a', 'abort']:
+                    raise KPFException("User chose to halt execution")
+
+        check_scriptstop()
+
+        if requested_mode in ['manual', 'auto']:
+            matched_PO = VerifyCurrentBase.execute({})
+            if matched_PO == False:
+                # Check with user
+                log.debug('Asking for user input')
+                print()
+                print("#####################################################")
+                print("The dcs.PONAME value is incosistent with CURRENT_BASE")
+                print("Please double check that the target object is where you")
+                print("want it to be before proceeding.")
+                print()
+                print("Do you wish to continue executing this OB")
                 print("(Y/n)? ")
                 print("#####################################################")
                 print()
@@ -106,7 +128,7 @@ class ConfigureForScience(KPFTranslatorFunction):
         # Set source select shutters
         log.info(f"Set Source Select Shutters")
         SetSourceSelectShutters.execute({'SSS_Science': True,
-                                         'SSS_Sky': True,
+                                         'SSS_Sky': not OB.get('BlockSky', False),
                                          'SSS_SoCalSci': False,
                                          'SSS_SoCalCal': False,
                                          'SSS_CalSciSky': False})

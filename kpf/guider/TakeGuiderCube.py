@@ -46,12 +46,14 @@ class TakeGuiderCube(KPFTranslatorFunction):
         # Stop all loops if we're writing out a full image cube
         if initial_all_loops == 'Active' and collect_image_cube == True:
             kpfguide['ALL_LOOPS'].write('Inactive', wait=False)
-        WaitForTriggerFile.execute({'initial_lastfile': initial_lastfile})
+        cube_file = WaitForTriggerFile.execute({'initial_lastfile': initial_lastfile})
 
         # Reset TRIGCUBE and ALL_LOOPS to initial values
         kpfguide['TRIGCUBE'].write(initial_trigcube)
         if initial_all_loops == 'Active' and collect_image_cube == True:
             kpfguide['ALL_LOOPS'].write(initial_all_loops)
+
+        return cube_file
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

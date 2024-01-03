@@ -24,7 +24,14 @@ class StartAgitator(KPFTranslatorFunction):
         else:
             startup = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
             log.debug('Starting agitator motion')
-            agitator.write('Run')
+            try:
+                agitator.write('Run')
+            except Exception as e:
+                log.warning('Write to kpfmot.AGITATOR failed')
+                log.debug(e)
+                log.warning('Retrying')
+                time.sleep(1)
+                agitator.write('Run')
             time.sleep(startup)
 
     @classmethod
