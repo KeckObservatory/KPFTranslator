@@ -81,6 +81,11 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         SetSourceSelectShutters.execute({})
         WaitForCalSource.execute({'CalSource': 'Home'})
 
+        # Set TRIG_TARG to None, so that kpfassemble doesn't try
+        # to pick up this data set
+        trig_targ = ktl.cache('kpfexpose', 'TRIG_TARG')
+        trig_targ.write('None')
+
         ready = kpf_expmeter['EXPSTATE'].waitFor("== 'Ready'", timeout=60)
         if ready is not True:
             raise KPFException(f"Exposure Meter did not reach ready state")
