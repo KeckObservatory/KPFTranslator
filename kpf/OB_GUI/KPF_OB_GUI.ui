@@ -985,7 +985,7 @@
        <item row="11" column="3">
         <widget class="QLabel" name="ExpMeterThresholdNote">
          <property name="text">
-          <string>Flux (e-/nm) in sci detector</string>
+          <string>Flux (e-/pix) on sci detector</string>
          </property>
         </widget>
        </item>
