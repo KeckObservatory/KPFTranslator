@@ -56,8 +56,6 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
         band = str(args.get('ExpMeterBin'))
         spectrograph_flux = args.get('ExpMeterThreshold')
         expmeter_flux = expeter_flux_target(spectrograph_flux, band)
-
-        print(spectrograph_flux, band, expmeter_flux)
         kpf_expmeter = ktl.cache('kpf_expmeter')
         kpf_expmeter['THRESHOLDBIN'].write(band)
         kpf_expmeter['THRESHOLD'].write(expmeter_flux)
