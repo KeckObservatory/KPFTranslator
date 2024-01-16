@@ -63,7 +63,8 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
             if gain < 2:
                 newgain = gain + 1
                 if setvalues is True:
-                    log.info('Increasing gain')
+                    gain_string = {0: 'low', 1: 'medium', 2: 'high'}[newgain]
+                    log.info(f'Increasing gain to {gain_string}')
                     kpfguide['GAIN'].write(newgain)
                     time.sleep(time_shim)
                     OptimizeGuiderExposure.execute(args)
