@@ -65,7 +65,6 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
                     log.info('Increasing gain')
                     kpfguide['GAIN'].write(newgain)
                     time.sleep(1)
-                    log.info('Re-running OptimizeGuiderExposure')
                     OptimizeGuiderExposure.execute(args)
                 else:
                     print(f'Recommend incrasing gain to {newgain}')
