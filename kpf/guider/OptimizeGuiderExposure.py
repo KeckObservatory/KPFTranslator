@@ -6,7 +6,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class OptimizeFPS(KPFTranslatorFunction):
+class OptimizeGuiderExposure(KPFTranslatorFunction):
     '''
     
     Target peak = 6000 ADU
@@ -35,23 +35,39 @@ class OptimizeFPS(KPFTranslatorFunction):
         peak_ratio = peak/target_peak
         if peak_ratio > 1.5:
             # Star is dangerously bright, increase FPS
-            new_fps = fps*peak_ratio
+            new_fps = int(fps*peak_ratio)
+            print('Recommend new FPS: {new_fps}')
+            if args.get('set', False) is True:
+                kpfguide['FPS'].write(new_fps)
         elif peak_ratio > 0.5:
             # Star is in reasonable brightness range
             pass
         elif peak_ratio > 0.1:
             # Star is somewhat faint, decrease FPS
-            new_fps = fps*peak_ratio
+            new_fps = int(fps*peak_ratio)
+            print('Recommend new FPS: {new_fps}')
+            if args.get('set', False) is True:
+                kpfguide['FPS'].write(new_fps)
         else:
             # Star is very faint, possibly undetected
             print('Star is very faint')
             if gain < 2:
                 print('Incrasing gain')
                 newgain = gain + 1
-                kpfguide['GAIN'].write(newgain)
-                OptimizeFPS.execute({})
+                if args.get('set', False) is True:
+                    kpfguide['GAIN'].write(newgain)
+                    OptimizeGuiderExposure.execute({})
 
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument("--set", dest="set",
+                            default=False, action="store_true",
+                            help="Set the resulting gain and FPS?")
+        return super().add_cmdline_args(parser, cfg)

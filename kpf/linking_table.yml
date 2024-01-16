@@ -135,8 +135,8 @@ links:
         cmd: guider.GuiderLastfile.GuiderLastfile
     GuiderOutdir:
         cmd: guider.GuiderOutdir.GuiderOutdir
-    OptimizeFPS:
-        cmd: guider.OptimizeFPS.OptimizeFPS
+    OptimizeGuiderExposure:
+        cmd: guider.OptimizeGuiderExposure.OptimizeGuiderExposure
     PredictGuiderParameters:
         cmd: guider.PredictGuiderParameters.PredictGuiderParameters
     SetGuiderExpTime:
