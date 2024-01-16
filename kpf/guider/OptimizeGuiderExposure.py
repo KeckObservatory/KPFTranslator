@@ -9,7 +9,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class OptimizeGuiderExposure(KPFTranslatorFunction):
     '''
     
-    Target peak = 6000 ADU
+    Target peak = 4000 ADU
     Reasonable range = 3000-9000 ADU (0.5-1.5x target)
     
     '''
@@ -22,7 +22,7 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
         log.info('Running OptimizeGuiderExposure')
         setvalues = args.get("set", False)
         log.debug(f'set = {setvalues}')
-        target_peak = 6000
+        target_peak = 4000
         log.debug(f'target_peak = {target_peak}')
 
         kpfguide = ktl.cache('kpfguide')
@@ -38,14 +38,14 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
         # Check peak value
         peak = kpfguide['OBJECT_PEAK'].read(binary=True)
         peak_ratio = peak/target_peak
-        if peak_ratio > 1.5:
+        if peak_ratio > 2:
             # Star is dangerously bright, increase FPS
             new_fps = int(fps*peak_ratio)
             if setvalues is True:
                 log.info(f'Setting new FPS = {new_fps}')
                 kpfguide['FPS'].write(new_fps)
             else:
-                print('Recommend new FPS: {new_fps}')
+                print(f'Recommend new FPS: {new_fps}')
         elif peak_ratio > 0.5:
             # Star is in reasonable brightness range
             pass
@@ -56,7 +56,7 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
                 log.info(f'Setting new FPS = {new_fps}')
                 kpfguide['FPS'].write(new_fps)
             else:
-                print('Recommend new FPS: {new_fps}')
+                print(f'Recommend new FPS: {new_fps}')
         else:
             # Star is very faint, possibly undetected
             log.info('Star is very faint or undetected')
