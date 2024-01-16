@@ -1,4 +1,4 @@
-from time import sleep
+import time
 import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
@@ -36,27 +36,35 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
         if peak_ratio > 1.5:
             # Star is dangerously bright, increase FPS
             new_fps = int(fps*peak_ratio)
-            print('Recommend new FPS: {new_fps}')
             if args.get('set', False) is True:
+                log.info(f'Setting new FPS = {new_fps}')
                 kpfguide['FPS'].write(new_fps)
+            else:
+                print('Recommend new FPS: {new_fps}')
         elif peak_ratio > 0.5:
             # Star is in reasonable brightness range
             pass
         elif peak_ratio > 0.1:
             # Star is somewhat faint, decrease FPS
             new_fps = int(fps*peak_ratio)
-            print('Recommend new FPS: {new_fps}')
             if args.get('set', False) is True:
+                log.info(f'Setting new FPS = {new_fps}')
                 kpfguide['FPS'].write(new_fps)
+            else:
+                print('Recommend new FPS: {new_fps}')
         else:
             # Star is very faint, possibly undetected
-            print('Star is very faint')
+            print('Star is very faint or undetected')
             if gain < 2:
-                print('Incrasing gain')
                 newgain = gain + 1
                 if args.get('set', False) is True:
+                    log.info('Increasing gain')
                     kpfguide['GAIN'].write(newgain)
-                    OptimizeGuiderExposure.execute({})
+                    time.sleep(1)
+                    log.info('Re-running OptimizeGuiderExposure')
+                    OptimizeGuiderExposure.execute(args)
+                else:
+                    print(f'Recommend incrasing gain to {newgain}')
 
 
     @classmethod
