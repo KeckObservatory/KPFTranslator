@@ -28,12 +28,13 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
         kpfguide = ktl.cache('kpfguide')
         gain = kpfguide['GAIN'].read(binary=True) # 0 Low 1 Medium 2 High
         fps = kpfguide['FPS'].read(binary=True)
+        time_shim = 1/fps + 0.5
 
         # If TIPTILT_CALC is not on, turn it on
         if kpfguide['TIPTILT_CALC'].read() == 'Inactive':
             log.info('Turning TIPTILT_CALC on')
             kpfguide['TIPTILT_CALC'].write('Active')
-            time.sleep(1)
+            time.sleep(time_shim)
         # Check peak value
         peak = kpfguide['OBJECT_PEAK'].read(binary=True)
         peak_ratio = peak/target_peak
@@ -64,7 +65,7 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
                 if setvalues is True:
                     log.info('Increasing gain')
                     kpfguide['GAIN'].write(newgain)
-                    time.sleep(1)
+                    time.sleep(time_shim)
                     OptimizeGuiderExposure.execute(args)
                 else:
                     print(f'Recommend incrasing gain to {newgain}')
