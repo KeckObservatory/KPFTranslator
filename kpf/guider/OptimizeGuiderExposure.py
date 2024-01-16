@@ -19,7 +19,11 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        log.info('Running OptimizeGuiderExposure')
+        setvalues = args.get("set", False)
+        log.debug(f'set = {setvalues}')
         target_peak = 6000
+        log.debug(f'target_peak = {target_peak}')
 
         kpfguide = ktl.cache('kpfguide')
         gain = kpfguide['GAIN'].read(binary=True) # 0 Low 1 Medium 2 High
@@ -36,7 +40,7 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
         if peak_ratio > 1.5:
             # Star is dangerously bright, increase FPS
             new_fps = int(fps*peak_ratio)
-            if args.get('set', False) is True:
+            if setvalues is True:
                 log.info(f'Setting new FPS = {new_fps}')
                 kpfguide['FPS'].write(new_fps)
             else:
@@ -47,17 +51,17 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
         elif peak_ratio > 0.1:
             # Star is somewhat faint, decrease FPS
             new_fps = int(fps*peak_ratio)
-            if args.get('set', False) is True:
+            if setvalues is True:
                 log.info(f'Setting new FPS = {new_fps}')
                 kpfguide['FPS'].write(new_fps)
             else:
                 print('Recommend new FPS: {new_fps}')
         else:
             # Star is very faint, possibly undetected
-            print('Star is very faint or undetected')
+            log.info('Star is very faint or undetected')
             if gain < 2:
                 newgain = gain + 1
-                if args.get('set', False) is True:
+                if setvalues is True:
                     log.info('Increasing gain')
                     kpfguide['GAIN'].write(newgain)
                     time.sleep(1)
