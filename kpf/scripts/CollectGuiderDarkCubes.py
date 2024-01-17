@@ -53,6 +53,7 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
         OUTDIR.write(new_OUTDIR)
         SENSORSETP = ktl.cache('kpfguide', 'SENSORSETP')
         SENSORTEMP = ktl.cache('kpfguide', 'SENSORTEMP')
+        CONTINUOUS = ktl.cache('kpfguide', 'CONTINUOUS')
         try:
             log.info('Taking CRED2 dark cubes')
             ConfigureFIU.execute({'mode': 'Stowed'})
@@ -75,6 +76,7 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
             log.debug('Closing source shutters')
             SetSourceSelectShutters.execute({})
 
+            CONTINUOUS.write('Active')
             SetGuiderFPS.execute({'GuideFPS': 100})
 
             for gain in ['high', 'medium', 'low']:
