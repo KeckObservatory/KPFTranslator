@@ -21,10 +21,11 @@ class SetFVCExpTime(KPFTranslatorFunction):
         check_input(args, 'exptime', value_min=0.001, value_max=60)
         # Check if power is on
         camera = args.get('camera')
-        camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3}[camera]
-        powerkw = ktl.cache('kpfpower', f"KPFFVC{camnum}")
-        if powerkw.read() != 'On':
-            raise FailedPreCondition(f"{camera}FVC power is not On")
+        camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3, 'EXT': None}[camera]
+        if camnum is not None:
+            powerkw = ktl.cache('kpfpower', f"KPFFVC{camnum}")
+            if powerkw.read() != 'On':
+                raise FailedPreCondition(f"{camera}FVC power is not On")
 
     @classmethod
     def perform(cls, args, logger, cfg):
@@ -52,7 +53,8 @@ class SetFVCExpTime(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('camera', type=str,
-                            help='The FVC camera (SCI, CAHK, CAL)')
+                            choices=['SCI', 'CAHK', 'CAL', 'EXT'],
+                            help='The FVC camera')
         parser.add_argument('exptime', type=float,
                             help='The exposure time in seconds')
         return super().add_cmdline_args(parser, cfg)
