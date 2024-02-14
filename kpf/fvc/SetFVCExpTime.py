@@ -18,7 +18,7 @@ class SetFVCExpTime(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
-        check_input(args, 'exptime', value_min=0.001, value_max=60)
+        check_input(args, 'exptime', value_min=0.005, value_max=60)
         # Check if power is on
         camera = args.get('camera')
         camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3, 'EXT': None}[camera]
