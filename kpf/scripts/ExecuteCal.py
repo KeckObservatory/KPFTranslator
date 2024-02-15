@@ -267,9 +267,6 @@ class ExecuteCal(KPFTranslatorFunction):
         ## If we used WideFlat, set FF_FiberPos back to blank at end
         if calsource == 'WideFlat':
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
-        ## If we're using the LFC, set it back to StandbyHigh
-        if calsource == 'LFCFiber':
-            SetLFCtoStandbyHigh.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
