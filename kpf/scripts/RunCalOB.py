@@ -141,6 +141,7 @@ class RunCalOB(KPFTranslatorFunction):
                 cal['Template_Name'] = 'kpf_lamp'
                 cal['Template_Version'] = OB['Template_Version']
                 cal['nointensemon'] = OB.get('nointensemon', False)
+                cal['leave_lamps_on'] = OB.get('leave_lamps_on', False) # Only needed for LFC
                 ExecuteCal.execute(cal)
         except Exception as e:
             log.error("ExecuteCal failed:")
