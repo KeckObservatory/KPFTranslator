@@ -40,8 +40,11 @@ class TakeADCGridCalData(KPFTranslatorFunction):
         fvcsleeptime = 0.25
 
         ADC1VAL = ktl.cache('kpffiu', 'ADC1VAL')
+        ADC1VAL.monitor()
         ADC2VAL = ktl.cache('kpffiu', 'ADC2VAL')
+        ADC2VAL.monitor()
         LASTFILE = ktl.cache('kpffvc', 'EXTLASTFILE')
+        LASTFILE.monitor()
 
         utnow = datetime.utcnow()
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
@@ -58,9 +61,9 @@ class TakeADCGridCalData(KPFTranslatorFunction):
                 time.sleep(sleeptime)
                 kpfTakeFVCExposure.execute({'camera': 'EXT'})
                 time.sleep(fvcsleeptime)
-                row = {'file': LASTFILE.read(),
-                       'ADC1VAL': adc1,
-                       'ADC2VAL': adc2}
+                row = {'file': str(LASTFILE),
+                       'ADC1VAL': str(ADC1VAL),
+                       'ADC2VAL': str(ADC2VAL)}
                 images.add_row(row)
                 if images_file.exists():
                     images_file.unlink()
