@@ -1,4 +1,8 @@
+from pathlib import Path
+import os
+from datetime import datetime, timedelta
 import time
+from astropy.table import Table
 
 import ktl
 
@@ -6,17 +10,17 @@ import numpy as np
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input, ScriptStopTriggered)
-from kpf.fvc.kpfTakeFVCExposure import  kpfTakeFVCExposure
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
+from kpf.fvc.TakeFVCExposure import TakeFVCExposure
 
 
 class TakeADCGridCalData(KPFTranslatorFunction):
     '''
     '''
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_eng_tgsd'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
+        pass
 
     @classmethod
     @register_script(Path(__file__).name, os.getpid())
@@ -24,7 +28,7 @@ class TakeADCGridCalData(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
-        for key in OB:
+        for key in args:
             log.debug(f"  {key}: {args[key]}")
         log.info('-------------------------')
 
@@ -46,6 +50,7 @@ class TakeADCGridCalData(KPFTranslatorFunction):
         LASTFILE = ktl.cache('kpffvc', 'EXTLASTFILE')
         LASTFILE.monitor()
 
+        this_file_name = Path(__file__).name.replace('.py', '')
         utnow = datetime.utcnow()
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
         date_str = (utnow-timedelta(days=1)).strftime('%Y%b%d').lower()
@@ -56,18 +61,23 @@ class TakeADCGridCalData(KPFTranslatorFunction):
 
         for i,adc1 in enumerate(adc1vals):
             for j,adc2 in enumerate(adc2vals):
+                log.info(f'Moving ADC1 to {adc1:.1f}, ADC2 to {adc2:.1f}')
                 ADC1VAL.write(f"{adc1:.1f}")
                 ADC2VAL.write(f"{adc2:.1f}")
-                time.sleep(sleeptime)
-                kpfTakeFVCExposure.execute({'camera': 'EXT'})
+                time.sleep(adcsleeptime)
+                log.info('Taking EXT FVC exposure')
+                TakeFVCExposure.execute({'camera': 'EXT'})
                 time.sleep(fvcsleeptime)
                 row = {'file': str(LASTFILE),
                        'ADC1VAL': str(ADC1VAL),
                        'ADC2VAL': str(ADC2VAL)}
+                log.info(f'  {row["file"]}')
                 images.add_row(row)
                 if images_file.exists():
                     images_file.unlink()
                 images.write(images_file, format='ascii.csv')
+        log.info('Done')
+
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
