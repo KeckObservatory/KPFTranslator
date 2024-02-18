@@ -198,6 +198,8 @@ links:
         cmd: scripts.StartOfNight.StartOfNight
     StartUp:
         cmd: scripts.StartUp.StartUp
+    TakeADCGridCalData:
+        cmd: scripts.TakeADCGridCalData.TakeADCGridCalData
     TakeGuiderSensitivityData:
         cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
     TestScienceADC:
