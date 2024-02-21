@@ -9,6 +9,7 @@ import keygrabber
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.utils.SendEmail import SendEmail
 
 
 ##-------------------------------------------------------------------------
@@ -45,6 +46,18 @@ class CheckDewarWeights(KPFTranslatorFunction):
         else:
             # Dewar fill level is not ok
             print('Dewar weight is low!')
+            if args.get('email', False) is True:
+                try:
+                    msg = [f'KPF {dewar} dewar weight is low',
+                           f'',
+                           f'Current dewar weight: {weight:.1f}',
+                           f'Estimated weight at 11am fill: {weight_at_fill:.1f}',
+                           ]
+                    SendEmail.execute({'Subject': f'KPF {dewar} dewar weight is low',
+                                       'Message': '\n'.join(msg)})
+                except Exception as email_err:
+                    log.error(f'Sending email failed')
+                    log.error(email_err)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -59,4 +72,9 @@ class CheckDewarWeights(KPFTranslatorFunction):
                             choices=['green', 'red'],
                             default='green',
                             help='Which dewar to check? red or green')
+        parser.add_argument('--email',
+                            dest="email",
+                            default=False, action="store_true",
+                            help='Send email if dewar weight is low')
+
         return super().add_cmdline_args(parser, cfg)

@@ -39,7 +39,7 @@ class WaitForLampWarm(KPFTranslatorFunction):
             if lamp_status == 'Off':
                 raise KPFException(f"Lamp {lamp} should be on: {lamp_status}")
             elif lamp_status == 'Warm':
-                log.info(f"Lamp {lamp} is warm")
+                log.debug(f"Lamp {lamp} is warm")
             elif lamp_status == 'Warming':
                 lamp_timeon = kpflamps[f'{lamp}_TIMEON'].read(binary=True)
                 lamp_threshold = kpflamps[f'{lamp}_THRESHOLD'].read(binary=True)
@@ -68,8 +68,6 @@ class WaitForLampWarm(KPFTranslatorFunction):
             lamp_status = lamp_statuskw.read()
             if lamp_status != 'Warm':
                 raise FailedPostCondition(f"Lamp {lamp} should be warm: {lamp_status}")
-            else:
-                log.info(f"Lamp {lamp} is warm")
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

@@ -5,7 +5,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
-from kpf.scripts.GridSearch import GridSearch
+from kpf.engineering.GridSearch import GridSearch
 from kpf.fvc.PredictFVCParameters import PredictFVCParameters
 from kpf.expmeter.PredictExpMeterParameters import PredictExpMeterParameters
 

@@ -12,6 +12,7 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
 from kpf.expmeter.BuildMasterBias import BuildMasterBias
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.WaitForCalSource import WaitForCalSource
+from kpf.spectrograph.ResetDetectors import ResetExpMeterDetector
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.spectrograph.WaitForReady import WaitForReady
 
@@ -81,6 +82,11 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         SetSourceSelectShutters.execute({})
         WaitForCalSource.execute({'CalSource': 'Home'})
 
+        # Set TRIG_TARG to None, so that kpfassemble doesn't try
+        # to pick up this data set
+        trig_targ = ktl.cache('kpfexpose', 'TRIG_TARG')
+        trig_targ.write('None')
+
         ready = kpf_expmeter['EXPSTATE'].waitFor("== 'Ready'", timeout=60)
         if ready is not True:
             raise KPFException(f"Exposure Meter did not reach ready state")
@@ -128,7 +134,14 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        pass
+        expstate = ktl.cache('kpf_expmeter', 'EXPSTATE')
+        expstate.monitor()
+        timeout = 60
+        ready = expstate.waitFor("== 'Ready'", timeout=timeout)
+        if ready is not True:
+            log.error(f'ExpMeter is not Ready after {timeout} s')
+            log.warning(f'ExpMeter is {expstate.ascii}.  Resetting.')
+            ResetExpMeterDetector.execute({})
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):

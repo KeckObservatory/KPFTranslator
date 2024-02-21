@@ -75,6 +75,11 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         log.info(f"Stowing FIU")
         ConfigureFIU.execute({'mode': 'Stowed'})
 
+        # Turn off exposure meter controlled exposure
+        log.debug('Clearing kpf_expmeter.USETHRESHOLD')
+        kpf_expmeter = ktl.cache('kpf_expmeter')
+        kpf_expmeter['USETHRESHOLD'].write('No')
+
         # Set OBJECT back to empty string
         log.info('Waiting for readout to finish')
         WaitForReady.execute({})

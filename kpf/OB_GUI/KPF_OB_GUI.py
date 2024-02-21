@@ -800,8 +800,8 @@ class MainWindow(QMainWindow):
             self.other_names.setText(', '.join(self.target_names['all']))
             self.TargetName.setToolTip(', '.join(self.target_names['all']))
             self.GaiaID.setToolTip(', '.join(self.target_names['all']))
-        self.twomass_params = BuildOBfromQuery.get_Jmag(self.target_names['2MASSID'])
-        if self.twomass_params is not None:
+        if '2MASSID' in self.target_names['all']:
+            self.twomass_params = BuildOBfromQuery.get_Jmag(self.target_names['2MASSID'])
             for key in self.twomass_params:
                 self.update_OB(key, self.twomass_params[key])
         self.gaia_params = BuildOBfromQuery.get_gaia_parameters(gaiaid)

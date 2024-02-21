@@ -198,8 +198,12 @@ class RecoverDetectors(KPFTranslatorFunction):
         kpfmon = ktl.cache('kpfmon')
         camera_status = kpfmon['CAMSTATESTA'].read()
         if camera_status == 'OK':
-            log.warning('No camera error state detected')
-            return
+            log.warning('No camera error state detected by kpfmon')
+            explainnr = ktl.cache('kpfexpose', 'EXPLAINNR')
+            explainnr_str = explainnr.read()
+            if explainnr_str.find('hk:') >= 0:
+                log.warning('kpfexpose.EXPLAINNR contains hk')
+                ResetCaHKDetector.execute({})
         elif camera_status == 'ERROR':
             if kpfmon['G_STATESTA'].read() == 'ERROR':
                 ResetGreenDetector.execute({})

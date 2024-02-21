@@ -31,7 +31,7 @@ class SetupExpMeter(KPFTranslatorFunction):
         ## Configure exposure meter
         ## ----------------------------------------------------------------
         log.debug('Setting up exposure meter using SetupExpMeter')
-        EM_mode = args.get('ExpMeterMode', 'monitor')
+        EM_mode = args.get('ExpMeterMode', 'off')
         EM_enabled = kpfconfig['EXPMETER_ENABLED'].read() == 'Yes'
         if EM_mode == 'monitor' and EM_enabled:
             kpf_expmeter['USETHRESHOLD'].write('No')

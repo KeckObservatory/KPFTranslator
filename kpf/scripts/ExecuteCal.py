@@ -268,7 +268,7 @@ class ExecuteCal(KPFTranslatorFunction):
         if calsource == 'WideFlat':
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
         ## If we're using the LFC, set it back to StandbyHigh
-        if calsource == 'LFCFiber':
+        if calsource == 'LFCFiber' and args.get('leave_lamps_on', False) is False:
             SetLFCtoStandbyHigh.execute({})
 
     @classmethod

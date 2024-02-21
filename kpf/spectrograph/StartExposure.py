@@ -70,5 +70,7 @@ class StartExposure(KPFTranslatorFunction):
                 ResetCaHKDetector.execute({})
             # Now start a fresh exposure
             WaitForReady.execute({})
+            time.sleep(1.0)          # This time shim and the WaitForReady are hacks to catch if the
+            WaitForReady.execute({}) # reset detector went in to readout, but we didn't know.
             log.warning('Restarting exposure')
             StartExposure.execute(args)
