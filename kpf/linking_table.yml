@@ -63,6 +63,22 @@ links:
         cmd: calbench.WaitForND1.WaitForND1
     WaitForND2:
         cmd: calbench.WaitForND2.WaitForND2
+    # Engineering
+    TakeADCGridCalData:
+        cmd: engineering.TakeADCGridCalData.TakeADCGridCalData
+    GridSearch:
+        cmd: engineering.GridSearch.GridSearch
+    Run2DGridSearch:
+        cmd: engineering.Run2DGridSearch.Run2DGridSearch
+    TakeGuiderSensitivityData:
+        cmd: engineering.TakeGuiderSensitivityData.TakeGuiderSensitivityData
+    ImageBackIlluminatedFibers:
+        cmd: engineering.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
+    TriggerGreenMiniFill:
+        cmd: engineering.TriggerGreenMiniFill.TriggerGreenMiniFill
+    TriggerRedMiniFill:
+        cmd: engineering.TriggerRedMiniFill.TriggerRedMiniFill
+
     # ExpMeter
     BuildMasterBias:
         cmd: expmeter.BuildMasterBias.BuildMasterBias
@@ -182,10 +198,6 @@ links:
         cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
     ExecuteSlewCal:
         cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
-    GridSearch:
-        cmd: scripts.GridSearch.GridSearch
-    Run2DGridSearch:
-        cmd: scripts.Run2DGridSearch.Run2DGridSearch
     RunCalOB:
         cmd: scripts.RunCalOB.RunCalOB
     RunSciOB:
@@ -198,10 +210,6 @@ links:
         cmd: scripts.StartOfNight.StartOfNight
     StartUp:
         cmd: scripts.StartUp.StartUp
-    TakeADCGridCalData:
-        cmd: scripts.TakeADCGridCalData.TakeADCGridCalData
-    TakeGuiderSensitivityData:
-        cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
     TestScienceADC:
         cmd: scripts.TestScienceADC.TestScienceADC
     WaitForConfigureCalOB:
@@ -260,8 +268,6 @@ links:
         cmd: utils.CorrectDAR.CorrectDAR
     EstimateOBDuration:
         cmd: utils.EstimateOBDuration.EstimateOBDuration
-    ImageBackIlluminatedFibers:
-        cmd: utils.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
@@ -272,9 +278,5 @@ links:
         cmd: utils.StartGUIs.StartGUIs
     StopGUIs:
         cmd: utils.StopGUIs.StopGUIs
-    TriggerGreenMiniFill:
-        cmd: utils.TriggerGreenMiniFill.TriggerGreenMiniFill
-    TriggerRedMiniFill:
-        cmd: utils.TriggerRedMiniFill.TriggerRedMiniFill
     ZeroOutSlewCalTime:
         cmd: utils.ZeroOutSlewCalTime.ZeroOutSlewCalTime
