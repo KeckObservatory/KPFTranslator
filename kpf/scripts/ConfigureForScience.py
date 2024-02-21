@@ -124,7 +124,7 @@ class ConfigureForScience(KPFTranslatorFunction):
         if exposestatus.read() != 'Ready':
             log.info(f"Waiting for kpfexpose to be Ready")
             WaitForReady.execute({})
-            log.info(f"Readout complete")
+            log.debug(f"kpfexpose is Ready")
         # Set source select shutters
         log.info(f"Set Source Select Shutters")
         SetSourceSelectShutters.execute({'SSS_Science': True,
