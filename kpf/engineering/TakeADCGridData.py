@@ -15,7 +15,7 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
 from kpf.fvc.TakeFVCExposure import TakeFVCExposure
 
 
-class TakeADCGridCalData(KPFTranslatorFunction):
+class TakeADCGridData(KPFTranslatorFunction):
     '''
     '''
     @classmethod

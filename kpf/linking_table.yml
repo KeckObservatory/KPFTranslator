@@ -64,8 +64,8 @@ links:
     WaitForND2:
         cmd: calbench.WaitForND2.WaitForND2
     # Engineering
-    TakeADCGridCalData:
-        cmd: engineering.TakeADCGridCalData.TakeADCGridCalData
+    TakeADCGridData:
+        cmd: engineering.TakeADCGridData.TakeADCGridData
     GridSearch:
         cmd: engineering.GridSearch.GridSearch
     Run2DGridSearch:
