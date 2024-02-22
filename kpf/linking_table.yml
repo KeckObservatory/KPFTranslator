@@ -104,6 +104,8 @@ links:
         cmd: fiu.MeasureTipTiltMirrorRange.MeasureTipTiltMirrorRange
     SetADCAngles:
         cmd: fiu.SetADCAngles.SetADCAngles
+    SetADCOffsets:
+        cmd: fiu.SetADCOffsets.SetADCOffsets
     SetTipTiltCalculations:
         cmd: fiu.SetTipTiltCalculations.SetTipTiltCalculations
     SetTipTiltControl:
