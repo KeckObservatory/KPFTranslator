@@ -24,18 +24,26 @@ class SetADCOffsets(KPFTranslatorFunction):
         if kpffiu['ADCTRACK'].read() == 'On':
             log.info(f'Setting ADCTRACK to Off')
             kpffiu['ADCTRACK'].write('Off')
-            time.sleep(10)
+            time.sleep(1)
         ADC1_nominal, ADC2_nominal = kpffiu['ADCPRISMS'].read(binary=True)
-        ADC1 = ADC1_nominal + args.ADC1OFF
-        ADC2 = ADC2_nominal + args.ADC2OFF
+        ADC1 = ADC1_nominal + args.get('ADC1OFF')
+        ADC2 = ADC2_nominal + args.get('ADC2OFF')
         log.info(f"Setting ADC to offset angles: ADC1VAL={ADC1:.1f}, ADC2VAL={ADC2:.1f}")
         kpffiu['ADC1VAL'].write(ADC1)
         kpffiu['ADC2VAL'].write(ADC2)
 
-
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        pass
+        tol = 0.1
+        adc1targ = float(args.get('ADC1OFF'))
+        adc2targ = float(args.get('ADC2OFF'))
+        expr = (f"($kpffiu.ADC1VAL > {adc1targ-tol}) "
+                f"and ($kpffiu.ADC1VAL < {adc1targ+tol}) "
+                f"and ($kpffiu.ADC2VAL > {adc2targ-tol}) "
+                f"and ($kpffiu.ADC2VAL < {adc2targ+tol})")
+        success = ktl.waitFor(expr, timeout=60)
+        if success is False:
+            raise FailedPostCondition('ADC Prisms did not reach destination angles')
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
