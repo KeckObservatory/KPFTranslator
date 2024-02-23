@@ -13,7 +13,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.fvc.TakeFVCExposure import TakeFVCExposure
-
+from kpf.fiu.SetADCOffsets import SetADCOffsets
 
 class TakeADCOffsetGridData(KPFTranslatorFunction):
     '''
@@ -38,7 +38,6 @@ class TakeADCOffsetGridData(KPFTranslatorFunction):
         adc1deltas = np.arange(-adc1delta, adc1delta, adcstep)
         adc2deltas = np.arange(-adc2delta, adc2delta, adcstep)
 
-        adcsleeptime = 1
         fvcsleeptime = 0.25
 
         ADCPRISMS = ktl.cache('kpffiu', 'ADCPRISMS')
@@ -61,13 +60,8 @@ class TakeADCOffsetGridData(KPFTranslatorFunction):
 
         for i,delta1 in enumerate(adc1deltas):
             for j,delta2 in enumerate(adc2deltas):
-                adc1, adc2 = ADCPRISMS.binary
-                adc1 += delta1
-                adc2 += delta2
                 log.info(f'Moving ADC1 to {adc1:.1f}, ADC2 to {adc2:.1f}')
-                ADC1VAL.write(f"{adc1:.1f}")
-                ADC2VAL.write(f"{adc2:.1f}")
-                time.sleep(adcsleeptime)
+                SetADCOffsets.execute({'ADC1OFF': delta1, 'ADC2OFF': delta2})
                 log.info('Taking EXT FVC exposure')
                 TakeFVCExposure.execute({'camera': 'EXT'})
                 time.sleep(fvcsleeptime)
