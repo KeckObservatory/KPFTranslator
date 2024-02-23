@@ -34,14 +34,16 @@ class SetADCOffsets(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
+        kpffiu = ktl.cache('kpffiu')
         tol = 0.1
-        adc1targ = float(args.get('ADC1OFF'))
-        adc2targ = float(args.get('ADC2OFF'))
+        ADC1_nominal, ADC2_nominal = kpffiu['ADCPRISMS'].read(binary=True)
+        adc1targ = ADC1_nominal + args.get('ADC1OFF')
+        adc2targ = ADC2_nominal + args.get('ADC2OFF')
         expr = (f"($kpffiu.ADC1VAL > {adc1targ-tol}) "
                 f"and ($kpffiu.ADC1VAL < {adc1targ+tol}) "
                 f"and ($kpffiu.ADC2VAL > {adc2targ-tol}) "
                 f"and ($kpffiu.ADC2VAL < {adc2targ+tol})")
-        success = ktl.waitFor(expr, timeout=60)
+        success = ktl.waitFor(expr, timeout=20)
         if success is False:
             raise FailedPostCondition('ADC Prisms did not reach destination angles')
 

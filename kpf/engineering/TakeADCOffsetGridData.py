@@ -55,12 +55,12 @@ class TakeADCOffsetGridData(KPFTranslatorFunction):
         date_str = (utnow-timedelta(days=1)).strftime('%Y%b%d').lower()
         log_path = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}')
         images_file = log_path / Path(f'{this_file_name}_{now_str}.txt')
-        images = Table(names=('file', 'ADC1VAL', 'ADC2VAL'),
-                       dtype=('a90',  'f4', 'f4'))
+        images = Table(names=('file', 'DELTA1', 'DELTA2', 'ADC1VAL', 'ADC2VAL'),
+                       dtype=('a90',  'f4',     'f4',     'f4', 'f4'))
 
         for i,delta1 in enumerate(adc1deltas):
             for j,delta2 in enumerate(adc2deltas):
-                log.info(f'Moving ADC1 to {adc1:.1f}, ADC2 to {adc2:.1f}')
+                log.info(f'Moving ADCs to offset positions: {delta1:.1f}, {delta2:.1f}')
                 SetADCOffsets.execute({'ADC1OFF': delta1, 'ADC2OFF': delta2})
                 log.info('Taking EXT FVC exposure')
                 TakeFVCExposure.execute({'camera': 'EXT'})
