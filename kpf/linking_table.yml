@@ -64,16 +64,18 @@ links:
     WaitForND2:
         cmd: calbench.WaitForND2.WaitForND2
     # Engineering
-    TakeADCGridData:
-        cmd: engineering.TakeADCGridData.TakeADCGridData
     GridSearch:
         cmd: engineering.GridSearch.GridSearch
-    Run2DGridSearch:
-        cmd: engineering.Run2DGridSearch.Run2DGridSearch
-    TakeGuiderSensitivityData:
-        cmd: engineering.TakeGuiderSensitivityData.TakeGuiderSensitivityData
     ImageBackIlluminatedFibers:
         cmd: engineering.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
+    Run2DGridSearch:
+        cmd: engineering.Run2DGridSearch.Run2DGridSearch
+    TakeADCGridData:
+        cmd: engineering.TakeADCGridData.TakeADCGridData
+    TakeADCOffsetGridData:
+        cmd: engineering.TakeADCOffsetGridData.TakeADCOffsetGridData
+    TakeGuiderSensitivityData:
+        cmd: engineering.TakeGuiderSensitivityData.TakeGuiderSensitivityData
     TriggerGreenMiniFill:
         cmd: engineering.TriggerGreenMiniFill.TriggerGreenMiniFill
     TriggerRedMiniFill:
