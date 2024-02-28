@@ -1181,7 +1181,7 @@ class MainWindow(QMainWindow):
     def do_execute_slewcal_only(self):
         self.log.debug(f"execute_slewcal_only")
         slewcal_file = self.kpfconfig['SLEWCALFILE'].read()
-        execute_slewcal_only_cmd = f'kpfdo ExecuteSlewCal -f {slewcal_file} ; echo "Done!" ; sleep 20'
+        #execute_slewcal_only_cmd = f'kpfdo ExecuteSlewCal -f {slewcal_file} ; echo "Done!" ; sleep 20'
         execute_slewcal_only_cmd = f'kpfdo RunCalOB -f {slewcal_file} ; echo "Done!" ; sleep 20'
         self.log.debug(f'Executing: {execute_slewcal_only_cmd}')
         # Pop up an xterm with the script running
