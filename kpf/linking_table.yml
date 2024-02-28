@@ -102,6 +102,10 @@ links:
         cmd: fiu.ControlHatch.ControlHatch
     InitializeTipTilt:
         cmd: fiu.InitializeTipTilt.InitializeTipTilt
+    LockFIU:
+        cmd: fiu.LockFIU.LockFIU
+    UnlockFIU:
+        cmd: fiu.UnlockFIU.UnlockFIU
     MeasureTipTiltMirrorRange:
         cmd: fiu.MeasureTipTiltMirrorRange.MeasureTipTiltMirrorRange
     SetADCAngles:
