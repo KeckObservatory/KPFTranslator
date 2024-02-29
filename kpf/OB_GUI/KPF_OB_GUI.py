@@ -147,7 +147,7 @@ class MainWindow(QMainWindow):
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
         # Path to OB files
-        self.file_path = Path('/s/starlists')
+        self.file_path = Path('/s/sdata1701/OBs')
         self.starlist_file_name = ''
 
 
