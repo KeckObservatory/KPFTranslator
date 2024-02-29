@@ -88,6 +88,8 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             with open(slewcal_argsfile, 'r') as file:
                 slewcal_OB = yaml.safe_load(file)
                 slewcal_args = slewcal_OB.get('SEQ_Calibrations')[0]
+                slewcal_args['Template_Name'] = 'kpf_slewcal'
+                slewcal_args['Template_Version'] = '0.5'
             slewcal_args['TriggerCaHK'] = OB['TriggerCaHK']
             slewcal_args['TriggerGreen'] = OB['TriggerGreen']
             slewcal_args['TriggerRed'] = OB['TriggerRed']
