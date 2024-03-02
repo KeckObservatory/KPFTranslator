@@ -19,8 +19,16 @@ links:
         cmd: ao.SendPCUtoHome.SendPCUtoHome
     SendPCUtoKPF:
         cmd: ao.SendPCUtoKPF.SendPCUtoKPF
+    SetAFMtoMirror:
+        cmd: ao.SetAFMtoMirror.SetAFMtoMirror
+    SetAFStoNGS:
+        cmd: ao.SetAFStoNGS.SetAFStoNGS
+    SetAODCStoSIM:
+        cmd: ao.SetAODCStoSIM.SetAODCStoSIM
     SetAORotator:
         cmd: ao.SetAORotator.SetAORotator
+    SetAORotatorManual:
+        cmd: ao.SetAORotatorManual.SetAORotatorManual
     SetupAOforACAM:
         cmd: ao.SetupAOforACAM.SetupAOforACAM
     SetupAOforKPF:
@@ -29,6 +37,8 @@ links:
         cmd: ao.TurnHepaOff.TurnHepaOff
     TurnHepaOn:
         cmd: ao.TurnHepaOn.TurnHepaOn
+    TurnLightSourceOff:
+        cmd: ao.TurnLightSourceOff.TurnLightSourceOff
     # CaHK
     PowerCycleCaHK:
         cmd: cahk.PowerCycleCaHK.PowerCycleCaHK
