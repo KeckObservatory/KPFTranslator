@@ -7,6 +7,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.ao.ControlAOHatch import ControlAOHatch
 from kpf.ao.SetupAOforKPF import SetupAOforKPF
 from kpf.fiu.SetTipTiltGain import SetTipTiltGain
 from kpf.fiu.ConfigureFIU import ConfigureFIU
@@ -62,6 +63,17 @@ class StartOfNight(KPFTranslatorFunction):
                 return
             else:
                 SetupAOforKPF.execute({})
+                log.info('Open AO hatch')
+                try:
+                    ControlAOHatch.execute({'destination': 'open'})
+                except FailedToReachDestination:
+                    log.error(f"AO hatch did not move successfully")
+                    print()
+                    print('----------------------------------------------------------')
+                    print('AO hatch reported problems moving. Make sure stars are')
+                    print('visible on guide camera before proceeding.')
+                    print('----------------------------------------------------------')
+                    print()
 
         # ---------------------------------
         # Remaining non-AO Actions

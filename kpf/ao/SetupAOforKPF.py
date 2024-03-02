@@ -7,7 +7,6 @@ from kpf.ao.SetAORotatorManual import SetAORotatorManual
 from kpf.ao.SetAORotator import SetAORotator
 from kpf.ao.TurnHepaOff import TurnHepaOff
 from kpf.ao.SetAODCStoSIM import SetAODCStoSIM
-from kpf.ao.ControlAOHatch import ControlAOHatch
 from kpf.ao.SetAFMtoMirror import SetAFMtoMirror
 from kpf.ao.SendPCUtoHome import SendPCUtoHome
 from kpf.ao.SendPCUtoKPF import SendPCUtoKPF
@@ -56,9 +55,6 @@ class SetupAOforKPF(KPFTranslatorFunction):
             SendPCUtoHome.execute({})
             log.info('Move PCU to KPF')
             SendPCUtoKPF.execute({})
-
-        log.info('Open AO hatch')
-        ControlAOHatch.execute({'destination': 'open'})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):

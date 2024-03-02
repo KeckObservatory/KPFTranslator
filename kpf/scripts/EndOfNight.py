@@ -71,7 +71,10 @@ class EndOfNight(KPFTranslatorFunction):
         if user_input.lower() in ['y', 'yes', '']:
             log.debug('User chose to shut down AO')
             log.info('Closing AO Hatch')
-            ControlAOHatch.execute({'destination': 'closed'})
+            try:
+                ControlAOHatch.execute({'destination': 'closed'})
+            except FailedToReachDestination:
+                log.error(f"AO hatch did not move successfully")
             log.info('Sending PCU stage to Home position')
             SendPCUtoHome.execute({})
 #             log.info('Turning on AO HEPA Filter System')
