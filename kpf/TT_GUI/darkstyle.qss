@@ -1,0 +1,43 @@
+QMainWindow {
+  background-color: rgb(120, 120, 120);
+}
+
+QGroupBox {
+  background-color: rgb(80, 80, 80);
+}
+
+QTabWidget {
+  background-color: rgb(80, 80, 80);
+}
+
+QTabWidget QWidget {
+  background-color: rgb(100, 100, 100);
+}
+
+QTabWidget QComboBox {
+  background-color: rgb(140, 140, 140);
+  color: rgb(0, 0, 0);
+}
+
+QTabWidget::pane {
+  background-color: rgb(100, 100, 100);
+}
+
+QTabWidget::pane:selected {
+  background-color: rgb(100, 100, 100);
+}
+
+QPushButton {
+  background-color: rgb(100, 100, 100);
+}
+
+QComboBox {
+  background-color: rgb(140, 140, 140);
+  color: rgb(0, 0, 0);
+}
+
+QCheckBox {
+  background-color: rgb(80, 80, 80);
+  color: rgb(210, 210, 210);
+}
+
