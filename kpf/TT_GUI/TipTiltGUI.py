@@ -980,6 +980,7 @@ class MainWindow(QMainWindow):
 
     def load_file(self, filepath):
         tick = datetime.datetime.utcnow()
+        filepath = Path(filepath)
         hdul = fits.open(filepath, output_verify='silentfix')
         # Crop Image
         # Scale to an individual frame
@@ -994,22 +995,21 @@ class MainWindow(QMainWindow):
         image = AstroImage()
         image.load_nddata(cropped)
         self.ImageViewer.set_image(image)
+
+        date_beg = hdul[0].header.get('DATE-BEG')
+        self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
+
         self.overlay_objects()
         tock = datetime.datetime.utcnow()
         elapsed = (tock-tick).total_seconds()
         log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
 
     def update_lastfile(self, value):
-
-        ts = datetime.datetime.fromtimestamp(self.LASTFILE.timestamp)
-        value = self.LASTFILE.ascii
-
         p = Path(value)
         if p.exists() is False:
             log.error(f'{p} not found')
         else:
             self.load_file(f"{p}")
-            self.LastFileValue.setText(f"{p.name} ({ts.strftime('%H:%M:%S HST')})")
 
     def overlay_objects(self):
         self.add_mark(self.pix_target[0]-self.xcent+self.roidim,
