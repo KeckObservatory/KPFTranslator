@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>612</width>
-    <height>855</height>
+    <height>938</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>180</y>
-      <width>321</width>
-      <height>101</height>
+      <y>90</y>
+      <width>591</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="title">
@@ -31,7 +31,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>301</width>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
@@ -47,8 +47,8 @@
     <widget class="QCheckBox" name="CalculationCheckBox">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>70</y>
+       <x>280</x>
+       <y>30</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -65,8 +65,8 @@
     <widget class="QCheckBox" name="ControlCheckBox">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>70</y>
+       <x>400</x>
+       <y>30</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -83,8 +83,8 @@
     <widget class="QCheckBox" name="OffloadCheckBox">
      <property name="geometry">
       <rect>
-       <x>220</x>
-       <y>70</y>
+       <x>490</x>
+       <y>30</y>
        <width>91</width>
        <height>31</height>
       </rect>
@@ -99,96 +99,11 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="FluxReadingsBox">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>321</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Flux Readings</string>
-    </property>
-    <widget class="QLabel" name="PeakFluxLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>91</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Peak Flux</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="TotalFluxLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>91</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Total Flux</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="PeakFlux">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>20</y>
-       <width>181</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>--</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="TotalFlux">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>50</y>
-       <width>191</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>--</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="ImageDisplayBox">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>290</y>
+      <y>380</y>
       <width>591</width>
       <height>451</height>
      </rect>
@@ -867,143 +782,6 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="TipTiltTelemetryBox">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>90</y>
-      <width>261</width>
-      <height>211</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Tip Tilt Telemetry</string>
-    </property>
-    <widget class="QLabel" name="TipTiltPhaseLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Tip Tilt Phase</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="TipTiltFPSLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Tip Tilt FPS</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="TipTiltErrorLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Tip Tilt Error</string>
-     </property>
-    </widget>
-    <widget class="QFrame" name="TipTiltErrorPlotFrame">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>110</y>
-       <width>261</width>
-       <height>101</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="TipTiltFPS">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>20</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>--</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="TipTiltPhase">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>50</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>--</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="TipTiltError">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>80</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>--</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="Line" name="line">
     <property name="geometry">
      <rect>
@@ -1021,7 +799,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>750</y>
+      <y>840</y>
       <width>591</width>
       <height>71</height>
      </rect>
@@ -1135,6 +913,273 @@
      </property>
      <property name="text">
       <string>--</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="TipTiltTelemetryBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>170</y>
+      <width>591</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Tip Tilt Telemetry</string>
+    </property>
+    <widget class="QLabel" name="TipTiltPhaseLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Tip Tilt Phase</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TipTiltFPSLabel">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>20</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Tip Tilt FPS</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TipTiltErrorLabel">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>50</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Tip Tilt Error</string>
+     </property>
+    </widget>
+    <widget class="QFrame" name="TipTiltErrorPlotFrame">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>80</y>
+       <width>211</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TipTiltFPS">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>20</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TipTiltPhase">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TipTiltError">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>50</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TotalFlux">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>50</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="PeakFluxLabel">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>20</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Peak Flux</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="PeakFlux">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>20</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TotalFluxLabel">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>50</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Total Flux</string>
+     </property>
+    </widget>
+    <widget class="QFrame" name="FluxPlotFrame">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>80</y>
+       <width>181</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_2">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>30</y>
+       <width>20</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_3">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>30</y>
+       <width>20</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QFrame" name="FWHMPlotFrame">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>80</y>
+       <width>181</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
     </widget>
    </widget>

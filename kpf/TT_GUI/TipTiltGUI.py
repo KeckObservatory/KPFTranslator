@@ -31,9 +31,12 @@ plt.rcParams.update({'axes.titlesize': 'x-small',
 import numpy as np
 from astropy.io import fits
 from astropy.nddata import CCDData
+from astropy.modeling.models import Moffat2D
+from astropy.modeling.fitting import LevMarLSQFitter
 
 import warnings
 from astropy.wcs import FITSFixedWarning
+from astropy.utils.exceptions import AstropyUserWarning
 warnings.simplefilter('ignore', category=FITSFixedWarning)
 
 from ginga.AstroImage import AstroImage
@@ -93,7 +96,7 @@ def create_GUI_log():
 def main():
     application = QApplication(sys.argv)
     if cmd_line_args.dark == True:
-        css_file = ui_file = Path(__file__).parent / 'darkstyle.qss'
+        css_file = Path(__file__).parent / 'darkstyle.qss'
         with open(css_file, 'r') as f:
             dark_css = f.read()
         application.setStyleSheet(dark_css)
@@ -131,6 +134,7 @@ class MainWindow(QMainWindow):
         self.OBJECT3.monitor()
         self.OBJECT_CHOICE = ktl.cache('kpfguide', 'OBJECT_CHOICE')
         self.OBJECT_CHOICE.monitor()
+        self.OBJECT_FLUX = kPyQt.kFactory(self.kpfguide['OBJECT_FLUX'])
         self.TIPTILT_ERROR = ktl.cache('kpfguide', 'TIPTILT_ERROR')
         self.TIPTILT_ERROR.monitor()
         self.LASTFILE = ktl.cache('kpfguide', 'LASTFILE')
@@ -147,23 +151,33 @@ class MainWindow(QMainWindow):
         self.ttxrange = ktl.cache('kpfguide', 'TIPTILT_XRANGE').read(binary=True)
         self.ttyrange = ktl.cache('kpfguide', 'TIPTILT_YRANGE').read(binary=True)
 
-
-        # History
+        # History for Plots
+        #  Tip Tilt Error Plot
         self.TipTiltErrorValues = []
         self.TipTiltErrorTimes = []
         self.TipTiltErrorTime0 = None
         self.StarPositionError = []
         self.StarPositionTimes = []
         self.StarPositionTime0 = None
+        #  Mirror Position Plot
         self.MirrorPosCount = 60
         self.MirrorPosX = []
         self.MirrorPosY = []
         self.MirrorPosAlpha = np.linspace(0.1,1,self.MirrorPosCount)
+        #  Flux Plot
+        self.ObjectFluxValues = []
+        self.ObjectFluxTimes = []
+        self.ObjectFluxTime0 = None
+        #  FWHM Plot
+        self.ObjectFWHMValues = []
+        self.ObjectFWHMTimes = []
+        self.ObjectFWHMTime0 = None
         # Values for Image Display
         self.xcent = None
         self.ycent = None
         self.roidim = None
         self.pix_target = self.kpfguide['PIX_TARGET'].read(binary=True)
+        self.pscale = self.kpfguide['PSCALE'].read(binary=True)
         # Mode
         self.enable_control = not cmd_line_args.monitor
         if self.enable_control is True:
@@ -173,6 +187,8 @@ class MainWindow(QMainWindow):
         # Settings
         self.TipTiltErrorPlotUpdateTime = 2 # seconds
         self.TipTiltErrorPlotAgeThreshold = 30 # seconds
+        self.FluxPlotAgeThreshold = 30 # seconds
+        self.FWHMPlotAgeThreshold = 30 # seconds
         self.MirrorPositionPlotUpdateTime = 2 # seconds
         self.FigurePadding = 0.1
 
@@ -229,9 +245,8 @@ class MainWindow(QMainWindow):
 
         # Total Flux
         self.TotalFlux = self.findChild(QLabel, 'TotalFlux')
-        totalflux_kw = kPyQt.kFactory(self.kpfguide['OBJECT_FLUX'])
-        totalflux_kw.stringCallback.connect(self.update_TotalFlux)
-        totalflux_kw.primeCallback()
+        self.OBJECT_FLUX.stringCallback.connect(self.update_TotalFlux)
+        self.OBJECT_FLUX.primeCallback()
 
         # Tip Tilt FPS
         self.TipTiltFPS = self.findChild(QLabel, 'TipTiltFPS')
@@ -261,9 +276,33 @@ class MainWindow(QMainWindow):
         plotLayout.setColumnStretch(1, 100)
         self.TipTiltErrorPlotFrame.setLayout(plotLayout)
         self.update_TipTiltErrorPlot()
-        self.TipTiltErrorPlotTimer = QTimer()
-        self.TipTiltErrorPlotTimer.timeout.connect(self.update_TipTiltErrorPlot)
-        self.TipTiltErrorPlotTimer.start(self.TipTiltErrorPlotUpdateTime*1000)
+
+        # Flux Plot
+        self.FluxPlotFrame = self.findChild(QFrame, 'FluxPlotFrame')
+        self.FluxPlotFig = plt.figure(num=2, dpi=100)
+        self.FluxPlotFig.set_tight_layout({'pad': self.FigurePadding})
+        self.FluxPlotCanvas = FigureCanvasQTAgg(self.FluxPlotFig)
+        FluxPlotLayout = QGridLayout()
+        FluxPlotLayout.addWidget(self.FluxPlotCanvas, 1, 0, 1, -1)
+        FluxPlotLayout.setColumnStretch(1, 100)
+        self.FluxPlotFrame.setLayout(FluxPlotLayout)
+        self.update_FluxPlot()
+
+        # Flux Plot
+        self.FWHMPlotFrame = self.findChild(QFrame, 'FWHMPlotFrame')
+        self.FWHMPlotFig = plt.figure(num=3, dpi=100)
+        self.FWHMPlotFig.set_tight_layout({'pad': self.FigurePadding})
+        self.FWHMPlotCanvas = FigureCanvasQTAgg(self.FWHMPlotFig)
+        FWHMPlotLayout = QGridLayout()
+        FWHMPlotLayout.addWidget(self.FWHMPlotCanvas, 1, 0, 1, -1)
+        FWHMPlotLayout.setColumnStretch(1, 100)
+        self.FWHMPlotFrame.setLayout(FWHMPlotLayout)
+        self.update_FWHMPlot()
+
+        # Plot Timer
+        self.PlotTimer = QTimer()
+        self.PlotTimer.timeout.connect(self.update_plots)
+        self.PlotTimer.start(self.TipTiltErrorPlotUpdateTime*1000)
 
         # Image Display
         self.ImageDisplayFrame = self.findChild(QFrame, 'ImageDisplayFrame')
@@ -319,7 +358,7 @@ class MainWindow(QMainWindow):
         ttyvax_kw.stringCallback.connect(self.update_mirror_pos_y)
         ttyvax_kw.primeCallback()
         self.MirrorPositionFrame = self.findChild(QFrame, 'TipTiltMirrorPositionFrame')
-        self.MirrorPositionFig = plt.figure(num=2, dpi=100)
+        self.MirrorPositionFig = plt.figure(num=4, dpi=100)
         self.MirrorPositionFig.set_tight_layout({'pad': self.FigurePadding})
         self.MirrorPositionCanvas = FigureCanvasQTAgg(self.MirrorPositionFig)
         plotLayout = QGridLayout()
@@ -479,6 +518,13 @@ class MainWindow(QMainWindow):
 
 
     ##----------------------------------------------------------
+    ## update Plots
+    def update_plots(self):
+        self.update_TipTiltErrorPlot()
+        self.update_FluxPlot()
+
+
+    ##----------------------------------------------------------
     ## update CONTINUOUS
     def update_CONTINUOUS(self, value):
         if value == 'Inactive':
@@ -545,19 +591,18 @@ class MainWindow(QMainWindow):
     ## Peak Flux
     def update_PeakFlux(self, value):
         self.log.debug(f'update_PeakFlux: {value}')
+        self.peak_flux_value = float(value)
         if self.PeakFlux.isEnabled() == True:
-            flux = float(value)
-            flux_string = f'{flux:,.0f} ADU'
+            flux_string = f'{self.peak_flux_value:,.0f} ADU'
             self.PeakFlux.setText(f"{flux_string}")
     
-            if flux < 100 or flux > 12000:
+            if self.peak_flux_value < 100 or self.peak_flux_value > 12000:
                 style = f'color: red;'
-            elif flux < 500:
+            elif self.peak_flux_value < 500:
                 style = f'color: yellow;'
             else:
                 style = f'color: limegreen;'
             self.PeakFlux.setStyleSheet(style)
-
 
     ##----------------------------------------------------------
     ## Total Flux
@@ -567,6 +612,56 @@ class MainWindow(QMainWindow):
             flux = float(value)
             flux_string = f'{flux:,.0f} ADU'
             self.TotalFlux.setText(f"{flux_string}")
+
+            ts = datetime.datetime.now()
+            if len(self.ObjectFluxTimes) == 0:
+                self.ObjectFluxTime0 = ts
+            new_ts_value = (ts-self.ObjectFluxTime0).total_seconds()
+            self.ObjectFluxTimes.append(new_ts_value)
+            self.ObjectFluxValues.append(flux)
+
+    def update_FluxPlot(self):
+        npoints = len(self.ObjectFluxValues)
+        fig = plt.figure(num=2)
+        ax = fig.gca()
+        ax.clear()
+        plt.title('Flux')
+        if npoints <= 1:
+            log.debug('update_FluxPlot: clearing plot')
+            ax.set_ylim(0,1e6)
+            plt.yticks([])
+            plt.xticks([])
+            ax.grid('major', alpha=0.4)
+            ax.tick_params(axis='both', direction='in')
+            plt.xlabel(f'Last {self.FluxPlotAgeThreshold} s')
+            self.FluxPlotCanvas.draw()
+        else:
+            tick = datetime.datetime.utcnow()
+            log.info('update_FluxPlot')
+            recent = np.where(np.array(self.ObjectFluxTimes) > self.ObjectFluxTimes[-1]-self.TipTiltErrorPlotAgeThreshold)[0]
+            flux_times = np.array(self.ObjectFluxTimes)[recent]
+            flux = np.array(self.ObjectFluxValues)[recent]
+            n_plot_points = len(flux)
+
+            ax.plot(flux_times, flux, 'k-', ms=2, drawstyle='steps')
+            if len(flux) == 0:
+                ax.set_ylim(0,1e6)
+            else:
+                max_flux = max(flux)
+                if max_flux > 0:
+                    ax.set_ylim(0, 1.2*max_flux)
+                else:
+                    ax.set_ylim(0,1e6)
+            plt.xticks([])
+            plt.yticks([])
+            ax.grid('major')
+            plt.xlabel(f'Last {self.TipTiltErrorPlotAgeThreshold} s')
+            plt.xlim(max(flux_times)-self.TipTiltErrorPlotAgeThreshold, max(flux_times))
+            self.FluxPlotCanvas.draw()
+            tock = datetime.datetime.utcnow()
+            elapsed = (tock-tick).total_seconds()
+            log.info(f'  Plotted {npoints} Flux points in {elapsed*1000:.0f} ms')
+
 
 
     ##----------------------------------------------------------
@@ -637,11 +732,12 @@ class MainWindow(QMainWindow):
 
     def update_TipTiltErrorPlot(self):
         npoints = len(self.TipTiltErrorValues)
+        fig = plt.figure(num=1)
+        ax = fig.gca()
+        ax.clear()
+        plt.title('Tip Tilt Error')
         if npoints <= 1:
             log.debug('update_TipTiltErrorPlot: clearing plot')
-            fig = plt.figure(num=1)
-            ax = fig.gca()
-            ax.clear()
             ax.set_ylim(-3,3)
             plt.yticks([-2,0,2])
             plt.xticks([])
@@ -666,9 +762,6 @@ class MainWindow(QMainWindow):
                 n_plot_points += len(starpos_xerr)
                 n_plot_points += len(starpos_yerr)
 
-            fig = plt.figure(num=1)
-            ax = fig.gca()
-            ax.clear()
             ax.plot(tterr_times, tterr, 'k-', ms=2, drawstyle='steps')
             if len(self.StarPositionError) > 0:
                 ax.plot(starpos_times, starpos_xerr, 'gx', ms=4, alpha=0.5)
@@ -728,7 +821,7 @@ class MainWindow(QMainWindow):
         tick = datetime.datetime.utcnow()
         self.log.debug('update_MirrorPositionPlot')
         if len(self.MirrorPosX) > 0 and len(self.MirrorPosY) > 0:
-            mp_fig = plt.figure(num=2)
+            mp_fig = plt.figure(num=4)
             mp_ax = mp_fig.gca()
             #mp_ax.set_aspect('equal')
             mp_ax.clear()
@@ -780,13 +873,20 @@ class MainWindow(QMainWindow):
     ##----------------------------------------------------------
     ## Tip Tilt Calculations
     def update_TipTiltCalc(self, value):
-        self.log.debug(f'update_TipTiltCalc: {value}')
+        self.log.info(f'update_TipTiltCalc: {value}')
         self.CalculationCheckBox.setChecked(value == 'Active')
         if value == 'Inactive':
             self.TipTiltErrorValues = []
             self.StarPositionError = []
             self.TipTiltErrorTimes = []
             self.TipTiltErrorTime0 = None
+            self.ObjectFluxValues = []
+            self.ObjectFluxTimes = []
+            self.ObjectFluxTime0 = None
+            self.ObjectFWHMValues = []
+            self.ObjectFWHMTimes = []
+            self.ObjectFWHMTime0 = None
+            self.update_FWHMPlot()
 
     def TipTiltCalc_state_change(self, value):
         requested = {'2': 'Active', '0': 'Inactive'}[str(value)]
@@ -992,17 +1092,91 @@ class MainWindow(QMainWindow):
         y1 = self.ycent+self.roidim
         cropped = CCDData(data=hdul[0].data[y0:y1,x0:x1]/stack,
                           header=hdul[0].header, unit='adu')
+        date_beg = hdul[0].header.get('DATE-BEG')
+        ts = datetime.datetime.strptime(date_beg, '%Y-%m-%dT%H:%M:%S.%f')
+        self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
+        if self.TIPTILT_CALC.read() == 'Active':
+            self.calculate_FWHM(cropped, ts)
+#             try:
+#                 self.calculate_FWHM(cropped)
+#             except Exception as e:
+#                 print(e)
         image = AstroImage()
         image.load_nddata(cropped)
         self.ImageViewer.set_image(image)
-
-        date_beg = hdul[0].header.get('DATE-BEG')
-        self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
 
         self.overlay_objects()
         tock = datetime.datetime.utcnow()
         elapsed = (tock-tick).total_seconds()
         log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
+
+
+    def calculate_FWHM(self, cropped, ts):
+        self.log.debug('calculate_FWHM')
+        delta = 50
+        moffat0 = Moffat2D(amplitude=self.peak_flux_value,
+                           x_0=self.roidim, y_0=self.roidim,
+                   bounds={'x_0': (self.roidim-delta,self.roidim+delta),
+                           'y_0': (self.roidim-delta,self.roidim+delta)})
+        fitter = LevMarLSQFitter()
+        y, x = np.mgrid[:self.roidim*2, :self.roidim*2]
+        z = cropped.data
+        with warnings.catch_warnings():
+            # Ignore model linearity warning from the fitter
+            warnings.filterwarnings('ignore', message='Model is linear in parameters',
+                                    category=AstropyUserWarning)
+            psf = fitter(moffat0, x, y, z)
+#         xfit = self.xcent - self.roidim + psf.x_0
+#         yfit = self.ycent - self.roidim + psf.y_0
+        self.ObjectFWHMValues.append(psf.fwhm*self.pscale)
+        if len(self.ObjectFWHMTimes) == 0:
+            self.ObjectFWHMTime0 = ts
+        self.ObjectFWHMTimes.append((ts-self.ObjectFWHMTime0).total_seconds())
+        self.update_FWHMPlot()
+
+
+    def update_FWHMPlot(self):
+        npoints = len(self.ObjectFWHMValues)
+        fig = plt.figure(num=3)
+        ax = fig.gca()
+        ax.clear()
+        plt.title('FWHM')
+        if npoints <= 1:
+            log.debug('update_FWHMPlot: clearing plot')
+            ax.set_ylim(0,2)
+            plt.yticks([0,0.5,1,1.5,2])
+            plt.xticks([])
+            ax.grid('major', alpha=0.4)
+            ax.tick_params(axis='both', direction='in')
+            plt.xlabel(f'Last {self.FWHMPlotAgeThreshold} s')
+            self.FWHMPlotCanvas.draw()
+        else:
+            tick = datetime.datetime.utcnow()
+            log.info('update_FWHMPlot')
+            recent = np.where(np.array(self.ObjectFWHMTimes) > self.ObjectFWHMTimes[-1]-self.FWHMPlotAgeThreshold)[0]
+            fwhm_times = np.array(self.ObjectFWHMTimes)[recent]
+            fwhm = np.array(self.ObjectFWHMValues)[recent]
+            n_plot_points = len(fwhm)
+
+            ax.plot(fwhm_times, fwhm, 'ko', ms=2)
+            if len(fwhm) == 0:
+                ax.set_ylim(0,2)
+            else:
+                max_fwhm = max(fwhm)
+                if max_fwhm > 0:
+                    ax.set_ylim(0, 1.2*max_fwhm)
+                else:
+                    ax.set_ylim(0,2)
+            plt.xticks([])
+            plt.yticks([0,0.5,1,1.5,2])
+            ax.grid('major')
+            plt.xlabel(f'Last {self.FWHMPlotAgeThreshold} s')
+            plt.xlim(max(fwhm_times)-self.FWHMPlotAgeThreshold, max(fwhm_times))
+            self.FWHMPlotCanvas.draw()
+            tock = datetime.datetime.utcnow()
+            elapsed = (tock-tick).total_seconds()
+            log.info(f'  Plotted {npoints} FWHM points in {elapsed*1000:.0f} ms')
+
 
     def update_lastfile(self, value):
         p = Path(value)
