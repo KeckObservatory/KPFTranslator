@@ -1,5 +1,6 @@
 #!/kroot/rel/default/bin/kpython3
 import sys
+import os
 import traceback
 import argparse
 import time
@@ -1308,6 +1309,8 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     log = create_GUI_log()
     log.info(f"Starting KPF TipTilt GUI")
+    pid = os.getpid()
+    log.info(f"  PID = {pid}")
     try:
         main(log)
     except Exception as e:
