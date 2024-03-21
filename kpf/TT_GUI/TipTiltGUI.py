@@ -641,7 +641,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_TotalFlux: {value}')
         if self.TotalFlux.isEnabled() == True:
             flux = float(value)
-            flux_string = f'{flux:,.0f} ADU'
+            flux_string = f'{flux:,.0f}'
             self.TotalFlux.setText(f"{flux_string}")
 
             ts = datetime.datetime.now()
@@ -784,7 +784,7 @@ class MainWindow(QMainWindow):
             self.TipTiltErrorPlotCanvas.draw()
         else:
             tick = datetime.datetime.utcnow()
-            log.info('update_TipTiltErrorPlot')
+            log.debug('update_TipTiltErrorPlot')
 
             recent = np.where(np.array(self.TipTiltErrorTimes) > self.TipTiltErrorTimes[-1]-self.TipTiltErrorPlotAgeThreshold)[0]
             tterr_times = np.array(self.TipTiltErrorTimes)[recent]
@@ -816,7 +816,7 @@ class MainWindow(QMainWindow):
             self.TipTiltErrorPlotCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.info(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
+            log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
 
 
     ##----------------------------------------------------------
@@ -1200,7 +1200,7 @@ class MainWindow(QMainWindow):
             self.FWHMPlotCanvas.draw()
         else:
             tick = datetime.datetime.utcnow()
-            log.info('update_FWHMPlot')
+            log.debug('update_FWHMPlot')
             recent = np.where(np.array(self.ObjectFWHMTimes) > self.ObjectFWHMTimes[-1]-self.FWHMPlotAgeThreshold)[0]
             fwhm_times = np.array(self.ObjectFWHMTimes)[recent]
             fwhm = np.array(self.ObjectFWHMValues)[recent]
@@ -1223,7 +1223,7 @@ class MainWindow(QMainWindow):
             self.FWHMPlotCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.info(f'  Plotted {npoints} FWHM points in {elapsed*1000:.0f} ms')
+            log.debug(f'  Plotted {npoints} FWHM points in {elapsed*1000:.0f} ms')
 
 
     def update_lastfile(self, value):
