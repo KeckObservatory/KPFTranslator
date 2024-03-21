@@ -132,8 +132,8 @@ class MainWindow(QMainWindow):
         self.OBJECT2.monitor()
         self.OBJECT3 = ktl.cache('kpfguide', 'OBJECT3')
         self.OBJECT3.monitor()
-        self.OBJECT_CHOICE = ktl.cache('kpfguide', 'OBJECT_CHOICE')
-        self.OBJECT_CHOICE.monitor()
+        self.OBJECT_CHOICE = kPyQt.kFactory(self.kpfguide['OBJECT_CHOICE'])
+        self.OBJECT_CHOICE_value = 'None'
         self.OBJECT_FLUX = kPyQt.kFactory(self.kpfguide['OBJECT_FLUX'])
         self.TIPTILT_ERROR = ktl.cache('kpfguide', 'TIPTILT_ERROR')
         self.TIPTILT_ERROR.monitor()
@@ -187,8 +187,8 @@ class MainWindow(QMainWindow):
         # Settings
         self.TipTiltErrorPlotUpdateTime = 2 # seconds
         self.TipTiltErrorPlotAgeThreshold = 30 # seconds
-        self.FluxPlotAgeThreshold = 30 # seconds
-        self.FWHMPlotAgeThreshold = 30 # seconds
+        self.FluxPlotAgeThreshold = 60 # seconds
+        self.FWHMPlotAgeThreshold = 120 # seconds
         self.MirrorPositionPlotUpdateTime = 2 # seconds
         self.FigurePadding = 0.1
 
@@ -277,6 +277,14 @@ class MainWindow(QMainWindow):
         self.TipTiltErrorPlotFrame.setLayout(plotLayout)
         self.update_TipTiltErrorPlot()
 
+        # Tip Tilt Error Plot Time
+        self.TTErrPlotTime = self.findChild(QComboBox, 'TTErrPlotTime')
+        self.TTErrPlotTime_values = ['10', '30', '60', '120', '300']
+        self.TTErrPlotTime.addItems(self.TTErrPlotTime_values)
+        self.TTErrPlotTime.setCurrentText(f"{self.TipTiltErrorPlotAgeThreshold:.0f}")
+        self.set_TTErrPlotTime(self.TipTiltErrorPlotAgeThreshold)
+        self.TTErrPlotTime.currentTextChanged.connect(self.set_TTErrPlotTime)
+
         # Flux Plot
         self.FluxPlotFrame = self.findChild(QFrame, 'FluxPlotFrame')
         self.FluxPlotFig = plt.figure(num=2, dpi=100)
@@ -288,7 +296,15 @@ class MainWindow(QMainWindow):
         self.FluxPlotFrame.setLayout(FluxPlotLayout)
         self.update_FluxPlot()
 
-        # Flux Plot
+        # Flux Plot Time
+        self.FluxPlotTime = self.findChild(QComboBox, 'ObjectFluxPlotTime')
+        self.FluxPlotTime_values = ['10', '30', '60', '120', '300']
+        self.FluxPlotTime.addItems(self.FluxPlotTime_values)
+        self.FluxPlotTime.setCurrentText(f"{self.FluxPlotAgeThreshold:.0f}")
+        self.set_FluxPlotTime(self.FluxPlotAgeThreshold)
+        self.FluxPlotTime.currentTextChanged.connect(self.set_FluxPlotTime)
+
+        # FWHM Plot
         self.FWHMPlotFrame = self.findChild(QFrame, 'FWHMPlotFrame')
         self.FWHMPlotFig = plt.figure(num=3, dpi=100)
         self.FWHMPlotFig.set_tight_layout({'pad': self.FigurePadding})
@@ -298,6 +314,14 @@ class MainWindow(QMainWindow):
         FWHMPlotLayout.setColumnStretch(1, 100)
         self.FWHMPlotFrame.setLayout(FWHMPlotLayout)
         self.update_FWHMPlot()
+
+        # Flux Plot Time
+        self.FWHMPlotTime = self.findChild(QComboBox, 'FWHMPlotTime')
+        self.FWHMPlotTime_values = ['10', '30', '60', '120', '300']
+        self.FWHMPlotTime.addItems(self.FWHMPlotTime_values)
+        self.FWHMPlotTime.setCurrentText(f"{self.FWHMPlotAgeThreshold:.0f}")
+        self.set_FWHMPlotTime(self.FWHMPlotAgeThreshold)
+        self.FWHMPlotTime.currentTextChanged.connect(self.set_FWHMPlotTime)
 
         # Plot Timer
         self.PlotTimer = QTimer()
@@ -337,10 +361,9 @@ class MainWindow(QMainWindow):
 
         # Object Choice
         self.ObjectChoice = self.findChild(QComboBox, 'ObjectChoice')
-        self.ObjectChoice.addItems(list(self.kpfguide['OBJECT_CHOICE']._getEnumerators()))
-        objchoice_kw = kPyQt.kFactory(self.kpfguide['OBJECT_CHOICE'])
-        objchoice_kw.stringCallback.connect(self.update_ObjectChoice)
-        objchoice_kw.primeCallback()
+        self.ObjectChoice.addItems(['None', 'OBJECT1', 'OBJECT2', 'OBJECT3'])
+        self.OBJECT_CHOICE.stringCallback.connect(self.update_ObjectChoice)
+        self.OBJECT_CHOICE.primeCallback()
         self.ObjectChoice.currentTextChanged.connect(self.set_ObjectChoice)
         self.ObjectChoice.setEnabled(self.enable_control)
 
@@ -620,6 +643,10 @@ class MainWindow(QMainWindow):
             self.ObjectFluxTimes.append(new_ts_value)
             self.ObjectFluxValues.append(flux)
 
+
+    def set_FluxPlotTime(self, value):
+        self.FluxPlotAgeThreshold = float(value)
+
     def update_FluxPlot(self):
         npoints = len(self.ObjectFluxValues)
         fig = plt.figure(num=2)
@@ -637,13 +664,13 @@ class MainWindow(QMainWindow):
             self.FluxPlotCanvas.draw()
         else:
             tick = datetime.datetime.utcnow()
-            log.info('update_FluxPlot')
-            recent = np.where(np.array(self.ObjectFluxTimes) > self.ObjectFluxTimes[-1]-self.TipTiltErrorPlotAgeThreshold)[0]
+            log.debug('update_FluxPlot')
+            recent = np.where(np.array(self.ObjectFluxTimes) > self.ObjectFluxTimes[-1]-self.FluxPlotAgeThreshold)[0]
             flux_times = np.array(self.ObjectFluxTimes)[recent]
             flux = np.array(self.ObjectFluxValues)[recent]
             n_plot_points = len(flux)
 
-            ax.plot(flux_times, flux, 'k-', ms=2, drawstyle='steps')
+            ax.plot(flux_times, flux, 'ko', ms=2)
             if len(flux) == 0:
                 ax.set_ylim(0,1e6)
             else:
@@ -655,12 +682,12 @@ class MainWindow(QMainWindow):
             plt.xticks([])
             plt.yticks([])
             ax.grid('major')
-            plt.xlabel(f'Last {self.TipTiltErrorPlotAgeThreshold} s')
-            plt.xlim(max(flux_times)-self.TipTiltErrorPlotAgeThreshold, max(flux_times))
+            plt.xlabel(f'Last {self.FluxPlotAgeThreshold} s')
+            plt.xlim(max(flux_times)-self.FluxPlotAgeThreshold, max(flux_times))
             self.FluxPlotCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.info(f'  Plotted {npoints} Flux points in {elapsed*1000:.0f} ms')
+            log.debug(f'  Plotted {npoints} Flux points in {elapsed*1000:.0f} ms')
 
 
 
@@ -708,18 +735,17 @@ class MainWindow(QMainWindow):
         err = float(value)
         err_string = f'{err:.1f}'
         self.TipTiltError.setText(f"{err_string} pix")
-        self.TipTiltErrorValues.append(err)
-
-        ts = datetime.datetime.fromtimestamp(self.TIPTILT_ERROR.timestamp)
-        if len(self.TipTiltErrorTimes) == 0:
-            self.TipTiltErrorTime0 = ts
-        new_ts_value = (ts-self.TipTiltErrorTime0).total_seconds()
-        self.TipTiltErrorTimes.append(new_ts_value)
 
         # X and Y Error from OBJECT position
-        OBJECT_CHOICE_string = self.OBJECT_CHOICE.ascii
-        if OBJECT_CHOICE_string not in [None, 'None']:
-            OBJECT = getattr(self, OBJECT_CHOICE_string)
+        if self.OBJECT_CHOICE_value not in [None, 'None']:
+            self.TipTiltErrorValues.append(err)
+            ts = datetime.datetime.fromtimestamp(self.TIPTILT_ERROR.timestamp)
+            if len(self.TipTiltErrorTimes) == 0:
+                self.TipTiltErrorTime0 = ts
+            new_ts_value = (ts-self.TipTiltErrorTime0).total_seconds()
+            self.TipTiltErrorTimes.append(new_ts_value)
+
+            OBJECT = getattr(self, self.OBJECT_CHOICE_value)
             x, y, flux, hitrate = OBJECT.binary
             self.StarPositionError.append((x-self.pix_target[0], y-self.pix_target[1]))
             ts = datetime.datetime.fromtimestamp(OBJECT.timestamp)
@@ -727,7 +753,10 @@ class MainWindow(QMainWindow):
                 self.StarPositionTime0 = ts
             new_ts_value = (ts-self.StarPositionTime0).total_seconds()
             self.StarPositionTimes.append(new_ts_value)
-#         print(len(self.TipTiltErrorValues), len(self.TipTiltErrorTimes), len(self.StarPositionError), len(self.StarPositionTimes))
+
+
+    def set_TTErrPlotTime(self, value):
+        self.TipTiltErrorPlotAgeThreshold = float(value)
 
 
     def update_TipTiltErrorPlot(self):
@@ -768,8 +797,8 @@ class MainWindow(QMainWindow):
                 ax.plot(starpos_times, starpos_yerr, 'bv', ms=4, alpha=0.5)
             ax.axhline(y=0, xmin=0, xmax=1, color='k', alpha=0.8)
             try:
-                ax.set_ylim(1.2*min([min(starpos_xerr), min(starpos_yerr)]),
-                            1.2*max([max(starpos_xerr), max(starpos_yerr), max(tterr)]))
+                ax.set_ylim(min([min(starpos_xerr), min(starpos_yerr)])-0.5,
+                            max([max(starpos_xerr), max(starpos_yerr), max(tterr)])+0.5)
             except:
                 ax.set_ylim(-3,3)
             plt.xticks([])
@@ -852,11 +881,19 @@ class MainWindow(QMainWindow):
     ## Object Choice
     def update_ObjectChoice(self, value):
         self.log.debug(f'update_ObjectChoice: {value}')
+        self.OBJECT_CHOICE_value = value
+        if self.OBJECT_CHOICE_value not in ['None', None]:
+            self.ObjectChoice.clear()
+            self.ObjectChoice.addItems(['OBJECT1', 'OBJECT2', 'OBJECT3'])
+        else:
+            self.ObjectChoice.clear()
+            self.ObjectChoice.addItems(['None', 'OBJECT1', 'OBJECT2', 'OBJECT3'])
         self.ObjectChoice.setCurrentText(f"{value}")
 
     def set_ObjectChoice(self, value):
-        self.log.debug(f'set_ObjectChoice: {value}')
-        self.OBJECT_CHOICE.write(value)
+        self.log.debug(f'set_ObjectChoice: {value} ({type(value)})')
+        if value in ['OBJECT1', 'OBJECT2', 'OBJECT3']:
+            self.kpfguide['OBJECT_CHOICE'].write(f'{value}')
 
 
     ##----------------------------------------------------------
@@ -1053,7 +1090,6 @@ class MainWindow(QMainWindow):
             self.ImageViewer.set_autocut_params(value)
         else:
             pct = float(match_hist.group(1))/100
-            print(pct)
             self.ImageViewer.set_autocut_params('histogram', pct=pct)
 
     def set_ImageScaling(self, value):
@@ -1095,12 +1131,11 @@ class MainWindow(QMainWindow):
         date_beg = hdul[0].header.get('DATE-BEG')
         ts = datetime.datetime.strptime(date_beg, '%Y-%m-%dT%H:%M:%S.%f')
         self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
-        if self.TIPTILT_CALC.read() == 'Active':
-            self.calculate_FWHM(cropped, ts)
-#             try:
-#                 self.calculate_FWHM(cropped)
-#             except Exception as e:
-#                 print(e)
+        if self.TIPTILT_CALC.read() == 'Active' and self.OBJECT_CHOICE_value != 'None':
+            try:
+                self.calculate_FWHM(cropped, ts)
+            except Exception as e:
+                print(e)
         image = AstroImage()
         image.load_nddata(cropped)
         self.ImageViewer.set_image(image)
@@ -1132,6 +1167,11 @@ class MainWindow(QMainWindow):
         if len(self.ObjectFWHMTimes) == 0:
             self.ObjectFWHMTime0 = ts
         self.ObjectFWHMTimes.append((ts-self.ObjectFWHMTime0).total_seconds())
+        self.update_FWHMPlot()
+
+
+    def set_FWHMPlotTime(self, value):
+        self.FWHMPlotAgeThreshold = float(value)
         self.update_FWHMPlot()
 
 
