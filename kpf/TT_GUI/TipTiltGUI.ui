@@ -950,7 +950,7 @@
     <widget class="QLabel" name="FIUModeLabel">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>310</x>
        <y>20</y>
        <width>71</width>
        <height>16</height>
@@ -986,9 +986,9 @@
     <widget class="QLabel" name="FIUModeValue">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>380</x>
        <y>20</y>
-       <width>221</width>
+       <width>201</width>
        <height>16</height>
       </rect>
      </property>
@@ -1006,7 +1006,43 @@
       <rect>
        <x>130</x>
        <y>40</y>
-       <width>451</width>
+       <width>171</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ObjectLabel">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>40</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Object:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ObjectValue">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>40</y>
+       <width>201</width>
        <height>16</height>
       </rect>
      </property>

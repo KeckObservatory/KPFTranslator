@@ -93,14 +93,14 @@ def create_GUI_log():
     return log
 
 
-def main():
+def main(log):
     application = QApplication(sys.argv)
     if cmd_line_args.dark == True:
         css_file = Path(__file__).parent / 'darkstyle.qss'
         with open(css_file, 'r') as f:
             dark_css = f.read()
         application.setStyleSheet(dark_css)
-    main_window = MainWindow()
+    main_window = MainWindow(log)
     main_window.setupUi()
     main_window.show()
     return kPyQt.run(application)
@@ -108,7 +108,7 @@ def main():
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, log, *args, **kwargs):
         QMainWindow.__init__(self, *args, **kwargs)
         ui_file = Path(__file__).parent / 'TipTiltGUI.ui'
         uic.loadUi(f"{ui_file}", self)
@@ -538,6 +538,13 @@ class MainWindow(QMainWindow):
         peakflux_kw = kPyQt.kFactory(self.kpffiu['MODE'])
         peakflux_kw.stringCallback.connect(self.FIUMode.setText)
         peakflux_kw.primeCallback()
+
+        # OBJECT
+        self.Object = self.findChild(QLabel, 'ObjectValue')
+        kpfexpose_object = ktl.cache('kpfexpose', 'OBJECT')
+        object_kw = kPyQt.kFactory(kpfexpose_object)
+        object_kw.stringCallback.connect(self.Object.setText)
+        object_kw.primeCallback()
 
 
     ##----------------------------------------------------------
@@ -1302,7 +1309,7 @@ if __name__ == '__main__':
     log = create_GUI_log()
     log.info(f"Starting KPF TipTilt GUI")
     try:
-        main()
+        main(log)
     except Exception as e:
         log.error(e)
         log.error(traceback.format_exc())
