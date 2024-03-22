@@ -232,8 +232,9 @@ class MainWindow(QMainWindow):
         self.SAVE.primeCallback()
 
         # Camera Gain
+        self.CameraGainValue = self.findChild(QLabel, 'CameraGainValue')
         self.CameraGain = self.findChild(QComboBox, 'CameraGain')
-        self.CameraGain.addItems(list(self.GAIN.ktl_keyword._getEnumerators()))
+        self.CameraGain.addItems(list(self.GAIN.ktl_keyword._getEnumerators()) + [''])
         self.GAIN.stringCallback.connect(self.update_CameraGain)
         self.GAIN.primeCallback()
         self.CameraGain.currentTextChanged.connect(self.set_CameraGain)
@@ -401,17 +402,11 @@ class MainWindow(QMainWindow):
         self.ImageCut = self.findChild(QComboBox, 'ImageCut')
         self.ImageCut.addItems(['minmax', 'histogram 99.5', 'histogram 99', 'histogram 98', 'median', 'stddev', 'zscale'])
         self.ImageCut.currentTextChanged.connect(self.set_ImageCut)
-#         self.ImageCut.setEnabled(False)
-#         self.ImageCutLabel = self.findChild(QLabel, 'ImageCutLabel')
-#         self.ImageCutLabel.setEnabled(False)
 
         # Image Scaling
         self.ImageScaling = self.findChild(QComboBox, 'ImageScaling')
         self.ImageScaling.addItems(['linear', 'log', 'neglog'])
         self.ImageScaling.currentTextChanged.connect(self.set_ImageScaling)
-#         self.ImageScaling.setEnabled(False)
-#         self.ImageScalingLabel = self.findChild(QLabel, 'ImageScalingLabel')
-#         self.ImageScalingLabel.setEnabled(False)
 
         # Tip Tilt On/Off
         self.TipTiltOnOffButton = self.findChild(QPushButton, 'TipTiltOnOffButton')
@@ -420,7 +415,6 @@ class MainWindow(QMainWindow):
 
         # Tip Tilt Calculations
         self.CalculationCheckBox = self.findChild(QCheckBox, 'CalculationCheckBox')
-#         self.TIPTILT_CALC.stringCallback.connect(self.update_TipTiltCalc)
         self.TIPTILT_CALC.integerCallback.connect(self.update_TipTiltCalc)
         self.TIPTILT_CALC.primeCallback()
         self.CalculationCheckBox.stateChanged.connect(self.TipTiltCalc_state_change)
@@ -487,24 +481,27 @@ class MainWindow(QMainWindow):
         self.DECOffsetLabel.setEnabled(False)
 
         # X Axis Control: TIPTILT_CONTROL_X
+        self.XAxisControlValue = self.findChild(QLabel, 'XAxisControlValue')
         self.XAxisControl = self.findChild(QComboBox, 'XAxisControl')
-        self.XAxisControl.addItems(['Mirror', 'Bypass'])
+        self.XAxisControl.addItems(['', 'Mirror', 'Bypass'])
         self.TIPTILT_CONTROL_X.stringCallback.connect(self.update_XAxisControl)
         self.TIPTILT_CONTROL_X.primeCallback()
         self.XAxisControl.currentTextChanged.connect(self.set_XAxisControl)
         self.XAxisControl.setEnabled(self.enable_control)
 
         # Y Axis Control: TIPTILT_CONTROL_Y
+        self.YAxisControlValue = self.findChild(QLabel, 'YAxisControlValue')
         self.YAxisControl = self.findChild(QComboBox, 'YAxisControl')
-        self.YAxisControl.addItems(['Mirror', 'Bypass'])
+        self.YAxisControl.addItems(['', 'Mirror', 'Bypass'])
         self.TIPTILT_CONTROL_Y.stringCallback.connect(self.update_YAxisControl)
         self.TIPTILT_CONTROL_Y.primeCallback()
         self.YAxisControl.currentTextChanged.connect(self.set_YAxisControl)
         self.YAxisControl.setEnabled(self.enable_control)
 
         # DAR Enabled: DAR_ENABLE
+        self.DARCorrectionValue = self.findChild(QLabel, 'DARCorrectionValue')
         self.DAREnable = self.findChild(QComboBox, 'DAREnable')
-        self.DAREnable.addItems(['Yes', 'No'])
+        self.DAREnable.addItems(['', 'Yes', 'No'])
         self.DAR_ENABLE.stringCallback.connect(self.update_DAREnable)
         self.DAR_ENABLE.primeCallback()
         self.DAREnable.currentTextChanged.connect(self.set_DAREnable)
@@ -589,11 +586,13 @@ class MainWindow(QMainWindow):
     ## Camera Gain
     def update_CameraGain(self, value):
         self.log.debug(f'update_CameraGain: {value}')
-        self.CameraGain.setCurrentText(f"{value}")
+        self.CameraGainValue.setText(f'{value}')
+        self.CameraGain.setCurrentText('')
 
     def set_CameraGain(self, value):
-        self.log.info(f'Modifying kpfguide.GAIN = {value}')
-        self.GAIN.write(value)
+        if value != '':
+            self.log.info(f'Modifying kpfguide.GAIN = {value}')
+            self.GAIN.write(value)
 
 
     ##----------------------------------------------------------
@@ -899,11 +898,11 @@ class MainWindow(QMainWindow):
         self.log.debug(f'button clicked toggle_all_loops: {value}')
         current_kw_value = self.ALL_LOOPS.ktl_keyword.ascii
         if current_kw_value in ['Inactive', 'Mixed']:
-            self.log.warning(f'-->NOT Modifying kpfguide.ALL_LOOPS = Active')
-#             self.ALL_LOOPS.write('Active')
+            self.log.info(f'Modifying kpfguide.ALL_LOOPS = Active')
+            self.ALL_LOOPS.write('Active')
         elif current_kw_value == 'Active':
-            self.log.warning(f'-->NOT Modifying kpfguide.ALL_LOOPS = Inactive')
-#             self.ALL_LOOPS.write('Inactive')
+            self.log.info(f'Modifying kpfguide.ALL_LOOPS = Inactive')
+            self.ALL_LOOPS.write('Inactive')
 
 
     ##----------------------------------------------------------
@@ -929,8 +928,8 @@ class MainWindow(QMainWindow):
         current_value = self.TIPTILT_CALC.ktl_keyword.ascii
         self.log.debug(f'TipTiltCalc_state_change: {value} {requested} ({current_value})')
         if requested != current_value:
-            self.log.warning(f'--> NOT Modifying kpfguide.TIPTILT_CALC = {requested}')
-#             self.TIPTILT_CALC.write(requested)
+            self.log.info(f'Modifying kpfguide.TIPTILT_CALC = {requested}')
+            self.TIPTILT_CALC.write(requested)
         else:
             self.log.debug(f'No change to kpfguide.TIPTILT_CALC')
 
@@ -946,8 +945,8 @@ class MainWindow(QMainWindow):
         self.log.debug(f'TipTiltControl_state_change: {value} {requested}')
         current_value = self.TIPTILT_CONTROL.ktl_keyword.ascii
         if requested != current_value:
-            self.log.warning(f'--> NOT Modifying kpfguide.TIPTILT_CONTROL = {requested}')
-#             self.TIPTILT_CONTROL.write(requested)
+            self.log.info(f'Modifying kpfguide.TIPTILT_CONTROL = {requested}')
+            self.TIPTILT_CONTROL.write(requested)
         else:
             self.log.debug(f'No change to kpfguide.TIPTILT_CONTROL')
 
@@ -972,10 +971,10 @@ class MainWindow(QMainWindow):
         self.log.debug(f'Offload_state_change: {value} {requested}')
         # Try to re-enable OFFLOAD_DCS if it is not Yes
         if requested == 'Active' and self.OFFLOAD_DCS.ktl_keyword.ascii == 'No':
-            self.log.warning(f'--> NOT Modifying kpfguide.OFFLOAD_DCS = Yes')
-#             self.OFFLOAD_DCS.write('Yes')
-        self.log.warning(f'--> NOT Modifying kpfguide.OFFLOAD = {requested}')
-#         self.OFFLOAD.write(requested)
+            self.log.info(f'Modifying kpfguide.OFFLOAD_DCS = Yes')
+            self.OFFLOAD_DCS.write('Yes')
+        self.log.info(f'Modifying kpfguide.OFFLOAD = {requested}')
+        self.OFFLOAD.write(requested)
 
 
     ##----------------------------------------------------------
@@ -1021,8 +1020,10 @@ class MainWindow(QMainWindow):
     ## XAxisControl
     def update_XAxisControl(self, value):
         self.log.debug(f'update_XAxisControl: {value}')
-        self.XAxisControl.setCurrentText(f"{value}")
         color = {'Mirror': 'green', 'Bypass': 'orange'}[value]
+        self.XAxisControlValue.setText(f"{value}")
+        self.XAxisControlValue.setStyleSheet(f'color: {color};')
+        self.XAxisControl.setCurrentText('')
         if value == 'Bypass':
             self.XAxisStatusLabel.setText(f"X Axis: Offloads Only (Slow)")
         else:
@@ -1030,16 +1031,19 @@ class MainWindow(QMainWindow):
         self.XAxisStatusLabel.setStyleSheet(f'color: {color};')
 
     def set_XAxisControl(self, value):
-        self.log.info(f'Modifying kpfguide.TIPTILT_CONTROL_X = {value}')
-        self.TIPTILT_CONTROL_X.write(value)
+        if value != '':
+            self.log.info(f'Modifying kpfguide.TIPTILT_CONTROL_X = {value}')
+            self.TIPTILT_CONTROL_X.write(value)
 
 
     ##----------------------------------------------------------
     ## YAxisControl
     def update_YAxisControl(self, value):
         self.log.debug(f'update_YAxisControl: {value}')
-        self.YAxisControl.setCurrentText(f"{value}")
-        color = {'Mirror': 'green', 'Bypass': 'red'}[value]
+        color = {'Mirror': 'green', 'Bypass': 'orange'}[value]
+        self.YAxisControlValue.setText(f"{value}")
+        self.YAxisControlValue.setStyleSheet(f'color: {color};')
+        self.YAxisControl.setCurrentText('')
         if value == 'Bypass':
             self.YAxisStatusLabel.setText(f"Y Axis: Offloads Only (Slow)")
         else:
@@ -1047,16 +1051,19 @@ class MainWindow(QMainWindow):
         self.YAxisStatusLabel.setStyleSheet(f'color: {color};')
 
     def set_YAxisControl(self, value):
-        self.log.info(f'Modifying kpfguide.TIPTILT_CONTROL_Y = {value}')
-        self.TIPTILT_CONTROL_Y.write(value)
+        if value != '':
+            self.log.info(f'Modifying kpfguide.TIPTILT_CONTROL_Y = {value}')
+            self.TIPTILT_CONTROL_Y.write(value)
 
 
     ##----------------------------------------------------------
     ## DAREnable
     def update_DAREnable(self, value):
         self.log.debug(f'update_DAREnable: {value}')
-        self.DAREnable.setCurrentText(f"{value}")
         color = {'Yes': 'green', 'No': 'red'}[value]
+        self.DARCorrectionValue.setText(f"{value}")
+        self.DARCorrectionValue.setStyleSheet(f'color: {color};')
+        self.DAREnable.setCurrentText('')
         if value == 'No':
             self.DARStatusLabel.setText(f"DAR Disbabled")
         else:
@@ -1065,8 +1072,9 @@ class MainWindow(QMainWindow):
         self.load_file(self.LASTFILE.ktl_keyword.ascii)
 
     def set_DAREnable(self, value):
-        self.log.info(f'Modifying kpfguide.DAR_ENABLE = {value}')
-        self.DAR_ENABLE.write(value)
+        if value != '':
+            self.log.info(f'Modifying kpfguide.DAR_ENABLE = {value}')
+            self.DAR_ENABLE.write(value)
 
 
     ##----------------------------------------------------------
@@ -1104,7 +1112,7 @@ class MainWindow(QMainWindow):
         pix_target = self.PIX_TARGET.ktl_keyword.binary
         self.xcent, self.ycent = np.array(np.round(pix_target), dtype=int)
         if pix_target[0] < 0 or pix_target[0] > 640 or pix_target[1] < 0 or pix_target[1] > 512:
-            self.PixTargetValue.setText(f"{pix_target[0]:.1f}, {pix_target[1]:.1f} is out of range")
+            self.PixTargetValue.setText(f"Out Of Range")
             self.PixTargetValue.setStyleSheet(f'color: red;')
         else:
             self.PixTargetValue.setText(f"{pix_target[0]:.1f}, {pix_target[1]:.1f}")
