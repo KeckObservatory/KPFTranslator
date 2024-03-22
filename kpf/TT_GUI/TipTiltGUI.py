@@ -118,39 +118,52 @@ class MainWindow(QMainWindow):
         self.log.debug('Initializing MainWindow')
         # Keywords
         self.log.debug('Cacheing keyword services')
-        self.kpfguide = ktl.cache('kpfguide')
-        self.TIPTILT_CALC = kPyQt.kFactory(self.kpfguide['TIPTILT_CALC'])
-        self.TIPTILT_CONTROL = kPyQt.kFactory(self.kpfguide['TIPTILT_CONTROL'])
-        self.OFFLOAD = kPyQt.kFactory(self.kpfguide['OFFLOAD'])
-        self.OFFLOAD_DCS = kPyQt.kFactory(self.kpfguide['OFFLOAD_DCS'])
-        self.CONTINUOUS = kPyQt.kFactory(self.kpfguide['CONTINUOUS'])
-        self.SAVE = kPyQt.kFactory(self.kpfguide['SAVE'])
-        self.GAIN = kPyQt.kFactory(self.kpfguide['GAIN'])
-        self.FPS = kPyQt.kFactory(self.kpfguide['FPS'])
-        self.OBJECT1 = ktl.cache('kpfguide', 'OBJECT1')
-        self.OBJECT1.monitor()
-        self.OBJECT2 = ktl.cache('kpfguide', 'OBJECT2')
-        self.OBJECT2.monitor()
-        self.OBJECT3 = ktl.cache('kpfguide', 'OBJECT3')
-        self.OBJECT3.monitor()
-        self.OBJECT_CHOICE = kPyQt.kFactory(self.kpfguide['OBJECT_CHOICE'])
-        self.OBJECT_CHOICE_value = 'None'
-        self.OBJECT_FLUX = kPyQt.kFactory(self.kpfguide['OBJECT_FLUX'])
-        self.TIPTILT_ERROR = ktl.cache('kpfguide', 'TIPTILT_ERROR')
-        self.TIPTILT_ERROR.monitor()
-        self.LASTFILE = ktl.cache('kpfguide', 'LASTFILE')
-        self.LASTFILE.monitor()
-        self.kpffiu = ktl.cache('kpffiu')
-        self.kpfconfig = ktl.cache('kpfconfig')
-        self.EXPOSE = ktl.cache('kpfexpose', 'EXPOSE')
-        self.EXPOSE.monitor()
-        self.ELAPSED = ktl.cache('kpfexpose', 'ELAPSED')
-        self.ELAPSED.monitor()
-        self.EXPOSURE = ktl.cache('kpfexpose', 'EXPOSURE')
-        self.EXPOSURE.monitor()
-        self.tthome = ktl.cache('kpfguide', 'TIPTILT_HOME').read(binary=True)
-        self.ttxrange = ktl.cache('kpfguide', 'TIPTILT_XRANGE').read(binary=True)
-        self.ttyrange = ktl.cache('kpfguide', 'TIPTILT_YRANGE').read(binary=True)
+        kpfguide = ktl.cache('kpfguide')
+        self.CONTINUOUS = kPyQt.kFactory(kpfguide['CONTINUOUS'])
+        self.SAVE = kPyQt.kFactory(kpfguide['SAVE'])
+        self.GAIN = kPyQt.kFactory(kpfguide['GAIN'])
+        self.FPS = kPyQt.kFactory(kpfguide['FPS'])
+        self.TIPTILT_CALC = kPyQt.kFactory(kpfguide['TIPTILT_CALC'])
+        self.TIPTILT_CONTROL = kPyQt.kFactory(kpfguide['TIPTILT_CONTROL'])
+        self.OFFLOAD = kPyQt.kFactory(kpfguide['OFFLOAD'])
+        self.OFFLOAD_DCS = kPyQt.kFactory(kpfguide['OFFLOAD_DCS'])
+        self.ALL_LOOPS = kPyQt.kFactory(kpfguide['ALL_LOOPS'])
+        self.OBJECT1 = kPyQt.kFactory(kpfguide['OBJECT1'])
+        self.OBJECT2 = kPyQt.kFactory(kpfguide['OBJECT2'])
+        self.OBJECT3 = kPyQt.kFactory(kpfguide['OBJECT3'])
+
+        self.OBJECT_CHOICE = kPyQt.kFactory(kpfguide['OBJECT_CHOICE'])
+        self.OBJECT_FLUX = kPyQt.kFactory(kpfguide['OBJECT_FLUX'])
+        self.OBJECT_PEAK = kPyQt.kFactory(kpfguide['OBJECT_PEAK'])
+        self.OBJECT_INTENSITY = kPyQt.kFactory(kpfguide['OBJECT_INTENSITY'])
+        self.OBJECT_AREA = kPyQt.kFactory(kpfguide['OBJECT_AREA'])
+        self.OBJECT_DBCONT = kPyQt.kFactory(kpfguide['OBJECT_DBCONT'])
+        self.TIPTILT_PHASE = kPyQt.kFactory(kpfguide['TIPTILT_PHASE'])
+        self.TIPTILT_ERROR = kPyQt.kFactory(kpfguide['TIPTILT_ERROR'])
+        self.TIPTILT_CONTROL_X = kPyQt.kFactory(kpfguide['TIPTILT_CONTROL_X'])
+        self.TIPTILT_CONTROL_Y = kPyQt.kFactory(kpfguide['TIPTILT_CONTROL_Y'])
+        self.DAR_ENABLE = kPyQt.kFactory(kpfguide['DAR_ENABLE'])
+        self.LASTFILE = kPyQt.kFactory(kpfguide['LASTFILE'])
+        self.TIPTILT_ROIDIM = kPyQt.kFactory(kpfguide['TIPTILT_ROIDIM'])
+        self.PIX_TARGET = kPyQt.kFactory(kpfguide['PIX_TARGET'])
+
+        kpffiu = ktl.cache('kpffiu')
+        self.TTXSRV = kPyQt.kFactory(kpffiu['TTXSRV'])
+        self.TTYSRV = kPyQt.kFactory(kpffiu['TTYSRV'])
+        self.TTXVAX = kPyQt.kFactory(kpffiu['TTXVAX'])
+        self.TTYVAX = kPyQt.kFactory(kpffiu['TTYVAX'])
+        self.MODE = kPyQt.kFactory(kpffiu['MODE'])
+
+        self.SCRIPTNAME = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTNAME'))
+
+        self.EXPOSE = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSE'))
+        self.ELAPSED = kPyQt.kFactory(ktl.cache('kpfexpose', 'ELAPSED'))
+        self.OBJECT = kPyQt.kFactory(ktl.cache('kpfexpose', 'OBJECT'))
+        self.EXPOSURE = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSURE'))
+
+        self.tthome = kpfguide['TIPTILT_HOME'].read(binary=True)
+        self.ttxrange = kpfguide['TIPTILT_XRANGE'].read(binary=True)
+        self.ttyrange = kpfguide['TIPTILT_YRANGE'].read(binary=True)
 
         # History for Plots
         #  Tip Tilt Error Plot
@@ -176,9 +189,7 @@ class MainWindow(QMainWindow):
         # Values for Image Display
         self.xcent = None
         self.ycent = None
-        self.roidim = None
-        self.pix_target = self.kpfguide['PIX_TARGET'].read(binary=True)
-        self.pscale = self.kpfguide['PSCALE'].read(binary=True)
+        self.pscale = kpfguide['PSCALE'].read(binary=True)
         # Mode
         self.enable_control = not cmd_line_args.monitor
         if self.enable_control is True:
@@ -222,7 +233,7 @@ class MainWindow(QMainWindow):
 
         # Camera Gain
         self.CameraGain = self.findChild(QComboBox, 'CameraGain')
-        self.CameraGain.addItems(list(self.kpfguide['GAIN']._getEnumerators()))
+        self.CameraGain.addItems(list(self.GAIN.ktl_keyword._getEnumerators()))
         self.GAIN.stringCallback.connect(self.update_CameraGain)
         self.GAIN.primeCallback()
         self.CameraGain.currentTextChanged.connect(self.set_CameraGain)
@@ -240,9 +251,8 @@ class MainWindow(QMainWindow):
 
         # Peak Flux
         self.PeakFlux = self.findChild(QLabel, 'PeakFlux')
-        peakflux_kw = kPyQt.kFactory(self.kpfguide['OBJECT_PEAK'])
-        peakflux_kw.stringCallback.connect(self.update_PeakFlux)
-        peakflux_kw.primeCallback()
+        self.OBJECT_PEAK.stringCallback.connect(self.update_PeakFlux)
+        self.OBJECT_PEAK.primeCallback()
 
         # Total Flux
         self.TotalFlux = self.findChild(QLabel, 'TotalFlux')
@@ -251,21 +261,18 @@ class MainWindow(QMainWindow):
 
         # Tip Tilt FPS
         self.TipTiltFPS = self.findChild(QLabel, 'TipTiltFPS')
-        ttfps_kw = kPyQt.kFactory(self.kpfguide['TIPTILT_FPS'])
-        ttfps_kw.stringCallback.connect(self.update_TipTiltFPS)
-        ttfps_kw.primeCallback()
+        self.FPS.stringCallback.connect(self.update_TipTiltFPS)
+        self.FPS.primeCallback()
 
         # Tip Tilt Phase
         self.TipTiltPhase = self.findChild(QLabel, 'TipTiltPhase')
-        ttphase_kw = kPyQt.kFactory(self.kpfguide['TIPTILT_PHASE'])
-        ttphase_kw.stringCallback.connect(self.update_TipTiltPhase)
-        ttphase_kw.primeCallback()
+        self.TIPTILT_PHASE.stringCallback.connect(self.update_TipTiltPhase)
+        self.TIPTILT_PHASE.primeCallback()
 
         # Tip Tilt Error
         self.TipTiltError = self.findChild(QLabel, 'TipTiltError')
-        tterror_kw = kPyQt.kFactory(self.kpfguide['TIPTILT_ERROR'])
-        tterror_kw.stringCallback.connect(self.update_TipTiltError)
-        tterror_kw.primeCallback()
+        self.TIPTILT_ERROR.stringCallback.connect(self.update_TipTiltError)
+        self.TIPTILT_ERROR.primeCallback()
 
         # Tip Tilt Error Plot
         self.TipTiltErrorPlotFrame = self.findChild(QFrame, 'TipTiltErrorPlotFrame')
@@ -332,9 +339,8 @@ class MainWindow(QMainWindow):
         # Image Display
         self.ImageDisplayFrame = self.findChild(QFrame, 'ImageDisplayFrame')
         self.LastFileValue = self.findChild(QLabel, 'LastFileValue')
-        lastfile_kw = kPyQt.kFactory(self.kpfguide['LASTFILE'])
-        lastfile_kw.stringCallback.connect(self.update_lastfile)
-        lastfile_kw.primeCallback()
+        self.LASTFILE.stringCallback.connect(self.update_lastfile)
+        self.LASTFILE.primeCallback()
         # create the ginga viewer and configure it
         self.ImageViewer = CanvasView(self.ginga_log, render='widget')
         self.ImageViewer.enable_autocuts('on')
@@ -361,26 +367,23 @@ class MainWindow(QMainWindow):
         self.ImageDisplayFrame.setLayout(gingaLayout)
 
         # Object Choice
+        self.ObjectChoiceValue = self.findChild(QLabel, 'ObjectChoiceValue')
         self.ObjectChoice = self.findChild(QComboBox, 'ObjectChoice')
-        self.ObjectChoice.addItems(['None', 'OBJECT1', 'OBJECT2', 'OBJECT3'])
+        self.ObjectChoice.addItems(['', 'OBJECT1', 'OBJECT2', 'OBJECT3'])
         self.OBJECT_CHOICE.stringCallback.connect(self.update_ObjectChoice)
         self.OBJECT_CHOICE.primeCallback()
         self.ObjectChoice.currentTextChanged.connect(self.set_ObjectChoice)
         self.ObjectChoice.setEnabled(self.enable_control)
 
         # Mirror Position Plot
-        ttxsrv_kw = kPyQt.kFactory(self.kpffiu['TTXSRV'])
-        ttxsrv_kw.stringCallback.connect(self.update_ttxsrv)
-        ttxsrv_kw.primeCallback()
-        ttysrv_kw = kPyQt.kFactory(self.kpffiu['TTYSRV'])
-        ttysrv_kw.stringCallback.connect(self.update_ttysrv)
-        ttysrv_kw.primeCallback()
-        ttxvax_kw = kPyQt.kFactory(self.kpffiu['TTXVAX'])
-        ttxvax_kw.stringCallback.connect(self.update_mirror_pos_x)
-        ttxvax_kw.primeCallback()
-        ttyvax_kw = kPyQt.kFactory(self.kpffiu['TTYVAX'])
-        ttyvax_kw.stringCallback.connect(self.update_mirror_pos_y)
-        ttyvax_kw.primeCallback()
+        self.TTXSRV.stringCallback.connect(self.update_ttxsrv)
+        self.TTXSRV.primeCallback()
+        self.TTYSRV.stringCallback.connect(self.update_ttysrv)
+        self.TTYSRV.primeCallback()
+        self.TTXVAX.stringCallback.connect(self.update_mirror_pos_x)
+        self.TTXVAX.primeCallback()
+        self.TTYVAX.stringCallback.connect(self.update_mirror_pos_y)
+        self.TTYVAX.primeCallback()
         self.MirrorPositionFrame = self.findChild(QFrame, 'TipTiltMirrorPositionFrame')
         self.MirrorPositionFig = plt.figure(num=4, dpi=100)
         self.MirrorPositionFig.set_tight_layout({'pad': self.FigurePadding})
@@ -417,7 +420,8 @@ class MainWindow(QMainWindow):
 
         # Tip Tilt Calculations
         self.CalculationCheckBox = self.findChild(QCheckBox, 'CalculationCheckBox')
-        self.TIPTILT_CALC.stringCallback.connect(self.update_TipTiltCalc)
+#         self.TIPTILT_CALC.stringCallback.connect(self.update_TipTiltCalc)
+        self.TIPTILT_CALC.integerCallback.connect(self.update_TipTiltCalc)
         self.TIPTILT_CALC.primeCallback()
         self.CalculationCheckBox.stateChanged.connect(self.TipTiltCalc_state_change)
         self.CalculationCheckBox.setEnabled(self.enable_control)
@@ -445,9 +449,8 @@ class MainWindow(QMainWindow):
         self.DetectSNRSelector = self.findChild(QComboBox, 'DetectSNRSelector')
         self.DetectSNR_values = ['', '3', '5', '7', '10', '20', '30']
         self.DetectSNRSelector.addItems(self.DetectSNR_values)
-        detectsnr_kw = kPyQt.kFactory(self.kpfguide['OBJECT_INTENSITY'])
-        detectsnr_kw.stringCallback.connect(self.update_DetectSNR)
-        detectsnr_kw.primeCallback()
+        self.OBJECT_INTENSITY.stringCallback.connect(self.update_DetectSNR)
+        self.OBJECT_INTENSITY.primeCallback()
         self.DetectSNRSelector.currentTextChanged.connect(self.set_DetectSNR)
         self.DetectSNRSelector.setEnabled(self.enable_control)
 
@@ -456,9 +459,8 @@ class MainWindow(QMainWindow):
         self.DetectAreaSelector = self.findChild(QComboBox, 'DetectAreaSelector')
         self.DetectArea_values = ['', '30', '50', '80', '100', '150', '200', '300']
         self.DetectAreaSelector.addItems(self.DetectArea_values)
-        detectArea_kw = kPyQt.kFactory(self.kpfguide['OBJECT_AREA'])
-        detectArea_kw.stringCallback.connect(self.update_DetectArea)
-        detectArea_kw.primeCallback()
+        self.OBJECT_AREA.stringCallback.connect(self.update_DetectArea)
+        self.OBJECT_AREA.primeCallback()
         self.DetectAreaSelector.currentTextChanged.connect(self.set_DetectArea)
         self.DetectAreaSelector.setEnabled(self.enable_control)
 
@@ -467,9 +469,8 @@ class MainWindow(QMainWindow):
         self.DeblendSelector = self.findChild(QComboBox, 'DeblendSelector')
         self.Deblend_values = ['', '1.00', '0.50', '0.20', '0.10', '0.02', '0.01', '0.001']
         self.DeblendSelector.addItems(self.Deblend_values)
-        Deblend_kw = kPyQt.kFactory(self.kpfguide['OBJECT_DBCONT'])
-        Deblend_kw.stringCallback.connect(self.update_Deblend)
-        Deblend_kw.primeCallback()
+        self.OBJECT_DBCONT.stringCallback.connect(self.update_Deblend)
+        self.OBJECT_DBCONT.primeCallback()
         self.DeblendSelector.currentTextChanged.connect(self.set_Deblend)
         self.DeblendSelector.setEnabled(self.enable_control)
 
@@ -488,64 +489,54 @@ class MainWindow(QMainWindow):
         # X Axis Control: TIPTILT_CONTROL_X
         self.XAxisControl = self.findChild(QComboBox, 'XAxisControl')
         self.XAxisControl.addItems(['Mirror', 'Bypass'])
-        XAxisControl_kw = kPyQt.kFactory(self.kpfguide['TIPTILT_CONTROL_X'])
-        XAxisControl_kw.stringCallback.connect(self.update_XAxisControl)
-        XAxisControl_kw.primeCallback()
+        self.TIPTILT_CONTROL_X.stringCallback.connect(self.update_XAxisControl)
+        self.TIPTILT_CONTROL_X.primeCallback()
         self.XAxisControl.currentTextChanged.connect(self.set_XAxisControl)
         self.XAxisControl.setEnabled(self.enable_control)
 
         # Y Axis Control: TIPTILT_CONTROL_Y
         self.YAxisControl = self.findChild(QComboBox, 'YAxisControl')
         self.YAxisControl.addItems(['Mirror', 'Bypass'])
-        YAxisControl_kw = kPyQt.kFactory(self.kpfguide['TIPTILT_CONTROL_Y'])
-        YAxisControl_kw.stringCallback.connect(self.update_YAxisControl)
-        YAxisControl_kw.primeCallback()
+        self.TIPTILT_CONTROL_Y.stringCallback.connect(self.update_YAxisControl)
+        self.TIPTILT_CONTROL_Y.primeCallback()
         self.YAxisControl.currentTextChanged.connect(self.set_YAxisControl)
         self.YAxisControl.setEnabled(self.enable_control)
 
         # DAR Enabled: DAR_ENABLE
         self.DAREnable = self.findChild(QComboBox, 'DAREnable')
         self.DAREnable.addItems(['Yes', 'No'])
-        DAREnable_kw = kPyQt.kFactory(self.kpfguide['DAR_ENABLE'])
-        DAREnable_kw.stringCallback.connect(self.update_DAREnable)
-        DAREnable_kw.primeCallback()
+        self.DAR_ENABLE.stringCallback.connect(self.update_DAREnable)
+        self.DAR_ENABLE.primeCallback()
         self.DAREnable.currentTextChanged.connect(self.set_DAREnable)
         self.DAREnable.setEnabled(self.enable_control)
 
         # Pixel Readout
         self.PixelReadout = self.findChild(QLabel, 'PixelReadout')
 
-
         # Pixel Target PIX_TARGET
         self.PixTargetValue = self.findChild(QLabel, 'PixTargetValue')
 
         # Script Status
         self.ScriptStatus = self.findChild(QLabel, 'ScriptValue')
-        scriptname_kw = kPyQt.kFactory(self.kpfconfig['SCRIPTNAME'])
-        scriptname_kw.stringCallback.connect(self.ScriptStatus.setText)
-        scriptname_kw.primeCallback()
+        self.SCRIPTNAME.stringCallback.connect(self.ScriptStatus.setText)
+        self.SCRIPTNAME.primeCallback()
 
         # Exposure Status
         self.ExposureStatus = self.findChild(QLabel, 'ExposureStatusValue')
-        expose_kw = kPyQt.kFactory(self.EXPOSE)
-        expose_kw.stringCallback.connect(self.update_Expose)
-        expose_kw.primeCallback()
-        elapsed_kw = kPyQt.kFactory(self.ELAPSED)
-        elapsed_kw.stringCallback.connect(self.update_Elapsed)
-        elapsed_kw.primeCallback()
+        self.EXPOSE.stringCallback.connect(self.update_exposure_status_string)
+        self.EXPOSE.primeCallback()
+        self.ELAPSED.stringCallback.connect(self.update_exposure_status_string)
+        self.ELAPSED.primeCallback()
 
         # FIU Mode
         self.FIUMode = self.findChild(QLabel, 'FIUModeValue')
-        peakflux_kw = kPyQt.kFactory(self.kpffiu['MODE'])
-        peakflux_kw.stringCallback.connect(self.FIUMode.setText)
-        peakflux_kw.primeCallback()
+        self.MODE.stringCallback.connect(self.FIUMode.setText)
+        self.MODE.primeCallback()
 
         # OBJECT
-        self.Object = self.findChild(QLabel, 'ObjectValue')
-        kpfexpose_object = ktl.cache('kpfexpose', 'OBJECT')
-        object_kw = kPyQt.kFactory(kpfexpose_object)
-        object_kw.stringCallback.connect(self.Object.setText)
-        object_kw.primeCallback()
+        self.ObjectValue = self.findChild(QLabel, 'ObjectValue')
+        self.OBJECT.stringCallback.connect(self.ObjectValue.setText)
+        self.OBJECT.primeCallback()
 
 
     ##----------------------------------------------------------
@@ -601,7 +592,7 @@ class MainWindow(QMainWindow):
         self.CameraGain.setCurrentText(f"{value}")
 
     def set_CameraGain(self, value):
-        self.log.debug(f'set_CameraGain: {value}')
+        self.log.info(f'Modifying kpfguide.GAIN = {value}')
         self.GAIN.write(value)
 
 
@@ -614,7 +605,7 @@ class MainWindow(QMainWindow):
 
     def set_CameraFPS(self, value):
         if value != '':
-            self.log.debug(f'set_CameraFPS: {value}')
+            self.log.info(f'Modifying kpfguide.FPS = {value}')
             self.FPS.write(value)
 
 
@@ -727,7 +718,7 @@ class MainWindow(QMainWindow):
             if fps_string == '0.0':
                 style = f'color: black;'
             else:
-                camera_fps = self.kpfguide['FPS'].read(binary=True)
+                camera_fps = self.FPS.ktl_keyword.binary
                 delta_fps = abs(camera_fps - fps)
                 if delta_fps/camera_fps > 0.1:
                     style = f'color: red;'
@@ -745,18 +736,19 @@ class MainWindow(QMainWindow):
         self.TipTiltError.setText(f"{err_string} pix")
 
         # X and Y Error from OBJECT position
-        if self.OBJECT_CHOICE_value not in [None, 'None']:
+        if self.OBJECT_CHOICE.ktl_keyword.binary != 0:
             self.TipTiltErrorValues.append(err)
-            ts = datetime.datetime.fromtimestamp(self.TIPTILT_ERROR.timestamp)
+            ts = datetime.datetime.fromtimestamp(self.TIPTILT_ERROR.ktl_keyword.timestamp)
             if len(self.TipTiltErrorTimes) == 0:
                 self.TipTiltErrorTime0 = ts
             new_ts_value = (ts-self.TipTiltErrorTime0).total_seconds()
             self.TipTiltErrorTimes.append(new_ts_value)
 
-            OBJECT = getattr(self, self.OBJECT_CHOICE_value)
-            x, y, flux, hitrate = OBJECT.binary
-            self.StarPositionError.append((x-self.pix_target[0], y-self.pix_target[1]))
-            ts = datetime.datetime.fromtimestamp(OBJECT.timestamp)
+            OBJECT = getattr(self, self.OBJECT_CHOICE.ktl_keyword.ascii)
+            x, y, flux, hitrate = OBJECT.ktl_keyword.binary
+            pix_target = self.PIX_TARGET.ktl_keyword.binary
+            self.StarPositionError.append((x-pix_target[0], y-pix_target[1]))
+            ts = datetime.datetime.fromtimestamp(OBJECT.ktl_keyword.timestamp)
             if len(self.StarPositionTimes) == 0:
                 self.StarPositionTime0 = ts
             new_ts_value = (ts-self.StarPositionTime0).total_seconds()
@@ -889,38 +881,37 @@ class MainWindow(QMainWindow):
     ## Object Choice
     def update_ObjectChoice(self, value):
         self.log.debug(f'update_ObjectChoice: {value}')
-        self.OBJECT_CHOICE_value = value
-        if self.OBJECT_CHOICE_value not in ['None', None]:
-            self.ObjectChoice.clear()
-            self.ObjectChoice.addItems(['OBJECT1', 'OBJECT2', 'OBJECT3'])
-        else:
-            self.ObjectChoice.clear()
-            self.ObjectChoice.addItems(['None', 'OBJECT1', 'OBJECT2', 'OBJECT3'])
-        self.ObjectChoice.setCurrentText(f"{value}")
+        self.ObjectChoiceValue.setText(f"{value}")
+        self.ObjectChoice.setCurrentText('')
 
     def set_ObjectChoice(self, value):
         self.log.debug(f'set_ObjectChoice: {value} ({type(value)})')
-        if value in ['OBJECT1', 'OBJECT2', 'OBJECT3']:
-            self.kpfguide['OBJECT_CHOICE'].write(f'{value}')
+        if value != self.OBJECT_CHOICE.ktl_keyword.ascii and value in ['OBJECT1', 'OBJECT2', 'OBJECT3']:
+            self.log.info(f'Modifying kpfguide.OBJECT_CHOICE = {value}')
+            self.OBJECT_CHOICE.write(f'{value}')
+        else:
+            self.log.debug(f'No change to kpfguide.OBJECT_CHOICE')
 
 
     ##----------------------------------------------------------
     ## Tip Tilt On/Off
     def toggle_all_loops(self, value):
         self.log.debug(f'button clicked toggle_all_loops: {value}')
-        current_kw_value = self.kpfguide['ALL_LOOPS'].read()
+        current_kw_value = self.ALL_LOOPS.ktl_keyword.ascii
         if current_kw_value in ['Inactive', 'Mixed']:
-            self.kpfguide['ALL_LOOPS'].write('Active')
+            self.log.warning(f'-->NOT Modifying kpfguide.ALL_LOOPS = Active')
+#             self.ALL_LOOPS.write('Active')
         elif current_kw_value == 'Active':
-            self.kpfguide['ALL_LOOPS'].write('Inactive')
+            self.log.warning(f'-->NOT Modifying kpfguide.ALL_LOOPS = Inactive')
+#             self.ALL_LOOPS.write('Inactive')
 
 
     ##----------------------------------------------------------
     ## Tip Tilt Calculations
-    def update_TipTiltCalc(self, value):
-        self.log.info(f'update_TipTiltCalc: {value}')
-        self.CalculationCheckBox.setChecked(value == 'Active')
-        if value == 'Inactive':
+    def update_TipTiltCalc(self, intvalue):
+        self.log.info(f'update_TipTiltCalc: {intvalue} ({type(intvalue)})')
+        self.CalculationCheckBox.setChecked(intvalue)
+        if intvalue == 0:
             self.TipTiltErrorValues = []
             self.StarPositionError = []
             self.TipTiltErrorTimes = []
@@ -935,11 +926,11 @@ class MainWindow(QMainWindow):
 
     def TipTiltCalc_state_change(self, value):
         requested = {'2': 'Active', '0': 'Inactive'}[str(value)]
-        current_value = self.TIPTILT_CALC.read()
+        current_value = self.TIPTILT_CALC.ktl_keyword.ascii
         self.log.debug(f'TipTiltCalc_state_change: {value} {requested} ({current_value})')
         if requested != current_value:
-            self.log.info(f'Setting kpfguide.TIPTILT_CALC = {requested}')
-            self.TIPTILT_CALC.write(requested)
+            self.log.warning(f'--> NOT Modifying kpfguide.TIPTILT_CALC = {requested}')
+#             self.TIPTILT_CALC.write(requested)
         else:
             self.log.debug(f'No change to kpfguide.TIPTILT_CALC')
 
@@ -953,10 +944,10 @@ class MainWindow(QMainWindow):
     def TipTiltControl_state_change(self, value):
         requested = {'2': 'Active', '0': 'Inactive'}[str(value)]
         self.log.debug(f'TipTiltControl_state_change: {value} {requested}')
-        current_value = self.TIPTILT_CONTROL.read()
+        current_value = self.TIPTILT_CONTROL.ktl_keyword.ascii
         if requested != current_value:
-            self.log.info(f'Setting kpfguide.TIPTILT_CONTROL = {requested}')
-            self.TIPTILT_CONTROL.write(requested)
+            self.log.warning(f'--> NOT Modifying kpfguide.TIPTILT_CONTROL = {requested}')
+#             self.TIPTILT_CONTROL.write(requested)
         else:
             self.log.debug(f'No change to kpfguide.TIPTILT_CONTROL')
 
@@ -980,11 +971,11 @@ class MainWindow(QMainWindow):
         requested = {'2': 'Active', '0': 'Inactive'}[str(value)]
         self.log.debug(f'Offload_state_change: {value} {requested}')
         # Try to re-enable OFFLOAD_DCS if it is not Yes
-        if requested == 'Active' and self.OFFLOAD_DCS.read() == 'No':
-            self.log.info(f'Setting kpfguide.OFFLOAD_DCS = Yes')
-            self.OFFLOAD_DCS.write('Yes')
-        self.log.info(f'Setting kpfguide.OFFLOAD = {requested}')
-        self.OFFLOAD.write(requested)
+        if requested == 'Active' and self.OFFLOAD_DCS.ktl_keyword.ascii == 'No':
+            self.log.warning(f'--> NOT Modifying kpfguide.OFFLOAD_DCS = Yes')
+#             self.OFFLOAD_DCS.write('Yes')
+        self.log.warning(f'--> NOT Modifying kpfguide.OFFLOAD = {requested}')
+#         self.OFFLOAD.write(requested)
 
 
     ##----------------------------------------------------------
@@ -996,8 +987,8 @@ class MainWindow(QMainWindow):
 
     def set_DetectSNR(self, value):
         if value != '':
-            self.log.debug(f'set_DetectSNR: {value}')
-            self.kpfguide['OBJECT_INTENSITY'].write(value)
+            self.log.info(f'Modifying kpfguide.OBJECT_INTENSITY = {value}')
+            self.OBJECT_INTENSITY.write(value)
 
 
     ##----------------------------------------------------------
@@ -1009,8 +1000,8 @@ class MainWindow(QMainWindow):
 
     def set_DetectArea(self, value):
         if value != '':
-            self.log.debug(f'set_DetectArea: {value}')
-            self.kpfguide['OBJECT_AREA'].write(value)
+            self.log.info(f'Modifying kpfguide.OBJECT_AREA = {value}')
+            self.OBJECT_AREA.write(value)
 
 
     ##----------------------------------------------------------
@@ -1022,8 +1013,8 @@ class MainWindow(QMainWindow):
 
     def set_Deblend(self, value):
         if value != '':
-            self.log.debug(f'set_Deblend: {value}')
-            self.kpfguide['OBJECT_DBCONT'].write(value)
+            self.log.info(f'Modifying kpfguide.OBJECT_DBCONT = {value}')
+            self.OBJECT_DBCONT.write(value)
 
 
     ##----------------------------------------------------------
@@ -1039,8 +1030,8 @@ class MainWindow(QMainWindow):
         self.XAxisStatusLabel.setStyleSheet(f'color: {color};')
 
     def set_XAxisControl(self, value):
-        self.log.debug(f'set_XAxisControl: {value}')
-        self.kpfguide['TIPTILT_CONTROL_X'].write(value)
+        self.log.info(f'Modifying kpfguide.TIPTILT_CONTROL_X = {value}')
+        self.TIPTILT_CONTROL_X.write(value)
 
 
     ##----------------------------------------------------------
@@ -1056,8 +1047,8 @@ class MainWindow(QMainWindow):
         self.YAxisStatusLabel.setStyleSheet(f'color: {color};')
 
     def set_YAxisControl(self, value):
-        self.log.debug(f'set_YAxisControl: {value}')
-        self.kpfguide['TIPTILT_CONTROL_Y'].write(value)
+        self.log.info(f'Modifying kpfguide.TIPTILT_CONTROL_Y = {value}')
+        self.TIPTILT_CONTROL_Y.write(value)
 
 
     ##----------------------------------------------------------
@@ -1071,21 +1062,19 @@ class MainWindow(QMainWindow):
         else:
             self.DARStatusLabel.setText(f"")
         self.DARStatusLabel.setStyleSheet(f'color: {color};')
-        self.load_file(self.kpfguide['LASTFILE'].read())
+        self.load_file(self.LASTFILE.ktl_keyword.ascii)
 
     def set_DAREnable(self, value):
-        self.log.debug(f'set_DAREnable: {value}')
-        self.kpfguide['DAR_ENABLE'].write(value)
+        self.log.info(f'Modifying kpfguide.DAR_ENABLE = {value}')
+        self.DAR_ENABLE.write(value)
 
 
     ##----------------------------------------------------------
     ## Exposure Status
-    def update_Expose(self, value):
-        exposure_status_string = f"{self.EXPOSE} ({self.ELAPSED.binary:.0f}/{self.EXPOSURE.binary:.0f} s)"
-        self.ExposureStatus.setText(exposure_status_string)
-
-    def update_Elapsed(self, value):
-        exposure_status_string = f"{self.EXPOSE} ({self.ELAPSED.binary:.0f}/{self.EXPOSURE.binary:.0f} s)"
+    def update_exposure_status_string(self, value):
+        elapsed = self.ELAPSED.ktl_keyword.binary
+        exptime = self.EXPOSURE.ktl_keyword.binary
+        exposure_status_string = f"{self.EXPOSE} ({elapsed:.0f}/{exptime:.0f} s)"
         self.ExposureStatus.setText(exposure_status_string)
 
 
@@ -1111,18 +1100,18 @@ class MainWindow(QMainWindow):
         self.ImageViewer.set_intensity_map(ginga_name)
 
     def refresh_guide_geometry_parameters(self):
-        self.roidim = self.kpfguide['TIPTILT_ROIDIM'].read(binary=True)
-        self.roidim  = int(self.roidim/2) # Use half width
-        self.pix_target = self.kpfguide['PIX_TARGET'].read(binary=True)
-        self.xcent, self.ycent = np.array(np.round(self.pix_target), dtype=int)
-        if self.pix_target[0] < 0 or self.pix_target[0] > 640 or self.pix_target[1] < 0 or self.pix_target[1] > 512:
-            self.PixTargetValue.setText(f"{self.pix_target[0]:.1f}, {self.pix_target[1]:.1f} is out of range")
+        roidim  = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
+        pix_target = self.PIX_TARGET.ktl_keyword.binary
+        self.xcent, self.ycent = np.array(np.round(pix_target), dtype=int)
+        if pix_target[0] < 0 or pix_target[0] > 640 or pix_target[1] < 0 or pix_target[1] > 512:
+            self.PixTargetValue.setText(f"{pix_target[0]:.1f}, {pix_target[1]:.1f} is out of range")
             self.PixTargetValue.setStyleSheet(f'color: red;')
         else:
-            self.PixTargetValue.setText(f"{self.pix_target[0]:.1f}, {self.pix_target[1]:.1f}")
+            self.PixTargetValue.setText(f"{pix_target[0]:.1f}, {pix_target[1]:.1f}")
             self.PixTargetValue.setStyleSheet(f'color: black;')
 
     def load_file(self, filepath):
+        roidim  = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
         tick = datetime.datetime.utcnow()
         filepath = Path(filepath)
         hdul = fits.open(filepath, output_verify='silentfix')
@@ -1130,16 +1119,19 @@ class MainWindow(QMainWindow):
         # Scale to an individual frame
         stack = hdul[0].header.get('FRAM_STK')
         self.refresh_guide_geometry_parameters()
-        x0 = self.xcent-self.roidim
-        x1 = self.xcent+self.roidim
-        y0 = self.ycent-self.roidim
-        y1 = self.ycent+self.roidim
+        x0 = self.xcent-roidim
+        x1 = self.xcent+roidim
+        y0 = self.ycent-roidim
+        y1 = self.ycent+roidim
         cropped = CCDData(data=hdul[0].data[y0:y1,x0:x1]/stack,
                           header=hdul[0].header, unit='adu')
         date_beg = hdul[0].header.get('DATE-BEG')
         ts = datetime.datetime.strptime(date_beg, '%Y-%m-%dT%H:%M:%S.%f')
         self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
-        if self.TIPTILT_CALC.read() == 'Active' and self.OBJECT_CHOICE_value != 'None':
+
+        TipTiltCalc = self.TIPTILT_CALC.ktl_keyword.ascii
+        ObjectChoice = self.OBJECT_CHOICE.ktl_keyword.ascii
+        if TipTiltCalc == 'Active' and ObjectChoice != 'None':
             try:
                 self.calculate_FWHM(cropped, ts)
             except Exception as e:
@@ -1156,21 +1148,22 @@ class MainWindow(QMainWindow):
 
     def calculate_FWHM(self, cropped, ts):
         self.log.debug('calculate_FWHM')
+        roidim  = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
         delta = 50
         moffat0 = Moffat2D(amplitude=self.peak_flux_value,
-                           x_0=self.roidim, y_0=self.roidim,
-                   bounds={'x_0': (self.roidim-delta,self.roidim+delta),
-                           'y_0': (self.roidim-delta,self.roidim+delta)})
+                           x_0=roidim, y_0=roidim,
+                   bounds={'x_0': (-delta, +delta),
+                           'y_0': (-delta, +delta)})
         fitter = LevMarLSQFitter()
-        y, x = np.mgrid[:self.roidim*2, :self.roidim*2]
+        y, x = np.mgrid[:roidim*2, :roidim*2]
         z = cropped.data
         with warnings.catch_warnings():
             # Ignore model linearity warning from the fitter
             warnings.filterwarnings('ignore', message='Model is linear in parameters',
                                     category=AstropyUserWarning)
             psf = fitter(moffat0, x, y, z)
-#         xfit = self.xcent - self.roidim + psf.x_0
-#         yfit = self.ycent - self.roidim + psf.y_0
+#         xfit = self.xcent - roidim + psf.x_0
+#         yfit = self.ycent - roidim + psf.y_0
         self.ObjectFWHMValues.append(psf.fwhm*self.pscale)
         if len(self.ObjectFWHMTimes) == 0:
             self.ObjectFWHMTime0 = ts
@@ -1234,20 +1227,23 @@ class MainWindow(QMainWindow):
             self.load_file(f"{p}")
 
     def overlay_objects(self):
-        self.add_mark(self.pix_target[0]-self.xcent+self.roidim,
-                      self.pix_target[1]-self.ycent+self.roidim,
+        roidim = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
+        pix_target = self.PIX_TARGET.ktl_keyword.binary
+        self.add_mark(pix_target[0]-self.xcent+roidim,
+                      pix_target[1]-self.ycent+roidim,
                       'crosshair', tag='PIX_TARGET',
                       label=False,
                       color='red', alpha=0.5)
 
         for obj in [1,2,3]:
-            objectN = self.kpfguide[f'OBJECT{obj}'].read(binary=True)
+            objectN_kfo = getattr(self, f'OBJECT{obj}')
+            objectN = objectN_kfo.ktl_keyword.binary
             if objectN[0] > -998:
                 color = {1: 'blue', 2: 'green', 3: 'red'}[obj]
                 flux = objectN[2]
                 hits = objectN[3]
-                self.add_mark(objectN[0]-self.xcent+self.roidim,
-                              objectN[1]-self.ycent+self.roidim,
+                self.add_mark(objectN[0]-self.xcent+roidim,
+                              objectN[1]-self.ycent+roidim,
                               'circle', tag=f'OBJECT{obj}',
                               label=f"OBJ{obj}: {hits:.0%}",
                               color=color, radius=10, alpha=0.8)
@@ -1284,6 +1280,8 @@ class MainWindow(QMainWindow):
 
 
     def cursor_position_update(self, viewer, button, data_x, data_y):
+        roidim = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
+        pix_target = self.PIX_TARGET.ktl_keyword.binary
         try:
             # We report the value across the pixel, even though the coords
             # change halfway across the pixel
@@ -1293,8 +1291,8 @@ class MainWindow(QMainWindow):
 
             
 
-            fits_x = self.pix_target[0] - self.roidim + data_x + 1
-            fits_y = self.pix_target[1] - self.roidim + data_y + 1
+            fits_x = pix_target[0] - roidim + data_x + 1
+            fits_y = pix_target[1] - roidim + data_y + 1
             text = f"X: {fits_x:.0f}, Y: {fits_y:.0f}, value: {value:d}"
             #text = f"pixel value: {value:d}"
             self.PixelReadout.setText(text)
