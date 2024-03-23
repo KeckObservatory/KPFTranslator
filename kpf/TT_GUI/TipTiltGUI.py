@@ -98,9 +98,11 @@ def main(log):
     application = QApplication(sys.argv)
     if cmd_line_args.dark == True:
         css_file = Path(__file__).parent / 'darkstyle.qss'
-        with open(css_file, 'r') as f:
-            dark_css = f.read()
-        application.setStyleSheet(dark_css)
+    else:
+        css_file = Path(__file__).parent / 'lightstyle.qss'
+    with open(css_file, 'r') as f:
+        dark_css = f.read()
+    application.setStyleSheet(dark_css)
     main_window = MainWindow(log)
     main_window.setupUi()
     main_window.show()
@@ -1080,9 +1082,10 @@ class MainWindow(QMainWindow):
     ##----------------------------------------------------------
     ## Exposure Status
     def update_exposure_status_string(self, value):
+        status = self.EXPOSE.ktl_keyword.ascii
         elapsed = self.ELAPSED.ktl_keyword.binary
         exptime = self.EXPOSURE.ktl_keyword.binary
-        exposure_status_string = f"{self.EXPOSE} ({elapsed:.0f}/{exptime:.0f} s)"
+        exposure_status_string = f"{status} ({elapsed:.0f}/{exptime:.0f} s)"
         self.ExposureStatus.setText(exposure_status_string)
 
 

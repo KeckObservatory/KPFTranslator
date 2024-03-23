@@ -1,9 +1,11 @@
 QMainWindow {
-  background-color: rgb(120, 120, 120);
+  background-color: rgb(80, 80, 80);
 }
 
 QGroupBox {
-  background-color: rgb(80, 80, 80);
+  font-weight: bold;
+  text-decoration: underline;
+  background-color: rgb(120, 120, 120);
 }
 
 QTabWidget {
