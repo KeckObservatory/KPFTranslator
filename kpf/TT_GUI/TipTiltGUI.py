@@ -205,6 +205,12 @@ class MainWindow(QMainWindow):
         self.FWHMPlotAgeThreshold = 120 # seconds
         self.MirrorPositionPlotUpdateTime = 2 # seconds
         self.FigurePadding = 0.1
+        self.VeryLowPeakFluxThreshold = 300
+        self.LowPeakFluxThreshold = 600
+        self.HighPeakFluxThreshold = 12000
+        self.VeryLowFluxThreshold = 20000
+        self.LowFluxThreshold = 40000
+        self.HighFluxThreshold = 10e6
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -618,11 +624,12 @@ class MainWindow(QMainWindow):
         if self.PeakFlux.isEnabled() == True:
             flux_string = f'{self.peak_flux_value:,.0f} ADU'
             self.PeakFlux.setText(f"{flux_string}")
-    
-            if self.peak_flux_value < 100 or self.peak_flux_value > 12000:
+            if self.peak_flux_value < self.VeryLowPeakFluxThreshold:
                 style = f'color: red;'
-            elif self.peak_flux_value < 500:
+            elif self.peak_flux_value < self.LowPeakFluxThreshold:
                 style = f'color: yellow;'
+            elif self.peak_flux_value > self.HighPeakFluxThreshold:
+                style = f'color: red;'
             else:
                 style = f'color: limegreen;'
             self.PeakFlux.setStyleSheet(style)
@@ -635,6 +642,15 @@ class MainWindow(QMainWindow):
             flux = float(value)
             flux_string = f'{flux:,.0f}'
             self.TotalFlux.setText(f"{flux_string}")
+            if flux < self.VeryLowFluxThreshold:
+                style = f'color: red;'
+            elif flux < self.LowFluxThreshold:
+                style = f'color: yellow;'
+            elif flux > self.HighFluxThreshold:
+                style = f'color: red;'
+            else:
+                style = f'color: limegreen;'
+            self.TotalFlux.setStyleSheet(style)
 
             ts = datetime.datetime.now()
             if len(self.ObjectFluxTimes) == 0:
