@@ -127,6 +127,9 @@ class StartOfNight(KPFTranslatorFunction):
         deblend = cfg.getfloat('tiptilt', 'deblend', fallback=1)
         log.info(f"Setting default tip tilt deblending parameter of {deblend}")
         kpfguide['OBJECT_DBCONT'].write(detect_snr)
+        # Set DAR parameter to default value
+        log.info(f"Ensuring DAR correction is on")
+        kpfguide['DAR_ENABLE'].write('Yes')
         # Set Outdirs
         expose = ktl.cache('kpfexpose', 'EXPOSE')
         if expose.read() != 'Ready':
