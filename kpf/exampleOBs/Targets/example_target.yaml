@@ -1,0 +1,26 @@
+Template_Name: kpf_target
+Template_Version: 1.0
+
+# Target Info
+TargetName: 10700               # Name 
+GaiaID: DR3 2452378776434276992 # Gaia ID 
+2MASSID: 01440402-1556141       # 2MASS ID 
+Parallax: 273.81                # Parallax in arcsec
+RadialVelocity: -16.597         # Radial Velocity in km/s
+Gmag: 3.3                       # G band magnitude (eventualy used by exposure meter)
+Jmag: 2.14                      # J band magnitude (eventualy used by guider)
+Teff: 5266                      # Effective temperature
+# Target Coordinates
+RA:                             # Right Ascension
+DEC:                            # Declination
+Equinox: 2000                   # Equinox of coordinates
+Frame: Fk5                      # Coordinate system, should be Fk5 for DCS
+PMRA: 0                         # Proper motion in RA in seconds-of-time/year
+PMDEC: 0                        # Proper motion in Dec in arcsec/year
+Epoch: 2000.0                   # Epoch of coordinates if proper motion is to be applied
+DRA: 0                          # Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east)
+DDEC: 0                         # Non sidereal tracking rate in Dec in arcsec/hr
+# Guider Setup
+GuideMode: manual               # "manual", "auto", "off", or "telescope"
+GuideCamGain: low               # Guide camera gain; values = low | medium | high
+GuideFPS: 100                   # Frames per second for guide camera (for tip-tilt)
