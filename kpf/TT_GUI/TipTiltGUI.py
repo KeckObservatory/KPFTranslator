@@ -218,6 +218,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("KPF TipTilt GUI")
 
         # Menu Bar
+        self.actionQuit = self.findChild(QAction, 'actionQuit')
+        self.actionQuit.triggered.connect(self.quit)
         self.actionrestart_kpfguide1 = self.findChild(QAction, 'actionrestart_kpfguide1')
         self.actionrestart_kpfguide1.triggered.connect(self.run_restart_kpfguide1)
         self.actionrestart_kpfguide2 = self.findChild(QAction, 'actionrestart_kpfguide2')
@@ -598,6 +600,13 @@ class MainWindow(QMainWindow):
         self.CalculationCheckBox.setEnabled(enabled)
         self.ControlCheckBox.setEnabled(enabled)
         self.OffloadCheckBox.setEnabled(enabled)
+
+
+    ##----------------------------------------------------------
+    ## Quit
+    def quit(self):
+        log.info(f"Quitting KPF TipTilt GUI")
+        sys.exit()
 
     ##----------------------------------------------------------
     ## Camera Gain
