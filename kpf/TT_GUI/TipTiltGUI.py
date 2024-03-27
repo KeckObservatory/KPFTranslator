@@ -1147,39 +1147,50 @@ class MainWindow(QMainWindow):
             self.PixTargetValue.setStyleSheet(f'color: black;')
 
     def load_file(self, filepath):
+        try:
+            filepath = Path(filepath)
+        except:
+            log.warning(f'Unable to parse file: {filepath}')
+            return
+
         roidim  = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
         tick = datetime.datetime.utcnow()
-        filepath = Path(filepath)
-        hdul = fits.open(filepath, output_verify='silentfix')
-        # Crop Image
-        # Scale to an individual frame
-        stack = hdul[0].header.get('FRAM_STK')
-        self.refresh_guide_geometry_parameters()
-        x0 = self.xcent-roidim
-        x1 = self.xcent+roidim
-        y0 = self.ycent-roidim
-        y1 = self.ycent+roidim
-        cropped = CCDData(data=hdul[0].data[y0:y1,x0:x1]/stack,
-                          header=hdul[0].header, unit='adu')
-        date_beg = hdul[0].header.get('DATE-BEG')
-        ts = datetime.datetime.strptime(date_beg, '%Y-%m-%dT%H:%M:%S.%f')
-        self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
-
-        TipTiltCalc = self.TIPTILT_CALC.ktl_keyword.ascii
-        ObjectChoice = self.OBJECT_CHOICE.ktl_keyword.ascii
-        if TipTiltCalc == 'Active' and ObjectChoice != 'None':
-            try:
-                self.calculate_FWHM(cropped, ts)
-            except Exception as e:
-                print(e)
-        image = AstroImage()
-        image.load_nddata(cropped)
-        self.ImageViewer.set_image(image)
-
-        self.overlay_objects()
-        tock = datetime.datetime.utcnow()
-        elapsed = (tock-tick).total_seconds()
-        log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
+        if filepath.exists() is False:
+            self.log.debug(f"Could not find file: {filepath}")
+        elif filepath.is_dir() is True:
+            self.log.debug(f"File is a directory: {filepath}")
+        else:
+            self.log.debug(f"Loading FITS file: {filepath}")
+            hdul = fits.open(filepath, output_verify='silentfix')
+            # Crop Image
+            # Scale to an individual frame
+            stack = hdul[0].header.get('FRAM_STK')
+            self.refresh_guide_geometry_parameters()
+            x0 = self.xcent-roidim
+            x1 = self.xcent+roidim
+            y0 = self.ycent-roidim
+            y1 = self.ycent+roidim
+            cropped = CCDData(data=hdul[0].data[y0:y1,x0:x1]/stack,
+                              header=hdul[0].header, unit='adu')
+            date_beg = hdul[0].header.get('DATE-BEG')
+            ts = datetime.datetime.strptime(date_beg, '%Y-%m-%dT%H:%M:%S.%f')
+            self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
+    
+            TipTiltCalc = self.TIPTILT_CALC.ktl_keyword.ascii
+            ObjectChoice = self.OBJECT_CHOICE.ktl_keyword.ascii
+            if TipTiltCalc == 'Active' and ObjectChoice != 'None':
+                try:
+                    self.calculate_FWHM(cropped, ts)
+                except Exception as e:
+                    print(e)
+            image = AstroImage()
+            image.load_nddata(cropped)
+            self.ImageViewer.set_image(image)
+    
+            self.overlay_objects()
+            tock = datetime.datetime.utcnow()
+            elapsed = (tock-tick).total_seconds()
+            log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
 
 
     def calculate_FWHM(self, cropped, ts):
