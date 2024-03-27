@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>612</width>
-    <height>938</height>
+    <height>944</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -982,7 +982,7 @@
       <x>10</x>
       <y>840</y>
       <width>591</width>
-      <height>71</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="title">
@@ -1401,7 +1401,41 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>612</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuTroubleshooting">
+    <property name="title">
+     <string>Troubleshooting</string>
+    </property>
+    <addaction name="actionrestart_kpfguide1"/>
+    <addaction name="actionrestart_kpfguide2"/>
+    <addaction name="actionrestart_kpfguide3"/>
+   </widget>
+   <addaction name="menuTroubleshooting"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionrestart_kpfguide1">
+   <property name="text">
+    <string>restart kpfguide1 (CRED2 Communications)</string>
+   </property>
+  </action>
+  <action name="actionrestart_kpfguide2">
+   <property name="text">
+    <string>restart kpfguide2 (Tip Tilt Control Software)</string>
+   </property>
+  </action>
+  <action name="actionrestart_kpfguide3">
+   <property name="text">
+    <string>restart kpfguide3 (Offloading Software)</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

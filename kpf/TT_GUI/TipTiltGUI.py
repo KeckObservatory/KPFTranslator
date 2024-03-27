@@ -10,6 +10,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import re
 import copy
+import subprocess
 
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
@@ -18,7 +19,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import QTimer, QMargins
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QFrame, QStatusBar,
                              QLabel, QPushButton, QLineEdit, QComboBox,
-                             QCheckBox, QMessageBox, QGridLayout)
+                             QCheckBox, QMessageBox, QGridLayout, QAction)
 
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -216,8 +217,16 @@ class MainWindow(QMainWindow):
         self.log.debug('setupUi')
         self.setWindowTitle("KPF TipTilt GUI")
 
+        # Menu Bar
+        self.actionrestart_kpfguide1 = self.findChild(QAction, 'actionrestart_kpfguide1')
+        self.actionrestart_kpfguide1.triggered.connect(self.run_restart_kpfguide1)
+        self.actionrestart_kpfguide2 = self.findChild(QAction, 'actionrestart_kpfguide2')
+        self.actionrestart_kpfguide2.triggered.connect(self.run_restart_kpfguide2)
+        self.actionrestart_kpfguide3 = self.findChild(QAction, 'actionrestart_kpfguide3')
+        self.actionrestart_kpfguide3.triggered.connect(self.run_restart_kpfguide3)
+
         # Status Bar
-        self.StatusBar = self.findChild(QStatusBar, 'statusbar')
+        self.StatusBar = self.findChild(QStatusBar, 'statusBar')
         self.CONTINUOUSStatusLabel = QLabel('')
         self.StatusBar.addPermanentWidget(self.CONTINUOUSStatusLabel)
         self.SAVEStatusLabel = QLabel('')
@@ -1327,6 +1336,44 @@ class MainWindow(QMainWindow):
         except Exception:
             value = None
 
+    ##----------------------------------------------------------
+    ## Restarting kpfguide dispatchers
+    def run_restart_kpfguide1(self):
+        self.run_restart_kpfguide_popup(1)
+
+    def run_restart_kpfguide2(self):
+        self.run_restart_kpfguide_popup(2)
+
+    def run_restart_kpfguide3(self):
+        self.run_restart_kpfguide_popup(3)
+
+    def run_restart_kpfguide_popup(self, num):
+        self.log.debug(f"run_restart_kpfguide_popup{num}")
+        restart_kpfguide_popup = QMessageBox()
+        restart_kpfguide_popup.setWindowTitle(f'Restart kpfguide{num} Confirmation')
+        restart_kpfguide_popup.setText(f"Do you really want to restart kpfguide{num}?")
+        restart_kpfguide_popup.setIcon(QMessageBox.Critical)
+        restart_kpfguide_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
+        bttn = restart_kpfguide_popup.exec_()
+        if bttn == QMessageBox.Yes:
+            self.log.debug(f'restart_kpfguide{num} confirmed')
+            self.restart_kpfguide(num)
+        else:
+            self.log.debug(f'restart_kpfguide{num} cancelled')
+            return False
+
+
+    def restart_kpfguide(self, num):
+        self.log.warning(f"Recieved request to restart kpfguide{num}")
+        restart_kpfguide_cmd = f'kpf restart kpfguide{num} ; echo "Done!" ; sleep 5'
+        # Pop up an xterm with the script running
+        xterm_cmd = ['xterm',
+                     '-title', f'restart kpfguide{num}',
+                     '-name', f'restart kpfguide{num}',
+                     '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+                     '-e', f'{restart_kpfguide_cmd}']
+        self.log.warning(f"Launching: {xterm_cmd}")
+        proc = subprocess.Popen(xterm_cmd)
 
 # end of class MainWindow
 
