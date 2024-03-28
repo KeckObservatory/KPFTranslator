@@ -68,11 +68,13 @@ class RunSciOB(KPFTranslatorFunction):
         print("    the star on the KPF PO and they have initiated tip tilt")
         print("    corrections (if desired).")
         print()
-        print("    Press 'Enter' to begin science exposure(s) ...")
+        print("    Press 'Enter' to begin exposure(s) or 'a' to abort script")
         print("###############################################################")
         print()
         user_input = input()
         log.debug(f'response: "{user_input}"')
+        if user_input.lower() in ['a', 'abort', 'q', 'quit']:
+            raise KPFException("User chose to halt execution")
 
         check_scriptstop()
 

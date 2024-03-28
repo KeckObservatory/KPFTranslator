@@ -76,13 +76,13 @@ class ConfigureForScience(KPFTranslatorFunction):
                 print("The tip tilt loops are not in the expected state based")
                 print("on the information in the OB.")
                 print()
-                print("Do you wish to continue executing this OB")
-                print("(Y/n)? ")
+                print("Do you wish to continue executing this OB?")
+                print("(y/n) [y]:")
                 print("#####################################################")
                 print()
                 user_input = input()
                 log.debug(f'response: "{user_input}"')
-                if user_input.lower().strip() in ['n', 'no', 'a', 'abort']:
+                if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
                     raise KPFException("User chose to halt execution")
 
         check_scriptstop()
@@ -98,13 +98,13 @@ class ConfigureForScience(KPFTranslatorFunction):
                 print("Please double check that the target object is where you")
                 print("want it to be before proceeding.")
                 print()
-                print("Do you wish to continue executing this OB")
-                print("(Y/n)? ")
+                print("Do you wish to continue executing this OB?")
+                print("(y/n) [y]:")
                 print("#####################################################")
                 print()
                 user_input = input()
                 log.debug(f'response: "{user_input}"')
-                if user_input.lower().strip() in ['n', 'no', 'a', 'abort']:
+                if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
                     raise KPFException("User chose to halt execution")
 
         check_scriptstop()

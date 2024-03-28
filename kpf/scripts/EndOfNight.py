@@ -61,7 +61,8 @@ class EndOfNight(KPFTranslatorFunction):
                "Perform shutdown of AO? This will move the AO hatch and PCU.",
                "The AO area should be clear of personnel before proceeding.",
                "",
-               "Do you wish to shutdown AO? [Y/n]",
+               "Do you wish to shutdown AO?",
+               "(y/n) [y]:",
                "--------------------------------------------------------------",
                "",
                ]
