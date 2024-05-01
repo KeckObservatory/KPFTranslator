@@ -44,6 +44,7 @@ from kpf.utils.SetTargetInfo import SetTargetInfo
 from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 from kpf.expmeter.SetupExpMeter import SetupExpMeter
+from kpf.socal.WaitForSoCalOnTarget import WaitForSoCalOnTarget
 
 
 class ExecuteCal(KPFTranslatorFunction):
@@ -248,6 +249,9 @@ class ExecuteCal(KPFTranslatorFunction):
                     log.error('LFC is not ready, skipping remaining LFC frames')
                     SetLFCtoStandbyHigh.execute({})
                     return
+            # Check if SoCal is ready
+            if calsource in ['SoCal-CalFib', 'SoCal-SciSky']:
+                WaitForSoCalOnTarget.execute()
             # Start agitator for each exposure if we are in normal read mode
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
