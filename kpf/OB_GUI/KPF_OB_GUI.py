@@ -371,6 +371,11 @@ class MainWindow(QMainWindow):
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
         self.update_OB('AutoNDFilters', self.OB.SEQ_Observations1.get('AutoNDFilters'))
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
+        # Disable AutoNDFilters for operation
+        self.AutoNDFilters.setEnabled(False)
+
+        self.ExtraNDLabel = self.findChild(QLabel, 'ExtraNDLabel')
+        self.ExtraND = self.findChild(QComboBox, 'ExtraND')
 
         # Do this after the CalND and AutoNDFilters objects have been created
         self.update_OB('TakeSimulCal', self.OB.SEQ_Observations1.get('TakeSimulCal'))
@@ -978,7 +983,6 @@ class MainWindow(QMainWindow):
         # SEQ_Observations: ExpMeterMode
         self.ExpMeterMode.setCurrentText(f"{self.OB.SEQ_Observations1.get('ExpMeterMode')}")
         # SEQ_Observations: AutoExpMeter
-#         self.AutoEMExpTime = 
         self.ExpMeterExpTimeEdit.setEnabled(not self.OB.SEQ_Observations1.get('AutoExpMeter'))
         # SEQ_Observations: ExpMeterExpTime
         self.ExpMeterExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterExpTime')}")
@@ -993,6 +997,9 @@ class MainWindow(QMainWindow):
         auto_nd = self.OB.SEQ_Observations1.get('AutoNDFilters')
         self.CalND1.setEnabled(take_simulcal and not auto_nd)
         self.CalND2.setEnabled(take_simulcal and not auto_nd)
+        self.ExtraNDLabel.setEnabled(take_simulcal and auto_nd)
+        self.ExtraND.setEnabled(take_simulcal and auto_nd)
+
         # SEQ_Observations: CalND1
         self.CalND1.setCurrentText(f"{self.OB.SEQ_Observations1.get('CalND1')}")
         # SEQ_Observations: CalND2
