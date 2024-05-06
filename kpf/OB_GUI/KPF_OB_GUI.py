@@ -1186,10 +1186,15 @@ class MainWindow(QMainWindow):
             self.log.debug('Not executing slew cal')
 
     def do_execute_slewcal_only(self):
+        fiumode = ktl.cache('kpffiu', 'MODE')
         self.log.debug(f"execute_slewcal_only")
         slewcal_file = self.kpfconfig['SLEWCALFILE'].read()
-        #execute_slewcal_only_cmd = f'kpfdo ExecuteSlewCal -f {slewcal_file} ; echo "Done!" ; sleep 20'
-        execute_slewcal_only_cmd = f'kpfdo RunCalOB -f {slewcal_file} --nointensemon; echo "Done!" ; sleep 20'
+        execute_slewcal_only_cmd = f'kpfdo RunCalOB -f {slewcal_file} --nointensemon ; echo "Done!"'
+        # Check if FIU is currently in Observing. If so, send it back when done.
+        fiumode_list = fiumode.read().split(',')
+        if 'Observing' in fiumode_list:
+            execute_slewcal_only_cmd += ' ; modify -s kpffiu MODE=Observing'
+        execute_slewcal_only_cmd += ' ; sleep 20'
         self.log.debug(f'Executing: {execute_slewcal_only_cmd}')
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'ExecuteSlewCal', '-name', 'ExecuteSlewCal',
