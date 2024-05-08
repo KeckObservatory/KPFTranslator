@@ -1,7 +1,6 @@
 Template_Name: kpf_observation
 Template_Version: 2.0
 
-ConfigName: 4x30s_SimulCal     # Identifier for this Configuration
 Object: default                # User settable comment. Use 'default' to automatically set to TargetName
 # Science Detectors
 nExp: 4                        # Number of exoposures in the OB
