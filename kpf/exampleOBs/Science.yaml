@@ -2,26 +2,25 @@ Template_Name: kpf_sci
 Template_Version: 2.0
 
 # Target
-TargetName:                     # Name
-GaiaID: DR3 nnnnnnnnnnnnnnnnnnn # Gaia ID
-2MASSID:                        # 2MASS ID
-Parallax:                       # Parallax in arcsec
-RadialVelocity:                 # Radial Velocity in km/s
-Gmag:                           # G band magnitude (eventualy used by exposure meter)
-Jmag:                           # J band magnitude (eventualy used by guider)
-Teff:                           # Effective temperature
-RA:                             # Right Ascension
-DEC:                            # Declination
-Equinox: 2000                   # Equinox of coordinates
-Frame: Fk5                      # Coordinate system, should be Fk5 for DCS
-PMRA: 0                         # Proper motion in RA in seconds-of-time/year
-PMDEC: 0                        # Proper motion in Dec in arcsec/year
-Epoch: 2000.0                   # Epoch of coordinates if proper motion is to be applied
-DRA: 0                          # Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east)
-DDEC: 0                         # Non sidereal tracking rate in Dec in arcsec/hr
-GuideMode: manual               # "manual", "auto", "off", or "telescope"
-GuideCamGain: low               # Guide camera gain; values = low | medium | high
-GuideFPS: 100                   # Frames per second for guide camera (for tip-tilt)
+TargetName:                      # Name
+GaiaID: DR3 nnnnnnnnnnnnnnnnnnn  # Gaia ID
+2MASSID:                         # 2MASS ID
+Parallax:                        # Parallax in arcsec
+RadialVelocity:                  # Radial Velocity in km/s
+Gmag:                            # G band magnitude (eventualy used by exposure meter)
+Jmag:                            # J band magnitude (eventualy used by guider)
+Teff:                            # Effective temperature
+RA:                              # Right Ascension
+DEC:                             # Declination
+Equinox: 2000                    # Equinox of coordinates
+PMRA: 0                          # Proper motion in RA in seconds-of-time/year
+PMDEC: 0                         # Proper motion in Dec in arcsec/year
+Epoch: 2000.0                    # Epoch of coordinates if proper motion is to be applied
+DRA: 0                           # Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east)
+DDEC: 0                          # Non sidereal tracking rate in Dec in arcsec/hr
+GuideMode: manual                # "manual", "auto", "off", or "telescope"
+GuideCamGain: low                # Guide camera gain; values = low | medium | high
+GuideFPS: 100                    # Frames per second for guide camera (for tip-tilt)
 Observations:
 # Observation 1
 - Object: default                # User settable comment. Use 'default' to automatically set to TargetName
