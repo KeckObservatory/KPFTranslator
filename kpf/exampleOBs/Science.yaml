@@ -8,8 +8,8 @@ GaiaID: DR3 nnnnnnnnnnnnnnnnnnn  # Gaia ID
 ## DRP Info
 Parallax:                        # Parallax in arcsec
 RadialVelocity:                  # Radial Velocity in km/s
-Gmag:                            # G band magnitude (eventualy used by exposure meter)
-Jmag:                            # J band magnitude (eventualy used by guider)
+Gmag:                            # G band magnitude
+Jmag:                            # J band magnitude
 Teff:                            # Effective temperature
 ## Coordinates
 RA:                              # Right Ascension
