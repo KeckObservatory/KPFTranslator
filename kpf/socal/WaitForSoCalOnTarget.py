@@ -19,22 +19,29 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         socal = ktl.cache('kpfsocal')
-        # Enter loop waiting for operational conditions:
-        #    Check if enclosure is open
-        #      * kpfsocal.ENCSTA = 0
-        #    Check if EKO is tracking:
-        #      * kpfsocal.EKOONLINE = Online
-        #      * kpfsocal.EKOMODE = 3
-        #    Check Pyrheliometer flux?
-        #      * kpfsocal.PYRIRRAD > ??
-        #    Check operations loop
-        #      * kpfsocal.AUTONOMOUS = 1
-        #      * kpfsocal.CAN_OPEN = True
-        #      * kpfsocal.IS_OPEN = True
-        #      * kpfsocal.IS_TRACKING = True
-        #      * kpfsocal.ONLINE = True
-        #      * kpfsocal.STATE = ?
+        timeout = args.get('timeout', 1)
+        pyrirrad_threshold = cfg.getfloat('socal', 'pyrirrad_threshold', fallback=1000)
+        expr = '($kpfsocal.ENCSTA == 0) '
+        expr += 'and ($kpfsocal.EKOONLINE == Online)'
+        expr += 'and ($kpfsocal.EKOMODE == 3)'
+        expr += f'and ($kpfsocal.PYRIRRAD > {pyrirrad_threshold})'
+        expr += 'and ($kpfsocal.AUTONOMOUS == 1)'
+        expr += 'and ($kpfsocal.CAN_OPEN == True)'
+        expr += 'and ($kpfsocal.IS_OPEN == True)'
+        expr += 'and ($kpfsocal.IS_TRACKING == True)'
+        expr += 'and ($kpfsocal.ONLINE == True)'
+        expr += 'and ($kpfsocal.STATE == Tracking)'
+        on_target = ktl.cache(expr, timeout=timeout)
+        return on_target
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument('timeout', type=float,
+                            help='Timeout time in seconds')
+        return super().add_cmdline_args(parser, cfg)

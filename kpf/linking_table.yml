@@ -219,8 +219,8 @@ links:
         cmd: scripts.RunCalOB.RunCalOB
     RunSciOB:
         cmd: scripts.RunSciOB.RunSciOB
-    RunScheduledCals:
-        cmd: scripts.RunScheduledCals.RunScheduledCals
+    RunSoCalObservingLoop:
+        cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
     RunTwilightRVStandard:
         cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
     StartOfNight:
@@ -231,6 +231,9 @@ links:
         cmd: scripts.TestScienceADC.TestScienceADC
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
+    # SoCal
+    WaitForSoCalOnTarget:
+        cmd: socal.WaitForSoCalOnTarget.WaitForSoCalOnTarget
     # Spectrograph
     QueryFastReadMode:
         cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
