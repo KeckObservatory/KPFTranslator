@@ -31,7 +31,7 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
         expr += 'and ($kpfsocal.IS_TRACKING == True)'
         expr += 'and ($kpfsocal.ONLINE == True)'
         expr += 'and ($kpfsocal.STATE == Tracking)'
-        on_target = ktl.cache(expr, timeout=timeout)
+        on_target = ktl.waitFor(expr, timeout=timeout)
         return on_target
 
     @classmethod
