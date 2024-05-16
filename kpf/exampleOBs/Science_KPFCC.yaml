@@ -61,5 +61,4 @@ Metadata:
   SetDayOfSemester:              # Calculation
   TotalObservationsRequested:    # Calculation
   TotalTimeForOB:                # Calculation [hours]
-  TotalTimeForOB:                # Calculation [hours]
   RequestFeasibility:            # Calculation
