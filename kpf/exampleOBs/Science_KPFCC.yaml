@@ -2,63 +2,63 @@ Template_Name: kpf_sci
 Template_Version: 2.0
 
 Target:
-  TargetName:                      # Name
-  GaiaID: DR3 nnnnnnnnnnnnnnnnnnn  # Gaia ID
-  2MASSID:                         # 2MASS ID
+  TargetName: string              # Name
+  GaiaID: DR3 nnnnnnnnnnnnnnnnnnn # Gaia ID
+  2MASSID: string                 # 2MASS ID
   ## DRP Info
-  Parallax:                        # Parallax in arcsec
-  RadialVelocity:                  # Radial Velocity in km/s
-  Gmag:                            # G band magnitude
-  Jmag:                            # J band magnitude
-  Teff:                            # Effective temperature
+  Parallax: float                 # Parallax in arcsec
+  RadialVelocity: float           # Radial Velocity in km/s
+  Gmag: float                     # G band magnitude
+  Jmag: float                     # J band magnitude
+  Teff: float                     # Effective temperature
   ## Coordinates
-  RA:                              # Right Ascension
-  DEC:                             # Declination
-  Equinox: 2000                    # Equinox of coordinates
-  PMRA: 0                          # Proper motion in RA in seconds-of-time/year
-  PMDEC: 0                         # Proper motion in Dec in arcsec/year
-  Epoch: 2000.0                    # Epoch of coordinates if proper motion is to be applied
-  DRA: 0                           # Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east)
-  DDEC: 0                          # Non sidereal tracking rate in Dec in arcsec/hr
+  RA: hh:mm:ss.ss                 # Right Ascension
+  DEC: dd:mm:ss.s                 # Declination
+  Equinox: 2000                   # Equinox of coordinates
+  PMRA: float                     # Proper motion in RA in seconds-of-time/year
+  PMDEC: float                    # Proper motion in Dec in arcsec/year
+  Epoch: float                    # Epoch of coordinates if proper motion is to be applied
+  DRA: float                      # Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east)
+  DDEC: float                     # Non sidereal tracking rate in Dec in arcsec/hr
   ## Guider Setup
-  GuideMode: manual                # "manual", "auto", "off", or "telescope"
-  GuideCamGain: low                # Guide camera gain; values = low | medium | high
-  GuideFPS: 100                    # Frames per second for guide camera (for tip-tilt)
+  GuideMode: string               # "manual", "auto", "off", or "telescope"
+  GuideCamGain: string            # Guide camera gain; values = low | medium | high
+  GuideFPS: int                   # Frames per second for guide camera (for tip-tilt)
 Observations:
-  Object: default                # User settable comment. Use 'default' to automatically set to TargetName
+  Object: string                  # User settable comment. Use 'default' to automatically set to TargetName
   # Science Detectors
-  nExp: 4                        # Number of exoposures in the OB
-  ExpTime: 30                    # Exposure time of the main spectrometer and CaH&K. See Exposure Meter section below.
+  nExp: int                       # Number of exoposures in the OB
+  ExpTime: float                  # Exposure time of the main spectrometer and CaH&K. See Exposure Meter section below.
   # Instrument Configuration
-  TriggerCaHK: True              # Include CaHK in exposure (True/False)
-  TriggerGreen: True             # Include Green CCD in exposure (True/False)
-  TriggerRed: True               # Include Red CCD in exposure (True/False)
-  BlockSky: False                # Close the sky fiber shutter during observations (True/False)
-  # Exposure Meter
-  ExpMeterMode: control          # "monitor" or "control" (to terminate exposure based on flux)
-  AutoExpMeter: False            # Set the exposure meter exposure time automatically
-  ExpMeterExpTime: 0.5           # Exposure time of the Exposure Meter subframes
-  ExpMeterBin: 3                 # Exposure meter wavelength bin to use for stopping exposure
-  ExpMeterThreshold: 1e5         # Target science flux in e-/nm
-  # Simultaneous Calibration
-  TakeSimulCal: True             # Take simultaneous calibrations? (True/False)
-  AutoNDFilters: False           # Automatically set ND filters
-  CalND1: OD 4.0                 # OD=Optical Density. Throughput = 10^-OD. Values = OD 0.1, OD 1.0, OD 1.3, OD 2.0, OD 3.0, OD 4.0
-  CalND2: OD 0.1                 # Values: OD 0.1, OD 0.3, OD 0.5, OD 0.8, OD 1.0, OD 4.0
-Scheduling:
-  VisitsPerNight:                # Number of Visits per Night
-  NightsPerSemester:             # Number of of Nights Per Semester
-  InterNightCadenceMin:          # Minimum Inter-Night Cadence (hours?)
-  IntraNightCadenceMin:          # Minimum Intra-Night Cadence (days?)
+  TriggerCaHK: bool               # Include CaHK in exposure (True/False)
+  TriggerGreen: bool              # Include Green CCD in exposure (True/False)
+  TriggerRed: bool                # Include Red CCD in exposure (True/False)
+  BlockSky: bool                  # Close the sky fiber shutter during observations (True/False)
+  # Exposure Meter 
+  ExpMeterMode: string            # "monitor" or "control" (to terminate exposure based on flux)
+  AutoExpMeter: bool              # Set the exposure meter exposure time automatically
+  ExpMeterExpTime: float          # Exposure time of the Exposure Meter subframes
+  ExpMeterBin: int                # Exposure meter wavelength bin to use for stopping exposure
+  ExpMeterThreshold: float        # Target science flux in e-/nm
+  # Simultaneous Calibration 
+  TakeSimulCal: bool              # Take simultaneous calibrations? (True/False)
+  AutoNDFilters: bool             # Automatically set ND filters
+  CalND1: string                  # OD=Optical Density. Throughput = 10^-OD. Values = OD 0.1, OD 1.0, OD 1.3, OD 2.0, OD 3.0, OD 4.0
+  CalND2: string                  # Values: OD 0.1, OD 0.3, OD 0.5, OD 0.8, OD 1.0, OD 4.0
+Scheduling: 
+  VisitsPerNight: int             # Number of Visits per Night
+  NightsPerSemester: int          # Number of of Nights Per Semester
+  InterNightCadenceMin: float     # Minimum Inter-Night Cadence (hours?)
+  IntraNightCadenceMin: float     # Minimum Intra-Night Cadence (days?)
 Metadata:
-  ObservingNotes:
-  SemesterID:
-  OBState:
-  OBStatus:
-  OBSubmittalDetails:
-  OBSubmitter:
-  RiseDayOfSemester:             # Calculation
-  SetDayOfSemester:              # Calculation
-  TotalObservationsRequested:    # Calculation
-  TotalTimeForOB:                # Calculation [hours]
-  RequestFeasibility:            # Calculation
+  ObservingNotes: string
+  SemesterID: string
+  OBState: ?
+  OBStatus: ?
+  OBSubmittalDetails: ?
+  OBSubmitter: string
+  RiseDayOfSemester: ?            # Calculation
+  SetDayOfSemester: ?             # Calculation
+  TotalObservationsRequested: int # Calculation
+  TotalTimeForOB: float           # Calculation [hours]
+  RequestFeasibility: ?           # Calculation
