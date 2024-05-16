@@ -51,8 +51,12 @@ Scheduling:
   InterNightCadenceMin: float     # Minimum Inter-Night Cadence (hours?)
   IntraNightCadenceMin: float     # Minimum Intra-Night Cadence (days?)
 Metadata:
-  ObservingNotes: string
-  SemesterID: string
+  ID:                             # Unique ID for this OB
+  SemesterID: string              # Semester and program ID
+  ObservingNotes: string          # Notes by author of this OB for observer
+  NAttemptedExecutions: int       # Count of attempted executions of this OB
+  NCompletedExecutions: int       # Count of completed executions of this OB
+  NValidatedExecutions: int       # Count of validated executions of this OB
   OBState: ?
   OBStatus: ?
   OBSubmittalDetails: ?
