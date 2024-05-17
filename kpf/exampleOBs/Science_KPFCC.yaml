@@ -40,7 +40,7 @@ Observations:
   ExpMeterExpTime: float          # Exposure time of the Exposure Meter subframes
   ExpMeterBin: int                # Exposure meter wavelength bin to use for stopping exposure
   ExpMeterThreshold: float        # Target science flux in e-/nm
-  # Simultaneous Calibration 
+  # Simultaneous Calibration
   TakeSimulCal: bool              # Take simultaneous calibrations? (True/False)
   AutoNDFilters: bool             # Automatically set ND filters
   CalND1: string                  # OD=Optical Density. Throughput = 10^-OD. Values = OD 0.1, OD 1.0, OD 1.3, OD 2.0, OD 3.0, OD 4.0
@@ -50,6 +50,12 @@ Scheduling:
   NightsPerSemester: int          # Number of of Nights Per Semester
   InterNightCadenceMin: float     # Minimum Inter-Night Cadence (hours?)
   IntraNightCadenceMin: float     # Minimum Intra-Night Cadence (days?)
+  # Calculated Values
+  RiseDayOfSemester: ?            # 
+  SetDayOfSemester: ?             # 
+  TotalObservationsRequested: int # 
+  TotalTimeForOB: float           # [hours]
+  RequestFeasibility: ?           # 
 Metadata:
   ID:                             # Unique ID for this OB
   SemesterID: string              # Semester and program ID
@@ -57,12 +63,7 @@ Metadata:
   NAttemptedExecutions: int       # Count of attempted executions of this OB
   NCompletedExecutions: int       # Count of completed executions of this OB
   NValidatedExecutions: int       # Count of validated executions of this OB
-  OBState: ?
-  OBStatus: ?
-  OBSubmittalDetails: ?
-  OBSubmitter: string
-  RiseDayOfSemester: ?            # Calculation
-  SetDayOfSemester: ?             # Calculation
-  TotalObservationsRequested: int # Calculation
-  TotalTimeForOB: float           # Calculation [hours]
-  RequestFeasibility: ?           # Calculation
+  OBState: ?                      # ?
+  OBStatus: ?                     # ?
+  OBSubmittalDetails: ?           # ?
+  OBSubmitter: string             # ?
