@@ -9,6 +9,7 @@ from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
+from kpf.socal.WaitForSoCalOnTarget import WaitForSoCalOnTarget
 
 
 class RunSoCalObservingLoop(KPFTranslatorFunction):
@@ -31,8 +32,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         SCRIPTNAME.monitor()
         SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
         SCRIPTPID.monitor()
-        
+
         # Start Loop
+        max_wait_per_iteration = 60
         start_time = args.get('StartTimeUT', 19)
         end_time = args.get('EndTimeUT', 22)
         now = datetime.datetime.utcnow()
@@ -59,7 +61,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         set_script_keywords(Path(__file__).name, os.getpid())
 
         if now_decimal > start_time and now_decimal < end_time:
-            on_target = WaitForSoCalOnTarget.execute({'timeout': 60})
+            on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
             log.debug(f'SoCal on target: {on_target}')
             if on_target == True:
                 # Observe the Sun
@@ -169,6 +171,4 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                             choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
                                      "OD 1.0", "OD 4.0"],
                             help='ND2 Filter to use for Etalon.')
-
-
         return super().add_cmdline_args(parser, cfg)
