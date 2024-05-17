@@ -50,6 +50,10 @@ Scheduling:
   NightsPerSemester: int          # Number of of Nights Per Semester
   InterNightCadenceMin: float     # Minimum Inter-Night Cadence (hours?)
   IntraNightCadenceMin: float     # Minimum Intra-Night Cadence (days?)
+  # Sky Conditions
+  SeeingBand:                     # 
+  ExtinctionBand:                 # 
+  MinimumElevation:               # 
   # Calculated Values
   RiseDayOfSemester: ?            # 
   SetDayOfSemester: ?             # 
@@ -59,7 +63,7 @@ Scheduling:
 Metadata:
   ID:                             # Unique ID for this OB
   SemesterID: string              # Semester and program ID
-  ObservingNotes: string          # Notes by author of this OB for observer
+  ObservingNotes: string          # Notes by author of this OB for observer -- suggest they describe what is critical in case some component is down (e.g. Ca HK)
   NAttemptedExecutions: int       # Count of attempted executions of this OB
   NCompletedExecutions: int       # Count of completed executions of this OB
   NValidatedExecutions: int       # Count of validated executions of this OB
