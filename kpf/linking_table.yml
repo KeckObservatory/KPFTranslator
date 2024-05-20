@@ -232,6 +232,10 @@ links:
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
     # SoCal
+    DisableSoCal:
+        cmd: socal.DisableSoCal.DisableSoCal
+    EnableSoCal:
+        cmd: socal.EnableSoCal.EnableSoCal
     IsSoCalClosed:
         cmd: socal.IsSoCalClosed.IsSoCalClosed
     IsSoCalOpen:
