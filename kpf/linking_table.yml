@@ -232,6 +232,10 @@ links:
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
     # SoCal
+    IsSoCalClosed:
+        cmd: socal.IsSoCalClosed.IsSoCalClosed
+    IsSoCalOpen:
+        cmd: socal.IsSoCalOpen.IsSoCalOpen
     WaitForSoCalOnTarget:
         cmd: socal.WaitForSoCalOnTarget.WaitForSoCalOnTarget
     # Spectrograph
