@@ -21,7 +21,7 @@ class IsSoCalClosed(KPFTranslatorFunction):
         timeout = cfg.getfloat('SoCal', 'enclosure_status_time', fallback=10)
         ENCSTA = ktl.cache('kpfsocal', 'ENCSTA')
         is_closed = ENCSTA.waitFor("==1", timeout=timeout)
-        msg = {False: 'SoCal is open', True: 'SoCal is Closed'}[is_closed]
+        msg = {True: 'SoCal is Closed', False: 'SoCal is NOT Closed'}[is_closed]
         print(msg)
         return is_closed
 
