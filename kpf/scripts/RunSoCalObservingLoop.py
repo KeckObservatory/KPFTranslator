@@ -35,9 +35,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
         # Start Loop
         max_wait_per_iteration = 60
-        start_time = args.get('StartTimeUT', 19)
-        end_time = args.get('EndTimeUT', 22)
-        now = datetime.datetime.utcnow()
+        start_time = args.get('StartTimeHST', 9)
+        end_time = args.get('EndTimeHST', 12)
+        now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
         if now_decimal < start_time:
@@ -145,10 +145,10 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     def add_cmdline_args(cls, parser, cfg=None):
         '''The arguments to add to the command line interface.
         '''
-        parser.add_argument('StartTimeUT', type=float,
-                            help='Start of daily observing window in decimal hours UT.')
-        parser.add_argument('EndTimeUT', type=float,
-                            help='End of daily observing window in decimal hours UT.')
+        parser.add_argument('StartTimeHST', type=float,
+                            help='Start of daily observing window in decimal hours HST.')
+        parser.add_argument('EndTimeHST', type=float,
+                            help='End of daily observing window in decimal hours HST.')
         # SoCal Parameters
         parser.add_argument('SoCalExpTime', type=float, default=12,
                             help='Exposure time for SoCal exposures.')

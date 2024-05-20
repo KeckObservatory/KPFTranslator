@@ -19,7 +19,7 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         socal = ktl.cache('kpfsocal')
-        timeout = args.get('timeout', 1)
+        timeout = cfg.getfloat('SoCal', 'enclosure_status_time', fallback=10)
         pyrirrad_threshold = cfg.getfloat('socal', 'pyrirrad_threshold', fallback=1000)
         expr = '($kpfsocal.ENCSTA == 0) '
         expr += 'and ($kpfsocal.EKOONLINE == Online)'
@@ -37,11 +37,3 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
-        parser.add_argument('timeout', type=float,
-                            help='Timeout time in seconds')
-        return super().add_cmdline_args(parser, cfg)
