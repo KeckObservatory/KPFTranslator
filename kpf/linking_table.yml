@@ -236,6 +236,10 @@ links:
         cmd: socal.IsSoCalClosed.IsSoCalClosed
     IsSoCalOpen:
         cmd: socal.IsSoCalOpen.IsSoCalOpen
+    SoCalStartAutonomous:
+        cmd: socal.SoCalStartAutonomous.SoCalStartAutonomous
+    SoCalStopAutonomous:
+        cmd: socal.SoCalStopAutonomous.SoCalStopAutonomous
     WaitForSoCalOnTarget:
         cmd: socal.WaitForSoCalOnTarget.WaitForSoCalOnTarget
     # Spectrograph
