@@ -24,6 +24,6 @@ class SoCalStartAutonomous(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         AUTONOMOUS = ktl.cache('kpfsocal', 'AUTONOMOUS')
-        success = AUTONOMOUS.waitFor("==0", timeout=1)
+        success = AUTONOMOUS.waitFor("==1", timeout=1)
         if success is False:
             raise FailedToReachDestination('kpfsocal.AUTONOMOUS is not 1')
