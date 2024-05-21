@@ -3,6 +3,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
+from kpf.socal.SoCalStopAutonomous import SoCalStopAutonomous
 
 
 class ParkSoCal(KPFTranslatorFunction):
@@ -18,6 +19,7 @@ class ParkSoCal(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        SoCalStopAutonomous.execute({})
         log.info('Parking SoCal')
         kpfsocal = ktl.cache('kpfsocal')
         kpfsocal['ENCCMD'].write('close')
