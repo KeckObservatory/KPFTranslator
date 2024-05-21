@@ -240,6 +240,8 @@ links:
         cmd: socal.IsSoCalClosed.IsSoCalClosed
     IsSoCalOpen:
         cmd: socal.IsSoCalOpen.IsSoCalOpen
+    ParkSoCal:
+        cmd: socal.ParkSoCal.ParkSoCal
     SoCalStartAutonomous:
         cmd: socal.SoCalStartAutonomous.SoCalStartAutonomous
     SoCalStopAutonomous:
