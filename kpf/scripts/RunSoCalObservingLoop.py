@@ -69,7 +69,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
         while now_decimal > start_time and now_decimal < end_time:
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
-            log.debug(f'SoCal on target: {on_target}')
             if on_target == True:
                 # Observe the Sun
                 observation = {'Template_Name': 'kpf_lamp',
@@ -113,7 +112,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                                'TakeSimulCal': True,
                                'nointensemon': True,
                                }
- 
+            log.info(f'SoCal on target: {on_target}')
+            log.info(f"Executing {observation['Object']}")
             try:
                 check_scriptstop()
                 ExecuteCal.execute(observation)
