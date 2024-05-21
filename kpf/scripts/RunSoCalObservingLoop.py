@@ -147,6 +147,11 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
         log.info('SoCal observation loop completed')
+        # Clear script keywords so that cleanup can start successfully
+        clear_script_keywords()
+
+        # Cleanup
+        CleanupAfterScience.execute()
 
 
     @classmethod
