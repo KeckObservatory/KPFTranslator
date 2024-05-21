@@ -8,7 +8,7 @@ import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+                 FailedToReachDestination, check_input, ScriptStopTriggered)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
