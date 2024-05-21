@@ -9,6 +9,8 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
+from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
+                         add_script_log)
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
 from kpf.socal.WaitForSoCalOnTarget import WaitForSoCalOnTarget
@@ -61,6 +63,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         log.info('Starting SoCal observation loop')
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
+        check_scriptstop()
 
         if now_decimal > start_time and now_decimal < end_time:
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
@@ -108,6 +111,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                                }
  
             try:
+                check_scriptstop()
                 ExecuteCal.execute(observation)
             except Exception as e:
                 log.error("ExecuteCal failed:")
@@ -131,6 +135,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                 log.error('Running CleanupAfterCalibrations and exiting')
                 CleanupAfterCalibrations.execute({})
                 sys.exit(1)
+
+            check_scriptstop()
 
             # Update loop inputs
             now = datetime.datetime.utcnow()
