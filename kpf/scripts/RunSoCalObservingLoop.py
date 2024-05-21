@@ -13,6 +13,7 @@ from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
 from kpf.socal.WaitForSoCalOnTarget import WaitForSoCalOnTarget
@@ -57,7 +58,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             return
 
         if SCRIPTPID.binary >= 0:
-            waittime = (end_time-now_decimal)*3600 - 600
+            waittime = (end_time-now_decimal)*3600 - 900
             log.warning(f'Script is currently running: {SCRIPTNAME.ascii} {SCRIPTPID.binary}')
             log.info(f'Waiting for kpfconfig.SCRIPTPID to be clear')
             SCRIPTPID.waitFor("==-1", timeout=waittime)
@@ -85,7 +86,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                                'CalND1': args.get('SoCalND1', 'OD 0.1'),
                                'CalND2': args.get('SoCalND2', 'OD 0.1'),
                                'ExpTime': args.get('SoCalExpTime', 12),
-                               'nExp': 5,
+                               'nExp': 15,
                                'SSS_Science': True,
                                'SSS_Sky': True,
                                'TakeSimulCal': True,
@@ -106,7 +107,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                                'CalND1': args.get('EtalonND1', 'OD 0.1'),
                                'CalND2': args.get('EtalonND2', 'OD 0.1'),
                                'ExpTime': args.get('EtalonExpTime', 60),
-                               'nExp': 3,
+                               'nExp': 9,
                                'SSS_Science': True,
                                'SSS_Sky': True,
                                'TakeSimulCal': True,
