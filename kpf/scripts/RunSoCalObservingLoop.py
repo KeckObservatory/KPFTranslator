@@ -16,6 +16,8 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
 from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
+from kpf.socal.ParkSoCal import ParkSoCal
+from kpf.socal.SoCalStartAutonomous import SoCalStartAutonomous
 from kpf.socal.WaitForSoCalOnTarget import WaitForSoCalOnTarget
 
 
@@ -109,7 +111,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
-        AUTONOMOUS = ktl.cache('kpfsocal', 'AUTONOMOUS').read()
+        # Start SoCal in autonomous mode
+        SoCalStartAutonomous.execute({})
+
         if now_decimal < start_time:
             wait = (start_time-now_decimal)*3600
             log.info(f'Waiting {wait:.0f}s for SoCal window start time')
@@ -117,9 +121,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         elif now_decimal > end_time:
             log.info("End time for today's SoCal window has passed")
             return
-        elif AUTONOMOUS == 'Manual':
-            log.warning('SoCal is in Manual mode. Exiting.')
-            return
+
 
         check_scriptstop()
 
@@ -186,7 +188,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
         # Cleanup
         CleanupAfterScience.execute({})
-
+        # Park SoCal?
+        if args.get('park', False) == True:
+            ParkSoCal.execute({})
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -200,6 +204,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,
             help='End of daily observing window in decimal hours HST.')
+        parser.add_argument("--park", dest="park",
+            default=False, action="store_true",
+            help="Close and park SoCal when done?")
         parser.add_argument("--notscheduled", dest="scheduled",
             default=True, action="store_false",
             help="Do not respect the kpfconfig.ALLOWSCHEDULEDCALS flag.")
