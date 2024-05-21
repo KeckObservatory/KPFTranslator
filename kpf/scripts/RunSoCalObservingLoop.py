@@ -152,24 +152,30 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         parser.add_argument('EndTimeHST', type=float,
                             help='End of daily observing window in decimal hours HST.')
         # SoCal Parameters
-        parser.add_argument('SoCalExpTime', type=float, default=12,
+        parser.add_argument('--SoCalExpTime', dest="SoCalExpTime",
+                            type=float, default=12,
                             help='Exposure time for SoCal exposures.')
-        parser.add_argument('SoCalND1', type=str, default='OD 0.1',
+        parser.add_argument('--SoCalND1', dest="SoCalND1",
+                            type=str, default='OD 0.1',
                             choices=["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0",
                                      "OD 3.0", "OD 4.0"],
                             help='ND1 Filter to use for SoCal.')
-        parser.add_argument('SoCalND2', type=str, default='OD 0.1',
+        parser.add_argument('--SoCalND2', dest="SoCalND2",
+                            type=str, default='OD 0.1',
                             choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
                                      "OD 1.0", "OD 4.0"],
                             help='ND2 Filter to use for SoCal.')
         # Etalon Parameters
-        parser.add_argument('EtalonExpTime', type=float, default=60,
+        parser.add_argument('--EtalonExpTime', dest="EtalonExpTime",
+                            type=float, default=60,
                             help='Exposure time for Etalon exposures.')
-        parser.add_argument('EtalonND1', type=str, default='OD 0.1',
+        parser.add_argument('--EtalonND1', dest="EtalonND1",
+                            type=str, default='OD 0.1',
                             choices=["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0",
                                      "OD 3.0", "OD 4.0"],
                             help='ND1 Filter to use for Etalon.')
-        parser.add_argument('EtalonND2', type=str, default='OD 0.1',
+        parser.add_argument('--EtalonND2', dest="EtalonND2",
+                            type=str, default='OD 0.1',
                             choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
                                      "OD 1.0", "OD 4.0"],
                             help='ND2 Filter to use for Etalon.')
