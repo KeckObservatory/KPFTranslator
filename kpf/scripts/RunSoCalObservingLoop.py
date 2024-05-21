@@ -143,7 +143,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             check_scriptstop()
 
             # Update loop inputs
-            now = datetime.datetime.utcnow()
+            now = datetime.datetime.now()
             now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
         log.info('SoCal observation loop completed')
