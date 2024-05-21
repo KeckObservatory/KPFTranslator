@@ -40,6 +40,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
         SCRIPTPID.monitor()
 
+        socal_ND1 = cfg.getfloat('SoCal', 'ND1', fallback='OD 0.1')
+        socal_ND2 = cfg.getfloat('SoCal', 'ND2', fallback='OD 0.1')
+        socal_ExpTime = cfg.getfloat('SoCal', 'ExpTime', fallback=12)
         SoCal_observation = {'Template_Name': 'kpf_lamp',
                              'Template_Version': '1.0',
                              'TargetName': 'Sun',
@@ -51,9 +54,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                              'RunAgitator': True,
                              'CalSource': 'SoCal-SciSky',
                              'Object': 'SoCal',
-                             'CalND1': args.get('SoCalND1', 'OD 0.1'),
-                             'CalND2': args.get('SoCalND2', 'OD 0.1'),
-                             'ExpTime': args.get('SoCalExpTime', 12),
+                             'CalND1': socal_ND1,
+                             'CalND2': socal_ND2,
+                             'ExpTime': socal_ExpTime,
                              'nExp': 15,
                              'SSS_Science': True,
                              'SSS_Sky': True,
@@ -69,6 +72,10 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         SoCal_duration = int(SoCal_observation['nExp'])*max([float(SoCal_observation['ExpTime']), archon_time_shim])
         SoCal_duration += int(SoCal_observation['nExp'])*readout
 #         print(f"Estimated SoCal observation time = {SoCal_duration}")
+
+        Etalon_ND1 = cfg.getfloat('SoCal', 'EtalonND1', fallback='OD 0.1')
+        Etalon_ND2 = cfg.getfloat('SoCal', 'EtalonND2', fallback='OD 0.1')
+        Etalon_ExpTime = cfg.getfloat('SoCal', 'EtalonExpTime', fallback=60)
         Etalon_observation = {'Template_Name': 'kpf_lamp',
                               'Template_Version': '1.0',
                               'TriggerCaHK': True,
@@ -79,9 +86,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                               'RunAgitator': True,
                               'CalSource': 'EtalonFiber',
                               'Object': 'autocal-etalon-all',
-                              'CalND1': args.get('EtalonND1', 'OD 0.1'),
-                              'CalND2': args.get('EtalonND2', 'OD 0.1'),
-                              'ExpTime': args.get('EtalonExpTime', 60),
+                              'CalND1': Etalon_ND1,
+                              'CalND2': Etalon_ND2,
+                              'ExpTime': Etalon_ExpTime,
                               'nExp': 8,
                               'SSS_Science': True,
                               'SSS_Sky': True,
@@ -182,32 +189,3 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                             help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,
                             help='End of daily observing window in decimal hours HST.')
-        # SoCal Parameters
-        parser.add_argument('--SoCalExpTime', dest="SoCalExpTime",
-                            type=float, default=12,
-                            help='Exposure time for SoCal exposures.')
-        parser.add_argument('--SoCalND1', dest="SoCalND1",
-                            type=str, default='OD 0.1',
-                            choices=["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0",
-                                     "OD 3.0", "OD 4.0"],
-                            help='ND1 Filter to use for SoCal.')
-        parser.add_argument('--SoCalND2', dest="SoCalND2",
-                            type=str, default='OD 0.1',
-                            choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
-                                     "OD 1.0", "OD 4.0"],
-                            help='ND2 Filter to use for SoCal.')
-        # Etalon Parameters
-        parser.add_argument('--EtalonExpTime', dest="EtalonExpTime",
-                            type=float, default=60,
-                            help='Exposure time for Etalon exposures.')
-        parser.add_argument('--EtalonND1', dest="EtalonND1",
-                            type=str, default='OD 0.1',
-                            choices=["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0",
-                                     "OD 3.0", "OD 4.0"],
-                            help='ND1 Filter to use for Etalon.')
-        parser.add_argument('--EtalonND2', dest="EtalonND2",
-                            type=str, default='OD 0.1',
-                            choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
-                                     "OD 1.0", "OD 4.0"],
-                            help='ND2 Filter to use for Etalon.')
-        return super().add_cmdline_args(parser, cfg)
