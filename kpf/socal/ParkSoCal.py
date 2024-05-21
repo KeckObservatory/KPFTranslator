@@ -18,6 +18,7 @@ class ParkSoCal(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        log.info('Parking SoCal')
         kpfsocal = ktl.cache('kpfsocal')
         kpfsocal['ENCCMD'].write('close')
         kpfsocal['EKOSLEW'].write(0)
