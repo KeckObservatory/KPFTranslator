@@ -40,10 +40,62 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
         SCRIPTPID.monitor()
 
+        SoCal_observation = {'Template_Name': 'kpf_lamp',
+                             'Template_Version': '1.0',
+                             'TargetName': 'Sun',
+                             'TriggerCaHK': False,
+                             'TimedShutter_CaHK': False,
+                             'TriggerGreen': True,
+                             'TriggerRed': True,
+                             'TriggerExpMeter': False,
+                             'RunAgitator': True,
+                             'CalSource': 'SoCal-SciSky',
+                             'Object': 'SoCal',
+                             'CalND1': args.get('SoCalND1', 'OD 0.1'),
+                             'CalND2': args.get('SoCalND2', 'OD 0.1'),
+                             'ExpTime': args.get('SoCalExpTime', 12),
+                             'nExp': 15,
+                             'SSS_Science': True,
+                             'SSS_Sky': True,
+                             'TakeSimulCal': True,
+                             'nointensemon': True,
+                             }
+        readout_red = cfg.getfloat('time_estimates', f'readout_red', fallback=60)
+        readout_green = cfg.getfloat('time_estimates', f'readout_green', fallback=60)
+        readout_cahk = cfg.getfloat('time_estimates', 'readout_cahk', fallback=1)
+        archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
+                             fallback=2)
+        readout = max([readout_red, readout_green, readout_cahk])
+        SoCal_duration = int(SoCal_observation['nExp'])*max([float(SoCal_observation['ExpTime']), archon_time_shim])
+        SoCal_duration += int(SoCal_observation['nExp'])*readout
+#         print(f"Estimated SoCal observation time = {SoCal_duration}")
+        Etalon_observation = {'Template_Name': 'kpf_lamp',
+                              'Template_Version': '1.0',
+                              'TriggerCaHK': True,
+                              'TimedShutter_CaHK': True,
+                              'TriggerGreen': True,
+                              'TriggerRed': True,
+                              'TriggerExpMeter': False,
+                              'RunAgitator': True,
+                              'CalSource': 'EtalonFiber',
+                              'Object': 'autocal-etalon-all',
+                              'CalND1': args.get('EtalonND1', 'OD 0.1'),
+                              'CalND2': args.get('EtalonND2', 'OD 0.1'),
+                              'ExpTime': args.get('EtalonExpTime', 60),
+                              'nExp': 8,
+                              'SSS_Science': True,
+                              'SSS_Sky': True,
+                              'TakeSimulCal': True,
+                              'nointensemon': True,
+                              }
+        Etalon_duration = int(Etalon_observation['nExp'])*max([float(Etalon_observation['ExpTime']), archon_time_shim])
+        Etalon_duration += int(Etalon_observation['nExp'])*readout
+#         print(f"Estimated Etalon observation time = {Etalon_duration}")
+
         # Start Loop
         max_wait_per_iteration = 60
         start_time = args.get('StartTimeHST', 9)
-        end_time = args.get('EndTimeHST', 12)
+        end_time = args.get('EndTimeHST', 12) - SoCal_duration/3600 - 0.05
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
@@ -58,7 +110,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             return
 
         if SCRIPTPID.binary >= 0:
-            waittime = (end_time-now_decimal)*3600 - 900
+            waittime = (end_time-now_decimal)*3600 - SoCal_duration - 180
             log.warning(f'Script is currently running: {SCRIPTNAME.ascii} {SCRIPTPID.binary}')
             log.info(f'Waiting for kpfconfig.SCRIPTPID to be clear')
             SCRIPTPID.waitFor("==-1", timeout=waittime)
@@ -72,47 +124,10 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
             if on_target == True:
                 # Observe the Sun
-                observation = {'Template_Name': 'kpf_lamp',
-                               'Template_Version': '1.0',
-                               'TargetName': 'Sun',
-                               'TriggerCaHK': False,
-                               'TimedShutter_CaHK': False,
-                               'TriggerGreen': True,
-                               'TriggerRed': True,
-                               'TriggerExpMeter': False,
-                               'RunAgitator': True,
-                               'CalSource': 'SoCal-SciSky',
-                               'Object': 'SoCal',
-                               'CalND1': args.get('SoCalND1', 'OD 0.1'),
-                               'CalND2': args.get('SoCalND2', 'OD 0.1'),
-                               'ExpTime': args.get('SoCalExpTime', 12),
-                               'nExp': 15,
-                               'SSS_Science': True,
-                               'SSS_Sky': True,
-                               'TakeSimulCal': True,
-                               'nointensemon': True,
-                               }
+                observation = SoCal_observation
             else:
                 # Take etalon calibrations
-                observation = {'Template_Name': 'kpf_lamp',
-                               'Template_Version': '1.0',
-                               'TriggerCaHK': True,
-                               'TimedShutter_CaHK': True,
-                               'TriggerGreen': True,
-                               'TriggerRed': True,
-                               'TriggerExpMeter': False,
-                               'RunAgitator': True,
-                               'CalSource': 'EtalonFiber',
-                               'Object': 'autocal-etalon-all',
-                               'CalND1': args.get('EtalonND1', 'OD 0.1'),
-                               'CalND2': args.get('EtalonND2', 'OD 0.1'),
-                               'ExpTime': args.get('EtalonExpTime', 60),
-                               'nExp': 9,
-                               'SSS_Science': True,
-                               'SSS_Sky': True,
-                               'TakeSimulCal': True,
-                               'nointensemon': True,
-                               }
+                observation = Etalon_observation
             log.info(f'SoCal on target: {on_target}')
             log.info(f"Executing {observation['Object']}")
             try:
