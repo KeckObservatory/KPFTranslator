@@ -1,3 +1,4 @@
+import os
 import time
 from pathlib import Path
 import datetime
@@ -55,7 +56,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             return
 
         if SCRIPTPID.binary >= 0:
-            waittime = (end_time-now_decimal)*3600
+            waittime = (end_time-now_decimal)*3600 - 600
             log.warning(f'Script is currently running: {SCRIPTNAME.ascii} {SCRIPTPID.binary}')
             log.info(f'Waiting for kpfconfig.SCRIPTPID to be clear')
             SCRIPTPID.waitFor("==-1", timeout=waittime)
