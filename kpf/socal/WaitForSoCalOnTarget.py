@@ -32,7 +32,7 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
         expr += 'and ($kpfsocal.ONLINE == True)'
         expr += 'and ($kpfsocal.STATE == Tracking)'
         on_target = ktl.waitFor(expr, timeout=timeout)
-        msg = {True: 'On Target', 'NOT On Target'}[on_target]
+        msg = {True: 'On Target', False: 'NOT On Target'}[on_target]
         print(msg)
         return on_target
 
