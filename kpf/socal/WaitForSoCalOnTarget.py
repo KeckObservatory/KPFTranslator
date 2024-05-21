@@ -33,6 +33,26 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
         on_target = ktl.waitFor(expr, timeout=timeout)
         msg = {True: 'On Target', False: 'NOT On Target'}[on_target]
         print(msg)
+        if on_target == False:
+            kpfsocal = ktl.cache('kpfsocal')
+            if kpfsocal['ENCSTA'].read(binary=True) != 0:
+                log.debug(f'ENCSTA != 0')
+            if kpfsocal['EKOONLINE'].read() != 'Online':
+                log.debug(f'EKOONLINE != Online')
+            if kpfsocal['EKOMODE'].read(binary=True) != 3:
+                log.debug(f'EKOMODE != 3')
+            if kpfsocal['PYRIRRAD'].read(binary=True) < pyrirrad_threshold:
+                log.debug(f'PYRIRRAD < {pyrirrad_threshold}')
+            if kpfsocal['AUTONOMOUS'].read(binary=True) != 1:
+                log.debug(f'AUTONOMOUS != 1')
+            if kpfsocal['IS_OPEN'].read(binary=True) != True:
+                log.debug(f'IS_OPEN != True')
+            if kpfsocal['IS_TRACKING'].read(binary=True) != True:
+                log.debug(f'IS_TRACKING != True')
+            if kpfsocal['ONLINE'].read(binary=True) != True:
+                log.debug(f'ONLINE != True')
+            if kpfsocal['STATE'].read() != 'Tracking':
+                log.debug(f'STATE != Tracking')
         return on_target
 
     @classmethod
