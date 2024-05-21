@@ -43,8 +43,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
-        check_scriptstop()
-
         socal_ND1 = cfg.get('SoCal', 'ND1', fallback='OD 0.1')
         socal_ND2 = cfg.get('SoCal', 'ND2', fallback='OD 0.1')
         socal_ExpTime = cfg.getfloat('SoCal', 'ExpTime', fallback=12)
@@ -111,11 +109,11 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
-
         AUTONOMOUS = ktl.cache('kpfsocal', 'AUTONOMOUS').read()
         if now_decimal < start_time:
-            log.info('Waiting for SoCal window start time')
-            time.sleep((start_time-now_decimal)*3600)
+            wait = (start_time-now_decimal)*3600
+            log.info(f'Waiting {wait:.0f}s for SoCal window start time')
+            time.sleep(wait)
         elif now_decimal > end_time:
             log.info("End time for today's SoCal window has passed")
             return
@@ -123,18 +121,22 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             log.warning('SoCal is in Manual mode. Exiting.')
             return
 
-        SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID').read(binary=True)
-        if SCRIPTPID >= 0:
+        check_scriptstop()
+
+        SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
+        if SCRIPTPID.read(binary=True) >= 0:
             SCRIPTNAME = ktl.cache('kpfconfig', 'SCRIPTNAME').read()
             waittime = (end_time-now_decimal)*3600 - SoCal_duration - 180
-            log.warning(f'Script is currently running: {SCRIPTNAME} {SCRIPTPID}')
-            log.info(f'Waiting for kpfconfig.SCRIPTPID to be clear')
-            SCRIPTPID.waitFor("==-1", timeout=waittime)
+            log.warning(f'Script is currently running: {SCRIPTNAME}')
+            if waittime > 0:
+                log.info(f'Waiting up to {waittime:.0f}s for running script to end')
+                SCRIPTPID.waitFor("==-1", timeout=waittime)
 
-        log.info('Starting SoCal observation loop')
+        check_scriptstop()
+
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
-        check_scriptstop()
+        log.info('Starting SoCal observation loop')
 
         while now_decimal > start_time and now_decimal < end_time:
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
