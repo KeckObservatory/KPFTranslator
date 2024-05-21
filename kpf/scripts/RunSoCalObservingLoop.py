@@ -33,6 +33,12 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
+        # Check the ALLOWSCHEDULEDCALS value
+        if args.get('scheduled', True) is True:
+            ALLOWSCHEDULED = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS').read()
+            if ALLOWSCHEDULED == 'No':
+                return
+
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
@@ -189,7 +195,10 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         '''The arguments to add to the command line interface.
         '''
         parser.add_argument('StartTimeHST', type=float,
-                            help='Start of daily observing window in decimal hours HST.')
+            help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,
-                            help='End of daily observing window in decimal hours HST.')
+            help='End of daily observing window in decimal hours HST.')
+        parser.add_argument("--notscheduled", dest="scheduled",
+            default=True, action="store_false",
+            help="Do not respect the kpfconfig.ALLOWSCHEDULEDCALS flag.")
         return super().add_cmdline_args(parser, cfg)
