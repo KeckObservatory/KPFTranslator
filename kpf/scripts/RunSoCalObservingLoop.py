@@ -33,12 +33,11 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
-        AUTONOMOUS = ktl.cache('kpfsocal', 'AUTONOMOUS')
-        AUTONOMOUS.monitor()
-        SCRIPTNAME = ktl.cache('kpfconfig', 'SCRIPTNAME')
-        SCRIPTNAME.monitor()
-        SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
-        SCRIPTPID.monitor()
+        log.info('-------------------------')
+        log.info(f"Running {cls.__name__}")
+        log.info('-------------------------')
+
+        check_scriptstop()
 
         socal_ND1 = cfg.get('SoCal', 'ND1', fallback='OD 0.1')
         socal_ND2 = cfg.get('SoCal', 'ND2', fallback='OD 0.1')
@@ -71,7 +70,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         readout = max([readout_red, readout_green, readout_cahk])
         SoCal_duration = int(SoCal_observation['nExp'])*max([float(SoCal_observation['ExpTime']), archon_time_shim])
         SoCal_duration += int(SoCal_observation['nExp'])*readout
-#         print(f"Estimated SoCal observation time = {SoCal_duration}")
+        log.debug(f"Estimated SoCal observation time = {SoCal_duration}")
 
         Etalon_ND1 = cfg.get('SoCal', 'EtalonND1', fallback='OD 0.1')
         Etalon_ND2 = cfg.get('SoCal', 'EtalonND2', fallback='OD 0.1')
@@ -97,7 +96,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                               }
         Etalon_duration = int(Etalon_observation['nExp'])*max([float(Etalon_observation['ExpTime']), archon_time_shim])
         Etalon_duration += int(Etalon_observation['nExp'])*readout
-#         print(f"Estimated Etalon observation time = {Etalon_duration}")
+        log.debug(f"Estimated Etalon observation time = {Etalon_duration}")
 
         # Start Loop
         max_wait_per_iteration = 60
@@ -106,19 +105,23 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
+
+        AUTONOMOUS = ktl.cache('kpfsocal', 'AUTONOMOUS').read()
         if now_decimal < start_time:
             log.info('Waiting for SoCal window start time')
             time.sleep((start_time-now_decimal)*3600)
         elif now_decimal > end_time:
             log.info("End time for today's SoCal window has passed")
             return
-        elif AUTONOMOUS.ascii == 'Manual':
+        elif AUTONOMOUS == 'Manual':
             log.warning('SoCal is in Manual mode. Exiting.')
             return
 
-        if SCRIPTPID.binary >= 0:
+        SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID').read(binary=True)
+        if SCRIPTPID >= 0:
+            SCRIPTNAME = ktl.cache('kpfconfig', 'SCRIPTNAME').read()
             waittime = (end_time-now_decimal)*3600 - SoCal_duration - 180
-            log.warning(f'Script is currently running: {SCRIPTNAME.ascii} {SCRIPTPID.binary}')
+            log.warning(f'Script is currently running: {SCRIPTNAME} {SCRIPTPID}')
             log.info(f'Waiting for kpfconfig.SCRIPTPID to be clear')
             SCRIPTPID.waitFor("==-1", timeout=waittime)
 
