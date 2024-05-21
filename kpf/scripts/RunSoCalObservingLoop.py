@@ -40,8 +40,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
         SCRIPTPID.monitor()
 
-        socal_ND1 = cfg.getfloat('SoCal', 'ND1', fallback='OD 0.1')
-        socal_ND2 = cfg.getfloat('SoCal', 'ND2', fallback='OD 0.1')
+        socal_ND1 = cfg.get('SoCal', 'ND1', fallback='OD 0.1')
+        socal_ND2 = cfg.get('SoCal', 'ND2', fallback='OD 0.1')
         socal_ExpTime = cfg.getfloat('SoCal', 'ExpTime', fallback=12)
         SoCal_observation = {'Template_Name': 'kpf_lamp',
                              'Template_Version': '1.0',
@@ -73,8 +73,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         SoCal_duration += int(SoCal_observation['nExp'])*readout
 #         print(f"Estimated SoCal observation time = {SoCal_duration}")
 
-        Etalon_ND1 = cfg.getfloat('SoCal', 'EtalonND1', fallback='OD 0.1')
-        Etalon_ND2 = cfg.getfloat('SoCal', 'EtalonND2', fallback='OD 0.1')
+        Etalon_ND1 = cfg.get('SoCal', 'EtalonND1', fallback='OD 0.1')
+        Etalon_ND2 = cfg.get('SoCal', 'EtalonND2', fallback='OD 0.1')
         Etalon_ExpTime = cfg.getfloat('SoCal', 'EtalonExpTime', fallback=60)
         Etalon_observation = {'Template_Name': 'kpf_lamp',
                               'Template_Version': '1.0',
