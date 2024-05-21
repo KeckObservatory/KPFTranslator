@@ -19,13 +19,13 @@ class ParkSoCal(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfsocal = ktl.cache('kpfsocal')
-        kpfsocal.['ENCCMD'].write('close')
-        kpfsocal.['EKOSLEW'].write(0)
-        kpfsocal.['EKOTARGALT'].write(0)
-        kpfsocal.['EKOTARGAZ'].write(0)
-        kpfsocal.['EKOMODE'].write(0)
-        kpfsocal.['EKOSLEW'].write(1)
-        kpfsocal.['EKOSLEW'].write(0)
+        kpfsocal['ENCCMD'].write('close')
+        kpfsocal['EKOSLEW'].write(0)
+        kpfsocal['EKOTARGALT'].write(0)
+        kpfsocal['EKOTARGAZ'].write(0)
+        kpfsocal['EKOMODE'].write(0)
+        kpfsocal['EKOSLEW'].write(1)
+        kpfsocal['EKOSLEW'].write(0)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
