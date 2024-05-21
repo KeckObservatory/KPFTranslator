@@ -189,3 +189,4 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                             help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,
                             help='End of daily observing window in decimal hours HST.')
+        return super().add_cmdline_args(parser, cfg)
