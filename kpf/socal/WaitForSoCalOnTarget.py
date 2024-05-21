@@ -18,7 +18,6 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        socal = ktl.cache('kpfsocal')
         timeout = cfg.getfloat('SoCal', 'enclosure_status_time', fallback=10)
         pyrirrad_threshold = cfg.getfloat('SoCal', 'pyrirrad_threshold', fallback=1000)
         expr = '($kpfsocal.ENCSTA == 0) '
