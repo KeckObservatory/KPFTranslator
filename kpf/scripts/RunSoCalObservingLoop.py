@@ -67,7 +67,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         set_script_keywords(Path(__file__).name, os.getpid())
         check_scriptstop()
 
-        if now_decimal > start_time and now_decimal < end_time:
+        while now_decimal > start_time and now_decimal < end_time:
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
             log.debug(f'SoCal on target: {on_target}')
             if on_target == True:
