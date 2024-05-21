@@ -2,6 +2,7 @@ import os
 import time
 from pathlib import Path
 import datetime
+import traceback
 
 import ktl
 
@@ -89,6 +90,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                                'SSS_Science': True,
                                'SSS_Sky': True,
                                'TakeSimulCal': True,
+                               'nointensemon': True,
                                }
             else:
                 # Take etalon calibrations
@@ -109,6 +111,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                                'SSS_Science': True,
                                'SSS_Sky': True,
                                'TakeSimulCal': True,
+                               'nointensemon': True,
                                }
  
             try:
