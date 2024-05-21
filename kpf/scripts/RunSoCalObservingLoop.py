@@ -174,7 +174,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         clear_script_keywords()
 
         # Cleanup
-        CleanupAfterScience.execute()
+        CleanupAfterScience.execute({})
 
 
     @classmethod
