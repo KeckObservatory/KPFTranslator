@@ -19,6 +19,7 @@ class SoCalStartAutonomous(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         AUTONOMOUS = ktl.cache('kpfsocal', 'AUTONOMOUS')
+        log.info('Setting kpfsocal.AUTONOMOUS = 1')
         AUTONOMOUS.write(1)
 
     @classmethod

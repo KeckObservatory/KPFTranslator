@@ -19,6 +19,7 @@ class EnableSoCal(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         CAN_OPEN = ktl.cache('kpfsocal', 'CAN_OPEN')
+        log.info('Setting kpfsocal.CAN_OPEN = 1')
         CAN_OPEN.write(1)
 
     @classmethod
