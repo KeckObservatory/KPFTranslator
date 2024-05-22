@@ -93,6 +93,10 @@ def waitfor_window_to_appear(name, env=None, timeout=20):
 
 class StartGUIs(KPFTranslatorFunction):
     '''Start KPF GUIs
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

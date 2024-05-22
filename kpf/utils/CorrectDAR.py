@@ -12,13 +12,17 @@ from kpf.utils.CalculateDAR import calculate_DAR_arcsec, calculate_DAR_pix
 ## CorrectDAR
 ##-------------------------------------------------------------------------
 class CorrectDAR(KPFTranslatorFunction):
-    '''Return the DAR correction in arcseconds between the CRED2 wavelength
-    and the science wavelength.
-    
+    '''Modify the CURRENT_BASE keyword based upon the calculated differential
+    atmospheric refraction value. This is NOT the recommended method for doing
+    this as it is now done automatically in the `kpfguide` keyword service. 
+    This script predates full functionality of `kpfguide` and is being left in
+    place only for emergency use.
+
     Calculation from Filippenko 1982 (PASP, 94:715-721, August 1982)
-    
+
     ARGS:
-    EL - Elevation of the telescope.
+    =====
+    :EL: `float` Elevation of the telescope.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

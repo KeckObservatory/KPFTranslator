@@ -14,7 +14,9 @@ class WaitForReady(KPFTranslatorFunction):
     block until the camera is ready for another exposure.  Times out after
     waiting for exposure time plus a set buffer time.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

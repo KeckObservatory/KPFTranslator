@@ -9,7 +9,9 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class StopAgitator(KPFTranslatorFunction):
     '''Stop the agitator motion.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

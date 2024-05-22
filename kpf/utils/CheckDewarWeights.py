@@ -16,7 +16,13 @@ from kpf.utils.SendEmail import SendEmail
 ## CheckDewarWeights
 ##-------------------------------------------------------------------------
 class CheckDewarWeights(KPFTranslatorFunction):
-    '''
+    '''Check the weight of the red and green dewars and send email if they are
+    lower than expected.
+
+    ARGS:
+    =====
+    :dewar: `str` Which dewar to check? red or green
+    :email: `bool` If True, send email if dewar weight is low
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

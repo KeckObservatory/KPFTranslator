@@ -13,11 +13,12 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
     `kpfexpose.SRC_SHUTTERS` keyword.
     
     ARGS:
-    SSS_Science (bool) - Open the SciSelect shutter? (default=False)
-    SSS_Sky (bool) - Open the SkySelect shutter? (default=False)
-    SSS_CalSciSky (bool) - Open the Cal_SciSky shutter? (default=False)
-    SSS_SoCalSci (bool) - Open the SoCalSci shutter? (default=False)
-    SSS_SoCalCal (bool) - Open the SoCalCal shutter? (default=False)
+    =====
+    :SSS_Science: `bool` Open the SciSelect shutter? (default=False)
+    :SSS_Sky: `bool` Open the SkySelect shutter? (default=False)
+    :SSS_CalSciSky: `bool` Open the Cal_SciSky shutter? (default=False)
+    :SSS_SoCalSci: `bool` Open the SoCalSci shutter? (default=False)
+    :SSS_SoCalCal: `bool` Open the SoCalCal shutter? (default=False)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
