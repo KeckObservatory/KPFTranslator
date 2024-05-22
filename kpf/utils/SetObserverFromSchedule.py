@@ -15,7 +15,16 @@ from kpf.spectrograph.SetProgram import SetProgram
 ## SetObserverFromSchedule
 ##-----------------------------------------------------------------------------
 class SetObserverFromSchedule(KPFTranslatorFunction):
-    '''
+    '''Look up the telescope schedule and try to determine the observer names
+    based on the current date and the scheduled programs.
+
+    If only one KPF program is on the schedule, the script will use that to set
+    the observer names.  If multiple programs are on the schedule, it will use
+    the progname input (see below) or query the user if no progname is given.
+
+    ARGS:
+    =====
+    :progname: `str` The program name to set if a choice is needed.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -8,7 +8,14 @@ from kpf.calbench import standardize_lamp_name
 ## EstimateOBDuration
 ##-----------------------------------------------------------------------------
 class EstimateOBDuration(KPFTranslatorFunction):
-    '''
+    '''Estimate the duration of the input OB.
+
+    This script will determine the OB type (science or calibration) and invoke
+    either `EstimateCalOBDuration` or `EstimateSciOBDuration`
+
+    ARGS:
+    =====
+    :OB: `dict` A fully specified observing block (OB).
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
@@ -42,7 +49,11 @@ class EstimateOBDuration(KPFTranslatorFunction):
 ## EstimateCalOBDuration
 ##-----------------------------------------------------------------------------
 class EstimateCalOBDuration(KPFTranslatorFunction):
-    '''
+    '''Estimate the duration of the input calibration OB.
+
+    ARGS:
+    =====
+    :OB: `dict` A fully specified observing block (OB).
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
@@ -126,7 +137,11 @@ class EstimateCalOBDuration(KPFTranslatorFunction):
 ## EstimateSciOBDuration
 ##-----------------------------------------------------------------------------
 class EstimateSciOBDuration(KPFTranslatorFunction):
-    '''
+    '''Estimate the duration of the input science OB.
+
+    ARGS:
+    =====
+    :OB: `dict` A fully specified observing block (OB).
     '''
     @classmethod
     def pre_condition(cls, OB, logger, cfg):

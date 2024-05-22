@@ -11,7 +11,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetOutdirs(KPFTranslatorFunction):
-    '''
+    '''Set output directories for all detectors based on the current date.
+    
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
