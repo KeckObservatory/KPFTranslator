@@ -9,7 +9,9 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class ResetCaHKDetector(KPFTranslatorFunction):
     '''Resets the Ca HK detector by aborting the exposure
 
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -35,7 +37,9 @@ class ResetCaHKDetector(KPFTranslatorFunction):
 class ResetExpMeterDetector(KPFTranslatorFunction):
     '''Resets the exposure meter detector
 
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -61,7 +65,9 @@ class ResetExpMeterDetector(KPFTranslatorFunction):
 class ResetGreenDetector(KPFTranslatorFunction):
     '''Resets the kpfgreen detector
 
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -103,7 +109,9 @@ class ResetGreenDetector(KPFTranslatorFunction):
 class ResetRedDetector(KPFTranslatorFunction):
     '''Resets the kpfred detector
 
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -151,7 +159,9 @@ class ResetDetectors(KPFTranslatorFunction):
     (from camerad) the normal sequence of messages for a completed exposure,
     pretend everything is fine for starting a new exposure.”
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -185,7 +195,9 @@ class ResetDetectors(KPFTranslatorFunction):
 class RecoverDetectors(KPFTranslatorFunction):
     '''Try to examine the state of all detectors an run the appropriate recovery
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

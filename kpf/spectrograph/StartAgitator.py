@@ -10,7 +10,9 @@ class StartAgitator(KPFTranslatorFunction):
     '''Start the agitator motion and wait the appropriate startup time before
     returning.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

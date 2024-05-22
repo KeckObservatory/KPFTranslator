@@ -7,7 +7,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class QueryFastReadMode(KPFTranslatorFunction):
-    '''
+    '''Returns True if both ACF files are consistent with fast read mode.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

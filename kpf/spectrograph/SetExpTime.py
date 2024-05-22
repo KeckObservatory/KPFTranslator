@@ -10,8 +10,9 @@ class SetExpTime(KPFTranslatorFunction):
     '''Sets the exposure time for the science detectors in the kpfexpose
     keyword service.
     
-    Args:
-    ExpTime - The exposure time in seconds
+    ARGS:
+    =====
+    :ExpTime: `float` The exposure time in seconds
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

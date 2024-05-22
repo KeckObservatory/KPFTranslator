@@ -12,7 +12,8 @@ class SetProgram(KPFTranslatorFunction):
     keyword service.
     
     ARGS:
-    progname - The program ID to set.
+    =====
+    :progname: `str` The program ID to set.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

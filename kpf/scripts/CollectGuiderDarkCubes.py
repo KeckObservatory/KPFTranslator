@@ -17,8 +17,10 @@ from kpf.guider.TakeGuiderCube import TakeGuiderCube
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 
 class CollectGuiderDarkCubes(KPFTranslatorFunction):
-    '''
+    '''Obtains CRED2 "trigger file" data cubes under dark conditions at each of
+    the three gain settings for the detector.
 
+    Sequence:
     - Set FIU to Stowed
     - Set kpfguide.SENSORSETP = -40
     - Wait for temperature to reach target

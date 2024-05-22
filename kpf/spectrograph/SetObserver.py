@@ -11,7 +11,8 @@ class SetObserver(KPFTranslatorFunction):
     keyword service.
     
     ARGS:
-    observer - The desired value of the OBSERVER keyword.
+    =====
+    :observer: `str` The desired value of the OBSERVER keyword.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

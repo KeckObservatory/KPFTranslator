@@ -17,8 +17,6 @@ from kpf.spectrograph.WaitForReady import WaitForReady
 class WaitForConfigureCalibrations(KPFTranslatorFunction):
     '''Script which waits for the instrument to be configured for calibrations.
 
-    Can be called by `ddoi_script_functions.waitfor_configure_for_science`.
-
     ARGS:
     =====
     None

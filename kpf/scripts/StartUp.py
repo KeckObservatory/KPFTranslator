@@ -13,9 +13,6 @@ from kpf.utils.StartGUIs import StartGUIs
 class StartUp(KPFTranslatorFunction):
     '''Start KPF software for afternoon setup.
 
-    This will set the output directories, set the program ID and observers, and
-    bring up the instrument GUIS.
-
     ARGS:
     =====
     None

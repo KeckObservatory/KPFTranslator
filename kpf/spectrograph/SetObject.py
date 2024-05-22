@@ -11,7 +11,8 @@ class SetObject(KPFTranslatorFunction):
     keyword service.
     
     ARGS:
-    Object - The desired object keyword value.
+    =====
+    :Object: `str` The desired object keyword value.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

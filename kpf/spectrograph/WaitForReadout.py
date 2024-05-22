@@ -12,7 +12,9 @@ class WaitForReadout(KPFTranslatorFunction):
     '''Waits for the `kpfexpose.EXPOSE` keyword to be "Readout".  This will
     block until the camera enters the readout state.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
