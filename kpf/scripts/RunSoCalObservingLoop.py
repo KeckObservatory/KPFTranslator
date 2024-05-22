@@ -22,11 +22,49 @@ from kpf.socal.WaitForSoCalOnTarget import WaitForSoCalOnTarget
 
 
 class RunSoCalObservingLoop(KPFTranslatorFunction):
-    '''
+    '''This script runs a control loop to execute SoCal observations.
+
+    When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means
+    that the SoCal dispatcher number 4 will handle opening the enclosure,
+    acquiring and tracking the Sun, and will perform a weather safety shutdown
+    if needed.  The AUTONOMOUS mode will respect the CAN_OPEN keyword as well,
+    so that keyword will lock our SoCal motions if that is desired.
+
+    The script takes two required inputs: a start and end time in decimal hours
+    (in HST).  The start time can be after the invocation of this script.  This
+    is in fact the recommended operational strategy as the SoCal AUTONOMOUS
+    mode will then have time to open and acquire the Sun before observations
+    start.
+
+    If needed, the script will wait until the start time before taking further
+    actions (beyond setting AUTONOMOUS). Once the start time has passed, the
+    script will try to determine if SoCal is successfully observing the Sun by
+    invoking the `WaitForSoCalOnTarget` script.
+
+    If SoCal is on target, then a short observation of the Sun is performed.
+    Some of the parameters can be modified in the `KPFTranslator` configuration
+    file (`kpf_int_config.ini`). This observation, as currently configured,
+    takes about 15 minutes to complete.
+
+    If SoCal is not on target (according to the `WaitForSoCalOnTarget` script),
+    then an Etalon calibration set is taken.  This is a way to make use of time
+    that would otherwise be unproductive. This etalon script also takes around
+    15 minutes or a bit less to complete.
+
+    One either of the two observations above has completed, the script repeats
+    the loop as long as there is enough time before the end time to complete a
+    SoCal observation.
+
+    Once the end time has passed, the system will perform basic cleanup of KPF,
+    then it will park SoCal using `ParkSoCal` if the park flag is set.
 
     ARGS:
     =====
-    
+    :StartTimeHST: `float` The time (in decimal hours HST) to begin observing.
+    :EndTimeHST: `float` The time (in decimal hours HST) to end observing.
+    :park: `bool` If True, the script will park SoCal when complete.
+    :scheduled: `bool` If True, the script will not run if the keyword
+                `kpfconfig.ALLOWSCHEDULEDCALS` is "No".
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
