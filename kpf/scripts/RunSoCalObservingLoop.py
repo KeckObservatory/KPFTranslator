@@ -171,6 +171,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             if waittime > 0:
                 log.info(f'Waiting up to {waittime:.0f}s for running script to end')
                 SCRIPTPID.waitFor("==-1", timeout=waittime)
+                time.sleep(10) # time shim
 
         check_scriptstop()
 
