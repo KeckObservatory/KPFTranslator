@@ -197,7 +197,7 @@ class MainWindow(QMainWindow):
             self.log.info(f"Starting GUI in monitor only mode")
         # Settings
         self.TipTiltErrorPlotUpdateTime = 2 # seconds
-        self.TipTiltErrorPlotAgeThreshold = 30 # seconds
+        self.TipTiltErrorPlotAgeThreshold = 60 # seconds
         self.FluxPlotAgeThreshold = 60 # seconds
         self.MirrorPositionPlotUpdateTime = 2 # seconds
         self.FigurePadding = 0.1
@@ -802,7 +802,7 @@ class MainWindow(QMainWindow):
                 n_plot_points += len(starpos_xerr)
                 n_plot_points += len(starpos_yerr)
 
-            ax.plot(tterr_times, tterr, 'k-', ms=2, drawstyle='steps')
+            ax.plot(tterr_times, tterr, 'ko', ms=2, drawstyle='steps')
             if len(self.StarPositionError) > 0:
                 ax.plot(starpos_times, starpos_xerr, 'gx', ms=4, alpha=0.5)
                 ax.plot(starpos_times, starpos_yerr, 'bv', ms=4, alpha=0.5)
