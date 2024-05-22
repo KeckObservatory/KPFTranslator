@@ -31,8 +31,27 @@ class IsSoCalShutDown(KPFTranslatorFunction):
         msg = f'SoCal is {closedstr}closed and {parkedstr}parked'
         print(msg)
 
-        return is_closed and is_home
+        shutdown = is_closed and is_home
+        if not shutdown and args.get('email', False) is True:
+            try:
+                SendEmail.execute({'Subject': f'KPF SoCal is not shut down properly',
+                                   'Message': msg})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
+
+        return shutdown
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        '''The arguments to add to the command line interface.
+        '''
+        parser.add_argument('--email', dest="email",
+                            default=False, action="store_true",
+                            help='Send email if SoCal is not shut down?')
+
+        return super().add_cmdline_args(parser, cfg)
