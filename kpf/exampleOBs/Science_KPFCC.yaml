@@ -34,7 +34,7 @@ Observations:
   TriggerGreen: bool              # Include Green CCD in exposure (True/False)
   TriggerRed: bool                # Include Red CCD in exposure (True/False)
   BlockSky: bool                  # Close the sky fiber shutter during observations (True/False)
-  # Exposure Meter 
+  # Exposure Meter
   ExpMeterMode: string            # "monitor" or "control" (to terminate exposure based on flux)
   AutoExpMeter: bool              # Set the exposure meter exposure time automatically
   ExpMeterExpTime: float          # Exposure time of the Exposure Meter subframes

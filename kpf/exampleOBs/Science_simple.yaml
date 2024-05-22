@@ -34,13 +34,13 @@ Observations:
   TriggerGreen: bool              # Include Green CCD in exposure (True/False)
   TriggerRed: bool                # Include Red CCD in exposure (True/False)
   BlockSky: bool                  # Close the sky fiber shutter during observations (True/False)
-  # Exposure Meter 
+  # Exposure Meter
   ExpMeterMode: string            # "monitor" or "control" (to terminate exposure based on flux)
   AutoExpMeter: bool              # Set the exposure meter exposure time automatically
   ExpMeterExpTime: float          # Exposure time of the Exposure Meter subframes
   ExpMeterBin: int                # Exposure meter wavelength bin to use for stopping exposure
   ExpMeterThreshold: float        # Target science flux in e-/nm
-  # Simultaneous Calibration 
+  # Simultaneous Calibration
   TakeSimulCal: bool              # Take simultaneous calibrations? (True/False)
   AutoNDFilters: bool             # Automatically set ND filters
   CalND1: string                  # OD=Optical Density. Throughput = 10^-OD. Values = OD 0.1, OD 1.0, OD 1.3, OD 2.0, OD 3.0, OD 4.0
