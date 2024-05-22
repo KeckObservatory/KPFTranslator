@@ -185,10 +185,6 @@ class MainWindow(QMainWindow):
         self.ObjectFluxValues = []
         self.ObjectFluxTimes = []
         self.ObjectFluxTime0 = None
-        #  FWHM Plot
-        self.ObjectFWHMValues = []
-        self.ObjectFWHMTimes = []
-        self.ObjectFWHMTime0 = None
         # Values for Image Display
         self.xcent = None
         self.ycent = None
@@ -203,7 +199,6 @@ class MainWindow(QMainWindow):
         self.TipTiltErrorPlotUpdateTime = 2 # seconds
         self.TipTiltErrorPlotAgeThreshold = 30 # seconds
         self.FluxPlotAgeThreshold = 60 # seconds
-        self.FWHMPlotAgeThreshold = 120 # seconds
         self.MirrorPositionPlotUpdateTime = 2 # seconds
         self.FigurePadding = 0.1
         self.VeryLowPeakFluxThreshold = 300
@@ -331,25 +326,6 @@ class MainWindow(QMainWindow):
         self.FluxPlotTime.setCurrentText(f"{self.FluxPlotAgeThreshold:.0f}")
         self.set_FluxPlotTime(self.FluxPlotAgeThreshold)
         self.FluxPlotTime.currentTextChanged.connect(self.set_FluxPlotTime)
-
-        # FWHM Plot
-        self.FWHMPlotFrame = self.findChild(QFrame, 'FWHMPlotFrame')
-        self.FWHMPlotFig = plt.figure(num=3, dpi=100)
-        self.FWHMPlotFig.set_tight_layout({'pad': self.FigurePadding})
-        self.FWHMPlotCanvas = FigureCanvasQTAgg(self.FWHMPlotFig)
-        FWHMPlotLayout = QGridLayout()
-        FWHMPlotLayout.addWidget(self.FWHMPlotCanvas, 1, 0, 1, -1)
-        FWHMPlotLayout.setColumnStretch(1, 100)
-        self.FWHMPlotFrame.setLayout(FWHMPlotLayout)
-        self.update_FWHMPlot()
-
-        # Flux Plot Time
-        self.FWHMPlotTime = self.findChild(QComboBox, 'FWHMPlotTime')
-        self.FWHMPlotTime_values = ['10', '30', '60', '120', '300']
-        self.FWHMPlotTime.addItems(self.FWHMPlotTime_values)
-        self.FWHMPlotTime.setCurrentText(f"{self.FWHMPlotAgeThreshold:.0f}")
-        self.set_FWHMPlotTime(self.FWHMPlotAgeThreshold)
-        self.FWHMPlotTime.currentTextChanged.connect(self.set_FWHMPlotTime)
 
         # Plot Timer
         self.PlotTimer = QTimer()
@@ -954,10 +930,6 @@ class MainWindow(QMainWindow):
             self.ObjectFluxValues = []
             self.ObjectFluxTimes = []
             self.ObjectFluxTime0 = None
-            self.ObjectFWHMValues = []
-            self.ObjectFWHMTimes = []
-            self.ObjectFWHMTime0 = None
-            self.update_FWHMPlot()
 
     def TipTiltCalc_state_change(self, value):
         requested = {'2': 'Active', '0': 'Inactive'}[str(value)]
@@ -1187,11 +1159,6 @@ class MainWindow(QMainWindow):
     
             TipTiltCalc = self.TIPTILT_CALC.ktl_keyword.ascii
             ObjectChoice = self.OBJECT_CHOICE.ktl_keyword.ascii
-            if TipTiltCalc == 'Active' and ObjectChoice != 'None':
-                try:
-                    self.calculate_FWHM(cropped, ts)
-                except Exception as e:
-                    print(e)
             image = AstroImage()
             image.load_nddata(cropped)
             self.ImageViewer.set_image(image)
@@ -1200,79 +1167,6 @@ class MainWindow(QMainWindow):
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
             log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
-
-
-    def calculate_FWHM(self, cropped, ts):
-        self.log.debug('calculate_FWHM')
-        roidim  = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
-        delta = 50
-        moffat0 = Moffat2D(amplitude=self.peak_flux_value,
-                           x_0=roidim, y_0=roidim,
-                   bounds={'x_0': (-delta, +delta),
-                           'y_0': (-delta, +delta)})
-        fitter = LevMarLSQFitter()
-        y, x = np.mgrid[:roidim*2, :roidim*2]
-        z = cropped.data
-        with warnings.catch_warnings():
-            # Ignore model linearity warning from the fitter
-            warnings.filterwarnings('ignore', message='Model is linear in parameters',
-                                    category=AstropyUserWarning)
-            psf = fitter(moffat0, x, y, z)
-#         xfit = self.xcent - roidim + psf.x_0
-#         yfit = self.ycent - roidim + psf.y_0
-        self.ObjectFWHMValues.append(psf.fwhm*self.pscale)
-        if len(self.ObjectFWHMTimes) == 0:
-            self.ObjectFWHMTime0 = ts
-        self.ObjectFWHMTimes.append((ts-self.ObjectFWHMTime0).total_seconds())
-        self.update_FWHMPlot()
-
-
-    def set_FWHMPlotTime(self, value):
-        self.FWHMPlotAgeThreshold = float(value)
-        self.update_FWHMPlot()
-
-
-    def update_FWHMPlot(self):
-        npoints = len(self.ObjectFWHMValues)
-        fig = plt.figure(num=3)
-        ax = fig.gca()
-        ax.clear()
-        plt.title('FWHM')
-        if npoints <= 1:
-            log.debug('update_FWHMPlot: clearing plot')
-            ax.set_ylim(0,2)
-            plt.yticks([0,0.5,1,1.5,2])
-            plt.xticks([])
-            ax.grid('major', alpha=0.4)
-            ax.tick_params(axis='both', direction='in')
-            plt.xlabel(f'Last {self.FWHMPlotAgeThreshold} s')
-            self.FWHMPlotCanvas.draw()
-        else:
-            tick = datetime.datetime.utcnow()
-            log.debug('update_FWHMPlot')
-            recent = np.where(np.array(self.ObjectFWHMTimes) > self.ObjectFWHMTimes[-1]-self.FWHMPlotAgeThreshold)[0]
-            fwhm_times = np.array(self.ObjectFWHMTimes)[recent]
-            fwhm = np.array(self.ObjectFWHMValues)[recent]
-            n_plot_points = len(fwhm)
-
-            ax.plot(fwhm_times, fwhm, 'ko', ms=2)
-            if len(fwhm) == 0:
-                ax.set_ylim(0,2)
-            else:
-                max_fwhm = max(fwhm)
-                if max_fwhm > 0:
-                    ax.set_ylim(0, 1.2*max_fwhm)
-                else:
-                    ax.set_ylim(0,2)
-            plt.xticks([])
-            plt.yticks([0,0.5,1,1.5,2])
-            ax.grid('major')
-            plt.xlabel(f'Last {self.FWHMPlotAgeThreshold} s')
-            plt.xlim(max(fwhm_times)-self.FWHMPlotAgeThreshold, max(fwhm_times))
-            self.FWHMPlotCanvas.draw()
-            tock = datetime.datetime.utcnow()
-            elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Plotted {npoints} FWHM points in {elapsed*1000:.0f} ms')
 
 
     def update_lastfile(self, value):
