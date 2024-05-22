@@ -6,7 +6,8 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class WaitForSoCalOnTarget(KPFTranslatorFunction):
-    '''
+    '''Returns True if, within a set timeout, a set of conditions which suggest
+    that SoCal is on the Sun accurately evaluate to True.
 
     ARGS:
     =====

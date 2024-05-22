@@ -6,7 +6,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SoCalStartAutonomous(KPFTranslatorFunction):
-    '''
+    '''Start SoCal's AUTONOMOUS mode by setting AUTONOMOUS=1
 
     ARGS:
     =====

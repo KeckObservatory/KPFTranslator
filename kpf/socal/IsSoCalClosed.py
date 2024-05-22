@@ -6,7 +6,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class IsSoCalClosed(KPFTranslatorFunction):
-    '''
+    '''Returns True if SoCal enclsoure is closed.
 
     ARGS:
     =====

@@ -6,7 +6,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class DisableSoCal(KPFTranslatorFunction):
-    '''
+    '''Disables SoCal by setting kpfsocal.CAN_OPEN to No.
 
     ARGS:
     =====

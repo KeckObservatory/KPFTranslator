@@ -7,7 +7,8 @@ from kpf.socal.SoCalStopAutonomous import SoCalStopAutonomous
 
 
 class ParkSoCal(KPFTranslatorFunction):
-    '''
+    '''Parks SoCal. This includes setting AUTONOMOUS to "Manual", closing the
+    enclosure, and parking the solar tracker.
 
     ARGS:
     =====
