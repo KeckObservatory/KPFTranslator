@@ -28,7 +28,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     that the SoCal dispatcher number 4 will handle opening the enclosure,
     acquiring and tracking the Sun, and will perform a weather safety shutdown
     if needed.  The AUTONOMOUS mode will respect the CAN_OPEN keyword as well,
-    so that keyword will lock our SoCal motions if that is desired.
+    so that keyword will lock out SoCal motions if that is desired.
 
     The script takes two required inputs: a start and end time in decimal hours
     (in HST).  The start time can be after the invocation of this script.  This
@@ -47,7 +47,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
     If SoCal is on target, then a short observation of the Sun is performed.
     Some of the parameters can be modified in the `KPFTranslator` configuration
-    file (`kpf_int_config.ini`). This observation, as currently configured,
+    file (`kpf_inst_config.ini`). This observation, as currently configured,
     takes about 15 minutes to complete.
 
     If SoCal is not on target (according to the `WaitForSoCalOnTarget` script),
@@ -55,7 +55,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     that would otherwise be unproductive. This etalon script also takes around
     15 minutes or a bit less to complete.
 
-    One either of the two observations above has completed, the script repeats
+    Once either of the two observations above has completed, the script repeats
     the loop as long as there is enough time before the end time to complete a
     SoCal observation.
 
