@@ -38,8 +38,12 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
     If needed, the script will wait until the start time before taking further
     actions (beyond setting AUTONOMOUS). Once the start time has passed, the
-    script will try to determine if SoCal is successfully observing the Sun by
-    invoking the `WaitForSoCalOnTarget` script.
+    script will check the `kpfconfig.SCRIPT%` keywords to see if something is
+    currently running.  If so, it will wait for the script keywords to clear
+    before starting operations.
+
+    Next the script will try to determine if SoCal is successfully observing
+    the Sun by invoking the `WaitForSoCalOnTarget` script.
 
     If SoCal is on target, then a short observation of the Sun is performed.
     Some of the parameters can be modified in the `KPFTranslator` configuration
@@ -159,7 +163,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         elif now_decimal > end_time:
             log.info("End time for today's SoCal window has passed")
             return
-
 
         check_scriptstop()
 
