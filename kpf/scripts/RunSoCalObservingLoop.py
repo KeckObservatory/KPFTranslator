@@ -13,7 +13,6 @@ from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
-from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
 from kpf.socal.ParkSoCal import ParkSoCal
@@ -229,7 +228,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         clear_script_keywords()
 
         # Cleanup
-        CleanupAfterScience.execute({})
+        CleanupAfterCalibrations.execute({})
         # Park SoCal?
         if args.get('park', False) == True:
             ParkSoCal.execute({})
