@@ -52,8 +52,6 @@ class ExecuteCal(KPFTranslatorFunction):
     This must have arguments as input, either from a file using the `-f` command
     line tool, or passed in from the execution engine.
 
-    Can be called by `ddoi_script_functions.execute_observation`.
-
     ARGS:
     =====
     None
@@ -268,7 +266,7 @@ class ExecuteCal(KPFTranslatorFunction):
         if calsource == 'WideFlat':
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
         ## If we're using the LFC, set it back to StandbyHigh
-        if calsource == 'LFCFiber':
+        if calsource == 'LFCFiber' and args.get('leave_lamps_on', False) is False:
             SetLFCtoStandbyHigh.execute({})
 
     @classmethod

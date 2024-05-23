@@ -11,7 +11,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 ## ZeroOutSlewCalTime
 ##-------------------------------------------------------------------------
 class ZeroOutSlewCalTime(KPFTranslatorFunction):
-    '''
+    '''Zero out the slew cal timer by setting it to the current timestamp.
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

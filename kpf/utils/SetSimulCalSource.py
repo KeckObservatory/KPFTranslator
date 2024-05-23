@@ -19,7 +19,6 @@ class SetSimulCalSource(KPFTranslatorFunction):
     =====
     :calsource: The calibration source to use (must be one of Etalon, LFC,
                 Th_daily, Th_gold, U_daily, U_gold).
-
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

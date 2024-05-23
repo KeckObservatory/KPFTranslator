@@ -14,7 +14,9 @@ class StartExposure(KPFTranslatorFunction):
     to Start.  This will return immediately after.  Use commands like
     WaitForReadout or WaitForReady to determine when an exposure is done.
     
-    ARGS: None
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -70,5 +72,7 @@ class StartExposure(KPFTranslatorFunction):
                 ResetCaHKDetector.execute({})
             # Now start a fresh exposure
             WaitForReady.execute({})
+            time.sleep(1.0)          # This time shim and the WaitForReady are hacks to catch if the
+            WaitForReady.execute({}) # reset detector went in to readout, but we didn't know.
             log.warning('Restarting exposure')
             StartExposure.execute(args)

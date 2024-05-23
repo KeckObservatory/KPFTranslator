@@ -48,6 +48,10 @@ def kill_process(process, server='kpf'):
 
 class StopGUIs(KPFTranslatorFunction):
     '''Start KPF GUIs
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

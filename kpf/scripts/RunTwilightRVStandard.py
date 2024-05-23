@@ -137,7 +137,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         # Select Target
         # ---------------------------------
         horizon = 30*u.deg
-        starlist_file = Path(f'/s/starlists/000000_kpftwilight/starlist.txt')
+        starlist_file = Path(f'/s/sdata1701/OBs/kpftwilight/starlist.txt')
         all_targets = rank_targets(starlist_file, horizon=horizon)
         if len(all_targets) == 0:
             log.error(f'No targets available above horizon ({horizon:.1f})')
@@ -148,7 +148,7 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
         with open(sciOBfile, 'r') as f:
             sciOB = yaml.safe_load(f)
 
-        calOBfile = Path('/s/starlists/000000_kpftwilight/twilight_program_cal.yaml')
+        calOBfile = Path('/s/sdata1701/OBs/kpftwilight/twilight_program_cal.yaml')
         if calOBfile.exists() is False:
             log.error(f"Could not load OB file: {calOBfile}")
             return

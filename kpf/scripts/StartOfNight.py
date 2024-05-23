@@ -7,6 +7,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.ao.ControlAOHatch import ControlAOHatch
 from kpf.ao.SetupAOforKPF import SetupAOforKPF
 from kpf.fiu.SetTipTiltGain import SetTipTiltGain
 from kpf.fiu.ConfigureFIU import ConfigureFIU
@@ -50,7 +51,8 @@ class StartOfNight(KPFTranslatorFunction):
                    "--------------------------------------------------------------",
                    "This script will configure the FIU and AO bench for observing.",
                    "The AO bench area should be clear of personnel before proceeding.",
-                   "Do you wish to to continue? [Y/n]",
+                   "Do you wish to to continue?",
+                   "(y/n) [y]:",
                    "--------------------------------------------------------------",
                    "",
                    ]
@@ -62,6 +64,17 @@ class StartOfNight(KPFTranslatorFunction):
                 return
             else:
                 SetupAOforKPF.execute({})
+                log.info('Open AO hatch')
+                try:
+                    ControlAOHatch.execute({'destination': 'open'})
+                except FailedToReachDestination:
+                    log.error(f"AO hatch did not move successfully")
+                    print()
+                    print('----------------------------------------------------------')
+                    print('AO hatch reported problems moving. Make sure stars are')
+                    print('visible on guide camera before proceeding.')
+                    print('----------------------------------------------------------')
+                    print()
 
         # ---------------------------------
         # Remaining non-AO Actions
@@ -98,10 +111,26 @@ class StartOfNight(KPFTranslatorFunction):
         # Power on Simulcal lamp if needed
         if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
             CalLampPower.execute({'lamp': calsource, 'power': 'on'})
-        # Set tip tilt loop gain
+        # Set tip tilt loop gain to default value
+        kpfguide = ktl.cache('kpfguide')
         tip_tilt_gain = cfg.getfloat('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
         log.info(f"Setting default tip tilt loop gain of {tip_tilt_gain}")
         SetTipTiltGain.execute({'GuideLoopGain': tip_tilt_gain})
+        # Set tip tilt loop detection threshold to default value
+        detect_snr = cfg.getfloat('tiptilt', 'detect_snr', fallback=7)
+        log.info(f"Setting default tip tilt detection SNR of {detect_snr}")
+        kpfguide['OBJECT_INTENSITY'].write(detect_snr)
+        # Set tip tilt loop detection area to default value
+        detect_area = cfg.getfloat('tiptilt', 'detect_area', fallback=100)
+        log.info(f"Setting default tip tilt detection area of {detect_area}")
+        kpfguide['OBJECT_AREA'].write(detect_area)
+        # Set tip tilt loop deblend parameter to default value
+        deblend = cfg.getfloat('tiptilt', 'deblend', fallback=1)
+        log.info(f"Setting default tip tilt deblending parameter of {deblend}")
+        kpfguide['OBJECT_DBCONT'].write(detect_snr)
+        # Set DAR parameter to default value
+        log.info(f"Ensuring DAR correction is on")
+        kpfguide['DAR_ENABLE'].write('Yes')
         # Set Outdirs
         expose = ktl.cache('kpfexpose', 'EXPOSE')
         if expose.read() != 'Ready':

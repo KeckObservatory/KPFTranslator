@@ -7,11 +7,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 def expeter_flux_target(spectrograph_flux, band):
-    slope = {'498.125': 1/4.569,
-             '604.375': 1/11.125,
-             '710.625': 1/10.026,
-             '816.875': 1/12.446}[band]
-    expmeter_flux = slope*spectrograph_flux
+    slope = {'498.125': 7503.438,
+             '604.375': 50044.28,
+             '710.625': 30752.42,
+             '816.875': 42361.16}
+    expmeter_flux = spectrograph_flux*slope[band]
     return expmeter_flux
 
 
@@ -56,8 +56,6 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
         band = str(args.get('ExpMeterBin'))
         spectrograph_flux = args.get('ExpMeterThreshold')
         expmeter_flux = expeter_flux_target(spectrograph_flux, band)
-
-        print(spectrograph_flux, band, expmeter_flux)
         kpf_expmeter = ktl.cache('kpf_expmeter')
         kpf_expmeter['THRESHOLDBIN'].write(band)
         kpf_expmeter['THRESHOLD'].write(expmeter_flux)

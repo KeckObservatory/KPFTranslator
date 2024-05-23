@@ -19,8 +19,16 @@ links:
         cmd: ao.SendPCUtoHome.SendPCUtoHome
     SendPCUtoKPF:
         cmd: ao.SendPCUtoKPF.SendPCUtoKPF
+    SetAFMtoMirror:
+        cmd: ao.SetAFMtoMirror.SetAFMtoMirror
+    SetAFStoNGS:
+        cmd: ao.SetAFStoNGS.SetAFStoNGS
+    SetAODCStoSIM:
+        cmd: ao.SetAODCStoSIM.SetAODCStoSIM
     SetAORotator:
         cmd: ao.SetAORotator.SetAORotator
+    SetAORotatorManual:
+        cmd: ao.SetAORotatorManual.SetAORotatorManual
     SetupAOforACAM:
         cmd: ao.SetupAOforACAM.SetupAOforACAM
     SetupAOforKPF:
@@ -29,6 +37,8 @@ links:
         cmd: ao.TurnHepaOff.TurnHepaOff
     TurnHepaOn:
         cmd: ao.TurnHepaOn.TurnHepaOn
+    TurnLightSourceOff:
+        cmd: ao.TurnLightSourceOff.TurnLightSourceOff
     # CaHK
     PowerCycleCaHK:
         cmd: cahk.PowerCycleCaHK.PowerCycleCaHK
@@ -63,6 +73,23 @@ links:
         cmd: calbench.WaitForND1.WaitForND1
     WaitForND2:
         cmd: calbench.WaitForND2.WaitForND2
+    # Engineering
+    GridSearch:
+        cmd: engineering.GridSearch.GridSearch
+    ImageBackIlluminatedFibers:
+        cmd: engineering.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
+    Run2DGridSearch:
+        cmd: engineering.Run2DGridSearch.Run2DGridSearch
+    TakeADCGridData:
+        cmd: engineering.TakeADCGridData.TakeADCGridData
+    TakeADCOffsetGridData:
+        cmd: engineering.TakeADCOffsetGridData.TakeADCOffsetGridData
+    TakeGuiderSensitivityData:
+        cmd: engineering.TakeGuiderSensitivityData.TakeGuiderSensitivityData
+    TriggerGreenMiniFill:
+        cmd: engineering.TriggerGreenMiniFill.TriggerGreenMiniFill
+    TriggerRedMiniFill:
+        cmd: engineering.TriggerRedMiniFill.TriggerRedMiniFill
     # ExpMeter
     BuildMasterBias:
         cmd: expmeter.BuildMasterBias.BuildMasterBias
@@ -85,10 +112,16 @@ links:
         cmd: fiu.ControlHatch.ControlHatch
     InitializeTipTilt:
         cmd: fiu.InitializeTipTilt.InitializeTipTilt
+    LockFIU:
+        cmd: fiu.LockFIU.LockFIU
+    UnlockFIU:
+        cmd: fiu.UnlockFIU.UnlockFIU
     MeasureTipTiltMirrorRange:
         cmd: fiu.MeasureTipTiltMirrorRange.MeasureTipTiltMirrorRange
     SetADCAngles:
         cmd: fiu.SetADCAngles.SetADCAngles
+    SetADCOffsets:
+        cmd: fiu.SetADCOffsets.SetADCOffsets
     SetTipTiltCalculations:
         cmd: fiu.SetTipTiltCalculations.SetTipTiltCalculations
     SetTipTiltControl:
@@ -135,6 +168,8 @@ links:
         cmd: guider.GuiderLastfile.GuiderLastfile
     GuiderOutdir:
         cmd: guider.GuiderOutdir.GuiderOutdir
+    OptimizeGuiderExposure:
+        cmd: guider.OptimizeGuiderExposure.OptimizeGuiderExposure
     PredictGuiderParameters:
         cmd: guider.PredictGuiderParameters.PredictGuiderParameters
     SetGuiderExpTime:
@@ -180,28 +215,41 @@ links:
         cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
     ExecuteSlewCal:
         cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
-    GridSearch:
-        cmd: scripts.GridSearch.GridSearch
-    Run2DGridSearch:
-        cmd: scripts.Run2DGridSearch.Run2DGridSearch
     RunCalOB:
         cmd: scripts.RunCalOB.RunCalOB
     RunSciOB:
         cmd: scripts.RunSciOB.RunSciOB
-    RunScheduledCals:
-        cmd: scripts.RunScheduledCals.RunScheduledCals
+    RunSoCalObservingLoop:
+        cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
     RunTwilightRVStandard:
         cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
     StartOfNight:
         cmd: scripts.StartOfNight.StartOfNight
     StartUp:
         cmd: scripts.StartUp.StartUp
-    TakeGuiderSensitivityData:
-        cmd: scripts.TakeGuiderSensitivityData.TakeGuiderSensitivityData
     TestScienceADC:
         cmd: scripts.TestScienceADC.TestScienceADC
     WaitForConfigureCalOB:
         cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
+    # SoCal
+    DisableSoCal:
+        cmd: socal.DisableSoCal.DisableSoCal
+    EnableSoCal:
+        cmd: socal.EnableSoCal.EnableSoCal
+    IsSoCalClosed:
+        cmd: socal.IsSoCalClosed.IsSoCalClosed
+    IsSoCalOpen:
+        cmd: socal.IsSoCalOpen.IsSoCalOpen
+    IsSoCalShutDown:
+        cmd: socal.IsSoCalShutDown.IsSoCalShutDown
+    ParkSoCal:
+        cmd: socal.ParkSoCal.ParkSoCal
+    SoCalStartAutonomous:
+        cmd: socal.SoCalStartAutonomous.SoCalStartAutonomous
+    SoCalStopAutonomous:
+        cmd: socal.SoCalStopAutonomous.SoCalStopAutonomous
+    WaitForSoCalOnTarget:
+        cmd: socal.WaitForSoCalOnTarget.WaitForSoCalOnTarget
     # Spectrograph
     QueryFastReadMode:
         cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
@@ -256,8 +304,6 @@ links:
         cmd: utils.CorrectDAR.CorrectDAR
     EstimateOBDuration:
         cmd: utils.EstimateOBDuration.EstimateOBDuration
-    ImageBackIlluminatedFibers:
-        cmd: utils.ImageBackIlluminatedFibers.ImageBackIlluminatedFibers
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
@@ -268,9 +314,5 @@ links:
         cmd: utils.StartGUIs.StartGUIs
     StopGUIs:
         cmd: utils.StopGUIs.StopGUIs
-    TriggerGreenMiniFill:
-        cmd: utils.TriggerGreenMiniFill.TriggerGreenMiniFill
-    TriggerRedMiniFill:
-        cmd: utils.TriggerRedMiniFill.TriggerRedMiniFill
     ZeroOutSlewCalTime:
         cmd: utils.ZeroOutSlewCalTime.ZeroOutSlewCalTime

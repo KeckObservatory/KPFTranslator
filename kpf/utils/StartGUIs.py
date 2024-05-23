@@ -93,6 +93,10 @@ def waitfor_window_to_appear(name, env=None, timeout=20):
 
 class StartGUIs(KPFTranslatorFunction):
     '''Start KPF GUIs
+
+    ARGS:
+    =====
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -126,16 +130,21 @@ class StartGUIs(KPFTranslatorFunction):
             window_names = get_window_list(env=env)
             GUIname = GUI['name']
             if GUIname not in window_names and args.get('position_only', False) is False:
-                log.info(f"Starting '{GUIname}' GUI")
-                gui_proc = subprocess.Popen(GUI['cmd'], env=env,
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE)
-                success = waitfor_window_to_appear(GUIname, env=env)
-                if success is False:
-                    log.error(f'{GUIname} did not come up')
-                    stdout, stderr = gui_proc.communicate()
-                    log.error(f"STDERR: {stderr.decode()}")
-                    log.error(f"STDOUT: {stdout.decode()}")
+                instrume = ktl.cache('dcs1', 'INSTRUME')
+                if GUIname == 'MAGIQ - Observer UI: KPF on Keck1' and instrume.read() != 'KPF':
+                    log.info(f'Selected instrument is not KPF, not starting magiq')
+                    success = False
+                else:
+                    log.info(f"Starting '{GUIname}' GUI")
+                    gui_proc = subprocess.Popen(GUI['cmd'], env=env,
+                                                stdout=subprocess.PIPE,
+                                                stderr=subprocess.PIPE)
+                    success = waitfor_window_to_appear(GUIname, env=env)
+                    if success is False:
+                        log.error(f'{GUIname} did not come up')
+                        stdout, stderr = gui_proc.communicate()
+                        log.error(f"STDERR: {stderr.decode()}")
+                        log.error(f"STDOUT: {stdout.decode()}")
             else:
                 log.info(f"Existing '{GUIname}' window found")
                 success = True

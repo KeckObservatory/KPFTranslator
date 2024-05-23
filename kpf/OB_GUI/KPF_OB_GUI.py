@@ -147,7 +147,7 @@ class MainWindow(QMainWindow):
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
         # Path to OB files
-        self.file_path = Path('/s/starlists')
+        self.file_path = Path('/s/sdata1701/OBs')
         self.starlist_file_name = ''
 
 
@@ -371,6 +371,11 @@ class MainWindow(QMainWindow):
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
         self.update_OB('AutoNDFilters', self.OB.SEQ_Observations1.get('AutoNDFilters'))
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
+        # Disable AutoNDFilters for operation
+        self.AutoNDFilters.setEnabled(False)
+
+        self.ExtraNDLabel = self.findChild(QLabel, 'ExtraNDLabel')
+        self.ExtraND = self.findChild(QComboBox, 'ExtraND')
 
         # Do this after the CalND and AutoNDFilters objects have been created
         self.update_OB('TakeSimulCal', self.OB.SEQ_Observations1.get('TakeSimulCal'))
@@ -800,8 +805,8 @@ class MainWindow(QMainWindow):
             self.other_names.setText(', '.join(self.target_names['all']))
             self.TargetName.setToolTip(', '.join(self.target_names['all']))
             self.GaiaID.setToolTip(', '.join(self.target_names['all']))
-        self.twomass_params = BuildOBfromQuery.get_Jmag(self.target_names['2MASSID'])
-        if self.twomass_params is not None:
+        if '2MASSID' in self.target_names['all']:
+            self.twomass_params = BuildOBfromQuery.get_Jmag(self.target_names['2MASSID'])
             for key in self.twomass_params:
                 self.update_OB(key, self.twomass_params[key])
         self.gaia_params = BuildOBfromQuery.get_gaia_parameters(gaiaid)
@@ -978,7 +983,6 @@ class MainWindow(QMainWindow):
         # SEQ_Observations: ExpMeterMode
         self.ExpMeterMode.setCurrentText(f"{self.OB.SEQ_Observations1.get('ExpMeterMode')}")
         # SEQ_Observations: AutoExpMeter
-#         self.AutoEMExpTime = 
         self.ExpMeterExpTimeEdit.setEnabled(not self.OB.SEQ_Observations1.get('AutoExpMeter'))
         # SEQ_Observations: ExpMeterExpTime
         self.ExpMeterExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterExpTime')}")
@@ -993,6 +997,9 @@ class MainWindow(QMainWindow):
         auto_nd = self.OB.SEQ_Observations1.get('AutoNDFilters')
         self.CalND1.setEnabled(take_simulcal and not auto_nd)
         self.CalND2.setEnabled(take_simulcal and not auto_nd)
+        self.ExtraNDLabel.setEnabled(take_simulcal and auto_nd)
+        self.ExtraND.setEnabled(take_simulcal and auto_nd)
+
         # SEQ_Observations: CalND1
         self.CalND1.setCurrentText(f"{self.OB.SEQ_Observations1.get('CalND1')}")
         # SEQ_Observations: CalND2
@@ -1179,9 +1186,15 @@ class MainWindow(QMainWindow):
             self.log.debug('Not executing slew cal')
 
     def do_execute_slewcal_only(self):
+        fiumode = ktl.cache('kpffiu', 'MODE')
         self.log.debug(f"execute_slewcal_only")
         slewcal_file = self.kpfconfig['SLEWCALFILE'].read()
-        execute_slewcal_only_cmd = f'kpfdo ExecuteSlewCal -f {slewcal_file} ; echo "Done!" ; sleep 20'
+        execute_slewcal_only_cmd = f'kpfdo RunCalOB -f {slewcal_file} --nointensemon ; echo "Done!"'
+        # Check if FIU is currently in Observing. If so, send it back when done.
+        fiumode_list = fiumode.read().split(',')
+        if 'Observing' in fiumode_list:
+            execute_slewcal_only_cmd += ' ; modify -s kpffiu MODE=Observing'
+        execute_slewcal_only_cmd += ' ; sleep 20'
         self.log.debug(f'Executing: {execute_slewcal_only_cmd}')
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'ExecuteSlewCal', '-name', 'ExecuteSlewCal',

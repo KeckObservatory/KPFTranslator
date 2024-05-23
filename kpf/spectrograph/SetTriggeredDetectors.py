@@ -12,10 +12,11 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     `kpfexpose.TRIG_TARG` keyword value.
     
     ARGS:
-    TriggerRed (bool) - Trigger the Red detector? (default=False)
-    TriggerGreen (bool) - Trigger the Green detector? (default=False)
-    TriggerCaHK (bool) - Trigger the CaH&K detector? (default=False)
-    TriggerExpMeter (bool) - Trigger the ExpMeter detector? (default=False)
+    =====
+    :TriggerRed: `bool` Trigger the Red detector? (default=False)
+    :TriggerGreen: `bool` Trigger the Green detector? (default=False)
+    :TriggerCaHK: `bool` Trigger the CaH&K detector? (default=False)
+    :TriggerExpMeter: `bool` Trigger the ExpMeter detector? (default=False)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

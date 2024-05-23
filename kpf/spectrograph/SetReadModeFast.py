@@ -8,9 +8,11 @@ from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 
 
 class SetReadModeFast(KPFTranslatorFunction):
-    '''
+    '''Configure both detectors to fast read mode by changing the ACF files
+    they are using.
 
     ARGS:
+    =====
     None
     '''
     @classmethod

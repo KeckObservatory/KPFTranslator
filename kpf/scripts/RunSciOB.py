@@ -26,9 +26,6 @@ class RunSciOB(KPFTranslatorFunction):
     This must have arguments as input, typically from a file using the `-f`
     command line tool.
 
-    Not intended to be called by DDOI's execution engine. This script replaces
-    the DDOI Script.
-
     This script is abortable.  When `.abort_execution()` is invoked, the
     `kpconfig.SCRIPTSTOP` is set to Yes.  This script checked for this value at
     various locations in the script.  As a result, the script will not stop
@@ -68,11 +65,13 @@ class RunSciOB(KPFTranslatorFunction):
         print("    the star on the KPF PO and they have initiated tip tilt")
         print("    corrections (if desired).")
         print()
-        print("    Press 'Enter' to begin science exposure(s) ...")
+        print("    Press 'Enter' to begin exposure(s) or 'a' to abort script")
         print("###############################################################")
         print()
         user_input = input()
         log.debug(f'response: "{user_input}"')
+        if user_input.lower() in ['a', 'abort', 'q', 'quit']:
+            raise KPFException("User chose to halt execution")
 
         check_scriptstop()
 

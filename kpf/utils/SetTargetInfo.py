@@ -9,7 +9,12 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 ## SetTargetInfo
 ##-------------------------------------------------------------------------
 class SetTargetInfo(KPFTranslatorFunction):
-    '''
+    '''Set the target info keywords based on the target information in the OB.
+
+    ARGS:
+    =====
+    :OB: `dict` A fully specified observing block (OB) or at least the target
+         components of an OB.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

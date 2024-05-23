@@ -86,17 +86,19 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             log.info(f"Beginning Slew Cal")
             log.debug(f"Using: {slewcal_argsfile}")
             with open(slewcal_argsfile, 'r') as file:
-                slewcal_args = yaml.safe_load(file)
+                slewcal_OB = yaml.safe_load(file)
+                slewcal_args = slewcal_OB.get('SEQ_Calibrations')[0]
+                slewcal_args['Template_Name'] = 'kpf_slewcal'
+                slewcal_args['Template_Version'] = '0.5'
             slewcal_args['TriggerCaHK'] = OB['TriggerCaHK']
             slewcal_args['TriggerGreen'] = OB['TriggerGreen']
             slewcal_args['TriggerRed'] = OB['TriggerRed']
             ExecuteSlewCal.execute(slewcal_args)
             log.info('Slew cal complete. Resetting SLEWCALREQ')
             kpfconfig['SLEWCALREQ'].write('No')
-        else:
-            # Set FIU Mode (this is done in ExecuteSlewCal if that is chosen)
-            log.info('Setting FIU mode to Observing')
-            ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+        # Set FIU Mode
+        log.info('Setting FIU mode to Observing')
+        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
         # Set Target Parameters from OB
         SetTargetInfo.execute(OB)

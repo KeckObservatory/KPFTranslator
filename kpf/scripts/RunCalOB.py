@@ -28,9 +28,6 @@ class RunCalOB(KPFTranslatorFunction):
     This must have arguments as input, typically from a file using the `-f`
     command line tool.
 
-    Not intended to be called by DDOI's execution engine. This script replaces
-    the DDOI Script.
-
     This script is abortable.  When `.abort_execution()` is invoked, the
     `kpconfig.SCRIPTSTOP` is set to Yes.  This script checked for this value at
     various locations in the script.  As a result, the script will not stop
@@ -141,6 +138,7 @@ class RunCalOB(KPFTranslatorFunction):
                 cal['Template_Name'] = 'kpf_lamp'
                 cal['Template_Version'] = OB['Template_Version']
                 cal['nointensemon'] = OB.get('nointensemon', False)
+                cal['leave_lamps_on'] = OB.get('leave_lamps_on', False) # Only needed for LFC
                 ExecuteCal.execute(cal)
         except Exception as e:
             log.error("ExecuteCal failed:")
