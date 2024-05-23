@@ -182,22 +182,24 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
         check_scriptstop()
 
+        nSoCalObs = 0
+        nEtalonObs = 0
+
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
         while now_decimal > start_time and now_decimal < end_time:
             log.debug('Checking if SoCal is on the Sun')
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
-            if on_target == True:
-                # Observe the Sun
-                observation = SoCal_observation
-            else:
-                # Take etalon calibrations
-                observation = Etalon_observation
+            observation = {True: SoCal_observation, False: Etalon_observation}[on_target]
             log.info(f'SoCal on target: {on_target}')
             log.info(f"Executing {observation['Object']}")
             try:
                 check_scriptstop()
                 ExecuteCal.execute(observation)
+                if on_target == True:
+                    nSoCalObs += 1
+                else:
+                    nEtalonObs += 1
             except Exception as e:
                 log.error("ExecuteCal failed:")
                 log.error(e)
@@ -228,6 +230,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
         log.info('SoCal observation loop completed')
+        log.info(f'Executed {nSoCalObs} SoCal sequences')
+        log.info(f'Executed {nEtalonObs} Etalon sequences')
         # Clear script keywords so that cleanup can start successfully
         clear_script_keywords()
 
