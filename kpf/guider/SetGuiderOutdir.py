@@ -12,7 +12,7 @@ class SetGuiderOutdir(KPFTranslatorFunction):
     
     ARGS:
     =====
-    :outdir: The desired output path
+    :outdir: `str` The desired output path
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

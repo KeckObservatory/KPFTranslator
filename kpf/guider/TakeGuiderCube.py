@@ -16,9 +16,9 @@ class TakeGuiderCube(KPFTranslatorFunction):
     
     ARGS:
     =====
-    :duration: The duration in seconds of the image set.
-    :ImageCube: (bool) Collect the full cube of images? (default True) This will
-                slow down file write considerably.
+    :duration: `float` The duration in seconds of the image set.
+    :ImageCube: `bool` Collect the full cube of images? (default True) This
+                will slow down file write considerably.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

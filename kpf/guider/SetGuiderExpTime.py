@@ -56,7 +56,7 @@ class SetGuiderExpTime(KPFTranslatorFunction):
 
     ARGS:
     =====
-    :exptime: The exposure time in seconds.
+    :exptime: `float` The exposure time in seconds.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

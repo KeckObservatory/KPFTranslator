@@ -26,7 +26,7 @@ class ExecuteDark(KPFTranslatorFunction):
 
     ARGS:
     =====
-    None
+    :args: `dict` An dark calibration component of an observing block (OB).
     '''
     abortable = True
 
