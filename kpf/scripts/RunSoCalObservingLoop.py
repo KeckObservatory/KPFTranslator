@@ -176,11 +176,16 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
-        log.info('Starting SoCal observation loop')
+        log.info(f'Starting SoCal observation loop')
+        log.info(f'Start time: {start_time:.2f} HST')
+        log.info(f'End Time: {end_time:.2f} HST')
 
         check_scriptstop()
 
+        now = datetime.datetime.now()
+        now_decimal = (now.hour + now.minute/60 + now.second/3600)
         while now_decimal > start_time and now_decimal < end_time:
+            log.debug('Checking if SoCal is on the Sun')
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
             if on_target == True:
                 # Observe the Sun
