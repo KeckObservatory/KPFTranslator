@@ -236,7 +236,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         clear_script_keywords()
 
         # Cleanup
-        CleanupAfterCalibrations.execute({})
+        CleanupAfterCalibrations.execute(Etalon_observation)
         # Park SoCal?
         if args.get('park', False) == True:
             ParkSoCal.execute({})
