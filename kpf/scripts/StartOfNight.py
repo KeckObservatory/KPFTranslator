@@ -33,7 +33,6 @@ class StartOfNight(KPFTranslatorFunction):
     :AO: `bool` Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
         pass
 
