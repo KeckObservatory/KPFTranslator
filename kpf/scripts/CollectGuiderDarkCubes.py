@@ -87,7 +87,7 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
                 SetGuiderGain.execute({'GuideCamGain': gain})
                 cube_file = TakeGuiderCube.execute({'duration': 10})
                 with open(output_file, 'a') as f:
-                    f.write(f"{gain:6s}, {cube_file}\n")
+                    f.write(f"{gain:12s}, {cube_file}\n")
                 check_scriptstop()
                 time.sleep(30) # shim to give time to recover after writing cube
                 check_scriptstop()
@@ -99,7 +99,8 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
                 SetGuiderGain.execute({'GuideCamGain': gain})
                 cube_file = TakeGuiderCube.execute({'duration': 10})
                 with open(output_file, 'a') as f:
-                    f.write(f"{gain:6s}_nosub, {cube_file}\n")
+                    gain_string = f'{gain}_nosub'
+                    f.write(f"{gain_string:12s}, {cube_file}\n")
                 kpfguide[f'SUB_{gain.upper()}'].write(sub_file)
                 check_scriptstop()
                 time.sleep(30) # shim to give time to recover after writing cube

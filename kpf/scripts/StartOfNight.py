@@ -30,10 +30,9 @@ class StartOfNight(KPFTranslatorFunction):
     
     ARGS:
     =====
-    :AO: (bool) Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
+    :AO: `bool` Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, args, logger, cfg):
         pass
 
@@ -41,6 +40,47 @@ class StartOfNight(KPFTranslatorFunction):
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, logger, cfg):
         log.info(f"Running KPF Start of Night script")
+
+        # Check Scripts
+        kpfconfig = ktl.cache('kpfconfig')
+        expose = ktl.cache('kpfexpose', 'EXPOSE')
+        scriptname = kpfconfig['SCRIPTNAME'].read()
+        pid = kpfconfig['SCRIPTPID'].read(binary=True)
+        if scriptname != '' or pid >= 0:
+            # ---------------------------------
+            # User Verification
+            # ---------------------------------
+            msg = ["",
+                   "--------------------------------------------------------------",
+                   f"A script ({scriptname}, {pid}) is currently running. ",
+                   "",
+                   "Depending on when you are seeing this, it may be a scheduled",
+                   "nighttime calibration which can and should be interrupted to",
+                   "enable observing.",
+                   "",
+                   "Do you wish to end the current exposure and request a script",
+                   "stop in order to proceed with running StartOfNight?",
+                   "",
+                   "End Exposure and Request Script Stop?",
+                   "(y/n) [y]:",
+                   "--------------------------------------------------------------",
+                   "",
+                   ]
+            for line in msg:
+                print(line)
+            user_input = input()
+            if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+                log.warning(f'User aborted Start Of Night')
+                return
+            else:
+                log.info('User opted to stop existing script')
+                kpfconfig['SCRIPTSTOP'].write(1)
+                expose.write('End')
+                waittime = 120
+                log.info(f'Waiting up to {waittime:.0f}s for running script to end')
+                kpfconfig['SCRIPTPID'].waitFor("==-1", timeout=waittime)
+                time.sleep(2) # time shim
+                check_script_running()
 
         # Setup AO
         if args.get('AO', True) is True:
@@ -127,12 +167,11 @@ class StartOfNight(KPFTranslatorFunction):
         # Set tip tilt loop deblend parameter to default value
         deblend = cfg.getfloat('tiptilt', 'deblend', fallback=1)
         log.info(f"Setting default tip tilt deblending parameter of {deblend}")
-        kpfguide['OBJECT_DBCONT'].write(detect_snr)
+        kpfguide['OBJECT_DBCONT'].write(1.0)
         # Set DAR parameter to default value
         log.info(f"Ensuring DAR correction is on")
         kpfguide['DAR_ENABLE'].write('Yes')
         # Set Outdirs
-        expose = ktl.cache('kpfexpose', 'EXPOSE')
         if expose.read() != 'Ready':
             log.info('Waiting for kpfexpose to be Ready')
             WaitForReady.execute({})

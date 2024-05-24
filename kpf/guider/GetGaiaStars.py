@@ -23,7 +23,7 @@ class GetGaiaStars(KPFTranslatorFunction):
 
     ARGS:
     =====
-    :file: The file to retrieve stars for.
+    :file: `str` The file to retrieve stars for.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

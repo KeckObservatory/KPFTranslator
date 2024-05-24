@@ -28,7 +28,7 @@ class PredictGuiderParameters(KPFTranslatorFunction):
     
     Args:
     =====
-    :Jmag: The J magnitude of the target
+    :Jmag: `float` The J magnitude of the target
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

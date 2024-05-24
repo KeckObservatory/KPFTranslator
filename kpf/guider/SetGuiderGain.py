@@ -10,7 +10,7 @@ class SetGuiderGain(KPFTranslatorFunction):
     
     ARGS:
     =====
-    :gain: The desired gain (high, medium, or low)
+    :gain: `str` The desired gain (high, medium, or low)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

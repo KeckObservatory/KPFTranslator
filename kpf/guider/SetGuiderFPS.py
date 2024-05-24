@@ -11,7 +11,7 @@ class SetGuiderFPS(KPFTranslatorFunction):
     
     ARGS:
     =====
-    :fps: Number of frames per second
+    :fps: `float` Number of frames per second
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

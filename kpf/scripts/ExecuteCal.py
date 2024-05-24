@@ -54,7 +54,7 @@ class ExecuteCal(KPFTranslatorFunction):
 
     ARGS:
     =====
-    None
+    :args: `dict` An lamp calibration component of an observing block (OB).
     '''
     abortable = True
 

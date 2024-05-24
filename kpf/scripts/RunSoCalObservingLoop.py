@@ -86,6 +86,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
+        # Prepare SoCal parameters to pass to ExecuteCal
         socal_ND1 = cfg.get('SoCal', 'ND1', fallback='OD 0.1')
         socal_ND2 = cfg.get('SoCal', 'ND2', fallback='OD 0.1')
         socal_ExpTime = cfg.getfloat('SoCal', 'ExpTime', fallback=12)
@@ -119,6 +120,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         SoCal_duration += int(SoCal_observation['nExp'])*readout
         log.debug(f"Estimated SoCal observation time = {SoCal_duration}")
 
+        # Prepare Etalon parameters to pass to ExecuteCal
         Etalon_ND1 = cfg.get('SoCal', 'EtalonND1', fallback='OD 0.1')
         Etalon_ND2 = cfg.get('SoCal', 'EtalonND2', fallback='OD 0.1')
         Etalon_ExpTime = cfg.getfloat('SoCal', 'EtalonExpTime', fallback=60)
@@ -145,16 +147,15 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         Etalon_duration += int(Etalon_observation['nExp'])*readout
         log.debug(f"Estimated Etalon observation time = {Etalon_duration}")
 
+        # Start SoCal in autonomous mode
+        SoCalStartAutonomous.execute({})
+
         # Start Loop
         max_wait_per_iteration = 60
         start_time = args.get('StartTimeHST', 9)
         end_time = args.get('EndTimeHST', 12) - SoCal_duration/3600 - 0.05
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
-
-        # Start SoCal in autonomous mode
-        SoCalStartAutonomous.execute({})
-
         if now_decimal < start_time:
             wait = (start_time-now_decimal)*3600
             log.info(f'Waiting {wait:.0f}s for SoCal window start time')
@@ -162,8 +163,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         elif now_decimal > end_time:
             log.info("End time for today's SoCal window has passed")
             return
-
-        check_scriptstop()
 
         SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
         if SCRIPTPID.read(binary=True) >= 0:
@@ -175,25 +174,32 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                 SCRIPTPID.waitFor("==-1", timeout=waittime)
                 time.sleep(10) # time shim
 
-        check_scriptstop()
-
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
-        log.info('Starting SoCal observation loop')
+        log.info(f'Starting SoCal observation loop')
+        log.info(f'Start time: {start_time:.2f} HST')
+        log.info(f'End Time: {end_time:.2f} HST')
 
+        check_scriptstop()
+
+        nSoCalObs = 0
+        nEtalonObs = 0
+
+        now = datetime.datetime.now()
+        now_decimal = (now.hour + now.minute/60 + now.second/3600)
         while now_decimal > start_time and now_decimal < end_time:
+            log.debug('Checking if SoCal is on the Sun')
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
-            if on_target == True:
-                # Observe the Sun
-                observation = SoCal_observation
-            else:
-                # Take etalon calibrations
-                observation = Etalon_observation
+            observation = {True: SoCal_observation, False: Etalon_observation}[on_target]
             log.info(f'SoCal on target: {on_target}')
             log.info(f"Executing {observation['Object']}")
             try:
                 check_scriptstop()
                 ExecuteCal.execute(observation)
+                if on_target == True:
+                    nSoCalObs += 1
+                else:
+                    nEtalonObs += 1
             except Exception as e:
                 log.error("ExecuteCal failed:")
                 log.error(e)
@@ -224,11 +230,13 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
         log.info('SoCal observation loop completed')
+        log.info(f'Executed {nSoCalObs} SoCal sequences')
+        log.info(f'Executed {nEtalonObs} Etalon sequences')
         # Clear script keywords so that cleanup can start successfully
         clear_script_keywords()
 
         # Cleanup
-        CleanupAfterCalibrations.execute({})
+        CleanupAfterCalibrations.execute(Etalon_observation)
         # Park SoCal?
         if args.get('park', False) == True:
             ParkSoCal.execute({})
