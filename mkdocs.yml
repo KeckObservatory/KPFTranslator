@@ -8,4 +8,5 @@ nav:
   - Home: index.md
   - Pre-Observing: pre-observing.md
   - Observing: observing.md
+  - Scripts: scripts.md
   - Post-Observing: post-observing.md
