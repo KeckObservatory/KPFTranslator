@@ -246,8 +246,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('StartTimeHST', type=float,
             help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,

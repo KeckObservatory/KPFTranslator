@@ -1,12 +1,59 @@
 site_name: KPF
+repo_url: https://github.com/KeckObservatory/KPFTranslator/
+repo_name: KPFTranslator
+
+theme:
+  name: readthedocs
+  titles_only: true
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - python
 
 plugins:
 - search
 - mkdocstrings
 
 nav:
-  - Home: index.md
-  - Pre-Observing: pre-observing.md
-  - Observing: observing.md
-  - Scripts: scripts.md
-  - Post-Observing: post-observing.md
+  - "KPF Home": index.md
+  - "Instrument Info":
+    - "Instrument Subsystem Descriptions":
+      - "Spectrograph": spectrograph.md
+      - "FIU": fiu.md
+      - "Guider": guider.md
+      - "Ca H&K Spectrograph": cahk.md
+      - "Exposure Meter": exposuremeter.md
+      - "Calibration Bench": calbench.md
+      - "Agitator": agitator.md
+    - "Instrument Specifications":
+      - "Detectors": detectors.md
+      - "Sensitivity": sensitivity.md
+      - "Data Format": dataformat.md
+      - "KPF vs. HIRES": KPFvsHIRES.md
+    - "Instrument Software":
+      - "Operations Scripts":
+        - "RunCalOB": scripts/RunCalOB.md
+        - "RunSciOB": scripts/RunSciOB.md
+        - "RunSoCalObservingLoop": scripts/RunSoCalObservingLoop.md
+        - "StartOfNight": scripts/StartOfNight.md
+  - "Pre-Observing":
+    - "Preparing for Your Run":
+      - "Pre-observing Checklist": preobservingchecklist.md
+      - "Target List Format": https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html
+      - "VSQ Reservations": https://www.keck.hawaii.edu/realpublic/inst/common/VSQ.html
+      - "Remote Observing": http://www2.keck.hawaii.edu/inst/common/mainland_observing.html
+    - "Telescope Specifications":
+      - "Limits": https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html
+      - "Telescope Info": http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf
+    - "Keck Policies":
+      - "Split Nights": http://www2.keck.hawaii.edu/observing/SplitNights.html
+      - "Remote Observing": http://www2.keck.hawaii.edu/inst/common/mainland_observing.html
+      - "Other Policies": http://www2.keck.hawaii.edu/observing/policies.html
+  - "Observing":
+    - "Procedures & Checklists":
+      - "Afternoon Setup": afternoonsetup.md
+      - "Preparing OBs": preparingOBs.md
+  - "Post-Observing":
+    - "End of Night":
+      - "Shutdown Checklist": shutdown.md
+      - "Post-observing Comment Form": poc.md
