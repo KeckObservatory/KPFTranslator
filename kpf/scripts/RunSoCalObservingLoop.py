@@ -179,6 +179,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         log.info(f'Starting SoCal observation loop')
         log.info(f'Start time: {start_time:.2f} HST')
         log.info(f'End Time: {end_time:.2f} HST')
+        time.sleep(1)
 
         check_scriptstop()
 
