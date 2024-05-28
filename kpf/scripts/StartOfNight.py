@@ -46,7 +46,7 @@ class StartOfNight(KPFTranslatorFunction):
         expose = ktl.cache('kpfexpose', 'EXPOSE')
         scriptname = kpfconfig['SCRIPTNAME'].read()
         pid = kpfconfig['SCRIPTPID'].read(binary=True)
-        if scriptname in ['', 'None', None] or pid >= 0:
+        if scriptname not in ['', 'None', None] or pid >= 0:
             # ---------------------------------
             # User Verification
             # ---------------------------------
