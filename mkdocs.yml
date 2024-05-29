@@ -30,12 +30,7 @@ nav:
       - "Sensitivity": sensitivity.md
       - "Data Format": dataformat.md
       - "KPF vs. HIRES": KPFvsHIRES.md
-    - "Instrument Software":
-      - "Operations Scripts":
-        - "RunCalOB": scripts/RunCalOB.md
-        - "RunSciOB": scripts/RunSciOB.md
-        - "RunSoCalObservingLoop": scripts/RunSoCalObservingLoop.md
-        - "StartOfNight": scripts/StartOfNight.md
+    - "Instrument Software": KPFTranslator.md
   - "Pre-Observing":
     - "Preparing for Your Run":
       - "Pre-observing Checklist": preobservingchecklist.md
@@ -53,7 +48,12 @@ nav:
     - "Procedures & Checklists":
       - "Afternoon Setup": afternoonsetup.md
       - "Preparing OBs": preparingOBs.md
-  - "Post-Observing":
     - "End of Night":
       - "Shutdown Checklist": shutdown.md
       - "Post-observing Comment Form": poc.md
+  - "Technical Documentation":
+    - "Operations Scripts":
+      - "RunCalOB": scripts/RunCalOB.md
+      - "RunSciOB": scripts/RunSciOB.md
+      - "RunSoCalObservingLoop": scripts/RunSoCalObservingLoop.md
+      - "StartOfNight": scripts/StartOfNight.md
