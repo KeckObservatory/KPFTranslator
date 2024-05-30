@@ -8,7 +8,7 @@ with open(linking_table_file, 'r') as f:
 prefix = contents['common'].get('prefix')
 
 scriptsdir = Path('docs/scripts/')
-scriptsdir.mkdir(parents=False, exist_ok=False)
+scriptsdir.mkdir(parents=False, exist_ok=True)
 
 all_scripts = ['# Scripts\n', '\n']
 
