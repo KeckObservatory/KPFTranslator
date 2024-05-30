@@ -33,8 +33,6 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        '''
-        '''
         success = WaitForLFCReady.execute({})
         if success is not True:
             raise FailedPostCondition('LFC did not reach expected state')

@@ -40,8 +40,6 @@ class WaitForFlatFieldFiberPos(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('FF_FiberPos', type=str,
                             choices=["Blank", "6 mm f/5", "7.5 mm f/4",
                                      "10 mm f/3", "13.2 mm f/2.3", "Open"],

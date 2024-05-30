@@ -43,8 +43,6 @@ class SetObject(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('Object', type=str,
                             help='The OBJECT keyword')
         return super().add_cmdline_args(parser, cfg)

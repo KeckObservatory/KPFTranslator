@@ -49,8 +49,6 @@ class SetADCOffsets(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('ADC1OFF', type=float,
                             help="Offset for ADC1 (in degrees)")
         parser.add_argument('ADC2OFF', type=float,

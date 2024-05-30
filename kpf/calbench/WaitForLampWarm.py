@@ -71,8 +71,6 @@ class WaitForLampWarm(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('lamp', type=str,
                             choices=['BrdbandFiber', 'U_gold', 'U_daily',
                                      'Th_daily', 'Th_gold', 'WideFlat'],

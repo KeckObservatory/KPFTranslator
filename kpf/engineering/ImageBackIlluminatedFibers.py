@@ -112,8 +112,6 @@ class ImageBackIlluminatedFibers(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument("--Science", "--Sci", "--science", "--sci", "--SCI",
                             dest="SCI",
                             default=False, action="store_true",

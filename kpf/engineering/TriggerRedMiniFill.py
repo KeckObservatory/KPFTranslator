@@ -52,8 +52,6 @@ class TriggerRedMiniFill(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('duration', type=float,
                             help='The duration of the fill in seconds (240 recommended)')
         return super().add_cmdline_args(parser, cfg)

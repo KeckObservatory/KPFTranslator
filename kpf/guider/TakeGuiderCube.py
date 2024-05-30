@@ -62,8 +62,6 @@ class TakeGuiderCube(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('duration', type=float,
                             help='The duration in seconds')
         parser.add_argument("--noTRIGCUBE", dest="ImageCube",

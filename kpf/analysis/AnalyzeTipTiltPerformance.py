@@ -676,8 +676,6 @@ class AnalyzeTipTiltPerformance(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('files', type=str, nargs='*',
             help="The FITS files to analyze")
         parser.add_argument("-g", "--gif", dest="gif",

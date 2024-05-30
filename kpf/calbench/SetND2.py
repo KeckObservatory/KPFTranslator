@@ -41,8 +41,6 @@ class SetND2(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('CalND2', type=str,
                             choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
                                      "OD 1.0", "OD 4.0"],
