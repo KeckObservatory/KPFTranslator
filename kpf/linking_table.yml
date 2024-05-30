@@ -138,8 +138,6 @@ links:
         cmd: fiu.StartTipTilt.StartTipTilt
     StopTipTilt:
         cmd: fiu.StopTipTilt.StopTipTilt
-    UpdateCurrentBase:
-        cmd: fiu.UpdateCurrentBase.UpdateCurrentBase
     TestTipTiltMirrorRange:
         cmd: fiu.TestTipTiltMirrorRange.TestTipTiltMirrorRange
     VerifyCurrentBase:
@@ -209,10 +207,6 @@ links:
         cmd: scripts.ConfigureForScience.ConfigureForScience
     EndOfNight:
         cmd: scripts.EndOfNight.EndOfNight
-    ExecuteCalSequence:
-        cmd: scripts.ExecuteCalSequence.ExecuteCalSequence
-    ExecuteSciSequence:
-        cmd: scripts.ExecuteSciSequence.ExecuteSciSequence
     ExecuteSlewCal:
         cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
     RunCalOB:
@@ -227,10 +221,8 @@ links:
         cmd: scripts.StartOfNight.StartOfNight
     StartUp:
         cmd: scripts.StartUp.StartUp
-    TestScienceADC:
-        cmd: scripts.TestScienceADC.TestScienceADC
-    WaitForConfigureCalOB:
-        cmd: scripts.WaitForConfigureCalOB.WaitForConfigureCalOB
+    WaitForConfigureCalibrations:
+        cmd: scripts.WaitForConfigureCalibrations.WaitForConfigureCalibrations
     # SoCal
     DisableSoCal:
         cmd: socal.DisableSoCal.DisableSoCal
