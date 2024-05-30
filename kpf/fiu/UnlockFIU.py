@@ -5,7 +5,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class UnockFIU(KPFTranslatorFunction):
+class UnlockFIU(KPFTranslatorFunction):
     '''Unlock the FIU mechanisms
     
     ARGS:

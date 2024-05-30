@@ -5,7 +5,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class SetTipTiltCalculations(KPFTranslatorFunction):
+class SetTipTiltControl(KPFTranslatorFunction):
     '''Turn the tip tilt control software on or off.
     
     ARGS:

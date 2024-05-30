@@ -93,8 +93,8 @@ links:
     # ExpMeter
     BuildMasterBias:
         cmd: expmeter.BuildMasterBias.BuildMasterBias
-    SetExpMeterExptime:
-        cmd: expmeter.SetExpMeterExptime.SetExpMeterExptime
+    SetExpMeterExpTime:
+        cmd: expmeter.SetExpMeterExpTime.SetExpMeterExpTime
     PredictExpMeterParameters:
         cmd: expmeter.PredictExpMeterParameters.PredictExpMeterParameters
     SetMasterBiasToDefault:
@@ -265,8 +265,8 @@ links:
         cmd: spectrograph.ResetDetectors.ResetRedDetector
     ResetDetectors:
         cmd: spectrograph.ResetDetectors.ResetDetectors
-    SetExptime:
-        cmd: spectrograph.SetExptime.SetExptime
+    SetExpTime:
+        cmd: spectrograph.SetExpTime.SetExpTime
     SetObject:
         cmd: spectrograph.SetObject.SetObject
     SetObserver:
