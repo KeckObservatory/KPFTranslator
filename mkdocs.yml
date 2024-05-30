@@ -52,8 +52,4 @@ nav:
       - "Shutdown Checklist": shutdown.md
       - "Post-observing Comment Form": poc.md
   - "Technical Documentation":
-    - "Operations Scripts":
-      - "RunCalOB": scripts/RunCalOB.md
-      - "RunSciOB": scripts/RunSciOB.md
-      - "RunSoCalObservingLoop": scripts/RunSoCalObservingLoop.md
-      - "StartOfNight": scripts/StartOfNight.md
+    - "Operations Scripts": scripts/scripts.md
