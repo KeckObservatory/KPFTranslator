@@ -69,8 +69,6 @@ class TakeFVCExposure(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('camera', type=str,
                             choices=['SCI', 'CAHK', 'CAL', 'EXT'],
                             help='The FVC camera')

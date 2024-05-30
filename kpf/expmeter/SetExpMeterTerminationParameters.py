@@ -67,8 +67,6 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('ExpMeterBin', type=int,
                             choices=[1,2,3,4],
                             help="Which exposure meter band to use (1, 2, 3, or 4)")

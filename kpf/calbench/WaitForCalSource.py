@@ -36,8 +36,6 @@ class WaitForCalSource(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        '''Verifies that the final OCTAGON keyword value matches the input.
-        '''
         target = args.get('CalSource')
         timeout = cfg.getfloat('times', 'octagon_move_time', fallback=60)
         expr = f"($kpfcal.OCTAGON == {target})"
@@ -48,8 +46,6 @@ class WaitForCalSource(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('CalSource', type=str,
                             choices=['Home', 'EtalonFiber', 'BrdbandFiber',
                                      'U_gold', 'U_daily', 'Th_daily', 'Th_gold',

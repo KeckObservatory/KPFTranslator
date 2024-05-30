@@ -211,8 +211,6 @@ class Fit2DGridSearch(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('fgs_cube_fileX', type=str,
             help="The FGS FITS cube for the X pixel scan")
         parser.add_argument('fgs_cube_fileY', type=str,

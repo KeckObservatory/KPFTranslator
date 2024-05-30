@@ -76,8 +76,6 @@ class BuildMasterBias(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('files', nargs='*',
                             help="The files to combine")
         parser.add_argument("--output", dest="output", type=str,

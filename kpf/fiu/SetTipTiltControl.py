@@ -5,7 +5,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class SetTipTiltCalculations(KPFTranslatorFunction):
+class SetTipTiltControl(KPFTranslatorFunction):
     '''Turn the tip tilt control software on or off.
     
     ARGS:
@@ -35,8 +35,6 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('control', type=str,
                             choices=['Active', 'Inactive'],
                             help='Control "Active" or "Inactive"')

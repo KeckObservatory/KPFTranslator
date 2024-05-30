@@ -309,8 +309,6 @@ class RunTwilightRVStandard(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('--test', dest="test_only",
                             default=False, action="store_true",
                             help='Only execute the target selection code')

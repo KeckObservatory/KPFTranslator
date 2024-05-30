@@ -128,8 +128,6 @@ class BuildOBfromQuery(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('GaiaID', type=str,
                             help='Gaia DR3 ID to query for (e.g. "35227046884571776")')
         return super().add_cmdline_args(parser, cfg)

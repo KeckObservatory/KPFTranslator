@@ -84,8 +84,6 @@ class SetGuiderExpTime(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('exptime', type=float,
                             help='The exposure time in seconds')
         return super().add_cmdline_args(parser, cfg)

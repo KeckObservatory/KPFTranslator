@@ -186,7 +186,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
-        while now_decimal > start_time and now_decimal < end_time:
+        while now_decimal >= start_time and now_decimal < end_time:
             log.debug('Checking if SoCal is on the Sun')
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
             observation = {True: SoCal_observation, False: Etalon_observation}[on_target]
@@ -216,11 +216,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                     except Exception as email_err:
                         log.error(f'Sending email failed')
                         log.error(email_err)
-                # Cleanup
-                clear_script_keywords()
-                log.error('Running CleanupAfterCalibrations and exiting')
-                CleanupAfterCalibrations.execute({})
-                sys.exit(1)
 
             check_scriptstop()
 

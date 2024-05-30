@@ -146,8 +146,6 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('--repeats', type=int, default=1,
                             help="The number of iterations to use in the calculation")
         return super().add_cmdline_args(parser, cfg)
