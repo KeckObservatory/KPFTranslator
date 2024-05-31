@@ -7,10 +7,9 @@ from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
 
 
-class WaitForND1(KPFTranslatorFunction):
+class WaitForND(KPFTranslatorFunction):
     '''# Description
-    Wait for the ND1 filter wheel (the one at the output of the 
-    octagon) via the `kpfcal.ND1POS` keyword.
+    Wait for both ND filter wheels.
 
     # Parameters
 
