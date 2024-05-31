@@ -16,12 +16,12 @@ from kpf.ao.TurnLightSourceOff import TurnLightSourceOff
 
 
 class SetupAOforACAM(KPFTranslatorFunction):
-    '''Set up AO in the safe mode for ACAM operation to assist KPF acquisition
+    '''# Description
+    Set up AO in the safe mode for ACAM operation to assist KPF acquisition
         1. Set AFM to Mirror
         2. Set AFS to ngs
     
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

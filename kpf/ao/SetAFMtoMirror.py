@@ -6,10 +6,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetAFMtoMirror(KPFTranslatorFunction):
-    '''Set AFM to Mirror so ACAM sees light
+    '''# Description
+    Set AFM to Mirror so ACAM sees light
     
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

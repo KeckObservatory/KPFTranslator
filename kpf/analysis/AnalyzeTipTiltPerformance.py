@@ -634,8 +634,13 @@ def run_new_sep_parameters(cube, original, snr=5, minarea=50, binning=1,
 ## AnalyzeTipTiltPerformance
 ##-------------------------------------------------------------------------
 class AnalyzeTipTiltPerformance(KPFTranslatorFunction):
-    '''
-    ARGS:
+    '''# Description
+    Generates a plot analyzing tip tilt performance for a single observation.
+    Can take as input either an L0 file, in which case it will strip out the
+    guider extension for use, or a guider "cube" file.
+
+    # Parameters
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

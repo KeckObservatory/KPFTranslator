@@ -7,12 +7,16 @@ from kpf.calbench import standardize_lamp_name
 
 
 class IsCalSourceEnabled(KPFTranslatorFunction):
-    '''Return a boolean indicating whether the input CalSource is enabled as
+    '''# Description
+    Return a boolean indicating whether the input CalSource is enabled as
     reported by the kpfconfig.%_ENABLED keywords.
 
-    ARGS:
-    =====
-    :CalSource: Which lamp to check?
+    # Parameters
+
+    **CalSource** (`str`)
+    > Which lamp to check?
+    <br>Allowed Values: EtalonFiber, BrdbandFiber, U_gold, U_daily,
+    Th_daily, Th_gold, SoCal-CalFib, LFCFiber, SoCal-SciSky, WideFlat
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

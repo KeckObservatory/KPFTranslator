@@ -784,8 +784,12 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing='0.7',
 ## AnalyzeGridSearch
 ##-------------------------------------------------------------------------
 class AnalyzeGridSearch(KPFTranslatorFunction):
-    '''
-    ARGS:
+    '''# Description
+    Tool to analyze engineering data taken by the `engineering.GridSearch` or
+    `engineering.Run2DGridSearch` scripts.
+
+    # Parameters
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

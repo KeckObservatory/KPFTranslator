@@ -55,6 +55,8 @@ links:
         cmd: calbench.SetLFCtoAstroComb.SetLFCtoAstroComb
     SetLFCtoStandbyHigh:
         cmd: calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh
+    SetND:
+        cmd: calbench.SetND.SetND
     SetND1:
         cmd: calbench.SetND1.SetND1
     SetND2:
@@ -69,6 +71,8 @@ links:
         cmd: calbench.WaitForLampWarm.WaitForLampWarm
     WaitForLFCReady:
         cmd: calbench.WaitForLFCReady.WaitForLFCReady
+    WaitForND:
+        cmd: calbench.WaitForND.WaitForND
     WaitForND1:
         cmd: calbench.WaitForND1.WaitForND1
     WaitForND2:
@@ -302,6 +306,8 @@ links:
         cmd: utils.SetOutdirs.SetOutdirs
     SetSimulCalSource:
         cmd: utils.SetSimulCalSource.SetSimulCalSource
+    SetTargetInfo:
+        cmd: utils.SetTargetInfo.SetTargetInfo
     StartGUIs:
         cmd: utils.StartGUIs.StartGUIs
     StopGUIs:

@@ -8,11 +8,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetLFCtoStandbyHigh(KPFTranslatorFunction):
-    '''Set the Laser Frequency Comb (LFC) to "StandbyHigh" mode. This is the
+    '''# Description
+    Set the Laser Frequency Comb (LFC) to "StandbyHigh" mode. This is the
     mode which should be set after operation of the LFC for science is complete.
 
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

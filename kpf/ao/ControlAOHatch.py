@@ -6,11 +6,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class ControlAOHatch(KPFTranslatorFunction):
-    '''Control the AO Hatch
-    
-    ARGS:
-    =====
-    :destination: 'open' or 'close'
+    '''# Description
+    Command the AO Hatch to open or close.
+
+    # Parameters
+    **destination** (`str`)
+    > The destination position.
+    <br>Allowed Values: 'open' or 'close'
+
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -26,7 +29,7 @@ class ControlAOHatch(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        destination = args.get('destination')
+        destination = args.get('destination', '').strip()
         final_dest = {'close': 'closed', 'closed': 'closed', 'open': 'open'}[destination]
         aohatchsts = ktl.cache('ao', 'AOHATCHSTS')
         success = aohatchsts.waitfor(f"== '{final_dest}'", timeout=30)

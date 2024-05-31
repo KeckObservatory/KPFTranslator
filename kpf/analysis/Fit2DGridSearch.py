@@ -190,8 +190,11 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
 ## Fit2DGridSearch
 ##-------------------------------------------------------------------------
 class Fit2DGridSearch(KPFTranslatorFunction):
-    '''Take two 1D grid search runs (one in X and one in Y) ...
-    ARGS:
+    '''# Description
+    Take two 1D grid search runs (one in X and one in Y) ...
+
+    # Parameters
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

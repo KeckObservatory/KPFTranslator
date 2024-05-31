@@ -6,10 +6,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetAORotatorManual(KPFTranslatorFunction):
-    '''AO rotator needs to be in the Manual mode before observing.
+    '''# Description
+    AO rotator needs to be in the Manual mode before observing.
     
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

@@ -7,10 +7,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SendPCUtoKPF(KPFTranslatorFunction):
-    '''Send the PCU stage to the "kpf" named position.
+    '''#Description
+    Send the PCU stage to the "kpf" named position.
     
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

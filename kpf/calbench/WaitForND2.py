@@ -6,14 +6,17 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class WaitForND2(KPFTranslatorFunction):
-    '''Set the filter in the ND2 filter wheel (the one at the output of the 
+    '''# Description
+    Set the filter in the ND2 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND2POS` keyword.
-    
-    ARGS:
-    =====
-    :CalND2: The neutral density filter to put in the second filter wheel.
-        Allowed values are "OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0",
-        "OD 4.0"
+
+    # Parameters
+
+    **CalND2** (`str`)
+    > The neutral density filter to put in the second filter
+    wheel. This affects only the light injected in to the simultaneous
+    calibration fiber.
+    <br>Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`, `OD 0.8`, `OD 1.0`, `OD 4.0`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -8,11 +8,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class WaitForLFCReady(KPFTranslatorFunction):
-    '''Wait for the Laser Frequency Comb (LFC) to be ready and in "AstroComb"
+    '''# Description
+    Wait for the Laser Frequency Comb (LFC) to be ready and in "AstroComb"
     mode
 
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

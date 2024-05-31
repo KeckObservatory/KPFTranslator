@@ -47,10 +47,9 @@ def kill_process(process, server='kpf'):
 
 
 class StopGUIs(KPFTranslatorFunction):
-    '''Start KPF GUIs
+    '''Stop KPF GUIs
 
-    ARGS:
-    =====
+    ### ARGS
     None
     '''
     @classmethod

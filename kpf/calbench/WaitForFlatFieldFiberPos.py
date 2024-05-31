@@ -6,14 +6,15 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class WaitForFlatFieldFiberPos(KPFTranslatorFunction):
-    '''Wait for the flat field fiber aperture via the `kpfcal.FF_FIBERPOS`
+    '''# Description
+    Wait for the flat field fiber aperture via the `kpfcal.FF_FIBERPOS`
     keyword.
     
-    ARGS:
-    =====
-    :FF_FiberPos: The name of the flat field fiber position desired.  Allowed
-        values are "Blank", "6 mm f/5", "7.5 mm f/4", "10 mm f/3",
-        "13.2 mm f/2.3", "Open"
+    # Parameters
+
+    **FF_FiberPos** (`str`)
+    > The name of the flat field fiber position desired.
+    <br>Allowed Values: "Blank", "6 mm f/5", "7.5 mm f/4", "10 mm f/3", "13.2 mm f/2.3", "Open"
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
