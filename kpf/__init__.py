@@ -30,6 +30,11 @@ def create_KPF_log():
     LogFileHandler.setLevel(logging.DEBUG)
     LogFileHandler.setFormatter(LogFormat)
     log.addHandler(LogFileHandler)
+    # Try to change permissions in case they are bad
+    try:
+        os.chmod(LogFileName, 0o666)
+    except OSError:
+        pass
     return log
 
 log = create_KPF_log()

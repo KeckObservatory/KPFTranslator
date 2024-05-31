@@ -120,7 +120,6 @@ class RunCalOB(KPFTranslatorFunction):
                     log.error(f'Sending email failed')
                     log.error(email_err)
             # Cleanup
-            clear_script_keywords()
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
             sys.exit(1)
@@ -158,13 +157,9 @@ class RunCalOB(KPFTranslatorFunction):
                     log.error(f'Sending email failed')
                     log.error(email_err)
             # Cleanup
-            clear_script_keywords()
             log.error('Running CleanupAfterCalibrations and exiting')
             CleanupAfterCalibrations.execute(OB)
             sys.exit(1)
-
-        # Clear script keywords so that cleanup can start successfully
-        clear_script_keywords()
 
         # Cleanup: Turn off lamps
         try:
@@ -174,19 +169,18 @@ class RunCalOB(KPFTranslatorFunction):
             log.error(e)
             traceback_text = traceback.format_exc()
             log.error(traceback_text)
+            clear_script_keywords()
             # Email error to kpf_info
-            if not isinstance(e, ScriptStopTriggered):
-                try:
-                    msg = [f'{type(e)}',
-                           f'{traceback_text}',
-                           '',
-                           f'{OB}']
-                    SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
-                                       'Message': '\n'.join(msg)})
-                except Exception as email_err:
-                    log.error(f'Sending email failed')
-                    log.error(email_err)
-            raise e
+            try:
+                msg = [f'{type(e)}',
+                       f'{traceback_text}',
+                       '',
+                       f'{OB}']
+                SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
+                                   'Message': '\n'.join(msg)})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
