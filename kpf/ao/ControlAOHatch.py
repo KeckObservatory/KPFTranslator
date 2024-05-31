@@ -26,7 +26,7 @@ class ControlAOHatch(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        destination = args.get('destination')
+        destination = args.get('destination', '').strip()
         final_dest = {'close': 'closed', 'closed': 'closed', 'open': 'open'}[destination]
         aohatchsts = ktl.cache('ao', 'AOHATCHSTS')
         success = aohatchsts.waitfor(f"== '{final_dest}'", timeout=30)
