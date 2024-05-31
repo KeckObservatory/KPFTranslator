@@ -227,11 +227,28 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         log.info('SoCal observation loop completed')
         log.info(f'Executed {nSoCalObs} SoCal sequences')
         log.info(f'Executed {nEtalonObs} Etalon sequences')
-        # Clear script keywords so that cleanup can start successfully
-        clear_script_keywords()
 
         # Cleanup
-        CleanupAfterCalibrations.execute(Etalon_observation)
+        try:
+            CleanupAfterCalibrations.execute(Etalon_observation)
+        except Exception as e:
+            log.error("CleanupAfterCalibrations failed:")
+            log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
+            clear_script_keywords()
+            # Email error to kpf_info
+            try:
+                msg = [f'{type(e)}',
+                       f'{traceback_text}',
+                       '',
+                       f'{OB}']
+                SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
+                                   'Message': '\n'.join(msg)})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
+
         # Park SoCal?
         if args.get('park', False) == True:
             ParkSoCal.execute({})

@@ -109,9 +109,6 @@ class RunSciOB(KPFTranslatorFunction):
                 CleanupAfterScience.execute(OB)
                 sys.exit(1)
 
-        # Clear script keywords so that cleanup can start successfully
-        clear_script_keywords()
-
         # Cleanup
         CleanupAfterScience.execute(OB)
 

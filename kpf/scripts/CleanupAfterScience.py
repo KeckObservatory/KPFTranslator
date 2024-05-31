@@ -22,7 +22,6 @@ class CleanupAfterScience(KPFTranslatorFunction):
     :OB: `dict` A fully specified science observing block (OB).
     '''
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
         pass
 
