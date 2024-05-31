@@ -8,11 +8,13 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetAORotator(KPFTranslatorFunction):
-    '''Set the AO rotator destination
+    '''# Description
+    Set the AO rotator destination
     
-    ARGS:
-    =====
-    :dest: Angle in degrees
+    # Parameters
+
+    **dest** (`float`)
+    > Angle in degrees for the physical drive angle of the rotator.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -6,10 +6,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class TurnHepaOff(KPFTranslatorFunction):
-    '''Turn HEPA Filter system off
+    '''# Description
+    Turn HEPA Filter system off
     
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

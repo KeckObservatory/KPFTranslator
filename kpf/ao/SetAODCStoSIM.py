@@ -6,10 +6,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetAODCStoSIM(KPFTranslatorFunction):
-    '''Set AO in AO DCS sim mode, so AO doesn't communicate with telescope
+    '''# Description
+    Set AO in AO DCS sim mode, so AO doesn't communicate with telescope
     
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

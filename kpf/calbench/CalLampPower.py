@@ -9,26 +9,21 @@ from kpf.calbench import standardize_lamp_name
 
 
 class CalLampPower(KPFTranslatorFunction):
-    '''Powers off one of the cal lamps via the `kpflamps` keyword service.
-    
+    '''# Description
+    Powers off one of the cal lamps via the `kpflamps` keyword service.
+
     Uses the lamp names from the OCTAGON when appropriate.
-    
-    Supported lamp names are:
-     - BrdbandFiber
-     - U_gold
-     - U_daily
-     - Th_daily
-     - Th_gold
-     - WideFlat
-     - ExpMeterLED
-     - CaHKLED
-     - SciLED
-     - SkyLED
-    
-    ARGS:
-    =====
-    :lamp: name of the lamp to control
-    :power: "on" or "off" destination state for lamp
+
+    # Parameters
+
+    **lamp** (`str`)
+    > Name of the lamp to control
+    <br>Allowed Values: BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold,
+    WideFlat, ExpMeterLED, CaHKLED, SciLED, SkyLED
+
+    **power** (`str`)
+    > Destination state for lamp power
+    <br>Allowed Values: "on" or "off"
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

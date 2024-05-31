@@ -8,14 +8,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class WaitForCalSource(KPFTranslatorFunction):
-    '''Wait for the move to a cal source is complete (kpfcal.OCTAGON keyword).
-    
-    Valid names: Home, EtalonFiber, BrdbandFiber, U_gold, U_daily,
+    '''# Description
+    Wait for the move to a cal source is complete (kpfcal.OCTAGON keyword).
+
+    # Parameters
+    **CalSource** (`str`)
+    > Which lamp to check?
+    <br>Allowed Values: EtalonFiber, BrdbandFiber, U_gold, U_daily,
     Th_daily, Th_gold, SoCal-CalFib, LFCFiber
-    
-    ARGS:
-    =====
-    :CalSource: The octagon position that is the destination
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

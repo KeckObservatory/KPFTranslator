@@ -9,11 +9,11 @@ from kpf.calbench.WaitForLFCReady import WaitForLFCReady
 
 
 class SetLFCtoAstroComb(KPFTranslatorFunction):
-    '''Set the Laser Frequency Comb (LFC) to "AstroComb" mode. This should
+    '''# Description
+    Set the Laser Frequency Comb (LFC) to "AstroComb" mode. This should
     be used during operation of the LFC.
 
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod

@@ -15,7 +15,8 @@ from kpf.ao.TurnLightSourceOff import TurnLightSourceOff
 
 
 class SetupAOforKPF(KPFTranslatorFunction):
-    '''Set up AO in the safe mode for KPF operation
+    '''# Description
+    Set up AO in the safe mode for KPF operation
         1. Set AO roator in Manual mode
         2. Set AO rotator to 0 deg
         3. Turn off HEPA
@@ -24,8 +25,7 @@ class SetupAOforKPF(KPFTranslatorFunction):
         6. Move PCU to the KPF position
         7. Open AO hatch 
     
-    ARGS:
-    =====
+    # Parameters
     None
     '''
     @classmethod
