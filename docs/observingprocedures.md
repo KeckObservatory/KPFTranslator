@@ -1,11 +1,11 @@
 # Quick Reference
 
-- [Wait for Dome to Open](#Wait for Dome to Open)
-- [Run Start of Night](#Run Start of Night)
-- [Slew to the Vicinity of Your First Target](#Slew to the Vicinity of Your First Target)
-- [Focus the Telescope](#Focus the Telescope)
-- [Execute OBs](#Execute OBs)
-- [Switching Programs on a Split Night](#Switching Programs on a Split Night)
+- [Wait for Dome to Open](#wait-for-dome-to-open)
+- [Run Start of Night](#run-start-of-night)
+- [Slew to the Vicinity of Your First Target](#slew-to-the-vicinity-of-your-first-target)
+- [Focus the Telescope](#focus-the-telescope)
+- [Execute OBs](#execute-obs)
+- [Switching Programs on a Split Night](#switching-programs-on-a-split-night)
 
 # Wait for Dome to Open
 
