@@ -1,3 +1,5 @@
 # KPF Translator
 
-Most of KPF operations are controlled via the [KPF Translator](https://github.com/KeckObservatory/KPFTranslator).
+Most of KPF operations are controlled via the [KPF Translator](https://github.com/KeckObservatory/KPFTranslator) which is composed of Python code, which interacts with the underlying KTL keywords to automate various tasks. Each script is actually a Python class which is invoked by an `execute()` method which itself calls the `pre_condition()`, `perform()`, and `post_condition()` methods. This three-part structure allows the script to check that the system is ready for the action to be performed, then execute the action, then confirm a successful execution. These scripts can also be invoked via a command line interface to the underlying python and are used for everything from small, atomic actions which might require only a single KTL keyword write to execute, to large scripts which need significant flow control such as executing a science observation at night -- including configuring the instrument, waiting for the telescope and tip-tilt system to acquire the target, executing the specified exposures, and finally performing clean up actions.
+
+Detailed documentation on each translator script can be found in the [scripts](scripts/scripts.md) section of this documentation.

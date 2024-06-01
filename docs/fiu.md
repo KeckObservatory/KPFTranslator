@@ -8,16 +8,15 @@ The Fiber Injection Unit (FIU) sits on the Keck I AO bench ahead of AO correctio
 | 445-870 nm | Science Spectrograph | Includes two fibers (science and sky)
 | 950-1200 nm | Guide Camera | Used for acquisition and fast tip tilt correction
 
+The FIU can also be configured in a mode which takes light from the calibration bench in the basement and injects it in to the science and sky fibers.
+
 ## Atmospheric Dispersion Correctors
 
 In addition, the FIU contains atmospheric dispersion correction (ADC) systems for both the science and Ca H&K wavelengths.
 
 ### Science ADC
 
-For the science arm, a pair of prisms are rotated to provide dispersion correction based on the telescope position. The ADCs are designed to keep all the science wavelengths within 50 mas.  The ADC corrects atmospheric dispersion at that full 50 mas specification down to an elevation of 35 (TBC) degrees.
-
-The prisms reach their maximum correction power at an elevation of 25 degrees, beyond that, their correction power is fixed and no longer increases as the elevation decreases.
-
+For the science arm, a pair of prisms are rotated to provide dispersion correction based on the telescope position. The ADCs are designed to keep all the science wavelengths within 50 mas.  The ADC corrects atmospheric dispersion at that full 50 mas specification down to an elevation of 30 degrees.  The prisms reach their maximum correction power at an elevation of 25 degrees, beyond that, their correction power is fixed and no longer increases as the elevation decreases.
 
 ### Ca H&K ADC
 
