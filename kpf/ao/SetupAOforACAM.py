@@ -10,8 +10,9 @@ from kpf.ao.SetAFStoNGS import SetAFStoNGS
 class SetupAOforACAM(KPFTranslatorFunction):
     '''# Description
     Set up AO in the safe mode for ACAM operation to assist KPF acquisition
-        1. Set AFM to Mirror
-        2. Set AFS to ngs
+
+    - Set AFM to Mirror
+    - Set AFS to ngs
 
     ## KTL Keywords Used
 
