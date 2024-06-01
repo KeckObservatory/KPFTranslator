@@ -9,8 +9,17 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SendPCUtoKPF(KPFTranslatorFunction):
     '''#Description
     Send the PCU stage to the "kpf" named position.
-    
-    # Parameters
+
+    ## KTL Keywords Used
+    - `ao.PCSFNAME`
+    - `ao.PCSFSTST`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod

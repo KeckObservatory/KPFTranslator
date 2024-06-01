@@ -7,25 +7,38 @@ from kpf.ao.SetAORotatorManual import SetAORotatorManual
 from kpf.ao.SetAORotator import SetAORotator
 from kpf.ao.TurnHepaOff import TurnHepaOff
 from kpf.ao.SetAODCStoSIM import SetAODCStoSIM
-from kpf.ao.SetAFMtoMirror import SetAFMtoMirror
 from kpf.ao.SendPCUtoHome import SendPCUtoHome
 from kpf.ao.SendPCUtoKPF import SendPCUtoKPF
-from kpf.ao.SetAFStoNGS import SetAFStoNGS
 from kpf.ao.TurnLightSourceOff import TurnLightSourceOff
 
 
 class SetupAOforKPF(KPFTranslatorFunction):
     '''# Description
     Set up AO in the safe mode for KPF operation
-        1. Set AO roator in Manual mode
-        2. Set AO rotator to 0 deg
-        3. Turn off HEPA
-        4. Set AO in DCS sim mode
-        5. Home PCU
-        6. Move PCU to the KPF position
-        7. Open AO hatch 
-    
-    # Parameters
+    - Set AO roator in Manual mode
+    - Set AO rotator to 0 deg
+    - Turn off HEPA
+    - Set AO in DCS sim mode
+    - Home PCU
+    - Move PCU to the KPF position
+    - Open AO hatch
+
+    ## KTL Keywords Used
+
+    - `ao.PCSFNAME`
+
+    ## Scripts Called
+
+    - `kpf.ao.SetAORotatorManual`
+    - `kpf.ao.SetAORotator`
+    - `kpf.ao.TurnHepaOff`
+    - `kpf.ao.SetAODCStoSIM`
+    - `kpf.ao.TurnLightSourceOff`
+    - `kpf.ao.SendPCUtoHome`
+    - `kpf.ao.SendPCUtoKPF`
+
+    ## Parameters
+
     None
     '''
     @classmethod

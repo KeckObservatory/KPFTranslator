@@ -10,8 +10,17 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetAORotator(KPFTranslatorFunction):
     '''# Description
     Set the AO rotator destination
-    
-    # Parameters
+
+    ## KTL Keywords Used
+    - `ao.AODCSSIM`
+    - `ao.AOCOMSIM`
+    - `ao.AODCSSFP`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
 
     **dest** (`float`)
     > Angle in degrees for the physical drive angle of the rotator.

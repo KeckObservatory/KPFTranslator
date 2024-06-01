@@ -8,8 +8,18 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetAFStoNGS(KPFTranslatorFunction):
     '''# Description
     ACAM should be set to NGS focus. LGS focus will not work for KPF.
-    
-    # Parameters
+
+    ## KTL Keywords Used
+    - `ao.OBASNAME`
+    - `ao.OBASSLEW`
+    - `ao.OBASSTST`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod

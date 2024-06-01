@@ -8,8 +8,18 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetAFMtoMirror(KPFTranslatorFunction):
     '''# Description
     Set AFM to Mirror so ACAM sees light
-    
-    # Parameters
+
+    ## KTL Keywords Used
+    - `ao.OBAMNAME`
+    - `ao.OBAMSLEW`
+    - `ao.OBAMSTST`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod

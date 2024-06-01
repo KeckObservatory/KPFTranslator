@@ -9,7 +9,16 @@ class ControlAOHatch(KPFTranslatorFunction):
     '''# Description
     Command the AO Hatch to open or close.
 
-    # Parameters
+    ## KTL Keywords Used
+    - `ao.AOHATCHCMD`
+    - `ao.AOHATCHSTS`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     **destination** (`str`)
     > The destination position.
     <br>Allowed Values: 'open' or 'close'

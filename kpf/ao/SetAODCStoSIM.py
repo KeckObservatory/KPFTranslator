@@ -8,8 +8,18 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetAODCStoSIM(KPFTranslatorFunction):
     '''# Description
     Set AO in AO DCS sim mode, so AO doesn't communicate with telescope
-    
-    # Parameters
+
+    ## KTL Keywords Used
+    - `ao.AODCSSIM`
+    - `ao.AOCOMSIM`
+    - `ao.AODCSSFP`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod

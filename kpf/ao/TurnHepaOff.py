@@ -8,8 +8,18 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class TurnHepaOff(KPFTranslatorFunction):
     '''# Description
     Turn HEPA Filter system off
-    
-    # Parameters
+
+    ## KTL Keywords Used
+
+    - `ao.OBHPAON`
+    - `ao.OBHPASTA`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod
