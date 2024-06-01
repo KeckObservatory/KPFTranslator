@@ -33,7 +33,7 @@ class RunSciOB(KPFTranslatorFunction):
 
     ARGS:
     =====
-    :OB: `dict` A fully specified observing block (OB).
+    * __OB__ - `dict` A fully specified observing block (OB).
     '''
     abortable = True
 

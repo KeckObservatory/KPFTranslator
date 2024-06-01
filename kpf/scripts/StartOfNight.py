@@ -30,7 +30,7 @@ class StartOfNight(KPFTranslatorFunction):
     
     ARGS:
     =====
-    :AO: `bool` Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
+    * __AO__ - `bool` Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

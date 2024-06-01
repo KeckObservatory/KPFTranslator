@@ -61,12 +61,11 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     Once the end time has passed, the system will perform basic cleanup of KPF,
     then it will park SoCal using `ParkSoCal` if the park flag is set.
 
-    ARGS:
-    =====
-    :StartTimeHST: `float` The time (in decimal hours HST) to begin observing.
-    :EndTimeHST: `float` The time (in decimal hours HST) to end observing.
-    :park: `bool` If True, the script will park SoCal when complete.
-    :scheduled: `bool` If True, the script will not run if the keyword
+    ## Arguments
+    * __StartTimeHST__ - `float` The time (in decimal hours HST) to begin observing.
+    * __EndTimeHST__ - `float` The time (in decimal hours HST) to end observing.
+    * __park__ - `bool` If True, the script will park SoCal when complete.
+    * __scheduled__ - `bool` If True, the script will not run if the keyword
                 `kpfconfig.ALLOWSCHEDULEDCALS` is "No".
     '''
     @classmethod
@@ -259,8 +258,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('StartTimeHST', type=float,
             help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,
