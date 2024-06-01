@@ -146,7 +146,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Technical Documentation</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../scripts/">Operations Scripts</a>
+                  <li class="toctree-l1"><a class="" href="../">Operations Scripts</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U">Troubleshooting</a>
                   </li>
@@ -189,7 +189,14 @@
 
       <h2 id="kpf.ao.TurnLightSourceOff.TurnLightSourceOff--description">Description</h2>
 <p>Turn K1 AO light source off</p>
-<h2 id="kpf.ao.TurnLightSourceOff.TurnLightSourceOff--parameters">Parameters</h2>
+<h3 id="kpf.ao.TurnLightSourceOff.TurnLightSourceOff--ktl-keywords-used">KTL Keywords Used</h3>
+<ul>
+<li><code>ao.OBSWON</code></li>
+<li><code>ao.OBSWSTA</code></li>
+</ul>
+<h3 id="kpf.ao.TurnLightSourceOff.TurnLightSourceOff--scripts-called">Scripts Called</h3>
+<p>None</p>
+<h3 id="kpf.ao.TurnLightSourceOff.TurnLightSourceOff--parameters">Parameters</h3>
 <p>None</p>
 
               <details class="quote">
@@ -216,11 +223,31 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TurnLightSourceOff</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TurnLightSourceOff</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Turn K1 AO light source off</span>
 
-<span class="sd">    # Parameters</span>
+<span class="sd">    ## KTL Keywords Used</span>
+
+<span class="sd">    - `ao.OBSWON`</span>
+<span class="sd">    - `ao.OBSWSTA`</span>
+
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Parameters</span>
+
 <span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>

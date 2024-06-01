@@ -146,7 +146,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Technical Documentation</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../scripts/">Operations Scripts</a>
+                  <li class="toctree-l1"><a class="" href="../">Operations Scripts</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U">Troubleshooting</a>
                   </li>
@@ -194,7 +194,9 @@
 <li><code>ao.AOHATCHCMD</code></li>
 <li><code>ao.AOHATCHSTS</code></li>
 </ul>
-<h2 id="kpf.ao.ControlAOHatch.ControlAOHatch--parameters">Parameters</h2>
+<h3 id="kpf.ao.ControlAOHatch.ControlAOHatch--scripts-called">Scripts Called</h3>
+<p>None</p>
+<h3 id="kpf.ao.ControlAOHatch.ControlAOHatch--parameters">Parameters</h3>
 <p><strong>destination</strong> (<code>str</code>)</p>
 <blockquote>
 <p>The destination position.
@@ -243,7 +245,12 @@
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ControlAOHatch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ControlAOHatch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Command the AO Hatch to open or close.</span>
 
@@ -251,7 +258,12 @@
 <span class="sd">    - `ao.AOHATCHCMD`</span>
 <span class="sd">    - `ao.AOHATCHSTS`</span>
 
-<span class="sd">    # Parameters</span>
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Parameters</span>
+
 <span class="sd">    **destination** (`str`)</span>
 <span class="sd">    &gt; The destination position.</span>
 <span class="sd">    &lt;br&gt;Allowed Values: &#39;open&#39; or &#39;close&#39;</span>

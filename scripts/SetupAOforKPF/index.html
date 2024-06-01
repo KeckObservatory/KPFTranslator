@@ -146,7 +146,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Technical Documentation</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../scripts/">Operations Scripts</a>
+                  <li class="toctree-l1"><a class="" href="../">Operations Scripts</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U">Troubleshooting</a>
                   </li>
@@ -188,20 +188,38 @@
 
 
       <h2 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--description">Description</h2>
-<p>Set up AO in the safe mode for KPF operation
-    1. Set AO roator in Manual mode
-    2. Set AO rotator to 0 deg
-    3. Turn off HEPA
-    4. Set AO in DCS sim mode
-    5. Home PCU
-    6. Move PCU to the KPF position
-    7. Open AO hatch </p>
-<h2 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--parameters">Parameters</h2>
+<p>Set up AO in the safe mode for KPF operation</p>
+<ul>
+<li>Set AO roator in Manual mode</li>
+<li>Set AO rotator to 0 deg</li>
+<li>Turn off HEPA</li>
+<li>Set AO in DCS sim mode</li>
+<li>Home PCU</li>
+<li>Move PCU to the KPF position</li>
+<li>Open AO hatch</li>
+</ul>
+<h3 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--ktl-keywords-used">KTL Keywords Used</h3>
+<ul>
+<li><code>ao.PCSFNAME</code></li>
+</ul>
+<h3 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--scripts-called">Scripts Called</h3>
+<ul>
+<li><code>kpf.ao.SetAORotatorManual</code></li>
+<li><code>kpf.ao.SetAORotator</code></li>
+<li><code>kpf.ao.TurnHepaOff</code></li>
+<li><code>kpf.ao.SetAODCStoSIM</code></li>
+<li><code>kpf.ao.TurnLightSourceOff</code></li>
+<li><code>kpf.ao.SendPCUtoHome</code></li>
+<li><code>kpf.ao.SendPCUtoKPF</code></li>
+</ul>
+<h3 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--parameters">Parameters</h3>
 <p>None</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/ao/SetupAOforKPF.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
@@ -245,18 +263,48 @@
 <span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
-<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetupAOforKPF</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetupAOforKPF</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Set up AO in the safe mode for KPF operation</span>
-<span class="sd">        1. Set AO roator in Manual mode</span>
-<span class="sd">        2. Set AO rotator to 0 deg</span>
-<span class="sd">        3. Turn off HEPA</span>
-<span class="sd">        4. Set AO in DCS sim mode</span>
-<span class="sd">        5. Home PCU</span>
-<span class="sd">        6. Move PCU to the KPF position</span>
-<span class="sd">        7. Open AO hatch </span>
 
-<span class="sd">    # Parameters</span>
+<span class="sd">    - Set AO roator in Manual mode</span>
+<span class="sd">    - Set AO rotator to 0 deg</span>
+<span class="sd">    - Turn off HEPA</span>
+<span class="sd">    - Set AO in DCS sim mode</span>
+<span class="sd">    - Home PCU</span>
+<span class="sd">    - Move PCU to the KPF position</span>
+<span class="sd">    - Open AO hatch</span>
+
+<span class="sd">    ## KTL Keywords Used</span>
+
+<span class="sd">    - `ao.PCSFNAME`</span>
+
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    - `kpf.ao.SetAORotatorManual`</span>
+<span class="sd">    - `kpf.ao.SetAORotator`</span>
+<span class="sd">    - `kpf.ao.TurnHepaOff`</span>
+<span class="sd">    - `kpf.ao.SetAODCStoSIM`</span>
+<span class="sd">    - `kpf.ao.TurnLightSourceOff`</span>
+<span class="sd">    - `kpf.ao.SendPCUtoHome`</span>
+<span class="sd">    - `kpf.ao.SendPCUtoKPF`</span>
+
+<span class="sd">    ## Parameters</span>
+
 <span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
