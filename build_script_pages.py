@@ -23,7 +23,7 @@ for script in contents['links'].keys():
 
 for package in packages.keys():
 
-    all_scripts.append(f'* {package}\n')
+    all_scripts.append(f'## {package}\n')
 
     for script in packages[package]:
         scriptname = script.split('.')[-1]
@@ -40,7 +40,7 @@ for package in packages.keys():
                           f'    options:\n',
                           f'      show_source: true\n',
                           ])
-        all_scripts.append(f"    * [{scriptname}]({scriptname}.md)\n")
+        all_scripts.append(f"* [{scriptname}]({scriptname}.md)\n")
 
 script_list_file = Path('docs/scripts/scripts.md')
 if script_list_file.exists() == True:
