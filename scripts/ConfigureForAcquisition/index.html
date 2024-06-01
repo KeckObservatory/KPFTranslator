@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>ConfigureForAcquisition - KPF</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "ConfigureForAcquisition";
+        var mkdocs_page_input_path = "scripts/ConfigureForAcquisition.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">KPF Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystem Descriptions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../agitator/">Agitator</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dataformat/">Data Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../scripts/">Operations Scripts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../preparingOBs/">Preparing OBs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Keck Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Telescope Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://koa.ipac.caltech.edu/UserGuide/PyKOA/notebooks/PyKOA_KPF_introduction.html">Retrieve Data using PyKOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">ConfigureForAcquisition</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="configureforacquisition"><code>ConfigureForAcquisition</code></h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="kpf.scripts.ConfigureForAcquisition.ConfigureForAcquisition"></a>
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
+
+
+      <p>Script which configures the instrument for Acquisition step.</p>
+<ul>
+<li>Sets target parameters</li>
+<li>Sets guide camera parameters</li>
+<li>Sets FIU mode</li>
+<li>Executes Slew Cal</li>
+</ul>
+<p>This must have arguments as input, either from a file using the <code>-f</code> command
+line tool, or passed in from the execution engine.</p>
+<p>Can be called by <code>ddoi_script_functions.configure_for_acquisition</code>.</p>
+<h2 id="kpf.scripts.ConfigureForAcquisition.ConfigureForAcquisition--args">ARGS:</h2>
+<p>:OB: <code>dict</code> A fully specified science observing block (OB).</p>
+
+              <details class="quote">
+                <summary>Source code in <code>kpf/scripts/ConfigureForAcquisition.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureForAcquisition</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which configures the instrument for Acquisition step.</span>
+
+<span class="sd">    - Sets target parameters</span>
+<span class="sd">    - Sets guide camera parameters</span>
+<span class="sd">    - Sets FIU mode</span>
+<span class="sd">    - Executes Slew Cal</span>
+
+<span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
+<span class="sd">    line tool, or passed in from the execution engine.</span>
+
+<span class="sd">    Can be called by `ddoi_script_functions.configure_for_acquisition`.</span>
+
+<span class="sd">    ARGS:</span>
+<span class="sd">    =====</span>
+<span class="sd">    :OB: `dict` A fully specified science observing block (OB).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@obey_scriptrun</span>
+    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="n">check_input</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span> <span class="s1">&#39;Template_Name&#39;</span><span class="p">,</span> <span class="n">allowed_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;kpf_sci&#39;</span><span class="p">])</span>
+        <span class="n">check_input</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span> <span class="s1">&#39;Template_Version&#39;</span><span class="p">,</span> <span class="n">version_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">value_min</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span>
+        <span class="c1"># Check guider parameters</span>
+        <span class="n">guide_mode</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GuideMode&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">guide_mode</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">check_input</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span> <span class="s1">&#39;Jmag&#39;</span><span class="p">,</span> <span class="n">allowed_types</span><span class="o">=</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span>
+        <span class="c1"># Check Slewcals</span>
+        <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SLEWCALREQ&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">slewcal_argsfile</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SLEWCALFILE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">slewcal_argsfile</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Slew cal file </span><span class="si">{</span><span class="n">slewcal_argsfile</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">OB</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SEQ_Observations&#39;</span><span class="p">]:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">OB</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">OB</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
+
+        <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
+        <span class="n">kpf_expmeter</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_expmeter&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Set Octagon</span>
+        <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
+        <span class="n">calsource</span> <span class="o">=</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SIMULCALSOURCE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">octagon</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfcal&#39;</span><span class="p">,</span> <span class="s1">&#39;OCTAGON&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current OCTAGON = </span><span class="si">{</span><span class="n">octagon</span><span class="si">}</span><span class="s2">, desired = </span><span class="si">{</span><span class="n">calsource</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">octagon</span> <span class="o">!=</span> <span class="n">calsource</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Set CalSource/Octagon: </span><span class="si">{</span><span class="n">calsource</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">SetCalSource</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;CalSource&#39;</span><span class="p">:</span> <span class="n">calsource</span><span class="p">,</span> <span class="s1">&#39;wait&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+        <span class="c1">## Execute Slew Cal if Requested</span>
+        <span class="k">if</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SLEWCALREQ&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">slewcal_argsfile</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SLEWCALFILE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Beginning Slew Cal&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using: </span><span class="si">{</span><span class="n">slewcal_argsfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">slewcal_argsfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">slewcal_OB</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">slewcal_args</span> <span class="o">=</span> <span class="n">slewcal_OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SEQ_Calibrations&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">slewcal_args</span><span class="p">[</span><span class="s1">&#39;Template_Name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;kpf_slewcal&#39;</span>
+                <span class="n">slewcal_args</span><span class="p">[</span><span class="s1">&#39;Template_Version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0.5&#39;</span>
+            <span class="n">slewcal_args</span><span class="p">[</span><span class="s1">&#39;TriggerCaHK&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OB</span><span class="p">[</span><span class="s1">&#39;TriggerCaHK&#39;</span><span class="p">]</span>
+            <span class="n">slewcal_args</span><span class="p">[</span><span class="s1">&#39;TriggerGreen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OB</span><span class="p">[</span><span class="s1">&#39;TriggerGreen&#39;</span><span class="p">]</span>
+            <span class="n">slewcal_args</span><span class="p">[</span><span class="s1">&#39;TriggerRed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OB</span><span class="p">[</span><span class="s1">&#39;TriggerRed&#39;</span><span class="p">]</span>
+            <span class="n">ExecuteSlewCal</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">slewcal_args</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Slew cal complete. Resetting SLEWCALREQ&#39;</span><span class="p">)</span>
+            <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SLEWCALREQ&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;No&#39;</span><span class="p">)</span>
+        <span class="c1"># Set FIU Mode</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting FIU mode to Observing&#39;</span><span class="p">)</span>
+        <span class="n">ConfigureFIU</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Observing&#39;</span><span class="p">,</span> <span class="s1">&#39;wait&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+        <span class="c1"># Set Target Parameters from OB</span>
+        <span class="n">SetTargetInfo</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">OB</span><span class="p">)</span>
+
+        <span class="c1"># Set guide camera parameters</span>
+        <span class="n">guide_mode</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GuideMode&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">guide_mode</span> <span class="o">==</span> <span class="s1">&#39;manual&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GuideCamGain&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">SetGuiderGain</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">OB</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GuideFPS&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">SetGuiderFPS</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">OB</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">guide_mode</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">guider_parameters</span> <span class="o">=</span> <span class="n">PredictGuiderParameters</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">OB</span><span class="p">)</span>
+            <span class="n">SetGuiderGain</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">guider_parameters</span><span class="p">)</span>
+            <span class="n">SetGuiderFPS</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">guider_parameters</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">guide_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;off&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span> <span class="c1"># pyyaml converts &#39;off&#39; to False, so handle both</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GuideMode is off, no guider parameters set&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Guide mode &#39;</span><span class="si">{</span><span class="n">guide_mode</span><span class="si">}</span><span class="s2">&#39; is not supported.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not setting guider parameters.&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

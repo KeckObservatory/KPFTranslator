@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>StartGUIs - KPF</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "StartGUIs";
+        var mkdocs_page_input_path = "scripts/StartGUIs.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">KPF Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystem Descriptions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../agitator/">Agitator</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dataformat/">Data Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../scripts/">Operations Scripts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../preparingOBs/">Preparing OBs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Keck Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Telescope Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://koa.ipac.caltech.edu/UserGuide/PyKOA/notebooks/PyKOA_KPF_introduction.html">Retrieve Data using PyKOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">StartGUIs</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="startguis"><code>StartGUIs</code></h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="kpf.utils.StartGUIs.StartGUIs"></a>
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
+
+
+      <p>Start KPF GUIs</p>
+<h4 id="kpf.utils.StartGUIs.StartGUIs--args">ARGS</h4>
+<p>None</p>
+
+              <details class="quote">
+                <summary>Source code in <code>kpf/utils/StartGUIs.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartGUIs</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Start KPF GUIs</span>
+
+<span class="sd">    ### ARGS</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="c1"># Get DISPLAY varibales</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>
+        <span class="n">uidisp</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="c1">#         for dispno in [0, 1, 2, 3]:</span>
+<span class="c1">#             uidisp_proc = subprocess.run([&#39;uidisp&#39;, f&#39;{dispno}&#39;], env=env,</span>
+<span class="c1">#                                          stdout=subprocess.PIPE)</span>
+<span class="c1">#             uidisp[dispno] = uidisp_proc.stdout.decode().strip(&#39;\n&#39;)</span>
+
+        <span class="n">kvncstatus_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;kvncstatus&#39;</span><span class="p">],</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
+                                         <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="n">kvncstatus</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">kvncstatus_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getlogin</span><span class="p">()</span>
+        <span class="n">display</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;control0&#39;</span><span class="p">:</span>  <span class="n">kvncstatus</span><span class="p">[</span><span class="n">kvncstatus</span><span class="p">[</span><span class="s1">&#39;Desktop&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="sa">f</span><span class="s1">&#39;kpf-</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s1">-control0&#39;</span><span class="p">][</span><span class="s1">&#39;Display&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="s1">&#39;control1&#39;</span><span class="p">:</span>  <span class="n">kvncstatus</span><span class="p">[</span><span class="n">kvncstatus</span><span class="p">[</span><span class="s1">&#39;Desktop&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="sa">f</span><span class="s1">&#39;kpf-</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s1">-control1&#39;</span><span class="p">][</span><span class="s1">&#39;Display&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="s1">&#39;control2&#39;</span><span class="p">:</span>  <span class="n">kvncstatus</span><span class="p">[</span><span class="n">kvncstatus</span><span class="p">[</span><span class="s1">&#39;Desktop&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="sa">f</span><span class="s1">&#39;kpf-</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s1">-control2&#39;</span><span class="p">][</span><span class="s1">&#39;Display&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="s1">&#39;telstatus&#39;</span><span class="p">:</span>  <span class="n">kvncstatus</span><span class="p">[</span><span class="n">kvncstatus</span><span class="p">[</span><span class="s1">&#39;Desktop&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="sa">f</span><span class="s1">&#39;kpf-</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s1">-telstatus&#39;</span><span class="p">][</span><span class="s1">&#39;Display&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="p">}</span>
+
+        <span class="c1"># Start GUIs if needed</span>
+        <span class="k">for</span> <span class="n">GUI</span> <span class="ow">in</span> <span class="n">GUI_list</span><span class="p">:</span>
+            <span class="c1"># Find out of GUIs are Running</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting DISPLAY to kpf</span><span class="si">{</span><span class="n">display</span><span class="p">[</span><span class="n">GUI</span><span class="p">[</span><span class="s1">&#39;display&#39;</span><span class="p">]]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">env</span><span class="p">[</span><span class="s1">&#39;DISPLAY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;kpf</span><span class="si">{</span><span class="n">display</span><span class="p">[</span><span class="n">GUI</span><span class="p">[</span><span class="s1">&#39;display&#39;</span><span class="p">]]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">window_names</span> <span class="o">=</span> <span class="n">get_window_list</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+            <span class="n">GUIname</span> <span class="o">=</span> <span class="n">GUI</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">GUIname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">window_names</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;position_only&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">instrume</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;dcs1&#39;</span><span class="p">,</span> <span class="s1">&#39;INSTRUME&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">GUIname</span> <span class="o">==</span> <span class="s1">&#39;MAGIQ - Observer UI: KPF on Keck1&#39;</span> <span class="ow">and</span> <span class="n">instrume</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;KPF&#39;</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Selected instrument is not KPF, not starting magiq&#39;</span><span class="p">)</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting &#39;</span><span class="si">{</span><span class="n">GUIname</span><span class="si">}</span><span class="s2">&#39; GUI&quot;</span><span class="p">)</span>
+                    <span class="n">gui_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">GUI</span><span class="p">[</span><span class="s1">&#39;cmd&#39;</span><span class="p">],</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
+                                                <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                                <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="n">waitfor_window_to_appear</span><span class="p">(</span><span class="n">GUIname</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">success</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">GUIname</span><span class="si">}</span><span class="s1"> did not come up&#39;</span><span class="p">)</span>
+                        <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">gui_proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;STDERR: </span><span class="si">{</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;STDOUT: </span><span class="si">{</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Existing &#39;</span><span class="si">{</span><span class="n">GUIname</span><span class="si">}</span><span class="s2">&#39; window found&quot;</span><span class="p">)</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">GUI</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">success</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Positioning &#39;</span><span class="si">{</span><span class="n">GUIname</span><span class="si">}</span><span class="s2">&#39; GUI&quot;</span><span class="p">)</span>
+                <span class="n">wmctrl_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wmctrl&#39;</span><span class="p">,</span> <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">GUIname</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;-e&#39;</span><span class="p">,</span> <span class="n">GUI</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]]</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Running: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wmctrl_cmd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">wmctrl_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wmctrl_cmd</span><span class="p">),</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">GUI</span><span class="p">[</span><span class="s1">&#39;cmd&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;xterm&#39;</span><span class="p">:</span>
+                    <span class="n">xterm_title</span> <span class="o">=</span> <span class="n">GUI</span><span class="p">[</span><span class="s1">&#39;cmd&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="n">waitfor_window_to_appear</span><span class="p">(</span><span class="n">xterm_title</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimizing &#39;</span><span class="si">{</span><span class="n">xterm_title</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                    <span class="n">wmctrl_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wmctrl&#39;</span><span class="p">,</span> <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="n">xterm_title</span><span class="p">,</span> <span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="s1">&#39;add,hidden&#39;</span><span class="p">]</span>
+                    <span class="n">wmctrl_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wmctrl_cmd</span><span class="p">),</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">GUIname</span> <span class="o">==</span> <span class="s1">&#39;SAOImage kpfds9&#39;</span><span class="p">:</span>
+                <span class="c1"># Configure ds9 initial color maps and scaling</span>
+                <span class="n">cmaps</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;cool&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="s1">&#39;heat&#39;</span><span class="p">}</span>
+                <span class="k">for</span> <span class="n">frameno</span> <span class="ow">in</span> <span class="n">cmaps</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">xpaset_cmds</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;xpaset&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfds9&#39;</span><span class="p">,</span> <span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;frameno&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">frameno</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span>
+                                   <span class="p">[</span><span class="s1">&#39;xpaset&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfds9&#39;</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cmaps</span><span class="p">[</span><span class="n">frameno</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span>
+                                   <span class="p">[</span><span class="s1">&#39;xpaset&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfds9&#39;</span><span class="p">,</span> <span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="s1">&#39;99.5&#39;</span><span class="p">]]</span>
+                    <span class="k">for</span> <span class="n">xpaset_cmd</span> <span class="ow">in</span> <span class="n">xpaset_cmds</span><span class="p">:</span>
+                        <span class="n">xpa_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">xpaset_cmd</span><span class="p">,</span>
+                                                    <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                                    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--position&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
+                            <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;position_only&quot;</span><span class="p">,</span>
+                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Only position the GUIs, do not start&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>WaitForReady - KPF</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "WaitForReady";
+        var mkdocs_page_input_path = "scripts/WaitForReady.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">KPF Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystem Descriptions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../agitator/">Agitator</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dataformat/">Data Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../scripts/">Operations Scripts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../preparingOBs/">Preparing OBs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Keck Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Telescope Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://koa.ipac.caltech.edu/UserGuide/PyKOA/notebooks/PyKOA_KPF_introduction.html">Retrieve Data using PyKOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">WaitForReady</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="waitforready"><code>WaitForReady</code></h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="kpf.spectrograph.WaitForReady.WaitForReady"></a>
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="kpf.spectrograph.ResetDetectors.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
+
+
+      <p>Waits for the <code>kpfexpose.EXPOSE</code> keyword to be "Ready".  This will
+block until the camera is ready for another exposure.  Times out after
+waiting for exposure time plus a set buffer time.</p>
+<h2 id="kpf.spectrograph.WaitForReady.WaitForReady--args">ARGS:</h2>
+<p>None</p>
+
+              <details class="quote">
+                <summary>Source code in <code>kpf/spectrograph/WaitForReady.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForReady</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Waits for the `kpfexpose.EXPOSE` keyword to be &quot;Ready&quot;.  This will</span>
+<span class="sd">    block until the camera is ready for another exposure.  Times out after</span>
+<span class="sd">    waiting for exposure time plus a set buffer time.</span>
+
+<span class="sd">    ARGS:</span>
+<span class="sd">    =====</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="n">kpfexpose</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfexpose&#39;</span><span class="p">)</span>
+        <span class="n">exptime</span> <span class="o">=</span> <span class="n">kpfexpose</span><span class="p">[</span><span class="s1">&#39;EXPOSURE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">starting_status</span> <span class="o">=</span> <span class="n">kpfexpose</span><span class="p">[</span><span class="s1">&#39;EXPOSE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">detectors</span> <span class="o">=</span> <span class="n">kpfexpose</span><span class="p">[</span><span class="s1">&#39;TRIG_TARG&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">detector_list</span> <span class="o">=</span> <span class="n">detectors</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+        <span class="n">buffer_time</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;readout_buffer_time&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">read_times</span> <span class="o">=</span> <span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;time_estimates&#39;</span><span class="p">,</span> <span class="s1">&#39;readout_red&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">60</span><span class="p">),</span>
+                      <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;time_estimates&#39;</span><span class="p">,</span> <span class="s1">&#39;readout_green&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">60</span><span class="p">),</span>
+                      <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;time_estimates&#39;</span><span class="p">,</span> <span class="s1">&#39;readout_cahk&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                      <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;time_estimates&#39;</span><span class="p">,</span> <span class="s1">&#39;readout_expmeter&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                      <span class="p">]</span>
+        <span class="n">slowest_read</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">read_times</span><span class="p">)</span>
+
+        <span class="n">wait_time</span> <span class="o">=</span> <span class="n">exptime</span><span class="o">+</span><span class="n">slowest_read</span><span class="o">+</span><span class="n">buffer_time</span> <span class="k">if</span> <span class="n">starting_status</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="n">slowest_read</span><span class="o">+</span><span class="n">buffer_time</span>
+
+        <span class="n">wait_logic_steps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;($kpfexpose.EXPOSE == 0)&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;Green&#39;</span> <span class="ow">in</span> <span class="n">detector_list</span><span class="p">:</span>
+            <span class="n">wait_logic_steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;($kpfgreen.EXPSTATE == 0)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;Red&#39;</span> <span class="ow">in</span> <span class="n">detector_list</span><span class="p">:</span>
+            <span class="n">wait_logic_steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;($kpfred.EXPSTATE == 0)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;Ca_HK&#39;</span> <span class="ow">in</span> <span class="n">detector_list</span><span class="p">:</span>
+            <span class="n">wait_logic_steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;($kpf_hk.EXPSTATE == 0)&quot;</span><span class="p">)</span>
+        <span class="n">wait_logic</span> <span class="o">=</span> <span class="s1">&#39; and &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wait_logic_steps</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Waiting (</span><span class="si">{</span><span class="n">wait_time</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">s max) for detectors to be ready&quot;</span><span class="p">)</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="n">wait_logic</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">wait_time</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">success</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfexpose is </span><span class="si">{</span><span class="n">kpfexpose</span><span class="p">[</span><span class="s2">&quot;EXPOSE&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;WaitForReady failed to reach expected state&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfexpose is </span><span class="si">{</span><span class="n">kpfexpose</span><span class="p">[</span><span class="s2">&quot;EXPOSE&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfexpose EXPLAINR = </span><span class="si">{</span><span class="n">kpfexpose</span><span class="p">[</span><span class="s2">&quot;EXPLAINR&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfexpose EXPLAINNR = </span><span class="si">{</span><span class="n">kpfexpose</span><span class="p">[</span><span class="s2">&quot;EXPLAINNR&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">kpfexpose</span><span class="p">[</span><span class="s1">&#39;EXPOSE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Readout&#39;</span><span class="p">:</span>
+                <span class="c1"># Readout errors are handled in kpfred and kpfgreen services.</span>
+                <span class="c1"># Just wait some extra time for that to recover the system.</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="n">wait_logic</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">wait_time</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">RecoverDetectors</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="n">expr</span> <span class="o">=</span> <span class="s2">&quot;($kpfexpose.EXPOSE == &#39;Ready&#39;)&quot;</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose_reset_time&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">expose</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfexpose&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPOSE&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">FailedPostCondition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;kpfexpose.EXPOSE=</span><span class="si">{</span><span class="n">expose</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2"> is not Ready&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

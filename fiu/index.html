@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>FIU - KPF</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "FIU";
+        var mkdocs_page_input_path = "fiu.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">KPF Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >Instrument Subsystem Descriptions</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../agitator/">Agitator</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../dataformat/">Data Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../scripts/scripts/">Operations Scripts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../preparingOBs/">Preparing OBs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Keck Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Telescope Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://koa.ipac.caltech.edu/UserGuide/PyKOA/notebooks/PyKOA_KPF_introduction.html">Retrieve Data using PyKOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Instrument Info</li>
+          <li class="breadcrumb-item">Instrument Subsystem Descriptions</li>
+      <li class="breadcrumb-item active">FIU</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="fiber-injection-unit-fiu">Fiber Injection Unit (FIU)</h1>
+<p>The Fiber Injection Unit (FIU) sits on the Keck I AO bench ahead of AO correction. The unit's primary role is to feed telescope light to the science, sky, and Ca H&amp;K fibers. The unit utilizes a pair of dichroics to send light to the relevant subsystems:</p>
+<table>
+<thead>
+<tr>
+<th>Wavelength Range</th>
+<th>Subsystem</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>382-402 nm</td>
+<td>Ca H&amp;K Spectrograph</td>
+<td>Includes two fibers (science and sky)</td>
+</tr>
+<tr>
+<td>445-870 nm</td>
+<td>Science Spectrograph</td>
+<td>Includes two fibers (science and sky)</td>
+</tr>
+<tr>
+<td>950-1200 nm</td>
+<td>Guide Camera</td>
+<td>Used for acquisition and fast tip tilt correction</td>
+</tr>
+</tbody>
+</table>
+<p>The FIU can also be configured in a mode which takes light from the calibration bench in the basement and injects it in to the science and sky fibers.</p>
+<h2 id="atmospheric-dispersion-correctors">Atmospheric Dispersion Correctors</h2>
+<p>In addition, the FIU contains atmospheric dispersion correction (ADC) systems for both the science and Ca H&amp;K wavelengths.</p>
+<h3 id="science-adc">Science ADC</h3>
+<p>For the science arm, a pair of prisms are rotated to provide dispersion correction based on the telescope position. The ADCs are designed to keep all the science wavelengths within 50 mas.  The ADC corrects atmospheric dispersion at that full 50 mas specification down to an elevation of 30 degrees.  The prisms reach their maximum correction power at an elevation of 25 degrees, beyond that, their correction power is fixed and no longer increases as the elevation decreases.</p>
+<h3 id="ca-hk-adc">Ca H&amp;K ADC</h3>
+<p>For the Ca H&amp;K arm, the fiber is on a two axis stage and is translated in such as way as to place the fiber under the correct wavelengths of light. The total wavelength range in this arm is small enough that only the differential position between this arm and the science and guide arms is corrected, there is no correction of the dispersion over the narrow wavelength range of the Ca H&amp;K arm.</p>
+<h2 id="fiu-layout">FIU Layout</h2>
+<p><img alt="Diagram showing the FIU components in science mode." src="../figures/FIU_science.png" /></p>
+<blockquote>
+<p>The FIU layout when in science mode. Light from the telescope is directed to the FIU off of a tip tilt mirror located on the PCU stage.</p>
+</blockquote>
+<p><img alt="Diagram showing the FIU components in calibration mode." src="../figures/FIU_calibration.png" /></p>
+<blockquote>
+<p>The FIU layout when in calibration mode. The calibration fibers are illuminated and a fold mirror is moved in to place to direct their light on to the science fiber. </p>
+</blockquote>
+<h2 id="fiber-viewing-cameras">Fiber Viewing Cameras</h2>
+<p>Both the science arm and the Ca H&amp;K arm have fiber viewing cameras (FVCs) for imaging the fiber tip.  These are only useful in an engineering context as it takes a very bright (roughly 1st magnitude) star to be visible because the FVCs are looking through the dichroics (and the ADC prisms in the science arm).  This drastically reduced the amount of light to the FVCs and makes the images hard to interpret due to reflections and ghost images.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../spectrograph/" class="btn btn-neutral float-left" title="Spectrograph"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../guider/" class="btn btn-neutral float-right" title="Guider">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+      <span><a href="../spectrograph/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../guider/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>RunSoCalObservingLoop - KPF</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "RunSoCalObservingLoop";
+        var mkdocs_page_input_path = "scripts/RunSoCalObservingLoop.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">KPF Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystem Descriptions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../agitator/">Agitator</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dataformat/">Data Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../scripts/">Operations Scripts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../preparingOBs/">Preparing OBs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Keck Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Telescope Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://koa.ipac.caltech.edu/UserGuide/PyKOA/notebooks/PyKOA_KPF_introduction.html">Retrieve Data using PyKOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">RunSoCalObservingLoop</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="runsocalobservingloop"><code>RunSoCalObservingLoop</code></h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="kpf.scripts.RunSoCalObservingLoop.RunSoCalObservingLoop"></a>
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
+
+
+      <p>This script runs a control loop to execute SoCal observations.</p>
+<p>When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means
+that the SoCal dispatcher number 4 will handle opening the enclosure,
+acquiring and tracking the Sun, and will perform a weather safety shutdown
+if needed.  The AUTONOMOUS mode will respect the CAN_OPEN keyword as well,
+so that keyword will lock out SoCal motions if that is desired.</p>
+<p>The script takes two required inputs: a start and end time in decimal hours
+(in HST).  The start time can be after the invocation of this script.  This
+is in fact the recommended operational strategy as the SoCal AUTONOMOUS
+mode will then have time to open and acquire the Sun before observations
+start.</p>
+<p>If needed, the script will wait until the start time before taking further
+actions (beyond setting AUTONOMOUS). Once the start time has passed, the
+script will check the <code>kpfconfig.SCRIPT%</code> keywords to see if something is
+currently running.  If so, it will wait for the script keywords to clear
+before starting operations.</p>
+<p>Next the script will try to determine if SoCal is successfully observing
+the Sun by invoking the <code>WaitForSoCalOnTarget</code> script.</p>
+<p>If SoCal is on target, then a short observation of the Sun is performed.
+Some of the parameters can be modified in the <code>KPFTranslator</code> configuration
+file (<code>kpf_inst_config.ini</code>). This observation, as currently configured,
+takes about 15 minutes to complete.</p>
+<p>If SoCal is not on target (according to the <code>WaitForSoCalOnTarget</code> script),
+then an Etalon calibration set is taken.  This is a way to make use of time
+that would otherwise be unproductive. This etalon script also takes around
+15 minutes or a bit less to complete.</p>
+<p>Once either of the two observations above has completed, the script repeats
+the loop as long as there is enough time before the end time to complete a
+SoCal observation.</p>
+<p>Once the end time has passed, the system will perform basic cleanup of KPF,
+then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p>
+<h3 id="kpf.scripts.RunSoCalObservingLoop.RunSoCalObservingLoop--arguments">Arguments</h3>
+<ul>
+<li><strong>StartTimeHST</strong> - <code>float</code> The time (in decimal hours HST) to begin observing.</li>
+<li><strong>EndTimeHST</strong> - <code>float</code> The time (in decimal hours HST) to end observing.</li>
+<li><strong>park</strong> - <code>bool</code> If True, the script will park SoCal when complete.</li>
+<li><strong>scheduled</strong> - <code>bool</code> If True, the script will not run if the keyword
+            <code>kpfconfig.ALLOWSCHEDULEDCALS</code> is "No".</li>
+</ul>
+
+              <details class="quote">
+                <summary>Source code in <code>kpf/scripts/RunSoCalObservingLoop.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCalObservingLoop</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;This script runs a control loop to execute SoCal observations.</span>
+
+<span class="sd">    When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means</span>
+<span class="sd">    that the SoCal dispatcher number 4 will handle opening the enclosure,</span>
+<span class="sd">    acquiring and tracking the Sun, and will perform a weather safety shutdown</span>
+<span class="sd">    if needed.  The AUTONOMOUS mode will respect the CAN_OPEN keyword as well,</span>
+<span class="sd">    so that keyword will lock out SoCal motions if that is desired.</span>
+
+<span class="sd">    The script takes two required inputs: a start and end time in decimal hours</span>
+<span class="sd">    (in HST).  The start time can be after the invocation of this script.  This</span>
+<span class="sd">    is in fact the recommended operational strategy as the SoCal AUTONOMOUS</span>
+<span class="sd">    mode will then have time to open and acquire the Sun before observations</span>
+<span class="sd">    start.</span>
+
+<span class="sd">    If needed, the script will wait until the start time before taking further</span>
+<span class="sd">    actions (beyond setting AUTONOMOUS). Once the start time has passed, the</span>
+<span class="sd">    script will check the `kpfconfig.SCRIPT%` keywords to see if something is</span>
+<span class="sd">    currently running.  If so, it will wait for the script keywords to clear</span>
+<span class="sd">    before starting operations.</span>
+
+<span class="sd">    Next the script will try to determine if SoCal is successfully observing</span>
+<span class="sd">    the Sun by invoking the `WaitForSoCalOnTarget` script.</span>
+
+<span class="sd">    If SoCal is on target, then a short observation of the Sun is performed.</span>
+<span class="sd">    Some of the parameters can be modified in the `KPFTranslator` configuration</span>
+<span class="sd">    file (`kpf_inst_config.ini`). This observation, as currently configured,</span>
+<span class="sd">    takes about 15 minutes to complete.</span>
+
+<span class="sd">    If SoCal is not on target (according to the `WaitForSoCalOnTarget` script),</span>
+<span class="sd">    then an Etalon calibration set is taken.  This is a way to make use of time</span>
+<span class="sd">    that would otherwise be unproductive. This etalon script also takes around</span>
+<span class="sd">    15 minutes or a bit less to complete.</span>
+
+<span class="sd">    Once either of the two observations above has completed, the script repeats</span>
+<span class="sd">    the loop as long as there is enough time before the end time to complete a</span>
+<span class="sd">    SoCal observation.</span>
+
+<span class="sd">    Once the end time has passed, the system will perform basic cleanup of KPF,</span>
+<span class="sd">    then it will park SoCal using `ParkSoCal` if the park flag is set.</span>
+
+<span class="sd">    ## Arguments</span>
+<span class="sd">    * __StartTimeHST__ - `float` The time (in decimal hours HST) to begin observing.</span>
+<span class="sd">    * __EndTimeHST__ - `float` The time (in decimal hours HST) to end observing.</span>
+<span class="sd">    * __park__ - `bool` If True, the script will park SoCal when complete.</span>
+<span class="sd">    * __scheduled__ - `bool` If True, the script will not run if the keyword</span>
+<span class="sd">                `kpfconfig.ALLOWSCHEDULEDCALS` is &quot;No&quot;.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@add_script_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="c1"># Check the ALLOWSCHEDULEDCALS value</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scheduled&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ALLOWSCHEDULED</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;ALLOWSCHEDULEDCALS&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ALLOWSCHEDULED</span> <span class="o">==</span> <span class="s1">&#39;No&#39;</span><span class="p">:</span>
+                <span class="k">return</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Prepare SoCal parameters to pass to ExecuteCal</span>
+        <span class="n">socal_ND1</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SoCal&#39;</span><span class="p">,</span> <span class="s1">&#39;ND1&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;OD 0.1&#39;</span><span class="p">)</span>
+        <span class="n">socal_ND2</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SoCal&#39;</span><span class="p">,</span> <span class="s1">&#39;ND2&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;OD 0.1&#39;</span><span class="p">)</span>
+        <span class="n">socal_ExpTime</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;SoCal&#39;</span><span class="p">,</span> <span class="s1">&#39;ExpTime&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">SoCal_observation</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Template_Name&#39;</span><span class="p">:</span> <span class="s1">&#39;kpf_lamp&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Template_Version&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;TargetName&#39;</span><span class="p">:</span> <span class="s1">&#39;Sun&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;TriggerCaHK&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;TimedShutter_CaHK&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;TriggerGreen&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;TriggerRed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;TriggerExpMeter&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;RunAgitator&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;CalSource&#39;</span><span class="p">:</span> <span class="s1">&#39;SoCal-SciSky&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Object&#39;</span><span class="p">:</span> <span class="s1">&#39;SoCal&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;CalND1&#39;</span><span class="p">:</span> <span class="n">socal_ND1</span><span class="p">,</span>
+                             <span class="s1">&#39;CalND2&#39;</span><span class="p">:</span> <span class="n">socal_ND2</span><span class="p">,</span>
+                             <span class="s1">&#39;ExpTime&#39;</span><span class="p">:</span> <span class="n">socal_ExpTime</span><span class="p">,</span>
+                             <span class="s1">&#39;nExp&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                             <span class="s1">&#39;SSS_Science&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;SSS_Sky&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;TakeSimulCal&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;nointensemon&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="p">}</span>
+        <span class="n">readout_red</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;time_estimates&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;readout_red&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">readout_green</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;time_estimates&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;readout_green&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">readout_cahk</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;time_estimates&#39;</span><span class="p">,</span> <span class="s1">&#39;readout_cahk&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">archon_time_shim</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;archon_temperature_time_shim&#39;</span><span class="p">,</span>
+                             <span class="n">fallback</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">readout</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">readout_red</span><span class="p">,</span> <span class="n">readout_green</span><span class="p">,</span> <span class="n">readout_cahk</span><span class="p">])</span>
+        <span class="n">SoCal_duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">SoCal_observation</span><span class="p">[</span><span class="s1">&#39;nExp&#39;</span><span class="p">])</span><span class="o">*</span><span class="nb">max</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">SoCal_observation</span><span class="p">[</span><span class="s1">&#39;ExpTime&#39;</span><span class="p">]),</span> <span class="n">archon_time_shim</span><span class="p">])</span>
+        <span class="n">SoCal_duration</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">SoCal_observation</span><span class="p">[</span><span class="s1">&#39;nExp&#39;</span><span class="p">])</span><span class="o">*</span><span class="n">readout</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Estimated SoCal observation time = </span><span class="si">{</span><span class="n">SoCal_duration</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Prepare Etalon parameters to pass to ExecuteCal</span>
+        <span class="n">Etalon_ND1</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SoCal&#39;</span><span class="p">,</span> <span class="s1">&#39;EtalonND1&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;OD 0.1&#39;</span><span class="p">)</span>
+        <span class="n">Etalon_ND2</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SoCal&#39;</span><span class="p">,</span> <span class="s1">&#39;EtalonND2&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;OD 0.1&#39;</span><span class="p">)</span>
+        <span class="n">Etalon_ExpTime</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;SoCal&#39;</span><span class="p">,</span> <span class="s1">&#39;EtalonExpTime&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">Etalon_observation</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Template_Name&#39;</span><span class="p">:</span> <span class="s1">&#39;kpf_lamp&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;Template_Version&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;TriggerCaHK&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;TimedShutter_CaHK&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;TriggerGreen&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;TriggerRed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;TriggerExpMeter&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;RunAgitator&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;CalSource&#39;</span><span class="p">:</span> <span class="s1">&#39;EtalonFiber&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;Object&#39;</span><span class="p">:</span> <span class="s1">&#39;autocal-etalon-all&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;CalND1&#39;</span><span class="p">:</span> <span class="n">Etalon_ND1</span><span class="p">,</span>
+                              <span class="s1">&#39;CalND2&#39;</span><span class="p">:</span> <span class="n">Etalon_ND2</span><span class="p">,</span>
+                              <span class="s1">&#39;ExpTime&#39;</span><span class="p">:</span> <span class="n">Etalon_ExpTime</span><span class="p">,</span>
+                              <span class="s1">&#39;nExp&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                              <span class="s1">&#39;SSS_Science&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;SSS_Sky&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;TakeSimulCal&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;nointensemon&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="p">}</span>
+        <span class="n">Etalon_duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Etalon_observation</span><span class="p">[</span><span class="s1">&#39;nExp&#39;</span><span class="p">])</span><span class="o">*</span><span class="nb">max</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">Etalon_observation</span><span class="p">[</span><span class="s1">&#39;ExpTime&#39;</span><span class="p">]),</span> <span class="n">archon_time_shim</span><span class="p">])</span>
+        <span class="n">Etalon_duration</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Etalon_observation</span><span class="p">[</span><span class="s1">&#39;nExp&#39;</span><span class="p">])</span><span class="o">*</span><span class="n">readout</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Estimated Etalon observation time = </span><span class="si">{</span><span class="n">Etalon_duration</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Start SoCal in autonomous mode</span>
+        <span class="n">SoCalStartAutonomous</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+
+        <span class="c1"># Start Loop</span>
+        <span class="n">max_wait_per_iteration</span> <span class="o">=</span> <span class="mi">60</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;StartTimeHST&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;EndTimeHST&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="o">-</span> <span class="n">SoCal_duration</span><span class="o">/</span><span class="mi">3600</span> <span class="o">-</span> <span class="mf">0.05</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">now_decimal</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">hour</span> <span class="o">+</span> <span class="n">now</span><span class="o">.</span><span class="n">minute</span><span class="o">/</span><span class="mi">60</span> <span class="o">+</span> <span class="n">now</span><span class="o">.</span><span class="n">second</span><span class="o">/</span><span class="mi">3600</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">now_decimal</span> <span class="o">&lt;</span> <span class="n">start_time</span><span class="p">:</span>
+            <span class="n">wait</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_time</span><span class="o">-</span><span class="n">now_decimal</span><span class="p">)</span><span class="o">*</span><span class="mi">3600</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Waiting </span><span class="si">{</span><span class="n">wait</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">s for SoCal window start time&#39;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">wait</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">now_decimal</span> <span class="o">&gt;</span> <span class="n">end_time</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;End time for today&#39;s SoCal window has passed&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">SCRIPTPID</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;SCRIPTPID&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">SCRIPTPID</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">SCRIPTNAME</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;SCRIPTNAME&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">waittime</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">now_decimal</span><span class="p">)</span><span class="o">*</span><span class="mi">3600</span> <span class="o">-</span> <span class="n">SoCal_duration</span> <span class="o">-</span> <span class="mi">180</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Script is currently running: </span><span class="si">{</span><span class="n">SCRIPTNAME</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">waittime</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Waiting up to </span><span class="si">{</span><span class="n">waittime</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">s for running script to end&#39;</span><span class="p">)</span>
+                <span class="n">SCRIPTPID</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="s2">&quot;==-1&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">waittime</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># time shim</span>
+
+        <span class="n">check_script_running</span><span class="p">()</span>
+        <span class="n">set_script_keywords</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting SoCal observation loop&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Start time: </span><span class="si">{</span><span class="n">start_time</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> HST&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;End Time: </span><span class="si">{</span><span class="n">end_time</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> HST&#39;</span><span class="p">)</span>
+
+        <span class="n">check_scriptstop</span><span class="p">()</span>
+
+        <span class="n">nSoCalObs</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nEtalonObs</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">now_decimal</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">hour</span> <span class="o">+</span> <span class="n">now</span><span class="o">.</span><span class="n">minute</span><span class="o">/</span><span class="mi">60</span> <span class="o">+</span> <span class="n">now</span><span class="o">.</span><span class="n">second</span><span class="o">/</span><span class="mi">3600</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">now_decimal</span> <span class="o">&gt;=</span> <span class="n">start_time</span> <span class="ow">and</span> <span class="n">now_decimal</span> <span class="o">&lt;</span> <span class="n">end_time</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Checking if SoCal is on the Sun&#39;</span><span class="p">)</span>
+            <span class="n">on_target</span> <span class="o">=</span> <span class="n">WaitForSoCalOnTarget</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;timeout&#39;</span><span class="p">:</span> <span class="n">max_wait_per_iteration</span><span class="p">})</span>
+            <span class="n">observation</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="n">SoCal_observation</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="n">Etalon_observation</span><span class="p">}[</span><span class="n">on_target</span><span class="p">]</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SoCal on target: </span><span class="si">{</span><span class="n">on_target</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing </span><span class="si">{</span><span class="n">observation</span><span class="p">[</span><span class="s1">&#39;Object&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">check_scriptstop</span><span class="p">()</span>
+                <span class="n">ExecuteCal</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">on_target</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">nSoCalObs</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nEtalonObs</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ExecuteCal failed:&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">traceback_text</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback_text</span><span class="p">)</span>
+                <span class="c1"># Email error to kpf_info</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ScriptStopTriggered</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                               <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                               <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">OB</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+                        <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="s1">&#39;ExecuteCals Failed&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)})</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">email_err</span><span class="p">:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending email failed&#39;</span><span class="p">)</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">email_err</span><span class="p">)</span>
+
+            <span class="n">check_scriptstop</span><span class="p">()</span>
+
+            <span class="c1"># Update loop inputs</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="n">now_decimal</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">hour</span> <span class="o">+</span> <span class="n">now</span><span class="o">.</span><span class="n">minute</span><span class="o">/</span><span class="mi">60</span> <span class="o">+</span> <span class="n">now</span><span class="o">.</span><span class="n">second</span><span class="o">/</span><span class="mi">3600</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;SoCal observation loop completed&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Executed </span><span class="si">{</span><span class="n">nSoCalObs</span><span class="si">}</span><span class="s1"> SoCal sequences&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Executed </span><span class="si">{</span><span class="n">nEtalonObs</span><span class="si">}</span><span class="s1"> Etalon sequences&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Cleanup</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">CleanupAfterCalibrations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Etalon_observation</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;CleanupAfterCalibrations failed:&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">traceback_text</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback_text</span><span class="p">)</span>
+            <span class="n">clear_script_keywords</span><span class="p">()</span>
+            <span class="c1"># Email error to kpf_info</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                       <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">traceback_text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                       <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">OB</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+                <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="s1">&#39;CleanupAfterCalibrations Failed&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)})</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">email_err</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending email failed&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">email_err</span><span class="p">)</span>
+
+        <span class="c1"># Park SoCal?</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;park&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ParkSoCal</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;StartTimeHST&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Start of daily observing window in decimal hours HST.&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;EndTimeHST&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;End of daily observing window in decimal hours HST.&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--park&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;park&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Close and park SoCal when done?&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--notscheduled&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;scheduled&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_false&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not respect the kpfconfig.ALLOWSCHEDULEDCALS flag.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

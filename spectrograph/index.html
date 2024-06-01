@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Spectrograph - KPF</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Spectrograph";
+        var mkdocs_page_input_path = "spectrograph.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">KPF Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >Instrument Subsystem Descriptions</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../agitator/">Agitator</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../dataformat/">Data Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../scripts/scripts/">Operations Scripts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../preparingOBs/">Preparing OBs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Keck Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Telescope Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://koa.ipac.caltech.edu/UserGuide/PyKOA/notebooks/PyKOA_KPF_introduction.html">Retrieve Data using PyKOA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Instrument Info</li>
+          <li class="breadcrumb-item">Instrument Subsystem Descriptions</li>
+      <li class="breadcrumb-item active">Spectrograph</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="spectrometer-optical-design">Spectrometer Optical Design</h1>
+<p>The baseline KPF spectrometer design is shown in the following figure. Light enters the core spectrometer following the fiber image reformatter, at the focal point of the primary collimator mirror (traditionally this would be the location of the spectrometer slit). The f/8 beam diverges past this point and then strikes the primary collimator mirror (an off-axis paraboloid). Upon reflection, the now collimated 200 mm diameter light beam travels to the echelle grating, located one primary collimator focal length away from the primary collimator. After diffraction by the echelle, the diverging monochromatic beams reflect from the primary collimator a second time. Because the echelle grating is rotated slightly out of plane (the echelle gamma angle), the dispersed light does not return along the same path, and the pre- and post-diffraction beams are separated. Therefore, after reflecting from the collimator the second time, the dispersed light does not return to the entrance slit, but forms an intermediate focus to the side of the echelle. Just before the intermediate focus, a flat mirror is employed to fold the beam, to make the spectrometer footprint more compact.</p>
+<p><img alt="Layout of the spectrograph on the optical bench." src="../figures/KPFSpecLayout.JPG" /></p>
+<blockquote>
+<p>Layout of the spectrograph on the optical bench.</p>
+</blockquote>
+<p>After the fold mirror reflection, the light rays go through the intermediate focus, and then the diverging monochromatic beams are collimated by the secondary collimator mirror (an off-axis paraboloid). The monochromatic beam diameter here is 160 mm, owing to the secondary collimator having a focal length 0.8x that of the primary collimator. The converging monochromatic beams next encounter a dichroic beamsplitter, where wavelengths blueward of 593 nm are reflected, and wavelengths redward of 593 nm are transmitted. After reflection, the green channel monochromatic beams continue to converge towards the white pupil, where the cross-dispersion grism (grating prism) is located. This disperser consists of a shallow apex angle prism bonded to a volume phase holographic (VPH) grating. Following the grism, the light enters the camera, which then focuses the spectrum onto the CCD detector. A summary of various spectrometer parameters is given the the following table.</p>
+<p><img alt="A brief summary table of KPF instrument properties." src="../figures/KPFParameterSummaryTable.JPG" /></p>
+<blockquote>
+<p>A brief summary table of KPF instrument properties.</p>
+</blockquote>
+<h1 id="vph-grating-overview">VPH Grating Overview</h1>
+<p>As described above, the main spectrometer employs VPH-based grisms for cross-dispersion. In order to provide sufficient cross dispersion, the green channel VPH grating was produced with a line density of 800 lines per mm and the red channel VPH with 450 lines per mm. A summary of the KPF VPH grating specifications are shown in the table below. Both gratings were produced by Kaiser Optical Systems (KOSI). </p>
+<p><img alt="A brief summary table of KPF's VPH grating properties." src="../figures/VPHTable.JPG" /></p>
+<blockquote>
+<p>A brief summary table of KPF's VPH grating properties.</p>
+</blockquote>
+<p>A preliminary set of diffraction efficiency measurements was conducted by KOSI at a few locations across the clear aperture for each KPF grating. These data were re-measured and confirmed at SSL using the measurement test equipment and procedures developed by the DESI project. Overall, we were able to confirm KOSI's measurements and saw a slight (2-4%) increase in diffraction efficiency. The optimum angle of incidence (AOI) for each grating were both chosen away from their design AOI due to gains in diffraction efficiency at the "blue" end (green grating) and "red" end (red grating) of the KPF passband. For the green grating, we chose an AOI of -29.5 degree which incrased the overall band average efficiency from 86.4 degree to 87.7 degree. This increased the blue end efficiency from 77.6% to 84.6%. For the red grating, we chose an AOI of -25.4 degree which slightly increased the overall band average efficiency from 87.7% to 88.6%. This increased the red end efficiency from 82.7% to 89.6%. The following figure shows the SSL measured efficiency of the two KPF VPH gratings over the spectrometer's passband. With the changing of the AOI in each grating, we have seen significant gains (approximately 25%) in diffraction efficiency vs. the production minimum specification at both ends of the spectrometer passband. Overall these grating exceeded our production minimum specification by &gt;5% across at all wavelengths with the noted gains at the "blue" and "red" ends of the KPF spectrometer passband.</p>
+<p><img alt="Plot of the VPH grating efficiency as a function of wavelength." src="../figures/VPHEfficiency.JPG" /></p>
+<blockquote>
+<p>Plot of the VPH grating efficiency as a function of wavelength.</p>
+</blockquote>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="KPF Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../fiu/" class="btn btn-neutral float-right" title="FIU">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../fiu/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
