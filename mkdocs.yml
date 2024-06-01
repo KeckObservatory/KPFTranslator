@@ -1,6 +1,11 @@
 site_name: KPF
+site_description: Public documentation for the Keck Planet Finder (KPF) instrument at the W. M. Keck Observatory.
+site_author: Josh Walawender
 repo_url: https://github.com/KeckObservatory/KPFTranslator/
 repo_name: KPFTranslator
+edit_uri: ''
+
+remote_branch: gh-pages
 
 theme:
   name: readthedocs
@@ -9,6 +14,9 @@ theme:
   hljs_languages:
     - yaml
     - python
+
+markdown_extensions:
+  - codehilite
 
 plugins:
 - search
@@ -54,6 +62,6 @@ nav:
     - "Post-observing Comment Form": https://www2.keck.hawaii.edu/inst/PILogin/login.php
     - "Retrieve Data from KOA": https://koa.ipac.caltech.edu/
     - "Retrieve Data using PyKOA": http://koa.ipac.caltech.edu/UserGuide/PyKOA/notebooks/PyKOA_KPF_introduction.html
-    - "Proprietary Period": http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf
+    - "Data Proprietary Period": http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf
     - "Acknowledging Keck": https://www2.keck.hawaii.edu/observing/keck_authors.html
     - "Acknowledging KPF": references.md
