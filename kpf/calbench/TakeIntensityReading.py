@@ -11,8 +11,22 @@ class TakeIntensityReading(KPFTranslatorFunction):
     '''# Description
     Insert the intensity monitor (aka "cal diode") in to the beam and record
     a measurement of the cal lamp intensity.
-    
-    # Parameters
+
+    ## KTL Keywords Used
+
+    - `kpflamps.INTENSEMON`
+    - `kpfcal.SERIALCONN`
+    - `kpfcal.INTENMON`
+    - `kpfcal.NAVG`
+    - `kpfcal.AVG`
+    - `kpfcal.MEASURING`
+
+    ## Scripts Called
+
+    - `kpf.utils.SendEmail`
+
+    ## Parameters
+
     None
     '''
     @classmethod

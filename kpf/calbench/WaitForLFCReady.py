@@ -12,7 +12,20 @@ class WaitForLFCReady(KPFTranslatorFunction):
     Wait for the Laser Frequency Comb (LFC) to be ready and in "AstroComb"
     mode
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpfmon.HB_MENLOSTA`
+    - `kpfmon.LFCREADYSTA`
+    - `kpfcal.WOBBLE`
+    - `kpfcal.OPERATIONMODE`
+    - `kpfcal.SPECFLAT`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod

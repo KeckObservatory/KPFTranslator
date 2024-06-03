@@ -12,7 +12,15 @@ class SetCalSource(KPFTranslatorFunction):
     Selects which source is fed from the octagon in to the cal bench via the
     kpfcal.OCTAGON keyword.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpfcal.OCTAGON`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
 
     **CalSource** (`str`)
     > Which lamp to check?

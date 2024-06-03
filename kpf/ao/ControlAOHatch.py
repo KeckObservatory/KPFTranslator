@@ -10,6 +10,7 @@ class ControlAOHatch(KPFTranslatorFunction):
     Command the AO Hatch to open or close.
 
     ## KTL Keywords Used
+
     - `ao.AOHATCHCMD`
     - `ao.AOHATCHSTS`
 
@@ -22,7 +23,6 @@ class ControlAOHatch(KPFTranslatorFunction):
     **destination** (`str`)
     > The destination position.
     <br>Allowed Values: 'open' or 'close'
-
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

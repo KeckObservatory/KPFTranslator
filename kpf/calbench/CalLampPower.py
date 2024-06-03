@@ -14,7 +14,24 @@ class CalLampPower(KPFTranslatorFunction):
 
     Uses the lamp names from the OCTAGON when appropriate.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpflamps.BRDBANDFIBER`
+    - `kpflamps.U_GOLD`
+    - `kpflamps.U_DAILY`
+    - `kpflamps.TH_DAILY`
+    - `kpflamps.TH_GOLD`
+    - `kpflamps.FF_FIBER`
+    - `kpflamps.EXPMLED`
+    - `kpflamps.HKLED`
+    - `kpflamps.SCILED`
+    - `kpflamps.SKYLED`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
 
     **lamp** (`str`)
     > Name of the lamp to control

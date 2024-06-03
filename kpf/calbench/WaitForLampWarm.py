@@ -12,7 +12,32 @@ class WaitForLampWarm(KPFTranslatorFunction):
     '''# Description
     Wait for the specified lamp to be warm.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpflamps.FF_FIBER_STATUS`
+    - `kpflamps.FF_FIBER_TIMEON`
+    - `kpflamps.FF_FIBER_THRESHOLD`
+    - `kpflamps.BRDBANDFIBER_STATUS`
+    - `kpflamps.BRDBANDFIBER_TIMEON`
+    - `kpflamps.BRDBANDFIBER_THRESHOLD`
+    - `kpflamps.TH_DAILY_STATUS`
+    - `kpflamps.TH_DAILY_TIMEON`
+    - `kpflamps.TH_DAILY_THRESHOLD`
+    - `kpflamps.TH_GOLD_STATUS`
+    - `kpflamps.TH_GOLD_TIMEON`
+    - `kpflamps.TH_GOLD_THRESHOLD`
+    - `kpflamps.U_DAILY_STATUS`
+    - `kpflamps.U_DAILY_TIMEON`
+    - `kpflamps.U_DAILY_THRESHOLD`
+    - `kpflamps.U_GOLD_STATUS`
+    - `kpflamps.U_GOLD_TIMEON`
+    - `kpflamps.U_GOLD_THRESHOLD`
+
+    ## Scripts Called
+
+    - `kpf.calbench.CalLampPower`
+
+    ## Parameters
 
     **CalSource** (`str`)
     > Which lamp to check?

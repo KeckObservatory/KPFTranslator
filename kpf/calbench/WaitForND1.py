@@ -10,7 +10,15 @@ class WaitForND1(KPFTranslatorFunction):
     Wait for the ND1 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND1POS` keyword.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpfcal.ND1POS`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
 
     **CalND1** (`str`)
     > The neutral density filter to put in the first filter

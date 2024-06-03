@@ -10,7 +10,15 @@ class WaitForND2(KPFTranslatorFunction):
     Set the filter in the ND2 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND2POS` keyword.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpfcal.ND2POS`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
 
     **CalND2** (`str`)
     > The neutral density filter to put in the second filter

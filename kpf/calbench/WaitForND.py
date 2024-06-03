@@ -11,7 +11,16 @@ class WaitForND(KPFTranslatorFunction):
     '''# Description
     Wait for both ND filter wheels.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    None
+
+    ## Scripts Called
+
+    - `kpf.calbench.SetND1`
+    - `kpf.calbench.SetND2`
+
+    ## Parameters
 
     **CalND1** (`str`)
     > The neutral density filter to put in the first filter

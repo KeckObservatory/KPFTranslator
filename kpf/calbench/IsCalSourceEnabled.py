@@ -11,7 +11,25 @@ class IsCalSourceEnabled(KPFTranslatorFunction):
     Return a boolean indicating whether the input CalSource is enabled as
     reported by the kpfconfig.%_ENABLED keywords.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpfcal.OCTAGON`
+    - `kpfconfig.BRDBANDFIBER_ENABLED`
+    - `kpfconfig.U_GOLD_ENABLED`
+    - `kpfconfig.U_DAILY_ENABLED`
+    - `kpfconfig.TH_DAILY_ENABLED`
+    - `kpfconfig.TH_GOLD_ENABLED`
+    - `kpfconfig.FF_FIBER_ENABLED`
+    - `kpfconfig.EXPMLED_ENABLED`
+    - `kpfconfig.HKLED_ENABLED`
+    - `kpfconfig.SCILED_ENABLED`
+    - `kpfconfig.SKYLED_ENABLED`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
 
     **CalSource** (`str`)
     > Which lamp to check?

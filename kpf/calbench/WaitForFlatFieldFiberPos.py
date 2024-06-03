@@ -9,8 +9,16 @@ class WaitForFlatFieldFiberPos(KPFTranslatorFunction):
     '''# Description
     Wait for the flat field fiber aperture via the `kpfcal.FF_FIBERPOS`
     keyword.
-    
-    # Parameters
+
+    ## KTL Keywords Used
+
+    - `kpfcal.FF_FIBERPOS`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
 
     **FF_FiberPos** (`str`)
     > The name of the flat field fiber position desired.

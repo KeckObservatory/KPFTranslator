@@ -12,7 +12,16 @@ class SetND(KPFTranslatorFunction):
     Set the filter in the ND1 & ND2 filter wheels via the `kpfcal.ND1POS` and
     `kpfcal.ND2POS` keywords.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    None
+
+    ## Scripts Called
+
+    - `kpf.calbench.SetND1`
+    - `kpf.calbench.SetND2`
+
+    ## Parameters
 
     **CalND1** (`str`)
     > The neutral density filter to put in the first filter

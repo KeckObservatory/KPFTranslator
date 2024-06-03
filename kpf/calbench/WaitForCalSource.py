@@ -11,7 +11,16 @@ class WaitForCalSource(KPFTranslatorFunction):
     '''# Description
     Wait for the move to a cal source is complete (kpfcal.OCTAGON keyword).
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpfcal.OCTAGON`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     **CalSource** (`str`)
     > Which lamp to check?
     <br>Allowed Values: EtalonFiber, BrdbandFiber, U_gold, U_daily,

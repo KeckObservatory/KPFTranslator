@@ -13,7 +13,17 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
     Set the Laser Frequency Comb (LFC) to "AstroComb" mode. This should
     be used during operation of the LFC.
 
-    # Parameters
+    ## KTL Keywords Used
+
+    - `kpfcal.OPERATIONMODE`
+    - `kpfmon.HB_MENLOSTA`
+
+    ## Scripts Called
+
+    - `kpf.calbench.WaitForLFCReady`
+
+    ## Parameters
+
     None
     '''
     @classmethod
