@@ -31,6 +31,12 @@ def add_script_handler(this_file_name):
     script_log_path = Path(kpflog_filehandler.baseFilename).parent / date_str
     if script_log_path.exists() is False:
         script_log_path.mkdir(mode=0o777, parents=True)
+        # Try to set permissions on the date directory
+        # necessary because the mode input to mkdir is modified by umask
+        try:
+            os.chmod(script_log_path, 0o777)
+        except OSError as e:
+            pass
     script_logfile = script_log_path / f"{now_str}_{this_file_name}.log"
     ScriptLogFileHandler = logging.FileHandler(script_logfile)
     ScriptLogFileHandler.setLevel(logging.DEBUG)
