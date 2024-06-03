@@ -190,7 +190,23 @@
       <h2 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--description">Description</h2>
 <p>Return a boolean indicating whether the input CalSource is enabled as
 reported by the kpfconfig.%_ENABLED keywords.</p>
-<h2 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--parameters">Parameters</h2>
+<h3 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--ktl-keywords-used">KTL Keywords Used</h3>
+<ul>
+<li><code>kpfcal.OCTAGON</code></li>
+<li><code>kpfconfig.BRDBANDFIBER_ENABLED</code></li>
+<li><code>kpfconfig.U_GOLD_ENABLED</code></li>
+<li><code>kpfconfig.U_DAILY_ENABLED</code></li>
+<li><code>kpfconfig.TH_DAILY_ENABLED</code></li>
+<li><code>kpfconfig.TH_GOLD_ENABLED</code></li>
+<li><code>kpfconfig.FF_FIBER_ENABLED</code></li>
+<li><code>kpfconfig.EXPMLED_ENABLED</code></li>
+<li><code>kpfconfig.HKLED_ENABLED</code></li>
+<li><code>kpfconfig.SCILED_ENABLED</code></li>
+<li><code>kpfconfig.SKYLED_ENABLED</code></li>
+</ul>
+<h3 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--scripts-called">Scripts Called</h3>
+<p>None</p>
+<h3 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--parameters">Parameters</h3>
 <p><strong>CalSource</strong> (<code>str</code>)</p>
 <blockquote>
 <p>Which lamp to check?
@@ -254,12 +270,48 @@ Th_daily, Th_gold, SoCal-CalFib, LFCFiber, SoCal-SciSky, WideFlat</p>
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IsCalSourceEnabled</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IsCalSourceEnabled</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Return a boolean indicating whether the input CalSource is enabled as</span>
 <span class="sd">    reported by the kpfconfig.%_ENABLED keywords.</span>
 
-<span class="sd">    # Parameters</span>
+<span class="sd">    ## KTL Keywords Used</span>
+
+<span class="sd">    - `kpfcal.OCTAGON`</span>
+<span class="sd">    - `kpfconfig.BRDBANDFIBER_ENABLED`</span>
+<span class="sd">    - `kpfconfig.U_GOLD_ENABLED`</span>
+<span class="sd">    - `kpfconfig.U_DAILY_ENABLED`</span>
+<span class="sd">    - `kpfconfig.TH_DAILY_ENABLED`</span>
+<span class="sd">    - `kpfconfig.TH_GOLD_ENABLED`</span>
+<span class="sd">    - `kpfconfig.FF_FIBER_ENABLED`</span>
+<span class="sd">    - `kpfconfig.EXPMLED_ENABLED`</span>
+<span class="sd">    - `kpfconfig.HKLED_ENABLED`</span>
+<span class="sd">    - `kpfconfig.SCILED_ENABLED`</span>
+<span class="sd">    - `kpfconfig.SKYLED_ENABLED`</span>
+
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Parameters</span>
 
 <span class="sd">    **CalSource** (`str`)</span>
 <span class="sd">    &gt; Which lamp to check?</span>

@@ -190,7 +190,15 @@
       <h2 id="kpf.calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh--description">Description</h2>
 <p>Set the Laser Frequency Comb (LFC) to "StandbyHigh" mode. This is the
 mode which should be set after operation of the LFC for science is complete.</p>
-<h2 id="kpf.calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh--parameters">Parameters</h2>
+<h3 id="kpf.calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh--ktl-keywords-used">KTL Keywords Used</h3>
+<ul>
+<li><code>kpfcal.OPERATIONMODE</code></li>
+<li><code>kpfmon.HB_MENLOSTA</code></li>
+<li><code>kpfmon.LFCREADYSTA</code></li>
+</ul>
+<h3 id="kpf.calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh--scripts-called">Scripts Called</h3>
+<p>None</p>
+<h3 id="kpf.calbench.SetLFCtoStandbyHigh.SetLFCtoStandbyHigh--parameters">Parameters</h3>
 <p>None</p>
 
               <details class="quote">
@@ -224,12 +232,34 @@ mode which should be set after operation of the LFC for science is complete.</p>
 <span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
-<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetLFCtoStandbyHigh</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetLFCtoStandbyHigh</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Set the Laser Frequency Comb (LFC) to &quot;StandbyHigh&quot; mode. This is the</span>
 <span class="sd">    mode which should be set after operation of the LFC for science is complete.</span>
 
-<span class="sd">    # Parameters</span>
+<span class="sd">    ## KTL Keywords Used</span>
+
+<span class="sd">    - `kpfcal.OPERATIONMODE`</span>
+<span class="sd">    - `kpfmon.HB_MENLOSTA`</span>
+<span class="sd">    - `kpfmon.LFCREADYSTA`</span>
+
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Parameters</span>
+
 <span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>

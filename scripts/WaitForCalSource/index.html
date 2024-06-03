@@ -189,7 +189,13 @@
 
       <h2 id="kpf.calbench.WaitForCalSource.WaitForCalSource--description">Description</h2>
 <p>Wait for the move to a cal source is complete (kpfcal.OCTAGON keyword).</p>
-<h2 id="kpf.calbench.WaitForCalSource.WaitForCalSource--parameters">Parameters</h2>
+<h3 id="kpf.calbench.WaitForCalSource.WaitForCalSource--ktl-keywords-used">KTL Keywords Used</h3>
+<ul>
+<li><code>kpfcal.OCTAGON</code></li>
+</ul>
+<h3 id="kpf.calbench.WaitForCalSource.WaitForCalSource--scripts-called">Scripts Called</h3>
+<p>None</p>
+<h3 id="kpf.calbench.WaitForCalSource.WaitForCalSource--parameters">Parameters</h3>
 <p><strong>CalSource</strong> (<code>str</code>)</p>
 <blockquote>
 <p>Which lamp to check?
@@ -243,11 +249,29 @@ Th_daily, Th_gold, SoCal-CalFib, LFCFiber</p>
 <span class="normal">51</span>
 <span class="normal">52</span>
 <span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForCalSource</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForCalSource</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Wait for the move to a cal source is complete (kpfcal.OCTAGON keyword).</span>
 
-<span class="sd">    # Parameters</span>
+<span class="sd">    ## KTL Keywords Used</span>
+
+<span class="sd">    - `kpfcal.OCTAGON`</span>
+
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Parameters</span>
+
 <span class="sd">    **CalSource** (`str`)</span>
 <span class="sd">    &gt; Which lamp to check?</span>
 <span class="sd">    &lt;br&gt;Allowed Values: EtalonFiber, BrdbandFiber, U_gold, U_daily,</span>

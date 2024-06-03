@@ -190,7 +190,22 @@
       <h2 id="kpf.calbench.CalLampPower.CalLampPower--description">Description</h2>
 <p>Powers off one of the cal lamps via the <code>kpflamps</code> keyword service.</p>
 <p>Uses the lamp names from the OCTAGON when appropriate.</p>
-<h2 id="kpf.calbench.CalLampPower.CalLampPower--parameters">Parameters</h2>
+<h3 id="kpf.calbench.CalLampPower.CalLampPower--ktl-keywords-used">KTL Keywords Used</h3>
+<ul>
+<li><code>kpflamps.BRDBANDFIBER</code></li>
+<li><code>kpflamps.U_GOLD</code></li>
+<li><code>kpflamps.U_DAILY</code></li>
+<li><code>kpflamps.TH_DAILY</code></li>
+<li><code>kpflamps.TH_GOLD</code></li>
+<li><code>kpflamps.FF_FIBER</code></li>
+<li><code>kpflamps.EXPMLED</code></li>
+<li><code>kpflamps.HKLED</code></li>
+<li><code>kpflamps.SCILED</code></li>
+<li><code>kpflamps.SKYLED</code></li>
+</ul>
+<h3 id="kpf.calbench.CalLampPower.CalLampPower--scripts-called">Scripts Called</h3>
+<p>None</p>
+<h3 id="kpf.calbench.CalLampPower.CalLampPower--parameters">Parameters</h3>
 <p><strong>lamp</strong> (<code>str</code>)</p>
 <blockquote>
 <p>Name of the lamp to control
@@ -261,13 +276,47 @@ WideFlat, ExpMeterLED, CaHKLED, SciLED, SkyLED</p>
 <span class="normal">64</span>
 <span class="normal">65</span>
 <span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CalLampPower</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CalLampPower</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Powers off one of the cal lamps via the `kpflamps` keyword service.</span>
 
 <span class="sd">    Uses the lamp names from the OCTAGON when appropriate.</span>
 
-<span class="sd">    # Parameters</span>
+<span class="sd">    ## KTL Keywords Used</span>
+
+<span class="sd">    - `kpflamps.BRDBANDFIBER`</span>
+<span class="sd">    - `kpflamps.U_GOLD`</span>
+<span class="sd">    - `kpflamps.U_DAILY`</span>
+<span class="sd">    - `kpflamps.TH_DAILY`</span>
+<span class="sd">    - `kpflamps.TH_GOLD`</span>
+<span class="sd">    - `kpflamps.FF_FIBER`</span>
+<span class="sd">    - `kpflamps.EXPMLED`</span>
+<span class="sd">    - `kpflamps.HKLED`</span>
+<span class="sd">    - `kpflamps.SCILED`</span>
+<span class="sd">    - `kpflamps.SKYLED`</span>
+
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Parameters</span>
 
 <span class="sd">    **lamp** (`str`)</span>
 <span class="sd">    &gt; Name of the lamp to control</span>
