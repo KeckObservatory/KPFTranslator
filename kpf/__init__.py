@@ -5,6 +5,9 @@ from logging.handlers import RotatingFileHandler
 import datetime
 from packaging import version
 import yaml
+import traceback
+
+from kpf.utils.SendEmail import SendEmail
 
 
 ##-------------------------------------------------------------------------
@@ -23,6 +26,21 @@ def create_KPF_log():
     logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
     if logdir.exists() is False:
         logdir.mkdir(mode=0o777, parents=True)
+
+    # Try to examine permissions on log directory
+    logdir_permissions = oct(os.stat(logdir).st_mode)[-3:]
+    if logdir_permissions != '777':
+        try:
+            msg = [f'Failed to set permissions:',
+                   f'{logdir}',
+                   f'Permissions: {logdir_permissions}']
+            SendEmail.execute({'To': 'jwalawender@keck.hawaii.edu',
+                               'Subject': f'Permissions for logdir are bad',
+                               'Message': '\n'.join(msg)})
+        except Exception as email_err:
+            log.error(f'Sending email failed')
+            log.error(email_err)
+
     LogFileName = logdir / 'KPFTranslator.log'
     LogFileHandler = RotatingFileHandler(LogFileName,
                                          maxBytes=100*1024*1024, # 100 MB
@@ -33,8 +51,17 @@ def create_KPF_log():
     # Try to change permissions in case they are bad
     try:
         os.chmod(LogFileName, 0o666)
-    except OSError:
-        pass
+    except OSError as e:
+        try:
+            msg = [f'{type(e)}',
+                   f'{traceback_text}',
+                   '',
+                   f'{OB}']
+            SendEmail.execute({'Subject': f'chmod for {LogFileName} failed',
+                               'Message': '\n'.join(msg)})
+        except Exception as email_err:
+            log.error(f'Sending email failed')
+            log.error(email_err)
     return log
 
 log = create_KPF_log()
