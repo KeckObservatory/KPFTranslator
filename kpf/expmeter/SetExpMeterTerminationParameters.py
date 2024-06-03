@@ -16,11 +16,12 @@ def expeter_flux_target(spectrograph_flux, band):
 
 
 class SetExpMeterTerminationParameters(KPFTranslatorFunction):
-    '''Sets the exposure meter exposure termination control parameters
-    
+    '''# Description
+    Sets the exposure meter exposure termination control parameters
+
     Threshold bin definition (from kpf_expmeter.THRESHOLDBIN)
     Values: 0 All 1 498.125 2 604.375 3 710.625 4 816.875
-    
+
     Relationship (slope) between expmeter flux and science spectrograph flux
     (from Jon Zink: https://cal-planet-search.slack.com/archives/CE57W8VL0/p1692294839416559?thread_ts=1692226289.791179&cid=CE57W8VL0)
     bin,m
@@ -28,11 +29,24 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
     604.38,11.125201914680732
     710.62,10.02578758982348
     816.88,12.446153099971543
-    
-    Args:
-    =====
-    :Band: Which of the 4 exposure meter bands to use (1=498nm, 2=604nm, 3=711nm, 4=817nm)
-    :Flux: The flux (e/nm) in the science spectrum desired
+
+    ## KTL Keywords Used
+
+    - `kpf_expmeter.THRESHOLDBIN`
+    - `kpf_expmeter.THRESHOLD`
+    - `kpf_expmeter.USETHRESHOLD`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
+    **Band** (`int`)
+    > Which of the 4 exposure meter bands to use (1=498nm, 2=604nm, 3=711nm, 4=817nm)
+
+    **Flux** (`float`)
+    > The flux (e/nm) in the science spectrum desired
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
