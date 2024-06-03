@@ -44,8 +44,6 @@ class SetCalSource(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        '''Verifies that the final OCTAGON keyword value matches the input.
-        '''
         target = args.get('CalSource')
         timeout = cfg.getfloat('times', 'octagon_move_time', fallback=90)
         expr = f"($kpfcal.OCTAGON == {target})"
