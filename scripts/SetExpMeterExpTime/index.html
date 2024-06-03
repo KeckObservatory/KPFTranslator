@@ -187,9 +187,19 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <p>Sets the exposure time for the exposure meter</p>
-<h2 id="kpf.expmeter.SetExpMeterExpTime.SetExpMeterExpTime--args">Args:</h2>
-<p>:ExpMeterExpTime: The exposure time in seconds</p>
+      <h2 id="kpf.expmeter.SetExpMeterExpTime.SetExpMeterExpTime--description">Description</h2>
+<p>Sets the exposure time for the exposure meter</p>
+<h3 id="kpf.expmeter.SetExpMeterExpTime.SetExpMeterExpTime--ktl-keywords-used">KTL Keywords Used</h3>
+<ul>
+<li><code>kpf_expmeter.EXPOSURE</code></li>
+</ul>
+<h3 id="kpf.expmeter.SetExpMeterExpTime.SetExpMeterExpTime--scripts-called">Scripts Called</h3>
+<p>None</p>
+<h3 id="kpf.expmeter.SetExpMeterExpTime.SetExpMeterExpTime--parameters">Parameters</h3>
+<p><strong>ExpMeterExpTime</strong> (<code>float</code>)</p>
+<blockquote>
+<p>The exposure time in seconds</p>
+</blockquote>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/expmeter/SetExpMeterExpTime.py</code></summary>
@@ -229,12 +239,32 @@
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
-<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetExpMeterExpTime</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Sets the exposure time for the exposure meter</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetExpMeterExpTime</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
+<span class="sd">    Sets the exposure time for the exposure meter</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :ExpMeterExpTime: The exposure time in seconds</span>
+<span class="sd">    ## KTL Keywords Used</span>
+
+<span class="sd">    - `kpf_expmeter.EXPOSURE`</span>
+
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Parameters</span>
+
+<span class="sd">    **ExpMeterExpTime** (`float`)</span>
+<span class="sd">    &gt; The exposure time in seconds</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

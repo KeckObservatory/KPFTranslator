@@ -187,9 +187,17 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <p>Estimate the proper exposure meter exposure time given the stellar Gmag.</p>
-<h2 id="kpf.expmeter.PredictExpMeterParameters.PredictExpMeterParameters--args">Args:</h2>
-<p>:Gmag: The Gaia g magnitude of the target</p>
+      <h2 id="kpf.expmeter.PredictExpMeterParameters.PredictExpMeterParameters--description">Description</h2>
+<p>Estimate the proper exposure meter exposure time given the stellar Gmag.</p>
+<h3 id="kpf.expmeter.PredictExpMeterParameters.PredictExpMeterParameters--ktl-keywords-used">KTL Keywords Used</h3>
+<p>None</p>
+<h3 id="kpf.expmeter.PredictExpMeterParameters.PredictExpMeterParameters--scripts-called">Scripts Called</h3>
+<p>None</p>
+<h3 id="kpf.expmeter.PredictExpMeterParameters.PredictExpMeterParameters--parameters">Parameters</h3>
+<p><strong>Gmag</strong> (<code>float</code>)</p>
+<blockquote>
+<p>The Gaia g magnitude of the target</p>
+</blockquote>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/expmeter/PredictExpMeterParameters.py</code></summary>
@@ -230,12 +238,32 @@
 <span class="normal">70</span>
 <span class="normal">71</span>
 <span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictExpMeterParameters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Estimate the proper exposure meter exposure time given the stellar Gmag.</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictExpMeterParameters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
+<span class="sd">    Estimate the proper exposure meter exposure time given the stellar Gmag.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :Gmag: The Gaia g magnitude of the target</span>
+<span class="sd">    ## KTL Keywords Used</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Scripts Called</span>
+
+<span class="sd">    None</span>
+
+<span class="sd">    ## Parameters</span>
+
+<span class="sd">    **Gmag** (`float`)</span>
+<span class="sd">    &gt; The Gaia g magnitude of the target</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
