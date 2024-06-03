@@ -99,6 +99,8 @@ links:
         cmd: expmeter.BuildMasterBias.BuildMasterBias
     SetExpMeterExpTime:
         cmd: expmeter.SetExpMeterExpTime.SetExpMeterExpTime
+    SetExpMeterTerminationParameters:
+        cmd: expmeter.SetExpMeterTerminationParameters.SetExpMeterTerminationParameters
     PredictExpMeterParameters:
         cmd: expmeter.PredictExpMeterParameters.PredictExpMeterParameters
     SetMasterBiasToDefault:
