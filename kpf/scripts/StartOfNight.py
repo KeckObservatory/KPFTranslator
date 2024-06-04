@@ -30,7 +30,7 @@ class StartOfNight(KPFTranslatorFunction):
     
     ARGS:
     =====
-    :AO: `bool` Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
+    * __AO__ - `bool` Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -46,7 +46,7 @@ class StartOfNight(KPFTranslatorFunction):
         expose = ktl.cache('kpfexpose', 'EXPOSE')
         scriptname = kpfconfig['SCRIPTNAME'].read()
         pid = kpfconfig['SCRIPTPID'].read(binary=True)
-        if scriptname != '' or pid >= 0:
+        if scriptname not in ['', 'None', None] or pid >= 0:
             # ---------------------------------
             # User Verification
             # ---------------------------------
@@ -200,8 +200,6 @@ class StartOfNight(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument("--noAO", dest="AO",
                             default=True, action="store_false",
                             help="Skip configuring AO?")

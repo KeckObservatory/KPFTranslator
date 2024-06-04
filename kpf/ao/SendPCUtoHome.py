@@ -7,10 +7,19 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SendPCUtoHome(KPFTranslatorFunction):
-    '''Send the PCU stage to the "home" named position.
-    
-    ARGS:
-    =====
+    '''# Description
+    Send the PCU stage to the "home" named position.
+
+    ## KTL Keywords Used
+    - `ao.PCSFNAME`
+    - `ao.PCSFSTST`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod

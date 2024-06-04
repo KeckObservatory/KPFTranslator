@@ -33,7 +33,7 @@ class RunSciOB(KPFTranslatorFunction):
 
     ARGS:
     =====
-    :OB: `dict` A fully specified observing block (OB).
+    * __OB__ - `dict` A fully specified observing block (OB).
     '''
     abortable = True
 
@@ -108,9 +108,6 @@ class RunSciOB(KPFTranslatorFunction):
                 log.error('Running CleanupAfterScience and exiting')
                 CleanupAfterScience.execute(OB)
                 sys.exit(1)
-
-        # Clear script keywords so that cleanup can start successfully
-        clear_script_keywords()
 
         # Cleanup
         CleanupAfterScience.execute(OB)

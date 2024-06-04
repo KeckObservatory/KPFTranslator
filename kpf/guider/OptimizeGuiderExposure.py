@@ -78,8 +78,6 @@ class OptimizeGuiderExposure(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument("--set", dest="set",
                             default=False, action="store_true",
                             help="Set the resulting gain and FPS?")

@@ -35,8 +35,6 @@ class SetTipTiltCalculations(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('calculations', type=str,
                             choices=['Active', 'Inactive'],
                             help='Calulations "Active" or "Inactive"')

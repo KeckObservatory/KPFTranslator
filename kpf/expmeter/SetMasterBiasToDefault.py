@@ -7,10 +7,19 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetMasterBiasToDefault(KPFTranslatorFunction):
-    '''Sets the master bias file for the exposure meter to the default value
-    
-    Args:
-    =====
+    '''# Description
+    Sets the master bias file for the exposure meter to the default value
+
+    ## KTL Keywords Used
+
+    - `kpf_expmeter.BIAS_FILE`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod

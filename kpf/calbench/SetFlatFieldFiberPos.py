@@ -6,15 +6,26 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetFlatFieldFiberPos(KPFTranslatorFunction):
-    '''Set the flat field fiber aperture via the `kpfcal.FF_FIBERPOS` keyword.
-    
-    Allowed Values:
-    "Blank", "6 mm f/5", "7.5 mm f/4", "10 mm f/3", "13.2 mm f/2.3", "Open"
-    
-    ARGS:
-    =====
-    :FF_FiberPos: The name of the flat field fiber position desired.
-    :wait: (bool) Wait for move to complete before returning? (default: True)
+    '''# Description
+    Set the flat field fiber aperture via the `kpfcal.FF_FIBERPOS` keyword.
+
+    ## KTL Keywords Used
+
+    - `kpfcal.FF_FIBERPOS`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
+    **FF_FiberPos** (`str`)
+    > The name of the flat field fiber position desired.
+    <br>Allowed Values: "Blank", "6 mm f/5", "7.5 mm f/4", "10 mm f/3", "13.2 mm f/2.3", "Open"
+
+    **wait** (`bool`)
+    > Wait for move to complete before returning?
+    <br>default: True
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -43,8 +54,6 @@ class SetFlatFieldFiberPos(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('FF_FiberPos', type=str,
                             choices=["Blank", "6 mm f/5", "7.5 mm f/4",
                                      "10 mm f/3", "13.2 mm f/2.3", "Open"],

@@ -7,12 +7,34 @@ from kpf.calbench import standardize_lamp_name
 
 
 class IsCalSourceEnabled(KPFTranslatorFunction):
-    '''Return a boolean indicating whether the input CalSource is enabled as
+    '''# Description
+    Return a boolean indicating whether the input CalSource is enabled as
     reported by the kpfconfig.%_ENABLED keywords.
 
-    ARGS:
-    =====
-    :CalSource: Which lamp to check?
+    ## KTL Keywords Used
+
+    - `kpfcal.OCTAGON`
+    - `kpfconfig.BRDBANDFIBER_ENABLED`
+    - `kpfconfig.U_GOLD_ENABLED`
+    - `kpfconfig.U_DAILY_ENABLED`
+    - `kpfconfig.TH_DAILY_ENABLED`
+    - `kpfconfig.TH_GOLD_ENABLED`
+    - `kpfconfig.FF_FIBER_ENABLED`
+    - `kpfconfig.EXPMLED_ENABLED`
+    - `kpfconfig.HKLED_ENABLED`
+    - `kpfconfig.SCILED_ENABLED`
+    - `kpfconfig.SKYLED_ENABLED`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
+    **CalSource** (`str`)
+    > Which lamp to check?
+    <br>Allowed Values: EtalonFiber, BrdbandFiber, U_gold, U_daily,
+    Th_daily, Th_gold, SoCal-CalFib, LFCFiber, SoCal-SciSky, WideFlat
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -50,8 +72,6 @@ class IsCalSourceEnabled(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('CalSource', type=str,
                             choices=['BrdbandFiber', 'WideFlat', 'Th_daily',
                                      'Th_gold', 'U_daily', 'U_gold',

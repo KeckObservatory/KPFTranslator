@@ -10,13 +10,25 @@ from kpf.spectrograph.ResetDetectors import ResetCaHKDetector
 
 
 class PowerCycleCaHK(KPFTranslatorFunction):
-    '''Script which will power cycle the Ca HK detector control system and
+    '''# Description
+    Script which will power cycle the Ca HK detector control system and
     restart the services. Use as a last resort measure after other
     troubleshooting measures such as resetting the detector and restarting
     software have already failed.
-    
-    ARGS:
-    =====
+
+    ## KTL Keywords Used
+
+    - `kpfpower.OUTLET_J1%`
+    - `kpfpower.OUTLET_J2%`
+    - `kpfpower.OUTLET_J5%`
+
+    ## Scripts Called
+
+    -`kpf start/stop/status/restart kpfexpose2`
+    -`kpf start/stop/status/restart kpf_hk`
+
+    ## Parameters
+
     None
     '''
     @classmethod

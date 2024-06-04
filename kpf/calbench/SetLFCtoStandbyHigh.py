@@ -8,11 +8,22 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetLFCtoStandbyHigh(KPFTranslatorFunction):
-    '''Set the Laser Frequency Comb (LFC) to "StandbyHigh" mode. This is the
+    '''# Description
+    Set the Laser Frequency Comb (LFC) to "StandbyHigh" mode. This is the
     mode which should be set after operation of the LFC for science is complete.
 
-    ARGS:
-    =====
+    ## KTL Keywords Used
+
+    - `kpfcal.OPERATIONMODE`
+    - `kpfmon.HB_MENLOSTA`
+    - `kpfmon.LFCREADYSTA`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod
@@ -32,8 +43,6 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        '''Verifies that kpfmon shows no errors.
-        '''
         LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
         timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
         success = LFCready.waitFor('== "OK"', timeout=timeout)

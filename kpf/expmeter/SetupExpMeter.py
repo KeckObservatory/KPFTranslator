@@ -9,13 +9,27 @@ from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTermination
 
 
 class SetupExpMeter(KPFTranslatorFunction):
-    '''
+    '''# Description
+    Configure the exposure meter using the given OB arguments.
 
-    ARGS:
-    =====
-    None
+    ## KTL Keywords Used
+
+    - `kpf_expmeter.USETHRESHOLD`
+    - `kpfconfig.EXPMETER_ENABLED`
+
+    ## Scripts Called
+
+    - `kpf.expmeter.SetExpMeterTerminationParameters`
+
+    ## Parameters
+
+    **ExpMeterMode** (`str`)
+    > See Science OB definition
+
+    **TriggerExpMeter** (`bool`)
+    > See Science OB definition
     '''
-    abortable = True
+    abortable = False
 
     @classmethod
     def pre_condition(cls, args, logger, cfg):

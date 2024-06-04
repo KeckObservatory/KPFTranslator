@@ -6,10 +6,20 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class TurnLightSourceOff(KPFTranslatorFunction):
-    '''Turn K1 AO light source off
-    
-    ARGS:
-    =====
+    '''# Description
+    Turn K1 AO light source off
+
+    ## KTL Keywords Used
+
+    - `ao.OBSWON`
+    - `ao.OBSWSTA`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
     None
     '''
     @classmethod

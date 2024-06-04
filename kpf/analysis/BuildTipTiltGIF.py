@@ -33,10 +33,14 @@ args = p.parse_args()
 ## read_file
 ##-------------------------------------------------------------------------
 def read_file(file):
-    '''Read the file on disk, either the L0 file or the kpfguide_cube file.
+    '''# Description
+    Read the file on disk, either the L0 file or the kpfguide_cube file.
     
     Return an astropy.table.Table of telemetry, the image cube (if present),
     and a dictionary with selected metadata.
+
+    # Parameters
+    None
     '''
     hdul = fits.open(file)
     # print(hdul.info())

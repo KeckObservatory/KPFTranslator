@@ -72,8 +72,6 @@ class CheckDewarWeights(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('dewar', type=str,
                             choices=['green', 'red'],
                             default='green',

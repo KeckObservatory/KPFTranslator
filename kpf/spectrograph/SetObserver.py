@@ -40,8 +40,6 @@ class SetObserver(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('observer', type=str,
                             help='The OBSERVER keyword')
         return super().add_cmdline_args(parser, cfg)

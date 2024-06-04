@@ -8,11 +8,25 @@ from kpf.utils.SendEmail import SendEmail
 
 
 class TakeIntensityReading(KPFTranslatorFunction):
-    '''Insert the intensity monitor (aka "cal diode") in to the beam and record
+    '''# Description
+    Insert the intensity monitor (aka "cal diode") in to the beam and record
     a measurement of the cal lamp intensity.
-    
-    ARGS:
-    =====
+
+    ## KTL Keywords Used
+
+    - `kpflamps.INTENSEMON`
+    - `kpfcal.SERIALCONN`
+    - `kpfcal.INTENMON`
+    - `kpfcal.NAVG`
+    - `kpfcal.AVG`
+    - `kpfcal.MEASURING`
+
+    ## Scripts Called
+
+    - `kpf.utils.SendEmail`
+
+    ## Parameters
+
     None
     '''
     @classmethod

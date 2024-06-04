@@ -43,9 +43,9 @@ def count_start_state_errors(date='2023-07-20'):
 ## CountCameraErrors
 ##-------------------------------------------------------------------------
 class CountCameraErrors(KPFTranslatorFunction):
-    '''
+    '''# Description
 
-    ARGS:
+    # Parameters
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

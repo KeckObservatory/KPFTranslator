@@ -784,8 +784,12 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing='0.7',
 ## AnalyzeGridSearch
 ##-------------------------------------------------------------------------
 class AnalyzeGridSearch(KPFTranslatorFunction):
-    '''
-    ARGS:
+    '''# Description
+    Tool to analyze engineering data taken by the `engineering.GridSearch` or
+    `engineering.Run2DGridSearch` scripts.
+
+    # Parameters
+    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -807,8 +811,6 @@ class AnalyzeGridSearch(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('logfile', type=str, nargs='*',
             help="The logfile or files of the grid search runs to analyze")
         ## add flags

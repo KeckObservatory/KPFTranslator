@@ -61,12 +61,11 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     Once the end time has passed, the system will perform basic cleanup of KPF,
     then it will park SoCal using `ParkSoCal` if the park flag is set.
 
-    ARGS:
-    =====
-    :StartTimeHST: `float` The time (in decimal hours HST) to begin observing.
-    :EndTimeHST: `float` The time (in decimal hours HST) to end observing.
-    :park: `bool` If True, the script will park SoCal when complete.
-    :scheduled: `bool` If True, the script will not run if the keyword
+    ## Arguments
+    * __StartTimeHST__ - `float` The time (in decimal hours HST) to begin observing.
+    * __EndTimeHST__ - `float` The time (in decimal hours HST) to end observing.
+    * __park__ - `bool` If True, the script will park SoCal when complete.
+    * __scheduled__ - `bool` If True, the script will not run if the keyword
                 `kpfconfig.ALLOWSCHEDULEDCALS` is "No".
     '''
     @classmethod
@@ -187,7 +186,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
-        while now_decimal > start_time and now_decimal < end_time:
+        while now_decimal >= start_time and now_decimal < end_time:
             log.debug('Checking if SoCal is on the Sun')
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
             observation = {True: SoCal_observation, False: Etalon_observation}[on_target]
@@ -217,11 +216,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                     except Exception as email_err:
                         log.error(f'Sending email failed')
                         log.error(email_err)
-                # Cleanup
-                clear_script_keywords()
-                log.error('Running CleanupAfterCalibrations and exiting')
-                CleanupAfterCalibrations.execute({})
-                sys.exit(1)
 
             check_scriptstop()
 
@@ -232,11 +226,28 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         log.info('SoCal observation loop completed')
         log.info(f'Executed {nSoCalObs} SoCal sequences')
         log.info(f'Executed {nEtalonObs} Etalon sequences')
-        # Clear script keywords so that cleanup can start successfully
-        clear_script_keywords()
 
         # Cleanup
-        CleanupAfterCalibrations.execute(Etalon_observation)
+        try:
+            CleanupAfterCalibrations.execute(Etalon_observation)
+        except Exception as e:
+            log.error("CleanupAfterCalibrations failed:")
+            log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
+            clear_script_keywords()
+            # Email error to kpf_info
+            try:
+                msg = [f'{type(e)}',
+                       f'{traceback_text}',
+                       '',
+                       f'{OB}']
+                SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
+                                   'Message': '\n'.join(msg)})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
+
         # Park SoCal?
         if args.get('park', False) == True:
             ParkSoCal.execute({})
@@ -247,8 +258,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('StartTimeHST', type=float,
             help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,

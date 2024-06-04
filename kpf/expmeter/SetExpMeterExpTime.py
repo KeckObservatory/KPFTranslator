@@ -7,11 +7,21 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetExpMeterExpTime(KPFTranslatorFunction):
-    '''Sets the exposure time for the exposure meter
-    
-    Args:
-    =====
-    :ExpMeterExpTime: The exposure time in seconds
+    '''# Description
+    Sets the exposure time for the exposure meter
+
+    ## KTL Keywords Used
+
+    - `kpf_expmeter.EXPOSURE`
+
+    ## Scripts Called
+
+    None
+
+    ## Parameters
+
+    **ExpMeterExpTime** (`float`)
+    > The exposure time in seconds
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -40,8 +50,6 @@ class SetExpMeterExpTime(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('ExpMeterExpTime', type=float,
                             help="The exposure time in seconds")
         return super().add_cmdline_args(parser, cfg)
