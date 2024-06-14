@@ -67,5 +67,5 @@ nav:
     - "Acknowledging Keck": https://www2.keck.hawaii.edu/observing/keck_authors.html
     - "Acknowledging KPF": references.md
   - "Technical Documentation":
-    - "Operations Scripts": scripts/
+    - "Operations Scripts": scripts/scripts.md
     - "Troubleshooting": https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U
