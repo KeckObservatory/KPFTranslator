@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>OB Parameters - KPF</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "OB Parameters";
+        var mkdocs_page_input_path = "OBparameters.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">KPF Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystem Descriptions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../agitator/">Agitator</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../dataformat/">Data Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../KPFTranslator/">Instrument Software</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../preparingOBs/">Preparing OBs</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">OB Parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Keck Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Telescope Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Retrieve Your Data</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://koa.ipac.caltech.edu/UserGuide/PyKOA/notebooks/PyKOA_KPF_introduction.html">Retrieve Data using PyKOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Technical Documentation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="../scripts/">Operations Scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U">Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Observing with KPF</li>
+      <li class="breadcrumb-item active">OB Parameters</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="science-ob-contents">Science OB Contents</h1>
+<p>Here is an example science OB formatted as a text file (this is the YAML data format). The comments (preceded by a # symbol) are not needed, but are present to help the reader. </p>
+<div class="codehilite"><pre><span></span><code><span class="n">Template_Name</span><span class="o">:</span><span class="w"> </span><span class="n">kpf_sci</span>
+<span class="n">Template_Version</span><span class="o">:</span><span class="w"> </span><span class="mf">1.0</span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="n">Info</span>
+<span class="n">TargetName</span><span class="o">:</span><span class="w"> </span><span class="mi">10700</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span>
+<span class="n">GaiaID</span><span class="o">:</span><span class="w"> </span><span class="n">DR3</span><span class="w"> </span><span class="mi">2452378776434276992</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="n">Gaia</span><span class="w"> </span><span class="n">ID</span><span class="w"> </span>
+<span class="mi">2</span><span class="n">MASSID</span><span class="o">:</span><span class="w"> </span><span class="mi">01440402</span><span class="o">-</span><span class="mi">1556141</span><span class="w">       </span><span class="err">#</span><span class="w"> </span><span class="mi">2</span><span class="n">MASS</span><span class="w"> </span><span class="n">ID</span><span class="w"> </span>
+<span class="n">Parallax</span><span class="o">:</span><span class="w"> </span><span class="mf">273.81</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">Parallax</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">arcsec</span>
+<span class="n">RadialVelocity</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">16.597</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="n">Radial</span><span class="w"> </span><span class="n">Velocity</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">km</span><span class="o">/</span><span class="n">s</span>
+<span class="n">Gmag</span><span class="o">:</span><span class="w"> </span><span class="mf">3.3</span><span class="w">                       </span><span class="err">#</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="n">band</span><span class="w"> </span><span class="n">magnitude</span><span class="w"> </span><span class="o">(</span><span class="n">eventualy</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="n">meter</span><span class="o">)</span>
+<span class="n">Jmag</span><span class="o">:</span><span class="w"> </span><span class="mf">2.14</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="n">J</span><span class="w"> </span><span class="n">band</span><span class="w"> </span><span class="n">magnitude</span><span class="w"> </span><span class="o">(</span><span class="n">eventualy</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">guider</span><span class="o">)</span>
+<span class="n">Teff</span><span class="o">:</span><span class="w"> </span><span class="mi">5266</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="n">Effective</span><span class="w"> </span><span class="n">temperature</span>
+<span class="err">#</span><span class="w"> </span><span class="n">Guider</span><span class="w"> </span><span class="n">Setup</span>
+<span class="n">GuideMode</span><span class="o">:</span><span class="w"> </span><span class="n">manual</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="s2">&quot;manual&quot;</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;off&quot;</span><span class="o">,</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="s2">&quot;telescope&quot;</span>
+<span class="n">GuideCamGain</span><span class="o">:</span><span class="w"> </span><span class="n">low</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="n">Guide</span><span class="w"> </span><span class="n">camera</span><span class="w"> </span><span class="n">gain</span><span class="o">;</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">low</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">medium</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">high</span>
+<span class="n">GuideFPS</span><span class="o">:</span><span class="w"> </span><span class="mi">100</span><span class="w">                   </span><span class="err">#</span><span class="w"> </span><span class="n">Frames</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">guide</span><span class="w"> </span><span class="n">camera</span><span class="w"> </span><span class="o">(</span><span class="k">for</span><span class="w"> </span><span class="n">tip</span><span class="o">-</span><span class="n">tilt</span><span class="o">)</span>
+<span class="err">#</span><span class="w"> </span><span class="n">Spectrograph</span><span class="w"> </span><span class="n">Setup</span>
+<span class="n">TriggerCaHK</span><span class="o">:</span><span class="w"> </span><span class="n">False</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="n">Include</span><span class="w"> </span><span class="n">CaHK</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="o">(</span><span class="n">True</span><span class="o">/</span><span class="n">False</span><span class="o">)</span>
+<span class="n">TriggerGreen</span><span class="o">:</span><span class="w"> </span><span class="n">True</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="n">Include</span><span class="w"> </span><span class="n">Green</span><span class="w"> </span><span class="n">CCD</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="o">(</span><span class="n">True</span><span class="o">/</span><span class="n">False</span><span class="o">)</span>
+<span class="n">TriggerRed</span><span class="o">:</span><span class="w"> </span><span class="n">True</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">Include</span><span class="w"> </span><span class="n">Red</span><span class="w"> </span><span class="n">CCD</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="o">(</span><span class="n">True</span><span class="o">/</span><span class="n">False</span><span class="o">)</span>
+<span class="n">BlockSky</span><span class="o">:</span><span class="w"> </span><span class="n">False</span><span class="w">                 </span><span class="err">#</span><span class="w"> </span><span class="n">Close</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">sky</span><span class="w"> </span><span class="n">fiber</span><span class="w"> </span><span class="n">shutter</span><span class="w"> </span><span class="n">during</span><span class="w"> </span><span class="n">observations</span><span class="w"> </span><span class="o">(</span><span class="n">True</span><span class="o">/</span><span class="n">False</span><span class="o">)</span>
+<span class="err">#</span><span class="w"> </span><span class="n">Observations</span>
+<span class="n">SEQ_Observations</span><span class="o">:</span><span class="w">               </span><span class="err">#</span><span class="w"> </span>
+<span class="o">-</span><span class="w"> </span><span class="n">Object</span><span class="o">:</span><span class="w"> </span><span class="mi">10700</span><span class="w">                 </span><span class="err">#</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="n">settable</span><span class="w"> </span><span class="n">comment</span>
+<span class="w">  </span><span class="n">nExp</span><span class="o">:</span><span class="w"> </span><span class="mi">4</span><span class="w">                       </span><span class="err">#</span><span class="w"> </span><span class="n">Number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">exoposures</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">OB</span>
+<span class="w">  </span><span class="n">ExpTime</span><span class="o">:</span><span class="w"> </span><span class="mi">30</span><span class="w">                   </span><span class="err">#</span><span class="w"> </span><span class="n">Exposure</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="n">spectrometer</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">CaH</span><span class="o">&amp;</span><span class="n">K</span><span class="o">.</span><span class="w"> </span><span class="n">See</span><span class="w"> </span><span class="n">Exposure</span><span class="w"> </span><span class="n">Meter</span><span class="w"> </span><span class="n">section</span><span class="w"> </span><span class="n">below</span><span class="o">.</span>
+<span class="w">  </span><span class="n">ExpMeterMode</span><span class="o">:</span><span class="w"> </span><span class="n">control</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="s2">&quot;monitor&quot;</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="s2">&quot;control&quot;</span><span class="w"> </span><span class="o">(</span><span class="n">to</span><span class="w"> </span><span class="n">terminate</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">flux</span><span class="o">)</span>
+<span class="w">  </span><span class="n">AutoExpMeter</span><span class="o">:</span><span class="w"> </span><span class="n">False</span><span class="w">           </span><span class="err">#</span><span class="w"> </span><span class="n">Set</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="n">meter</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">automatically</span>
+<span class="w">  </span><span class="n">ExpMeterExpTime</span><span class="o">:</span><span class="w"> </span><span class="mf">0.5</span><span class="w">          </span><span class="err">#</span><span class="w"> </span><span class="n">Exposure</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Exposure</span><span class="w"> </span><span class="n">Meter</span><span class="w"> </span><span class="n">subframes</span>
+<span class="w">  </span><span class="n">ExpMeterBin</span><span class="o">:</span><span class="w"> </span><span class="mi">3</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">Exposure</span><span class="w"> </span><span class="n">meter</span><span class="w"> </span><span class="n">wavelength</span><span class="w"> </span><span class="n">bin</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stopping</span><span class="w"> </span><span class="n">exposure</span>
+<span class="w">  </span><span class="n">ExpMeterThreshold</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="n">e5</span><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="n">science</span><span class="w"> </span><span class="n">flux</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">e</span><span class="o">-/</span><span class="n">nm</span>
+<span class="w">  </span><span class="n">TakeSimulCal</span><span class="o">:</span><span class="w"> </span><span class="n">True</span><span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="n">Take</span><span class="w"> </span><span class="n">simultaneous</span><span class="w"> </span><span class="n">calibrations</span><span class="o">?</span><span class="w"> </span><span class="o">(</span><span class="n">True</span><span class="o">/</span><span class="n">False</span><span class="o">)</span>
+<span class="w">  </span><span class="n">AutoNDFilters</span><span class="o">:</span><span class="w"> </span><span class="n">False</span><span class="w">          </span><span class="err">#</span><span class="w"> </span><span class="n">Automatically</span><span class="w"> </span><span class="kd">set</span><span class="w"> </span><span class="n">ND</span><span class="w"> </span><span class="n">filters</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">available</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">time</span><span class="o">!</span>
+<span class="w">  </span><span class="n">CalND1</span><span class="o">:</span><span class="w"> </span><span class="n">OD</span><span class="w"> </span><span class="mf">4.0</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">OD</span><span class="o">=</span><span class="n">Optical</span><span class="w"> </span><span class="n">Density</span><span class="o">.</span><span class="w"> </span><span class="n">Throughput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="o">^-</span><span class="n">OD</span>
+<span class="w">  </span><span class="n">CalND2</span><span class="o">:</span><span class="w"> </span><span class="n">OD</span><span class="w"> </span><span class="mf">0.1</span><span class="w">                </span><span class="err">#</span><span class="w"> </span>
+</code></pre></div>
+
+<p>Each value in the OB is described in more detail below.</p>
+<p><strong>Template_Name and Template_Version</strong> (<code>str</code>)</p>
+<blockquote>
+<p>These values indicate to the software what sort of observation this is and what script to execute. For a science observation, always use "kpf_sci" as the template name.</p>
+</blockquote>
+<p><strong>TargetName</strong>: (<code>str</code>)</p>
+<blockquote>
+<p>This is a name chosen by the observer.</p>
+</blockquote>
+<p><strong>GaiaID and 2MASSID</strong>: (<code>str</code>)</p>
+<blockquote>
+<p>These values are used by the DRP to identify the star and determine its properties.</p>
+</blockquote>
+<p><strong>Parallax</strong>: (<code>float</code>)</p>
+<blockquote>
+<p>Parallax in arcseconds.</p>
+</blockquote>
+<p><strong>RadialVelocity</strong>: (<code>float</code>)</p>
+<blockquote>
+<p>Radial Velocity in km/s.</p>
+</blockquote>
+<p><strong>Gmag</strong>: (<code>float</code>)</p>
+<blockquote>
+<p>This is used by the DRP and by the algorithm which automatically sets the exposure meter exposure time.</p>
+</blockquote>
+<p><strong>Jmag</strong>: (<code>float</code>)</p>
+<blockquote>
+<p>This is used by the algorithm which automatically sets the guider gain and frame rate.</p>
+</blockquote>
+<p><strong>Teff</strong>: (<code>float</code>)</p>
+<blockquote>
+<p>The effective temperature of the star.
+<br>Allowed Range: 2600 - 45000</p>
+</blockquote>
+<p><strong>GuideMode</strong>: (<code>str</code>)</p>
+<blockquote>
+<p>If "manual" is selected, the values for the gain and FPS below are used. If "auto" is selected, the camera gain and FPS values in the OB are ignored and the software will choose values based on the Jmag value.
+<br>Allowed Values: "manual", "auto", or "off"</p>
+</blockquote>
+<p><strong>GuideCamGain</strong>: (<code>str</code>)</p>
+<blockquote>
+<p>The gain (high, medium, or low) at which to operate the guide camera. Ignored if the GuideMode is set to "auto".
+<br>Allowed Values: "high", "medium", or "low"</p>
+</blockquote>
+<p><strong>GuideFPS</strong>: (<code>float</code>)</p>
+<blockquote>
+<p>The frame rate (frames per second) at which to operate the guide camera. Ignored if the GuideMode is set to "auto".</p>
+</blockquote>
+<p><strong>TriggerCaHK, TriggerGreen, and TriggerRed</strong>: (<code>bool</code>)</p>
+<blockquote>
+<p>These values indicate whether to trigger the respective camera during the science exposures. All of these cameras will be synced up and will get the same exposure time.</p>
+</blockquote>
+<h2 id="seq_observations">SEQ_Observations</h2>
+<p>The <code>SEQ_Observations:</code> line is required. The following block of lines represent one entry in a list. If more than one set of exposures on a target is desired, this block of text can be repeated to build a second "observation" on the target with different parameters.</p>
+<p><strong>Object</strong>: (<code>str</code>)</p>
+<blockquote>
+<p>This value will go in to the FITS header as the OBJECT keyword value. This is can be used as a notes field for the observer to explain how this set of exposures differs from any following observations of this target. This field can be left blank or set to the target name, it is entirely up to the observer.</p>
+</blockquote>
+<p><strong>nExp</strong>: (<code>int</code>)</p>
+<blockquote>
+<p>The number of exposures to take.</p>
+</blockquote>
+<p><strong>ExpTime</strong>: (<code>float</code>)</p>
+<blockquote>
+<p>The exposure time in seconds. Note that if the exposure meter is controlling the exposure duration, this exposure time is the maximum value which will be allowed (the exposure meter may cut the exposure short if the desired flux level is reached).</p>
+</blockquote>
+<p><strong>ExpMeterMode</strong>: (<code>str</code>)</p>
+<blockquote>
+<p>For now, only the "monitor" mode is available. In "monitor" the exposure meter will take exposure during the science exposure and record fluxes. This data will be stored in the resulting FITS file can be used to determine the flux weighted exposure midpoint in time for accurate barycentric correction.
+<br>Allowed Values: "monitor", "control", or "off"</p>
+</blockquote>
+<p><strong>AutoExpMeter</strong>: (<code>bool</code>)</p>
+<blockquote>
+<p>If this is True, the software will use the Gmag value to estimate a good exposure time for the individual exposure meter exposures and use that instead of the ExpMeterExpTime value below.</p>
+</blockquote>
+<p><strong>ExpMeterExpTime</strong>: (<code>float</code>)</p>
+<blockquote>
+<p>The exposure time in seconds for individual exposure meter exposures. This is ignored if AutoExpMeter is True.</p>
+</blockquote>
+<p><strong>TakeSimulCal</strong>: (<code>bool</code>)</p>
+<blockquote>
+<p>Should the instrument be configured to illuminate the simultaneous calibration fiber during the science exposure?</p>
+</blockquote>
+<p><strong>AutoNDFilters</strong>: (<code>bool</code>)</p>
+<blockquote>
+<p>Should the software automatically set the ND filters based on the target and exposure information? This is not currently implemented and will be ignored!</p>
+</blockquote>
+<p><strong>CalND1</strong> (<code>str</code>)</p>
+<blockquote>
+<p>The neutral density filter to put in the first filter
+wheel. This affects both the simultaneous calibration light and light
+which can be routed through the FIU to the science and sky fibers.
+<br>Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</code>, <code>OD 2.0</code>, <code>OD 3.0</code>, <code>OD 4.0</code></p>
+</blockquote>
+<p><strong>CalND2</strong> (<code>str</code>)</p>
+<blockquote>
+<p>The neutral density filter to put in the second filter
+wheel. This affects only the light injected in to the simultaneous
+calibration fiber.
+<br>Allowed Values: <code>OD 0.1</code>, <code>OD 0.3</code>, <code>OD 0.5</code>, <code>OD 0.8</code>, <code>OD 1.0</code>, <code>OD 4.0</code></p>
+</blockquote>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../preparingOBs/" class="btn btn-neutral float-left" title="Preparing OBs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../observingprocedures/" class="btn btn-neutral float-right" title="Observing Procedures">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+      <span><a href="../preparingOBs/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../observingprocedures/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

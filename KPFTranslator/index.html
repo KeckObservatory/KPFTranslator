@@ -87,6 +87,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../preparingOBs/">Preparing OBs</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../OBparameters/">OB Parameters</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
@@ -177,7 +179,7 @@
               
                 <h1 id="kpf-translator">KPF Translator</h1>
 <p>Most of KPF operations are controlled via the <a href="https://github.com/KeckObservatory/KPFTranslator">KPF Translator</a> which is composed of Python code, which interacts with the underlying KTL keywords to automate various tasks. Each script is actually a Python class which is invoked by an <code>execute()</code> method which itself calls the <code>pre_condition()</code>, <code>perform()</code>, and <code>post_condition()</code> methods. This three-part structure allows the script to check that the system is ready for the action to be performed, then execute the action, then confirm a successful execution. These scripts can also be invoked via a command line interface to the underlying python and are used for everything from small, atomic actions which might require only a single KTL keyword write to execute, to large scripts which need significant flow control such as executing a science observation at night -- including configuring the instrument, waiting for the telescope and tip-tilt system to acquire the target, executing the specified exposures, and finally performing clean up actions.</p>
-<p>Detailed documentation on each translator script can be found in the <a href="../scripts/">scripts</a> section of this documentation.</p>
+<p>Detailed documentation on each translator script can be found in the <a href="scripts/index.md">scripts</a> section of this documentation.</p>
               
             </div>
           </div><footer>
