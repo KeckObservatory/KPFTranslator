@@ -42,6 +42,7 @@ nav:
   - "Observing with KPF":
     - "Afternoon Setup": afternoonsetup.md
     - "Preparing OBs": preparingOBs.md
+    - "OB Parameters": OBparameters.md
     - "Observing Procedures": observingprocedures.md
     - "How to Retrieve Data using RTI": https://koa.ipac.caltech.edu/rti-gui/login
     - "Data Reduction": kpfdrp.md
