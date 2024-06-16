@@ -45,13 +45,16 @@ nav:
     - "Observing Procedures": observingprocedures.md
     - "Retrieve Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
     - "Data Reduction": kpfdrp.md
-  - "General Observing Info":
+  - "General Observing Info": 
     - "Weather":
       - "MK Weather Center": http://mkwc.ifa.hawaii.edu/forecast/mko/index.cgi
       - "Keck Cloud Cameras": https://www3.keck.hawaii.edu/skycams/CloudCamTimelapse.html
-    - "Preparing for Your Run":
-      - "Pre-observing Checklist": https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html
+    - "Useful Keck Pages":
+      - "Telescope Schedule": https://www2.keck.hawaii.edu/observing/keckSchedule/keckSchedule.php
       - "Target List Format": https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html
+      - "Keck Instruments": http://www2.keck.hawaii.edu/inst/
+      - "General Keck Observing Info": https://www.keckobservatory.org/observing/
+      - "Pre-observing Checklist": https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html
       - "Remote Observing": http://www2.keck.hawaii.edu/inst/common/mainland_observing.html
     - "Telescope Specifications":
       - "Limits": https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html

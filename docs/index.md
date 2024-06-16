@@ -20,7 +20,7 @@ A detailed summary of the instrument status was presented at the September 2023 
 
 <font color="green">Ca H&K Detector</font>: Currently functional.
 
-<font color="green">Double Star Observations</font>: Recent modifications to the tip tilt system should enable double star observations.  There is still learning curve as we figure out how to optimize source detection thought, so be patient with the OAs while trying to do this.  Remember that this is not the same as the MAGIQ guiding system, so your intuition there does not transfer to KPF.
+<font color="green">Double Star Observations</font>: Recent modifications to the tip tilt system should enable double star observations.  There is still learning curve as we figure out how to optimize source detection though, so be patient with the OAs while trying to do this.  Remember that this is not the same as the MAGIQ guiding system, so your intuition there does not transfer to KPF.
 
 <font color="green">Etalon</font>: The etalon flux problem was fixed during the servicing mission in Feb 2024 and it is now provided the expected flux levels. We have not yet worked out an algorithm for recommending ND filter settings for a given observation to balance SimulCal five flux with science fiber flux, but the mode is available. We are still recommending that slew cals should be taken every hour.
 
