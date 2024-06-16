@@ -42,7 +42,7 @@ for package in packages.keys():
                           ])
         all_scripts.append(f"* [{scriptname}]({scriptname}.md)\n")
 
-script_list_file = Path('docs/scripts/index.md')
+script_list_file = Path('docs/scripts/scripts.md')
 if script_list_file.exists() == True:
     script_list_file.unlink()
 with open(script_list_file, 'w') as scripts_list:
