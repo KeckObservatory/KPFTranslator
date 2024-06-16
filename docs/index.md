@@ -1,5 +1,10 @@
 # Keck Planet Finder (KPF)
 
+| Email Contact: | [kpf_info@keck.hawaii.edu](mailto:kpf_info@keck.hawaii.edu) |
+| -------------- | ---------------------- |
+| Instrument Scientist: | Josh Walawender |
+| Deputy Instrument Scientist: | Sherry Yeh |
+
 ## Instrument Status
 
 KPF has been commissioned on sky, and is available for use. Many aspects of the instrument are still being optimized and the long term stability is still under evaluation. Short term stability looks excellent (exceeding the 50 cm/s target spec within a night) and we expect measures of the long term RV precision to become available as the DRP evolves.
