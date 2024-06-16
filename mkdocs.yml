@@ -32,6 +32,7 @@ nav:
       - "Ca H&K Spectrograph": cahk.md
       - "Exposure Meter": exposuremeter.md
       - "Calibration Bench": calbench.md
+      - "Solar Calibrator": socal.md
       - "Agitator": agitator.md
     - "Instrument Specifications":
       - "Detectors": detectors.md
