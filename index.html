@@ -104,11 +104,17 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
+                  <li class="toctree-l1"><a class="reference internal" >Useful Keck Pages</a>
     <ul>
-                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/observing/keckSchedule/keckSchedule.php">Telescope Schedule</a>
                 </li>
                 <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/">Keck Instruments</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keckobservatory.org/observing/">General Keck Observing Info</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
                 </li>
                 <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
                 </li>
@@ -208,7 +214,7 @@
 <h3 id="subsystem-status">Subsystem Status</h3>
 <p><font color="green">Tip Tilt Corrections</font>: The tip tilt stage was replaced in early June 2024 and is now working as expected.</p>
 <p><font color="green">Ca H&amp;K Detector</font>: Currently functional.</p>
-<p><font color="green">Double Star Observations</font>: Recent modifications to the tip tilt system should enable double star observations.  There is still learning curve as we figure out how to optimize source detection thought, so be patient with the OAs while trying to do this.  Remember that this is not the same as the MAGIQ guiding system, so your intuition there does not transfer to KPF.</p>
+<p><font color="green">Double Star Observations</font>: Recent modifications to the tip tilt system should enable double star observations.  There is still learning curve as we figure out how to optimize source detection though, so be patient with the OAs while trying to do this.  Remember that this is not the same as the MAGIQ guiding system, so your intuition there does not transfer to KPF.</p>
 <p><font color="green">Etalon</font>: The etalon flux problem was fixed during the servicing mission in Feb 2024 and it is now provided the expected flux levels. We have not yet worked out an algorithm for recommending ND filter settings for a given observation to balance SimulCal five flux with science fiber flux, but the mode is available. We are still recommending that slew cals should be taken every hour.</p>
 <p><font color="green">LFC</font>: Is operating normally. Standard exposure parameters are now <code>ExpTime: 60, CalND1: OD 2.0, and CalND2: OD 0.1</code>.</p>
 <p><font color="green">Detector Systems</font>: The red and green detectors suffer from occasional “start state errors” in which the affected detector remains in the start phase and does not produce a useful exposure. The observing scripts now detect this occurrence, abort the current exposure (with read out) and start a fresh exposure on both cameras. No action is necessary on the part of the observer.  This costs about a minute of time for this to happen, but the resulting data should be normal (unless another error occurs).  The occurrence rate for these problems is 0.34% on the green detector and 0.22% on the red, so around one in every 180 exposures is affected by one of the two detectors experiencing this error.</p>
@@ -286,5 +292,5 @@
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-06-16 02:18:51.649876+00:00
+Build Date UTC : 2024-06-16 02:25:52.768431+00:00
 -->
