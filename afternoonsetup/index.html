@@ -48,7 +48,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Instrument Info</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystem Descriptions</a>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystems</a>
     <ul>
                 <li class="toctree-l2"><a class="reference internal" href="../spectrograph/">Spectrograph</a>
                 </li>
@@ -85,18 +85,24 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Afternoon Setup</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../preparingOBs/">Preparing OBs</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../OBparameters/">OB Parameters</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">How to Retrieve Data using RTI</a>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieve Data in Real Time</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" >Weather</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://mkwc.ifa.hawaii.edu/forecast/mko/index.cgi">MK Weather Center</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/skycams/CloudCamTimelapse.html">Keck Cloud Cameras</a>
+                </li>
+    </ul>
+                  </li>
               </ul>
-              <p class="caption"><span class="caption-text">General Keck Observing Info</span></p>
+              <p class="caption"><span class="caption-text">General Observing Info</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" >Preparing for Your Run</a>
     <ul>
@@ -186,7 +192,23 @@
 <li>Start the KPF GUIs</li>
 </ul>
 <p>This can be run at any time prior to observing. If automated calibrations are in progress, this may take several minutes as certain operations can only be done while the detectors are not exposing.</p>
-<p>Observers should use the afternoon to <a href="../preparingOBs/">prepare Observing Blocks (OBs)</a> and their star list if they have not done so already. </p>
+<h1 id="preparing-observing-blocks-obs">Preparing Observing Blocks (OBs)</h1>
+<p>Observers should use the afternoon to prepare Observing Blocks (OBs) and their star list if they have not done so already. </p>
+<p>The basic unit of KPF nighttime operations is the Observing Block (OB). An OB describes a single visit to a science target and the observations made there. The data in an OB can be divided in to 4 rough categories:</p>
+<p><strong>Target information</strong>: The OB will contain information about the target beyond what is in a typical Keck Star List entry in order to flow that information to the FITS header and the data reduction pipeline (DRP).</p>
+<p><strong>Guide camera configuration</strong>: The OB will also contain information about how to configure the guide camera and tip tilt system for this target.</p>
+<p><strong>Instrument Setup</strong>: The OB will also contain information about how to configure the instrument for this set of observations.</p>
+<p><strong>Observations</strong>: Finally, the OB will contain a list of "observations" to be made of the target. For typical KPF observers, this will only have one entry, but multiple entries are supported. Each entry describes a set of exposures on the target and contains the information on how those exposures should be executed.</p>
+<p>The data contained in the OB is a set of keyword-value pairs. Observers can prepare OBs as text files which can be read in by the KPF software and executed or (once logged in to the KPF VNCs) they can use tools there to build the OBs and save them as files. </p>
+<h2 id="kpf-ob-gui">KPF OB GUI</h2>
+<p>A graphical tool has been built to help observers build their KPF OBs, it is launched automatically as part of the script to start all GUIs.</p>
+<p><img alt="A screenshot of the KPF OB GUI" src="../figures/KPF_OB_GUI.png" /></p>
+<blockquote>
+<p>A screenshot of the KPF OB GUI. This tool is still under development and may change.</p>
+</blockquote>
+<p>The top section of the GUI, "Instrument Status" shows whether an instrument script (e.g. an observation or calibration set) is being run and allows users to request that script stop.</p>
+<p>The middle section can be used to load an OB from a file, build an OB from scratch using a Gaia DR3 catalog query, save the OB to a file, or execute the OB.</p>
+<p>The lower section is where a user can fill out the OB parameters as described in the "KPF Science OB Contents" section above.</p>
 <h1 id="start-of-night">Start of Night</h1>
 <p>KPF does, however, need to be configured properly at the start of the night. There is a procedure which should be run <strong>only after the Observing Assistant (OA) has selected KPF as the instrument</strong> and <strong>after automated afternoon calibrations are complete.</strong>  It is important that this not be run while other instruments are observing. To configure KPF for observing, run <code>KPF Control Menu --&gt; Run Start of Night Script</code> from the background menu (or <code>kpfStartOfNight</code> from the command line on any KPF machine). This will:</p>
 <ul>
@@ -202,7 +224,7 @@
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../KPFTranslator/" class="btn btn-neutral float-left" title="Instrument Software"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../preparingOBs/" class="btn btn-neutral float-right" title="Preparing OBs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../OBparameters/" class="btn btn-neutral float-right" title="OB Parameters">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -232,7 +254,7 @@
       <span><a href="../KPFTranslator/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../preparingOBs/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../OBparameters/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
