@@ -28,6 +28,7 @@ nav:
     - "Instrument Subsystems":
       - "Spectrograph": spectrograph.md
       - "FIU": fiu.md
+      - "Tip Tilt Sysyem": tiptilt.md
       - "Guider": guider.md
       - "Ca H&K Spectrograph": cahk.md
       - "Exposure Meter": exposuremeter.md
