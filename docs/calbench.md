@@ -16,12 +16,16 @@ Most of the calibration sources are located in the "octagon".  A rotating fold m
 
 ## Etalon
 
+The KPF etalon is a thermally stable (~1 mK RMS) resonant cavity fed by an NKT SuperK EVO light source.  The resulting line forest covers all of the KPF science passband.  The Etalon spectrum evolves slowly with time, so it is not used for obsolte calibration, but it can be used to track the short time scale evolution of the instrument.  Effectively "filling in" between absolute wavelength calibrators such as the LFC or the arc lamps.
 
 ## Broadband Lamp
 
+KPF takes relatively standard spectral flats using a broadband lamp.  Because of the extreme requirements for PRV measurements, the flats must be extraordinarily high signal to noise and be taken daily to track any changes.
 
 ## Arc Lamps
 
+The arc lamps (ThAr and UNe) can be used for absolute wavelength calibration. Unlike the LFC, they do not have a regular spacing of lines, but they do provide lines in the bluest orders (see below).  Two of each lamp are available in the octagon at any time.
 
 ## Laser Frequency Comb
 
+The LFC is the best calibrator due to the density of lines which allows a very precise measurement of the wavelength solution, but it is currently (early 2024) limited due to a lack of flux in the bluest orders.  For those, the traditional Thorium and Uranium lamps provide absolute calibration.
