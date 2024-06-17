@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Data Reduction - KPF</title>
+    <title>Tip Tilt Sysyem - KPF</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Data Reduction";
-        var mkdocs_page_input_path = "kpfdrp.md";
+        var mkdocs_page_name = "Tip Tilt Sysyem";
+        var mkdocs_page_input_path = "tiptilt.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -47,14 +47,14 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Instrument Info</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystems</a>
-    <ul>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >Instrument Subsystems</a>
+    <ul class="current">
                 <li class="toctree-l2"><a class="reference internal" href="../spectrograph/">Spectrograph</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../fiu/">FIU</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../tiptilt/">Tip Tilt Sysyem</a>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Tip Tilt Sysyem</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../guider/">Guider</a>
                 </li>
@@ -86,7 +86,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Observing with KPF</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../OBparameters/">OB Parameters</a>
@@ -95,7 +95,7 @@
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieve Data in Real Time</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Data Reduction</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">General Observing Info</span></p>
@@ -191,8 +191,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Observing with KPF</li>
-      <li class="breadcrumb-item active">Data Reduction</li>
+          <li class="breadcrumb-item">Instrument Info</li>
+          <li class="breadcrumb-item">Instrument Subsystems</li>
+      <li class="breadcrumb-item active">Tip Tilt Sysyem</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -201,39 +202,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="data-reduction-pipeline">Data Reduction Pipeline</h1>
-<p>WMKO automatically delivers KPF L0 data products to the Keck Observatory Archive (KOA) for distribution to observers. We plan to distribute L1 and L2 data products as well, but the KPF DRP is still under active development by the KPF science team, so the Keck deployment of the DRP is on hold until there are less frequent changes for us to track.</p>
-<p>Observers not affiliated with the KPF build team or with the California Planet Search (CPS) should contact their Staff Astronomer about access to reduced data products.</p>
-<p>Advanced users who would like to run the DRP locally can find the <a href="https://github.com/Keck-DataReductionPipelines/KPF-Pipeline">KPF DRP on GitHub</a>.</p>
-<h2 id="level-definitions">Level Definitions</h2>
-<table>
-<thead>
-<tr>
-<th>Level</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>L0</td>
-<td>Raw spectra packaged with other instrument data<br>(see <a href="../dataformat/">Data Format</a> for details)</td>
-</tr>
-<tr>
-<td>L1</td>
-<td>1-d, wavelength calibrated spectra</td>
-</tr>
-<tr>
-<td>L2</td>
-<td>RVs, multiple activity indicators</td>
-</tr>
-</tbody>
-</table>
+                <h1 id="tip-tilt-correction-system">Tip Tilt Correction System</h1>
+<p>The KPF tip tilt system takes fast (e.g. 100 FPS) subframe images from the KPF <a href="../guider/">CRED2 guide camera</a> in order to control the fast tip tilt mirror which directs light in to the KPF FIU.  This fast tip tilt system maintains the stellar position on the science fiber.  This is critical not for reasons of maximizing flux in to the spectrograph (though that is a side benefit), but to optimize the radial velocity measurement by keeping the illumination pattern on the fiber tip stable.</p>
+<p>Even after fiber scrambling and agitation, if the star’s position on the fiber entrance fiber shifts, that can manifest as a small shift of the spectrum on the detector which would be interpreted as a radial velocity change.  Thus we need to position the star on the fiber, and then hold it in a consistent place during observations and make that position consistent from observation to observation.</p>
+<p>The tip tilt mirror is a fold mirror which sits on the PCU stage on the Keck I AO bench.  The mirror folds the light in to the KPF FIU and is controlled in tip and tilt by a piezo stage built by nPoint.  The nominal spec for tip tilt performance is to position of the star within 50mas of the target position and then maintain that position at an RMS fo 50mas or better.</p>
+<p>The software which controls the tip tilt stage is built in to the <code>kpffiu</code> and <code>kpfguide</code> KTL keyword services.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../observingprocedures/" class="btn btn-neutral float-left" title="Observing Procedures"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../references/" class="btn btn-neutral float-right" title="Acknowledging KPF">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../fiu/" class="btn btn-neutral float-left" title="FIU"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../guider/" class="btn btn-neutral float-right" title="Guider">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -260,10 +239,10 @@
         </span>
     
     
-      <span><a href="../observingprocedures/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../fiu/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../references/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../guider/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
