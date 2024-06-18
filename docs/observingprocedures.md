@@ -1,17 +1,16 @@
 # Quick Reference
 
-- [Wait for Dome to Open](#wait-for-dome-to-open)
-- [Run Start of Night](#run-start-of-night)
-- [Slew to the Vicinity of Your First Target](#slew-to-the-vicinity-of-your-first-target)
-- [Focus the Telescope](#focus-the-telescope)
-- [Execute OBs](#execute-obs)
+- [Beginning of the Night](#beginning-of-the-night)
+- [Performing Observations](#performing-observations)
 - [Switching Programs on a Split Night](#switching-programs-on-a-split-night)
 
-# Wait for Dome to Open
+# Beginning of the Night
+
+### Wait for Dome to Open
 
 The Observing Assistant (OA) is not permitted to open the dome until after sunset. Please be patient while the shutter opens and the OA checks the initial telescope pointing. 
 
-# Run Start of Night
+### Run Start of Night
 
 To configure KPF for observing, run `KPF Control Menu --> Run Start of Night Script` from the background menu (or `kpfStartOfNight` from the command line on any KPF machine). This will
 
@@ -24,33 +23,49 @@ To configure KPF for observing, run `KPF Control Menu --> Run Start of Night Scr
 - Set data output directory
 - Set observers from telescope schedule
 
-# Slew to the Vicinity of Your First Target
+### Slew to the Vicinity of Your First Target
 
 When ready to move the telescope, the OA will ask you for your first target and load the coordinates from your starlist file. They will select a bright star near your target and will attempt to acquire that in the guider, then will double-check the accuracy of pointing by acquiring one or two additional stars from the SAO or GSC catalogs.
 
 To monitor the guider images, run `Telescope GUIs --> MAGIQ Guider UI` from the background menu.
 
-# Focus the Telescope
+### Focus the Telescope
 
-The OA will run the telescope focus procedure (Autofoc) near your science field. On some nights, they will opt for the Mira focus procedure which takes slightly longer but is needed to calibrate the secondary mirror tilt.
+The OA will run the telescope focus procedure (typically Autofoc) near your science field. On some nights, they will opt for the Mira focus procedure which takes slightly longer but is needed to calibrate the secondary mirror tilt.
 
-# Execute OBs
+# Performing Observations
+
+### Highlight Your Target in Magiq
+
+In the Magiq star list (at the bottom of the Magiq User GUI), right click your target and select the option to highlight it for the OA (you can get the same result by middle clicking the target).  This highlighting will show up on the OA's GUI making it easier for them to find the target you want to go to.  Let the OA know to slew to the target when your current exposure is done.
+
+### Execute Your OB
 
 Observers can load previously saved OBs or create them on the fly for KPF observing. To load and execute a saved OB:
 
 - Click Load OB from File
-- Select a desired OB from the file list
-- Click Execute This OB or Execute OB with Slew Cal
+- Select the OB from the file list
+- Click Execute This OB (or Execute OB with Slew Cal)
 
-The GUI will first prompt the observers to conform the OB execution. Once confirmed, an xterm will launch and prompt the observers with addtional information if needed.
+The GUI will first prompt the observers to confirm the OB execution. Once confirmed, an xterm will launch and prompt the observers with addtional information if and when needed, so watch the contents of this xterm.
 
 Executing the OB will not start an exposure immediately. The system will first configure the instrument and will then prompt the observer to confirm once the OA has acquired the target. While configuring the instrument, the OB will set the gain and frames per second on the guider based on the target information (J magnitude).  Because of this, **it is important to execute the OB during the slew** and before the OA acquires the target, so that the guider exposure parameters are not changed while the OA is working to acquire the target.
 
-The log lines which show up in the xterm with the running OB contain useful information.  In general, lines with INFO are attempting to explain what the instrument is doing.  Lines with WARNING are indicating that a minor problem has occurred, but the system is handling it.  The WARNING lines are purely informational, no action is needed on the part of the observer in response.  Lines with ERROR indicate a serious problems which may require user intervention.
+The log lines which show up in the xterm with the running OB contain useful information.  In general, lines with INFO are attempting to explain what the instrument is doing.  Lines with WARNING are indicating that a minor problem has occurred, but the system is handling it -- these lines are purely informational, no action is needed on the part of the observer in response.  Lines with ERROR indicate a serious problems which may require user intervention.
 
-## Stopping Scripts or Exposures
+### Slew Cals
 
-**Important**: If you wish to halt an OB durin execution, do **NOT** hit Control-c in the terminal.  Use the "Request Script STOP" button instead. The KPF scripts have checkpoints in them which are places where the script can cleanly exit and perform important cleanup operations.  The "STOP Exposure and Script" button does the same thing, but it will also terminate an exposure in progress.
+KPF has the option of taking a "slew cal" immediately prior to a science observation.  This is a way to make use of the time spent slewing from one target to another.  If an OB is executed with a slew cal (using the "Execute OB with Slew Cal" button in the OB GUI), then the FIU will transition to calibration mode (the FIU hatch will close and calibration light will be directed to the science and sky fibers), and a calibration exposure will be taken.  This will obscure the sky during calibration, so the OA will not be able to see the target until the slew cal is done.  This process takes around 2 minutes and so fits nicely in to long slews.
+
+Because the slew cal happens during the slew to a target, it is optimally performed with a science OB so that the guider can be configured for the science target.  This is another case where executing a science OB before the slew has completed is the most efficient observing strategy.
+
+At the moment, we recommend that slew cals are taken roughly every hour while observing.  This helps track the internal drift of the instrument itself over time scales less than 1 day and can be used by the DRP to further improve RV precision.  The instrument software keeps track of the time since the last relevant calibration and the timer is shown in the upper right of the OB GUI.  The "Time Since Cal" value will color code to orange if it exceeds 1 hour and will become red at 2 hours.  Despite this, **the choice to take slew cals is entirely up to the observer** the timer is only a recommendation.
+
+Slew cals can also be taken independently using the "Execute Slew Cal Only" button.  This is not the intended method for taking slew cals and we recommend using the "Execute OB with Slew Cal" button instead, however the slew cal only option may be useful during periods of bad weather when no observing is happening.
+
+### Stopping Scripts or Exposures
+
+**Important**: If you wish to halt an OB during execution, do **NOT** hit Control-c in the terminal.  Use the "Request Script STOP" button instead. The KPF scripts have checkpoints in them which are places where the script can cleanly exit and perform important cleanup operations.  The "STOP Exposure and Script" button does the same thing, but it will also terminate an exposure in progress.
 
 # Switching Programs on a Split Night
 

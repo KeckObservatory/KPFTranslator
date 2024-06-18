@@ -43,8 +43,8 @@ nav:
     - "Instrument Software": KPFTranslator.md
   - "Observing with KPF":
     - "Afternoon Setup": afternoonsetup.md
-    - "OB Parameters": OBparameters.md
     - "Observing Procedures": observingprocedures.md
+    - "OB Parameters": OBparameters.md
     - "Retrieve Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
     - "Data Reduction": kpfdrp.md
   - "General Observing Info": 
