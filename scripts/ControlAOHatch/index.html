@@ -213,21 +213,37 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.ao.ControlAOHatch.ControlAOHatch--description">Description</h2>
-<p>Command the AO Hatch to open or close.</p>
-<h3 id="kpf.ao.ControlAOHatch.ControlAOHatch--ktl-keywords-used">KTL Keywords Used</h3>
+      <p>Command the AO Hatch to open or close.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>destination</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The destination position. Allowed Values: 'open' or
+'close'.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
 <ul>
 <li><code>ao.AOHATCHCMD</code></li>
 <li><code>ao.AOHATCHSTS</code></li>
 </ul>
-<h3 id="kpf.ao.ControlAOHatch.ControlAOHatch--scripts-called">Scripts Called</h3>
-<p>None</p>
-<h3 id="kpf.ao.ControlAOHatch.ControlAOHatch--parameters">Parameters</h3>
-<p><strong>destination</strong> (<code>str</code>)</p>
-<blockquote>
-<p>The destination position.
-<br>Allowed Values: 'open' or 'close'</p>
-</blockquote>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/ao/ControlAOHatch.py</code></summary>
@@ -269,31 +285,17 @@
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ControlAOHatch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Command the AO Hatch to open or close.</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ControlAOHatch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Command the AO Hatch to open or close.</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    Args:</span>
+<span class="sd">        destination (str): The destination position. Allowed Values: &#39;open&#39; or</span>
+<span class="sd">            &#39;close&#39;.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `ao.AOHATCHCMD`</span>
 <span class="sd">    - `ao.AOHATCHSTS`</span>
-
-<span class="sd">    ## Scripts Called</span>
-
-<span class="sd">    None</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    **destination** (`str`)</span>
-<span class="sd">    &gt; The destination position.</span>
-<span class="sd">    &lt;br&gt;Allowed Values: &#39;open&#39; or &#39;close&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

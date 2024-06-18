@@ -213,26 +213,48 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.expmeter.SetupExpMeter.SetupExpMeter--description">Description</h2>
-<p>Configure the exposure meter using the given OB arguments.</p>
-<h3 id="kpf.expmeter.SetupExpMeter.SetupExpMeter--ktl-keywords-used">KTL Keywords Used</h3>
+      <p>Configure the exposure meter using the given OB arguments.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>ExpMeterMode</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>See Science OB definition.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>TriggerExpMeter</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>See Science OB definition.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpf_expmeter.USETHRESHOLD</code></li>
 <li><code>kpfconfig.EXPMETER_ENABLED</code></li>
 </ul>
-<h3 id="kpf.expmeter.SetupExpMeter.SetupExpMeter--scripts-called">Scripts Called</h3>
+<p>Scripts Called:</p>
 <ul>
 <li><code>kpf.expmeter.SetExpMeterTerminationParameters</code></li>
 </ul>
-<h3 id="kpf.expmeter.SetupExpMeter.SetupExpMeter--parameters">Parameters</h3>
-<p><strong>ExpMeterMode</strong> (<code>str</code>)</p>
-<blockquote>
-<p>See Science OB definition</p>
-</blockquote>
-<p><strong>TriggerExpMeter</strong> (<code>bool</code>)</p>
-<blockquote>
-<p>See Science OB definition</p>
-</blockquote>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/expmeter/SetupExpMeter.py</code></summary>
@@ -304,31 +326,21 @@
 <span class="normal">76</span>
 <span class="normal">77</span>
 <span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetupExpMeter</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Configure the exposure meter using the given OB arguments.</span>
+<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetupExpMeter</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Configure the exposure meter using the given OB arguments.</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ExpMeterMode (str): See Science OB definition.</span>
+<span class="sd">        TriggerExpMeter (bool): See Science OB definition.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `kpf_expmeter.USETHRESHOLD`</span>
 <span class="sd">    - `kpfconfig.EXPMETER_ENABLED`</span>
 
-<span class="sd">    ## Scripts Called</span>
+<span class="sd">    Scripts Called:</span>
 
 <span class="sd">    - `kpf.expmeter.SetExpMeterTerminationParameters`</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    **ExpMeterMode** (`str`)</span>
-<span class="sd">    &gt; See Science OB definition</span>
-
-<span class="sd">    **TriggerExpMeter** (`bool`)</span>
-<span class="sd">    &gt; See Science OB definition</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">abortable</span> <span class="o">=</span> <span class="kc">False</span>
 

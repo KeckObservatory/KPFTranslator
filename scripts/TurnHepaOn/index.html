@@ -213,17 +213,12 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.ao.TurnHepaOn.TurnHepaOn--description">Description</h2>
-<p>Turn HEPA Filter system on</p>
-<h3 id="kpf.ao.TurnHepaOn.TurnHepaOn--ktl-keywords-used">KTL Keywords Used</h3>
+      <p>Turn HEPA Filter system on</p>
+<p>KTL Keywords Used:</p>
 <ul>
 <li><code>ao.OBHPAON</code></li>
 <li><code>ao.OBHPASTA</code></li>
 </ul>
-<h3 id="kpf.ao.TurnHepaOn.TurnHepaOn--scripts-called">Scripts Called</h3>
-<p>None</p>
-<h3 id="kpf.ao.TurnHepaOn.TurnHepaOn--parameters">Parameters</h3>
-<p>None</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/ao/TurnHepaOn.py</code></summary>
@@ -250,31 +245,13 @@
 <span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TurnHepaOn</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Turn HEPA Filter system on</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TurnHepaOn</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Turn HEPA Filter system on</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `ao.OBHPAON`</span>
 <span class="sd">    - `ao.OBHPASTA`</span>
-
-<span class="sd">    ## Scripts Called</span>
-
-<span class="sd">    None</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

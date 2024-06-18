@@ -214,11 +214,65 @@
 
 
       <p>Take an exposure with the specified fiber viewing camera</p>
-<h2 id="kpf.fvc.TakeFVCExposure.TakeFVCExposure--args">ARGS:</h2>
-<p>:camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
-:wait: (bool) Wait for move to complete before returning? (default: True)
-:display: (bool) Display the resulting image to the engineering ds9
-          instance for FVCs using XPA.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>camera</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL</p>
+              </div>
+            </li>
+            <li>
+              <b><code>wait</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Wait for image to complete before returning? (default: True)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>display</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Display the resulting image to the engineering ds9
+  instance for FVCs using XPA?</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffvc.SCIEXPTIME</code></li>
+<li><code>kpffvc.CAHKEXPTIME</code></li>
+<li><code>kpffvc.EXTEXPTIME</code></li>
+<li><code>kpffvc.CALEXPTIME</code></li>
+<li><code>kpffvc.SCILASTFILE</code></li>
+<li><code>kpffvc.CALLASTFILE</code></li>
+<li><code>kpffvc.EXTLASTFILE</code></li>
+<li><code>kpffvc.CAHKLASTFILE</code></li>
+<li><code>kpffvc.SCIEXPOSE</code></li>
+<li><code>kpffvc.CALEXPOSE</code></li>
+<li><code>kpffvc.EXTEXPOSE</code></li>
+<li><code>kpffvc.CAHKEXPOSE</code></li>
+<li><code>kpfpower.KPFFVC1</code></li>
+<li><code>kpfpower.KPFFVC2</code></li>
+<li><code>kpfpower.KPFFVC3</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fvc/TakeFVCExposure.py</code></summary>
@@ -292,15 +346,49 @@
 <span class="normal">78</span>
 <span class="normal">79</span>
 <span class="normal">80</span>
-<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeFVCExposure</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeFVCExposure</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Take an exposure with the specified fiber viewing camera</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?</span>
-<span class="sd">    :wait: (bool) Wait for move to complete before returning? (default: True)</span>
-<span class="sd">    :display: (bool) Display the resulting image to the engineering ds9</span>
-<span class="sd">              instance for FVCs using XPA.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        camera (str): Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL</span>
+<span class="sd">        wait (bool): Wait for image to complete before returning? (default: True)</span>
+<span class="sd">        display (bool): Display the resulting image to the engineering ds9</span>
+<span class="sd">              instance for FVCs using XPA?</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffvc.SCIEXPTIME`</span>
+<span class="sd">    - `kpffvc.CAHKEXPTIME`</span>
+<span class="sd">    - `kpffvc.EXTEXPTIME`</span>
+<span class="sd">    - `kpffvc.CALEXPTIME`</span>
+<span class="sd">    - `kpffvc.SCILASTFILE`</span>
+<span class="sd">    - `kpffvc.CALLASTFILE`</span>
+<span class="sd">    - `kpffvc.EXTLASTFILE`</span>
+<span class="sd">    - `kpffvc.CAHKLASTFILE`</span>
+<span class="sd">    - `kpffvc.SCIEXPOSE`</span>
+<span class="sd">    - `kpffvc.CALEXPOSE`</span>
+<span class="sd">    - `kpffvc.EXTEXPOSE`</span>
+<span class="sd">    - `kpffvc.CAHKEXPOSE`</span>
+<span class="sd">    - `kpfpower.KPFFVC1`</span>
+<span class="sd">    - `kpfpower.KPFFVC2`</span>
+<span class="sd">    - `kpfpower.KPFFVC3`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

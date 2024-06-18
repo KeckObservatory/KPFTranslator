@@ -215,8 +215,16 @@
 
       <p>Shutdown the tip tilt system by setting the control mode to open loop
 and setting the target values in X and Y to 0.</p>
-<h2 id="kpf.fiu.ShutdownTipTilt.ShutdownTipTilt--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.TTXSRV</code></li>
+<li><code>kpffiu.TTYSRV</code></li>
+<li><code>kpffiu.TTXVAX</code></li>
+<li><code>kpffiu.TTYVAX</code></li>
+<li><code>kpfguide.TIPTILT_CONTROL</code></li>
+<li><code>kpfguide.TIPTILT_CALC</code></li>
+<li><code>kpfguide.TIPTILT_HOME</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/ShutdownTipTilt.py</code></summary>
@@ -266,13 +274,25 @@ and setting the target values in X and Y to 0.</p>
 <span class="normal">51</span>
 <span class="normal">52</span>
 <span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ShutdownTipTilt</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ShutdownTipTilt</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Shutdown the tip tilt system by setting the control mode to open loop</span>
 <span class="sd">    and setting the target values in X and Y to 0.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.TTXSRV`</span>
+<span class="sd">    - `kpffiu.TTYSRV`</span>
+<span class="sd">    - `kpffiu.TTXVAX`</span>
+<span class="sd">    - `kpffiu.TTYVAX`</span>
+<span class="sd">    - `kpfguide.TIPTILT_CONTROL`</span>
+<span class="sd">    - `kpfguide.TIPTILT_CALC`</span>
+<span class="sd">    - `kpfguide.TIPTILT_HOME`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

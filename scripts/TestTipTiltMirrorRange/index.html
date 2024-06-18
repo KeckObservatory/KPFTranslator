@@ -213,8 +213,21 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.fiu.TestTipTiltMirrorRange.TestTipTiltMirrorRange--args">ARGS:</h2>
-<p>None</p>
+      <p>Verify if the tip tilt system is reaching the nominal range. Output is
+only via log messages.</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.TTXVAX</code></li>
+<li><code>kpffiu.TTYVAX</code></li>
+<li><code>kpfguide.TIPTILT_HOME</code></li>
+<li><code>kpfguide.TIPTILT_XRANGE</code></li>
+<li><code>kpfguide.TIPTILT_YRANGE</code></li>
+</ul>
+<p>Scripts Called:</p>
+<ul>
+<li><code>kpf.fiu.InitializeTipTilt</code></li>
+<li><code>kpf.fiu.ShutdownTipTilt</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/TestTipTiltMirrorRange.py</code></summary>
@@ -275,12 +288,32 @@
 <span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
-<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TestTipTiltMirrorRange</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TestTipTiltMirrorRange</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Verify if the tip tilt system is reaching the nominal range. Output is</span>
+<span class="sd">    only via log messages.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.TTXVAX`</span>
+<span class="sd">    - `kpffiu.TTYVAX`</span>
+<span class="sd">    - `kpfguide.TIPTILT_HOME`</span>
+<span class="sd">    - `kpfguide.TIPTILT_XRANGE`</span>
+<span class="sd">    - `kpfguide.TIPTILT_YRANGE`</span>
+
+<span class="sd">    Scripts Called:</span>
+
+<span class="sd">    - `kpf.fiu.InitializeTipTilt`</span>
+<span class="sd">    - `kpf.fiu.ShutdownTipTilt`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

@@ -213,18 +213,13 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.ao.SetAFStoNGS.SetAFStoNGS--description">Description</h2>
-<p>ACAM should be set to NGS focus. LGS focus will not work for KPF.</p>
-<h3 id="kpf.ao.SetAFStoNGS.SetAFStoNGS--ktl-keywords-used">KTL Keywords Used</h3>
+      <p>ACAM should be set to NGS focus. LGS focus will not work for KPF.</p>
+<p>KTL Keywords Used:</p>
 <ul>
 <li><code>ao.OBASNAME</code></li>
 <li><code>ao.OBASSLEW</code></li>
 <li><code>ao.OBASSTST</code></li>
 </ul>
-<h3 id="kpf.ao.SetAFStoNGS.SetAFStoNGS--scripts-called">Scripts Called</h3>
-<p>None</p>
-<h3 id="kpf.ao.SetAFStoNGS.SetAFStoNGS--parameters">Parameters</h3>
-<p>None</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/ao/SetAFStoNGS.py</code></summary>
@@ -254,30 +249,14 @@
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetAFStoNGS</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    ACAM should be set to NGS focus. LGS focus will not work for KPF.</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetAFStoNGS</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;ACAM should be set to NGS focus. LGS focus will not work for KPF.</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    KTL Keywords Used:</span>
+
 <span class="sd">    - `ao.OBASNAME`</span>
 <span class="sd">    - `ao.OBASSLEW`</span>
 <span class="sd">    - `ao.OBASSTST`</span>
-
-<span class="sd">    ## Scripts Called</span>
-
-<span class="sd">    None</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

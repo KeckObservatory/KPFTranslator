@@ -214,9 +214,48 @@
 
 
       <p>Take exposures with the specified FVC continuously and display to ds9.</p>
-<h2 id="kpf.fvc.TakeFVCContinuous.TakeFVCContinuous--args">ARGS:</h2>
-<p>:camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
-:exptime: The exposure time in seconds.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>camera</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL</p>
+              </div>
+            </li>
+            <li>
+              <b><code>exptime</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The exposure time in seconds.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffvc.SCIEXPTIME</code></li>
+<li><code>kpffvc.CAHKEXPTIME</code></li>
+<li><code>kpffvc.EXTEXPTIME</code></li>
+<li><code>kpffvc.CALEXPTIME</code></li>
+<li><code>kpfpower.KPFFVC1</code></li>
+<li><code>kpfpower.KPFFVC2</code></li>
+<li><code>kpfpower.KPFFVC3</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fvc/TakeFVCContinuous.py</code></summary>
@@ -258,13 +297,31 @@
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
-<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeFVCContinuous</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeFVCContinuous</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Take exposures with the specified FVC continuously and display to ds9.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?</span>
-<span class="sd">    :exptime: The exposure time in seconds.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        camera (str): Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL</span>
+<span class="sd">        exptime (float): The exposure time in seconds.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffvc.SCIEXPTIME`</span>
+<span class="sd">    - `kpffvc.CAHKEXPTIME`</span>
+<span class="sd">    - `kpffvc.EXTEXPTIME`</span>
+<span class="sd">    - `kpffvc.CALEXPTIME`</span>
+<span class="sd">    - `kpfpower.KPFFVC1`</span>
+<span class="sd">    - `kpfpower.KPFFVC2`</span>
+<span class="sd">    - `kpfpower.KPFFVC3`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

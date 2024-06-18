@@ -215,8 +215,13 @@
 
       <p>Check whether the tip tilt system's target pixel (kpffiu.CURRENT_BASE)
 is consistent with the selected pointing origin (dcs.PONAME)</p>
-<h2 id="kpf.fiu.VerifyCurrentBase.VerifyCurrentBase--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>dcs1.PONAME</code></li>
+<li><code>kpfguide.CURRENT_BASE</code></li>
+<li><code>kpfguide.SCIENCE_BASE</code></li>
+<li><code>kpfguide.SKY_BASE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/VerifyCurrentBase.py</code></summary>
@@ -269,13 +274,19 @@ is consistent with the selected pointing origin (dcs.PONAME)</p>
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VerifyCurrentBase</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VerifyCurrentBase</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Check whether the tip tilt system&#39;s target pixel (kpffiu.CURRENT_BASE)</span>
 <span class="sd">    is consistent with the selected pointing origin (dcs.PONAME)</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `dcs1.PONAME`</span>
+<span class="sd">    - `kpfguide.CURRENT_BASE`</span>
+<span class="sd">    - `kpfguide.SCIENCE_BASE`</span>
+<span class="sd">    - `kpfguide.SKY_BASE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

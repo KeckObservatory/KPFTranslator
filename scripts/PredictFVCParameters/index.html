@@ -216,9 +216,31 @@
       <p>Estimate the exposure time given the stellar Jmag and which camera.</p>
 <p>Based on scaling from a single, poorly measured data point:
 For Vmag ~ 4, the SCIFVC_exptime = 1 and CAHKFVC_exptime = 15</p>
-<h2 id="kpf.fvc.PredictFVCParameters.PredictFVCParameters--args">Args:</h2>
-<p>:Gmag: The G magnitude of the target</p>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>Gmag</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The G magnitude of the target.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
               <details class="quote">
                 <summary>Source code in <code>kpf/fvc/PredictFVCParameters.py</code></summary>
                 <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 7</span>
@@ -276,16 +298,14 @@ For Vmag ~ 4, the SCIFVC_exptime = 1 and CAHKFVC_exptime = 15</p>
 <span class="normal">59</span>
 <span class="normal">60</span>
 <span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictFVCParameters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictFVCParameters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Estimate the exposure time given the stellar Jmag and which camera.</span>
 
 <span class="sd">    Based on scaling from a single, poorly measured data point:</span>
 <span class="sd">    For Vmag ~ 4, the SCIFVC_exptime = 1 and CAHKFVC_exptime = 15</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :Gmag: The G magnitude of the target</span>
+<span class="sd">        Gmag (float): The G magnitude of the target.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

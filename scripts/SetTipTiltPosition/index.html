@@ -216,10 +216,44 @@
       <p>Set the position of the tip tilt mirror.</p>
 <p>This should only be used in an engineering context. To control the position
 of a star, set the CURRENT_BASE or PIX_TARGET keywords as appropriate, e.g.
-via the :py:func:<code>SetTipTiltTargetPixel</code> translator module function.</p>
-<h2 id="kpf.fiu.SetTipTiltPosition.SetTipTiltPosition--args">ARGS:</h2>
-<p>:x: The desired X position (TTXVAX).
-:y: The desired Y position (TTYVAX).</p>
+via the <code>kpf.fiu.SetTipTiltTargetPixel</code> translator module function.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>x</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The desired X position (TTXVAX).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>y</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The desired Y position (TTYVAX).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.TTXVAX</code></li>
+<li><code>kpffiu.TTYVAX</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/SetTipTiltPosition.py</code></summary>
@@ -272,17 +306,25 @@ via the :py:func:<code>SetTipTiltTargetPixel</code> translator module function.<
 <span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
-<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetTipTiltPosition</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetTipTiltPosition</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the position of the tip tilt mirror.</span>
 
 <span class="sd">    This should only be used in an engineering context. To control the position</span>
 <span class="sd">    of a star, set the CURRENT_BASE or PIX_TARGET keywords as appropriate, e.g.</span>
-<span class="sd">    via the :py:func:`SetTipTiltTargetPixel` translator module function.</span>
+<span class="sd">    via the `kpf.fiu.SetTipTiltTargetPixel` translator module function.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :x: The desired X position (TTXVAX).</span>
-<span class="sd">    :y: The desired Y position (TTYVAX).</span>
+<span class="sd">    Args:</span>
+<span class="sd">        x (float): The desired X position (TTXVAX).</span>
+<span class="sd">        y (float): The desired Y position (TTYVAX).</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.TTXVAX`</span>
+<span class="sd">    - `kpffiu.TTYVAX`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

@@ -215,9 +215,39 @@
 
       <p>Wait for the FIU to reach specified mode (kpffiu.MODE). This will retry
 the configure command if the system fails to reach its destination.</p>
-<h2 id="kpf.fiu.WaitForConfigureFIU.WaitForConfigureFIU--args">ARGS:</h2>
-<p>:mode: The desired FIU mode.  One of:
-       Stowed, Alignment, Acquisition, Observing, Calibration</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>mode</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The desired FIU mode. Allowed values: Stowed, Alignment,
+Acquisition, Observing, Calibration</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.MODE</code></li>
+</ul>
+<p>Scripts Called:</p>
+<ul>
+<li><code>kpf.calbench.ConfigureFIUOnce</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/WaitForConfigureFIU.py</code></summary>
@@ -269,14 +299,28 @@ the configure command if the system fails to reach its destination.</p>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
-<span class="normal">102</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForConfigureFIU</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForConfigureFIU</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Wait for the FIU to reach specified mode (kpffiu.MODE). This will retry</span>
 <span class="sd">    the configure command if the system fails to reach its destination.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :mode: The desired FIU mode.  One of:</span>
-<span class="sd">           Stowed, Alignment, Acquisition, Observing, Calibration</span>
+<span class="sd">    Args:</span>
+<span class="sd">        mode (str): The desired FIU mode. Allowed values: Stowed, Alignment,</span>
+<span class="sd">            Acquisition, Observing, Calibration</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.MODE`</span>
+
+<span class="sd">    Scripts Called:</span>
+
+<span class="sd">    - `kpf.calbench.ConfigureFIUOnce`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

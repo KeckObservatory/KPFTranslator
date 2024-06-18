@@ -213,10 +213,44 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.calbench.CalLampPower.CalLampPower--description">Description</h2>
-<p>Powers off one of the cal lamps via the <code>kpflamps</code> keyword service.</p>
-<p>Uses the lamp names from the OCTAGON when appropriate.</p>
-<h3 id="kpf.calbench.CalLampPower.CalLampPower--ktl-keywords-used">KTL Keywords Used</h3>
+      <p>Powers off one of the cal lamps via the <code>kpflamps</code> keyword service. Uses
+the lamp names from the OCTAGON when appropriate.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>lamp</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Name of the lamp to control. Allowed Values: BrdbandFiber,
+U_gold, U_daily, Th_daily, Th_gold, WideFlat, ExpMeterLED, CaHKLED,
+SciLED, SkyLED</p>
+              </div>
+            </li>
+            <li>
+              <b><code>power</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Destination state for lamp power. Allowed Values: "on" or
+"off".</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpflamps.BRDBANDFIBER</code></li>
 <li><code>kpflamps.U_GOLD</code></li>
@@ -229,20 +263,6 @@
 <li><code>kpflamps.SCILED</code></li>
 <li><code>kpflamps.SKYLED</code></li>
 </ul>
-<h3 id="kpf.calbench.CalLampPower.CalLampPower--scripts-called">Scripts Called</h3>
-<p>None</p>
-<h3 id="kpf.calbench.CalLampPower.CalLampPower--parameters">Parameters</h3>
-<p><strong>lamp</strong> (<code>str</code>)</p>
-<blockquote>
-<p>Name of the lamp to control
-<br>Allowed Values: BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold,
-WideFlat, ExpMeterLED, CaHKLED, SciLED, SkyLED</p>
-</blockquote>
-<p><strong>power</strong> (<code>str</code>)</p>
-<blockquote>
-<p>Destination state for lamp power
-<br>Allowed Values: "on" or "off"</p>
-</blockquote>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/CalLampPower.py</code></summary>
@@ -309,23 +329,18 @@ WideFlat, ExpMeterLED, CaHKLED, SciLED, SkyLED</p>
 <span class="normal">71</span>
 <span class="normal">72</span>
 <span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CalLampPower</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Powers off one of the cal lamps via the `kpflamps` keyword service.</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CalLampPower</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Powers off one of the cal lamps via the `kpflamps` keyword service. Uses</span>
+<span class="sd">    the lamp names from the OCTAGON when appropriate.</span>
 
-<span class="sd">    Uses the lamp names from the OCTAGON when appropriate.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        lamp (str): Name of the lamp to control. Allowed Values: BrdbandFiber,</span>
+<span class="sd">            U_gold, U_daily, Th_daily, Th_gold, WideFlat, ExpMeterLED, CaHKLED,</span>
+<span class="sd">            SciLED, SkyLED</span>
+<span class="sd">        power (str): Destination state for lamp power. Allowed Values: &quot;on&quot; or</span>
+<span class="sd">            &quot;off&quot;.</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `kpflamps.BRDBANDFIBER`</span>
 <span class="sd">    - `kpflamps.U_GOLD`</span>
@@ -337,21 +352,6 @@ WideFlat, ExpMeterLED, CaHKLED, SciLED, SkyLED</p>
 <span class="sd">    - `kpflamps.HKLED`</span>
 <span class="sd">    - `kpflamps.SCILED`</span>
 <span class="sd">    - `kpflamps.SKYLED`</span>
-
-<span class="sd">    ## Scripts Called</span>
-
-<span class="sd">    None</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    **lamp** (`str`)</span>
-<span class="sd">    &gt; Name of the lamp to control</span>
-<span class="sd">    &lt;br&gt;Allowed Values: BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold,</span>
-<span class="sd">    WideFlat, ExpMeterLED, CaHKLED, SciLED, SkyLED</span>
-
-<span class="sd">    **power** (`str`)</span>
-<span class="sd">    &gt; Destination state for lamp power</span>
-<span class="sd">    &lt;br&gt;Allowed Values: &quot;on&quot; or &quot;off&quot;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

@@ -213,20 +213,17 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.calbench.SetLFCtoAstroComb.SetLFCtoAstroComb--description">Description</h2>
-<p>Set the Laser Frequency Comb (LFC) to "AstroComb" mode. This should
+      <p>Set the Laser Frequency Comb (LFC) to "AstroComb" mode. This should
 be used during operation of the LFC.</p>
-<h3 id="kpf.calbench.SetLFCtoAstroComb.SetLFCtoAstroComb--ktl-keywords-used">KTL Keywords Used</h3>
+<p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfcal.OPERATIONMODE</code></li>
 <li><code>kpfmon.HB_MENLOSTA</code></li>
 </ul>
-<h3 id="kpf.calbench.SetLFCtoAstroComb.SetLFCtoAstroComb--scripts-called">Scripts Called</h3>
+<p>Scripts Called:</p>
 <ul>
 <li><code>kpf.calbench.WaitForLFCReady</code></li>
 </ul>
-<h3 id="kpf.calbench.SetLFCtoAstroComb.SetLFCtoAstroComb--parameters">Parameters</h3>
-<p>None</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/SetLFCtoAstroComb.py</code></summary>
@@ -262,28 +259,18 @@ be used during operation of the LFC.</p>
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetLFCtoAstroComb</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Set the Laser Frequency Comb (LFC) to &quot;AstroComb&quot; mode. This should</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetLFCtoAstroComb</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the Laser Frequency Comb (LFC) to &quot;AstroComb&quot; mode. This should</span>
 <span class="sd">    be used during operation of the LFC.</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `kpfcal.OPERATIONMODE`</span>
 <span class="sd">    - `kpfmon.HB_MENLOSTA`</span>
 
-<span class="sd">    ## Scripts Called</span>
+<span class="sd">    Scripts Called:</span>
 
 <span class="sd">    - `kpf.calbench.WaitForLFCReady`</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

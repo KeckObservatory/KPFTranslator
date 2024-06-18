@@ -213,21 +213,46 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos--description">Description</h2>
-<p>Wait for the flat field fiber aperture via the <code>kpfcal.FF_FIBERPOS</code>
+      <p>Wait for the flat field fiber aperture via the <code>kpfcal.FF_FIBERPOS</code>
 keyword.</p>
-<h3 id="kpf.calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos--ktl-keywords-used">KTL Keywords Used</h3>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>FF_FiberPos</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the flat field fiber position desired.
+Allowed Values: "Blank", "6 mm f/5", "7.5 mm f/4", "10 mm f/3",
+"13.2 mm f/2.3", "Open".</p>
+              </div>
+            </li>
+            <li>
+              <b><code>wait</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Wait for move to complete before returning? default: True</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <h3 id="kpf.calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos--ktl-keywords-used">KTL Keywords Used</h3>
 <ul>
 <li><code>kpfcal.FF_FIBERPOS</code></li>
 </ul>
-<h3 id="kpf.calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos--scripts-called">Scripts Called</h3>
-<p>None</p>
-<h3 id="kpf.calbench.WaitForFlatFieldFiberPos.WaitForFlatFieldFiberPos--parameters">Parameters</h3>
-<p><strong>FF_FiberPos</strong> (<code>str</code>)</p>
-<blockquote>
-<p>The name of the flat field fiber position desired.
-<br>Allowed Values: "Blank", "6 mm f/5", "7.5 mm f/4", "10 mm f/3", "13.2 mm f/2.3", "Open"</p>
-</blockquote>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/WaitForFlatFieldFiberPos.py</code></summary>
@@ -274,29 +299,19 @@ keyword.</p>
 <span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForFlatFieldFiberPos</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Wait for the flat field fiber aperture via the `kpfcal.FF_FIBERPOS`</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForFlatFieldFiberPos</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Wait for the flat field fiber aperture via the `kpfcal.FF_FIBERPOS`</span>
 <span class="sd">    keyword.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        FF_FiberPos (str): The name of the flat field fiber position desired.</span>
+<span class="sd">            Allowed Values: &quot;Blank&quot;, &quot;6 mm f/5&quot;, &quot;7.5 mm f/4&quot;, &quot;10 mm f/3&quot;,</span>
+<span class="sd">            &quot;13.2 mm f/2.3&quot;, &quot;Open&quot;.</span>
+<span class="sd">        wait (bool): Wait for move to complete before returning? default: True</span>
 
 <span class="sd">    ## KTL Keywords Used</span>
 
 <span class="sd">    - `kpfcal.FF_FIBERPOS`</span>
-
-<span class="sd">    ## Scripts Called</span>
-
-<span class="sd">    None</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    **FF_FiberPos** (`str`)</span>
-<span class="sd">    &gt; The name of the flat field fiber position desired.</span>
-<span class="sd">    &lt;br&gt;Allowed Values: &quot;Blank&quot;, &quot;6 mm f/5&quot;, &quot;7.5 mm f/4&quot;, &quot;10 mm f/3&quot;, &quot;13.2 mm f/2.3&quot;, &quot;Open&quot;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

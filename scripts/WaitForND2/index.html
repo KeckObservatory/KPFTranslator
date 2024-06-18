@@ -216,20 +216,37 @@
       <h2 id="kpf.calbench.WaitForND2.WaitForND2--description">Description</h2>
 <p>Set the filter in the ND2 filter wheel (the one at the output of the 
 octagon) via the <code>kpfcal.ND2POS</code> keyword.</p>
-<h3 id="kpf.calbench.WaitForND2.WaitForND2--ktl-keywords-used">KTL Keywords Used</h3>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>CalND2</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The neutral density filter to put in the first filter
+wheel. This affects only the light injected in to the simultaneous
+calibration fiber. Allowed Values: <code>OD 0.1</code>, <code>OD 0.3</code>, <code>OD 0.5</code>,
+<code>OD 0.8</code>, <code>OD 1.0</code>, <code>OD 4.0</code></p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfcal.ND2POS</code></li>
 </ul>
-<h3 id="kpf.calbench.WaitForND2.WaitForND2--scripts-called">Scripts Called</h3>
-<p>None</p>
-<h3 id="kpf.calbench.WaitForND2.WaitForND2--parameters">Parameters</h3>
-<p><strong>CalND2</strong> (<code>str</code>)</p>
-<blockquote>
-<p>The neutral density filter to put in the second filter
-wheel. This affects only the light injected in to the simultaneous
-calibration fiber.
-<br>Allowed Values: <code>OD 0.1</code>, <code>OD 0.3</code>, <code>OD 0.5</code>, <code>OD 0.8</code>, <code>OD 1.0</code>, <code>OD 4.0</code></p>
-</blockquote>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/WaitForND2.py</code></summary>
@@ -280,32 +297,20 @@ calibration fiber.
 <span class="normal">52</span>
 <span class="normal">53</span>
 <span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForND2</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForND2</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Set the filter in the ND2 filter wheel (the one at the output of the </span>
 <span class="sd">    octagon) via the `kpfcal.ND2POS` keyword.</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    Args:</span>
+<span class="sd">        CalND2 (str): The neutral density filter to put in the first filter</span>
+<span class="sd">            wheel. This affects only the light injected in to the simultaneous</span>
+<span class="sd">            calibration fiber. Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`,</span>
+<span class="sd">            `OD 0.8`, `OD 1.0`, `OD 4.0`</span>
+
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `kpfcal.ND2POS`</span>
-
-<span class="sd">    ## Scripts Called</span>
-
-<span class="sd">    None</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    **CalND2** (`str`)</span>
-<span class="sd">    &gt; The neutral density filter to put in the second filter</span>
-<span class="sd">    wheel. This affects only the light injected in to the simultaneous</span>
-<span class="sd">    calibration fiber.</span>
-<span class="sd">    &lt;br&gt;Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`, `OD 0.8`, `OD 1.0`, `OD 4.0`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

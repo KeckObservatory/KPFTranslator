@@ -215,8 +215,45 @@
 
       <p>Quick and dirty code to manually set ADC angles to prescribed offsets
 from nominal based on the telescope position.</p>
-<h2 id="kpf.fiu.SetADCOffsets.SetADCOffsets--args">ARGS:</h2>
-<p>None</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>ADC1OFF</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>Offset for ADC1 (in degrees).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>ADC2OFF</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>Offset for ADC2 (in degrees).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.ADC1VAL</code></li>
+<li><code>kpffiu.ADC2VAL</code></li>
+<li><code>kpffiu.ADCTRACK</code></li>
+<li><code>kpffiu.ADCPRISMS</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/SetADCOffsets.py</code></summary>
@@ -267,13 +304,27 @@ from nominal based on the telescope position.</p>
 <span class="normal">53</span>
 <span class="normal">54</span>
 <span class="normal">55</span>
-<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetADCOffsets</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetADCOffsets</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Quick and dirty code to manually set ADC angles to prescribed offsets</span>
 <span class="sd">    from nominal based on the telescope position.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ADC1OFF (float): Offset for ADC1 (in degrees).</span>
+<span class="sd">        ADC2OFF (float): Offset for ADC2 (in degrees).</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.ADC1VAL`</span>
+<span class="sd">    - `kpffiu.ADC2VAL`</span>
+<span class="sd">    - `kpffiu.ADCTRACK`</span>
+<span class="sd">    - `kpffiu.ADCPRISMS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

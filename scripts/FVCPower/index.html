@@ -214,9 +214,44 @@
 
 
       <p>Turn on or off the power for the specified FVC camera.</p>
-<h2 id="kpf.fvc.FVCPower.FVCPower--args">ARGS:</h2>
-<p>:camera: Which FVC camera (SCI, CAHK, CAL)?
-:power: Desired state: on or off</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>camera</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL</p>
+              </div>
+            </li>
+            <li>
+              <b><code>power</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The desired state. Allowed values: on or off</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfpower.KPFFVC1</code></li>
+<li><code>kpfpower.KPFFVC2</code></li>
+<li><code>kpfpower.KPFFVC3</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fvc/FVCPower.py</code></summary>
@@ -263,13 +298,23 @@
 <span class="normal">52</span>
 <span class="normal">53</span>
 <span class="normal">54</span>
-<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FVCPower</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FVCPower</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Turn on or off the power for the specified FVC camera.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :camera: Which FVC camera (SCI, CAHK, CAL)?</span>
-<span class="sd">    :power: Desired state: on or off</span>
+<span class="sd">    Args:</span>
+<span class="sd">        camera (str): Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL</span>
+<span class="sd">        power (str): The desired state. Allowed values: on or off</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfpower.KPFFVC1`</span>
+<span class="sd">    - `kpfpower.KPFFVC2`</span>
+<span class="sd">    - `kpfpower.KPFFVC3`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

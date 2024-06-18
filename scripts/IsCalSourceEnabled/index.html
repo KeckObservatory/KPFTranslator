@@ -213,10 +213,57 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--description">Description</h2>
-<p>Return a boolean indicating whether the input CalSource is enabled as
+      <p>Return a boolean indicating whether the input CalSource is enabled as
 reported by the kpfconfig.%_ENABLED keywords.</p>
-<h3 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--ktl-keywords-used">KTL Keywords Used</h3>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>CalSource</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Which lamp to check? Allowed Values: EtalonFiber,
+BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold, SoCal-CalFib,
+LFCFiber, SoCal-SciSky, WideFlat</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>The return value. True for enabled, False for disabled.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfcal.OCTAGON</code></li>
 <li><code>kpfconfig.BRDBANDFIBER_ENABLED</code></li>
@@ -230,15 +277,6 @@ reported by the kpfconfig.%_ENABLED keywords.</p>
 <li><code>kpfconfig.SCILED_ENABLED</code></li>
 <li><code>kpfconfig.SKYLED_ENABLED</code></li>
 </ul>
-<h3 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--scripts-called">Scripts Called</h3>
-<p>None</p>
-<h3 id="kpf.calbench.IsCalSourceEnabled.IsCalSourceEnabled--parameters">Parameters</h3>
-<p><strong>CalSource</strong> (<code>str</code>)</p>
-<blockquote>
-<p>Which lamp to check?
-<br>Allowed Values: EtalonFiber, BrdbandFiber, U_gold, U_daily,
-Th_daily, Th_gold, SoCal-CalFib, LFCFiber, SoCal-SciSky, WideFlat</p>
-</blockquote>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/IsCalSourceEnabled.py</code></summary>
@@ -310,16 +348,19 @@ Th_daily, Th_gold, SoCal-CalFib, LFCFiber, SoCal-SciSky, WideFlat</p>
 <span class="normal">74</span>
 <span class="normal">75</span>
 <span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IsCalSourceEnabled</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Return a boolean indicating whether the input CalSource is enabled as</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IsCalSourceEnabled</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Return a boolean indicating whether the input CalSource is enabled as</span>
 <span class="sd">    reported by the kpfconfig.%_ENABLED keywords.</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    Args:</span>
+<span class="sd">        CalSource (str): Which lamp to check? Allowed Values: EtalonFiber,</span>
+<span class="sd">            BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold, SoCal-CalFib,</span>
+<span class="sd">            LFCFiber, SoCal-SciSky, WideFlat</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The return value. True for enabled, False for disabled.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `kpfcal.OCTAGON`</span>
 <span class="sd">    - `kpfconfig.BRDBANDFIBER_ENABLED`</span>
@@ -332,17 +373,6 @@ Th_daily, Th_gold, SoCal-CalFib, LFCFiber, SoCal-SciSky, WideFlat</p>
 <span class="sd">    - `kpfconfig.HKLED_ENABLED`</span>
 <span class="sd">    - `kpfconfig.SCILED_ENABLED`</span>
 <span class="sd">    - `kpfconfig.SKYLED_ENABLED`</span>
-
-<span class="sd">    ## Scripts Called</span>
-
-<span class="sd">    None</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    **CalSource** (`str`)</span>
-<span class="sd">    &gt; Which lamp to check?</span>
-<span class="sd">    &lt;br&gt;Allowed Values: EtalonFiber, BrdbandFiber, U_gold, U_daily,</span>
-<span class="sd">    Th_daily, Th_gold, SoCal-CalFib, LFCFiber, SoCal-SciSky, WideFlat</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

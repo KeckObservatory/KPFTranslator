@@ -213,22 +213,19 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.cahk.PowerCycleCaHK.PowerCycleCaHK--description">Description</h2>
-<p>Script which will power cycle the Ca HK detector control system and
+      <p>Script which will power cycle the Ca HK detector control system and
 restart the services. Use as a last resort measure after other
 troubleshooting measures such as resetting the detector and restarting
 software have already failed.</p>
-<h3 id="kpf.cahk.PowerCycleCaHK.PowerCycleCaHK--ktl-keywords-used">KTL Keywords Used</h3>
+<p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfpower.OUTLET_J1%</code></li>
 <li><code>kpfpower.OUTLET_J2%</code></li>
 <li><code>kpfpower.OUTLET_J5%</code></li>
 </ul>
-<h3 id="kpf.cahk.PowerCycleCaHK.PowerCycleCaHK--scripts-called">Scripts Called</h3>
+<p>Scripts Called:</p>
 <p>-<code>kpf start/stop/status/restart kpfexpose2</code>
 -<code>kpf start/stop/status/restart kpf_hk</code></p>
-<h3 id="kpf.cahk.PowerCycleCaHK.PowerCycleCaHK--parameters">Parameters</h3>
-<p>None</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/cahk/PowerCycleCaHK.py</code></summary>
@@ -355,32 +352,22 @@ software have already failed.</p>
 <span class="normal">132</span>
 <span class="normal">133</span>
 <span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PowerCycleCaHK</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Script which will power cycle the Ca HK detector control system and</span>
+<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PowerCycleCaHK</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which will power cycle the Ca HK detector control system and</span>
 <span class="sd">    restart the services. Use as a last resort measure after other</span>
 <span class="sd">    troubleshooting measures such as resetting the detector and restarting</span>
 <span class="sd">    software have already failed.</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `kpfpower.OUTLET_J1%`</span>
 <span class="sd">    - `kpfpower.OUTLET_J2%`</span>
 <span class="sd">    - `kpfpower.OUTLET_J5%`</span>
 
-<span class="sd">    ## Scripts Called</span>
+<span class="sd">    Scripts Called:</span>
 
 <span class="sd">    -`kpf start/stop/status/restart kpfexpose2`</span>
 <span class="sd">    -`kpf start/stop/status/restart kpf_hk`</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

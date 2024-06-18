@@ -213,8 +213,23 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.fiu.MeasureTipTiltMirrorRange.MeasureTipTiltMirrorRange--args">ARGS:</h2>
-<p>None</p>
+      <p>Measure the range of the tip tilt mirror.  Prints to screen the keyword
+modify commands to update the range parameters.</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.TTXVAX</code></li>
+<li><code>kpffiu.TTYVAX</code></li>
+<li><code>kpffiu.TTXMEX</code></li>
+<li><code>kpffiu.TTYMEX</code></li>
+<li><code>kpffiu.TTXMED</code></li>
+<li><code>kpffiu.TTYMED</code></li>
+<li><code>kpfguide.TIPTILT_HOME</code></li>
+</ul>
+<p>Scripts Called:</p>
+<ul>
+<li><code>kpf.fiu.InitializeTipTilt</code></li>
+<li><code>kpf.fiu.ShutdownTipTilt</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/MeasureTipTiltMirrorRange.py</code></summary>
@@ -302,12 +317,36 @@
 <span class="normal">148</span>
 <span class="normal">149</span>
 <span class="normal">150</span>
-<span class="normal">151</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MeasureTipTiltMirrorRange</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MeasureTipTiltMirrorRange</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Measure the range of the tip tilt mirror.  Prints to screen the keyword</span>
+<span class="sd">    modify commands to update the range parameters.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.TTXVAX`</span>
+<span class="sd">    - `kpffiu.TTYVAX`</span>
+<span class="sd">    - `kpffiu.TTXMEX`</span>
+<span class="sd">    - `kpffiu.TTYMEX`</span>
+<span class="sd">    - `kpffiu.TTXMED`</span>
+<span class="sd">    - `kpffiu.TTYMED`</span>
+<span class="sd">    - `kpfguide.TIPTILT_HOME`</span>
+
+<span class="sd">    Scripts Called:</span>
+
+<span class="sd">    - `kpf.fiu.InitializeTipTilt`</span>
+<span class="sd">    - `kpf.fiu.ShutdownTipTilt`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

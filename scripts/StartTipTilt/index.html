@@ -217,8 +217,13 @@
 start all functions including DAR (via DAR_ENABLE), tip tilt calculations
 (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to
 the telescope (via OFFLOAD_DCS and OFFLOAD).</p>
-<h2 id="kpf.fiu.StartTipTilt.StartTipTilt--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.TTXSRV</code></li>
+<li><code>kpffiu.TTYSRV</code></li>
+<li><code>kpfguide.DAR_ENABLE</code></li>
+<li><code>kpfguide.ALL_LOOPS</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/StartTipTilt.py</code></summary>
@@ -256,15 +261,21 @@ the telescope (via OFFLOAD_DCS and OFFLOAD).</p>
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
-<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartTipTilt</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartTipTilt</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Start the tip tilt control loop.  This uses the ALL_LOOPS keyword to</span>
 <span class="sd">    start all functions including DAR (via DAR_ENABLE), tip tilt calculations</span>
 <span class="sd">    (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to</span>
 <span class="sd">    the telescope (via OFFLOAD_DCS and OFFLOAD).</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.TTXSRV`</span>
+<span class="sd">    - `kpffiu.TTYSRV`</span>
+<span class="sd">    - `kpfguide.DAR_ENABLE`</span>
+<span class="sd">    - `kpfguide.ALL_LOOPS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

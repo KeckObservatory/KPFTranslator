@@ -213,8 +213,7 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--description">Description</h2>
-<p>Set up AO in the safe mode for KPF operation</p>
+      <p>Set up AO in the safe mode for KPF operation</p>
 <ul>
 <li>Set AO roator in Manual mode</li>
 <li>Set AO rotator to 0 deg</li>
@@ -224,11 +223,11 @@
 <li>Move PCU to the KPF position</li>
 <li>Open AO hatch</li>
 </ul>
-<h3 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--ktl-keywords-used">KTL Keywords Used</h3>
+<p>KTL Keywords Used:</p>
 <ul>
 <li><code>ao.PCSFNAME</code></li>
 </ul>
-<h3 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--scripts-called">Scripts Called</h3>
+<p>Scripts Called:</p>
 <ul>
 <li><code>kpf.ao.SetAORotatorManual</code></li>
 <li><code>kpf.ao.SetAORotator</code></li>
@@ -238,8 +237,6 @@
 <li><code>kpf.ao.SendPCUtoHome</code></li>
 <li><code>kpf.ao.SendPCUtoKPF</code></li>
 </ul>
-<h3 id="kpf.ao.SetupAOforKPF.SetupAOforKPF--parameters">Parameters</h3>
-<p>None</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/ao/SetupAOforKPF.py</code></summary>
@@ -298,14 +295,8 @@
 <span class="normal">67</span>
 <span class="normal">68</span>
 <span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetupAOforKPF</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Set up AO in the safe mode for KPF operation</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetupAOforKPF</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Set up AO in the safe mode for KPF operation</span>
 
 <span class="sd">    - Set AO roator in Manual mode</span>
 <span class="sd">    - Set AO rotator to 0 deg</span>
@@ -315,11 +306,11 @@
 <span class="sd">    - Move PCU to the KPF position</span>
 <span class="sd">    - Open AO hatch</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    KTL Keywords Used:</span>
 
 <span class="sd">    - `ao.PCSFNAME`</span>
 
-<span class="sd">    ## Scripts Called</span>
+<span class="sd">    Scripts Called:</span>
 
 <span class="sd">    - `kpf.ao.SetAORotatorManual`</span>
 <span class="sd">    - `kpf.ao.SetAORotator`</span>
@@ -328,10 +319,6 @@
 <span class="sd">    - `kpf.ao.TurnLightSourceOff`</span>
 <span class="sd">    - `kpf.ao.SendPCUtoHome`</span>
 <span class="sd">    - `kpf.ao.SendPCUtoKPF`</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

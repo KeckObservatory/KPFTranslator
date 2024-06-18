@@ -213,12 +213,50 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <p>Set the FIU mode (kpffiu.MODE). IF the wait option is fale this will
+      <p>Set the FIU mode (kpffiu.MODE). If the wait option is fale this will
 retry the move if it fails with a configurable number of retries.</p>
-<h2 id="kpf.fiu.ConfigureFIU.ConfigureFIU--args">ARGS:</h2>
-<p>:mode: The desired FIU mode.  One of:
-       Stowed, Alignment, Acquisition, Observing, Calibration
-:wait: (bool) Wait for move to complete before returning? (default: True)</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>mode</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The desired FIU mode. Allowed values: Stowed, Alignment,
+Acquisition, Observing, Calibration</p>
+              </div>
+            </li>
+            <li>
+              <b><code>wait</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Wait for move to complete before returning? (default: True)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.MODE</code></li>
+</ul>
+<p>Scripts Called:</p>
+<ul>
+<li><code>kpf.calbench.ConfigureFIUOnce</code></li>
+<li><code>kpf.calbench.WaitForConfigureFIU</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/ConfigureFIU.py</code></summary>
@@ -262,15 +300,31 @@ retry the move if it fails with a configurable number of retries.</p>
 <span class="normal">51</span>
 <span class="normal">52</span>
 <span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureFIU</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the FIU mode (kpffiu.MODE). IF the wait option is fale this will</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureFIU</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the FIU mode (kpffiu.MODE). If the wait option is fale this will</span>
 <span class="sd">    retry the move if it fails with a configurable number of retries.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :mode: The desired FIU mode.  One of:</span>
-<span class="sd">           Stowed, Alignment, Acquisition, Observing, Calibration</span>
-<span class="sd">    :wait: (bool) Wait for move to complete before returning? (default: True)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        mode (str): The desired FIU mode. Allowed values: Stowed, Alignment,</span>
+<span class="sd">            Acquisition, Observing, Calibration</span>
+<span class="sd">        wait (bool): Wait for move to complete before returning? (default: True)</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.MODE`</span>
+
+<span class="sd">    Scripts Called:</span>
+
+<span class="sd">    - `kpf.calbench.ConfigureFIUOnce`</span>
+<span class="sd">    - `kpf.calbench.WaitForConfigureFIU`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

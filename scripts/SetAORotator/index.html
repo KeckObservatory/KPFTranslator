@@ -213,22 +213,39 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.ao.SetAORotator.SetAORotator--description">Description</h2>
-<p>Set the AO rotator destination</p>
-<h3 id="kpf.ao.SetAORotator.SetAORotator--ktl-keywords-used">KTL Keywords Used</h3>
+      <p>Set the AO rotator destination</p>
+<p>KTL Keywords Used:</p>
 <ul>
 <li><code>ao.AODCSSIM</code></li>
 <li><code>ao.AOCOMSIM</code></li>
 <li><code>ao.AODCSSFP</code></li>
 </ul>
-<h3 id="kpf.ao.SetAORotator.SetAORotator--scripts-called">Scripts Called</h3>
-<p>None</p>
-<h3 id="kpf.ao.SetAORotator.SetAORotator--parameters">Parameters</h3>
-<p><strong>dest</strong> (<code>float</code>)</p>
-<blockquote>
-<p>Angle in degrees for the physical drive angle of the rotator.</p>
-</blockquote>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>dest</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>Angle in degrees for the physical drive angle of the
+rotator.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
               <details class="quote">
                 <summary>Source code in <code>kpf/ao/SetAORotator.py</code></summary>
                 <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">10</span>
@@ -267,28 +284,18 @@
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetAORotator</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
-<span class="sd">    Set the AO rotator destination</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetAORotator</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the AO rotator destination</span>
 
-<span class="sd">    ## KTL Keywords Used</span>
+<span class="sd">    KTL Keywords Used:</span>
+
 <span class="sd">    - `ao.AODCSSIM`</span>
 <span class="sd">    - `ao.AOCOMSIM`</span>
 <span class="sd">    - `ao.AODCSSFP`</span>
 
-<span class="sd">    ## Scripts Called</span>
-
-<span class="sd">    None</span>
-
-<span class="sd">    ## Parameters</span>
-
-<span class="sd">    **dest** (`float`)</span>
-<span class="sd">    &gt; Angle in degrees for the physical drive angle of the rotator.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        dest (float): Angle in degrees for the physical drive angle of the</span>
+<span class="sd">            rotator.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

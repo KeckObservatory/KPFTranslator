@@ -213,9 +213,13 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <p>Quick and dirty code to manually set ADC angles for a notional NULL position</p>
-<h2 id="kpf.fiu.SetADCAngles.SetADCAngles--args">ARGS:</h2>
-<p>None</p>
+      <p>Quick and dirty code to manually set ADC angles for a notional NULL
+position.</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.ADC1VAL</code></li>
+<li><code>kpffiu.ADC2VAL</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/SetADCAngles.py</code></summary>
@@ -262,12 +266,16 @@
 <span class="normal">69</span>
 <span class="normal">70</span>
 <span class="normal">71</span>
-<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetADCAngles</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Quick and dirty code to manually set ADC angles for a notional NULL position</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetADCAngles</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Quick and dirty code to manually set ADC angles for a notional NULL</span>
+<span class="sd">    position.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.ADC1VAL`</span>
+<span class="sd">    - `kpffiu.ADC2VAL`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

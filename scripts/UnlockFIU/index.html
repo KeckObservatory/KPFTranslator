@@ -214,8 +214,16 @@
 
 
       <p>Unlock the FIU mechanisms</p>
-<h2 id="kpf.fiu.UnlockFIU.UnlockFIU--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpffiu.ADC1LCK</code></li>
+<li><code>kpffiu.ADC2LCK</code></li>
+<li><code>kpffiu.FOLDLCK</code></li>
+<li><code>kpffiu.HKXLCK</code></li>
+<li><code>kpffiu.HKYLCK</code></li>
+<li><code>kpffiu.TTXLCK</code></li>
+<li><code>kpffiu.TTYLCK</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/UnlockFIU.py</code></summary>
@@ -243,12 +251,24 @@
 <span class="normal">29</span>
 <span class="normal">30</span>
 <span class="normal">31</span>
-<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UnlockFIU</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UnlockFIU</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Unlock the FIU mechanisms</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpffiu.ADC1LCK`</span>
+<span class="sd">    - `kpffiu.ADC2LCK`</span>
+<span class="sd">    - `kpffiu.FOLDLCK`</span>
+<span class="sd">    - `kpffiu.HKXLCK`</span>
+<span class="sd">    - `kpffiu.HKYLCK`</span>
+<span class="sd">    - `kpffiu.TTXLCK`</span>
+<span class="sd">    - `kpffiu.TTYLCK`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
@@ -260,10 +280,10 @@
         <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;adc1lck&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;adc2lck&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;foldlck&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;hkxlck=&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;hkylck=&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;ttxlck=&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;ttylck=&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;hkxlck&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;hkylck&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;ttxlck&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;ttylck&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
