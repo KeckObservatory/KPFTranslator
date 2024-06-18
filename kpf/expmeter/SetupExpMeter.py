@@ -9,25 +9,20 @@ from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTermination
 
 
 class SetupExpMeter(KPFTranslatorFunction):
-    '''# Description
-    Configure the exposure meter using the given OB arguments.
+    '''Configure the exposure meter using the given OB arguments.
 
-    ## KTL Keywords Used
+    Args:
+        ExpMeterMode (str): See Science OB definition.
+        TriggerExpMeter (bool): See Science OB definition.
+
+    KTL Keywords Used:
 
     - `kpf_expmeter.USETHRESHOLD`
     - `kpfconfig.EXPMETER_ENABLED`
 
-    ## Scripts Called
+    Scripts Called:
 
     - `kpf.expmeter.SetExpMeterTerminationParameters`
-
-    ## Parameters
-
-    **ExpMeterMode** (`str`)
-    > See Science OB definition
-
-    **TriggerExpMeter** (`bool`)
-    > See Science OB definition
     '''
     abortable = False
 

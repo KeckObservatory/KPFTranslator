@@ -13,10 +13,13 @@ class StartTipTilt(KPFTranslatorFunction):
     start all functions including DAR (via DAR_ENABLE), tip tilt calculations
     (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to
     the telescope (via OFFLOAD_DCS and OFFLOAD).
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpffiu.TTXSRV`
+    - `kpffiu.TTYSRV`
+    - `kpfguide.DAR_ENABLE`
+    - `kpfguide.ALL_LOOPS`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

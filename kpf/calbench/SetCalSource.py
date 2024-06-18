@@ -8,24 +8,17 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetCalSource(KPFTranslatorFunction):
-    '''# Description
-    Selects which source is fed from the octagon in to the cal bench via the
-    kpfcal.OCTAGON keyword.
+    '''Selects which source is fed from the octagon in to the cal bench via the
+    `kpfcal.OCTAGON` keyword.
 
-    ## KTL Keywords Used
+    Args:
+        CalSource (str): Which lamp to select? Allowed Values: EtalonFiber,
+            BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold, SoCal-CalFib,
+            LFCFiber
+
+    KTL Keywords Used:
 
     - `kpfcal.OCTAGON`
-
-    ## Scripts Called
-
-    None
-
-    ## Parameters
-
-    **CalSource** (`str`)
-    > Which lamp to check?
-    <br>Allowed Values: EtalonFiber, BrdbandFiber, U_gold, U_daily,
-    Th_daily, Th_gold, SoCal-CalFib, LFCFiber
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

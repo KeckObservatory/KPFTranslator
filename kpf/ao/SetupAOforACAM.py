@@ -8,24 +8,12 @@ from kpf.ao.SetAFStoNGS import SetAFStoNGS
 
 
 class SetupAOforACAM(KPFTranslatorFunction):
-    '''# Description
-    Set up AO in the safe mode for ACAM operation to assist KPF acquisition
+    '''Set up AO in the safe mode for ACAM operation to assist KPF acquisition
 
-    - Set AFM to Mirror
-    - Set AFS to ngs
-
-    ## KTL Keywords Used
-
-    None
-
-    ## Scripts Called
+    Scripts Called:
 
     - `kpf.ao.SetAFMtoMirror`
     - `kpf.ao.SetAFStoNGS`
-
-    ## Parameters
-
-    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -6,29 +6,20 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetND1(KPFTranslatorFunction):
-    '''# Description
-    Set the filter in the ND1 filter wheel (the one at the output of the 
+    '''Set the filter in the ND1 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND1POS` keyword.
 
-    ## KTL Keywords Used
+    Args:
+        CalND1 (str): The neutral density filter to put in the first filter
+            wheel. This affects both the simultaneous calibration light and
+            light which can be routed through the FIU to the science and sky
+            fibers. Allowed Values: `OD 0.1`, `OD 1.0`, `OD 1.3`, `OD 2.0`,
+            `OD 3.0`, `OD 4.0`
+        wait (bool): Wait for move to complete before returning? default: True
+
+    KTL Keywords Used:
 
     - `kpfcal.ND1POS`
-
-    ## Scripts Called
-
-    None
-
-    ## Parameters
-
-    **CalND1** (`str`)
-    > The neutral density filter to put in the first filter
-    wheel. This affects both the simultaneous calibration light and light
-    which can be routed through the FIU to the science and sky fibers.
-    <br>Allowed Values: `OD 0.1`, `OD 1.0`, `OD 1.3`, `OD 2.0`, `OD 3.0`, `OD 4.0`
-
-    **wait** (`bool`)
-    > Wait for move to complete before returning?
-    <br>default: True
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

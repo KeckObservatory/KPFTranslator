@@ -13,8 +13,7 @@ from kpf.ao.TurnLightSourceOff import TurnLightSourceOff
 
 
 class SetupAOforKPF(KPFTranslatorFunction):
-    '''# Description
-    Set up AO in the safe mode for KPF operation
+    '''Set up AO in the safe mode for KPF operation
 
     - Set AO roator in Manual mode
     - Set AO rotator to 0 deg
@@ -24,11 +23,11 @@ class SetupAOforKPF(KPFTranslatorFunction):
     - Move PCU to the KPF position
     - Open AO hatch
 
-    ## KTL Keywords Used
+    KTL Keywords Used:
 
     - `ao.PCSFNAME`
 
-    ## Scripts Called
+    Scripts Called:
 
     - `kpf.ao.SetAORotatorManual`
     - `kpf.ao.SetAORotator`
@@ -37,10 +36,6 @@ class SetupAOforKPF(KPFTranslatorFunction):
     - `kpf.ao.TurnLightSourceOff`
     - `kpf.ao.SendPCUtoHome`
     - `kpf.ao.SendPCUtoKPF`
-
-    ## Parameters
-
-    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -10,10 +10,12 @@ class SetCurrentBase(KPFTranslatorFunction):
     based upon the pointing origin (PO) reported by DCS.  The target pixel for
     tip tilt controll will be this value, but modified by the DAR correction
     and offset guiding parameters.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfguide.CURRENT_BASE`
+    - `kpfguide.SCIENCE_BASE`
+    - `kpfguide.SKY_BASE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

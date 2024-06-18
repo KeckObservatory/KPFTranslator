@@ -6,20 +6,12 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetAORotatorManual(KPFTranslatorFunction):
-    '''# Description
-    AO rotator needs to be in the Manual mode before observing.
+    '''AO rotator needs to be in the Manual mode before observing.
 
-    ## KTL Keywords Used
+    KTL Keywords Used: 
+
     - `ao.OBRTDSRC`
     - `ao.OBRTMOVE`
-
-    ## Scripts Called
-
-    None
-
-    ## Parameters
-
-    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

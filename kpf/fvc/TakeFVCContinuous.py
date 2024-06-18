@@ -13,11 +13,20 @@ from kpf.fvc.SetFVCExpTime import SetFVCExpTime
 
 class TakeFVCContinuous(KPFTranslatorFunction):
     '''Take exposures with the specified FVC continuously and display to ds9.
-    
-    ARGS:
-    =====
-    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
-    :exptime: The exposure time in seconds.
+
+    Args:
+        camera (str): Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL
+        exptime (float): The exposure time in seconds.
+
+    KTL Keywords Used:
+
+    - `kpffvc.SCIEXPTIME`
+    - `kpffvc.CAHKEXPTIME`
+    - `kpffvc.EXTEXPTIME`
+    - `kpffvc.CALEXPTIME`
+    - `kpfpower.KPFFVC1`
+    - `kpfpower.KPFFVC2`
+    - `kpfpower.KPFFVC3`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

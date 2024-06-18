@@ -9,10 +9,13 @@ from kpf.calbench.CalLampPower import CalLampPower
 
 
 class WaitForLampWarm(KPFTranslatorFunction):
-    '''# Description
-    Wait for the specified lamp to be warm.
+    '''Wait for the specified lamp to be warm.
 
-    ## KTL Keywords Used
+    Args:
+        CalSource (str): Which lamp to wait for. Allowed Values: BrdbandFiber,
+            U_gold, U_daily, Th_daily, Th_gold, WideFlat
+
+    KTL Keywords Used:
 
     - `kpflamps.FF_FIBER_STATUS`
     - `kpflamps.FF_FIBER_TIMEON`
@@ -33,16 +36,9 @@ class WaitForLampWarm(KPFTranslatorFunction):
     - `kpflamps.U_GOLD_TIMEON`
     - `kpflamps.U_GOLD_THRESHOLD`
 
-    ## Scripts Called
+    Scripts Called:
 
     - `kpf.calbench.CalLampPower`
-
-    ## Parameters
-
-    **CalSource** (`str`)
-    > Which lamp to check?
-    <br>Allowed Values: BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold,
-    WideFlat
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

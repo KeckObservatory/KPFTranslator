@@ -27,11 +27,13 @@ def calculate_ADC_delta(za):
 
 
 class SetADCAngles(KPFTranslatorFunction):
-    '''Quick and dirty code to manually set ADC angles for a notional NULL position
-    
-    ARGS:
-    =====
-    None
+    '''Quick and dirty code to manually set ADC angles for a notional NULL
+    position.
+
+    KTL Keywords Used:
+
+    - `kpffiu.ADC1VAL`
+    - `kpffiu.ADC2VAL`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
