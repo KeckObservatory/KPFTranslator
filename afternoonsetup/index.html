@@ -91,9 +91,17 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../OBparameters/">OB Parameters</a>
+                  <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../buildingOBs/">Building OBs</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../SciOBparameters/">Science OB Parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../CalOBparameters/">Calibration OB Parameters</a>
+                </li>
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieve Data in Real Time</a>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
                   </li>
@@ -205,22 +213,7 @@
 <p>The afternoon setup process for the instrument itself is minimal. Calibrations are automated, so unless you have very special requirements for your observation (if so please contact the Staff Astronomer supporting your night in advance), then observers will not need to execute any calibrations.</p>
 <p>Prior to starting observing, observers should run: <code>KPF Control Menu --&gt; Start KPF GUIs</code> from the background menu (or <code>kpfStartGUIs</code> from the command line on any KPF machine). This will start the KPF GUIs and can be run at any time prior to observing. </p>
 <h1 id="preparing-observing-blocks-obs">Preparing Observing Blocks (OBs)</h1>
-<p>Observers should use the afternoon to prepare Observing Blocks (OBs) and their star list if they have not done so already. </p>
-<p>The basic unit of KPF nighttime operations is the Observing Block (OB). An OB describes a single visit to a science target and the observations made there. The data in an OB can be divided in to 4 rough categories:</p>
-<p><strong>Target information</strong>: The OB will contain information about the target beyond what is in a typical Keck Star List entry in order to flow that information to the FITS header and the data reduction pipeline (DRP).</p>
-<p><strong>Guide camera configuration</strong>: The OB will also contain information about how to configure the guide camera and tip tilt system for this target.</p>
-<p><strong>Instrument Setup</strong>: The OB will also contain information about how to configure the instrument for this set of observations.</p>
-<p><strong>Observations</strong>: Finally, the OB will contain a list of "observations" to be made of the target. For typical KPF observers, this will only have one entry, but multiple entries are supported. Each entry describes a set of exposures on the target and contains the information on how those exposures should be executed.</p>
-<p>The data contained in the OB is a set of keyword-value pairs. Observers can prepare OBs as text files which can be read in by the KPF software and executed or (once logged in to the KPF VNCs) they can use tools there to build the OBs and save them as files. </p>
-<h2 id="kpf-ob-gui">KPF OB GUI</h2>
-<p>A graphical tool has been built to help observers build their KPF OBs, it is launched automatically as part of the script to start all GUIs.</p>
-<p><img alt="A screenshot of the KPF OB GUI" src="../figures/KPF_OB_GUI.png" /></p>
-<blockquote>
-<p>A screenshot of the KPF OB GUI. This tool is still under development and may change.</p>
-</blockquote>
-<p>The top section of the GUI, "Instrument Status" shows whether an instrument script (e.g. an observation or calibration set) is being run and allows users to request that script stop.</p>
-<p>The middle section can be used to load an OB from a file, build an OB from scratch using a Gaia DR3 catalog query, save the OB to a file, or execute the OB.</p>
-<p>The lower section is where a user can fill out the OB parameters as described in the "KPF Science OB Contents" section above.</p>
+<p>Observers should use the afternoon to <a href="../buildingOBs/">prepare Observing Blocks (OBs)</a> and their star list if they have not done so already. </p>
               
             </div>
           </div><footer>
