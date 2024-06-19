@@ -203,13 +203,7 @@
               
                 <h1 id="afternoon-setup">Afternoon Setup</h1>
 <p>The afternoon setup process for the instrument itself is minimal. Calibrations are automated, so unless you have very special requirements for your observation (if so please contact the Staff Astronomer supporting your night in advance), then observers will not need to execute any calibrations.</p>
-<p>Prior to starting observing, observers should run: <code>KPF Control Menu --&gt; Start KPF GUIs</code> from the background menu (or <code>kpfStartUp</code> from the command line on any KPF machine). This will:</p>
-<ul>
-<li>Configure the output directories</li>
-<li>Set the observer names based on the telescope schedule</li>
-<li>Start the KPF GUIs</li>
-</ul>
-<p>This can be run at any time prior to observing. If automated calibrations are in progress, this may take several minutes as certain operations can only be done while the detectors are not exposing.</p>
+<p>Prior to starting observing, observers should run: <code>KPF Control Menu --&gt; Start KPF GUIs</code> from the background menu (or <code>kpfStartGUIs</code> from the command line on any KPF machine). This will start the KPF GUIs and can be run at any time prior to observing. </p>
 <h1 id="preparing-observing-blocks-obs">Preparing Observing Blocks (OBs)</h1>
 <p>Observers should use the afternoon to prepare Observing Blocks (OBs) and their star list if they have not done so already. </p>
 <p>The basic unit of KPF nighttime operations is the Observing Block (OB). An OB describes a single visit to a science target and the observations made there. The data in an OB can be divided in to 4 rough categories:</p>
