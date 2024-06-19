@@ -2,13 +2,7 @@
 
 The afternoon setup process for the instrument itself is minimal. Calibrations are automated, so unless you have very special requirements for your observation (if so please contact the Staff Astronomer supporting your night in advance), then observers will not need to execute any calibrations.
 
-Prior to starting observing, observers should run: `KPF Control Menu --> Start KPF GUIs` from the background menu (or `kpfStartUp` from the command line on any KPF machine). This will:
-
- * Configure the output directories
- * Set the observer names based on the telescope schedule
- * Start the KPF GUIs
-
-This can be run at any time prior to observing. If automated calibrations are in progress, this may take several minutes as certain operations can only be done while the detectors are not exposing.
+Prior to starting observing, observers should run: `KPF Control Menu --> Start KPF GUIs` from the background menu (or `kpfStartGUIs` from the command line on any KPF machine). This will start the KPF GUIs and can be run at any time prior to observing. 
 
 # Preparing Observing Blocks (OBs)
 
