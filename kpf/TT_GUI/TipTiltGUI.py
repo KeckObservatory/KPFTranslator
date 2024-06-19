@@ -46,6 +46,8 @@ from ginga.misc import log as ginga_log
 from ginga.qtw.QtHelp import QtGui, QtCore
 from ginga.qtw.ImageViewQt import CanvasView
 
+from kpf.guider.PredictGuiderParameters import PredictGuiderParameters
+
 
 ##-------------------------------------------------------------------------
 ## Parse Command Line Arguments
@@ -134,7 +136,6 @@ class MainWindow(QMainWindow):
         self.OBJECT1 = kPyQt.kFactory(kpfguide['OBJECT1'])
         self.OBJECT2 = kPyQt.kFactory(kpfguide['OBJECT2'])
         self.OBJECT3 = kPyQt.kFactory(kpfguide['OBJECT3'])
-
         self.OBJECT_CHOICE = kPyQt.kFactory(kpfguide['OBJECT_CHOICE'])
         self.OBJECT_FLUX = kPyQt.kFactory(kpfguide['OBJECT_FLUX'])
         self.OBJECT_PEAK = kPyQt.kFactory(kpfguide['OBJECT_PEAK'])
@@ -157,6 +158,7 @@ class MainWindow(QMainWindow):
         self.TTYVAX = kPyQt.kFactory(kpffiu['TTYVAX'])
         self.MODE = kPyQt.kFactory(kpffiu['MODE'])
 
+        self.TARGET_JMAG = kPyQt.kFactory(ktl.cache('kpfconfig', 'TARGET_JMAG'))
         self.SCRIPTNAME = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTNAME'))
 
         self.EXPOSE = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSE'))
@@ -207,6 +209,9 @@ class MainWindow(QMainWindow):
         self.VeryLowFluxThreshold = 20000
         self.LowFluxThreshold = 40000
         self.HighFluxThreshold = 10e6
+        # Guider Prediction Values
+        self.ExtinctionValue = 0
+        self.GuiderParameters = None
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -244,6 +249,22 @@ class MainWindow(QMainWindow):
         self.CONTINUOUS.primeCallback()
         self.SAVE.stringCallback.connect(self.update_SAVE)
         self.SAVE.primeCallback()
+
+        # Target Jmag
+        self.JmagValue = self.findChild(QLabel, 'JmagValue')
+        self.TARGET_JMAG.stringCallback.connect(self.update_Jmag)
+        self.TARGET_JMAG.primeCallback()
+
+        # Recommended Values
+        self.RecommendedGainValue = self.findChild(QLabel, 'RecommendedGainValue')
+        self.RecommendedFPSValue = self.findChild(QLabel, 'RecommendedFPSValue')
+        self.Extinction = self.findChild(QComboBox, 'Extinction')
+        selector_values = [f'{x:.1f}' for x in np.arange(0,9,1)]
+        self.Extinction.addItems(selector_values)
+        self.set_extinction(self.ExtinctionValue)
+        self.SetRecommendedButton = self.findChild(QPushButton, 'SetRecommendedButton')
+        self.SetRecommendedButton.setEnabled(self.enable_control)
+        self.SetRecommendedButton.clicked.connect(self.set_recommended_guider_parameters)
 
         # Camera Gain
         self.CameraGainValue = self.findChild(QLabel, 'CameraGainValue')
@@ -596,6 +617,28 @@ class MainWindow(QMainWindow):
             self.log.info(f'Modifying kpfguide.GAIN = {value}')
             self.GAIN.write(value)
 
+    def update_Jmag(self, value):
+        self.log.debug(f'update_Jmag: {value}')
+        self.update_guider_prediction()
+
+    def set_extinction(self, value):
+        self.log.debug(f'set_extinction: {value}')
+        self.ExtinctionValue = float(value)
+        self.Extinction.setCurrentText(f"{float(value):.0f}")
+        self.update_guider_prediction()
+
+    def update_guider_prediction(self):
+        try:
+            mag_for_estimate = self.TARGET_JMAG.binary + self.ExtinctionValue
+            self.GuiderParameters = PredictGuiderParameters.execute({'Jmag': mag_for_estimate})
+            self.RecommendedGainValue.setText(self.GuiderParameters['GuideCamGain'])
+            self.RecommendedFPSValue.setText(self.GuiderParameters['GuideFPS'])
+        except:
+            log.warning(f'PredictGuiderParameters failed')
+
+    def set_recommended_guider_parameters(self):
+        self.set_CameraGain(self.GuiderParameters.get('GuideCamGain', ''))
+        self.set_CameraFPS(self.GuiderParameters.get('GuideFPS', ''))
 
     ##----------------------------------------------------------
     ## Camera FPS
