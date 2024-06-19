@@ -214,8 +214,11 @@
 
 
       <p>Start a "trigger file" from the guide camera.</p>
-<h2 id="kpf.guider.StartTriggerFile.StartTriggerFile--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.TRIGCUBE</code></li>
+<li><code>kpfguide.TRIGGER</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/StartTriggerFile.py</code></summary>
@@ -239,12 +242,14 @@
 <span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span>
-<span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartTriggerFile</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">28</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartTriggerFile</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Start a &quot;trigger file&quot; from the guide camera.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.TRIGCUBE`</span>
+<span class="sd">    - `kpfguide.TRIGGER`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

@@ -216,8 +216,16 @@
       <p>Depending on whether the guide camera is running in continuous mode or
 not, this will either grab the next exposure (if in continuous mode) or
 trigger a new exposure.</p>
-<h2 id="kpf.guider.TakeGuiderExposure.TakeGuiderExposure--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.EXPTIME</code></li>
+<li><code>kpfguide.LASTFILE</code></li>
+</ul>
+<p>Scripts Called:</p>
+<ul>
+<li><code>kpf.guider.TriggerSingleGuiderExposure</code></li>
+<li><code>kpf.guider.GrabGuiderExposure</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/TakeGuiderExposure.py</code></summary>
@@ -254,14 +262,26 @@ trigger a new exposure.</p>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
-<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeGuiderExposure</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeGuiderExposure</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Depending on whether the guide camera is running in continuous mode or</span>
 <span class="sd">    not, this will either grab the next exposure (if in continuous mode) or</span>
 <span class="sd">    trigger a new exposure.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.EXPTIME`</span>
+<span class="sd">    - `kpfguide.LASTFILE`</span>
+
+<span class="sd">    Scripts Called:</span>
+
+<span class="sd">    - `kpf.guider.TriggerSingleGuiderExposure`</span>
+<span class="sd">    - `kpf.guider.GrabGuiderExposure`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

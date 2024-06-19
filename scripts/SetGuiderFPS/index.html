@@ -215,8 +215,34 @@
 
       <p>Set the guider FPS (frames per second) via the kpfguide.FPS
 keyword.</p>
-<h2 id="kpf.guider.SetGuiderFPS.SetGuiderFPS--args">ARGS:</h2>
-<p>:fps: <code>float</code> Number of frames per second</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>GuideFPS</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>Number of frames per second.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.FPS</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/SetGuiderFPS.py</code></summary>
@@ -255,13 +281,19 @@ keyword.</p>
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetGuiderFPS</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetGuiderFPS</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the guider FPS (frames per second) via the kpfguide.FPS</span>
 <span class="sd">    keyword.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :fps: `float` Number of frames per second</span>
+<span class="sd">    Args:</span>
+<span class="sd">        GuideFPS (float): Number of frames per second.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.FPS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

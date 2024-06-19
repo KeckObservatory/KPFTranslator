@@ -213,9 +213,11 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <p>Continuously display latest guider images to ds9.</p>
-<h2 id="kpf.guider.DisplayGuiderContinuous.DisplayGuiderContinuous--args">ARGS:</h2>
-<p>None</p>
+      <p>Continuously display latest guider images to ds9 using <code>xpaset</code>.</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.LASTFILE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/DisplayGuiderContinuous.py</code></summary>
@@ -256,11 +258,11 @@
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DisplayGuiderContinuous</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Continuously display latest guider images to ds9.</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Continuously display latest guider images to ds9 using `xpaset`.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.LASTFILE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

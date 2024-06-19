@@ -214,8 +214,35 @@
 
 
       <p>Estimate the proper gain and FPS given the stellar Jmag.</p>
-<h2 id="kpf.guider.PredictGuiderParameters.PredictGuiderParameters--args">Args:</h2>
-<p>:Jmag: <code>float</code> The J magnitude of the target</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>Jmag</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The J magnitude of the target.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Scripts Called:</p>
+<ul>
+<li><code>kpf.guider.SetGuiderGain</code></li>
+<li><code>kpf.guider.SetGuiderFPS</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/PredictGuiderParameters.py</code></summary>
@@ -273,12 +300,20 @@
 <span class="normal">77</span>
 <span class="normal">78</span>
 <span class="normal">79</span>
-<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictGuiderParameters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictGuiderParameters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Estimate the proper gain and FPS given the stellar Jmag.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :Jmag: `float` The J magnitude of the target</span>
+<span class="sd">        Jmag (float): The J magnitude of the target.</span>
+
+<span class="sd">    Scripts Called:</span>
+
+<span class="sd">     - `kpf.guider.SetGuiderGain`</span>
+<span class="sd">     - `kpf.guider.SetGuiderFPS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

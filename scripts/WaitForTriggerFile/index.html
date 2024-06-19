@@ -214,8 +214,10 @@
 
 
       <p>Wait for a trigger file in progress to finish being collected.</p>
-<h2 id="kpf.guider.WaitForTriggerFile.WaitForTriggerFile--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.LASTTRIGFILE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/WaitForTriggerFile.py</code></summary>
@@ -247,9 +249,9 @@
 <span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForTriggerFile</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Wait for a trigger file in progress to finish being collected.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.LASTTRIGFILE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

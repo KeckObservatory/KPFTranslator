@@ -215,9 +215,31 @@
 
       <p>Build a ds9 region file of Gaia catalog stars which ought to be present
 in the specified guider image.</p>
-<h2 id="kpf.guider.GetGaiaStars.GetGaiaStars--args">ARGS:</h2>
-<p>:file: <code>str</code> The file to retrieve stars for.</p>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>file</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The file to retrieve stars for.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/GetGaiaStars.py</code></summary>
                 <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
@@ -296,14 +318,12 @@ in the specified guider image.</p>
 <span class="normal">93</span>
 <span class="normal">94</span>
 <span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GetGaiaStars</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">96</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GetGaiaStars</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Build a ds9 region file of Gaia catalog stars which ought to be present</span>
 <span class="sd">    in the specified guider image.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :file: `str` The file to retrieve stars for.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        file (str): The file to retrieve stars for.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

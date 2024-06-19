@@ -214,8 +214,35 @@
 
 
       <p>Set the guider gain via the kpfguide.GAIN keyword.</p>
-<h2 id="kpf.guider.SetGuiderGain.SetGuiderGain--args">ARGS:</h2>
-<p>:gain: <code>str</code> The desired gain (high, medium, or low)</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>GuideCamGain</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The desired gain. Allowed values: high, medium, or
+low.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.GAIN</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/SetGuiderGain.py</code></summary>
@@ -251,12 +278,20 @@
 <span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
-<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetGuiderGain</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetGuiderGain</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the guider gain via the kpfguide.GAIN keyword.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :gain: `str` The desired gain (high, medium, or low)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        GuideCamGain (str): The desired gain. Allowed values: high, medium, or</span>
+<span class="sd">            low.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.GAIN`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

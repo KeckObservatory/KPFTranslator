@@ -214,10 +214,51 @@
 
 
       <p>Take a "trigger file" from the guide camera of a given duration.</p>
-<h2 id="kpf.guider.TakeGuiderCube.TakeGuiderCube--args">ARGS:</h2>
-<p>:duration: <code>float</code> The duration in seconds of the image set.
-:ImageCube: <code>bool</code> Collect the full cube of images? (default True) This
-            will slow down file write considerably.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>duration</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The duration in seconds of the image set.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>ImageCube</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Collect the full cube of images? (default True) This
+will slow down file write considerably.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.TRIGCUBE</code></li>
+<li><code>kpfguide.LASTTRIGFILE</code></li>
+<li><code>kpfguide.ALL_LOOPS</code></li>
+</ul>
+<p>Scripts Called:</p>
+<ul>
+<li><code>kpf.guider.StartTriggerFile</code></li>
+<li><code>kpf.guider.StopTriggerFile</code></li>
+<li><code>kpf.guider.WaitForTriggerFile</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/TakeGuiderCube.py</code></summary>
@@ -277,14 +318,36 @@
 <span class="normal">67</span>
 <span class="normal">68</span>
 <span class="normal">69</span>
-<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeGuiderCube</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeGuiderCube</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Take a &quot;trigger file&quot; from the guide camera of a given duration.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :duration: `float` The duration in seconds of the image set.</span>
-<span class="sd">    :ImageCube: `bool` Collect the full cube of images? (default True) This</span>
-<span class="sd">                will slow down file write considerably.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        duration (float): The duration in seconds of the image set.</span>
+<span class="sd">        ImageCube (bool): Collect the full cube of images? (default True) This</span>
+<span class="sd">            will slow down file write considerably.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.TRIGCUBE`</span>
+<span class="sd">    - `kpfguide.LASTTRIGFILE`</span>
+<span class="sd">    - `kpfguide.ALL_LOOPS`</span>
+
+<span class="sd">    Scripts Called:</span>
+
+<span class="sd">    - `kpf.guider.StartTriggerFile`</span>
+<span class="sd">    - `kpf.guider.StopTriggerFile`</span>
+<span class="sd">    - `kpf.guider.WaitForTriggerFile`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

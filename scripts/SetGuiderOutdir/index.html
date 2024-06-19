@@ -214,8 +214,34 @@
 
 
       <p>Set the value of the kpfguide.OUTDIR keyword</p>
-<h2 id="kpf.guider.SetGuiderOutdir.SetGuiderOutdir--args">ARGS:</h2>
-<p>:outdir: <code>str</code> The desired output path</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>outdir</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The desired output path.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.OUTDIR</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/SetGuiderOutdir.py</code></summary>
@@ -244,12 +270,18 @@
 <span class="normal">32</span>
 <span class="normal">33</span>
 <span class="normal">34</span>
-<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetGuiderOutdir</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetGuiderOutdir</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the value of the kpfguide.OUTDIR keyword</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :outdir: `str` The desired output path</span>
+<span class="sd">    Args:</span>
+<span class="sd">        outdir (str): The desired output path.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.OUTDIR`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

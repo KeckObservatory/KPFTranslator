@@ -214,8 +214,34 @@
 
 
       <p>Print the value of the kpfguide.LASTFILE keyword to STDOUT</p>
-<h2 id="kpf.guider.GuiderLastfile.GuiderLastfile--args">ARGS:</h2>
-<p>:wait: <code>bool</code> Return only after lastfile is updated? (default = False)</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>wait</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Return only after lastfile is updated? (default = False)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfguide.LASTFILE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/GuiderLastfile.py</code></summary>
@@ -252,12 +278,18 @@
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GuiderLastfile</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GuiderLastfile</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Print the value of the kpfguide.LASTFILE keyword to STDOUT</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :wait: `bool` Return only after lastfile is updated? (default = False)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        wait (bool): Return only after lastfile is updated? (default = False)</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfguide.LASTFILE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
