@@ -44,8 +44,11 @@ nav:
   - "Observing with KPF":
     - "Afternoon Setup": afternoonsetup.md
     - "Observing Procedures": observingprocedures.md
-    - "OB Parameters": OBparameters.md
-    - "Retrieve Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
+    - "Observing Blocks":
+      - "Building OBs": buildingOBs.md
+      - "Science OB Parameters": SciOBparameters.md
+      - "Calibration OB Parameters": CalOBparameters.md
+    - "Retrieving Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
     - "Data Reduction": kpfdrp.md
   - "General Observing Info": 
     - "Weather":
