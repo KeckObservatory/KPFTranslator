@@ -21,9 +21,8 @@ class GetGaiaStars(KPFTranslatorFunction):
     '''Build a ds9 region file of Gaia catalog stars which ought to be present
     in the specified guider image.
 
-    ARGS:
-    =====
-    :file: `str` The file to retrieve stars for.
+    Args:
+        file (str): The file to retrieve stars for.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

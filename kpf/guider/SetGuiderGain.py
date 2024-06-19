@@ -7,10 +7,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetGuiderGain(KPFTranslatorFunction):
     '''Set the guider gain via the kpfguide.GAIN keyword.
-    
-    ARGS:
-    =====
-    :gain: `str` The desired gain (high, medium, or low)
+
+    Args:
+        GuideCamGain (str): The desired gain. Allowed values: high, medium, or
+            low.
+
+    KTL Keywords Used:
+
+    - `kpfguide.GAIN`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

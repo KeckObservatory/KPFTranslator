@@ -25,10 +25,14 @@ from kpf.guider.SetGuiderFPS import SetGuiderFPS
 
 class PredictGuiderParameters(KPFTranslatorFunction):
     '''Estimate the proper gain and FPS given the stellar Jmag.
-    
+
     Args:
-    =====
-    :Jmag: `float` The J magnitude of the target
+        Jmag (float): The J magnitude of the target.
+
+    Scripts Called:
+
+     - `kpf.guider.SetGuiderGain`
+     - `kpf.guider.SetGuiderFPS`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

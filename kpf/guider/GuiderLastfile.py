@@ -9,10 +9,13 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class GuiderLastfile(KPFTranslatorFunction):
     '''Print the value of the kpfguide.LASTFILE keyword to STDOUT
-    
-    ARGS:
-    =====
-    :wait: `bool` Return only after lastfile is updated? (default = False)
+
+    Args:
+        wait (bool): Return only after lastfile is updated? (default = False)
+
+    KTL Keywords Used:
+
+    - `kpfguide.LASTFILE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
