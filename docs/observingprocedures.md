@@ -12,16 +12,19 @@ The Observing Assistant (OA) is not permitted to open the dome until after sunse
 
 ### Run Start of Night
 
-To configure KPF for observing, run `KPF Control Menu --> Run Start of Night Script` from the background menu (or `kpfStartOfNight` from the command line on any KPF machine). This will
+KPF needs to be configured properly at the start of the night. There is a procedure which should be run **only after the Observing Assistant (OA) has selected KPF as the instrument** and **after automated afternoon calibrations are complete.**  The selected instrument ("INST") can be seen in the lower left corner of the [FACSUM window](figures/FACSUM.png).
+
+It is important that this not be run while other instruments are observing. To configure KPF for observing, run `KPF Control Menu --> Run Start of Night Script` from the background menu (or `kpfStartOfNight` from the command line on any KPF machine). This will:
 
 - Disable automated calibrations
 - Configure the FIU to the observing mode
 - Open the science and sky source select shutters
 - Configure the AO Bench. Including positioning the PCU stage and opening the AO hatch.
 - Configure DCS for KPF by setting dcs.ROTDEST=0 and dcs.ROTMODE=stationary
-- Confgure the tip tilt loop gain to its default setting
+- Configure the tip tilt loop gain to its default setting
 - Set data output directory
 - Set observers from telescope schedule
+
 
 ### Slew to the Vicinity of Your First Target
 
@@ -71,3 +74,4 @@ Slew cals can also be taken independently using the "Execute Slew Cal Only" butt
 
 On a KPF/KPF split night, before starting the second KPF program, run `KPF Control Menu --> Set Program ID and Observers` from the background menu (or `kpfSetObserverFromSchedule` from the command line on any KPF machine). Enter the program ID at the terminal prompt. The script will then set program ID and observers for the second KPF program, based on the telescope schedule.
 
+If you wish to set the observer names and program ID manually (i.e. without querying the telescope schedule), you can use the `kpfSetProgram` and `kpfSetObserver` scripts from the command line.  For example: `kpfSetProgram K123` will set program ID "K123" and `kpfSetObserver "E.E. Barnard, S.W. Burnham"` will set the observer name to "E.E. Barnard, S.W. Burnham".  Note that observer names should be enclosed in quotes to handle spaces in the list of names.
