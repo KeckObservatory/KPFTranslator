@@ -227,16 +227,6 @@
 <p>The top section of the GUI, "Instrument Status" shows whether an instrument script (e.g. an observation or calibration set) is being run and allows users to request that script stop.</p>
 <p>The middle section can be used to load an OB from a file, build an OB from scratch using a Gaia DR3 catalog query, save the OB to a file, or execute the OB.</p>
 <p>The lower section is where a user can fill out the OB parameters as described in the "KPF Science OB Contents" section above.</p>
-<h1 id="start-of-night">Start of Night</h1>
-<p>KPF does, however, need to be configured properly at the start of the night. There is a procedure which should be run <strong>only after the Observing Assistant (OA) has selected KPF as the instrument</strong> and <strong>after automated afternoon calibrations are complete.</strong>  It is important that this not be run while other instruments are observing. To configure KPF for observing, run <code>KPF Control Menu --&gt; Run Start of Night Script</code> from the background menu (or <code>kpfStartOfNight</code> from the command line on any KPF machine). This will:</p>
-<ul>
-<li>Disable automated calibrations</li>
-<li>Configure the FIU to the observing mode</li>
-<li>Open the science and sky source select shutters</li>
-<li>Configure the AO Bench. Including positioning the PCU stage and opening the AO hatch.</li>
-<li>Configure DCS for KPF by setting dcs.ROTDEST=0 and dcs.ROTMODE=stationary</li>
-<li>Confgure the tip tilt loop gain to its default setting</li>
-</ul>
               
             </div>
           </div><footer>

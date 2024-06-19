@@ -211,14 +211,15 @@
 <h3 id="wait-for-dome-to-open">Wait for Dome to Open</h3>
 <p>The Observing Assistant (OA) is not permitted to open the dome until after sunset. Please be patient while the shutter opens and the OA checks the initial telescope pointing. </p>
 <h3 id="run-start-of-night">Run Start of Night</h3>
-<p>To configure KPF for observing, run <code>KPF Control Menu --&gt; Run Start of Night Script</code> from the background menu (or <code>kpfStartOfNight</code> from the command line on any KPF machine). This will</p>
+<p>KPF needs to be configured properly at the start of the night. There is a procedure which should be run <strong>only after the Observing Assistant (OA) has selected KPF as the instrument</strong> and <strong>after automated afternoon calibrations are complete.</strong>  The selected instrument ("INST") can be seen in the lower left corner of the <a href="../figures/FACSUM.png">FACSUM window</a>.</p>
+<p>It is important that this not be run while other instruments are observing. To configure KPF for observing, run <code>KPF Control Menu --&gt; Run Start of Night Script</code> from the background menu (or <code>kpfStartOfNight</code> from the command line on any KPF machine). This will:</p>
 <ul>
 <li>Disable automated calibrations</li>
 <li>Configure the FIU to the observing mode</li>
 <li>Open the science and sky source select shutters</li>
 <li>Configure the AO Bench. Including positioning the PCU stage and opening the AO hatch.</li>
 <li>Configure DCS for KPF by setting dcs.ROTDEST=0 and dcs.ROTMODE=stationary</li>
-<li>Confgure the tip tilt loop gain to its default setting</li>
+<li>Configure the tip tilt loop gain to its default setting</li>
 <li>Set data output directory</li>
 <li>Set observers from telescope schedule</li>
 </ul>
@@ -249,6 +250,7 @@
 <p><strong>Important</strong>: If you wish to halt an OB during execution, do <strong>NOT</strong> hit Control-c in the terminal.  Use the "Request Script STOP" button instead. The KPF scripts have checkpoints in them which are places where the script can cleanly exit and perform important cleanup operations.  The "STOP Exposure and Script" button does the same thing, but it will also terminate an exposure in progress.</p>
 <h1 id="switching-programs-on-a-split-night">Switching Programs on a Split Night</h1>
 <p>On a KPF/KPF split night, before starting the second KPF program, run <code>KPF Control Menu --&gt; Set Program ID and Observers</code> from the background menu (or <code>kpfSetObserverFromSchedule</code> from the command line on any KPF machine). Enter the program ID at the terminal prompt. The script will then set program ID and observers for the second KPF program, based on the telescope schedule.</p>
+<p>If you wish to set the observer names and program ID manually (i.e. without querying the telescope schedule), you can use the <code>kpfSetProgram</code> and <code>kpfSetObserver</code> scripts from the command line.  For example: <code>kpfSetProgram K123</code> will set program ID "K123" and <code>kpfSetObserver "E.E. Barnard, S.W. Burnham"</code> will set the observer name to "E.E. Barnard, S.W. Burnham".  Note that observer names should be enclosed in quotes to handle spaces in the list of names.</p>
               
             </div>
           </div><footer>
