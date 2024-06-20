@@ -6,8 +6,6 @@ The data in an OB can be divided in to a few rough categories:
 
 **Target information**: The OB will contain information about the target beyond what is in a typical Keck Star List entry in order to flow that information to the FITS header and the data reduction pipeline (DRP).
 
-**Guide camera configuration**: The OB will also contain information about how to configure the guide camera and tip tilt system for this target.
-
 **Instrument Setup**: The OB will also contain information about how to configure the instrument for this set of observations.
 
 **Observations**: Finally, the OB will contain a list of "observations" to be made of the target. For typical KPF observers, this will only have one entry, but multiple entries are supported. Each entry describes a set of exposures on the target and contains the information on how those exposures should be executed.
