@@ -211,7 +211,7 @@ class MainWindow(QMainWindow):
         self.HighFluxThreshold = 10e6
         # Guider Prediction Values
         self.ExtinctionValue = 0
-        self.GuiderParameters = None
+        self.GuiderParameters = {}
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -625,7 +625,15 @@ class MainWindow(QMainWindow):
 
     def update_Jmag(self, value):
         self.log.debug(f'update_Jmag: {value}')
-        self.JmagValue.setText(f"{float(value):.1f}")
+        try:
+            self.JmagValue.setText(f"{float(value):.1f}")
+        except ValueError:
+            self.JmagValue.setText(str(value))
+            style = f'color: black;'
+            self.RecommendedGainValue.setText('--')
+            self.RecommendedGainValue.setStyleSheet(style)
+            self.RecommendedFPSValue.setText('--')
+            self.RecommendedFPSValue.setStyleSheet(style)
         self.update_guider_prediction()
 
     def set_extinction(self, value):
@@ -635,26 +643,31 @@ class MainWindow(QMainWindow):
         self.update_guider_prediction()
 
     def update_guider_prediction(self):
-        try:
-            target_Jmag = float(self.TARGET_JMAG.ktl_keyword.binary)
-            mag_for_estimate = target_Jmag + self.ExtinctionValue
-            self.GuiderParameters = PredictGuiderParameters.execute({'Jmag': mag_for_estimate})
-            self.RecommendedGainValue.setText(f"{self.GuiderParameters['GuideCamGain']}")
-            self.RecommendedFPSValue.setText(f"{self.GuiderParameters['GuideFPS']:.1f}")
-            self.colorize_recommended_values()
-        except Exception as e:
-            log.warning(f'PredictGuiderParameters failed')
-            print(e)
+        target_Jmag = self.TARGET_JMAG.ktl_keyword.binary
+        if target_Jmag not in ['', None]:
+            try:
+                mag_for_estimate = float(target_Jmag) + self.ExtinctionValue
+                self.GuiderParameters = PredictGuiderParameters.execute({'Jmag': mag_for_estimate})
+                self.RecommendedGainValue.setText(f"{self.GuiderParameters['GuideCamGain']}")
+                self.RecommendedFPSValue.setText(f"{self.GuiderParameters['GuideFPS']:.1f}")
+                self.colorize_recommended_values()
+            except Exception as e:
+                log.warning(f'PredictGuiderParameters failed')
+                print(e)
 
     def colorize_recommended_values(self):
         # Colorize recommended gain value
-        if self.GuiderParameters['GuideCamGain'].lower() != self.GAIN.ktl_keyword.ascii.lower():
+        if self.GuiderParameters.get('GuideCamGain', None) is None:
+            style = f'color: black;'
+        elif self.GuiderParameters.get('GuideCamGain').lower() != self.GAIN.ktl_keyword.ascii.lower():
             style = f'color: orange;'
         else:
             style = f'color: limegreen;'
         self.RecommendedGainValue.setStyleSheet(style)
         # Colorize recommended FPS value
-        if f"{self.GuiderParameters['GuideFPS']:.1f}" != f"{self.FPS.ktl_keyword.binary:.1f}":
+        if self.GuiderParameters.get('GuideFPS', None) is None:
+            style = f'color: black;'
+        elif f"{self.GuiderParameters.get('GuideFPS', 100):.1f}" != f"{self.FPS.ktl_keyword.binary:.1f}":
             style = f'color: orange;'
         else:
             style = f'color: limegreen;'
