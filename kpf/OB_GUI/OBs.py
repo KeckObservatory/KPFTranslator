@@ -152,9 +152,6 @@ class ScienceOB(BaseOB):
         self.Gmag = OBProperty('Gmag', OBdict.get('Gmag', ''), str)
         self.Jmag = OBProperty('Jmag', OBdict.get('Jmag', ''), str)
         self.Teff = OBProperty('Teff', OBdict.get('Teff', 0), float)
-        self.GuideMode = OBProperty('GuideMode', OBdict.get('GuideMode', 'auto'), str)
-        self.GuideCamGain = OBProperty('GuideCamGain', OBdict.get('GuideCamGain', 'high'), str)
-        self.GuideFPS = OBProperty('GuideFPS', OBdict.get('GuideFPS', 100), float)
         self.TriggerCaHK = OBProperty('TriggerCaHK', OBdict.get('TriggerCaHK', True), bool)
         self.TriggerGreen = OBProperty('TriggerGreen', OBdict.get('TriggerGreen', True), bool)
         self.TriggerRed = OBProperty('TriggerRed', OBdict.get('TriggerRed', True), bool)
@@ -185,12 +182,6 @@ class ScienceOB(BaseOB):
         self.lines += [f"Jmag: {self.get('Jmag')}"]
         self.lines += [f"Teff: {self.get('Teff')}"]
         self.lines += [f""]
-        self.lines += [f"# Guider Setup"]
-        self.lines += [f"GuideMode: {self.get('GuideMode')}"]
-        if self.get('GuideMode') != 'auto':
-            self.lines += [f"GuideCamGain: {self.get('GuideCamGain')}"]
-            self.lines += [f"GuideFPS: {self.get('GuideFPS')}"]
-        self.lines += [f""]
         self.lines += [f"# Spectrograph Setup"]
         self.lines += [f"TriggerCaHK: {self.get('TriggerCaHK')}"]
         self.lines += [f"TriggerGreen: {self.get('TriggerGreen')}"]
@@ -217,9 +208,6 @@ class ScienceOB(BaseOB):
                   'Gmag': self.get('Gmag'),
                   'Jmag': self.get('Jmag'),
                   'Teff': self.get('Teff'),
-                  'GuideMode': self.get('GuideMode'),
-                  'GuideCamGain': self.get('GuideCamGain'),
-                  'GuideFPS': self.get('GuideFPS'),
                   'TriggerCaHK': self.get('TriggerCaHK'),
                   'TriggerGreen': self.get('TriggerGreen'),
                   'TriggerRed': self.get('TriggerRed'),

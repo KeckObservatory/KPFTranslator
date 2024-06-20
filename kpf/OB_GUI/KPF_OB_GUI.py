@@ -81,9 +81,6 @@ class MainWindow(QMainWindow):
                    'TriggerGreen': True,
                    'TriggerRed': True,
                    'BlockSky': False,
-                   'GuideMode': 'auto',
-                   'GuideCamGain': 'high',
-                   'GuideFPS': 100,
                    'SEQ_Observations': [
                         {'Object': '',
                          'nExp': '1',
@@ -289,22 +286,6 @@ class MainWindow(QMainWindow):
         self.Gmag = self.findChild(QLabel, 'Gmag')
         self.Jmag = self.findChild(QLabel, 'Jmag')
         self.Teff = self.findChild(QLabel, 'Teff')
-
-        # Guider Setup
-        self.GuideMode = self.findChild(QComboBox, 'GuideMode')
-        self.GuideMode.addItems(["auto", "manual", "off"])
-        self.update_OB('GuideMode', self.OB.get('GuideMode'))
-        self.GuideMode.currentTextChanged.connect(self.set_guide_mode)
-        
-        self.GuideCamGain = self.findChild(QComboBox, 'GuideCamGain')
-        self.GuideCamGain.addItems(["high", "medium", "low"])
-        self.update_OB('GuideCamGain', self.OB.get('GuideCamGain'))
-        self.GuideCamGain.currentTextChanged.connect(self.set_guide_gain)
-        self.GuideFPS = self.findChild(QLineEdit, 'GuideFPS')
-        self.update_OB('GuideFPS', self.OB.get('GuideFPS'))
-        self.GuideFPS.textChanged.connect(self.set_fps)
-        if self.OB.get('GuideMode') == 'auto':
-            self.GuideFPS.setEnabled(False)
 
         # Spectrograph Setup
         self.TriggerCaHK = self.findChild(QCheckBox, 'TriggerCaHK')
@@ -834,18 +815,6 @@ class MainWindow(QMainWindow):
         self.update_OB('TargetName', value)
         self.TargetName.setText(f"{value}")
 
-    def set_guide_mode(self, value):
-        self.log.debug(f"set_guide_mode: {value}")
-        self.update_OB('GuideMode', value)
-
-    def set_guide_gain(self, value):
-        self.log.debug(f"set_guide_gain: {value}")
-        self.update_OB('GuideCamGain', value)
-
-    def set_fps(self, value):
-        self.log.debug(f"set_fps: {value}")
-        self.update_OB('GuideFPS', value)
-
     def set_object(self, value):
         self.log.debug(f"set_object: {value}")
         self.update_OB('Object', value)
@@ -958,14 +927,6 @@ class MainWindow(QMainWindow):
         self.Jmag.setText(f"{self.OB.get('Jmag')}")
         # Teff
         self.Teff.setText(f"{self.OB.get('Teff')}")
-        # GuideMode
-        self.GuideMode.setCurrentText(f"{self.OB.get('GuideMode')}")
-        self.GuideCamGain.setEnabled(self.OB.get('GuideMode') not in ['auto', 'off'])
-        self.GuideFPS.setEnabled(self.OB.get('GuideMode') not in ['auto', 'off'])
-        # GuideCamGain
-        self.GuideCamGain.setCurrentText(f"{self.OB.get('GuideCamGain')}")
-        # GuideFPS
-        self.GuideFPS.setText(f"{self.OB.get('GuideFPS')}")
         # TriggerCaHK
         self.TriggerCaHK.setChecked(self.OB.get('TriggerCaHK'))
         # TriggerGreen
