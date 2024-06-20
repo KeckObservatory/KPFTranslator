@@ -130,6 +130,7 @@ class MainWindow(QMainWindow):
         self.FPS = kPyQt.kFactory(kpfguide['FPS'])
         self.TIPTILT_CALC = kPyQt.kFactory(kpfguide['TIPTILT_CALC'])
         self.TIPTILT_CONTROL = kPyQt.kFactory(kpfguide['TIPTILT_CONTROL'])
+        self.TIPTILT_FPS = kPyQt.kFactory(kpfguide['TIPTILT_FPS'])
         self.OFFLOAD = kPyQt.kFactory(kpfguide['OFFLOAD'])
         self.OFFLOAD_DCS = kPyQt.kFactory(kpfguide['OFFLOAD_DCS'])
         self.ALL_LOOPS = kPyQt.kFactory(kpfguide['ALL_LOOPS'])
@@ -328,8 +329,8 @@ class MainWindow(QMainWindow):
 
         # Tip Tilt FPS
         self.TipTiltFPS = self.findChild(QLabel, 'TipTiltFPS')
-        self.FPS.stringCallback.connect(self.update_TipTiltFPS)
-        self.FPS.primeCallback()
+        self.TIPTILT_FPS.stringCallback.connect(self.update_TipTiltFPS)
+        self.TIPTILT_FPS.primeCallback()
 
         # Tip Tilt Phase
         self.TipTiltPhase = self.findChild(QLabel, 'TipTiltPhase')
