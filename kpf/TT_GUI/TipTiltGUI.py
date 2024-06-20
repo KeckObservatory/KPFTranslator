@@ -170,6 +170,13 @@ class MainWindow(QMainWindow):
         self.ttxrange = kpfguide['TIPTILT_XRANGE'].read(binary=True)
         self.ttyrange = kpfguide['TIPTILT_YRANGE'].read(binary=True)
 
+        self.HB_GUIDE1STA = kPyQt.kFactory(ktl.cache('kpfmon', 'HB_GUIDE1STA'))
+        self.ST_GUIDE1STA = kPyQt.kFactory(ktl.cache('kpfmon', 'ST_GUIDE1STA'))
+        self.HB_GUIDE2STA = kPyQt.kFactory(ktl.cache('kpfmon', 'HB_GUIDE2STA'))
+        self.ST_GUIDE2STA = kPyQt.kFactory(ktl.cache('kpfmon', 'ST_GUIDE2STA'))
+        self.HB_GUIDE3STA = kPyQt.kFactory(ktl.cache('kpfmon', 'HB_GUIDE3STA'))
+        self.ST_GUIDE3STA = kPyQt.kFactory(ktl.cache('kpfmon', 'ST_GUIDE3STA'))
+
         # History for Plots
         #  Tip Tilt Error Plot
         self.TipTiltErrorValues = []
@@ -243,6 +250,26 @@ class MainWindow(QMainWindow):
         self.StatusBar.addPermanentWidget(self.YAxisStatusLabel)
         self.DARStatusLabel = QLabel('')
         self.StatusBar.addPermanentWidget(self.DARStatusLabel)
+        self.kpfguide1StatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.kpfguide1StatusLabel)
+        self.kpfguide2StatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.kpfguide2StatusLabel)
+        self.kpfguide3StatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.kpfguide3StatusLabel)
+
+        # kpfmon Statuses
+        self.HB_GUIDE1STA.stringCallback.connect(self.update_kpfguide1status)
+        self.HB_GUIDE1STA.primeCallback()
+        self.ST_GUIDE1STA.stringCallback.connect(self.update_kpfguide1status)
+        self.ST_GUIDE1STA.primeCallback()
+        self.HB_GUIDE2STA.stringCallback.connect(self.update_kpfguide2status)
+        self.HB_GUIDE2STA.primeCallback()
+        self.ST_GUIDE2STA.stringCallback.connect(self.update_kpfguide2status)
+        self.ST_GUIDE2STA.primeCallback()
+        self.HB_GUIDE3STA.stringCallback.connect(self.update_kpfguide3status)
+        self.HB_GUIDE3STA.primeCallback()
+        self.ST_GUIDE3STA.stringCallback.connect(self.update_kpfguide3status)
+        self.ST_GUIDE3STA.primeCallback()
 
         # CONTINUOUS and SAVE
         self.CONTINUOUS.stringCallback.connect(self.update_CONTINUOUS)
@@ -561,6 +588,32 @@ class MainWindow(QMainWindow):
     def update_plots(self):
         self.update_TipTiltErrorPlot()
         self.update_FluxPlot()
+
+    ##----------------------------------------------------------
+    ## update kpfmon Statuses
+    def update_kpfguide1status(self, value):
+        if value != 'OK':
+            self.kpfguide1StatusLabel.setText(f'kpfguide1')
+            self.kpfguide1StatusLabel.setStyleSheet('color: red;')
+        else:
+            self.kpfguide1StatusLabel.setText('')
+            self.kpfguide1StatusLabel.setStyleSheet('color: black;')
+
+    def update_kpfguide2status(self, value):
+        if value != 'OK':
+            self.kpfguide2StatusLabel.setText(f'kpfguide2')
+            self.kpfguide2StatusLabel.setStyleSheet('color: red;')
+        else:
+            self.kpfguide2StatusLabel.setText('')
+            self.kpfguide2StatusLabel.setStyleSheet('color: black;')
+
+    def update_kpfguide3status(self, value):
+        if value != 'OK':
+            self.kpfguide3StatusLabel.setText(f'kpfguide3')
+            self.kpfguide3StatusLabel.setStyleSheet('color: red;')
+        else:
+            self.kpfguide3StatusLabel.setText('')
+            self.kpfguide3StatusLabel.setStyleSheet('color: black;')
 
 
     ##----------------------------------------------------------
