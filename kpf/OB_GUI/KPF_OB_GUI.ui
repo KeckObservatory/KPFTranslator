@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>903</width>
-    <height>838</height>
+    <height>763</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -365,7 +365,7 @@
       <x>10</x>
       <y>180</y>
       <width>891</width>
-      <height>651</height>
+      <height>581</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -499,32 +499,6 @@
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
-     <widget class="QPushButton" name="append_to_star_list_btn">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>590</y>
-        <width>171</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Append Target to Star List</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="star_list_line">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>590</y>
-        <width>691</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
      <widget class="Line" name="line_7">
       <property name="geometry">
        <rect>
@@ -557,57 +531,46 @@
         <x>10</x>
         <y>170</y>
         <width>421</width>
-        <height>351</height>
+        <height>321</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="ob_contents_layout" columnstretch="100,0,0">
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
-       <item row="9" column="0" colspan="2">
-        <widget class="QLabel" name="label_18">
+       <item row="10" column="0">
+        <widget class="QCheckBox" name="TriggerCaHK">
          <property name="text">
-          <string>&lt;h4&gt;Guider Setup&lt;/h4&gt;</string>
+          <string>Trigger CaHK</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
-        <widget class="QLabel" name="label_30">
+       <item row="2" column="2">
+        <widget class="QLabel" name="label_24">
          <property name="text">
-          <string>mas</string>
+          <string>Gaia DR3 ID</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_34">
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="TargetName"/>
+       </item>
+       <item row="7" column="2">
+        <widget class="QLabel" name="label_41">
          <property name="text">
-          <string>Gmag:</string>
+          <string>2MASS J magnitude</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="2">
-        <widget class="QLabel" name="label_33">
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="label_15">
          <property name="text">
-          <string>km/s</string>
+          <string>&lt;h4&gt;Target Info&lt;/h4&gt;</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
-        <widget class="QLabel" name="label_27">
-         <property name="text">
-          <string>2MASS ID</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_25">
-         <property name="text">
-          <string>2MASSID:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="twoMASSID">
+       <item row="2" column="1">
+        <widget class="QLabel" name="GaiaID">
          <property name="text">
           <string/>
          </property>
@@ -620,87 +583,17 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="2">
-        <widget class="QLabel" name="label_39">
+       <item row="3" column="2">
+        <widget class="QLabel" name="label_27">
          <property name="text">
-          <string>frames per second</string>
+          <string>2MASS ID</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_22">
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_35">
          <property name="text">
-          <string>GaiaID:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="label_24">
-         <property name="text">
-          <string>Gaia DR3 ID</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="Gmag">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="GaiaID">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_15">
-         <property name="text">
-          <string>&lt;h4&gt;Target Info&lt;/h4&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="label_36">
-         <property name="text">
-          <string>Teff:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_20">
-         <property name="text">
-          <string>Target Name:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="0">
-        <widget class="QLabel" name="label_29">
-         <property name="text">
-          <string>GuiderFPS:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QLabel" name="label_23">
-         <property name="text">
-          <string>GuiderMode:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="0">
-        <widget class="QLabel" name="label_26">
-         <property name="text">
-          <string>GuiderCamGain:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QLabel" name="Teff">
-         <property name="text">
-          <string/>
+          <string>Jmag:</string>
          </property>
         </widget>
        </item>
@@ -711,6 +604,27 @@
          </property>
         </widget>
        </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_34">
+         <property name="text">
+          <string>Gmag:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_20">
+         <property name="text">
+          <string>Target Name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="Parallax">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
        <item row="7" column="1">
         <widget class="QLabel" name="Jmag">
          <property name="text">
@@ -718,8 +632,15 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QLabel" name="RadialVelocity">
+       <item row="10" column="1">
+        <widget class="QCheckBox" name="TriggerGreen">
+         <property name="text">
+          <string>Trigger Green</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="twoMASSID">
          <property name="text">
           <string/>
          </property>
@@ -732,49 +653,19 @@
          </property>
         </widget>
        </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_25">
+         <property name="text">
+          <string>2MASSID:</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="2">
         <widget class="QLabel" name="label_21">
          <property name="text">
           <string>User supplied name</string>
          </property>
         </widget>
-       </item>
-       <item row="7" column="2">
-        <widget class="QLabel" name="label_41">
-         <property name="text">
-          <string>2MASS J magnitude</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="label_35">
-         <property name="text">
-          <string>Jmag:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="Parallax">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="2">
-        <widget class="QLabel" name="label_32">
-         <property name="text">
-          <string>high, medium, or low</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="1">
-        <widget class="QComboBox" name="GuideCamGain"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="TargetName"/>
-       </item>
-       <item row="10" column="1">
-        <widget class="QComboBox" name="GuideMode"/>
        </item>
        <item row="6" column="2">
         <widget class="QLabel" name="label_40">
@@ -783,8 +674,75 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="1">
-        <widget class="QLineEdit" name="GuideFPS"/>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_36">
+         <property name="text">
+          <string>Teff:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QLabel" name="label_30">
+         <property name="text">
+          <string>mas</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>&lt;h4&gt;Spectrograph Setup&lt;/h4&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_22">
+         <property name="text">
+          <string>GaiaID:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QLabel" name="label_33">
+         <property name="text">
+          <string>km/s</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLabel" name="Teff">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="2">
+        <widget class="QCheckBox" name="TriggerRed">
+         <property name="text">
+          <string>Trigger Red</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLabel" name="Gmag">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLabel" name="RadialVelocity">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QCheckBox" name="BlockSky">
+         <property name="text">
+          <string>BlockSky</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -792,9 +750,9 @@
       <property name="geometry">
        <rect>
         <x>450</x>
-        <y>160</y>
+        <y>170</y>
         <width>431</width>
-        <height>361</height>
+        <height>311</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="obs_seq_layout" columnstretch="0,0,0,0">
@@ -805,13 +763,6 @@
         <widget class="QLabel" name="ObjectNote">
          <property name="text">
           <string>OBJECT for FITS header</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QCheckBox" name="TriggerRed">
-         <property name="text">
-          <string>Trigger Red</string>
          </property>
         </widget>
        </item>
@@ -883,31 +834,10 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
-        <widget class="QCheckBox" name="TriggerGreen">
-         <property name="text">
-          <string>Trigger Green</string>
-         </property>
-        </widget>
-       </item>
        <item row="6" column="1">
         <widget class="QLabel" name="nExpLabel">
          <property name="text">
           <string>nExp:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QCheckBox" name="TriggerCaHK">
-         <property name="text">
-          <string>Trigger CaHK</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" colspan="2">
-        <widget class="QLabel" name="label_19">
-         <property name="text">
-          <string>&lt;h4&gt;Spectrograph Setup&lt;/h4&gt;</string>
          </property>
         </widget>
        </item>
@@ -985,13 +915,6 @@
        <item row="10" column="2">
         <widget class="QComboBox" name="ExpMeterBin"/>
        </item>
-       <item row="0" column="3">
-        <widget class="QCheckBox" name="BlockSky">
-         <property name="text">
-          <string>BlockSky</string>
-         </property>
-        </widget>
-       </item>
        <item row="12" column="3">
         <widget class="QCheckBox" name="AutoNDFilters">
          <property name="enabled">
@@ -1020,7 +943,7 @@
         <x>430</x>
         <y>170</y>
         <width>20</width>
-        <height>351</height>
+        <height>321</height>
        </rect>
       </property>
       <property name="orientation">
@@ -1073,7 +996,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>530</y>
+        <y>500</y>
         <width>141</width>
         <height>16</height>
        </rect>
@@ -1089,7 +1012,7 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>530</y>
+        <y>500</y>
         <width>731</width>
         <height>51</height>
        </rect>
@@ -1108,7 +1031,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>520</y>
+        <y>490</y>
         <width>871</width>
         <height>16</height>
        </rect>

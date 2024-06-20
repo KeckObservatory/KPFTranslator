@@ -145,7 +145,6 @@ class MainWindow(QMainWindow):
         self.bad_slew_cal_time = 2.0 # hours
         # Path to OB files
         self.file_path = Path('/s/sdata1701/OBs')
-        self.starlist_file_name = ''
 
 
     def setupUi(self):
@@ -266,14 +265,6 @@ class MainWindow(QMainWindow):
         ##----------------------
         ## Science OB Tab
         ##----------------------
-        # Star List
-        self.star_list_line = self.findChild(QLabel, 'star_list_line')
-        self.star_list_line.setText('Unable to form star list line without Gaia coordinates')
-        self.star_list_line.setStyleSheet("background-color:white; font-family:monospace")
-
-        self.append_to_star_list_btn = self.findChild(QPushButton, 'append_to_star_list_btn')
-        self.append_to_star_list_btn.clicked.connect(self.run_append_to_star_list)
-
         # Target Name
         self.TargetName = self.findChild(QLineEdit, 'TargetName')
         self.TargetName.textChanged.connect(self.set_target_name)
@@ -794,7 +785,6 @@ class MainWindow(QMainWindow):
         if self.gaia_params is not None:
             for key in self.gaia_params:
                 self.update_OB(key, self.gaia_params[key])
-        self.form_star_list_line()
 
     def set_gaia_query_input(self, value):
         value = value.strip()
@@ -912,7 +902,6 @@ class MainWindow(QMainWindow):
         self.log.debug('Render all values in OB')
         # TargetName
         self.TargetName.setText(f"{self.OB.get('TargetName')}")
-        self.form_star_list_line()
         # GaiaID
         self.GaiaID.setText(f"{self.OB.get('GaiaID')}")
         # 2MASSID
@@ -983,47 +972,6 @@ class MainWindow(QMainWindow):
                 # save fname as path to use in future
                 self.file_path = Path(save_file).parent
                 self.OB.write_to_file(save_file)
-
-    def form_star_list_line(self):
-        self.log.debug(f"form_star_list_line")
-        if self.gaia_params is not None:
-            starlist = BuildOBfromQuery.form_starlist_line(self.OB.get('TargetName'),
-                                                           self.gaia_params['RA_ICRS'],
-                                                           self.gaia_params['DE_ICRS'],
-                                                           vmag=self.OB.get('Gmag'),
-                                                           )
-            self.OB.star_list_line = starlist
-            self.star_list_line.setText(starlist)
-            return starlist
-        else:
-            msg = 'Unable to form star list line without Gaia coordinates'
-            self.star_list_line.setText(msg)
-            print(msg)
-            return None
-
-    def run_append_to_star_list(self):
-        self.log.debug(f"run_append_to_star_list")
-        if self.form_star_list_line() is None:
-            # Don't bother with dialog if we can't form a star list entry
-            return None
-        result = QFileDialog.getSaveFileName(self, 'Star List File',
-                                             f"{self.file_path}",
-                                             "txt Files (*txt);;All Files (*)")
-        if result:
-            starlist_file = result[0]
-            if starlist_file != '':
-                # save fname as path to use in future
-                starlist_file = Path(starlist_file)
-                self.file_path = starlist_file.parent
-                self.starlist_file_name = starlist_file.name
-                self.append_to_starlist_file(starlist_file)
-
-    def append_to_starlist_file(self, starlist_file):
-        self.log.debug(f"append_to_starlist_file: {starlist_file}")
-        line = self.form_star_list_line()
-        if line is not None:
-            with open(starlist_file, 'a') as f:
-                f.write(line+'\n')
 
     def run_load_from_file(self):
         self.log.debug(f"run_load_from_file")
