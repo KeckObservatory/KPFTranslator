@@ -258,13 +258,17 @@ class MainWindow(QMainWindow):
         # Recommended Values
         self.RecommendedGainValue = self.findChild(QLabel, 'RecommendedGainValue')
         self.RecommendedFPSValue = self.findChild(QLabel, 'RecommendedFPSValue')
+        # Extinction Correction
         self.Extinction = self.findChild(QComboBox, 'Extinction')
         selector_values = [f'{x:.1f}' for x in np.arange(0,9,1)]
         self.Extinction.addItems(selector_values)
         self.set_extinction(self.ExtinctionValue)
-        self.SetRecommendedButton = self.findChild(QPushButton, 'SetRecommendedButton')
+        self.Extinction.currentTextChanged.connect(self.set_extinction)
+        # Set Recommended Values
+        self.SetRecommendedButton = self.findChild(QPushButton, 'AcceptRecommendation')
         self.SetRecommendedButton.setEnabled(self.enable_control)
         self.SetRecommendedButton.clicked.connect(self.set_recommended_guider_parameters)
+        self.SetRecommendedButton.setEnabled(self.enable_control)
 
         # Camera Gain
         self.CameraGainValue = self.findChild(QLabel, 'CameraGainValue')
@@ -587,6 +591,7 @@ class MainWindow(QMainWindow):
         self.CameraGain.setEnabled(enabled)
         self.CameraFPSValue.setEnabled(enabled)
         self.CameraFPSSelector.setEnabled(enabled)
+        self.SetRecommendedButton.setEnabled(enabled)
         self.PeakFlux.setEnabled(enabled)
         self.TotalFlux.setEnabled(enabled)
         self.TipTiltFPS.setEnabled(enabled)
@@ -611,6 +616,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_CameraGain: {value}')
         self.CameraGainValue.setText(f'{value}')
         self.CameraGain.setCurrentText('')
+        self.colorize_recommended_values()
 
     def set_CameraGain(self, value):
         if value != '':
@@ -619,6 +625,7 @@ class MainWindow(QMainWindow):
 
     def update_Jmag(self, value):
         self.log.debug(f'update_Jmag: {value}')
+        self.JmagValue.setText(f"{float(value):.1f}")
         self.update_guider_prediction()
 
     def set_extinction(self, value):
@@ -629,12 +636,29 @@ class MainWindow(QMainWindow):
 
     def update_guider_prediction(self):
         try:
-            mag_for_estimate = self.TARGET_JMAG.binary + self.ExtinctionValue
+            target_Jmag = float(self.TARGET_JMAG.ktl_keyword.binary)
+            mag_for_estimate = target_Jmag + self.ExtinctionValue
             self.GuiderParameters = PredictGuiderParameters.execute({'Jmag': mag_for_estimate})
-            self.RecommendedGainValue.setText(self.GuiderParameters['GuideCamGain'])
-            self.RecommendedFPSValue.setText(self.GuiderParameters['GuideFPS'])
-        except:
+            self.RecommendedGainValue.setText(f"{self.GuiderParameters['GuideCamGain']}")
+            self.RecommendedFPSValue.setText(f"{self.GuiderParameters['GuideFPS']:.1f}")
+            self.colorize_recommended_values()
+        except Exception as e:
             log.warning(f'PredictGuiderParameters failed')
+            print(e)
+
+    def colorize_recommended_values(self):
+        # Colorize recommended gain value
+        if self.GuiderParameters['GuideCamGain'].lower() != self.GAIN.ktl_keyword.ascii.lower():
+            style = f'color: orange;'
+        else:
+            style = f'color: limegreen;'
+        self.RecommendedGainValue.setStyleSheet(style)
+        # Colorize recommended FPS value
+        if f"{self.GuiderParameters['GuideFPS']:.1f}" != f"{self.FPS.ktl_keyword.binary:.1f}":
+            style = f'color: orange;'
+        else:
+            style = f'color: limegreen;'
+        self.RecommendedFPSValue.setStyleSheet(style)
 
     def set_recommended_guider_parameters(self):
         self.set_CameraGain(self.GuiderParameters.get('GuideCamGain', ''))
@@ -646,6 +670,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_CameraFPS: {value}')
         self.CameraFPSValue.setText(f"{float(value):.1f}")
         self.CameraFPSSelector.setCurrentText('')
+        self.colorize_recommended_values()
 
     def set_CameraFPS(self, value):
         if value != '':
