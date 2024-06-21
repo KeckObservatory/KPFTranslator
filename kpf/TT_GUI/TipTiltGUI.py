@@ -106,7 +106,9 @@ def main(log):
     with open(css_file, 'r') as f:
         dark_css = f.read()
     application.setStyleSheet(dark_css)
-    main_window = MainWindow(log, dark=cmd_line_args.dark)
+    main_window = MainWindow(log,
+                             dark=cmd_line_args.dark,
+                             monitor=cmd_line_args.monitor)
     main_window.setupUi()
     main_window.show()
     return kPyQt.run(application)
@@ -114,7 +116,7 @@ def main(log):
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, log, dark=False, *args, **kwargs):
+    def __init__(self, log, dark=False, monitor=False, *args, **kwargs):
         QMainWindow.__init__(self, *args, **kwargs)
         ui_file = Path(__file__).parent / 'TipTiltGUI.ui'
         uic.loadUi(f"{ui_file}", self)
@@ -122,6 +124,7 @@ class MainWindow(QMainWindow):
         self.dark = dark
         if self.dark is True:
             plt.style.use('dark_background')
+        self.monitor = monitor
         self.ginga_log = ginga_log.get_logger("example1", log_stderr=True, level=40)
         self.log.debug('Initializing MainWindow')
         # Keywords
@@ -204,7 +207,7 @@ class MainWindow(QMainWindow):
         self.ycent = None
         self.pscale = kpfguide['PSCALE'].read(binary=True)
         # Mode
-        self.enable_control = not cmd_line_args.monitor
+        self.enable_control = not self.monitor
         if self.enable_control is True:
             self.log.info(f"Starting GUI in full control mode")
         else:
@@ -296,6 +299,7 @@ class MainWindow(QMainWindow):
         self.Extinction.addItems(selector_values)
         self.set_extinction(self.ExtinctionValue)
         self.Extinction.currentTextChanged.connect(self.set_extinction)
+        self.Extinction.setEnabled(self.enable_control)
         # Set Recommended Values
         self.SetRecommendedButton = self.findChild(QPushButton, 'AcceptRecommendation')
         self.SetRecommendedButton.setEnabled(self.enable_control)
@@ -647,20 +651,23 @@ class MainWindow(QMainWindow):
     ##----------------------------------------------------------
     ## Enable/Disable Camera Control and Telemetry
     def enable_control_and_telemetry(self, enabled):
-        self.CameraGain.setEnabled(enabled)
-        self.CameraFPSValue.setEnabled(enabled)
-        self.CameraFPSSelector.setEnabled(enabled)
-        self.SetRecommendedButton.setEnabled(enabled)
-        self.PeakFlux.setEnabled(enabled)
-        self.TotalFlux.setEnabled(enabled)
-        self.TipTiltFPS.setEnabled(enabled)
-        self.TipTiltPhase.setEnabled(enabled)
-        self.TipTiltRMSValue.setEnabled(enabled)
-        self.ObjectChoice.setEnabled(enabled)
-        self.TipTiltOnOffButton.setEnabled(enabled)
-        self.CalculationCheckBox.setEnabled(enabled)
-        self.ControlCheckBox.setEnabled(enabled)
-        self.OffloadCheckBox.setEnabled(enabled)
+        if self.monitor is False:
+            self.CameraGain.setEnabled(enabled)
+            self.CameraFPSValue.setEnabled(enabled)
+            self.CameraFPSSelector.setEnabled(enabled)
+            self.SetRecommendedButton.setEnabled(enabled)
+            self.PeakFlux.setEnabled(enabled)
+            self.TotalFlux.setEnabled(enabled)
+            self.TipTiltFPS.setEnabled(enabled)
+            self.TipTiltPhase.setEnabled(enabled)
+            self.TipTiltRMSValue.setEnabled(enabled)
+            self.ObjectChoice.setEnabled(enabled)
+            self.TipTiltOnOffButton.setEnabled(enabled)
+            self.CalculationCheckBox.setEnabled(enabled)
+            self.ControlCheckBox.setEnabled(enabled)
+            self.OffloadCheckBox.setEnabled(enabled)
+        else:
+            log.debug('Monitor mode in use')
 
 
     ##----------------------------------------------------------
