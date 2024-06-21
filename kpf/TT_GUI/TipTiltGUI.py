@@ -1268,10 +1268,10 @@ class MainWindow(QMainWindow):
         self.xcent, self.ycent = np.array(np.round(pix_target), dtype=int)
         if pix_target[0] < 0 or pix_target[0] > 640 or pix_target[1] < 0 or pix_target[1] > 512:
             self.PixTargetValue.setText(f"Out Of Range")
-            self.PixTargetValue.setStyleSheet(f'color: red;')
+            self.PixTargetValue.setStyleSheet(f'background-color: red;')
         else:
             self.PixTargetValue.setText(f"{pix_target[0]:.1f}, {pix_target[1]:.1f}")
-            self.PixTargetValue.setStyleSheet(f'color: black;')
+            self.PixTargetValue.setStyleSheet(f'background-color: transparent;')
 
     def load_file(self, filepath):
         try:
