@@ -145,6 +145,7 @@ class MainWindow(QMainWindow):
         self.OBJECT_DBCONT = kPyQt.kFactory(kpfguide['OBJECT_DBCONT'])
         self.TIPTILT_PHASE = kPyQt.kFactory(kpfguide['TIPTILT_PHASE'])
         self.TIPTILT_ERROR = kPyQt.kFactory(kpfguide['TIPTILT_ERROR'])
+        self.TIPTILT_ERROR_RMS = kPyQt.kFactory(kpfguide['TIPTILT_ERROR_RMS'])
         self.TIPTILT_CONTROL_X = kPyQt.kFactory(kpfguide['TIPTILT_CONTROL_X'])
         self.TIPTILT_CONTROL_Y = kPyQt.kFactory(kpfguide['TIPTILT_CONTROL_Y'])
         self.DAR_ENABLE = kPyQt.kFactory(kpfguide['DAR_ENABLE'])
@@ -338,9 +339,10 @@ class MainWindow(QMainWindow):
         self.TIPTILT_PHASE.primeCallback()
 
         # Tip Tilt Error
-        self.TipTiltError = self.findChild(QLabel, 'TipTiltError')
-        self.TIPTILT_ERROR.stringCallback.connect(self.update_TipTiltError)
-        self.TIPTILT_ERROR.primeCallback()
+        #self.TipTiltError = self.findChild(QLabel, 'TipTiltError')
+        self.TipTiltRMSValue = self.findChild(QLabel, 'TipTiltRMSValue')
+        self.TIPTILT_ERROR_RMS.stringCallback.connect(self.update_TipTiltRMS)
+        self.TIPTILT_ERROR_RMS.primeCallback()
 
         # Tip Tilt Error Plot
         self.TipTiltErrorPlotFrame = self.findChild(QFrame, 'TipTiltErrorPlotFrame')
@@ -650,7 +652,7 @@ class MainWindow(QMainWindow):
         self.TotalFlux.setEnabled(enabled)
         self.TipTiltFPS.setEnabled(enabled)
         self.TipTiltPhase.setEnabled(enabled)
-        self.TipTiltError.setEnabled(enabled)
+        self.TipTiltRMSValue.setEnabled(enabled)
         self.ObjectChoice.setEnabled(enabled)
         self.TipTiltOnOffButton.setEnabled(enabled)
         self.CalculationCheckBox.setEnabled(enabled)
@@ -875,11 +877,17 @@ class MainWindow(QMainWindow):
 
     ##----------------------------------------------------------
     ## Tip Tilt Error
+    def update_TipTiltRMS(self, value):
+        self.log.debug(f'update_TipTiltRMS: {value}')
+        rms = float(value)*self.pscale*1000
+        rms_string = f'{rms:.1f}'
+        self.TipTiltRMSValue.setText(f"{rms_string} mas")
+
     def update_TipTiltError(self, value):
         self.log.debug(f'update_TipTiltError: {value}')
         err = float(value)
         err_string = f'{err:.1f}'
-        self.TipTiltError.setText(f"{err_string} pix")
+        #self.TipTiltError.setText(f"{err_string} pix")
 
         # X and Y Error from OBJECT position
         if self.OBJECT_CHOICE.ktl_keyword.binary != 0:
