@@ -23,8 +23,43 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
     Obeys kpfconfig.ALLOWSCHEDULEDCALS (will not run if that is set to No)
 
     Args:
-    =====
-    :nExp: The number of frames to take
+        nExp (int): The number of frames to take.
+        combine (bool): Combine the files in to a master bias?
+        output (str): The output combined bias file.
+        update (bool): Update the bias file in use with the newly generated
+            file? (only used if combine is True).
+
+    KTL Keywords Used:
+
+    - `kpfconfig.EXPMETER_ENABLED`
+    - `kpfconfig.ALLOWSCHEDULEDCALS`
+    - `kpf_expmeter.COOLING`
+    - `kpf_expmeter.COOLTARG`
+    - `kpf_expmeter.COOLTEMP`
+    - `kpf_expmeter.BINX`
+    - `kpf_expmeter.BINY`
+    - `kpf_expmeter.TOP`
+    - `kpf_expmeter.LEFT`
+    - `kpf_expmeter.WIDTH`
+    - `kpf_expmeter.HEIGHT`
+    - `kpf_expmeter.EXPOSURE`
+    - `kpf_expmeter.OBJECT`
+    - `kpf_expmeter.OBSERVER`
+    - `kpf_expmeter.EXPMODE`
+    - `kpf_expmeter.EXPSTATE`
+    - `kpf_expmeter.EXPOSE`
+    - `kpf_expmeter.SEQNUM`
+    - `kpf_expmeter.FITSFILE`
+    - `kpfexpose.TRIG_TARG`
+
+    Scripts Called:
+
+    - `kpf.calbench.SetCalSource`
+    - `kpf.calbench.WaitForCalSource`
+    - `kpf.spectrograph.WaitForReady`
+    - `kpf.spectrograph.SetSourceSelectShutters`
+    - `kpf.expmeter.BuildMasterBias`
+    - `kpf.spectrograph.ResetDetectors.ResetExpMeterDetector`
     '''
     @classmethod
     @obey_scriptrun
@@ -145,8 +180,6 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('nExp', type=int,
                             help="The number of frames to take")
         parser.add_argument("-c", "--combine", dest="combine",

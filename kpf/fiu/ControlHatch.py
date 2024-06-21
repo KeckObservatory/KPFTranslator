@@ -7,10 +7,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class ControlHatch(KPFTranslatorFunction):
     '''Open or close the FIU hatch
-    
-    ARGS:
-    =====
-    :destination: The desired FIU hatch position name
+
+    Args:
+        destination (str): The desired FIU hatch position name. Allowed
+            values: closed, open
+
+    KTL Keywords Used:
+
+    - `kpffiu.HATCH`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -33,8 +37,6 @@ class ControlHatch(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('destination', type=str,
                             choices=['open', 'closed'],
                             help='Desired hatch position')

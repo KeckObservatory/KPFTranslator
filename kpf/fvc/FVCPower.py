@@ -11,11 +11,16 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class FVCPower(KPFTranslatorFunction):
     '''Turn on or off the power for the specified FVC camera.
-    
-    ARGS:
-    =====
-    :camera: Which FVC camera (SCI, CAHK, CAL)?
-    :power: Desired state: on or off
+
+    Args:
+        camera (str): Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL
+        power (str): The desired state. Allowed values: on or off
+
+    KTL Keywords Used:
+
+    - `kpfpower.KPFFVC1`
+    - `kpfpower.KPFFVC2`
+    - `kpfpower.KPFFVC3`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -46,8 +51,6 @@ class FVCPower(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('camera', type=str,
                             choices=['SCI', 'CAHK', 'CAL'],
                             help='The FVC camera')

@@ -10,9 +10,17 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 ## Configure FIU Once
 ##-----------------------------------------------------------------------------
 class ConfigureFIUOnce(KPFTranslatorFunction):
-    '''Set the FIU mode (kpffiu.MODE) with a single attempt.
-    
-    This is intended to be wrapped by :py:func:`ConfigureFIU` to handle retries.
+    '''Set the FIU mode (kpffiu.MODE) with a single attempt. This is intended
+    to be wrapped by `ConfigureFIU` to handle retries.
+
+    Args:
+        mode (str): The desired FIU mode. Allowed values: Stowed, Alignment,
+            Acquisition, Observing, Calibration
+        wait (bool): Wait for move to complete before returning? (default: True)
+
+    KTL Keywords Used:
+
+    - `kpffiu.MODE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

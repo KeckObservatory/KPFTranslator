@@ -12,11 +12,21 @@ from kpf.fiu.ShutdownTipTilt import ShutdownTipTilt
 
 
 class TestTipTiltMirrorRange(KPFTranslatorFunction):
-    '''
-    
-    ARGS:
-    =====
-    None
+    '''Verify if the tip tilt system is reaching the nominal range. Output is
+    only via log messages.
+
+    KTL Keywords Used:
+
+    - `kpffiu.TTXVAX`
+    - `kpffiu.TTYVAX`
+    - `kpfguide.TIPTILT_HOME`
+    - `kpfguide.TIPTILT_XRANGE`
+    - `kpfguide.TIPTILT_YRANGE`
+
+    Scripts Called:
+
+    - `kpf.fiu.InitializeTipTilt`
+    - `kpf.fiu.ShutdownTipTilt`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -8,15 +8,19 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetTipTiltPosition(KPFTranslatorFunction):
     '''Set the position of the tip tilt mirror.
-    
+
     This should only be used in an engineering context. To control the position
     of a star, set the CURRENT_BASE or PIX_TARGET keywords as appropriate, e.g.
-    via the :py:func:`SetTipTiltTargetPixel` translator module function.
-    
-    ARGS:
-    =====
-    :x: The desired X position (TTXVAX).
-    :y: The desired Y position (TTYVAX).
+    via the `kpf.fiu.SetTipTiltTargetPixel` translator module function.
+
+    Args:
+        x (float): The desired X position (TTXVAX).
+        y (float): The desired Y position (TTYVAX).
+
+    KTL Keywords Used:
+
+    - `kpffiu.TTXVAX`
+    - `kpffiu.TTYVAX`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -51,8 +55,6 @@ class SetTipTiltPosition(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('x', type=float,
                             help="X position of the tip tilt mirror (TTXVAX)")
         parser.add_argument('y', type=float,

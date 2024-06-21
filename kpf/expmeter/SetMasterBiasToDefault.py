@@ -8,10 +8,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetMasterBiasToDefault(KPFTranslatorFunction):
     '''Sets the master bias file for the exposure meter to the default value
-    
-    Args:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpf_expmeter.BIAS_FILE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

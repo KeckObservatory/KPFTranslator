@@ -35,10 +35,9 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class PredictExpMeterParameters(KPFTranslatorFunction):
     '''Estimate the proper exposure meter exposure time given the stellar Gmag.
-    
+
     Args:
-    =====
-    :Gmag: The Gaia g magnitude of the target
+        Gmag (float): The Gaia g magnitude of the target.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

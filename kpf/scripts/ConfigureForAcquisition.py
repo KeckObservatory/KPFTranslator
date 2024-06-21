@@ -37,7 +37,7 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
 
     ARGS:
     =====
-    None
+    :OB: `dict` A fully specified science observing block (OB).
     '''
     @classmethod
     @obey_scriptrun

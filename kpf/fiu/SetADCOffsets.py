@@ -9,10 +9,17 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetADCOffsets(KPFTranslatorFunction):
     '''Quick and dirty code to manually set ADC angles to prescribed offsets
     from nominal based on the telescope position.
-    
-    ARGS:
-    =====
-    None
+
+    Args:
+        ADC1OFF (float): Offset for ADC1 (in degrees).
+        ADC2OFF (float): Offset for ADC2 (in degrees).
+
+    KTL Keywords Used:
+
+    - `kpffiu.ADC1VAL`
+    - `kpffiu.ADC2VAL`
+    - `kpffiu.ADCTRACK`
+    - `kpffiu.ADCPRISMS`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -49,8 +56,6 @@ class SetADCOffsets(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('ADC1OFF', type=float,
                             help="Offset for ADC1 (in degrees)")
         parser.add_argument('ADC2OFF', type=float,

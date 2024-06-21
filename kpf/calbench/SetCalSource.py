@@ -8,16 +8,17 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetCalSource(KPFTranslatorFunction):
-    '''
-    Selects which source is fed from the octagon in to the cal bench via the
-    kpfcal.OCTAGON keyword.
-    
-    Valid names: Home, EtalonFiber, BrdbandFiber, U_gold, U_daily,
-    Th_daily, Th_gold, SoCal-CalFib, LFCFiber
-    
-    ARGS:
-    =====
-    :CalSource: The octagon position to select
+    '''Selects which source is fed from the octagon in to the cal bench via the
+    `kpfcal.OCTAGON` keyword.
+
+    Args:
+        CalSource (str): Which lamp to select? Allowed Values: EtalonFiber,
+            BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold, SoCal-CalFib,
+            LFCFiber
+
+    KTL Keywords Used:
+
+    - `kpfcal.OCTAGON`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -36,8 +37,6 @@ class SetCalSource(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        '''Verifies that the final OCTAGON keyword value matches the input.
-        '''
         target = args.get('CalSource')
         timeout = cfg.getfloat('times', 'octagon_move_time', fallback=90)
         expr = f"($kpfcal.OCTAGON == {target})"
@@ -48,8 +47,6 @@ class SetCalSource(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('CalSource', type=str,
                             choices=['Home', 'EtalonFiber', 'BrdbandFiber',
                                      'U_gold', 'U_daily', 'Th_daily', 'Th_gold',

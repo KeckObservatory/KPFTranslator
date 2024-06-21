@@ -8,10 +8,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SendPCUtoKPF(KPFTranslatorFunction):
     '''Send the PCU stage to the "kpf" named position.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `ao.PCSFNAME`
+    - `ao.PCSFSTST`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

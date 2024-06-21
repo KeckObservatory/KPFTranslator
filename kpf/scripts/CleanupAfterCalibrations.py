@@ -31,13 +31,11 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
 
     ARGS:
     =====
-    None
+    :OB: `dict` A fully specified calibration observing block (OB).
     '''
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.3')
+        pass
 
     @classmethod
     def perform(cls, OB, logger, cfg):

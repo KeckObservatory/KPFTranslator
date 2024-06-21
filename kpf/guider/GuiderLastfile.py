@@ -9,10 +9,13 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class GuiderLastfile(KPFTranslatorFunction):
     '''Print the value of the kpfguide.LASTFILE keyword to STDOUT
-    
-    ARGS:
-    =====
-    :wait: (bool) Return only after lastfile is updated? (default = False)
+
+    Args:
+        wait (bool): Return only after lastfile is updated? (default = False)
+
+    KTL Keywords Used:
+
+    - `kpfguide.LASTFILE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -37,8 +40,6 @@ class GuiderLastfile(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",
                             help="Send exposure command and return immediately?")

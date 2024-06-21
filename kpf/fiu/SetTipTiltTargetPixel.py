@@ -9,11 +9,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetTipTiltTargetPixel(KPFTranslatorFunction):
     '''Set the target pixel of the tip tilt mirror.  This sets the CURRENT_BASE
     keyword.
-    
-    ARGS:
-    =====
-    :x: The desired X target pixel
-    :y: The desired Y target pixel
+
+    Args:
+        x (float): The desired X target pixel.
+        y (float): The desired Y target pixel.
+
+    KTL Keywords Used:
+
+    - `kpfguide.CURRENT_BASE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -39,8 +42,6 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('x', type=float,
                             help="X pixel target (CURRENT_BASE)")
         parser.add_argument('y', type=float,

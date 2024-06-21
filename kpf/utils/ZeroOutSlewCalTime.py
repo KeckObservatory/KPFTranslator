@@ -13,8 +13,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class ZeroOutSlewCalTime(KPFTranslatorFunction):
     '''Zero out the slew cal timer by setting it to the current timestamp.
 
-    ARGS:
-    =====
+    ### ARGS
     None
     '''
     @classmethod

@@ -45,7 +45,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
 
     ARGS:
     =====
-    None
+    :OB: `dict` A fully specified slew cal observing block (OB).
     '''
     abortable = True
 

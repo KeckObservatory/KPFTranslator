@@ -11,9 +11,12 @@ class VerifyCurrentBase(KPFTranslatorFunction):
     '''Check whether the tip tilt system's target pixel (kpffiu.CURRENT_BASE)
     is consistent with the selected pointing origin (dcs.PONAME)
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `dcs1.PONAME`
+    - `kpfguide.CURRENT_BASE`
+    - `kpfguide.SCIENCE_BASE`
+    - `kpfguide.SKY_BASE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

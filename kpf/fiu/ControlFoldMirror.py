@@ -7,11 +7,15 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class ControlFoldMirror(KPFTranslatorFunction):
     '''Insert or remove the FIU Cal Fold Mirror from the beam.
-    
-    ARGS:
-    =====
-    :destination: The desired FIU fold mirror position name
-    :wait: (bool) Wait for move to complete before returning? (default: True)
+
+    Args:
+        destination (str): The desired FIU fold mirror position name. Allowed
+            values: in, out
+        wait (bool): Wait for move to complete before returning? (default: True)
+
+    KTL Keywords Used:
+
+    - `kpffiu.FOLDNAM`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -36,8 +40,6 @@ class ControlFoldMirror(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('destination', type=str,
                             choices=['in', 'out'],
                             help='Desired fold mirror position')

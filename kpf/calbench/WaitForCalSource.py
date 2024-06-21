@@ -9,13 +9,15 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class WaitForCalSource(KPFTranslatorFunction):
     '''Wait for the move to a cal source is complete (kpfcal.OCTAGON keyword).
-    
-    Valid names: Home, EtalonFiber, BrdbandFiber, U_gold, U_daily,
-    Th_daily, Th_gold, SoCal-CalFib, LFCFiber
-    
-    ARGS:
-    =====
-    :CalSource: The octagon position that is the destination
+
+    Args:
+        CalSource (str): Which lamp to select? Allowed Values: EtalonFiber,
+            BrdbandFiber, U_gold, U_daily, Th_daily, Th_gold, SoCal-CalFib,
+            LFCFiber
+
+    KTL Keywords Used:
+
+    - `kpfcal.OCTAGON`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -36,8 +38,6 @@ class WaitForCalSource(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        '''Verifies that the final OCTAGON keyword value matches the input.
-        '''
         target = args.get('CalSource')
         timeout = cfg.getfloat('times', 'octagon_move_time', fallback=60)
         expr = f"($kpfcal.OCTAGON == {target})"
@@ -48,8 +48,6 @@ class WaitForCalSource(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('CalSource', type=str,
                             choices=['Home', 'EtalonFiber', 'BrdbandFiber',
                                      'U_gold', 'U_daily', 'Th_daily', 'Th_gold',

@@ -27,11 +27,13 @@ def calculate_ADC_delta(za):
 
 
 class SetADCAngles(KPFTranslatorFunction):
-    '''Quick and dirty code to manually set ADC angles for a notional NULL position
-    
-    ARGS:
-    =====
-    None
+    '''Quick and dirty code to manually set ADC angles for a notional NULL
+    position.
+
+    KTL Keywords Used:
+
+    - `kpffiu.ADC1VAL`
+    - `kpffiu.ADC2VAL`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -67,8 +69,6 @@ class SetADCAngles(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('EL', type=float,
                             help="The telescope elevation to use in the calculation")
         return super().add_cmdline_args(parser, cfg)

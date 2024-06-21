@@ -13,7 +13,6 @@ from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
-from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
 from kpf.socal.ParkSoCal import ParkSoCal
@@ -28,7 +27,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     that the SoCal dispatcher number 4 will handle opening the enclosure,
     acquiring and tracking the Sun, and will perform a weather safety shutdown
     if needed.  The AUTONOMOUS mode will respect the CAN_OPEN keyword as well,
-    so that keyword will lock our SoCal motions if that is desired.
+    so that keyword will lock out SoCal motions if that is desired.
 
     The script takes two required inputs: a start and end time in decimal hours
     (in HST).  The start time can be after the invocation of this script.  This
@@ -38,12 +37,16 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
     If needed, the script will wait until the start time before taking further
     actions (beyond setting AUTONOMOUS). Once the start time has passed, the
-    script will try to determine if SoCal is successfully observing the Sun by
-    invoking the `WaitForSoCalOnTarget` script.
+    script will check the `kpfconfig.SCRIPT%` keywords to see if something is
+    currently running.  If so, it will wait for the script keywords to clear
+    before starting operations.
+
+    Next the script will try to determine if SoCal is successfully observing
+    the Sun by invoking the `WaitForSoCalOnTarget` script.
 
     If SoCal is on target, then a short observation of the Sun is performed.
     Some of the parameters can be modified in the `KPFTranslator` configuration
-    file (`kpf_int_config.ini`). This observation, as currently configured,
+    file (`kpf_inst_config.ini`). This observation, as currently configured,
     takes about 15 minutes to complete.
 
     If SoCal is not on target (according to the `WaitForSoCalOnTarget` script),
@@ -51,19 +54,18 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
     that would otherwise be unproductive. This etalon script also takes around
     15 minutes or a bit less to complete.
 
-    One either of the two observations above has completed, the script repeats
+    Once either of the two observations above has completed, the script repeats
     the loop as long as there is enough time before the end time to complete a
     SoCal observation.
 
     Once the end time has passed, the system will perform basic cleanup of KPF,
     then it will park SoCal using `ParkSoCal` if the park flag is set.
 
-    ARGS:
-    =====
-    :StartTimeHST: `float` The time (in decimal hours HST) to begin observing.
-    :EndTimeHST: `float` The time (in decimal hours HST) to end observing.
-    :park: `bool` If True, the script will park SoCal when complete.
-    :scheduled: `bool` If True, the script will not run if the keyword
+    ## Arguments
+    * __StartTimeHST__ - `float` The time (in decimal hours HST) to begin observing.
+    * __EndTimeHST__ - `float` The time (in decimal hours HST) to end observing.
+    * __park__ - `bool` If True, the script will park SoCal when complete.
+    * __scheduled__ - `bool` If True, the script will not run if the keyword
                 `kpfconfig.ALLOWSCHEDULEDCALS` is "No".
     '''
     @classmethod
@@ -83,6 +85,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
+        # Prepare SoCal parameters to pass to ExecuteCal
         socal_ND1 = cfg.get('SoCal', 'ND1', fallback='OD 0.1')
         socal_ND2 = cfg.get('SoCal', 'ND2', fallback='OD 0.1')
         socal_ExpTime = cfg.getfloat('SoCal', 'ExpTime', fallback=12)
@@ -116,6 +119,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         SoCal_duration += int(SoCal_observation['nExp'])*readout
         log.debug(f"Estimated SoCal observation time = {SoCal_duration}")
 
+        # Prepare Etalon parameters to pass to ExecuteCal
         Etalon_ND1 = cfg.get('SoCal', 'EtalonND1', fallback='OD 0.1')
         Etalon_ND2 = cfg.get('SoCal', 'EtalonND2', fallback='OD 0.1')
         Etalon_ExpTime = cfg.getfloat('SoCal', 'EtalonExpTime', fallback=60)
@@ -142,16 +146,15 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         Etalon_duration += int(Etalon_observation['nExp'])*readout
         log.debug(f"Estimated Etalon observation time = {Etalon_duration}")
 
+        # Start SoCal in autonomous mode
+        SoCalStartAutonomous.execute({})
+
         # Start Loop
         max_wait_per_iteration = 60
         start_time = args.get('StartTimeHST', 9)
         end_time = args.get('EndTimeHST', 12) - SoCal_duration/3600 - 0.05
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
-
-        # Start SoCal in autonomous mode
-        SoCalStartAutonomous.execute({})
-
         if now_decimal < start_time:
             wait = (start_time-now_decimal)*3600
             log.info(f'Waiting {wait:.0f}s for SoCal window start time')
@@ -159,9 +162,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         elif now_decimal > end_time:
             log.info("End time for today's SoCal window has passed")
             return
-
-
-        check_scriptstop()
 
         SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
         if SCRIPTPID.read(binary=True) >= 0:
@@ -171,26 +171,34 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             if waittime > 0:
                 log.info(f'Waiting up to {waittime:.0f}s for running script to end')
                 SCRIPTPID.waitFor("==-1", timeout=waittime)
-
-        check_scriptstop()
+                time.sleep(10) # time shim
 
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
-        log.info('Starting SoCal observation loop')
+        log.info(f'Starting SoCal observation loop')
+        log.info(f'Start time: {start_time:.2f} HST')
+        log.info(f'End Time: {end_time:.2f} HST')
 
-        while now_decimal > start_time and now_decimal < end_time:
+        check_scriptstop()
+
+        nSoCalObs = 0
+        nEtalonObs = 0
+
+        now = datetime.datetime.now()
+        now_decimal = (now.hour + now.minute/60 + now.second/3600)
+        while now_decimal >= start_time and now_decimal < end_time:
+            log.debug('Checking if SoCal is on the Sun')
             on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
-            if on_target == True:
-                # Observe the Sun
-                observation = SoCal_observation
-            else:
-                # Take etalon calibrations
-                observation = Etalon_observation
+            observation = {True: SoCal_observation, False: Etalon_observation}[on_target]
             log.info(f'SoCal on target: {on_target}')
             log.info(f"Executing {observation['Object']}")
             try:
                 check_scriptstop()
                 ExecuteCal.execute(observation)
+                if on_target == True:
+                    nSoCalObs += 1
+                else:
+                    nEtalonObs += 1
             except Exception as e:
                 log.error("ExecuteCal failed:")
                 log.error(e)
@@ -208,11 +216,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                     except Exception as email_err:
                         log.error(f'Sending email failed')
                         log.error(email_err)
-                # Cleanup
-                clear_script_keywords()
-                log.error('Running CleanupAfterCalibrations and exiting')
-                CleanupAfterCalibrations.execute({})
-                sys.exit(1)
 
             check_scriptstop()
 
@@ -221,11 +224,30 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             now_decimal = (now.hour + now.minute/60 + now.second/3600)
 
         log.info('SoCal observation loop completed')
-        # Clear script keywords so that cleanup can start successfully
-        clear_script_keywords()
+        log.info(f'Executed {nSoCalObs} SoCal sequences')
+        log.info(f'Executed {nEtalonObs} Etalon sequences')
 
         # Cleanup
-        CleanupAfterScience.execute({})
+        try:
+            CleanupAfterCalibrations.execute(Etalon_observation)
+        except Exception as e:
+            log.error("CleanupAfterCalibrations failed:")
+            log.error(e)
+            traceback_text = traceback.format_exc()
+            log.error(traceback_text)
+            clear_script_keywords()
+            # Email error to kpf_info
+            try:
+                msg = [f'{type(e)}',
+                       f'{traceback_text}',
+                       '',
+                       f'{OB}']
+                SendEmail.execute({'Subject': 'CleanupAfterCalibrations Failed',
+                                   'Message': '\n'.join(msg)})
+            except Exception as email_err:
+                log.error(f'Sending email failed')
+                log.error(email_err)
+
         # Park SoCal?
         if args.get('park', False) == True:
             ParkSoCal.execute({})
@@ -236,8 +258,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('StartTimeHST', type=float,
             help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,

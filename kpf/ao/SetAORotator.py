@@ -9,10 +9,16 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetAORotator(KPFTranslatorFunction):
     '''Set the AO rotator destination
-    
-    ARGS:
-    =====
-    :dest: Angle in degrees
+
+    KTL Keywords Used:
+
+    - `ao.AODCSSIM`
+    - `ao.AOCOMSIM`
+    - `ao.AODCSSFP`
+
+    Args:
+        dest (float): Angle in degrees for the physical drive angle of the
+            rotator.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -21,8 +27,9 @@ class SetAORotator(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         ao = ktl.cache('ao')
-        log.debug(f"Setting AO Rotator to {args['dest']:.1f}")
-        ao['OBRT'].write(args['dest'])
+        dest = args.get('dest', 0)
+        log.debug(f"Setting AO Rotator to {dest:.1f}")
+        ao['OBRT'].write(dest)
         ao['OBRTMOVE'].write('1')
 
     @classmethod
@@ -34,8 +41,6 @@ class SetAORotator(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('dest', type=float,
                             help="Desired rotator position")
         return super().add_cmdline_args(parser, cfg)

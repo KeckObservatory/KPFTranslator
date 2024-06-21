@@ -8,10 +8,16 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class ShutdownTipTilt(KPFTranslatorFunction):
     '''Shutdown the tip tilt system by setting the control mode to open loop
     and setting the target values in X and Y to 0.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpffiu.TTXSRV`
+    - `kpffiu.TTYSRV`
+    - `kpffiu.TTXVAX`
+    - `kpffiu.TTYVAX`
+    - `kpfguide.TIPTILT_CONTROL`
+    - `kpfguide.TIPTILT_CALC`
+    - `kpfguide.TIPTILT_HOME`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

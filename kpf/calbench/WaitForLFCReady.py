@@ -11,9 +11,13 @@ class WaitForLFCReady(KPFTranslatorFunction):
     '''Wait for the Laser Frequency Comb (LFC) to be ready and in "AstroComb"
     mode
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfmon.HB_MENLOSTA`
+    - `kpfmon.LFCREADYSTA`
+    - `kpfcal.WOBBLE`
+    - `kpfcal.OPERATIONMODE`
+    - `kpfcal.SPECFLAT`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

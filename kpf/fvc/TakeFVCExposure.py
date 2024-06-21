@@ -10,13 +10,30 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class TakeFVCExposure(KPFTranslatorFunction):
     '''Take an exposure with the specified fiber viewing camera
-    
-    ARGS:
-    =====
-    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
-    :wait: (bool) Wait for move to complete before returning? (default: True)
-    :display: (bool) Display the resulting image to the engineering ds9
-              instance for FVCs using XPA.
+
+    Args:
+        camera (str): Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL
+        wait (bool): Wait for image to complete before returning? (default: True)
+        display (bool): Display the resulting image to the engineering ds9
+              instance for FVCs using XPA?
+
+    KTL Keywords Used:
+
+    - `kpffvc.SCIEXPTIME`
+    - `kpffvc.CAHKEXPTIME`
+    - `kpffvc.EXTEXPTIME`
+    - `kpffvc.CALEXPTIME`
+    - `kpffvc.SCILASTFILE`
+    - `kpffvc.CALLASTFILE`
+    - `kpffvc.EXTLASTFILE`
+    - `kpffvc.CAHKLASTFILE`
+    - `kpffvc.SCIEXPOSE`
+    - `kpffvc.CALEXPOSE`
+    - `kpffvc.EXTEXPOSE`
+    - `kpffvc.CAHKEXPOSE`
+    - `kpfpower.KPFFVC1`
+    - `kpfpower.KPFFVC2`
+    - `kpfpower.KPFFVC3`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -69,8 +86,6 @@ class TakeFVCExposure(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('camera', type=str,
                             choices=['SCI', 'CAHK', 'CAL', 'EXT'],
                             help='The FVC camera')

@@ -28,7 +28,7 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
 
     ARGS:
     =====
-    None
+    :OB: `dict` A fully specified calibration observing block (OB).
     '''
     @classmethod
     @obey_scriptrun

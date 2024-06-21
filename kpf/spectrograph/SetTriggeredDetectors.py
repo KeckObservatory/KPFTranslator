@@ -80,8 +80,6 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument("--Red", "--red", "-r",
                             dest="TriggerRed",
                             default=False, action="store_true",

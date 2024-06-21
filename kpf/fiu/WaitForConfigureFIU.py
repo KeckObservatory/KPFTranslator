@@ -54,11 +54,18 @@ class WaitForConfigureFIUOnce(KPFTranslatorFunction):
 class WaitForConfigureFIU(KPFTranslatorFunction):
     '''Wait for the FIU to reach specified mode (kpffiu.MODE). This will retry
     the configure command if the system fails to reach its destination.
-    
-    ARGS:
-    =====
-    :mode: The desired FIU mode.  One of:
-           Stowed, Alignment, Acquisition, Observing, Calibration
+
+    Args:
+        mode (str): The desired FIU mode. Allowed values: Stowed, Alignment,
+            Acquisition, Observing, Calibration
+
+    KTL Keywords Used:
+
+    - `kpffiu.MODE`
+
+    Scripts Called:
+
+    - `kpf.calbench.ConfigureFIUOnce`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -95,8 +102,6 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('mode', type=str,
                             choices=['Stowed', 'Alignment', 'Acquisition',
                                      'Observing', 'Calibration'],

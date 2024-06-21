@@ -10,10 +10,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class StopTriggerFile(KPFTranslatorFunction):
     '''Stop a "trigger file" from the guide camera.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfguide.TRIGGER`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -7,10 +7,11 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class TurnLightSourceOff(KPFTranslatorFunction):
     '''Turn K1 AO light source off
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `ao.OBSWON`
+    - `ao.OBSWSTA`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -6,11 +6,16 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class ControlAOHatch(KPFTranslatorFunction):
-    '''Control the AO Hatch
-    
-    ARGS:
-    =====
-    :destination: 'open' or 'close'
+    '''Command the AO Hatch to open or close.
+
+    Args:
+        destination (str): The destination position. Allowed Values: 'open' or
+            'close'.
+
+    KTL Keywords Used:
+
+    - `ao.AOHATCHCMD`
+    - `ao.AOHATCHSTS`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -26,7 +31,7 @@ class ControlAOHatch(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        destination = args.get('destination')
+        destination = args.get('destination', '').strip()
         final_dest = {'close': 'closed', 'closed': 'closed', 'open': 'open'}[destination]
         aohatchsts = ktl.cache('ao', 'AOHATCHSTS')
         success = aohatchsts.waitfor(f"== '{final_dest}'", timeout=30)
@@ -35,8 +40,6 @@ class ControlAOHatch(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('destination', type=str,
                             choices=['open', 'close'],
                             help='Desired hatch position')

@@ -38,7 +38,7 @@ class ExecuteSci(KPFTranslatorFunction):
 
     ARGS:
     =====
-    None
+    :args: `dict` An observation component of a science observing block (OB).
     '''
     abortable = True
 

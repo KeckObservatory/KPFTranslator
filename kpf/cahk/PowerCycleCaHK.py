@@ -14,10 +14,17 @@ class PowerCycleCaHK(KPFTranslatorFunction):
     restart the services. Use as a last resort measure after other
     troubleshooting measures such as resetting the detector and restarting
     software have already failed.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfpower.OUTLET_J1%`
+    - `kpfpower.OUTLET_J2%`
+    - `kpfpower.OUTLET_J5%`
+
+    Scripts Called:
+
+    -`kpf start/stop/status/restart kpfexpose2`
+    -`kpf start/stop/status/restart kpf_hk`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

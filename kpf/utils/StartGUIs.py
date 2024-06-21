@@ -94,8 +94,7 @@ def waitfor_window_to_appear(name, env=None, timeout=20):
 class StartGUIs(KPFTranslatorFunction):
     '''Start KPF GUIs
 
-    ARGS:
-    =====
+    ### ARGS
     None
     '''
     @classmethod
@@ -179,8 +178,6 @@ class StartGUIs(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument("--position", "-p",
                             dest="position_only",
                             default=False, action="store_true",

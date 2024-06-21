@@ -10,10 +10,35 @@ from kpf.calbench.CalLampPower import CalLampPower
 
 class WaitForLampWarm(KPFTranslatorFunction):
     '''Wait for the specified lamp to be warm.
-    
-    ARGS:
-    =====
-    :CalSource: The name of the lamp to wait for.
+
+    Args:
+        CalSource (str): Which lamp to wait for. Allowed Values: BrdbandFiber,
+            U_gold, U_daily, Th_daily, Th_gold, WideFlat
+
+    KTL Keywords Used:
+
+    - `kpflamps.FF_FIBER_STATUS`
+    - `kpflamps.FF_FIBER_TIMEON`
+    - `kpflamps.FF_FIBER_THRESHOLD`
+    - `kpflamps.BRDBANDFIBER_STATUS`
+    - `kpflamps.BRDBANDFIBER_TIMEON`
+    - `kpflamps.BRDBANDFIBER_THRESHOLD`
+    - `kpflamps.TH_DAILY_STATUS`
+    - `kpflamps.TH_DAILY_TIMEON`
+    - `kpflamps.TH_DAILY_THRESHOLD`
+    - `kpflamps.TH_GOLD_STATUS`
+    - `kpflamps.TH_GOLD_TIMEON`
+    - `kpflamps.TH_GOLD_THRESHOLD`
+    - `kpflamps.U_DAILY_STATUS`
+    - `kpflamps.U_DAILY_TIMEON`
+    - `kpflamps.U_DAILY_THRESHOLD`
+    - `kpflamps.U_GOLD_STATUS`
+    - `kpflamps.U_GOLD_TIMEON`
+    - `kpflamps.U_GOLD_THRESHOLD`
+
+    Scripts Called:
+
+    - `kpf.calbench.CalLampPower`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -71,8 +96,6 @@ class WaitForLampWarm(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('lamp', type=str,
                             choices=['BrdbandFiber', 'U_gold', 'U_daily',
                                      'Th_daily', 'Th_gold', 'WideFlat'],

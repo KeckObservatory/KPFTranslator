@@ -13,12 +13,23 @@ from kpf.guider.WaitForTriggerFile import WaitForTriggerFile
 
 class TakeGuiderCube(KPFTranslatorFunction):
     '''Take a "trigger file" from the guide camera of a given duration.
-    
-    ARGS:
-    =====
-    :duration: The duration in seconds of the image set.
-    :ImageCube: (bool) Collect the full cube of images? (default True) This will
-                slow down file write considerably.
+
+    Args:
+        duration (float): The duration in seconds of the image set.
+        ImageCube (bool): Collect the full cube of images? (default True) This
+            will slow down file write considerably.
+
+    KTL Keywords Used:
+
+    - `kpfguide.TRIGCUBE`
+    - `kpfguide.LASTTRIGFILE`
+    - `kpfguide.ALL_LOOPS`
+
+    Scripts Called:
+
+    - `kpf.guider.StartTriggerFile`
+    - `kpf.guider.StopTriggerFile`
+    - `kpf.guider.WaitForTriggerFile`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -62,8 +73,6 @@ class TakeGuiderCube(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('duration', type=float,
                             help='The duration in seconds')
         parser.add_argument("--noTRIGCUBE", dest="ImageCube",

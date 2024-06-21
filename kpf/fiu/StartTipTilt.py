@@ -13,10 +13,13 @@ class StartTipTilt(KPFTranslatorFunction):
     start all functions including DAR (via DAR_ENABLE), tip tilt calculations
     (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to
     the telescope (via OFFLOAD_DCS and OFFLOAD).
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpffiu.TTXSRV`
+    - `kpffiu.TTYSRV`
+    - `kpfguide.DAR_ENABLE`
+    - `kpfguide.ALL_LOOPS`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -43,17 +46,3 @@ class StartTipTilt(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
-#         kpfguide = ktl.cache('kpfguide')
-#         timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
-#         expr = f"($kpfguide.TIPTILT_CALC == Active) "
-#         success = ktl.waitFor(expr, timeout=timeout)
-#         if success is False:
-#             raise FailedToReachDestination(kpfguide['TIPTILT_CALC'].read(), 'Active')
-#         expr = f"($kpfguide.TIPTILT_CONTROL == Active) "
-#         success = ktl.waitFor(expr, timeout=timeout)
-#         if success is False:
-#             raise FailedToReachDestination(kpfguide['TIPTILT_CONTROL'].read(), 'Active')
-#         expr = f"($kpfguide.OFFLOAD == Active) "
-#         success = ktl.waitFor(expr, timeout=timeout)
-#         if success is False:
-#             raise FailedToReachDestination(kpfguide['OFFLOAD'].read(), 'Active')

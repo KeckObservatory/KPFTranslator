@@ -56,6 +56,7 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
         SENSORSETP = ktl.cache('kpfguide', 'SENSORSETP')
         SENSORTEMP = ktl.cache('kpfguide', 'SENSORTEMP')
         CONTINUOUS = ktl.cache('kpfguide', 'CONTINUOUS')
+        kpfguide = ktl.cache('kpfguide')
         try:
             log.info('Taking CRED2 dark cubes')
             ConfigureFIU.execute({'mode': 'Stowed'})
@@ -86,10 +87,25 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
                 SetGuiderGain.execute({'GuideCamGain': gain})
                 cube_file = TakeGuiderCube.execute({'duration': 10})
                 with open(output_file, 'a') as f:
-                    f.write(f"{gain:6s}, {cube_file}\n")
+                    f.write(f"{gain:12s}, {cube_file}\n")
                 check_scriptstop()
                 time.sleep(30) # shim to give time to recover after writing cube
                 check_scriptstop()
+
+            for gain in ['high', 'medium', 'low']:
+                sub_file = kpfguide[f'SUB_{gain.upper()}'].read()
+                kpfguide[f'SUB_{gain.upper()}'].write('')
+                log.info(f'Collecting {gain} gain cube without bias subtraction')
+                SetGuiderGain.execute({'GuideCamGain': gain})
+                cube_file = TakeGuiderCube.execute({'duration': 10})
+                with open(output_file, 'a') as f:
+                    gain_string = f'{gain}_nosub'
+                    f.write(f"{gain_string:12s}, {cube_file}\n")
+                kpfguide[f'SUB_{gain.upper()}'].write(sub_file)
+                check_scriptstop()
+                time.sleep(30) # shim to give time to recover after writing cube
+                check_scriptstop()
+
 
         except Exception as e:
             log.error('Error running CollectGuiderDarkCubes')

@@ -9,10 +9,13 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetGuiderOutdir(KPFTranslatorFunction):
     '''Set the value of the kpfguide.OUTDIR keyword
-    
-    ARGS:
-    =====
-    :outdir: The desired output path
+
+    Args:
+        outdir (str): The desired output path.
+
+    KTL Keywords Used:
+
+    - `kpfguide.OUTDIR`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -30,8 +33,6 @@ class SetGuiderOutdir(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('outdir', type=str,
                             help='The desired output path')
         return super().add_cmdline_args(parser, cfg)

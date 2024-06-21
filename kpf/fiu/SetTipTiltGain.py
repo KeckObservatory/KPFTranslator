@@ -6,11 +6,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetTipTiltGain(KPFTranslatorFunction):
-    '''Set the CRED2 camera gain
-    
-    ARGS:
-    =====
-    :GuideLoopGain: The desired gain value
+    '''Set the guide loop gain.
+
+    Args:
+        GuideLoopGain (float): The desired gain value.
+
+    KTL Keywords Used:
+
+    - `kpfguide.TIPTILT_GAIN`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -36,8 +39,6 @@ class SetTipTiltGain(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('GuideLoopGain', type=float,
                             help="Tip tilt control loop gain")
         return super().add_cmdline_args(parser, cfg)

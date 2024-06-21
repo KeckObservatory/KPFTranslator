@@ -20,11 +20,15 @@ warnings.filterwarnings('ignore', category=FITSFixedWarning, append=True)
 
 
 class BuildMasterBias(KPFTranslatorFunction):
-    '''
+    '''Combine a set of bias files to make a master bias.
+
     Args:
-    =====
-    :files: A list of files to combine.
-    :output: The output combined filename to write.
+        files (list): A list of files to combine.
+        output (str): The output combined filename to write.
+
+    KTL Keywords Used:
+
+    - `kpf_expmeter.BIAS_FILE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -76,8 +80,6 @@ class BuildMasterBias(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('files', nargs='*',
                             help="The files to combine")
         parser.add_argument("--output", dest="output", type=str,

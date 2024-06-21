@@ -7,10 +7,12 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetAFStoNGS(KPFTranslatorFunction):
     '''ACAM should be set to NGS focus. LGS focus will not work for KPF.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `ao.OBASNAME`
+    - `ao.OBASSLEW`
+    - `ao.OBASSTST`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -15,7 +15,6 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     needed to obtain the specified exposure time.  Those individual frames are
     controlled by the FPS, AVERAGE, STACK, and EXPTIME keywords.
 
-
     From Kyle:
 
     If you want to tweak an exposure setting, I recommend MAGIQ use the
@@ -54,9 +53,12 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     system will be consuming this image stream, and it needs to retain full
     control of what an individual frame looks like.
 
-    ARGS:
-    =====
-    :exptime: The exposure time in seconds.
+    Args:
+        exptime (float): The exposure time in seconds.
+
+    KTL Keywords Used:
+
+    - `kpfguide.EXPTIME`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -84,8 +86,6 @@ class SetGuiderExpTime(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        '''The arguments to add to the command line interface.
-        '''
         parser.add_argument('exptime', type=float,
                             help='The exposure time in seconds')
         return super().add_cmdline_args(parser, cfg)

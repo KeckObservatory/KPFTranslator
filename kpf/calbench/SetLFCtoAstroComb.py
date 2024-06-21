@@ -12,9 +12,14 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
     '''Set the Laser Frequency Comb (LFC) to "AstroComb" mode. This should
     be used during operation of the LFC.
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfcal.OPERATIONMODE`
+    - `kpfmon.HB_MENLOSTA`
+
+    Scripts Called:
+
+    - `kpf.calbench.WaitForLFCReady`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -33,8 +38,6 @@ class SetLFCtoAstroComb(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        '''
-        '''
         success = WaitForLFCReady.execute({})
         if success is not True:
             raise FailedPostCondition('LFC did not reach expected state')
