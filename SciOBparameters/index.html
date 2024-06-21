@@ -224,10 +224,6 @@
 <span class="n">Gmag</span><span class="o">:</span><span class="w"> </span><span class="mf">3.3</span><span class="w">                       </span><span class="err">#</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="n">band</span><span class="w"> </span><span class="n">magnitude</span><span class="w"> </span><span class="o">(</span><span class="n">eventualy</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="n">meter</span><span class="o">)</span>
 <span class="n">Jmag</span><span class="o">:</span><span class="w"> </span><span class="mf">2.14</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="n">J</span><span class="w"> </span><span class="n">band</span><span class="w"> </span><span class="n">magnitude</span><span class="w"> </span><span class="o">(</span><span class="n">eventualy</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">guider</span><span class="o">)</span>
 <span class="n">Teff</span><span class="o">:</span><span class="w"> </span><span class="mi">5266</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="n">Effective</span><span class="w"> </span><span class="n">temperature</span>
-<span class="err">#</span><span class="w"> </span><span class="n">Guider</span><span class="w"> </span><span class="n">Setup</span>
-<span class="n">GuideMode</span><span class="o">:</span><span class="w"> </span><span class="n">manual</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="s2">&quot;manual&quot;</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;off&quot;</span><span class="o">,</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="s2">&quot;telescope&quot;</span>
-<span class="n">GuideCamGain</span><span class="o">:</span><span class="w"> </span><span class="n">low</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="n">Guide</span><span class="w"> </span><span class="n">camera</span><span class="w"> </span><span class="n">gain</span><span class="o">;</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">low</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">medium</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">high</span>
-<span class="n">GuideFPS</span><span class="o">:</span><span class="w"> </span><span class="mi">100</span><span class="w">                   </span><span class="err">#</span><span class="w"> </span><span class="n">Frames</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">guide</span><span class="w"> </span><span class="n">camera</span><span class="w"> </span><span class="o">(</span><span class="k">for</span><span class="w"> </span><span class="n">tip</span><span class="o">-</span><span class="n">tilt</span><span class="o">)</span>
 <span class="err">#</span><span class="w"> </span><span class="n">Spectrograph</span><span class="w"> </span><span class="n">Setup</span>
 <span class="n">TriggerCaHK</span><span class="o">:</span><span class="w"> </span><span class="n">False</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="n">Include</span><span class="w"> </span><span class="n">CaHK</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="o">(</span><span class="n">True</span><span class="o">/</span><span class="n">False</span><span class="o">)</span>
 <span class="n">TriggerGreen</span><span class="o">:</span><span class="w"> </span><span class="n">True</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="n">Include</span><span class="w"> </span><span class="n">Green</span><span class="w"> </span><span class="n">CCD</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">exposure</span><span class="w"> </span><span class="o">(</span><span class="n">True</span><span class="o">/</span><span class="n">False</span><span class="o">)</span>
@@ -282,20 +278,6 @@
 <blockquote>
 <p>The effective temperature of the star.
 <br>Allowed Range: 2600 - 45000</p>
-</blockquote>
-<p><strong>GuideMode</strong>: (<code>str</code>)</p>
-<blockquote>
-<p>If "manual" is selected, the values for the gain and FPS below are used. If "auto" is selected, the camera gain and FPS values in the OB are ignored and the software will choose values based on the Jmag value.
-<br>Allowed Values: "manual", "auto", or "off"</p>
-</blockquote>
-<p><strong>GuideCamGain</strong>: (<code>str</code>)</p>
-<blockquote>
-<p>The gain (high, medium, or low) at which to operate the guide camera. Ignored if the GuideMode is set to "auto".
-<br>Allowed Values: "high", "medium", or "low"</p>
-</blockquote>
-<p><strong>GuideFPS</strong>: (<code>float</code>)</p>
-<blockquote>
-<p>The frame rate (frames per second) at which to operate the guide camera. Ignored if the GuideMode is set to "auto".</p>
 </blockquote>
 <p><strong>TriggerCaHK, TriggerGreen, and TriggerRed</strong>: (<code>bool</code>)</p>
 <blockquote>

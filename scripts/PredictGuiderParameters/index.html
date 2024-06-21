@@ -331,25 +331,25 @@
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="n">Jmag</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Jmag&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Jmag</span> <span class="o">&lt;</span> <span class="mf">5.5</span><span class="p">:</span>
-            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;low&#39;</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;Low&#39;</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mi">100</span>
         <span class="k">elif</span> <span class="n">Jmag</span> <span class="o">&lt;</span> <span class="mf">8.0</span><span class="p">:</span>
-            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;medium&#39;</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;Medium&#39;</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mi">100</span>
         <span class="k">elif</span> <span class="n">Jmag</span> <span class="o">&lt;</span> <span class="mf">12.0</span><span class="p">:</span>
-            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;high&#39;</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;High&#39;</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mi">100</span>
         <span class="k">elif</span> <span class="n">Jmag</span> <span class="o">&lt;</span> <span class="mf">12.8</span><span class="p">:</span>
-            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;high&#39;</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;High&#39;</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mi">50</span>
         <span class="k">elif</span> <span class="n">Jmag</span> <span class="o">&lt;</span> <span class="mf">13.8</span><span class="p">:</span>
-            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;high&#39;</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;High&#39;</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mi">20</span>
         <span class="k">elif</span> <span class="n">Jmag</span> <span class="o">&lt;</span> <span class="mf">14.5</span><span class="p">:</span>
-            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;high&#39;</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;High&#39;</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;high&#39;</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="s1">&#39;High&#39;</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predicted GuideCamGain = </span><span class="si">{</span><span class="n">gain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predicted GuideFPS = </span><span class="si">{</span><span class="n">fps</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
