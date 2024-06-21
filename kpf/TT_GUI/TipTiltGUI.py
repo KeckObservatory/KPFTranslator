@@ -106,7 +106,7 @@ def main(log):
     with open(css_file, 'r') as f:
         dark_css = f.read()
     application.setStyleSheet(dark_css)
-    main_window = MainWindow(log)
+    main_window = MainWindow(log, dark=cmd_line_args.dark)
     main_window.setupUi()
     main_window.show()
     return kPyQt.run(application)
@@ -114,11 +114,14 @@ def main(log):
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, log, *args, **kwargs):
+    def __init__(self, log, dark=False, *args, **kwargs):
         QMainWindow.__init__(self, *args, **kwargs)
         ui_file = Path(__file__).parent / 'TipTiltGUI.ui'
         uic.loadUi(f"{ui_file}", self)
         self.log = log
+        self.dark = dark
+        if self.dark is True:
+            plt.style.use('dark_background')
         self.ginga_log = ginga_log.get_logger("example1", log_stderr=True, level=40)
         self.log.debug('Initializing MainWindow')
         # Keywords
