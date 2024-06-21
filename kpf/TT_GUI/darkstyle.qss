@@ -31,6 +31,7 @@ QTabWidget::pane:selected {
 
 QPushButton {
   background-color: rgb(100, 100, 100);
+  color: rgb(255, 255, 255);
 }
 
 QComboBox {
@@ -39,7 +40,7 @@ QComboBox {
 }
 
 QCheckBox {
-  background-color: rgb(80, 80, 80);
-  color: rgb(210, 210, 210);
+  background-color: rgb(120, 120, 120);
+  color: rgb(255, 255, 255);
 }
 
