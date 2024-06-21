@@ -597,26 +597,26 @@ class MainWindow(QMainWindow):
     def update_kpfguide1status(self, value):
         if value != 'OK':
             self.kpfguide1StatusLabel.setText(f'kpfguide1')
-            self.kpfguide1StatusLabel.setStyleSheet('color: red;')
+            self.kpfguide1StatusLabel.setStyleSheet('background-color: red;')
         else:
             self.kpfguide1StatusLabel.setText('')
-            self.kpfguide1StatusLabel.setStyleSheet('color: black;')
+            self.kpfguide1StatusLabel.setStyleSheet('background-color: transparent;')
 
     def update_kpfguide2status(self, value):
         if value != 'OK':
             self.kpfguide2StatusLabel.setText(f'kpfguide2')
-            self.kpfguide2StatusLabel.setStyleSheet('color: red;')
+            self.kpfguide2StatusLabel.setStyleSheet('background-color: red;')
         else:
             self.kpfguide2StatusLabel.setText('')
-            self.kpfguide2StatusLabel.setStyleSheet('color: black;')
+            self.kpfguide2StatusLabel.setStyleSheet('background-color: transparent;')
 
     def update_kpfguide3status(self, value):
         if value != 'OK':
             self.kpfguide3StatusLabel.setText(f'kpfguide3')
-            self.kpfguide3StatusLabel.setStyleSheet('color: red;')
+            self.kpfguide3StatusLabel.setStyleSheet('background-color: red;')
         else:
             self.kpfguide3StatusLabel.setText('')
-            self.kpfguide3StatusLabel.setStyleSheet('color: black;')
+            self.kpfguide3StatusLabel.setStyleSheet('background-color: transparent;')
 
 
     ##----------------------------------------------------------
@@ -624,10 +624,10 @@ class MainWindow(QMainWindow):
     def update_CONTINUOUS(self, value):
         if value == 'Inactive':
             self.CONTINUOUSStatusLabel.setText('CONTINUOUS')
-            self.CONTINUOUSStatusLabel.setStyleSheet('color: red;')
+            self.CONTINUOUSStatusLabel.setStyleSheet('background-color: red;')
         else:
             self.CONTINUOUSStatusLabel.setText('')
-            self.CONTINUOUSStatusLabel.setStyleSheet('color: black;')
+            self.CONTINUOUSStatusLabel.setStyleSheet('background-color: transparent;')
         self.enable_control_and_telemetry(value == 'Active')
 
     ##----------------------------------------------------------
@@ -635,10 +635,10 @@ class MainWindow(QMainWindow):
     def update_SAVE(self, value):
         if value == 'Inactive':
             self.SAVEStatusLabel.setText('SAVE')
-            self.SAVEStatusLabel.setStyleSheet('color: red;')
+            self.SAVEStatusLabel.setStyleSheet('background-color: red;')
         else:
             self.SAVEStatusLabel.setText('')
-            self.SAVEStatusLabel.setStyleSheet('color: black;')
+            self.SAVEStatusLabel.setStyleSheet('background-color: transparent;')
 
 
     ##----------------------------------------------------------
@@ -971,20 +971,20 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_ttxsrv: {value}')
         if value == 'Open':
             self.TTXSRVStatusLabel.setText('TTXSRV')
-            self.TTXSRVStatusLabel.setStyleSheet('color: red;')
+            self.TTXSRVStatusLabel.setStyleSheet('background-color: red;')
         else:
             self.TTXSRVStatusLabel.setText('')
-            self.TTXSRVStatusLabel.setStyleSheet('color: black;')
+            self.TTXSRVStatusLabel.setStyleSheet('background-color: transparent;')
         self.enable_control_and_telemetry(value == 'Closed')
 
     def update_ttysrv(self, value):
         self.log.debug(f'update_ttysrv: {value}')
         if value == 'Open':
             self.TTYSRVStatusLabel.setText('TTYSRV')
-            self.TTYSRVStatusLabel.setStyleSheet('color: red;')
+            self.TTYSRVStatusLabel.setStyleSheet('background-color: red;')
         else:
             self.TTYSRVStatusLabel.setText('')
-            self.TTYSRVStatusLabel.setStyleSheet('color: black;')
+            self.TTYSRVStatusLabel.setStyleSheet('background-color: transparent;')
         self.enable_control_and_telemetry(value == 'Closed')
 
     def update_mirror_pos_x(self, value):
