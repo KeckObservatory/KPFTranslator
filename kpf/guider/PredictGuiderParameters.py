@@ -59,9 +59,12 @@ class PredictGuiderParameters(KPFTranslatorFunction):
         elif Jmag < 14.5:
             gain = 'High'
             fps = 10
+        elif Jmag < 17.0:
+            gain = 'high'
+            fps = 1
         else:
-            gain = 'High'
-            fps = 10
+            gain = 'high'
+            fps = 1
         log.info(f"Predicted GuideCamGain = {gain}")
         log.info(f"Predicted GuideFPS = {fps:d}")
         result = {'GuideCamGain': gain, 'GuideFPS': fps}
