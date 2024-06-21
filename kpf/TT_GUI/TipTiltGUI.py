@@ -1220,9 +1220,10 @@ class MainWindow(QMainWindow):
         self.DAREnable.setCurrentText('')
         if value == 'No':
             self.DARStatusLabel.setText(f"DAR Disbabled")
+            self.DARStatusLabel.setStyleSheet(f'background-color: red;')
         else:
             self.DARStatusLabel.setText(f"")
-        self.DARStatusLabel.setStyleSheet(f'color: {color};')
+            self.DARStatusLabel.setStyleSheet(f'background-color: transparent;')
         self.load_file(self.LASTFILE.ktl_keyword.ascii)
 
     def set_DAREnable(self, value):
