@@ -2,6 +2,11 @@ QMainWindow {
   background-color: rgb(80, 80, 80);
 }
 
+QMenuBar {
+  background-color: rgb(120, 120, 120);
+  color: rgb(255, 255, 255);
+}
+
 QGroupBox {
   font-weight: bold;
   text-decoration: underline;
