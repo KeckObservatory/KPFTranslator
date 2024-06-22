@@ -1,2 +1,3 @@
 # Solar Calibrator (SoCal)
 
+The KPF Solar Calibrator (SoCal) is installed on the roof of the support building between the Keck I and Keck II domes. It consists of an EKO Sun Tracker inside an enclosure designed to protect it from strong winds and falling ice. The EKO tracker carries a pyrheliometer to measure solar intensity (used to confirm that we are on the Sun and the sky is clear) and a solar collector which feeds full disk solar light in to a fiber optic which carries it to two locations in the Calibration Bench in the basement where it can be fed in to the KPF instrument.
