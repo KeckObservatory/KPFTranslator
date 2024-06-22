@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
                          'nExp': '1',
                          'ExpTime': '10',
                          'ExpMeterMode': 'monitor',
-                         'AutoExpMeter': False,
+                         'AutoExpMeter': True,
                          'ExpMeterExpTime': '0.5',
                          'ExpMeterBin': '710.625',
                          'ExpMeterThreshold': 50000,
@@ -317,6 +317,7 @@ class MainWindow(QMainWindow):
 
         self.AutoEMExpTime = self.findChild(QCheckBox, 'AutoEMExpTime')
         self.AutoEMExpTime.stateChanged.connect(self.AutoEMExpTime_state_change)
+        self.update_OB('AutoExpMeter', self.OB.SEQ_Observations1.get('AutoExpMeter'))
 
         self.ExpMeterBin = self.findChild(QComboBox, 'ExpMeterBin')
         self.ExpMeterBin.addItems(self.expmeter_bins)
@@ -330,11 +331,13 @@ class MainWindow(QMainWindow):
         self.TakeSimulCal = self.findChild(QCheckBox, 'TakeSimulCal')
         self.TakeSimulCal.stateChanged.connect(self.TakeSimulCal_state_change)
 
+        self.CalND1Label = self.findChild(QLabel, 'CalND1Label')
         self.CalND1 = self.findChild(QComboBox, 'CalND1')
         self.CalND1.addItems(["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"])
         self.update_OB('CalND1', self.OB.SEQ_Observations1.get('CalND1'))
         self.CalND1.currentTextChanged.connect(self.set_CalND1)
 
+        self.CalND2Label = self.findChild(QLabel, 'CalND2Label')
         self.CalND2 = self.findChild(QComboBox, 'CalND2')
         self.CalND2.addItems(["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"])
         self.update_OB('CalND2', self.OB.SEQ_Observations1.get('CalND2'))
@@ -343,8 +346,6 @@ class MainWindow(QMainWindow):
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
         self.update_OB('AutoNDFilters', self.OB.SEQ_Observations1.get('AutoNDFilters'))
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
-        # Disable AutoNDFilters for operation
-        self.AutoNDFilters.setEnabled(False)
 
         self.ExtraNDLabel = self.findChild(QLabel, 'ExtraNDLabel')
         self.ExtraND = self.findChild(QComboBox, 'ExtraND')
@@ -933,6 +934,7 @@ class MainWindow(QMainWindow):
         # SEQ_Observations: ExpMeterMode
         self.ExpMeterMode.setCurrentText(f"{self.OB.SEQ_Observations1.get('ExpMeterMode')}")
         # SEQ_Observations: AutoExpMeter
+        self.AutoEMExpTime.setChecked(self.OB.SEQ_Observations1.get('AutoExpMeter'))
         self.ExpMeterExpTimeEdit.setEnabled(not self.OB.SEQ_Observations1.get('AutoExpMeter'))
         # SEQ_Observations: ExpMeterExpTime
         self.ExpMeterExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterExpTime')}")
@@ -945,10 +947,12 @@ class MainWindow(QMainWindow):
         self.TakeSimulCal.setText(f"{self.OB.SEQ_Observations1.get('TakeSimulCal')}")
         take_simulcal = self.OB.SEQ_Observations1.get('TakeSimulCal')
         auto_nd = self.OB.SEQ_Observations1.get('AutoNDFilters')
+        self.CalND1Label.setEnabled(take_simulcal and not auto_nd)
+        self.CalND2Label.setEnabled(take_simulcal and not auto_nd)
         self.CalND1.setEnabled(take_simulcal and not auto_nd)
         self.CalND2.setEnabled(take_simulcal and not auto_nd)
-        self.ExtraNDLabel.setEnabled(take_simulcal and auto_nd)
-        self.ExtraND.setEnabled(take_simulcal and auto_nd)
+        self.ExtraNDLabel.setEnabled(False) #take_simulcal and auto_nd)
+        self.ExtraND.setEnabled(False) #take_simulcal and auto_nd)
 
         # SEQ_Observations: CalND1
         self.CalND1.setCurrentText(f"{self.OB.SEQ_Observations1.get('CalND1')}")
