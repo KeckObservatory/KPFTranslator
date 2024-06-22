@@ -1,136 +1,286 @@
-import argparse
+from pathlib import Path
 import numpy as np
+from astropy.io import fits
+from astropy.modeling import models
+from astropy import units as u
+from astropy.table import Table
+import matplotlib.pyplot as plt
 
-description = '''
-    Estimates ND1 and ND2 filter OD level required to match target SNR
+from kpf_etc.etc import kpf_photon_noise_estimate, _findel
 
-    Prints suggested OD filter based on available set in wheel:
-    ND1: OD 0.1, OD 1.0, OD 1.3, OD 2.0, OD 3.0, OD 4.0
-    ND2: OD 0.1, OD 0.3, OD 0.5, OD 0.8, OD 1.0, OD 4.0
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
+                 FailedToReachDestination, check_input)
+from kpf.calbench.SetND import SetND
+
+## ------------------------------
+## Function from Sam Halversion
+## ------------------------------
+# function to get all possible additions of two arrays
+def all_possible_sums_with_indices_sorted(arr1, arr2):
+    sums_and_indices = []
+    for a in arr1:
+        for b in arr2:
+            sums_and_indices.append((a + b, a,b))
+    
+    # Sort by the sums
+    sums_and_indices.sort()
+
+    # Separate the sums and indices into two lists
+    sorted_sums = [x[0] for x in sums_and_indices]
+    sorted_indices = [(x[1], x[2]) for x in sums_and_indices]
+
+    return sorted_sums, sorted_indices
+
+
+## ------------------------------
+## Function from Sam Halversion
+## ------------------------------
+# function to derive etalon OD setting
+def get_simulcal_od(vmag, teff, exp_time, cal_fits, ref_wave=None,
+                    od_values=[0.2,1.0,1.3,2.0,3.0,4.0],
+                    filter_configs=[(0,0),(0,1),(0,2),(0,3),(0,4),(0,5)],
+                    plot=False):
+    '''
+    Function to compute nominal ND filter settings for KPF simultaneous
+    calibration source for a given stellar target
+    Note that target and exposure parameters must fall within the 
+    bounds of the KPF exposure time calculator:
+
+    - Teff: 2700 - 6600 Kelvin
+    - Vmag: 2 - 19
+    - Texp: 10 - 3600 seconds
 
     Parameters
     ----------
-    snr_desired : :obj:`float`
-        Minimum SNR desired for cal spectrum. Useful if you don't want to
-        match the target flux, but rather hit a minimum required SNR in the
-        specfied exposure time.
-    
-    exp_time : :obj:'float'
-        Target exposure time in seconds.
+    vmag : float
+        V-magnitude of target. 
 
-    cal_source : :obj:'str'
-        Calibration source being use [default = 'LFC']    
+    teff : float
+        Target effective temperature [K]
+
+    ref_wave : float
+        Reference wavelength at which the calibration source
+        and stellar flux rates should be matched [Angstrom].
+        (default is None)
+
+        If no wavelength is provided, the wavelength chosen
+        will be the flux-averaged stellar wavelength computed
+        by the KPF exposure time calculator
+
+    od_values : array
+        Array of all of possible ND filter combinations.
+
+    filter_configs : array of lists
+        Array of filter combinations, separated by filter wheel,
+        that generate the values in od_values.
 
     Returns
     -------
-    od : :obj:`float`
-        Nominal OD value to match target star flux.
+    od_nearest : float
+        Nominal total ND filter setting for observation
 
-    ND1 : :obj:`float`
-        Nearest OD setting to use for the first filter wheel to achieve total OD of 'od'
-    
-    ND2 : :obj:`float`
-        Nearest OD setting to use for the second filter wheel to achieve total OD of 'od'
-        
-    SNR_expected : :obj:`float`
-        Expected SNR that will be acquired in the cal spectrum based on actual combined OD of ND1 + ND2
-
-    S Halverson - JPL - 29-Dec-2019 for NEID
-    R Rubenzahl - Caltech - 26-Jan-2023 for KPF
+    nd_config : array
+        Nominal individual filter wheel settings to reach od_nearest
     '''
 
-
-def predict_nd_filters(snr_desired, exp_time, cal_source='LFCFiber'):
-    nonlinear_limit_snr = 550.  # rough non-linearity limit for single exposure
-
-    # **hardcoded values for scaling**
-    # Using LFC spectrum from KP.20230124.59504.08.fits as a reference
-    # in 60 seconds, LFC reaches 1e6 reduced photoelectrons in the 1D reduced (L1) file
-    # Since that's a sum of three fibers, we divide by 3 for counts in a single trace 
-    # The counts in the cal trace are roughly twice as high as the science traces
-    # so we multiply by two get get an estimate of cal-trace counts for LFC
-    # Numbers from example LFC spectrum at reddest order (peak # throughput) 
-#     ref_flux_lfc = 1e6/3 * 2 # reduced photoelectrons 
-#     ref_snr_lfc  = np.sqrt(ref_flux_lfc) 
-#     ref_exp_time_lfc = 60. # seconds
-    # This reference spectrum was taken using ND1=3.0 and ND2=0.1
-#     ref_nd1 = 3.0
-#     ref_nd2 = 0.1
-#     ref_od = ref_nd1 + ref_nd2
-
-    ref_flux = {'LFCFiber': 1e6/3 * 2, # reduced photoelectrons
-                'EtalonFiber': None}[cal_source]
-    ref_exp_time = {'LFCFiber': 60, # seconds
-                    'EtalonFiber': None}[cal_source]
-    ref_nd1 = {'LFCFiber': 3.0,
-               'EtalonFiber': None}[cal_source]
-    ref_nd2 = {'LFCFiber': 0.1,
-               'EtalonFiber': None}[cal_source]
-    ref_snr  = np.sqrt(ref_flux)
-    ref_od = ref_nd1 + ref_nd2
-
-    # Scale to zero attenuation
-    nom_flux = ref_flux / 10**(-ref_od) 
-    nom_snr  = np.sqrt(nom_flux)
-
-    # KPF OD filter set
-    nd1_filter_set = [0.1, 1.0, 1.3, 2.0, 3.0, 4.0]
-    nd2_filter_set = [0.1, 0.3, 0.5, 0.8, 1.0, 4.0]
-    nd_combos = {}
-    for nd1 in nd1_filter_set:
-        for nd2 in nd2_filter_set:
-            od = nd1 + nd2
-            if od in nd_combos:
-                continue
-            else:
-                nd_combos[round(od,1)] = [nd1, nd2]
-    ods_attainable = np.array(list(nd_combos.keys()))
-
-    # Select which cal source to use
-    cal_flux = nom_flux
-    cal_snr  = nom_snr
-    cal_exp_time = ref_exp_time
-    flux_rate_cal = cal_flux / cal_exp_time
-
-    # estimate nominal OD to reach SNR threshold in provided exposure time
-    od_for_snr = -np.log10( (snr_desired/cal_snr)**2 * (cal_exp_time/exp_time) )
+    # run ETC to get approximate stellar SNR in SCI channels
+    _, wvl_arr, snr_rv_ord, _ = kpf_photon_noise_estimate(teff,
+                                                          vmag,
+                                                          exp_time,
+                                                          quiet=True)
     
-    # get nearest ND filter combination
-    od_closest = ods_attainable[(np.abs(ods_attainable - od_for_snr)).argmin()]
-    ND1, ND2 = nd_combos[od_closest]
-    snr_exptime = (flux_rate_cal * exp_time * 10 ** (-od_closest)) ** 0.5
+    # get the approximate 1D SNR per slice
+    snr_rv_ord_slice = snr_rv_ord * (1./3. ** 0.5) # hokey, but not a bad approximation
 
-    if np.abs(10 ** (od_closest - od_for_snr)) > 2.:
-       print('WARNING: Cal flux a factor of >2 off from nominal')
+    # get flux-averaged wavelength of stellar spectrum to match
+    wav_avg = np.average(wvl_arr, weights=snr_rv_ord ** 2.)
+    peak_ord = _findel(wav_avg, wvl_arr)
 
-    print('')
-    print('Nominal OD to achieve desired SNR:% 5.3f'%(od_for_snr))
+    # if no user defined wavelength to match, use the flux-weighted wavelength
+    if ref_wave is not None:
+        order_ref = _findel(ref_wave, wvl_arr*10.)
+#         print('----------------------------------')
+#         print('Using reference wavelength: ' + str(ref_wave) + ' Angstrom')
+#         print('----------------------------------')
+    else:
+        order_ref = peak_ord
+#         print('----------------------------------')
+#         print('No reference wavelength provided -- matching CAL and SCI flux at flux-averaged stellar wavelength')
+#         print('----------------------------------')
 
-    # warn if nominal filter to match flux is beyond bounds
-    if od_closest > np.amax(ods_attainable):
-        print('WARNING: beyond OD filter set max value')
-    if od_closest < np.amin(ods_attainable):
-        print('WARNING: below OD filter set min value')
+    # compute the effective stellar flux rate at the reference wavelength
+    stellar_flux_rate = snr_rv_ord[order_ref] ** 2. / exp_time # photons per second at order
+    stellar_flux_rate_slice = stellar_flux_rate / 3. # approximate per-slice flux rate
+    #---------------------------------------------------
+    
+    # CAL SPECTRUM SCALING
+    #---------------------------------------------------
+    # flux spectrum of cal source
+    spec = np.concatenate((fits.getdata(cal_fits,'GREEN_CAL_FLUX'),fits.getdata(cal_fits,'RED_CAL_FLUX')))
+    spec_max = np.nanpercentile(spec, 99, axis=1)
 
-    print('')
-    print('Closest OD achievable: {}'.format(od_closest))
-    print('    Set ND1 filter to: {}'.format(ND1))
-    print('    Set ND2 filter to: {}'.format(ND2))
-    print('')
-    print('{} SNR (reddest) at closest OD filter setting in {} s is {:.1f}'.format(cal_source, exp_time, snr_exptime))
+    # wavelengths
+    wav = np.concatenate((fits.getdata(cal_fits,'GREEN_CAL_WAVE'),fits.getdata(cal_fits,'RED_CAL_WAVE')))
+    wav_mean = np.nanmean(wav, axis=1)
 
-    # warn if etalon flux is approaching non-linearity
-    if snr_exptime > nonlinear_limit_snr:
-        print('WARNING: etalon SNR >% 3.1f' %nonlinear_limit_snr)
+    # relevant exposure settings
+    cal_exptime = fits.getval(cal_fits,'EXPTIME') # get cal file exposure time
 
-    return {'CalND1': f"OD {ND1}", 'CalND2': f"OD {ND2}"}
+    # get cal sample file total OD
+    ref_OD = float(fits.getval(cal_fits, 'SSCALFW').split(' ')[-1]) + \
+                float(fits.getval(cal_fits, 'SIMCALFW').split(' ')[-1])
+
+    spec_max_native = spec_max * (10. ** (ref_OD))
+    cal_flux_rate = spec_max[order_ref] / cal_exptime # CAL photons per second at ref order
+    cal_flux_rate_native = cal_flux_rate * (10. ** (ref_OD)) # CAL flux rate with no OD filter    
+    
+    #---------------------------------------------------
+    # flux rate of CAL compared to SCI slices
+    ratio_flux = cal_flux_rate_native/stellar_flux_rate_slice # ratio
+
+    # find the nearest OD filter to the computed flux rate
+    index_od_nearest = _findel(np.log10(ratio_flux), od_values)
+    od_nearest = od_values[index_od_nearest] # total OD
+    
+    # compute the cal flux rate at the nearest OD filter setting
+    cal_flux_rate_nearest =  cal_flux_rate_native * (10. ** (-od_nearest))
+
+    # check that the closest CAL flux level is larger than SCI:
+    while cal_flux_rate_nearest > stellar_flux_rate_slice * 1.:
+        # if it is, bump up to the next OD filter setting
+        print('CAL FLUX EXCEEDS STELLAR FLUX -- ADDING MORE OD')
+        index_od_nearest += 1
+        od_nearest = od_values[index_od_nearest] # total OD
+        cal_flux_rate_nearest =  cal_flux_rate_native * (10. ** (-od_nearest))
+    else:
+        od_nearest = od_values[index_od_nearest]
+
+    # if we're at the maximum filter suppression, spit out a warning
+    if index_od_nearest == len(od_values) - 1:
+        print('WARNING -- OD FILTERS MAXED OUT')    
+    
+    # final filter configuration
+    nd_config = filter_configs[index_od_nearest]
+
+    # get the nearest OD setting etalon spectrum
+    snr_nearest = (spec_max_native/cal_exptime * (10. ** (-od_nearest) * exp_time)) ** 0.5
+    
+    # if the final etalon spectrum has low SNR, spit out a warning
+    if snr_nearest[order_ref] < 60:
+        print('WARNING -- LOW SIMULCAL FLUX AT THESE SETTINGS')
+        print('CAL SNR at reference wavelength ' + str(np.round(snr_nearest[order_ref],1)))
+
+    if plot:
+        cross_ord = 35 # crossover order from GREEN to RED
+        plt.plot(wvl_arr[0:cross_ord] * 10., snr_rv_ord_slice[0:cross_ord],'-d',color='k',mec='k',mfc='tab:green',ms=13,mew=2,label='Mean stellar SNR, single slice')
+        plt.plot(wvl_arr[cross_ord:] * 10., snr_rv_ord_slice[cross_ord:],'-d',color='k',mec='k',mfc='tab:red',ms=13,mew=2,label='Mean stellar SNR, single slice')
+        plt.plot(wav_mean, snr_nearest,'s',mec='k',mfc='tab:orange',ms=12,mew=2,label='Etalon CAL, OD: ' + str(np.round(od_nearest,1)))
+        plt.title('V = ' + str(np.round(vmag,1)) + ', Teff = ' + str(int(teff)) 
+                  + ' K, ' + str(int(exp_time)) + ' second exposure')
+        plt.ylabel('Mean order SNR')
+        plt.xlabel('Order wavelength [$\mathcal{\AA}$]')
+        plt.legend(ncol=1,loc='best')
+        
+        plt.show()
+#     print('SUGGESTED TOTAL ND: ', str(np.round(od_nearest,1)))
+#     print('SUGGESTED FILTER WHEEL SETTINGS --', 
+#           'SSCALFW:', nd_config[0],
+#           'SIMCALFW:', nd_config[1])
+    return od_nearest, nd_config
 
 
-if __name__ == "__main__":
-    p = argparse.ArgumentParser(description=description)
-    p.add_argument('SNR', type=float,
-                   help="The target SNR")
-    p.add_argument('ExpTime', type=float,
-                   help="The exposure time")
-    args = p.parse_args()
-    result = predict_nd_filters(args.SNR, args.ExpTime)
+
+## ------------------------------
+## Quick and Dirty: Convert from Gmag to Vmag
+## ------------------------------
+def estimate_Vmag(gmag, teff):
+    # Filter response curves from speclite package
+    #   https://speclite.readthedocs.io/en/latest/filters.html
+    # Filter curve data downloaded from
+    #   https://github.com/desihub/speclite/tree/main/speclite/data/filters
+    bb = models.BlackBody(temperature=teff*u.K)
+    
+    data_dir = Path(__file__).parent.parent.parent / 'data'
+    
+    g = Table.read(data_dir / 'gaiadr3-G.ecsv.txt', format='ascii', comment='#')
+    star_spec_g = bb(g['wavelength'].value*u.AA)
+    star_spec_g_per_A = [s.to(u.erg/u.s/u.sr/u.cm**2/u.AA, u.spectral_density(g['wavelength'].value[i] * u.AA))
+                         for i,s in enumerate(star_spec_g)]
+    star_spec_g_per_A = u.Quantity(star_spec_g_per_A)
+    flux_g = np.sum(star_spec_g_per_A[:-1]*np.diff(g['wavelength'].value)*u.AA*g['response'].value[:-1])
+    
+    V = Table.read(data_dir / 'bessell-V.txt', format='ascii', comment='#')
+    star_spec_V = bb(V['wavelength'].value*u.AA)
+    star_spec_V_per_A = [s.to(u.erg/u.s/u.sr/u.cm**2/u.AA, u.spectral_density(V['wavelength'].value[i] * u.AA))
+                         for i,s in enumerate(star_spec_V)]
+    star_spec_V_per_A = u.Quantity(star_spec_V_per_A)
+    flux_V = np.sum(star_spec_V_per_A[:-1]*np.diff(V['wavelength'].value)*u.AA*V['response'].value[:-1])
+
+    flux_ratio = flux_g/flux_V
+    vmag = gmag + 2.5*np.log10(flux_ratio)
+    return vmag
+
+
+
+class PredictNDFilters(KPFTranslatorFunction):
+    '''Predict which ND filters should be used for simultaneous calibrations.
+
+    Args:
+        ? (float): 
+
+    Scripts Called:
+
+     - `kpf.calbench.SetND`
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        check_input(args, 'Gmag', allowed_types=[int, float])
+        check_input(args, 'Teff', allowed_types=[int, float])
+        check_input(args, 'ExpTime', allowed_types=[int, float])
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        gmag = args.get('Gmag')
+        teff = args.get('Teff')
+        vmag = estimate_Vmag(gmag, teff)
+        obs_exp_time = args.get('ExpTime')
+
+        # reference calibration file to scale up/down
+        #cal_file = 'KP.20240529.80736.43_L1.fits' # reference etalon L1 file
+        data_dir = Path(__file__).parent.parent.parent / 'data'
+        cal_file = data_dir / 'KP.20240529.80736.43_L1.fits'
+
+        # Filter wheel populations for both wheels
+        od_arr_scical = [0.1, 0.3, 0.5, 0.8, 1.0, 4.0]
+        od_arr_cal = [0.1, 1.0, 1.3, 2., 3., 4.]
+        od_vals_all, filter_configs_all = all_possible_sums_with_indices_sorted(od_arr_scical, od_arr_cal)
+
+        od, nd_config = get_simulcal_od(vmag, teff, obs_exp_time, cal_file,
+                            ref_wave=5500, od_values=od_vals_all,
+                            filter_configs=filter_configs_all)
+
+        result = {'CalND1': f'OD {nd_config[0]}',
+                  'CalND2': f'OD {nd_config[1]}'}
+        log.info(f"Predicted ND1 = {result['CalND1']}")
+        log.info(f"Predicted ND2 = {result['CalND2']}")
+        if args.get('set', False):
+            SetND.execute(result)
+        return result
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('Gmag', type=float,
+                            help="The gaia G magnitude of the target")
+        parser.add_argument('Teff', type=float,
+                            help="The effective temperature of the target")
+        parser.add_argument('ExpTime', type=float,
+                            help="The exposure time on target")
+        parser.add_argument("--set", dest="set",
+            default=False, action="store_true",
+            help="Set these values after calculating?")
+        return super().add_cmdline_args(parser, cfg)
