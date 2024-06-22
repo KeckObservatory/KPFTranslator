@@ -38,6 +38,8 @@ links:
         cmd: calbench.CalLampPower.CalLampPower
     IsCalSourceEnabled:
         cmd: calbench.IsCalSourceEnabled.IsCalSourceEnabled
+    PredictNDFilters:
+        cmd: calbench.PredictNDFilters.PredictNDFilters
     SetCalSource:
         cmd: calbench.SetCalSource.SetCalSource
     SetFlatFieldFiberPos:
