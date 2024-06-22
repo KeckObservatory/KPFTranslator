@@ -1,4 +1,5 @@
 from pathlib import Path
+import datetime
 import numpy as np
 from astropy.io import fits
 from astropy.modeling import models
@@ -241,9 +242,12 @@ class PredictNDFilters(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
+        tick = datetime.datetime.now()
         gmag = args.get('Gmag')
         teff = args.get('Teff')
+        log.debug('Estimating Vmag from Gmag:')
         vmag = estimate_Vmag(gmag, teff)
+        log.debug(f'  Gmag={gmag:.2f} --> Vmag={vmag:.2f}')
         obs_exp_time = args.get('ExpTime')
 
         # reference calibration file to scale up/down
@@ -264,6 +268,9 @@ class PredictNDFilters(KPFTranslatorFunction):
                   'CalND2': f'OD {nd_config[1]}'}
         log.info(f"Predicted ND1 = {result['CalND1']}")
         log.info(f"Predicted ND2 = {result['CalND2']}")
+        tock = datetime.datetime.now()
+        elapsed = (tock-tick).total_seconds()
+        log.info(f'ND filter calculation took {elapsed:.1f}s')
         if args.get('set', False):
             SetND.execute(result)
         return result
