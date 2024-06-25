@@ -347,6 +347,9 @@ class MainWindow(QMainWindow):
 
         # Tip Tilt Error
         #self.TipTiltError = self.findChild(QLabel, 'TipTiltError')
+        self.TIPTILT_ERROR.stringCallback.connect(self.update_TipTiltError)
+        self.TIPTILT_ERROR.primeCallback()
+
         self.TipTiltRMSValue = self.findChild(QLabel, 'TipTiltRMSValue')
         self.TIPTILT_ERROR_RMS.stringCallback.connect(self.update_TipTiltRMS)
         self.TIPTILT_ERROR_RMS.primeCallback()
