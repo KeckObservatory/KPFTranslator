@@ -477,40 +477,6 @@
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># time shim</span>
                 <span class="n">check_script_running</span><span class="p">()</span>
 
-        <span class="c1"># Setup AO</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;AO&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="c1"># ---------------------------------</span>
-            <span class="c1"># User Verification</span>
-            <span class="c1"># ---------------------------------</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;--------------------------------------------------------------&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;This script will configure the FIU and AO bench for observing.&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;The AO bench area should be clear of personnel before proceeding.&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;Do you wish to to continue?&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;(y/n) [y]:&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;--------------------------------------------------------------&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;&quot;</span><span class="p">,</span>
-                   <span class="p">]</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">msg</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-            <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;quit&#39;</span><span class="p">,</span> <span class="s1">&#39;abort&#39;</span><span class="p">]:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;User aborted Start Of Night&#39;</span><span class="p">)</span>
-                <span class="k">return</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">SetupAOforKPF</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Open AO hatch&#39;</span><span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">ControlAOHatch</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">})</span>
-                <span class="k">except</span> <span class="n">FailedToReachDestination</span><span class="p">:</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AO hatch did not move successfully&quot;</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">()</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----------------------------------------------------------&#39;</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AO hatch reported problems moving. Make sure stars are&#39;</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;visible on guide camera before proceeding.&#39;</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----------------------------------------------------------&#39;</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">()</span>
-
         <span class="c1"># ---------------------------------</span>
         <span class="c1"># Remaining non-AO Actions</span>
         <span class="c1"># ---------------------------------</span>
@@ -588,6 +554,40 @@
         <span class="n">expmeter_enabled</span> <span class="o">=</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;EXPMETER_ENABLED&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">expmeter_enabled</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The ExpMeter detector is disabled tonight&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Setup AO</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;AO&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># ---------------------------------</span>
+            <span class="c1"># User Verification</span>
+            <span class="c1"># ---------------------------------</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;--------------------------------------------------------------&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;This script will configure the FIU and AO bench for observing.&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;The AO bench area should be clear of personnel before proceeding.&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;Do you wish to to continue?&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;(y/n) [y]:&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;--------------------------------------------------------------&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                   <span class="p">]</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">msg</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;quit&#39;</span><span class="p">,</span> <span class="s1">&#39;abort&#39;</span><span class="p">]:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;User aborted Start Of Night&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">SetupAOforKPF</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Open AO hatch&#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">ControlAOHatch</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">})</span>
+                <span class="k">except</span> <span class="n">FailedToReachDestination</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AO hatch did not move successfully&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">()</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----------------------------------------------------------&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AO hatch reported problems moving. Make sure stars are&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;visible on guide camera before proceeding.&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----------------------------------------------------------&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
