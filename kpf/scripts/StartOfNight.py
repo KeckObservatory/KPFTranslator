@@ -82,40 +82,6 @@ class StartOfNight(KPFTranslatorFunction):
                 time.sleep(2) # time shim
                 check_script_running()
 
-        # Setup AO
-        if args.get('AO', True) is True:
-            # ---------------------------------
-            # User Verification
-            # ---------------------------------
-            msg = ["",
-                   "--------------------------------------------------------------",
-                   "This script will configure the FIU and AO bench for observing.",
-                   "The AO bench area should be clear of personnel before proceeding.",
-                   "Do you wish to to continue?",
-                   "(y/n) [y]:",
-                   "--------------------------------------------------------------",
-                   "",
-                   ]
-            for line in msg:
-                print(line)
-            user_input = input()
-            if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
-                log.warning(f'User aborted Start Of Night')
-                return
-            else:
-                SetupAOforKPF.execute({})
-                log.info('Open AO hatch')
-                try:
-                    ControlAOHatch.execute({'destination': 'open'})
-                except FailedToReachDestination:
-                    log.error(f"AO hatch did not move successfully")
-                    print()
-                    print('----------------------------------------------------------')
-                    print('AO hatch reported problems moving. Make sure stars are')
-                    print('visible on guide camera before proceeding.')
-                    print('----------------------------------------------------------')
-                    print()
-
         # ---------------------------------
         # Remaining non-AO Actions
         # ---------------------------------
@@ -193,6 +159,40 @@ class StartOfNight(KPFTranslatorFunction):
         expmeter_enabled = kpfconfig['EXPMETER_ENABLED'].read(binary=True)
         if expmeter_enabled is False:
             log.warning(f"The ExpMeter detector is disabled tonight")
+
+        # Setup AO
+        if args.get('AO', True) is True:
+            # ---------------------------------
+            # User Verification
+            # ---------------------------------
+            msg = ["",
+                   "--------------------------------------------------------------",
+                   "This script will configure the FIU and AO bench for observing.",
+                   "The AO bench area should be clear of personnel before proceeding.",
+                   "Do you wish to to continue?",
+                   "(y/n) [y]:",
+                   "--------------------------------------------------------------",
+                   "",
+                   ]
+            for line in msg:
+                print(line)
+            user_input = input()
+            if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+                log.warning(f'User aborted Start Of Night')
+                return
+            else:
+                SetupAOforKPF.execute({})
+                log.info('Open AO hatch')
+                try:
+                    ControlAOHatch.execute({'destination': 'open'})
+                except FailedToReachDestination:
+                    log.error(f"AO hatch did not move successfully")
+                    print()
+                    print('----------------------------------------------------------')
+                    print('AO hatch reported problems moving. Make sure stars are')
+                    print('visible on guide camera before proceeding.')
+                    print('----------------------------------------------------------')
+                    print()
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
