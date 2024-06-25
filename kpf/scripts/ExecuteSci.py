@@ -84,7 +84,6 @@ class ExecuteSci(KPFTranslatorFunction):
         # Set octagon and ND filters
         if args.get('TakeSimulCal') == True:
             if args.get('AutoNDFilters') == True:
-                raise NotImplementedError('AutoNDFilters is not available')
                 TARGET_TEFF = ktl.cache('kpf_expmeter', 'TARGET_TEFF').read(binary=True)
                 TARGET_GMAG = kpfconfig['TARGET_GMAG'].read(binary=True)
                 result = PredictNDFilters.execute({'Gmag': TARGET_GMAG,
