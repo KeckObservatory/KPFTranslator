@@ -85,7 +85,7 @@ class ExecuteSci(KPFTranslatorFunction):
         if args.get('TakeSimulCal') == True:
             if args.get('AutoNDFilters') == True:
                 TARGET_TEFF = ktl.cache('kpf_expmeter', 'TARGET_TEFF').read(binary=True)
-                TARGET_GMAG = kpfconfig['TARGET_GMAG'].read(binary=True)
+                TARGET_GMAG = float(kpfconfig['TARGET_GMAG'].read())
                 result = PredictNDFilters.execute({'Gmag': TARGET_GMAG,
                                                    'Teff': TARGET_TEFF,
                                                    'ExpTime': args.get('ExpTime')})
