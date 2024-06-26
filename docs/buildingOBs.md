@@ -15,7 +15,7 @@ The data in an OB can be divided in to a few rough categories:
 A graphical tool has been built to help observers build their KPF OBs, it is launched automatically as part of the script to start all GUIs.
 
 ![A screenshot of the KPF OB GUI](figures/KPF_OB_GUI.png)
->  A screenshot of the KPF OB GUI. This tool is still under development and may change.
+>  A screenshot of the KPF OB GUI.
 
 The top section of the GUI, "Instrument Status" shows whether an instrument script (e.g. an observation or calibration set) is being run and allows users to request that script stop.
 
