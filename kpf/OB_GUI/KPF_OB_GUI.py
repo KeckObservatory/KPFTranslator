@@ -920,6 +920,7 @@ class MainWindow(QMainWindow):
         self.Teff.setText(f"{Teff:.0f}")
         if Teff < 2700 or Teff > 6600:
             self.OB.SEQ_Observations1.set('AutoNDFilters', False)
+            self.AutoNDFilters.setChecked(False)
             self.AutoNDFilters.setEnabled(False)
         else:
             self.AutoNDFilters.setEnabled(True)
