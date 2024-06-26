@@ -24,6 +24,7 @@ plugins:
 
 nav:
   - "KPF Home": index.md
+  - "Instrument Status": status.md
   - "Instrument Info":
     - "Instrument Subsystems":
       - "Spectrograph": spectrograph.md
