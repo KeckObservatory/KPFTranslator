@@ -916,7 +916,13 @@ class MainWindow(QMainWindow):
         # Jmag
         self.Jmag.setText(f"{self.OB.get('Jmag')}")
         # Teff
-        self.Teff.setText(f"{self.OB.get('Teff')}")
+        Teff = float(self.OB.get('Teff'))
+        self.Teff.setText(f"{Teff:.0f}")
+        if Teff < 2700 or Teff > 6600:
+            self.OB.SEQ_Observations1.set('AutoNDFilters', False)
+            self.AutoNDFilters.setEnabled(False)
+        else:
+            self.AutoNDFilters.setEnabled(True)
         # TriggerCaHK
         self.TriggerCaHK.setChecked(self.OB.get('TriggerCaHK'))
         # TriggerGreen
