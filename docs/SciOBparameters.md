@@ -93,7 +93,7 @@ The `SEQ_Observations:` line is required. The following block of lines represent
 > Should the instrument be configured to illuminate the simultaneous calibration fiber during the science exposure?
 
 **AutoNDFilters**: (`bool`)
-> Should the software automatically set the ND filters based on the target and exposure information? This is not currently implemented and will be ignored!
+> Should the software automatically set the ND filters based on the target and exposure information? This is currently (June 2024) in a testing mode and is not recommended for normal use.
 
 **CalND1** (`str`)
 > The neutral density filter to put in the first filter
