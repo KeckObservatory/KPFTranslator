@@ -318,7 +318,7 @@ class MainWindow(QMainWindow):
         # Camera FPS
         self.CameraFPSValue = self.findChild(QLabel, 'CameraFPSValue')
         self.CameraFPSSelector = self.findChild(QComboBox, 'CameraFPSSelector')
-        self.fps_values = ['', '2', '5', '10', '20', '50', '100', '150']
+        self.fps_values = ['', '150', '100', '50', '20', '10', '5', '2', '1', '0.5', '0.25']
         self.CameraFPSSelector.addItems(self.fps_values)
         self.FPS.stringCallback.connect(self.update_CameraFPS)
         self.FPS.primeCallback()
