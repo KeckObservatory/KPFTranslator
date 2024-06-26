@@ -132,7 +132,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                               'TriggerExpMeter': False,
                               'RunAgitator': True,
                               'CalSource': 'EtalonFiber',
-                              'Object': 'autocal-etalon-all',
+                              'Object': 'slewcal',
                               'CalND1': Etalon_ND1,
                               'CalND2': Etalon_ND2,
                               'ExpTime': Etalon_ExpTime,
