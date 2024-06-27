@@ -66,8 +66,7 @@ nav:
       - "General Keck Observing Info": https://www.keckobservatory.org/observing/
       - "Pre-observing Checklist": https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html
       - "Remote Observing": http://www2.keck.hawaii.edu/inst/common/mainland_observing.html
-    - "Telescope Specifications":
-      - "Limits": https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html
+      - "Telescope Limits": https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html
       - "Telescope Info": http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf
     - "Keck Policies":
       - "Split Nights": http://www2.keck.hawaii.edu/observing/SplitNights.html
