@@ -152,7 +152,9 @@ The "Flux" plot is the right hand plot in the GUI.  It plots the total flux in t
 
 #### Image Display
 
-The image display section shows a cropped version of the Magiq image (cropped to the region the tip tilt algorithm is using). The filename displayed and the timestamp at which the file was updated are shown near the top.  Mousing over the image will read out the pixel position and value of the pixel under the cursor just below the image and next to the X and Y position of the target pixel the algorithm is trying to steer the star to (this value is updated by DAR and so will change).
+The image display section shows a cropped version of the Magiq image (cropped to the region the tip tilt algorithm is using). It is important to remember that **this image is not the same as what the tip tilt system is using for its calculations!**  This is an average of frames over the Magiq exposure time, so you have a higher SNR in this image than you do in the individual frames going in to the tip tilt calculations.
+
+The filename displayed and the timestamp at which the file was updated are also shown near the top.  Mousing over the image will read out the pixel position and value of the pixel under the cursor just below the image and next to the X and Y position of the target pixel the algorithm is trying to steer the star to (this value is updated by DAR and so will change).
 
 The image will show an overlayed circle and label with the object's name ("OBJECT1, OBJECT2, or OBJECT3") and the percentage value next to the label is the fraction of frames in which is object is detected.  If this is much less than 100%, you should probably adjust the detection parameters or adjust the sensitivity of the guider (i.e. increase gain or lower the FPS).
 
