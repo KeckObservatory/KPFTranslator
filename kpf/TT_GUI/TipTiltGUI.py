@@ -501,7 +501,7 @@ class MainWindow(QMainWindow):
         # Detect SNR
         self.DetectSNRValue = self.findChild(QLabel, 'DetectSNRValue')
         self.DetectSNRSelector = self.findChild(QComboBox, 'DetectSNRSelector')
-        self.DetectSNR_values = ['', '3', '5', '7', '10', '20', '30']
+        self.DetectSNR_values = ['', '1', '2', '3', '5', '7', '15', '30']
         self.DetectSNRSelector.addItems(self.DetectSNR_values)
         self.OBJECT_INTENSITY.stringCallback.connect(self.update_DetectSNR)
         self.OBJECT_INTENSITY.primeCallback()
