@@ -142,11 +142,7 @@
                 </li>
                 <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
                 </li>
-    </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" >Telescope Specifications</a>
-    <ul>
-                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Limits</a>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html">Telescope Limits</a>
                 </li>
                 <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
                 </li>
@@ -431,9 +427,9 @@ software have already failed.</p>
 
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Power cycling the Ca HK detector system&#39;</span><span class="p">)</span>
         <span class="n">kpfpower</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfpower&#39;</span><span class="p">)</span>
-        <span class="n">outlets</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;J1&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose2 Galil RIO controller&#39;</span><span class="p">),</span>
+        <span class="n">outlets</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;J5&#39;</span><span class="p">,</span> <span class="s1">&#39;Andor Newton PS&#39;</span><span class="p">),</span>
+                   <span class="p">(</span><span class="s1">&#39;J1&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose2 Galil RIO controller&#39;</span><span class="p">),</span>
                    <span class="p">(</span><span class="s1">&#39;J2&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose2 Galil output bank&#39;</span><span class="p">),</span>
-                   <span class="p">(</span><span class="s1">&#39;J5&#39;</span><span class="p">,</span> <span class="s1">&#39;Andor Newton PS&#39;</span><span class="p">),</span>
                    <span class="p">]</span>
         <span class="k">for</span> <span class="n">outlet_id</span><span class="p">,</span> <span class="n">outlet_name</span> <span class="ow">in</span> <span class="n">outlets</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Powering off </span><span class="si">{</span><span class="n">outlet_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">outlet_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -442,7 +438,7 @@ software have already failed.</p>
         <span class="k">for</span> <span class="n">outlet_id</span><span class="p">,</span> <span class="n">outlet_name</span> <span class="ow">in</span> <span class="n">outlets</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Powering on </span><span class="si">{</span><span class="n">outlet_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">outlet_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">kpfpower</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;OUTLET_</span><span class="si">{</span><span class="n">outlet_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;On&#39;</span><span class="p">)</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Restarting kpf_hk keyword service&#39;</span><span class="p">)</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;kpf&#39;</span><span class="p">,</span> <span class="s1">&#39;restart&#39;</span><span class="p">,</span> <span class="s1">&#39;kpf_hk&#39;</span><span class="p">]</span>
