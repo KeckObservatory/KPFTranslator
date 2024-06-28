@@ -22,7 +22,14 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
 
     Obeys kpfconfig.ALLOWSCHEDULEDCALS (will not run if that is set to No)
 
-    ## KTL Keywords Used
+    Args:
+        nExp (int): The number of frames to take.
+        combine (bool): Combine the files in to a master bias?
+        output (str): The output combined bias file.
+        update (bool): Update the bias file in use with the newly generated
+            file? (only used if combine is True).
+
+    KTL Keywords Used:
 
     - `kpfconfig.EXPMETER_ENABLED`
     - `kpfconfig.ALLOWSCHEDULEDCALS`
@@ -45,7 +52,7 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
     - `kpf_expmeter.FITSFILE`
     - `kpfexpose.TRIG_TARG`
 
-    ## Scripts Called
+    Scripts Called:
 
     - `kpf.calbench.SetCalSource`
     - `kpf.calbench.WaitForCalSource`
@@ -53,21 +60,6 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
     - `kpf.spectrograph.SetSourceSelectShutters`
     - `kpf.expmeter.BuildMasterBias`
     - `kpf.spectrograph.ResetDetectors.ResetExpMeterDetector`
-
-    ## Parameters
-
-    **nExp** (`int`)
-    > The number of frames to take
-
-    **combine** (`bool`)
-    > Combine the files in to a master bias?
-
-    **output** (`str`)
-    > The output combined bias file
-
-    **update** (`bool`)
-    > Update the bias file in use with the newly generated file? (only used if
-    combine is True)
     '''
     @classmethod
     @obey_scriptrun

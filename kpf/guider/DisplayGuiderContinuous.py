@@ -11,11 +11,11 @@ from kpf.guider.GuiderLastfile import GuiderLastfile
 
 
 class DisplayGuiderContinuous(KPFTranslatorFunction):
-    '''Continuously display latest guider images to ds9.
-    
-    ARGS:
-    =====
-    None
+    '''Continuously display latest guider images to ds9 using `xpaset`.
+
+    KTL Keywords Used:
+
+    - `kpfguide.LASTFILE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

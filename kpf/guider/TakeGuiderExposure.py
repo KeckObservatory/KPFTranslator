@@ -14,10 +14,16 @@ class TakeGuiderExposure(KPFTranslatorFunction):
     '''Depending on whether the guide camera is running in continuous mode or
     not, this will either grab the next exposure (if in continuous mode) or
     trigger a new exposure.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfguide.EXPTIME`
+    - `kpfguide.LASTFILE`
+
+    Scripts Called:
+
+    - `kpf.guider.TriggerSingleGuiderExposure`
+    - `kpf.guider.GrabGuiderExposure`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

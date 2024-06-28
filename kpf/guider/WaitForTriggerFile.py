@@ -7,10 +7,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class WaitForTriggerFile(KPFTranslatorFunction):
     '''Wait for a trigger file in progress to finish being collected.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfguide.LASTTRIGFILE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

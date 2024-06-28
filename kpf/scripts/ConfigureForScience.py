@@ -24,7 +24,6 @@ from kpf.spectrograph.WaitForReady import WaitForReady
 class ConfigureForScience(KPFTranslatorFunction):
     '''Script which configures the instrument for Science observations.
 
-    - If needed, start tip tilt loops
     - Sets octagon / simulcal source
     - Sets source select shutters
     - Set triggered detectors
@@ -60,52 +59,24 @@ class ConfigureForScience(KPFTranslatorFunction):
 
         check_scriptstop()
 
-        # Check tip tilt loops
-        requested_mode = OB.get('GuideMode', 'off')
-        kpfguide = ktl.cache('kpfguide')
-        all_loops = kpfguide['ALL_LOOPS'].read()
-        tt_control = kpfguide['TIPTILT_CONTROL'].read()
-        if (requested_mode in ['manual', 'auto'] and all_loops in ['Inactive', 'Mixed'])\
-            or (requested_mode in ['off', 'telescope', False] and tt_control == 'Active'):
-                log.error(f'OB requesting {requested_mode}, but guide loops '
-                          f'are: {all_loops} ({tt_control})')
-                # Check with user
-                log.debug('Asking for user input')
-                print()
-                print("#####################################################")
-                print("The tip tilt loops are not in the expected state based")
-                print("on the information in the OB.")
-                print()
-                print("Do you wish to continue executing this OB?")
-                print("(y/n) [y]:")
-                print("#####################################################")
-                print()
-                user_input = input()
-                log.debug(f'response: "{user_input}"')
-                if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
-                    raise KPFException("User chose to halt execution")
-
-        check_scriptstop()
-
-        if requested_mode in ['manual', 'auto']:
-            matched_PO = VerifyCurrentBase.execute({})
-            if matched_PO == False:
-                # Check with user
-                log.debug('Asking for user input')
-                print()
-                print("#####################################################")
-                print("The dcs.PONAME value is incosistent with CURRENT_BASE")
-                print("Please double check that the target object is where you")
-                print("want it to be before proceeding.")
-                print()
-                print("Do you wish to continue executing this OB?")
-                print("(y/n) [y]:")
-                print("#####################################################")
-                print()
-                user_input = input()
-                log.debug(f'response: "{user_input}"')
-                if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
-                    raise KPFException("User chose to halt execution")
+        matched_PO = VerifyCurrentBase.execute({})
+        if matched_PO == False:
+            # Check with user
+            log.debug('Asking for user input')
+            print()
+            print("#####################################################")
+            print("The dcs.PONAME value is incosistent with CURRENT_BASE")
+            print("Please double check that the target object is where you")
+            print("want it to be before proceeding.")
+            print()
+            print("Do you wish to continue executing this OB?")
+            print("(y/n) [y]:")
+            print("#####################################################")
+            print()
+            user_input = input()
+            log.debug(f'response: "{user_input}"')
+            if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
+                raise KPFException("User chose to halt execution")
 
         check_scriptstop()
 
@@ -134,7 +105,7 @@ class ConfigureForScience(KPFTranslatorFunction):
                                          'SSS_CalSciSky': False})
 
         # Set Triggered Detectors
-        OB['TriggerGuide'] = (OB.get('GuideMode', 'off') != 'off')
+        OB['TriggerGuide'] = True
         SetTriggeredDetectors.execute(OB)
 
         check_scriptstop()

@@ -14,9 +14,6 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.scripts.ExecuteSlewCal import ExecuteSlewCal
 from kpf.calbench.SetCalSource import SetCalSource
-from kpf.guider.PredictGuiderParameters import PredictGuiderParameters
-from kpf.guider.SetGuiderFPS import SetGuiderFPS
-from kpf.guider.SetGuiderGain import SetGuiderGain
 from kpf.fiu.InitializeTipTilt import InitializeTipTilt
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.utils.SetTargetInfo import SetTargetInfo
@@ -26,14 +23,11 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
     '''Script which configures the instrument for Acquisition step.
 
     - Sets target parameters
-    - Sets guide camera parameters
     - Sets FIU mode
     - Executes Slew Cal
 
     This must have arguments as input, either from a file using the `-f` command
     line tool, or passed in from the execution engine.
-
-    Can be called by `ddoi_script_functions.configure_for_acquisition`.
 
     ARGS:
     =====
@@ -44,10 +38,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
     def pre_condition(cls, OB, logger, cfg):
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
-        # Check guider parameters
-        guide_mode = OB.get('GuideMode', 'off')
-        if guide_mode == 'auto':
-            check_input(OB, 'Jmag', allowed_types=[float, int])
         # Check Slewcals
         kpfconfig = ktl.cache('kpfconfig')
         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
@@ -102,23 +92,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
 
         # Set Target Parameters from OB
         SetTargetInfo.execute(OB)
-
-        # Set guide camera parameters
-        guide_mode = OB.get('GuideMode', 'off')
-        if guide_mode == 'manual':
-            if OB.get('GuideCamGain', None) is not None:
-                SetGuiderGain.execute(OB)
-            if OB.get('GuideFPS', None) is not None:
-                SetGuiderFPS.execute(OB)
-        elif guide_mode == 'auto':
-            guider_parameters = PredictGuiderParameters.execute(OB)
-            SetGuiderGain.execute(guider_parameters)
-            SetGuiderFPS.execute(guider_parameters)
-        elif guide_mode in ['off', False]: # pyyaml converts 'off' to False, so handle both
-            log.info(f"GuideMode is off, no guider parameters set")
-        else:
-            log.error(f"Guide mode '{guide_mode}' is not supported.")
-            log.error(f"Not setting guider parameters.")
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

@@ -7,10 +7,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetTipTiltCalculations(KPFTranslatorFunction):
     '''Turn the tip tilt calculation software on or off.
-    
-    ARGS:
-    =====
-    :calculations: The desired state of the calculations (Active or Inactive)
+
+    Args:
+        calculations (str): The desired state of the calculations. Allowed
+            values: Active or Inactive
+
+    KTL Keywords Used:
+
+    - `kpfguide.TIPTILT_CALC`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

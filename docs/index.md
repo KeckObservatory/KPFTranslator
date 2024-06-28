@@ -1,12 +1,9 @@
 # Keck Planet Finder (KPF)
 
-## Instrument Status
-
-KPF has been commissioned on sky, and is available for use. Many aspects of the instrument are still being optimized and the long term stability is still under evaluation. Short term stability looks excellent (exceeding the 50 cm/s target spec within a night) and we expect measures of the long term RV precision to become available as the DRP evolves.
-
-See [KPF Status Summary and Blog](https://keckobservatory.atlassian.net/wiki/spaces/KPF/overview) for the latest details on the instrument's operational status broken down by subsystem.
-
-A detailed summary of the instrument status was presented at the September 2023 Keck Science Meeting. The slides from that presentation are available in [PDF format](Keck Science Meeting 2023 Breakout Session.pdf).
+| Email Contact: | [kpf_info@keck.hawaii.edu](mailto:kpf_info@keck.hawaii.edu) |
+| -------------- | ---------------------- |
+| Instrument Scientist: | Josh Walawender |
+| Deputy Instrument Scientist: | Sherry Yeh |
 
 ## Instrument Description
 

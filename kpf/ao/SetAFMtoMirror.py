@@ -6,21 +6,13 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetAFMtoMirror(KPFTranslatorFunction):
-    '''# Description
-    Set AFM to Mirror so ACAM sees light
+    '''Set AFM to Mirror so ACAM sees light
 
-    ## KTL Keywords Used
+    KTL Keywords Used:
+
     - `ao.OBAMNAME`
     - `ao.OBAMSLEW`
     - `ao.OBAMSTST`
-
-    ## Scripts Called
-
-    None
-
-    ## Parameters
-
-    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

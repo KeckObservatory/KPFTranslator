@@ -10,10 +10,13 @@ class StopTipTilt(KPFTranslatorFunction):
     stop all functions including DAR (via DAR_ENABLE), tip tilt calculations
     (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to
     the telescope (via OFFLOAD_DCS and OFFLOAD).
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfguide.TIPTILT_CALC`
+    - `kpfguide.TIPTILT_CONTROL`
+    - `kpfguide.OFFLOAD`
+    - `kpfguide.ALL_LOOPS`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

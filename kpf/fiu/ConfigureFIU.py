@@ -12,14 +12,22 @@ from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 ## Configure FIU
 ##-----------------------------------------------------------------------------
 class ConfigureFIU(KPFTranslatorFunction):
-    '''Set the FIU mode (kpffiu.MODE). IF the wait option is fale this will
+    '''Set the FIU mode (kpffiu.MODE). If the wait option is fale this will
     retry the move if it fails with a configurable number of retries.
 
-    ARGS:
-    =====
-    :mode: The desired FIU mode.  One of:
-           Stowed, Alignment, Acquisition, Observing, Calibration
-    :wait: (bool) Wait for move to complete before returning? (default: True)
+    Args:
+        mode (str): The desired FIU mode. Allowed values: Stowed, Alignment,
+            Acquisition, Observing, Calibration
+        wait (bool): Wait for move to complete before returning? (default: True)
+
+    KTL Keywords Used:
+
+    - `kpffiu.MODE`
+
+    Scripts Called:
+
+    - `kpf.calbench.ConfigureFIUOnce`
+    - `kpf.calbench.WaitForConfigureFIU`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

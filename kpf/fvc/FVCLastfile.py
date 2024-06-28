@@ -9,10 +9,19 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class FVCLastfile(KPFTranslatorFunction):
     '''Print the value of the kpffvc.[camera]LASTFILE keyword to STDOUT
-    
-    ARGS:
-    =====
-    :camera: Which FVC camera (SCI, CAHK, EXT, CAL)?
+
+    Args:
+        camera (str): Which FVC camera? Allowed values: SCI, CAHK, EXT, CAL
+
+    Returns:
+        String containing the path to the file.
+
+    KTL Keywords Used:
+
+    - `kpffvc.SCILASTFILE`
+    - `kpffvc.CALLASTFILE`
+    - `kpffvc.EXTLASTFILE`
+    - `kpffvc.CAHKLASTFILE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -20,26 +20,15 @@ warnings.filterwarnings('ignore', category=FITSFixedWarning, append=True)
 
 
 class BuildMasterBias(KPFTranslatorFunction):
-    '''# Description
-    Powers off one of the cal lamps via the `kpflamps` keyword service.
+    '''Combine a set of bias files to make a master bias.
 
-    Uses the lamp names from the OCTAGON when appropriate.
+    Args:
+        files (list): A list of files to combine.
+        output (str): The output combined filename to write.
 
-    ## KTL Keywords Used
+    KTL Keywords Used:
 
     - `kpf_expmeter.BIAS_FILE`
-
-    ## Scripts Called
-
-    None
-
-    ## Parameters
-
-    **files** (`list`)
-    > A list of files to combine.
-
-    **output** (`str`)
-    > The output combined filename to write.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

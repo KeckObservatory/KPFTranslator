@@ -10,10 +10,6 @@ RadialVelocity: -16.597         # Radial Velocity in km/s
 Gmag: 3.3                       # G band magnitude (eventualy used by exposure meter)
 Jmag: 2.14                      # J band magnitude (eventualy used by guider)
 Teff: 5266                      # Effective temperature
-# Guider Setup
-GuideMode: manual               # "manual", "auto", "off", or "telescope"
-GuideCamGain: low               # Guide camera gain; values = low | medium | high
-GuideFPS: 100                   # Frames per second for guide camera (for tip-tilt)
 # Spectrograph Setup
 TriggerCaHK: False              # Include CaHK in exposure (True/False)
 TriggerGreen: True              # Include Green CCD in exposure (True/False)

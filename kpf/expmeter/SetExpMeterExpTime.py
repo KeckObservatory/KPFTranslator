@@ -7,21 +7,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class SetExpMeterExpTime(KPFTranslatorFunction):
-    '''# Description
-    Sets the exposure time for the exposure meter
+    '''Sets the exposure time for the exposure meter
 
-    ## KTL Keywords Used
+    Args:
+        ExpMeterExpTime (float): The exposure time in seconds.
+
+    KTL Keywords Used:
 
     - `kpf_expmeter.EXPOSURE`
-
-    ## Scripts Called
-
-    None
-
-    ## Parameters
-
-    **ExpMeterExpTime** (`float`)
-    > The exposure time in seconds
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -3,15 +3,6 @@ common:
   suffix: null
 
 links:
-    # Analysis
-    AnalyzeGridSearch:
-        cmd: analysis.AnalyzeGridSearch.AnalyzeGridSearch
-    AnalyzeTipTiltPerformance:
-        cmd: analysis.AnalyzeTipTiltPerformance.AnalyzeTipTiltPerformance
-    Fit2DGridSearch:
-        cmd: analysis.Fit2DGridSearch.Fit2DGridSearch
-    CountCameraErrors:
-        cmd: analysis.CountCameraErrors.CountCameraErrors
     # AO
     ControlAOHatch:
         cmd: ao.ControlAOHatch.ControlAOHatch
@@ -47,6 +38,8 @@ links:
         cmd: calbench.CalLampPower.CalLampPower
     IsCalSourceEnabled:
         cmd: calbench.IsCalSourceEnabled.IsCalSourceEnabled
+    PredictNDFilters:
+        cmd: calbench.PredictNDFilters.PredictNDFilters
     SetCalSource:
         cmd: calbench.SetCalSource.SetCalSource
     SetFlatFieldFiberPos:
@@ -94,6 +87,15 @@ links:
         cmd: engineering.TriggerGreenMiniFill.TriggerGreenMiniFill
     TriggerRedMiniFill:
         cmd: engineering.TriggerRedMiniFill.TriggerRedMiniFill
+    # Engineering/Analysis
+    AnalyzeGridSearch:
+        cmd: engineering.analysis.AnalyzeGridSearch.AnalyzeGridSearch
+    AnalyzeTipTiltPerformance:
+        cmd: engineering.analysis.AnalyzeTipTiltPerformance.AnalyzeTipTiltPerformance
+    Fit2DGridSearch:
+        cmd: engineering.analysis.Fit2DGridSearch.Fit2DGridSearch
+    CountCameraErrors:
+        cmd: engineering.analysis.CountCameraErrors.CountCameraErrors
     # ExpMeter
     BuildMasterBias:
         cmd: expmeter.BuildMasterBias.BuildMasterBias

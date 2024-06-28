@@ -11,10 +11,6 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class WaitForTipTilt(KPFTranslatorFunction):
     '''Dumb versions which simply waits for a few seconds.
-
-    ARGS:
-    =====
-    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -27,6 +23,7 @@ class WaitForTipTilt(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         pass
+
 
 class WaitForTipTilt_usephase(KPFTranslatorFunction):
     '''Attempts to determine whether tip tilt loops have started successfully.
@@ -58,10 +55,6 @@ class WaitForTipTilt_usephase(KPFTranslatorFunction):
     If we do lose lock during that period, it will keep trying to meet that
     second criteria for a period of tip_tilt_max_attempt_time after the initial
     tracking lock.
-
-    ARGS:
-    =====
-    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -65,11 +65,23 @@ def find_new_limit(ax, commanded_position, n=5,
 
 
 class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
-    '''
-    
-    ARGS:
-    =====
-    None
+    '''Measure the range of the tip tilt mirror.  Prints to screen the keyword
+    modify commands to update the range parameters.
+
+    KTL Keywords Used:
+
+    - `kpffiu.TTXVAX`
+    - `kpffiu.TTYVAX`
+    - `kpffiu.TTXMEX`
+    - `kpffiu.TTYMEX`
+    - `kpffiu.TTXMED`
+    - `kpffiu.TTYMED`
+    - `kpfguide.TIPTILT_HOME`
+
+    Scripts Called:
+
+    - `kpf.fiu.InitializeTipTilt`
+    - `kpf.fiu.ShutdownTipTilt`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

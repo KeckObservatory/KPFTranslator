@@ -7,10 +7,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetTipTiltControl(KPFTranslatorFunction):
     '''Turn the tip tilt control software on or off.
-    
-    ARGS:
-    =====
-    :control: The desired state of the calculations (Active or Inactive)
+
+    Args:
+        control (str): The desired state of the control. Allowed values: Active
+            or Inactive
+
+    KTL Keywords Used:
+
+    - `kpfguide.TIPTILT_CONTROL`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

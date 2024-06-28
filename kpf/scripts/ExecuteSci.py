@@ -25,6 +25,7 @@ from kpf.calbench.SetND1 import SetND1
 from kpf.calbench.SetND2 import SetND2
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
+from kpf.calbench.PredictNDFilters import PredictNDFilters
 from kpf.expmeter.PredictExpMeterParameters import PredictExpMeterParameters
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 from kpf.expmeter.SetupExpMeter import SetupExpMeter
@@ -83,12 +84,17 @@ class ExecuteSci(KPFTranslatorFunction):
         # Set octagon and ND filters
         if args.get('TakeSimulCal') == True:
             if args.get('AutoNDFilters') == True:
-                raise NotImplementedError('AutoNDFilters is not available')
-            else:
-                SetND1.execute({'CalND1': args['CalND1'], 'wait': False})
-                SetND2.execute({'CalND2': args['CalND2'], 'wait': False})
-                WaitForND1.execute(args)
-                WaitForND2.execute(args)
+                TARGET_TEFF = ktl.cache('kpf_expmeter', 'TARGET_TEFF').read(binary=True)
+                TARGET_GMAG = float(kpfconfig['TARGET_GMAG'].read())
+                result = PredictNDFilters.execute({'Gmag': TARGET_GMAG,
+                                                   'Teff': TARGET_TEFF,
+                                                   'ExpTime': args.get('ExpTime')})
+                args['CalND1'] = result['CalND1']
+                args['CalND2'] = result['CalND2']
+            SetND1.execute({'CalND1': args['CalND1'], 'wait': False})
+            SetND2.execute({'CalND2': args['CalND2'], 'wait': False})
+            WaitForND1.execute(args)
+            WaitForND2.execute(args)
 
         check_scriptstop() # Stop here if requested
 

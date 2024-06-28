@@ -10,10 +10,14 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class InitializeTipTilt(KPFTranslatorFunction):
     '''Initialize the tip tilt system by setting the control mode to closed loop
     and setting the target values in X and Y to 0.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfguide.TIPTILT_HOME`
+    - `kpffiu.TTXSRV`
+    - `kpffiu.TTYSRV`
+    - `kpffiu.TTXVAX`
+    - `kpffiu.TTYVAX`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

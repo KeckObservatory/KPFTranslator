@@ -9,10 +9,10 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class GuiderOutdir(KPFTranslatorFunction):
     '''Print the value of the kpfguide.OUTDIR keyword to STDOUT
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfguide.OUTDIR`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

@@ -44,6 +44,7 @@ from kpf.utils.SetTargetInfo import SetTargetInfo
 from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 from kpf.expmeter.SetupExpMeter import SetupExpMeter
+from kpf.utils.SendEmail import SendEmail
 
 
 class ExecuteCal(KPFTranslatorFunction):
@@ -122,6 +123,21 @@ class ExecuteCal(KPFTranslatorFunction):
                     SetLFCtoAstroComb.execute({})
                 except:
                     log.error('Failed to set LFC to AstroComb')
+                    try:
+                        HB_MENLOSTA = ktl.cache('kpfmon', 'HB_MENLOSTA')
+                        LFCREADYSTA = ktl.cache('kpfmon', 'LFCREADYSTA')
+                        WOBBLE = ktl.cache('kpfcal', 'WOBBLE')
+                        SPECFLAT = ktl.cache('kpfcal', 'SPECFLAT')
+                        msg = [f'Failed to set LFC to AstroComb',
+                               f'kpfmon.HB_MENLOSTA = {HB_MENLOSTA.read()}',
+                               f'kpfmon.LFCREADYSTA = {LFCREADYSTA.read()}',
+                               f'kpfcal.WOBBLE = {WOBBLE.read()}',
+                               f'kpfcal.SPECFLAT = {SPECFLAT.read()}']
+                        SendEmail.execute({'Subject': 'Failed to set LFC to AstroComb',
+                                           'Message': '\n'.join(msg)})
+                    except Exception as email_err:
+                        log.error(f'Sending email failed')
+                        log.error(email_err)
                     log.info('Commanding LFC back to Standby High')
                     SetLFCtoStandbyHigh.execute({})
                     return

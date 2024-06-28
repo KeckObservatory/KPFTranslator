@@ -6,21 +6,12 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class TurnHepaOff(KPFTranslatorFunction):
-    '''# Description
-    Turn HEPA Filter system off
+    '''Turn HEPA Filter system off
 
-    ## KTL Keywords Used
+    KTL Keywords Used:
 
     - `ao.OBHPAON`
     - `ao.OBHPASTA`
-
-    ## Scripts Called
-
-    None
-
-    ## Parameters
-
-    None
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

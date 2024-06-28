@@ -8,10 +8,13 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 class SetGuiderFPS(KPFTranslatorFunction):
     '''Set the guider FPS (frames per second) via the kpfguide.FPS
     keyword.
-    
-    ARGS:
-    =====
-    :fps: `float` Number of frames per second
+
+    Args:
+        GuideFPS (float): Number of frames per second.
+
+    KTL Keywords Used:
+
+    - `kpfguide.FPS`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

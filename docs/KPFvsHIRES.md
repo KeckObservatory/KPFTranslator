@@ -19,3 +19,10 @@ KPF, on the other hand, has higher spectral resolution even though it has a larg
 | Throughput<br>(sky to CCD) | ~8-10% peak-of-blaze (measured) | 5-6% peak-of-blaze<br>for B5-B1 deckers (measured) |
 | Doppler<br>Precision | 0.5 m/s noise floor (req.)<br>0.3 m/s (goal) | ~2 m/s systematic noise floor |
 | Doppler Speed | ~8-10x faster than HIRES | Limited by need for high SNR<br>to model iodine spectrum |
+
+## Comparing Using Exposure Time Calculators (ETCs)
+
+Using the [HIRES ETC at UCO](http://etc.ucolick.org/web_s2n/hires) and the [KPF ETC](sensitivity.md), we can compare the signal to noise in observations of a common target in each instrument.  It should be noted that the plot below is not a direct comparison of the two instruments, but is a comparison of two exposure time calculators.  Subtle differences in assumptions made in each piece of software may bias this result, so this should be taken as illustrative, not definitive.
+
+![Comparison of the signal to noise estimates from ETCs for KPF and HIRES.  Inputs to the ETCs were as similar as possible.](figures/KPFvsHIRES.png)
+> Comparison of the signal to noise estimates from ETCs for KPF and HIRES.  Inputs to the ETCs were as similar as possible.

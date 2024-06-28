@@ -11,8 +11,7 @@ class PredictFVCParameters(KPFTranslatorFunction):
     For Vmag ~ 4, the SCIFVC_exptime = 1 and CAHKFVC_exptime = 15
 
     Args:
-    =====
-    :Gmag: The G magnitude of the target
+        Gmag (float): The G magnitude of the target.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

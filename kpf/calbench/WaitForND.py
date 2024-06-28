@@ -8,31 +8,23 @@ from kpf.calbench.WaitForND2 import WaitForND2
 
 
 class WaitForND(KPFTranslatorFunction):
-    '''# Description
-    Wait for both ND filter wheels.
+    '''Wait for both ND filter wheels.
 
-    ## KTL Keywords Used
+    Args:
+        CalND1 (str): The neutral density filter to put in the first filter
+            wheel. This affects both the simultaneous calibration light and
+            light which can be routed through the FIU to the science and sky
+            fibers. Allowed Values: `OD 0.1`, `OD 1.0`, `OD 1.3`, `OD 2.0`,
+            `OD 3.0`, `OD 4.0`
+        CalND2 (str): The neutral density filter to put in the first filter
+            wheel. This affects only the light injected in to the simultaneous
+            calibration fiber. Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`,
+            `OD 0.8`, `OD 1.0`, `OD 4.0`
 
-    None
+    Scripts Called:
 
-    ## Scripts Called
-
-    - `kpf.calbench.SetND1`
-    - `kpf.calbench.SetND2`
-
-    ## Parameters
-
-    **CalND1** (`str`)
-    > The neutral density filter to put in the first filter
-    wheel. This affects both the simultaneous calibration light and light
-    which can be routed through the FIU to the science and sky fibers.
-    <br>Allowed Values: `OD 0.1`, `OD 1.0`, `OD 1.3`, `OD 2.0`, `OD 3.0`, `OD 4.0`
-
-    **CalND2** (`str`)
-    > The neutral density filter to put in the second filter
-    wheel. This affects only the light injected in to the simultaneous
-    calibration fiber.
-    <br>Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`, `OD 0.8`, `OD 1.0`, `OD 4.0`
+    - `kpf.calbench.WaitForND1`
+    - `kpf.calbench.WaitForND2`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

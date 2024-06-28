@@ -9,10 +9,13 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class SetGuiderOutdir(KPFTranslatorFunction):
     '''Set the value of the kpfguide.OUTDIR keyword
-    
-    ARGS:
-    =====
-    :outdir: `str` The desired output path
+
+    Args:
+        outdir (str): The desired output path.
+
+    KTL Keywords Used:
+
+    - `kpfguide.OUTDIR`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

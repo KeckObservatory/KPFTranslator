@@ -10,10 +10,15 @@ from kpf.guider import guider_is_saving, guider_is_active
 
 class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     '''Trigger a single guider exposure using the EXPOSE keyword.
-    
-    ARGS:
-    =====
-    :wait: `bool` Return only after lastfile is updated? (default = False)
+
+    Args:
+        wait (bool): Return only after lastfile is updated? (default = False)
+
+    KTL Keywords Used:
+
+    - `kpfguide.EXPTIME`
+    - `kpfguide.LASTFILE`
+    - `kpfguide.EXPOSE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):

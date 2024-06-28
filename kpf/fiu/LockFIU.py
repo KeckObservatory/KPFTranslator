@@ -7,11 +7,20 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 class LockFIU(KPFTranslatorFunction):
     '''Lock the FIU mechanisms
-    
-    ARGS:
-    =====
-    :comment: - A comment (must not be empty) designating why the mechanisms
-                are locked.
+
+    Args:
+        comment (str): A comment (must not be empty) designating why the
+            mechanisms are locked.
+
+    KTL Keywords Used:
+
+    - `kpffiu.ADC1LCK`
+    - `kpffiu.ADC2LCK`
+    - `kpffiu.FOLDLCK`
+    - `kpffiu.HKXLCK`
+    - `kpffiu.HKYLCK`
+    - `kpffiu.TTXLCK`
+    - `kpffiu.TTYLCK`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -24,10 +33,10 @@ class LockFIU(KPFTranslatorFunction):
         kpffiu['adc1lck'].write(comment)
         kpffiu['adc2lck'].write(comment)
         kpffiu['foldlck'].write(comment)
-        kpffiu['hkxlck='].write(comment)
-        kpffiu['hkylck='].write(comment)
-        kpffiu['ttxlck='].write(comment)
-        kpffiu['ttylck='].write(comment)
+        kpffiu['hkxlck'].write(comment)
+        kpffiu['hkylck'].write(comment)
+        kpffiu['ttxlck'].write(comment)
+        kpffiu['ttylck'].write(comment)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
