@@ -193,35 +193,19 @@ def get_simulcal_od(vmag, teff, exp_time, cal_fits, ref_wave=None,
 
 
 ## ------------------------------
-## Quick and Dirty: Convert from Gmag to Vmag
+## Convert from Gmag to Vmag
 ## ------------------------------
-def estimate_Vmag(gmag, teff):
-    # Filter response curves from speclite package
-    #   https://speclite.readthedocs.io/en/latest/filters.html
-    # Filter curve data downloaded from
-    #   https://github.com/desihub/speclite/tree/main/speclite/data/filters
-    bb = models.BlackBody(temperature=teff*u.K)
-    
-    data_dir = Path(__file__).parent.parent.parent / 'data'
-    
-    g = Table.read(data_dir / 'gaiadr3-G.ecsv.txt', format='ascii', comment='#')
-    star_spec_g = bb(g['wavelength'].value*u.AA)
-    star_spec_g_per_A = [s.to(u.erg/u.s/u.sr/u.cm**2/u.AA, u.spectral_density(g['wavelength'].value[i] * u.AA))
-                         for i,s in enumerate(star_spec_g)]
-    star_spec_g_per_A = u.Quantity(star_spec_g_per_A)
-    flux_g = np.sum(star_spec_g_per_A[:-1]*np.diff(g['wavelength'].value)*u.AA*g['response'].value[:-1])
-    
-    V = Table.read(data_dir / 'bessell-V.txt', format='ascii', comment='#')
-    star_spec_V = bb(V['wavelength'].value*u.AA)
-    star_spec_V_per_A = [s.to(u.erg/u.s/u.sr/u.cm**2/u.AA, u.spectral_density(V['wavelength'].value[i] * u.AA))
-                         for i,s in enumerate(star_spec_V)]
-    star_spec_V_per_A = u.Quantity(star_spec_V_per_A)
-    flux_V = np.sum(star_spec_V_per_A[:-1]*np.diff(V['wavelength'].value)*u.AA*V['response'].value[:-1])
-
-    flux_ratio = flux_g/flux_V
-    vmag = gmag + 2.5*np.log10(flux_ratio)
-    return vmag
-
+def get_GminusV(Teff):
+    '''Table of data from:
+    https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt
+    '''
+    table_file = 'EEM_dwarf_UBVIJHK_colors_Teff.txt'
+    t = Table.read(table_file, format='ascii')
+    filtered = t[t['G-V'] != '...']
+    Teff_diff = abs(filtered['Teff'] - Teff)
+    ind = np.argmin(Teff_diff)
+    GminusV = float(filtered[ind]['G-V'])
+    return GminusV
 
 
 class PredictNDFilters(KPFTranslatorFunction):
@@ -246,7 +230,7 @@ class PredictNDFilters(KPFTranslatorFunction):
         gmag = args.get('Gmag')
         teff = args.get('Teff')
         log.debug('Estimating Vmag from Gmag:')
-        vmag = estimate_Vmag(gmag, teff)
+        vmag = gmag - get_GminusV(teff)
         log.debug(f'  Gmag={gmag:.2f} --> Vmag={vmag:.2f}')
         obs_exp_time = args.get('ExpTime')
 
