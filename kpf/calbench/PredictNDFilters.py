@@ -259,7 +259,7 @@ class PredictNDFilters(KPFTranslatorFunction):
         log.info(f"Predicted ND2 = {result['CalND2']}")
         tock = datetime.datetime.now()
         elapsed = (tock-tick).total_seconds()
-        log.info(f'ND filter calculation took {elapsed:.1f}s')
+        log.debug(f'ND filter calculation took {elapsed:.1f}s')
         if args.get('set', False):
             SetND.execute(result)
         return result
