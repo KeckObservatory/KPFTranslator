@@ -33,12 +33,15 @@ class StartExposure(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         expr = f"(kpfexpose.EXPOSE != Start)"
         kpfexpose = ktl.cache('kpfexpose')
+        is_GREEN_ENABLED = ktl.cache('kpfconfig', 'GREEN_ENABLED').read()
+        is_RED_ENABLED = ktl.cache('kpfconfig', 'RED_ENABLED').read()
+        is_CA_HK_ENABLED = ktl.cache('kpfconfig', 'CA_HK_ENABLED').read()
         trig_targ = kpfexpose['TRIG_TARG'].read().split(',')
-        if 'Green' in trig_targ:
+        if 'Green' in trig_targ and is_GREEN_ENABLED:
             expr += ' and ($kpfgreen.EXPSTATE != Start)'
-        if 'Red' in trig_targ:
+        if 'Red' in trig_targ and is_RED_ENABLED:
             expr += ' and ($kpfred.EXPSTATE != Start)'
-        if 'Ca_HK' in trig_targ:
+        if 'Ca_HK' in trig_targ and is_CA_HK_ENABLED:
             expr += ' and ($kpf_hk.EXPSTATE != Start)'
         exptime = kpfexpose['EXPOSURE'].read(binary=True)
         timeout = 6
@@ -46,12 +49,15 @@ class StartExposure(KPFTranslatorFunction):
         if left_start_state is False:
             log.error(f'We are still in start state after {timeout} s')
             # Figure out which detector is stuck in the start state?
-            green_expstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
-            log.debug(f'kpfgreen.EXPSTATE = {green_expstate}')
-            red_expstate = ktl.cache('kpfred', 'EXPSTATE').read()
-            log.debug(f'kpfred.EXPSTATE = {red_expstate}')
-            cahk_expstate = ktl.cache('kpf_hk', 'EXPSTATE').read()
-            log.debug(f'kpf_hk.EXPSTATE = {cahk_expstate}')
+            if is_GREEN_ENABLED:
+                green_expstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
+                log.debug(f'kpfgreen.EXPSTATE = {green_expstate}')
+            if is_RED_ENABLED:
+                red_expstate = ktl.cache('kpfred', 'EXPSTATE').read()
+                log.debug(f'kpfred.EXPSTATE = {red_expstate}')
+            if is_CA_HK_ENABLED:
+                cahk_expstate = ktl.cache('kpf_hk', 'EXPSTATE').read()
+                log.debug(f'kpf_hk.EXPSTATE = {cahk_expstate}')
             # Abort the current exposure
             elapsed = kpfexpose['ELAPSED'].read(binary=True)
             remaining = exptime-elapsed
