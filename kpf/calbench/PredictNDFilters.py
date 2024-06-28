@@ -7,6 +7,8 @@ from astropy import units as u
 from astropy.table import Table
 import matplotlib.pyplot as plt
 
+import ktl
+
 from kpf_etc.etc import kpf_photon_noise_estimate, _findel
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
@@ -245,8 +247,21 @@ class PredictNDFilters(KPFTranslatorFunction):
         # Filter wheel populations for both wheels
 #         od_arr_scical = [0.1, 0.3, 0.5, 0.8, 1.0, 4.0]
 #         od_arr_cal = [0.1, 1.0, 1.3, 2., 3., 4.]
-        od_arr_scical = [0.1, 1.0, 1.3, 2., 3., 4.]
-        od_arr_cal = [0.1, 0.3, 0.5, 0.8, 1.0, 4.0]
+#         od_arr_scical = [0.1, 1.0, 1.3, 2., 3., 4.]
+#         od_arr_cal = [0.1, 0.3, 0.5, 0.8, 1.0, 4.0]
+
+        ND1POS = ktl.cache('kpfcal', 'ND1POS')
+        ND1POS_allowed_values = list(ND1POS._getEnumerators())
+        if 'Unknown' in ND1POS_allowed_values:
+            ND1POS_allowed_values.pop(ND1POS_allowed_values.index('Unknown'))
+        od_arr_scical = [float(pos[3:]) for pos in ND1POS_allowed_values]
+
+        ND2POS = ktl.cache('kpfcal', 'ND2POS')
+        ND2POS_allowed_values = list(ND2POS._getEnumerators())
+        if 'Unknown' in ND2POS_allowed_values:
+            ND2POS_allowed_values.pop(ND2POS_allowed_values.index('Unknown'))
+        od_arr_cal = [float(pos[3:]) for pos in ND2POS_allowed_values]
+
         od_vals_all, filter_configs_all = all_possible_sums_with_indices_sorted(od_arr_scical, od_arr_cal)
 
         od, nd_config = get_simulcal_od(vmag, teff, obs_exp_time, cal_file,
