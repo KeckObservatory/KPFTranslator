@@ -99,13 +99,6 @@ def create_GUI_log():
 
 def main(log):
     application = QApplication(sys.argv)
-    if cmd_line_args.dark == True:
-        css_file = Path(__file__).parent / 'darkstyle.qss'
-    else:
-        css_file = Path(__file__).parent / 'lightstyle.qss'
-    with open(css_file, 'r') as f:
-        dark_css = f.read()
-    application.setStyleSheet(dark_css)
     main_window = MainWindow(log,
                              dark=cmd_line_args.dark,
                              monitor=cmd_line_args.monitor)
@@ -122,8 +115,6 @@ class MainWindow(QMainWindow):
         uic.loadUi(f"{ui_file}", self)
         self.log = log
         self.dark = dark
-        if self.dark is True:
-            plt.style.use('dark_background')
         self.monitor = monitor
         self.ginga_log = ginga_log.get_logger("example1", log_stderr=True, level=40)
         self.log.debug('Initializing MainWindow')
@@ -235,6 +226,8 @@ class MainWindow(QMainWindow):
         # Menu Bar
         self.actionQuit = self.findChild(QAction, 'actionQuit')
         self.actionQuit.triggered.connect(self.quit)
+        self.actionDark = self.findChild(QAction, 'actionToggle_Dark_Mode')
+        self.actionDark.triggered.connect(self.toggle_dark_mode)
         self.actionrestart_kpfguide1 = self.findChild(QAction, 'actionrestart_kpfguide1')
         self.actionrestart_kpfguide1.triggered.connect(self.run_restart_kpfguide1)
         self.actionrestart_kpfguide2 = self.findChild(QAction, 'actionrestart_kpfguide2')
@@ -594,7 +587,37 @@ class MainWindow(QMainWindow):
         self.ObjectValue = self.findChild(QLabel, 'ObjectValue')
         self.OBJECT.stringCallback.connect(self.ObjectValue.setText)
         self.OBJECT.primeCallback()
+        
+        self.set_dark_mode()
 
+
+    ##----------------------------------------------------------
+    ## update dark mode
+    def toggle_dark_mode(self):
+        self.dark = not self.dark
+        self.set_dark_mode()
+
+    def set_dark_mode(self):
+        '''
+        >>> print(plt.style.available)
+        ['Solarize_Light2', '_classic_test_patch', 'bmh', 'classic',
+        'dark_background', 'fast', 'fivethirtyeight', 'ggplot', 'grayscale',
+        'seaborn', 'seaborn-bright', 'seaborn-colorblind', 'seaborn-dark',
+        'seaborn-dark-palette', 'seaborn-darkgrid', 'seaborn-deep',
+        'seaborn-muted', 'seaborn-notebook', 'seaborn-paper', 'seaborn-pastel',
+        'seaborn-poster', 'seaborn-talk', 'seaborn-ticks', 'seaborn-white',
+        'seaborn-whitegrid', 'tableau-colorblind10']
+        '''
+        if self.dark == True:
+            css_file = Path(__file__).parent / 'darkstyle.qss'
+            plt.style.use('dark_background')
+        else:
+            css_file = Path(__file__).parent / 'lightstyle.qss'
+            plt.style.use('_classic_test_patch')
+        with open(css_file, 'r') as f:
+            dark_css = f.read()
+        self.setStyleSheet(dark_css)
+        self.update_plots()
 
     ##----------------------------------------------------------
     ## update Plots

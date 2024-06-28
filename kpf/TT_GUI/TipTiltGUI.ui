@@ -1554,6 +1554,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionToggle_Dark_Mode"/>
     <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuFile"/>
@@ -1583,6 +1584,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionToggle_Dark_Mode">
+   <property name="text">
+    <string>Toggle Dark Mode</string>
    </property>
   </action>
  </widget>
