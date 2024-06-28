@@ -33,9 +33,9 @@ class StartExposure(KPFTranslatorFunction):
     def post_condition(cls, args, logger, cfg):
         expr = f"(kpfexpose.EXPOSE != Start)"
         kpfexpose = ktl.cache('kpfexpose')
-        is_GREEN_ENABLED = ktl.cache('kpfconfig', 'GREEN_ENABLED').read()
-        is_RED_ENABLED = ktl.cache('kpfconfig', 'RED_ENABLED').read()
-        is_CA_HK_ENABLED = ktl.cache('kpfconfig', 'CA_HK_ENABLED').read()
+        is_GREEN_ENABLED = ktl.cache('kpfconfig', 'GREEN_ENABLED').read() == 'Yes'
+        is_RED_ENABLED = ktl.cache('kpfconfig', 'RED_ENABLED').read() == 'Yes'
+        is_CA_HK_ENABLED = ktl.cache('kpfconfig', 'CA_HK_ENABLED').read() == 'Yes'
         trig_targ = kpfexpose['TRIG_TARG'].read().split(',')
         if 'Green' in trig_targ and is_GREEN_ENABLED:
             expr += ' and ($kpfgreen.EXPSTATE != Start)'
