@@ -199,7 +199,10 @@ def get_GminusV(Teff):
     '''Table of data from:
     https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt
     '''
-    table_file = 'EEM_dwarf_UBVIJHK_colors_Teff.txt'
+    p = Path(__file__).parent
+    table_file = p / 'EEM_dwarf_UBVIJHK_colors_Teff.txt'
+    if table_file.exists() is False:
+        return 0
     t = Table.read(table_file, format='ascii')
     filtered = t[t['G-V'] != '...']
     Teff_diff = abs(filtered['Teff'] - Teff)
