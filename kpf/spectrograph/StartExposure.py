@@ -70,12 +70,15 @@ class StartExposure(KPFTranslatorFunction):
                 kpfexpose['EXPOSE'].write('End')
                 time.sleep(2) # Time shim, this time is a WAG
             # Now reset the offending detector
-            if green_expstate == 'Start':
-                ResetGreenDetector.execute({})
-            if red_expstate == 'Start':
-                ResetRedDetector.execute({})
-            if cahk_expstate == 'Start':
-                ResetCaHKDetector.execute({})
+            if is_GREEN_ENABLED:
+                if green_expstate == 'Start':
+                    ResetGreenDetector.execute({})
+            if is_RED_ENABLED:
+                if red_expstate == 'Start':
+                    ResetRedDetector.execute({})
+            if is_CA_HK_ENABLED:
+                if cahk_expstate == 'Start':
+                    ResetCaHKDetector.execute({})
             # Now start a fresh exposure
             WaitForReady.execute({})
             time.sleep(1.0)          # This time shim and the WaitForReady are hacks to catch if the
