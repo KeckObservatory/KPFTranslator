@@ -150,6 +150,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
     <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/too_policies.html">ToO Interrupts</a>
+                </li>
                 <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
                 </li>
                 <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
@@ -216,6 +218,7 @@
 <li><a href="#beginning-of-the-night">Beginning of the Night</a></li>
 <li><a href="#performing-observations">Performing Observations</a></li>
 <li><a href="#switching-programs-on-a-split-night">Switching Programs on a Split Night</a></li>
+<li><a href="#bad-weather">Bad Weather</a></li>
 </ul>
 <h1 id="beginning-of-the-night">Beginning of the Night</h1>
 <h3 id="wait-for-dome-to-open">Wait for Dome to Open</h3>
@@ -261,6 +264,8 @@
 <h1 id="switching-programs-on-a-split-night">Switching Programs on a Split Night</h1>
 <p>On a KPF/KPF split night, before starting the second KPF program, run <code>KPF Control Menu --&gt; Set Program ID and Observers</code> from the background menu (or <code>kpfSetObserverFromSchedule</code> from the command line on any KPF machine). Enter the program ID at the terminal prompt. The script will then set program ID and observers for the second KPF program, based on the telescope schedule.</p>
 <p>If you wish to set the observer names and program ID manually (i.e. without querying the telescope schedule), you can use the <code>kpfSetProgram</code> and <code>kpfSetObserver</code> scripts from the command line.  For example: <code>kpfSetProgram K123</code> will set program ID "K123" and <code>kpfSetObserver "E.E. Barnard, S.W. Burnham"</code> will set the observer name to "E.E. Barnard, S.W. Burnham".  Note that observer names should be enclosed in quotes to handle spaces in the list of names.</p>
+<h1 id="bad-weather">Bad Weather</h1>
+<p>If the weather is so bad that no observing is taking place and there doesn't seem to be an immediate likelihood of observing, then we recommend that the observer runs the end of night procedure (<code>KPF Control Menu --&gt; Run End of Night Script</code>).  The main advantage of this is that running End of Night will re-enable the automatic scheduled calibrations which happen 4 times per night when KPF is not on sky.  This means that the instrumental drift will be tracked with no action required by the observer (i.e. running slew cals).  If one of these calibration scripts is in progress and observing should resume, use the "Request Script STOP" as described above. After that, run the Start of Night script just as you would at the beginning of the night (among other things it disables the autmatic scheduled calibrations).</p>
               
             </div>
           </div><footer>

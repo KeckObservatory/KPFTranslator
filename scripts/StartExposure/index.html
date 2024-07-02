@@ -150,6 +150,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
     <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/too_policies.html">ToO Interrupts</a>
+                </li>
                 <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
                 </li>
                 <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
@@ -297,7 +299,16 @@ WaitForReadout or WaitForReady to determine when an exposure is done.</p>
 <span class="normal">75</span>
 <span class="normal">76</span>
 <span class="normal">77</span>
-<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartExposure</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartExposure</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Begins an triggered exposure by setting the `kpfexpose.EXPOSE` keyword</span>
 <span class="sd">    to Start.  This will return immediately after.  Use commands like</span>
 <span class="sd">    WaitForReadout or WaitForReady to determine when an exposure is done.</span>
@@ -321,12 +332,15 @@ WaitForReadout or WaitForReady to determine when an exposure is done.</p>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="n">expr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(kpfexpose.EXPOSE != Start)&quot;</span>
         <span class="n">kpfexpose</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfexpose&#39;</span><span class="p">)</span>
+        <span class="n">is_GREEN_ENABLED</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;GREEN_ENABLED&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Yes&#39;</span>
+        <span class="n">is_RED_ENABLED</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;RED_ENABLED&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Yes&#39;</span>
+        <span class="n">is_CA_HK_ENABLED</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;CA_HK_ENABLED&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Yes&#39;</span>
         <span class="n">trig_targ</span> <span class="o">=</span> <span class="n">kpfexpose</span><span class="p">[</span><span class="s1">&#39;TRIG_TARG&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;Green&#39;</span> <span class="ow">in</span> <span class="n">trig_targ</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;Green&#39;</span> <span class="ow">in</span> <span class="n">trig_targ</span> <span class="ow">and</span> <span class="n">is_GREEN_ENABLED</span><span class="p">:</span>
             <span class="n">expr</span> <span class="o">+=</span> <span class="s1">&#39; and ($kpfgreen.EXPSTATE != Start)&#39;</span>
-        <span class="k">if</span> <span class="s1">&#39;Red&#39;</span> <span class="ow">in</span> <span class="n">trig_targ</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;Red&#39;</span> <span class="ow">in</span> <span class="n">trig_targ</span> <span class="ow">and</span> <span class="n">is_RED_ENABLED</span><span class="p">:</span>
             <span class="n">expr</span> <span class="o">+=</span> <span class="s1">&#39; and ($kpfred.EXPSTATE != Start)&#39;</span>
-        <span class="k">if</span> <span class="s1">&#39;Ca_HK&#39;</span> <span class="ow">in</span> <span class="n">trig_targ</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;Ca_HK&#39;</span> <span class="ow">in</span> <span class="n">trig_targ</span> <span class="ow">and</span> <span class="n">is_CA_HK_ENABLED</span><span class="p">:</span>
             <span class="n">expr</span> <span class="o">+=</span> <span class="s1">&#39; and ($kpf_hk.EXPSTATE != Start)&#39;</span>
         <span class="n">exptime</span> <span class="o">=</span> <span class="n">kpfexpose</span><span class="p">[</span><span class="s1">&#39;EXPOSURE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="mi">6</span>
@@ -334,12 +348,15 @@ WaitForReadout or WaitForReady to determine when an exposure is done.</p>
         <span class="k">if</span> <span class="n">left_start_state</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;We are still in start state after </span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s1"> s&#39;</span><span class="p">)</span>
             <span class="c1"># Figure out which detector is stuck in the start state?</span>
-            <span class="n">green_expstate</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfgreen&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPSTATE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfgreen.EXPSTATE = </span><span class="si">{</span><span class="n">green_expstate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">red_expstate</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfred&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPSTATE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfred.EXPSTATE = </span><span class="si">{</span><span class="n">red_expstate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">cahk_expstate</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_hk&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPSTATE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpf_hk.EXPSTATE = </span><span class="si">{</span><span class="n">cahk_expstate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_GREEN_ENABLED</span><span class="p">:</span>
+                <span class="n">green_expstate</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfgreen&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPSTATE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfgreen.EXPSTATE = </span><span class="si">{</span><span class="n">green_expstate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_RED_ENABLED</span><span class="p">:</span>
+                <span class="n">red_expstate</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfred&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPSTATE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfred.EXPSTATE = </span><span class="si">{</span><span class="n">red_expstate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_CA_HK_ENABLED</span><span class="p">:</span>
+                <span class="n">cahk_expstate</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_hk&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPSTATE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpf_hk.EXPSTATE = </span><span class="si">{</span><span class="n">cahk_expstate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="c1"># Abort the current exposure</span>
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">kpfexpose</span><span class="p">[</span><span class="s1">&#39;ELAPSED&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">remaining</span> <span class="o">=</span> <span class="n">exptime</span><span class="o">-</span><span class="n">elapsed</span>
@@ -352,12 +369,15 @@ WaitForReadout or WaitForReady to determine when an exposure is done.</p>
                 <span class="n">kpfexpose</span><span class="p">[</span><span class="s1">&#39;EXPOSE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;End&#39;</span><span class="p">)</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Time shim, this time is a WAG</span>
             <span class="c1"># Now reset the offending detector</span>
-            <span class="k">if</span> <span class="n">green_expstate</span> <span class="o">==</span> <span class="s1">&#39;Start&#39;</span><span class="p">:</span>
-                <span class="n">ResetGreenDetector</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-            <span class="k">if</span> <span class="n">red_expstate</span> <span class="o">==</span> <span class="s1">&#39;Start&#39;</span><span class="p">:</span>
-                <span class="n">ResetRedDetector</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-            <span class="k">if</span> <span class="n">cahk_expstate</span> <span class="o">==</span> <span class="s1">&#39;Start&#39;</span><span class="p">:</span>
-                <span class="n">ResetCaHKDetector</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+            <span class="k">if</span> <span class="n">is_GREEN_ENABLED</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">green_expstate</span> <span class="o">==</span> <span class="s1">&#39;Start&#39;</span><span class="p">:</span>
+                    <span class="n">ResetGreenDetector</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+            <span class="k">if</span> <span class="n">is_RED_ENABLED</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">red_expstate</span> <span class="o">==</span> <span class="s1">&#39;Start&#39;</span><span class="p">:</span>
+                    <span class="n">ResetRedDetector</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+            <span class="k">if</span> <span class="n">is_CA_HK_ENABLED</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cahk_expstate</span> <span class="o">==</span> <span class="s1">&#39;Start&#39;</span><span class="p">:</span>
+                    <span class="n">ResetCaHKDetector</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
             <span class="c1"># Now start a fresh exposure</span>
             <span class="n">WaitForReady</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>          <span class="c1"># This time shim and the WaitForReady are hacks to catch if the</span>
