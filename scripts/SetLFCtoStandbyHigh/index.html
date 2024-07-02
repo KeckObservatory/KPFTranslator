@@ -72,6 +72,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../agitator/">Agitator</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../computers/">Computers</a>
+                </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
@@ -267,7 +269,10 @@ mode which should be set after operation of the LFC for science is complete.</p>
 <span class="normal">38</span>
 <span class="normal">39</span>
 <span class="normal">40</span>
-<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetLFCtoStandbyHigh</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetLFCtoStandbyHigh</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the Laser Frequency Comb (LFC) to &quot;StandbyHigh&quot; mode. This is the</span>
 <span class="sd">    mode which should be set after operation of the LFC for science is complete.</span>
 
@@ -283,6 +288,9 @@ mode which should be set after operation of the LFC for science is complete.</p>
         <span class="n">success</span> <span class="o">=</span> <span class="n">heartbeat</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="s1">&#39;== &quot;OK&quot;&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">success</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Menlo heartbeat is not OK: </span><span class="si">{</span><span class="n">heartbeat</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lfc_mode</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfcal&#39;</span><span class="p">,</span> <span class="s1">&#39;OPERATIONMODE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lfc_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AstroComb&#39;</span><span class="p">,</span> <span class="s1">&#39;StandbyHigh&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LFC must be in AstroComb: </span><span class="si">{</span><span class="n">lfc_mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>

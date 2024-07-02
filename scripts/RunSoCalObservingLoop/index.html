@@ -72,6 +72,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../agitator/">Agitator</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../computers/">Computers</a>
+                </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
@@ -515,7 +517,9 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
 <span class="normal">268</span>
 <span class="normal">269</span>
 <span class="normal">270</span>
-<span class="normal">271</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCalObservingLoop</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCalObservingLoop</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;This script runs a control loop to execute SoCal observations.</span>
 
 <span class="sd">    When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means</span>
@@ -694,6 +698,8 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
                     <span class="n">nSoCalObs</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">nEtalonObs</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="n">ScriptStopTriggered</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ExecuteCal failed:&quot;</span><span class="p">)</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
