@@ -36,6 +36,7 @@ nav:
       - "Calibration Bench": calbench.md
       - "Solar Calibrator": socal.md
       - "Agitator": agitator.md
+      - "Computers": computers.md
     - "Instrument Specifications":
       - "Detectors": detectors.md
       - "Sensitivity": sensitivity.md
