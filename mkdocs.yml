@@ -45,6 +45,7 @@ nav:
     - "Instrument Software": KPFTranslator.md
   - "Observing with KPF":
     - "Afternoon Setup": afternoonsetup.md
+    - "Calibrations": calibrations.md
     - "Observing Procedures": observingprocedures.md
     - "Observing Blocks":
       - "Building OBs": buildingOBs.md
