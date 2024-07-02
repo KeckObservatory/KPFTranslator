@@ -12,7 +12,7 @@ A detailed summary of the instrument status was presented at the September 2023 
 This is an attempt to summarize the status of various sub-systems of the instrument.  Each sub-system name is color coded to indicate the status at a glance: <font color="green">green</font> means functioning normally, <font color="orange">orange</font> means mostly normal, but with some caveats or minor issues, and <font color="red">red</font> means the sub-system is compromised in some way.
 
 - <font color="green">Tip Tilt Corrections</font>: The tip tilt stage was replaced in early June 2024 and is now working as expected.
-- <font color="green">Ca H&K Detector</font>: Currently functional.
+- <font color="red">Ca H&K Detector</font>: Currently non-functional.
 - <font color="green">Double Star Observations</font>: Recent modifications to the tip tilt system should enable double star observations.  There is still learning curve as we figure out how to optimize source detection though, so be patient with the OAs while trying to do this.  Remember that this is not the same as the MAGIQ guiding system, so your intuition there does not transfer to KPF.
 - <font color="green">Etalon</font>: The etalon flux problem was fixed during the servicing mission in Feb 2024 and it is now provided the expected flux levels. We have not yet worked out an algorithm for recommending ND filter settings for a given observation to balance SimulCal five flux with science fiber flux, but the mode is available. We are still recommending that slew cals should be taken every hour.
 - <font color="green">LFC</font>: Is operating normally. Standard exposure parameters are now `ExpTime: 60, CalND1: OD 2.0, and CalND2: OD 0.1`.
