@@ -2,7 +2,7 @@
 
 #### Table of Contents
 
-1. [TL:DR Procedure](#tl:dr-procedure)
+1. [TL:DR Procedure](#tldr-procedure)
 1. [Tip Tilt System Overview](#tip-tilt-system-overview)
 1. [Tip Tilt GUI](#tip-tilt-gui)
     - [GUI Layout](#gui-layout)

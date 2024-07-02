@@ -120,7 +120,7 @@ class MainWindow(QMainWindow):
                            'SSS_Sky': True,
                            'TakeSimulCal': True,
                            'FF_FiberPos': 'Blank',
-                           'ExpMeterMode': 'monitor',
+                           'ExpMeterMode': 'off',
                            'ExpMeterExpTime': '0.5',
                            'ExpMeterBin': '710.625',
                            'ExpMeterThreshold': 50000},
