@@ -199,6 +199,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                     nSoCalObs += 1
                 else:
                     nEtalonObs += 1
+            except ScriptStopTriggered as e:
+                raise e
             except Exception as e:
                 log.error("ExecuteCal failed:")
                 log.error(e)
