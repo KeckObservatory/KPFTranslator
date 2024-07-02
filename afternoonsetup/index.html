@@ -95,6 +95,8 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Afternoon Setup</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibrations/">Calibrations</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
@@ -220,12 +222,45 @@
 <p>Prior to starting observing, observers should run: <code>KPF Control Menu --&gt; Start KPF GUIs</code> from the background menu (or <code>kpfStartGUIs</code> from the command line on any KPF machine). This will start the KPF GUIs and can be run at any time prior to observing. </p>
 <h1 id="preparing-observing-blocks-obs">Preparing Observing Blocks (OBs)</h1>
 <p>Observers should use the afternoon to <a href="../buildingOBs/">prepare Observing Blocks (OBs)</a> and their star list if they have not done so already. </p>
+<h1 id="starting-kpf-guis">Starting KPF GUIs</h1>
+<p>The KPF GUIs can be started at any time.  To do so, choose <code>KPF Control Menu -&gt; Start KPF GUIs</code> from the FVWM menu.  Check that the GUIs come up properly in the various VNC sessions.  Each session is described below.</p>
+<h3 id="control0">control0</h3>
+<p><img alt="A screenshot of the control0 VNC" src="../figures/control0.png" /></p>
+<p>The <code>control0</code> VNC session should contain:</p>
+<ul>
+<li><strong>OB GUI</strong>: This is where the observer can build and execute observing blocks.</li>
+<li><strong>Tip Tilt GUI</strong>: This is a view-only version of the GUI the OAs use to control the tip tilt system. Observers can use this to see the tip tilt system status and images, but observers can not control the system.</li>
+</ul>
+<h3 id="control1">control1</h3>
+<p><img alt="A screenshot of the control1 VNC" src="../figures/control1.png" /></p>
+<p>The <code>control1</code> VNC session should contain:</p>
+<ul>
+<li><strong>FIU GUI</strong>: This shows the status of the FIU including the light path.  This is a good place to look if you are not seeing stars on the guider and want to know if the guider should eb seeing the sky.</li>
+<li><strong>Exposure Meter GUI</strong>: This will show the progress of the flux measured by the exposure meter over the course of a single exposure.</li>
+<li><strong>Spectrograph GUI</strong>: This shows the staus of the overall instrument (including a simplified FIU status). The light paths which are illuminated will show up as colored lines and arrows here to indicate where light is being directed by the various components.</li>
+</ul>
+<h3 id="control2">control2</h3>
+<p><img alt="A screenshot of the control2 VNC" src="../figures/control2.png" /></p>
+<p>The <code>control2</code> VNC session should contain:</p>
+<ul>
+<li>A <strong>ds9</strong> instance which shows the latest raw image from the Ca H&amp;K, Green, and Red detectors.</li>
+<li><strong>Eventsounds GUI</strong>: This is a standard Keck GUI where the users can enable/disable sounds and change what sound is produced by a given event.</li>
+</ul>
+<h3 id="telstatus">telstatus</h3>
+<p><img alt="A screenshot of the telstatus VNC" src="../figures/telstatus.png" /></p>
+<p>The <code>telstatus</code> VNC session should contain:</p>
+<ul>
+<li><strong>FACSUM</strong>: A standard Keck GUI showing the status of the facility (telescope and dome).</li>
+<li><strong>XMET</strong>: A standard Keck GUI showing various weather telemetry values. The OAs have more weather information which is not shown here, but this is a good summary.</li>
+<li><strong>Magiq Observer UI</strong>: A standard Keck GUI for viewing guider images and interacting with star lists.</li>
+</ul>
+<p>Note that the Magiq UI may not come up if the StartGUIs script was run while KPF was not the selected instrument.  The Magiq UI will always come up with the guider for the selected instrument when launched.  If Magiq is not running, launch it via <code>Telescope GUIs --&gt; Magiq Guider UI</code> from the FVWM menu.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../KPFTranslator/" class="btn btn-neutral float-left" title="Instrument Software"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../observingprocedures/" class="btn btn-neutral float-right" title="Observing Procedures">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../calibrations/" class="btn btn-neutral float-right" title="Calibrations">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -255,7 +290,7 @@
       <span><a href="../KPFTranslator/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../observingprocedures/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../calibrations/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
