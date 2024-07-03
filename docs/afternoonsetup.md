@@ -8,6 +8,10 @@ Prior to starting observing, observers should run: `KPF Control Menu --> Start K
 
 Observers should use the afternoon to [prepare Observing Blocks (OBs)](buildingOBs.md) and their star list if they have not done so already. 
 
+# Connecting to VNCs
+
+Observers can connect to the Keck VNCs to control the instrument from Keck HQ in Waimea, one of the Keck Remote Observing Stations, or from home using the Remote Observing Software.  For details, see the [Remote Observing](https://www2.keck.hawaii.edu/inst/mainland_observing/) documentation.
+
 # Starting KPF GUIs
 
 The KPF GUIs can be started at any time.  To do so, choose `KPF Control Menu -> Start KPF GUIs` from the FVWM menu.  Check that the GUIs come up properly in the various VNC sessions.  Each session is described below.
