@@ -40,7 +40,7 @@ nav:
     - "Instrument Specifications":
       - "Detectors": detectors.md
       - "Sensitivity": sensitivity.md
-      - "Data Format": dataformat.md
+      - "Data Flow": dataflow.md
       - "KPF vs. HIRES": KPFvsHIRES.md
     - "Instrument Software": KPFTranslator.md
   - "Observing with KPF":
