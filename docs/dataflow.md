@@ -31,6 +31,8 @@ The L0 data is a multi extension FITS file consisting of the following HDUs:
 
 This can change depending on the composition of the science observation.  For example, if the Ca H&K detector was not triggered, that extension would not be used.
 
+A guide to examining the L0 data can be found [on this page](https://kpf-pipeline.readthedocs.io/en/develop/tutorials/KPF_Data_Tutorial_L0_and_2D.html) in the documentation for the KPF DRP.
+
 ## Keck Observatory Archive (KOA)
 
 The L0 data are immediately sent to KOA for archiving.  Observers can "subscribe" to the L0 data via KOA's [Real Time Ingestion (RTI)](https://koa.ipac.caltech.edu/rti-gui/login) interface.
