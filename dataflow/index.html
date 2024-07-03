@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Data Format - KPF</title>
+    <title>Data Flow - KPF</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Data Format";
-        var mkdocs_page_input_path = "dataformat.md";
+        var mkdocs_page_name = "Data Flow";
+        var mkdocs_page_input_path = "dataflow.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -82,7 +82,7 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../sensitivity/">Sensitivity</a>
                 </li>
-                <li class="toctree-l2 current"><a class="reference internal current" href="#">Data Format</a>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Data Flow</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../KPFvsHIRES/">KPF vs. HIRES</a>
                 </li>
@@ -209,7 +209,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Instrument Info</li>
           <li class="breadcrumb-item">Instrument Specifications</li>
-      <li class="breadcrumb-item active">Data Format</li>
+      <li class="breadcrumb-item active">Data Flow</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -218,11 +218,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <p>Because KPF contains many detectors, but they are all synchronized in time, the raw data is immediately combined in to a "Level 0" (L0) multi-extension FITS file by the <code>kpfassemble</code> dispatcher.  Most users will want to use that L0 data for analysis or inspection.</p>
-<h1 id="raw-data">Raw Data</h1>
+                <h1 id="data-flow">Data Flow</h1>
+<p><img alt="An idealized vision for the KPF data flow." src="../figures/DataFlow.png" /></p>
+<blockquote>
+<p>An idealized vision for the KPF data flow. This is still a work in progress.</p>
+</blockquote>
+<h2 id="raw-data">Raw Data</h2>
+<p>Because KPF contains many detectors, but they are all synchronized in time, the raw data is immediately combined in to a "Level 0" (L0) multi-extension FITS file by the <code>kpfassemble</code> dispatcher.  Most users will want to use that L0 data for analysis or inspection.</p>
 <p>Each detector writes data to a separate output directory and <code>kpfassemble</code> will collect them from these to generate the L0 file.  This is a relatively quick process, typically the L0 file is written a few seconds after the component raw data are available on disk.</p>
 <p>As mentioned on the <a href="../detectors/">detectors</a> page, the Green and Red detectors have 32 bit ADCs and thus the pixel data do not fall on the usual 0-65535 range you may be used to.</p>
-<h1 id="l0-data">L0 Data</h1>
+<h2 id="l0-data">L0 Data</h2>
 <p>The L0 data is a multi extension FITS file consisting of the following HDUs:</p>
 <table>
 <thead>
@@ -291,6 +296,11 @@
 </tbody>
 </table>
 <p>This can change depending on the composition of the science observation.  For example, if the Ca H&amp;K detector was not triggered, that extension would not be used.</p>
+<h2 id="keck-observatory-archive-koa">Keck Observatory Archive (KOA)</h2>
+<p>The L0 data are immediately sent to KOA for archiving.  Observers can "subscribe" to the L0 data via KOA's <a href="https://koa.ipac.caltech.edu/rti-gui/login">Real Time Ingestion (RTI)</a> interface.</p>
+<h1 id="data-reduction">Data Reduction</h1>
+<p>The <a href="../kpfdrp/">KPF Data Reduction Pipeline</a> was built and delivered by the KPF Instrument Team and is an important part of obtaining the desired performance from the instrument.</p>
+<p>While Keck plan's to eventually run the DRP locally and provide quick look products (QLP), L1, and L2 data to observers as part of the KOA RTI interface, the KPF DRP is still under active development by the KPF science team, so the Keck deployment of the DRP is on hold until there are less frequent changes for us to track. As a result, data for programs which have partnered with CPS are available through their instance of the DRP which is run on the CPS Team's hardware.  Observers who are not part of CPS should contact their Keck SA to arrange for access to reduced data products.</p>
               
             </div>
           </div><footer>
