@@ -158,6 +158,7 @@ class MainWindow(QMainWindow):
         self.LASTFILE = kPyQt.kFactory(kpfguide['LASTFILE'])
         self.TIPTILT_ROIDIM = kPyQt.kFactory(kpfguide['TIPTILT_ROIDIM'])
         self.PIX_TARGET = kPyQt.kFactory(kpfguide['PIX_TARGET'])
+        self.SUB_HIGH = kPyQt.kFactory(kpfguide['SUB_HIGH'])
 
         kpffiu = ktl.cache('kpffiu')
         self.TTXSRV = kPyQt.kFactory(kpffiu['TTXSRV'])
@@ -227,6 +228,10 @@ class MainWindow(QMainWindow):
         # Guider Prediction Values
         self.ExtinctionValue = 0
         self.GuiderParameters = {}
+        # Sky Subtraction
+        self.default_sub_file = '/kroot/rel/default/data/kpfguide/kpfguide_gain_high.fits'
+        self.SkyOffsetEastValue = 10
+        self.SkyOffsetNorthValue = 10
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -336,6 +341,36 @@ class MainWindow(QMainWindow):
         # Sky Subtraction Tab
         # --------------------------------------
 
+        # Sky Offsets
+        self.SkyOffsetEastLabel = self.findChild(QLabel, 'SkyOffsetEastLabel')
+        self.SkyOffsetEast = self.findChild(QLineEdit, 'SkyOffsetEast')
+        self.SkyOffsetEast.setText(str(self.SkyOffsetEastValue))
+        self.SkyOffsetEast.textChanged.connect(self.update_SkyOffsetEastValue)
+        self.SkyOffsetNorthLabel = self.findChild(QLabel, 'SkyOffsetNorthLabel')
+        self.SkyOffsetNorth = self.findChild(QLineEdit, 'SkyOffsetNorth')
+        self.SkyOffsetNorth.setText(str(self.SkyOffsetNorthValue))
+        self.SkyOffsetNorth.textChanged.connect(self.update_SkyOffsetNorthValue)
+
+        self.CurrentSubtractionImageLabel = self.findChild(QLabel, 'CurrentSubtractionImageLabel')
+        self.CurrentSubtractionImageValue = self.findChild(QLabel, 'CurrentSubtractionImageValue')
+        self.SUB_HIGH.stringCallback.connect(self.CurrentSubtractionImageValue.setText)
+        self.SUB_HIGH.primeCallback()
+
+        self.ObtainSkyFrameBtn = self.findChild(QPushButton, 'ObtainSkyFrameBtn')
+        self.ObtainSkyFrameBtn.clicked.connect(self.obtain_sky_frame)
+
+        self.ResetSkyFrameBtn = self.findChild(QPushButton, 'ResetSkyFrameBtn')
+        self.ResetSkyFrameBtn.clicked.connect(self.reset_sky_frame)
+
+        sky_subtraction_enabled = self.enable_control and False
+        self.SkyOffsetEastLabel.setEnabled(sky_subtraction_enabled)
+        self.SkyOffsetNorthLabel.setEnabled(sky_subtraction_enabled)
+        self.SkyOffsetEast.setEnabled(sky_subtraction_enabled)
+        self.SkyOffsetNorth.setEnabled(sky_subtraction_enabled)
+        self.CurrentSubtractionImageLabel.setEnabled(sky_subtraction_enabled)
+        self.CurrentSubtractionImageValue.setEnabled(sky_subtraction_enabled)
+        self.ObtainSkyFrameBtn.setEnabled(sky_subtraction_enabled)
+        self.ResetSkyFrameBtn.setEnabled(sky_subtraction_enabled)
 
         # --------------------------------------
         # Offset Guiding Tab
@@ -789,6 +824,33 @@ class MainWindow(QMainWindow):
         if value != '':
             self.log.info(f'Modifying kpfguide.FPS = {value}')
             self.FPS.write(value)
+
+
+    ##----------------------------------------------------------
+    ## Sky Subtraction
+    def update_SkyOffsetEastValue(self, value):
+        try:
+            self.SkyOffsetEastValue = float(value)
+        except TypeError:
+            pass
+#             self.self.SkyOffsetEast.setText(str(self.SkyOffsetEastValue))
+
+    def update_SkyOffsetNorthValue(self, value):
+        try:
+            self.SkyOffsetNorthValue = float(value)
+        except TypeError:
+            pass
+#             self.self.SkyOffsetNorth.setText(str(self.SkyOffsetNorthValue))
+
+    def reset_sky_frame(self):
+        self.log.debug(f'reset_sky_frame')
+        self.SUB_HIGH.ktl_keyword.write(self.default_sub_file)
+
+    def obtain_sky_frame(self):
+        print(f'Offsetting: en {self.SkyOffsetEastValue:.1f} {self.SkyOffsetNorthValue:.1f}')
+        print(f'Taking sky frame: TakeGuiderImageCube ? seconds')
+        print(f'Updating SUB_HIGH with LASTCUBEFILE')
+        print(f'Offsetting: en {-self.SkyOffsetEastValue:.1f} {-self.SkyOffsetNorthValue:.1f}')
 
 
     ##----------------------------------------------------------
