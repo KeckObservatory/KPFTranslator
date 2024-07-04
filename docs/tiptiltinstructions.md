@@ -124,7 +124,7 @@ The "DAR" setting determines whether the target pixel for the star is modified t
 ![A screenshot of the Tip Tilt GUI's Plot Time Spans tab.](figures/TipTiltGUI_PlotTimeSpans.png)
 >  A screenshot of the Tip Tilt GUI's Plot Time Spans tab.
 
-These two pulldowns allow you to change the time span of the two plots in the [Image Display](#image-display) region of the GUI.  They have no effect on the tip tilt performance, only the plots.
+These two pulldowns allow you to change the time span of the two plots in the [Tip Tilt Control and Telemetry](#tip-tilt-control-and-telemetry) region of the GUI.  They have no effect on the tip tilt performance, only the plots.
 
 #### Tip Tilt Control and Telemetry
 
