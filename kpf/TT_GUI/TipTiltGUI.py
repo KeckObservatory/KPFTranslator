@@ -47,6 +47,7 @@ from ginga.qtw.QtHelp import QtGui, QtCore
 from ginga.qtw.ImageViewQt import CanvasView
 
 from kpf.guider.PredictGuiderParameters import PredictGuiderParameters
+from kpf.guider.TakeGuiderCube import TakeGuiderCube
 
 
 ##-------------------------------------------------------------------------
@@ -846,11 +847,32 @@ class MainWindow(QMainWindow):
         self.log.debug(f'reset_sky_frame')
         self.SUB_HIGH.ktl_keyword.write(self.default_sub_file)
 
+    def en(self, e, n):
+        dcs = ktl.cache('dcs1')
+        dcs['RAOFF'].write(float(e))
+        dcs['DECOFF'].write(float(n))
+        dcs['REL2CURR'].write('t')
+
     def obtain_sky_frame(self):
-        print(f'Offsetting: en {self.SkyOffsetEastValue:.1f} {self.SkyOffsetNorthValue:.1f}')
-        print(f'Taking sky frame: TakeGuiderImageCube ? seconds')
-        print(f'Updating SUB_HIGH with LASTCUBEFILE')
-        print(f'Offsetting: en {-self.SkyOffsetEastValue:.1f} {-self.SkyOffsetNorthValue:.1f}')
+        # Offset to sky position
+        self.log.info(f'Offsetting: en {self.SkyOffsetEastValue:.1f} {self.SkyOffsetNorthValue:.1f}')
+        self.en(self.SkyOffsetEastValue, self.SkyOffsetNorthValue)
+        time.sleep(0.5)
+        # Take Image Cube to get sky
+        sky_multiplier = 4
+        duration = sky_multiplier*1/self.FPS.ktl_keyword.read(binary=True)
+        self.log.info(f'Taking sky frame: TakeGuiderImageCube {duration:.0f} seconds')
+        sky_file = TakeGuiderCube.execute({'duration': duration,
+                                           'ImageCube': False})
+        sky_file = Path(sky_file)
+        if sky_file.exists() == False:
+            self.log.error(f'Could not find {sky_file} on disk')
+        else:
+            self.log.info(f'Updating SUB_HIGH with LASTCUBEFILE')
+            self.SUB_HIGH.ktl_keyword.write(f'{sky_file}')
+        # Offset back to target
+        self.log.info(f'Offsetting: en {-self.SkyOffsetEastValue:.1f} {-self.SkyOffsetNorthValue:.1f}')
+        self.en(-self.SkyOffsetEastValue, -self.SkyOffsetNorthValue)
 
 
     ##----------------------------------------------------------
