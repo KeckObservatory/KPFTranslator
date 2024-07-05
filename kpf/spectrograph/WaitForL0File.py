@@ -6,7 +6,12 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 
 
 class WaitForL0File(KPFTranslatorFunction):
-    '''
+    '''Wait a short time to see if `kpfassemble` writes a new L0 file.  If it
+    does, print a log line with that file name.
+    
+    KTL Keywords Used:
+
+    - `kpfassemble.LOUTFILE`
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
