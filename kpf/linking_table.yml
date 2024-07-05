@@ -289,6 +289,8 @@ links:
         cmd: spectrograph.StartExposure.StartExposure
     StopAgitator:
         cmd: spectrograph.StopAgitator.StopAgitator
+    WaitForL0File:
+        cmd: spectrograph.WaitForL0File.WaitForL0File
     WaitForReadout:
         cmd: spectrograph.WaitForReadout.WaitForReadout
     WaitForReady:

@@ -17,6 +17,7 @@ from kpf.calbench.SetLFCtoStandbyHigh import SetLFCtoStandbyHigh
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.StopAgitator import StopAgitator
+from kpf.spectrograph.WaitForL0File import WaitForL0File
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.utils.SetTargetInfo import SetTargetInfo
 
@@ -86,7 +87,11 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         # Clear target info
         SetTargetInfo.execute({})
 
+        # Clear script keywords
         clear_script_keywords()
+
+        # Write L0 file name to log if can
+        WaitForL0File.execute({})
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):
