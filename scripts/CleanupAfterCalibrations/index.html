@@ -238,8 +238,7 @@ line tool, or passed in from the execution engine.</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/scripts/CleanupAfterCalibrations.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 24</span>
-<span class="normal"> 25</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 25</span>
 <span class="normal"> 26</span>
 <span class="normal"> 27</span>
 <span class="normal"> 28</span>
@@ -314,7 +313,12 @@ line tool, or passed in from the execution engine.</p>
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
-<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CleanupAfterCalibrations</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CleanupAfterCalibrations</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which cleans up after Cal OBs.</span>
 
 <span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
@@ -379,7 +383,11 @@ line tool, or passed in from the execution engine.</p>
         <span class="c1"># Clear target info</span>
         <span class="n">SetTargetInfo</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
 
+        <span class="c1"># Clear script keywords</span>
         <span class="n">clear_script_keywords</span><span class="p">()</span>
+
+        <span class="c1"># Write L0 file name to log if can</span>
+        <span class="n">WaitForL0File</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
