@@ -187,11 +187,19 @@ class GridSearch(KPFTranslatorFunction):
                     ##------------------------------------------------------
                     ## Tip Tilt
                     ##------------------------------------------------------
+                    log.info(f"Turning off TIPTILT_CALC")
+                    kpfguide['TIPTILT_CALC'].write('Inactive')
+                    starting_current_base = kpfguide['CURRENT_BASE'].read(binary=True)
                     log.info(f"Adjusting CURRENT_BASE to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                     SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
-                    sleep_time = 5
-                    log.debug(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
-                    time.sleep(sleep_time)
+                    dx = xs[i] - starting_current_base[0]
+                    dy = ys[i] - starting_current_base[1]
+                    log.info(f'Sending OFFLOAD_COMMAND: {dx:.1f} {dy:.1f}')
+                    kpfguide['OFFLOAD_COMMAND'].write((dx, dy))
+                    kpfguide['TIPTILT_CALC'].write('Active')
+                    kpfguide['TIPTILT_CONTROL'].write('Active')
+                    success = ktl.waitFor("$kpfguide.TIPTILT_PHASE == 'Tracking'", timeout=5)
+
                     xpix, ypix = kpfguide['PIX_TARGET'].read(binary=True)
                     log.info(f"PIX_TARGET is {xpix:.2f}, {ypix:.2f}")
                     # Check for lost star
