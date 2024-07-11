@@ -114,8 +114,6 @@ class GridSearch(KPFTranslatorFunction):
         log.info('Setting TRIGCUBE Inactive')
         kpfguide['TRIGCUBE'].write('Inactive')
         if grid == 'TipTilt':
-            current_base = kpfguide['CURRENT_BASE'].read(binary=True)
-            log.info(f"CURRENT_BASE = {current_base[0]:.2f} {current_base[1]:.2f}")
             log.info(f"DAR_ENABLE = {kpfguide['DAR_ENABLE'].read()}")
             dar_offset = kpfguide['DAR_OFFSET'].read(binary=True)
             log.info(f"DAR_OFFSET = {dar_offset[0]:.2f} {dar_offset[1]:.2f}")
@@ -180,9 +178,6 @@ class GridSearch(KPFTranslatorFunction):
                 log.info(f"Setting {FVC} FVC ExpTime = {exptime:.2f} s")
                 SetFVCExpTime.execute({'camera': FVC, 'exptime': exptime})
 
-#         for i,xi in enumerate(xis):
-#             yis.reverse()
-#             for j,yi in enumerate(yis):
         for i in xindicies:
             yindicies.reverse()
             for j in yindicies:
