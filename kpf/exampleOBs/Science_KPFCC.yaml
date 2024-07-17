@@ -46,6 +46,7 @@ Scheduling:
   NightsPerSemester: int          # Number of of Nights Per Semester
   InterNightCadenceMin: float     # Minimum Inter-Night Cadence (hours?)
   IntraNightCadenceMin: float     # Minimum Intra-Night Cadence (days?)
+  FastReadModeRequested: bool     # Does this OB request Fast Read Mode?
   # Sky Conditions
   SeeingBand:                     # 
   ExtinctionBand:                 # 
