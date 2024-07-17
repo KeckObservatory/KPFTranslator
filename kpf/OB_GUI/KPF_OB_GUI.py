@@ -81,15 +81,12 @@ class MainWindow(QMainWindow):
                    'TriggerGreen': True,
                    'TriggerRed': True,
                    'BlockSky': False,
-                   'GuideMode': 'auto',
-                   'GuideCamGain': 'high',
-                   'GuideFPS': 100,
                    'SEQ_Observations': [
                         {'Object': '',
                          'nExp': '1',
                          'ExpTime': '10',
                          'ExpMeterMode': 'monitor',
-                         'AutoExpMeter': False,
+                         'AutoExpMeter': True,
                          'ExpMeterExpTime': '0.5',
                          'ExpMeterBin': '710.625',
                          'ExpMeterThreshold': 50000,
@@ -123,7 +120,7 @@ class MainWindow(QMainWindow):
                            'SSS_Sky': True,
                            'TakeSimulCal': True,
                            'FF_FiberPos': 'Blank',
-                           'ExpMeterMode': 'monitor',
+                           'ExpMeterMode': 'off',
                            'ExpMeterExpTime': '0.5',
                            'ExpMeterBin': '710.625',
                            'ExpMeterThreshold': 50000},
@@ -148,7 +145,6 @@ class MainWindow(QMainWindow):
         self.bad_slew_cal_time = 2.0 # hours
         # Path to OB files
         self.file_path = Path('/s/sdata1701/OBs')
-        self.starlist_file_name = ''
 
 
     def setupUi(self):
@@ -269,14 +265,6 @@ class MainWindow(QMainWindow):
         ##----------------------
         ## Science OB Tab
         ##----------------------
-        # Star List
-        self.star_list_line = self.findChild(QLabel, 'star_list_line')
-        self.star_list_line.setText('Unable to form star list line without Gaia coordinates')
-        self.star_list_line.setStyleSheet("background-color:white; font-family:monospace")
-
-        self.append_to_star_list_btn = self.findChild(QPushButton, 'append_to_star_list_btn')
-        self.append_to_star_list_btn.clicked.connect(self.run_append_to_star_list)
-
         # Target Name
         self.TargetName = self.findChild(QLineEdit, 'TargetName')
         self.TargetName.textChanged.connect(self.set_target_name)
@@ -289,22 +277,6 @@ class MainWindow(QMainWindow):
         self.Gmag = self.findChild(QLabel, 'Gmag')
         self.Jmag = self.findChild(QLabel, 'Jmag')
         self.Teff = self.findChild(QLabel, 'Teff')
-
-        # Guider Setup
-        self.GuideMode = self.findChild(QComboBox, 'GuideMode')
-        self.GuideMode.addItems(["auto", "manual", "off"])
-        self.update_OB('GuideMode', self.OB.get('GuideMode'))
-        self.GuideMode.currentTextChanged.connect(self.set_guide_mode)
-        
-        self.GuideCamGain = self.findChild(QComboBox, 'GuideCamGain')
-        self.GuideCamGain.addItems(["high", "medium", "low"])
-        self.update_OB('GuideCamGain', self.OB.get('GuideCamGain'))
-        self.GuideCamGain.currentTextChanged.connect(self.set_guide_gain)
-        self.GuideFPS = self.findChild(QLineEdit, 'GuideFPS')
-        self.update_OB('GuideFPS', self.OB.get('GuideFPS'))
-        self.GuideFPS.textChanged.connect(self.set_fps)
-        if self.OB.get('GuideMode') == 'auto':
-            self.GuideFPS.setEnabled(False)
 
         # Spectrograph Setup
         self.TriggerCaHK = self.findChild(QCheckBox, 'TriggerCaHK')
@@ -345,6 +317,7 @@ class MainWindow(QMainWindow):
 
         self.AutoEMExpTime = self.findChild(QCheckBox, 'AutoEMExpTime')
         self.AutoEMExpTime.stateChanged.connect(self.AutoEMExpTime_state_change)
+        self.update_OB('AutoExpMeter', self.OB.SEQ_Observations1.get('AutoExpMeter'))
 
         self.ExpMeterBin = self.findChild(QComboBox, 'ExpMeterBin')
         self.ExpMeterBin.addItems(self.expmeter_bins)
@@ -358,11 +331,13 @@ class MainWindow(QMainWindow):
         self.TakeSimulCal = self.findChild(QCheckBox, 'TakeSimulCal')
         self.TakeSimulCal.stateChanged.connect(self.TakeSimulCal_state_change)
 
+        self.CalND1Label = self.findChild(QLabel, 'CalND1Label')
         self.CalND1 = self.findChild(QComboBox, 'CalND1')
         self.CalND1.addItems(["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"])
         self.update_OB('CalND1', self.OB.SEQ_Observations1.get('CalND1'))
         self.CalND1.currentTextChanged.connect(self.set_CalND1)
 
+        self.CalND2Label = self.findChild(QLabel, 'CalND2Label')
         self.CalND2 = self.findChild(QComboBox, 'CalND2')
         self.CalND2.addItems(["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"])
         self.update_OB('CalND2', self.OB.SEQ_Observations1.get('CalND2'))
@@ -371,8 +346,6 @@ class MainWindow(QMainWindow):
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
         self.update_OB('AutoNDFilters', self.OB.SEQ_Observations1.get('AutoNDFilters'))
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
-        # Disable AutoNDFilters for operation
-        self.AutoNDFilters.setEnabled(False)
 
         self.ExtraNDLabel = self.findChild(QLabel, 'ExtraNDLabel')
         self.ExtraND = self.findChild(QComboBox, 'ExtraND')
@@ -813,7 +786,6 @@ class MainWindow(QMainWindow):
         if self.gaia_params is not None:
             for key in self.gaia_params:
                 self.update_OB(key, self.gaia_params[key])
-        self.form_star_list_line()
 
     def set_gaia_query_input(self, value):
         value = value.strip()
@@ -833,18 +805,6 @@ class MainWindow(QMainWindow):
         self.log.debug(f"set_target_name: {value}")
         self.update_OB('TargetName', value)
         self.TargetName.setText(f"{value}")
-
-    def set_guide_mode(self, value):
-        self.log.debug(f"set_guide_mode: {value}")
-        self.update_OB('GuideMode', value)
-
-    def set_guide_gain(self, value):
-        self.log.debug(f"set_guide_gain: {value}")
-        self.update_OB('GuideCamGain', value)
-
-    def set_fps(self, value):
-        self.log.debug(f"set_fps: {value}")
-        self.update_OB('GuideFPS', value)
 
     def set_object(self, value):
         self.log.debug(f"set_object: {value}")
@@ -943,7 +903,6 @@ class MainWindow(QMainWindow):
         self.log.debug('Render all values in OB')
         # TargetName
         self.TargetName.setText(f"{self.OB.get('TargetName')}")
-        self.form_star_list_line()
         # GaiaID
         self.GaiaID.setText(f"{self.OB.get('GaiaID')}")
         # 2MASSID
@@ -957,15 +916,14 @@ class MainWindow(QMainWindow):
         # Jmag
         self.Jmag.setText(f"{self.OB.get('Jmag')}")
         # Teff
-        self.Teff.setText(f"{self.OB.get('Teff')}")
-        # GuideMode
-        self.GuideMode.setCurrentText(f"{self.OB.get('GuideMode')}")
-        self.GuideCamGain.setEnabled(self.OB.get('GuideMode') not in ['auto', 'off'])
-        self.GuideFPS.setEnabled(self.OB.get('GuideMode') not in ['auto', 'off'])
-        # GuideCamGain
-        self.GuideCamGain.setCurrentText(f"{self.OB.get('GuideCamGain')}")
-        # GuideFPS
-        self.GuideFPS.setText(f"{self.OB.get('GuideFPS')}")
+        Teff = float(self.OB.get('Teff'))
+        self.Teff.setText(f"{Teff:.0f}")
+        if Teff < 2700 or Teff > 6600:
+            self.OB.SEQ_Observations1.set('AutoNDFilters', False)
+            self.AutoNDFilters.setChecked(False)
+            self.AutoNDFilters.setEnabled(False)
+        else:
+            self.AutoNDFilters.setEnabled(True)
         # TriggerCaHK
         self.TriggerCaHK.setChecked(self.OB.get('TriggerCaHK'))
         # TriggerGreen
@@ -983,6 +941,7 @@ class MainWindow(QMainWindow):
         # SEQ_Observations: ExpMeterMode
         self.ExpMeterMode.setCurrentText(f"{self.OB.SEQ_Observations1.get('ExpMeterMode')}")
         # SEQ_Observations: AutoExpMeter
+        self.AutoEMExpTime.setChecked(self.OB.SEQ_Observations1.get('AutoExpMeter'))
         self.ExpMeterExpTimeEdit.setEnabled(not self.OB.SEQ_Observations1.get('AutoExpMeter'))
         # SEQ_Observations: ExpMeterExpTime
         self.ExpMeterExpTimeEdit.setText(f"{self.OB.SEQ_Observations1.get('ExpMeterExpTime')}")
@@ -995,10 +954,12 @@ class MainWindow(QMainWindow):
         self.TakeSimulCal.setText(f"{self.OB.SEQ_Observations1.get('TakeSimulCal')}")
         take_simulcal = self.OB.SEQ_Observations1.get('TakeSimulCal')
         auto_nd = self.OB.SEQ_Observations1.get('AutoNDFilters')
+        self.CalND1Label.setEnabled(take_simulcal and not auto_nd)
+        self.CalND2Label.setEnabled(take_simulcal and not auto_nd)
         self.CalND1.setEnabled(take_simulcal and not auto_nd)
         self.CalND2.setEnabled(take_simulcal and not auto_nd)
-        self.ExtraNDLabel.setEnabled(take_simulcal and auto_nd)
-        self.ExtraND.setEnabled(take_simulcal and auto_nd)
+        self.ExtraNDLabel.setEnabled(False) #take_simulcal and auto_nd)
+        self.ExtraND.setEnabled(False) #take_simulcal and auto_nd)
 
         # SEQ_Observations: CalND1
         self.CalND1.setCurrentText(f"{self.OB.SEQ_Observations1.get('CalND1')}")
@@ -1022,47 +983,6 @@ class MainWindow(QMainWindow):
                 # save fname as path to use in future
                 self.file_path = Path(save_file).parent
                 self.OB.write_to_file(save_file)
-
-    def form_star_list_line(self):
-        self.log.debug(f"form_star_list_line")
-        if self.gaia_params is not None:
-            starlist = BuildOBfromQuery.form_starlist_line(self.OB.get('TargetName'),
-                                                           self.gaia_params['RA_ICRS'],
-                                                           self.gaia_params['DE_ICRS'],
-                                                           vmag=self.OB.get('Gmag'),
-                                                           )
-            self.OB.star_list_line = starlist
-            self.star_list_line.setText(starlist)
-            return starlist
-        else:
-            msg = 'Unable to form star list line without Gaia coordinates'
-            self.star_list_line.setText(msg)
-            print(msg)
-            return None
-
-    def run_append_to_star_list(self):
-        self.log.debug(f"run_append_to_star_list")
-        if self.form_star_list_line() is None:
-            # Don't bother with dialog if we can't form a star list entry
-            return None
-        result = QFileDialog.getSaveFileName(self, 'Star List File',
-                                             f"{self.file_path}",
-                                             "txt Files (*txt);;All Files (*)")
-        if result:
-            starlist_file = result[0]
-            if starlist_file != '':
-                # save fname as path to use in future
-                starlist_file = Path(starlist_file)
-                self.file_path = starlist_file.parent
-                self.starlist_file_name = starlist_file.name
-                self.append_to_starlist_file(starlist_file)
-
-    def append_to_starlist_file(self, starlist_file):
-        self.log.debug(f"append_to_starlist_file: {starlist_file}")
-        line = self.form_star_list_line()
-        if line is not None:
-            with open(starlist_file, 'a') as f:
-                f.write(line+'\n')
 
     def run_load_from_file(self):
         self.log.debug(f"run_load_from_file")

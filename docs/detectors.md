@@ -14,9 +14,10 @@ The Ca H&K spectrograph has its own, separate timed shutter as it is on a comple
 | --------- | --------- | ------- | ---------- |
 | Readout Time | 47 s | 47 s | 1 s |
 | Read Noise | AMP1: 4.0 e-<br>AMP2: 4.9 e- | AMP1: 4.1 e-<br>AMP2: 4.2 e- |  |
-| Format | 4080x4080 | 4080x4080 | |
-| Gain |  |  |  |
+| Format | 4080x4080 | 4080x4080 | windowed to<br>1024x255 |
+| Gain | ~5 e-/ADU | ~5 e-/ADU | 5.26 e-/ADU |
 | Data Format | 32 bit | 32 bit | 16 bit |
+| Saturation | ~2.1 x 10^9 ADU<br>(~150 ke-) | ~2.1 x 10^9 ADU<br>(~150 ke-) | 65,536 ADU<br>(344 ke-) |
 
 Note that the Green and Red science detectors have 32 bit readouts instead of the more common 16 bit (which the Ca H&K detector uses).  This means that the values of the raw image pixels are not in the usual 0-65535 range for CCDs, but are instead much larger.  To convert to the more usual range we are used to, divide by 2^16 (65536) to get ADU values in that range.
 

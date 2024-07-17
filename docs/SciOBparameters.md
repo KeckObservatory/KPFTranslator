@@ -15,10 +15,6 @@ RadialVelocity: -16.597         # Radial Velocity in km/s
 Gmag: 3.3                       # G band magnitude (eventualy used by exposure meter)
 Jmag: 2.14                      # J band magnitude (eventualy used by guider)
 Teff: 5266                      # Effective temperature
-# Guider Setup
-GuideMode: manual               # "manual", "auto", "off", or "telescope"
-GuideCamGain: low               # Guide camera gain; values = low | medium | high
-GuideFPS: 100                   # Frames per second for guide camera (for tip-tilt)
 # Spectrograph Setup
 TriggerCaHK: False              # Include CaHK in exposure (True/False)
 TriggerGreen: True              # Include Green CCD in exposure (True/False)
@@ -67,17 +63,6 @@ Each value in the OB is described in more detail below.
 > The effective temperature of the star.
 <br>Allowed Range: 2600 - 45000
 
-**GuideMode**: (`str`)
-> If "manual" is selected, the values for the gain and FPS below are used. If "auto" is selected, the camera gain and FPS values in the OB are ignored and the software will choose values based on the Jmag value.
-<br>Allowed Values: "manual", "auto", or "off"
-
-**GuideCamGain**: (`str`)
-> The gain (high, medium, or low) at which to operate the guide camera. Ignored if the GuideMode is set to "auto".
-<br>Allowed Values: "high", "medium", or "low"
-
-**GuideFPS**: (`float`)
-> The frame rate (frames per second) at which to operate the guide camera. Ignored if the GuideMode is set to "auto".
-
 **TriggerCaHK, TriggerGreen, and TriggerRed**: (`bool`)
 > These values indicate whether to trigger the respective camera during the science exposures. All of these cameras will be synced up and will get the same exposure time.
 
@@ -108,7 +93,7 @@ The `SEQ_Observations:` line is required. The following block of lines represent
 > Should the instrument be configured to illuminate the simultaneous calibration fiber during the science exposure?
 
 **AutoNDFilters**: (`bool`)
-> Should the software automatically set the ND filters based on the target and exposure information? This is not currently implemented and will be ignored!
+> Should the software automatically set the ND filters based on the target and exposure information? This is currently (June 2024) in a testing mode and is not recommended for normal use.
 
 **CalND1** (`str`)
 > The neutral density filter to put in the first filter

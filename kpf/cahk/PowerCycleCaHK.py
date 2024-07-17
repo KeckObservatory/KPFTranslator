@@ -74,9 +74,9 @@ class PowerCycleCaHK(KPFTranslatorFunction):
 
         log.warning('Power cycling the Ca HK detector system')
         kpfpower = ktl.cache('kpfpower')
-        outlets = [('J1', 'kpfexpose2 Galil RIO controller'),
+        outlets = [('J5', 'Andor Newton PS'),
+                   ('J1', 'kpfexpose2 Galil RIO controller'),
                    ('J2', 'kpfexpose2 Galil output bank'),
-                   ('J5', 'Andor Newton PS'),
                    ]
         for outlet_id, outlet_name in outlets:
             log.info(f"Powering off {outlet_id}: {outlet_name}")
@@ -85,7 +85,7 @@ class PowerCycleCaHK(KPFTranslatorFunction):
         for outlet_id, outlet_name in outlets:
             log.info(f"Powering on {outlet_id}: {outlet_name}")
             kpfpower[f'OUTLET_{outlet_id}'].write('On')
-        time.sleep(10)
+            time.sleep(10)
 
         log.warning('Restarting kpf_hk keyword service')
         cmd = ['kpf', 'restart', 'kpf_hk']

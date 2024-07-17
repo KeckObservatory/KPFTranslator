@@ -31,8 +31,7 @@ class CleanupAfterScience(KPFTranslatorFunction):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
-        if OB.get('GuideMode', 'off') != 'off':
-            StopTipTilt.execute({})
+        StopTipTilt.execute({})
 
         kpfconfig = ktl.cache('kpfconfig')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)

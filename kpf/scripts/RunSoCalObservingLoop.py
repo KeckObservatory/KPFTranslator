@@ -132,7 +132,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                               'TriggerExpMeter': False,
                               'RunAgitator': True,
                               'CalSource': 'EtalonFiber',
-                              'Object': 'autocal-etalon-all',
+                              'Object': 'slewcal',
                               'CalND1': Etalon_ND1,
                               'CalND2': Etalon_ND2,
                               'ExpTime': Etalon_ExpTime,
@@ -199,6 +199,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                     nSoCalObs += 1
                 else:
                     nEtalonObs += 1
+            except ScriptStopTriggered as e:
+                raise e
             except Exception as e:
                 log.error("ExecuteCal failed:")
                 log.error(e)

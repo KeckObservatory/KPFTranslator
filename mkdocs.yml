@@ -24,6 +24,7 @@ plugins:
 
 nav:
   - "KPF Home": index.md
+  - "Instrument Status": status.md
   - "Instrument Info":
     - "Instrument Subsystems":
       - "Spectrograph": spectrograph.md
@@ -35,14 +36,16 @@ nav:
       - "Calibration Bench": calbench.md
       - "Solar Calibrator": socal.md
       - "Agitator": agitator.md
+      - "Computers": computers.md
     - "Instrument Specifications":
       - "Detectors": detectors.md
       - "Sensitivity": sensitivity.md
-      - "Data Format": dataformat.md
+      - "Data Flow": dataflow.md
       - "KPF vs. HIRES": KPFvsHIRES.md
     - "Instrument Software": KPFTranslator.md
   - "Observing with KPF":
     - "Afternoon Setup": afternoonsetup.md
+    - "Calibrations": calibrations.md
     - "Observing Procedures": observingprocedures.md
     - "Observing Blocks":
       - "Building OBs": buildingOBs.md
@@ -65,10 +68,10 @@ nav:
       - "General Keck Observing Info": https://www.keckobservatory.org/observing/
       - "Pre-observing Checklist": https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html
       - "Remote Observing": http://www2.keck.hawaii.edu/inst/common/mainland_observing.html
-    - "Telescope Specifications":
-      - "Limits": https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html
+      - "Telescope Limits": https://www.keck.hawaii.edu/realpublic/inst/common/TelLimits.html
       - "Telescope Info": http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf
     - "Keck Policies":
+      - "ToO Interrupts": https://www2.keck.hawaii.edu/inst/common/too_policies.html
       - "Split Nights": http://www2.keck.hawaii.edu/observing/SplitNights.html
       - "Remote Observing": http://www2.keck.hawaii.edu/inst/common/mainland_observing.html
       - "Other Policies": http://www2.keck.hawaii.edu/observing/policies.html
@@ -83,3 +86,4 @@ nav:
   - "Technical Documentation":
     - "Operations Scripts": scripts/scripts.md
     - "Troubleshooting": https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U
+    - "Tip Tilt Instructions for OAs": tiptiltinstructions.md

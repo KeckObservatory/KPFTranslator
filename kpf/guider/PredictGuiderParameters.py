@@ -42,26 +42,29 @@ class PredictGuiderParameters(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         Jmag = args.get('Jmag')
         if Jmag < 5.5:
-            gain = 'low'
+            gain = 'Low'
             fps = 100
         elif Jmag < 8.0:
-            gain = 'medium'
+            gain = 'Medium'
             fps = 100
         elif Jmag < 12.0:
-            gain = 'high'
+            gain = 'High'
             fps = 100
         elif Jmag < 12.8:
-            gain = 'high'
+            gain = 'High'
             fps = 50
         elif Jmag < 13.8:
-            gain = 'high'
+            gain = 'High'
             fps = 20
         elif Jmag < 14.5:
-            gain = 'high'
+            gain = 'High'
             fps = 10
+        elif Jmag < 17.0:
+            gain = 'high'
+            fps = 1
         else:
             gain = 'high'
-            fps = 10
+            fps = 1
         log.info(f"Predicted GuideCamGain = {gain}")
         log.info(f"Predicted GuideFPS = {fps:d}")
         result = {'GuideCamGain': gain, 'GuideFPS': fps}

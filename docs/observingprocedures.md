@@ -3,6 +3,7 @@
 - [Beginning of the Night](#beginning-of-the-night)
 - [Performing Observations](#performing-observations)
 - [Switching Programs on a Split Night](#switching-programs-on-a-split-night)
+- [Bad Weather](#bad-weather)
 
 # Beginning of the Night
 
@@ -52,7 +53,7 @@ Observers can load previously saved OBs or create them on the fly for KPF observ
 
 The GUI will first prompt the observers to confirm the OB execution. Once confirmed, an xterm will launch and prompt the observers with addtional information if and when needed, so watch the contents of this xterm.
 
-Executing the OB will not start an exposure immediately. The system will first configure the instrument and will then prompt the observer to confirm once the OA has acquired the target. While configuring the instrument, the OB will set the gain and frames per second on the guider based on the target information (J magnitude).  Because of this, **it is important to execute the OB during the slew** and before the OA acquires the target, so that the guider exposure parameters are not changed while the OA is working to acquire the target.
+Executing the OB will not start an exposure immediately. The system will first configure the instrument and will then prompt the observer to confirm once the OA has acquired the target. While configuring the instrument, the OB will provide information on how to set the gain and frames per second on the guider.  Because of this, **it is important to execute the OB during the slew** and before the OA acquires the target, so they have the right exposure parameters to see the target on the guider.
 
 The log lines which show up in the xterm with the running OB contain useful information.  In general, lines with INFO are attempting to explain what the instrument is doing.  Lines with WARNING are indicating that a minor problem has occurred, but the system is handling it -- these lines are purely informational, no action is needed on the part of the observer in response.  Lines with ERROR indicate a serious problems which may require user intervention.
 
@@ -75,3 +76,7 @@ Slew cals can also be taken independently using the "Execute Slew Cal Only" butt
 On a KPF/KPF split night, before starting the second KPF program, run `KPF Control Menu --> Set Program ID and Observers` from the background menu (or `kpfSetObserverFromSchedule` from the command line on any KPF machine). Enter the program ID at the terminal prompt. The script will then set program ID and observers for the second KPF program, based on the telescope schedule.
 
 If you wish to set the observer names and program ID manually (i.e. without querying the telescope schedule), you can use the `kpfSetProgram` and `kpfSetObserver` scripts from the command line.  For example: `kpfSetProgram K123` will set program ID "K123" and `kpfSetObserver "E.E. Barnard, S.W. Burnham"` will set the observer name to "E.E. Barnard, S.W. Burnham".  Note that observer names should be enclosed in quotes to handle spaces in the list of names.
+
+# Bad Weather
+
+If the weather is so bad that no observing is taking place and there doesn't seem to be an immediate likelihood of observing, then we recommend that the observer runs the end of night procedure (`KPF Control Menu --> Run End of Night Script`).  The main advantage of this is that running End of Night will re-enable the automatic scheduled calibrations which happen 4 times per night when KPF is not on sky.  This means that the instrumental drift will be tracked with no action required by the observer (i.e. running slew cals).  If one of these calibration scripts is in progress and observing should resume, use the "Request Script STOP" as described above. After that, run the Start of Night script just as you would at the beginning of the night (among other things it disables the autmatic scheduled calibrations).
