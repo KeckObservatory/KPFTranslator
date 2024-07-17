@@ -20,10 +20,6 @@ Target:
   Epoch: float                    # Epoch of coordinates if proper motion is to be applied
   DRA: float                      # Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east)
   DDEC: float                     # Non sidereal tracking rate in Dec in arcsec/hr
-  ## Guider Setup
-  GuideMode: string               # "manual", "auto", "off", or "telescope"
-  GuideCamGain: string            # Guide camera gain; values = low | medium | high
-  GuideFPS: int                   # Frames per second for guide camera (for tip-tilt)
 Observations:
   Object: string                  # User settable comment. Use 'default' to automatically set to TargetName
   # Science Detectors
