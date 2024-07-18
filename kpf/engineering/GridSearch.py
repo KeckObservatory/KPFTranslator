@@ -187,17 +187,17 @@ class GridSearch(KPFTranslatorFunction):
                     ##------------------------------------------------------
                     ## Tip Tilt
                     ##------------------------------------------------------
-                    log.info(f"Turning off TIPTILT_CALC")
-                    kpfguide['TIPTILT_CALC'].write('Inactive')
-                    starting_current_base = kpfguide['CURRENT_BASE'].read(binary=True)
+#                     log.info(f"Turning off TIPTILT_CALC")
+#                     kpfguide['TIPTILT_CALC'].write('Inactive')
+#                     starting_current_base = kpfguide['CURRENT_BASE'].read(binary=True)
                     log.info(f"Adjusting CURRENT_BASE to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
                     SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
-                    dx = xs[i] - starting_current_base[0]
-                    dy = ys[i] - starting_current_base[1]
-                    log.info(f'Sending OFFLOAD_COMMAND: {dx:.1f} {dy:.1f}')
-                    kpfguide['OFFLOAD_COMMAND'].write((dx, dy))
-                    kpfguide['TIPTILT_CALC'].write('Active')
-                    kpfguide['TIPTILT_CONTROL'].write('Active')
+#                     dx = xs[i] - starting_current_base[0]
+#                     dy = ys[i] - starting_current_base[1]
+#                     log.info(f'Sending OFFLOAD_COMMAND: {dx:.1f} {dy:.1f}')
+#                     kpfguide['OFFLOAD_COMMAND'].write((dx, dy))
+#                     kpfguide['TIPTILT_CALC'].write('Active')
+#                     kpfguide['TIPTILT_CONTROL'].write('Active')
                     success = ktl.waitFor("$kpfguide.TIPTILT_PHASE == 'Tracking'", timeout=5)
 
                     xpix, ypix = kpfguide['PIX_TARGET'].read(binary=True)
@@ -367,7 +367,7 @@ class GridSearch(KPFTranslatorFunction):
         expmeter_flux.write(fluxes_file, format='ascii.csv')
 
         if grid == 'TipTilt':
-            SetTipTiltTargetPixel.execute({'x': xpix0, 'y': ypix0})
+            SetTipTiltTargetPixel.execute({'x': basex, 'y': basey})
             StopTipTilt.execute({})
         elif grid == 'SciADC':
             kpffiu['ADC1NAM'].write('Null')
