@@ -25,8 +25,10 @@ class SetReadModeNormal(KPFTranslatorFunction):
         kpfred = ktl.cache('kpfred')
         green_normal_file = cfg.get('acf_files', 'green_normal')
         red_normal_file = cfg.get('acf_files', 'red_normal')
-        kpfgreen['ACF'].write(green_normal_file)
-        kpfred['ACF'].write(red_normal_file)
+        if kpfgreen['ACF'].read() != green_normal_file:
+            kpfgreen['ACF'].write(green_normal_file)
+        if kpfred['ACF'].read() != red_normal_file:
+            kpfred['ACF'].write(red_normal_file)
         time.sleep(2)
 
     @classmethod
