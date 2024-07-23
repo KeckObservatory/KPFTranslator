@@ -133,14 +133,14 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
         altazframe = AltAz(location=keck, obstime=utdate)
         altaz = pointing.transform_to(altazframe)
         va = float(hdul[0].header.get('VA'))
+        dar_offset_x = float(hdul[0].header.get('DAROFF_X'))
+        dar_offset_y = float(hdul[0].header.get('DAROFF_Y'))
 
     Xcenters, wavs, s = fit_fiber_centering_parameters(fgs_cube_fileX, xcent=xcent, plot=False, targname=targname)
-#     print(Xcenters, wavs, s)
     print(f"X seeing = {np.mean(s):.1f}")
     if np.std(s) > 0.01:
         print(f"Seeing varied during run: {s}")
     Ycenters, wavs, s = fit_fiber_centering_parameters(fgs_cube_fileY, ycent=ycent, plot=False, targname=targname)
-#     print(Ycenters, wavs, s)
     print(f"Y seeing = {np.mean(s):.1f}")
     if np.std(s) > 0.01:
         print(f"Seeing varied during run: {s}")
@@ -148,10 +148,18 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
     cstep = int(np.floor(256/ncolors))
     
     fig = plt.figure(figsize=(8,8))
-    title = f"{ut_string} UT\n{targname}: EL={altaz.alt.deg:.1f} deg, VA={va:.1f} deg"
+    title = f"{ut_string} UT\n{targname}: EL={altaz.alt.deg:.1f} deg, VA={va:.1f} deg, DAR_OFFSET=({dar_offset_x:.1f}, {dar_offset_y:.1f})"
     plt.title(title)
-    plt.plot([xcent, xcent], [ycent-4,ycent+4], 'k-')
-    plt.plot([xcent-4, xcent+4], [ycent,ycent], 'k-')
+
+    target_pix_x = np.mean(Xcenters) + dar_offset_x
+    target_pix_y = np.mean(Ycenters) + dar_offset_y
+
+    tpdelta = np.ceil(max([abs(target_pix_x-xcent), abs(target_pix_y-ycent)]))
+    plot_delta = max([4, tpdelta])
+
+    plt.plot([xcent, xcent], [ycent-plot_delta,ycent+plot_delta], 'k-')
+    plt.plot([xcent-plot_delta, xcent+plot_delta], [ycent,ycent], 'k-')
+    plt.plot([target_pix_x], [target_pix_y], 'kx', ms=10)
 
     for i,center in enumerate(zip(Xcenters, Ycenters, wavs)):
         xc, yc, wc = center
@@ -174,10 +182,10 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
     plt.grid()
     plt.xlabel('X pix')
     plt.ylabel('Y pix')
-    plt.ylim(ycent-4,ycent+4)
-    plt.yticks(np.arange(ycent-4,ycent+4,1))
-    plt.xlim(xcent-4,xcent+4)
-    plt.xticks(np.arange(xcent-4,xcent+4,1))
+    plt.ylim(ycent-plot_delta,ycent+plot_delta)
+    plt.yticks(np.arange(ycent-plot_delta,ycent+plot_delta,1))
+    plt.xlim(xcent-plot_delta,xcent+plot_delta)
+    plt.xticks(np.arange(xcent-plot_delta,xcent+plot_delta,1))
     fig.gca().set_aspect('equal', 'box')
     plt.legend(loc='best')
     plotfile = Path(f"{fgs_cube_fileX.name.replace('.fits', '.png').replace('TipTilt', '')}")
