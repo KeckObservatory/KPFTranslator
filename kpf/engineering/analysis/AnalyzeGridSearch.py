@@ -65,7 +65,7 @@ def parse_CRED2_image_header(cred2_file):
     hdul = fits.open(cred2_file)
     EL = float(hdul[0].header.get("EL"))
     va = np.arctan(hdul[0].header.get("CD1_1Y")/hdul[0].header.get("CD1_2Y"))*180/np.pi + 90
-    return va
+    return EL, va
 
 
 
@@ -90,12 +90,14 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     nspectra = len(images[images['camera'] == camname])
     log.info(f'Building FITS cube using {nspectra} spectra')
     vas = []
+    ELs = []
     for entry in images[images['camera'] == camname]:
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
         this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
         cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
-        va = parse_CRED2_image_header(cred2_file)
+        EL, va = parse_CRED2_image_header(cred2_file)
+        ELs.append(EL)
         vas.append(va)
         Xpix = entry['x']
         Ypix = entry['y']
@@ -156,6 +158,8 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
 
     va = np.mean(vas)
     log.info(f"Mean VA = {va:.1f} deg")
+    EL = np.mean(ELs)
+    log.info(f"Mean EL = {EL:.1f} deg")
     norm_spec_cube = np.zeros((nwav,ny,nx))
     for w,spectral_slice in enumerate(spec_cube):
         norm_spec_cube[w,:,:] = spectral_slice / spectral_slice.mean()
@@ -185,6 +189,7 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     hdu.header.set('OBJECT', 'Spectral_Cube')
     hdu.header.set('Comment', comment)
     hdu.header.set('VA', va, 'Mean Vertical Angle of input images')
+    hdu.header.set('EL', EL, 'Mean Elevation of input images')
     hdu.header.set('DAROFF_X', dar_offset[0], 'DAR_OFFSET in X')
     hdu.header.set('DAROFF_Y', dar_offset[1], 'DAR_OFFSET in Y')
     hdu.data = spec_cube
@@ -423,7 +428,7 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
         cred2_file = Path(entry['file'])
-        va = parse_CRED2_image_header(cred2_file)
+        EL, va = parse_CRED2_image_header(cred2_file)
         Xpix = entry['x']
         Ypix = entry['y']
 
@@ -526,7 +531,7 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
         new_fig_index = (i+1) + nx*(ny-j-1)
         this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
         cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
-        va = parse_CRED2_image_header(cred2_file)
+        EL, va = parse_CRED2_image_header(cred2_file)
         Xpix = entry['x']
         Ypix = entry['y']
 

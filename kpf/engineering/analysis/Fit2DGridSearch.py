@@ -9,7 +9,6 @@ from astropy.modeling import models, fitting
 from astropy.time import Time
 from astroquery.vizier import Vizier
 from astropy import units as u
-from astropy.coordinates import SkyCoord, EarthLocation, AltAz
 
 import matplotlib as mpl
 from matplotlib import pyplot as plt
@@ -128,11 +127,8 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
     if fnmatch is not None and targname is not None:
         utdate = datetime.strptime(f"{fnmatch.group(1)} {fnmatch.group(2)}", "%Y%m%d %H%M%S")
         ut_string = utdate.strftime('%Y-%m-%d %H:%M:%S')
-        pointing = SkyCoord.from_name(targname)
-        keck = EarthLocation.of_site('keck')
-        altazframe = AltAz(location=keck, obstime=utdate)
-        altaz = pointing.transform_to(altazframe)
         va = float(hdul[0].header.get('VA'))
+        el = float(hdul[0].header.get('EL'))
         dar_offset_x = float(hdul[0].header.get('DAROFF_X'))
         dar_offset_y = float(hdul[0].header.get('DAROFF_Y'))
 
@@ -146,16 +142,16 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
         print(f"Seeing varied during run: {s}")
     ncolors = len(Xcenters)-1
     cstep = int(np.floor(256/ncolors))
-    
+
     fig = plt.figure(figsize=(8,8))
-    title = f"{ut_string} UT\n{targname}: EL={altaz.alt.deg:.1f} deg, VA={va:.1f} deg, DAR_OFFSET=({dar_offset_x:.1f}, {dar_offset_y:.1f})"
+    title = f"{ut_string} UT\n{targname}: EL={el:.1f} deg, DAR_OFFSET=({dar_offset_x:.1f}, {dar_offset_y:.1f})"
     plt.title(title)
 
     target_pix_x = np.mean(Xcenters) + dar_offset_x
     target_pix_y = np.mean(Ycenters) + dar_offset_y
 
     tpdelta = np.ceil(max([abs(target_pix_x-xcent), abs(target_pix_y-ycent)]))
-    plot_delta = max([4, tpdelta])
+    plot_delta = max([8, tpdelta])
 
     plt.plot([xcent, xcent], [ycent-plot_delta,ycent+plot_delta], 'k-')
     plt.plot([xcent-plot_delta, xcent+plot_delta], [ycent,ycent], 'k-')
@@ -172,16 +168,10 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
                  color=color,
                  label=f'{wc:.0f} nm ({xc:.1f}, {yc:.1f})',
                  markersize=15, alpha=0.7)
-        if np.isclose(wc, 550, atol=0.001):
-            arrow_length = 1
-            arrow_dx = -arrow_length*np.cos((va-90)*np.pi/180)
-            arrow_dy = -arrow_length*np.sin((va-90)*np.pi/180)
-            plt.arrow(xc, yc, arrow_dx, arrow_dy,
-                      head_width=arrow_length/5, color='k', alpha=0.2)
 
     plt.grid()
-    plt.xlabel('X pix')
-    plt.ylabel('Y pix')
+    plt.xlabel('CURRENT_BASE X')
+    plt.ylabel('CURRENT_BASE Y')
     plt.ylim(ycent-plot_delta,ycent+plot_delta)
     plt.yticks(np.arange(ycent-plot_delta,ycent+plot_delta,1))
     plt.xlim(xcent-plot_delta,xcent+plot_delta)
@@ -210,11 +200,30 @@ class Fit2DGridSearch(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        fit_2D_fiber_center(Path(args.get('fgs_cube_fileX')),
-                            Path(args.get('fgs_cube_fileY')),
+        # 20240718at140930_GridSearch.log
+        # TipTilt20240718at140930_GridSearch.fits
+        log_file_x = Path(args.get('logfileX'))
+        fgs_cube_fileX = log_file_x.parent / Path(f'TipTilt{log_file_x.stem}.fits')
+        log_file_y = Path(args.get('logfileY'))
+        fgs_cube_fileY = log_file_y.parent / Path(f'TipTilt{log_file_y.stem}.fits')
+
+        # Try to determine targname/comment
+        try:
+            with open(log_file_x) as FO:
+                lines = FO.readlines()
+            for line in lines[:60]:
+                m_comment = re.search("comment: (.*)", line)
+                if m_comment is not None:
+                    comment = m_comment.groups()[0].strip('\n')
+            log.info(f"  Log Comment: {comment}")
+        except:
+            comment = ''
+
+        fit_2D_fiber_center(fgs_cube_fileX,
+                            fgs_cube_fileY,
                             xcent=args.get('xfit'),
                             ycent=args.get('yfit'),
-                            targname=args.get('targname'))
+                            targname=comment)
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
@@ -222,12 +231,10 @@ class Fit2DGridSearch(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        parser.add_argument('fgs_cube_fileX', type=str,
-            help="The FGS FITS cube for the X pixel scan")
-        parser.add_argument('fgs_cube_fileY', type=str,
-            help="The FGS FITS cube for the Y pixel scan")
-        parser.add_argument('targname', type=str,
-            help="The target name")
+        parser.add_argument('logfileX', type=str,
+            help="The GridSearch log file for the X pixel scan")
+        parser.add_argument('logfileY', type=str,
+            help="The GridSearch log file for the Y pixel scan")
         parser.add_argument("--xfit", dest="xfit", type=float,
             default=335.5,
             help="The X pixel position to use as the center when overlaying the model.")
