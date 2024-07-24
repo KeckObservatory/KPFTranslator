@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Instrument Software - KPF</title>
+    <title>Nighttime Calibrations - KPF</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Instrument Software";
-        var mkdocs_page_input_path = "KPFTranslator.md";
+        var mkdocs_page_name = "Nighttime Calibrations";
+        var mkdocs_page_input_path = "nighttimecalibrations.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -92,14 +92,14 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Observing with KPF</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../calibrations/">Daytime Calibrations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../nighttimecalibrations/">Nighttime Calibrations</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Nighttime Calibrations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
     <ul>
@@ -187,8 +187,8 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Technical Documentation</span></p>
-              <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Instrument Software</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../KPFTranslator/">Instrument Software</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../scripts/scripts/">Operations Scripts</a>
                   </li>
@@ -211,8 +211,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Technical Documentation</li>
-      <li class="breadcrumb-item active">Instrument Software</li>
+          <li class="breadcrumb-item">Observing with KPF</li>
+      <li class="breadcrumb-item active">Nighttime Calibrations</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -221,15 +221,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="kpf-translator">KPF Translator</h1>
-<p>Most of KPF operations are controlled via the <a href="https://github.com/KeckObservatory/KPFTranslator">KPF Translator</a> which is composed of Python code, which interacts with the underlying KTL keywords to automate various tasks. Each script is actually a Python class which is invoked by an <code>execute()</code> method which itself calls the <code>pre_condition()</code>, <code>perform()</code>, and <code>post_condition()</code> methods. This three-part structure allows the script to check that the system is ready for the action to be performed, then execute the action, then confirm a successful execution. These scripts can also be invoked via a command line interface to the underlying python and are used for everything from small, atomic actions which might require only a single KTL keyword write to execute, to large scripts which need significant flow control such as executing a science observation at night -- including configuring the instrument, waiting for the telescope and tip-tilt system to acquire the target, executing the specified exposures, and finally performing clean up actions.</p>
-<p>Detailed documentation on each translator script can be found in the <a href="../scripts/scripts/">scripts</a> section of this documentation.</p>
+                <h1 id="nighttime-calibrations">Nighttime Calibrations</h1>
+<p>To monitor the instrumental drift, KPF needs calibrations taken throughout the night.  There are two different calibrations that can be taken and each has advantages and disadvantages.  As we fully characterize the instrument and as the DRP evolves, our recommendations for how best to run nighttime calibrations may change, so check back here for updates.</p>
+<h2 id="recommended-strategy">Recommended Strategy</h2>
+<p>The current recommendation is to take a slew cal roughly every hour or so.  There is a "Time Since Cal" readout in the upper right of the OB GUI.  When the time since the last calibration exceeds 1 hour, the readout will turn orange.  At 2 hours, it will turn red.  This is only a recommendation, so the decision of when to take a slew cal is up to the observer.  See also the <a href="../observingprocedures/#slew-cals">Observing Procedures</a> page.</p>
+<h1 id="what-is-a-slew-cal">What is a Slew Cal?</h1>
+<p>Slew cals are a particular calibration (a single Etalon calibration exposure) which is intended to be taken during a long telescope slew. The best way to execute this is to click the "Execute OB with Slew Cal" button after loading the next desired OB and asking the OA to begin slewing to the target.  You should let the OA know you are running a slew cal as this will close the FIU hatch and direct Etalon light through the FIU which means that they will no longer see the sky on the guider during the calibration (which takes about 2 minutes).  Directing the calibration light through the FIU means that we will be illuminating the science, sky, and simulcal fibers (all 5 traces) with calibration light.</p>
+<h1 id="what-are-simultaneous-calibrations-simulcals">What are Simultaneous Calibrations (SimulCals)?</h1>
+<p>Simultaneous Calibration (simulcal) is when the calibration trace (one of the 5 traces on the main science detectors) is illuminated with calibration light (usually the etalon).  This can be done during science observations, but there are a number of caveats and potential pitfalls.</p>
+<p>The main concern when using simulcals is to get the appropriate calibration flux.  Because the science exposure time changes depending on the target, the brightness of the light injected in to the simulcal fiber must be modulated to find an appropriate flux.  This is accomplished with two filter wheels in the calibration bench which have neutral density (ND) filters.</p>
+<p>Too little simulcal flux is problematic because it makes the calibration less useful, but too much simulcal flux is worse. Even tiny amounts of scattered light or the far wings of an overly bright simulcal PSF can impact the science traces and bias the RV measurements.  Because of this, we are working on an automatic system for choosing the ND filters appropriate for the observation.  This is a complex system because it also interacts with the exposure meter making the exposure time non-deterministic.  We have not yet fully tested this system, so it is not yet recommended for regular science use.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../references/" class="btn btn-neutral float-left" title="Acknowledging KPF"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../scripts/scripts/" class="btn btn-neutral float-right" title="Operations Scripts">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../observingprocedures/" class="btn btn-neutral float-left" title="Observing Procedures"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../buildingOBs/" class="btn btn-neutral float-right" title="Building OBs">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -256,10 +263,10 @@
         </span>
     
     
-      <span><a href="../references/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../observingprocedures/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../scripts/scripts/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../buildingOBs/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
