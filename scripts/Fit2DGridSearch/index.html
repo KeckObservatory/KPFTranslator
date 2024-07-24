@@ -113,6 +113,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../fastreadmode/">Fast Read Mode</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">General Observing Info</span></p>
               <ul>
@@ -236,7 +238,8 @@
 
               <details class="quote">
                 <summary>Source code in <code>kpf/engineering/analysis/Fit2DGridSearch.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">191</span>
+<span class="normal">192</span>
 <span class="normal">193</span>
 <span class="normal">194</span>
 <span class="normal">195</span>
@@ -273,7 +276,23 @@
 <span class="normal">226</span>
 <span class="normal">227</span>
 <span class="normal">228</span>
-<span class="normal">229</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Fit2DGridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Fit2DGridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Take two 1D grid search runs (one in X and one in Y) ...</span>
 
@@ -286,11 +305,30 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">fit_2D_fiber_center</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fgs_cube_fileX&#39;</span><span class="p">)),</span>
-                            <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fgs_cube_fileY&#39;</span><span class="p">)),</span>
+        <span class="c1"># 20240718at140930_GridSearch.log</span>
+        <span class="c1"># TipTilt20240718at140930_GridSearch.fits</span>
+        <span class="n">log_file_x</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logfileX&#39;</span><span class="p">))</span>
+        <span class="n">fgs_cube_fileX</span> <span class="o">=</span> <span class="n">log_file_x</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TipTilt</span><span class="si">{</span><span class="n">log_file_x</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">.fits&#39;</span><span class="p">)</span>
+        <span class="n">log_file_y</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logfileY&#39;</span><span class="p">))</span>
+        <span class="n">fgs_cube_fileY</span> <span class="o">=</span> <span class="n">log_file_y</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TipTilt</span><span class="si">{</span><span class="n">log_file_y</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">.fits&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Try to determine targname/comment</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file_x</span><span class="p">)</span> <span class="k">as</span> <span class="n">FO</span><span class="p">:</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">FO</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="mi">60</span><span class="p">]:</span>
+                <span class="n">m_comment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;comment: (.*)&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m_comment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="n">m_comment</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Log Comment: </span><span class="si">{</span><span class="n">comment</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">fit_2D_fiber_center</span><span class="p">(</span><span class="n">fgs_cube_fileX</span><span class="p">,</span>
+                            <span class="n">fgs_cube_fileY</span><span class="p">,</span>
                             <span class="n">xcent</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xfit&#39;</span><span class="p">),</span>
                             <span class="n">ycent</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;yfit&#39;</span><span class="p">),</span>
-                            <span class="n">targname</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;targname&#39;</span><span class="p">))</span>
+                            <span class="n">targname</span><span class="o">=</span><span class="n">comment</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
@@ -298,12 +336,10 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;fgs_cube_fileX&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The FGS FITS cube for the X pixel scan&quot;</span><span class="p">)</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;fgs_cube_fileY&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The FGS FITS cube for the Y pixel scan&quot;</span><span class="p">)</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;targname&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The target name&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;logfileX&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The GridSearch log file for the X pixel scan&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;logfileY&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The GridSearch log file for the Y pixel scan&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--xfit&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;xfit&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="mf">335.5</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The X pixel position to use as the center when overlaying the model.&quot;</span><span class="p">)</span>

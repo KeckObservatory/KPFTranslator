@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Sensitivity - KPF</title>
+    <title>Fast Read Mode - KPF</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Sensitivity";
-        var mkdocs_page_input_path = "sensitivity.md";
+        var mkdocs_page_name = "Fast Read Mode";
+        var mkdocs_page_input_path = "fastreadmode.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -51,7 +51,7 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Instrument Info</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" >Instrument Subsystems</a>
     <ul>
                 <li class="toctree-l2"><a class="reference internal" href="../spectrograph/">Spectrograph</a>
@@ -76,11 +76,11 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" >Instrument Specifications</a>
-    <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
                 <li class="toctree-l2"><a class="reference internal" href="../detectors/">Detectors</a>
                 </li>
-                <li class="toctree-l2 current"><a class="reference internal current" href="#">Sensitivity</a>
+                <li class="toctree-l2"><a class="reference internal" href="../sensitivity/">Sensitivity</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../dataflow/">Data Flow</a>
                 </li>
@@ -92,7 +92,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Observing with KPF</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../calibrations/">Calibrations</a>
@@ -113,7 +113,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../fastreadmode/">Fast Read Mode</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Fast Read Mode</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">General Observing Info</span></p>
@@ -209,9 +209,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Instrument Info</li>
-          <li class="breadcrumb-item">Instrument Specifications</li>
-      <li class="breadcrumb-item active">Sensitivity</li>
+          <li class="breadcrumb-item">Observing with KPF</li>
+      <li class="breadcrumb-item active">Fast Read Mode</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -220,18 +219,53 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="spectrograph-sensitivity">Spectrograph Sensitivity</h1>
-<p>For sensitivity estimates, please see the KPF exposure time calculator written by the instrument team. More information is available on the <a href="https://exoplanets.caltech.edu/kpf-exposure-time-calculator/">KPF Exposure Time (and RV Precision) Calculator page</a> or go directly to GitHub to download the <a href="https://github.com/California-Planet-Search/KPF-etc">exposure time calculator software</a>.</p>
-<h1 id="acquiring-faint-targets">Acquiring Faint Targets</h1>
-<p>We use J-band magnitude as a rough guide for the guider sensitivity, but it is important to keep in mind that this is not a perfect match to the guider passband (950-1200 nm).  That said, we have acquired a J=17.0 (V=18.05) quasar using the guider with FPS=0.1 (10 second individual frame exposures).  It was not a strong detection: the target was just visible by eye in the images, but the guide system struggled to lock on to it.  Another test acquisition on a J=16.7 (V=17.6) object was correspondingly a bit easier.</p>
-<p>We believe this performance can be improved substantially by using sky subtraction.  This is possible currently, but is a slow manual process to configure.  On the second test target above (J=16.7, V=17.6), we got reasonable signal using 0.25 FPS (4 second exposures) while using sky subtraction.  We are planning to script this process to make it easier and to integrate sky subtraction in to the OA's GUI for controlling the tip tilt, but the timeline for that is still TBD.</p>
-<p>If you need to acquire very faint targets (J &gt; 16), please reach out to your SA ahead of time to discuss strategies.</p>
+                <h1 id="fast-read-mode">Fast Read Mode</h1>
+<p>The Green and Red science detectors can operate in a fast readout mode.  This reduces the readout time to 16 seconds (and significantly increases the read noise), however changing the readout modes induces a temperature change at the detectors which can impact PRV measurements.  As a result, <strong>fast read mode observations should be limited to those instances where it is critical to the science</strong> (e.g. seismology or other high cadence observations of a single target) and which are scheduled such that the mode change will not have overly negative impact on other science that night.</p>
+<p>Fast read mode is not appropriate for long term cadenced RV measurements as the two read modes have different systematic offsets and so RV measurements of the same target taken in different modes can not be easily combined.</p>
+<p>If you are interested in utilizing fast read mode, please contact <a href="mailto:kpf_info@keck.hawaii.edu">kpf_info</a> well ahead of your run. Fast read mode <strong>may not be available in all cases</strong> due to the impact on other scheduled observations.</p>
+<h2 id="details">Details</h2>
+<p>The KPF main spectrometer CCDs can be operated in two read modes: normal and fast.  The main difference is the time to read the CCDs, which is 47 sec in normal-read mode and 16 sec in fast-read mode.  In general, KPF observations should be taken in normal-read mode unless there is a highly compelling reason to operate in fast-read mode.</p>
+<p>The fast-read mode is only offered for KPF observations where the speed will aid in resolving fast astrophysical phenomena (e.g., seismology) or for cases where short exposure times are required to avoid saturation and the efficiency is significantly improved by also reading the CCDs quickly (e.g., observing a very bright star during a planetary transit).  This applies to sequences of exposures ranging from 1 hour to 1 night in duration.  The fast-read mode should not be used to improve the efficiency of individual exposure or short sequences of exposures, which comprise the vast majority of KPF observations.</p>
+<p>The motivation for this strategy is that <strong>changing between the two modes imparts a ~10 mK temperature transient</strong> to the CCDs, which shift and stretch at the nanometer level in response.  These perturbations violate the operating requirements of maintaining 1 mK rms temperature stability of the CCDs and lead to systematic errors in Doppler measurements on short timescales (&lt; 20-30 min).  On longer timescales, the CCDs appear to relax back to their original state, but this has not been measured at the sub-30 cm/s level.  Out of conservatism, KPF is toggled between read modes as infrequently as possible.</p>
+<p>Automated daily calibration sequences are taken in the normal-read mode and are used in the KPF Data Reduction Pipeline (DRP) to process spectra taken with both read modes.  <strong>Radial velocities measured from KPF spectra in the two modes are offset; users cannot combine RVs from the two modes in a time series.</strong>  On the other hand, RVs measured from spectra taken in the fast-read mode during a single night (which are processed with a common set of calibrations) have high Doppler stability over that night-long timescale; this is the main use case for the fast-read mode.</p>
+<p>Some additional tradeoffs to consider are the increased read noise and the charge transfer inefficiency (CTI) in fast-read mode. As listed in the table below, the read noise (measured in rms noise per CCD pixel) is 1.5-2X higher in fast-read mode. This limits the utility of this mode for faint sources, which have higher Poisson noise per CCD pixel in the source spectrum.  In fast-read mode, the CCDs are read out using four amplifiers at a higher clock speed (instead of two amplifiers at a slower speed).  This strategy brings one amplifier on the Green CCD into play that has ~100x higher CTI than the others.  CTI smears the spectrum along the direction of the CCD rows (leaving a trail of charge along pixels as they are clocked).  As a result, stellar lines in the affected quadrant are smeared in the dispersion direction.  The intensity of the effect depends on the number of electrons in each pixel (i.e., the SNR of the spectrum), making this effect very difficult to calibrate for precise RV measurements.  When computing RVs for fast-read mode spectra, the KPF DRP ignores portions of the spectrum in the affected quadrant.  This increases the RV uncertainties in the fast-read mode and adds an additional RV zero-point offset between measurements in the two modes.  Fast spectroscopy to measure changes in line intensity (not line shape or center) can still be accomplished using spectra from the affected quadrant.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Normal Read Mode</th>
+<th>Fast Read Mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Readout Time</td>
+<td>47 s</td>
+<td>16 s</td>
+</tr>
+<tr>
+<td>Read Noise</td>
+<td>Green: 4.0, 4.9 e-<br>Red: 4.1, 4.2 e-</td>
+<td>Green: 8.2, 9.7, 8.6, 6.9 e-<br>Red: 6.0, 5.8, 8.2, 6.6 e-</td>
+</tr>
+<tr>
+<td>Charge Transfer</td>
+<td></td>
+<td>One green amp has ~100x higher CTI</td>
+</tr>
+<tr>
+<td>Use Cases</td>
+<td>Most KPF observations,<br>including cadence RPV measurements<br>and general spectroscopy</td>
+<td>Sequences of short exposures whose<br>duration is 1 hour to 1 night.</td>
+</tr>
+</tbody>
+</table>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../detectors/" class="btn btn-neutral float-left" title="Detectors"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../dataflow/" class="btn btn-neutral float-right" title="Data Flow">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../kpfdrp/" class="btn btn-neutral float-left" title="Data Reduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../references/" class="btn btn-neutral float-right" title="Acknowledging KPF">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -258,10 +292,10 @@
         </span>
     
     
-      <span><a href="../detectors/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../kpfdrp/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../dataflow/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../references/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

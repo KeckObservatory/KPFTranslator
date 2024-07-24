@@ -113,6 +113,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../fastreadmode/">Fast Read Mode</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">General Observing Info</span></p>
               <ul>
@@ -261,7 +263,9 @@ they are using.</p>
 <span class="normal">32</span>
 <span class="normal">33</span>
 <span class="normal">34</span>
-<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetReadModeNormal</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetReadModeNormal</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Configure both detectors to normal read mode by changing the ACF files</span>
 <span class="sd">    they are using.</span>
 
@@ -279,8 +283,10 @@ they are using.</p>
         <span class="n">kpfred</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfred&#39;</span><span class="p">)</span>
         <span class="n">green_normal_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acf_files&#39;</span><span class="p">,</span> <span class="s1">&#39;green_normal&#39;</span><span class="p">)</span>
         <span class="n">red_normal_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acf_files&#39;</span><span class="p">,</span> <span class="s1">&#39;red_normal&#39;</span><span class="p">)</span>
-        <span class="n">kpfgreen</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">green_normal_file</span><span class="p">)</span>
-        <span class="n">kpfred</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">red_normal_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kpfgreen</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">!=</span> <span class="n">green_normal_file</span><span class="p">:</span>
+            <span class="n">kpfgreen</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">green_normal_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kpfred</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">!=</span> <span class="n">red_normal_file</span><span class="p">:</span>
+            <span class="n">kpfred</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">red_normal_file</span><span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>

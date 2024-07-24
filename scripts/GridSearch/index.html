@@ -113,6 +113,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../fastreadmode/">Fast Read Mode</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">General Observing Info</span></p>
               <ul>
@@ -575,7 +577,10 @@ line tool, or passed in from the execution engine.</p>
 <span class="normal">374</span>
 <span class="normal">375</span>
 <span class="normal">376</span>
-<span class="normal">377</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Executes an engineering grid search OB.</span>
 
 <span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
@@ -653,8 +658,6 @@ line tool, or passed in from the execution engine.</p>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting TRIGCUBE Inactive&#39;</span><span class="p">)</span>
         <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;TRIGCUBE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Inactive&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;TipTilt&#39;</span><span class="p">:</span>
-            <span class="n">current_base</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;CURRENT_BASE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CURRENT_BASE = </span><span class="si">{</span><span class="n">current_base</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">current_base</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DAR_ENABLE = </span><span class="si">{</span><span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;DAR_ENABLE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">dar_offset</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;DAR_OFFSET&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DAR_OFFSET = </span><span class="si">{</span><span class="n">dar_offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dar_offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -719,9 +722,6 @@ line tool, or passed in from the execution engine.</p>
                 <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting </span><span class="si">{</span><span class="n">FVC</span><span class="si">}</span><span class="s2"> FVC ExpTime = </span><span class="si">{</span><span class="n">exptime</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> s&quot;</span><span class="p">)</span>
                 <span class="n">SetFVCExpTime</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;camera&#39;</span><span class="p">:</span> <span class="n">FVC</span><span class="p">,</span> <span class="s1">&#39;exptime&#39;</span><span class="p">:</span> <span class="n">exptime</span><span class="p">})</span>
 
-<span class="c1">#         for i,xi in enumerate(xis):</span>
-<span class="c1">#             yis.reverse()</span>
-<span class="c1">#             for j,yi in enumerate(yis):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xindicies</span><span class="p">:</span>
             <span class="n">yindicies</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">yindicies</span><span class="p">:</span>
@@ -731,11 +731,19 @@ line tool, or passed in from the execution engine.</p>
                     <span class="c1">##------------------------------------------------------</span>
                     <span class="c1">## Tip Tilt</span>
                     <span class="c1">##------------------------------------------------------</span>
+<span class="c1">#                     log.info(f&quot;Turning off TIPTILT_CALC&quot;)</span>
+<span class="c1">#                     kpfguide[&#39;TIPTILT_CALC&#39;].write(&#39;Inactive&#39;)</span>
+<span class="c1">#                     starting_current_base = kpfguide[&#39;CURRENT_BASE&#39;].read(binary=True)</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusting CURRENT_BASE to (</span><span class="si">{</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ys</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">) (</span><span class="si">{</span><span class="n">xis</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">yis</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
                     <span class="n">SetTipTiltTargetPixel</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">ys</span><span class="p">[</span><span class="n">j</span><span class="p">]})</span>
-                    <span class="n">sleep_time</span> <span class="o">=</span> <span class="mi">5</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sleeping </span><span class="si">{</span><span class="n">sleep_time</span><span class="si">}</span><span class="s2"> s to allow tip tilt loop to settle&quot;</span><span class="p">)</span>
-                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span>
+<span class="c1">#                     dx = xs[i] - starting_current_base[0]</span>
+<span class="c1">#                     dy = ys[i] - starting_current_base[1]</span>
+<span class="c1">#                     log.info(f&#39;Sending OFFLOAD_COMMAND: {dx:.1f} {dy:.1f}&#39;)</span>
+<span class="c1">#                     kpfguide[&#39;OFFLOAD_COMMAND&#39;].write((dx, dy))</span>
+<span class="c1">#                     kpfguide[&#39;TIPTILT_CALC&#39;].write(&#39;Active&#39;)</span>
+<span class="c1">#                     kpfguide[&#39;TIPTILT_CONTROL&#39;].write(&#39;Active&#39;)</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="s2">&quot;$kpfguide.TIPTILT_PHASE == &#39;Tracking&#39;&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
                     <span class="n">xpix</span><span class="p">,</span> <span class="n">ypix</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;PIX_TARGET&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PIX_TARGET is </span><span class="si">{</span><span class="n">xpix</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ypix</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="c1"># Check for lost star</span>
@@ -903,7 +911,7 @@ line tool, or passed in from the execution engine.</p>
         <span class="n">expmeter_flux</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fluxes_file</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.csv&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;TipTilt&#39;</span><span class="p">:</span>
-            <span class="n">SetTipTiltTargetPixel</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">xpix0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">ypix0</span><span class="p">})</span>
+            <span class="n">SetTipTiltTargetPixel</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">basex</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">basey</span><span class="p">})</span>
             <span class="n">StopTipTilt</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
         <span class="k">elif</span> <span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;SciADC&#39;</span><span class="p">:</span>
             <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;ADC1NAM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Null&#39;</span><span class="p">)</span>
