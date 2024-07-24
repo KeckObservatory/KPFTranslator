@@ -151,7 +151,7 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
     target_pix_y = np.mean(Ycenters) + dar_offset_y
 
     tpdelta = np.ceil(max([abs(target_pix_x-xcent), abs(target_pix_y-ycent)]))
-    plot_delta = max([8, tpdelta])
+    plot_delta = max([9, tpdelta])
 
     plt.plot([xcent, xcent], [ycent-plot_delta,ycent+plot_delta], 'k-')
     plt.plot([xcent-plot_delta, xcent+plot_delta], [ycent,ycent], 'k-')
@@ -166,7 +166,8 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
             color = cm.bwr(i*cstep)
         plt.plot([xc], [yc], marker='o', linestyle='',
                  color=color,
-                 label=f'{wc:.0f} nm ({xc:.1f}, {yc:.1f})',
+#                  label=f'{wc:.0f} nm ({xc:.1f}, {yc:.1f})',
+                 label=f'{wc:.0f} nm',
                  markersize=15, alpha=0.7)
 
     plt.grid()
@@ -177,7 +178,7 @@ def fit_2D_fiber_center(fgs_cube_fileX, fgs_cube_fileY, xcent=335.5, ycent=258.0
     plt.xlim(xcent-plot_delta,xcent+plot_delta)
     plt.xticks(np.arange(xcent-plot_delta,xcent+plot_delta,1))
     fig.gca().set_aspect('equal', 'box')
-    plt.legend(loc='best')
+    plt.legend(loc='upper left')
     plotfile = Path(f"{fgs_cube_fileX.name.replace('.fits', '.png').replace('TipTilt', '')}")
     if plotfile.exists(): plotfile.unlink()
     plt.savefig(f"{plotfile}", bbox_inches='tight', pad_inches=0.1)
