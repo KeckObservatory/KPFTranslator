@@ -45,8 +45,9 @@ nav:
     - "Fast Read Mode": fastreadmode.md
   - "Observing with KPF":
     - "Afternoon Setup": afternoonsetup.md
-    - "Calibrations": calibrations.md
+    - "Daytime Calibrations": calibrations.md
     - "Observing Procedures": observingprocedures.md
+    - "Nighttime Calibrations": nighttimecalibrations.md
     - "Observing Blocks":
       - "Building OBs": buildingOBs.md
       - "Science OB Parameters": SciOBparameters.md
