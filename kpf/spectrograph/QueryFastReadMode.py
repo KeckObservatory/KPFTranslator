@@ -1,3 +1,4 @@
+from pathlib import Path
 import time
 import ktl
 
@@ -6,12 +7,8 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class QueryFastReadMode(KPFTranslatorFunction):
-    '''Returns True if both ACF files are consistent with fast read mode.
-
-    ARGS:
-    =====
-    None
+class QueryReadMode(KPFTranslatorFunction):
+    '''Returns string describing the read mode.
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
@@ -21,24 +18,50 @@ class QueryFastReadMode(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         kpfgreen = ktl.cache('kpfgreen')
         kpfred = ktl.cache('kpfred')
-        green_ACF = kpfgreen['ACF'].read()
-        red_ACF = kpfred['ACF'].read()
 
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')
         red_normal_file = cfg.get('acf_files', 'red_normal')
         red_fast_file = cfg.get('acf_files', 'red_fast')
 
-        if (green_ACF == green_normal_file) and (red_ACF == red_normal_file):
-            mode = 'normal'
-        elif (green_ACF == green_fast_file) and (red_ACF == red_fast_file):
-            mode = 'fast'
-        else:
-            mode = 'unknown'
+        green_ACFFILE = Path(kpfgreen['ACFFILE'].read()).stem
+        red_ACFFILE = Path(kpfred['ACFFILE'].read()).stem
 
-        log.debug(f"ACF Files: {green_ACF}/{red_ACF} mode is {mode}")
-        print(f"ACF Files: {green_ACF}/{red_ACF} mode is {mode}")
-        return mode == 'fast'
+        if green_ACFFILE == green_normal_file:
+            green_mode = 'normal'
+        elif green_ACF == green_fast_file:
+            green_mode = 'fast'
+        else:
+            green_mode = 'unknown'
+
+        if red_ACF == red_normal_file:
+            red_mode = 'normal'
+        elif red_ACF == red_fast_file:
+            red_mode = 'fast'
+        else:
+            red_mode = 'unknown'
+
+        msg = f"Green mode: {green_mode}, Red mode: {red_mode}"
+        log.debug(msg)
+        print(msg)
+        return green_mode, red_mode
+
+    @classmethod
+    def post_condition(cls, args, logger, cfg):
+        pass
+
+
+class QueryFastReadMode(KPFTranslatorFunction):
+    '''Returns True if both ACF files are consistent with fast read mode.
+    '''
+    @classmethod
+    def pre_condition(cls, args, logger, cfg):
+        pass
+
+    @classmethod
+    def perform(cls, args, logger, cfg):
+        green_mode, red_mode = QueryReadMode.execute({})
+        return (green_mode == 'fast') and (red_mode == 'fast')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
