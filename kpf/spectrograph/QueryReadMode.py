@@ -17,33 +17,30 @@ class QueryReadMode(KPFTranslatorFunction):
     @classmethod
     def perform(cls, args, logger, cfg):
         kpfgreen = ktl.cache('kpfgreen')
-        kpfred = ktl.cache('kpfred')
-
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')
-        red_normal_file = cfg.get('acf_files', 'red_normal')
-        red_fast_file = cfg.get('acf_files', 'red_fast')
-
         green_ACFFILE = Path(kpfgreen['ACFFILE'].read()).stem
-        red_ACFFILE = Path(kpfred['ACFFILE'].read()).stem
-
         if green_ACFFILE == green_normal_file:
             green_mode = 'normal'
-        elif green_ACF == green_fast_file:
+        elif green_ACFFILE == green_fast_file:
             green_mode = 'fast'
         else:
             green_mode = 'unknown'
 
-        if red_ACF == red_normal_file:
+        kpfred = ktl.cache('kpfred')
+        red_normal_file = cfg.get('acf_files', 'red_normal')
+        red_fast_file = cfg.get('acf_files', 'red_fast')
+        red_ACFFILE = Path(kpfred['ACFFILE'].read()).stem
+        if red_ACFFILE == red_normal_file:
             red_mode = 'normal'
-        elif red_ACF == red_fast_file:
+        elif red_ACFFILE == red_fast_file:
             red_mode = 'fast'
         else:
             red_mode = 'unknown'
 
-        msg = f"Green mode: {green_mode}, Red mode: {red_mode}"
-        log.debug(msg)
-        print(msg)
+        log.debug(f"Green read mode: {green_mode}, Red read mode: {red_mode}")
+        print(f"Green read mode: {green_mode}")
+        print(f"Red read mode: {red_mode}")
         return green_mode, red_mode
 
     @classmethod
