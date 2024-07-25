@@ -252,7 +252,7 @@ links:
         cmd: socal.WaitForSoCalOnTarget.WaitForSoCalOnTarget
     # Spectrograph
     QueryReadMode:
-        cmd: spectrograph.QueryFastReadMode.QueryReadMode
+        cmd: spectrograph.QueryReadMode.QueryReadMode
     QueryFastReadMode:
         cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
     RecoverDetectors:

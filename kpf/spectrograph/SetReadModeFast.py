@@ -4,7 +4,7 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
-from kpf.spectrograph.QueryFastReadMode import QueryReadMode
+from kpf.spectrograph.QueryReadMode import QueryReadMode
 
 
 class SetReadModeFast(KPFTranslatorFunction):
