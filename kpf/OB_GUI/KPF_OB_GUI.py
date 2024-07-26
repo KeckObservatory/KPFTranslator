@@ -203,8 +203,8 @@ class MainWindow(QMainWindow):
 #         slewcalfile_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALFILE'])
 #         slewcalfile_kw.stringCallback.connect(self.update_slewcalfile_value)
         self.read_mode = self.findChild(QLabel, 'readout_mode_value')
-        self.red_acf_file_kw.stringCallback.connect(self.update_acffile)
-        self.green_acf_file_kw.stringCallback.connect(self.update_acffile)
+#         self.red_acf_file_kw.stringCallback.connect(self.update_acffile)
+#         self.green_acf_file_kw.stringCallback.connect(self.update_acffile)
 
         # disabled detectors
         self.disabled_detectors_value = self.findChild(QLabel, 'disabled_detectors_value')
