@@ -659,8 +659,8 @@ class MainWindow(QMainWindow):
 
     # ACF File
     def update_acffile(self, value):
-        green_mode, red_mode = QueryFastReadMode.execute({})
-        if green_mode and red_mode:
+        fast = QueryFastReadMode.execute({})
+        if fast is True:
             self.read_mode.setText('Fast')
             self.read_mode.setStyleSheet("color:orange")
         else:
