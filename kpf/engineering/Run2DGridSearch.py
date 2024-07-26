@@ -36,6 +36,8 @@ class Run2DGridSearch(KPFTranslatorFunction):
         additional_text = args.get('comment', '')
         em_parameters = PredictExpMeterParameters.execute({'Gmag': Gmag})
         fvc_parameters = PredictFVCParameters.execute({'Gmag': Gmag})
+        print(f"Predicted FVC parameters:")
+        print(fvc_parameters)
         dcs = ktl.cache('dcs1')
         targname = dcs['TARGNAME'].read()
         args = {'Template_Name': 'kpf_eng_grid', 'Template_Version': 0.4,
@@ -54,7 +56,7 @@ class Run2DGridSearch(KPFTranslatorFunction):
                 'ExpMeter_exptime': em_parameters['ExpMeterExpTime'],
                 'FVCs': 'SCI,CAHK',
                 }
-        args.update(fvc_parameters)
+
         x_args = {'comment': f'1D in X {targname}: {additional_text}',
                   'nx': 15,
                   'ny': 1,
