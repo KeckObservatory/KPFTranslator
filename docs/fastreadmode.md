@@ -6,6 +6,10 @@ Fast read mode is not appropriate for long term cadenced RV measurements as the 
 
 If you are interested in utilizing fast read mode, please contact [kpf_info](mailto:kpf_info@keck.hawaii.edu) well ahead of your run. Fast read mode **may not be available in all cases** due to the impact on other scheduled observations.  If it is available for your run, the Keck SA will schedule when the mode is changed and when fast read mode calibrations (primarily biases) can be taken.  Our goal will be to minimize the number of changes of the read mode.
 
+After a mode change in either direction, the system needs time to stabilize before precision RVs are possible.  We have estimated this stabilization time to be about 20 minutes.
+
+Because KPF is expected to operate in normal read mode and be available for precision RVs and fast read mode is the aberration, when this 20 minute wait time is needed during the night (i.e. the mode change does not happen well before or after the observing window), then all instances of this 20 minute window should be considered part of the fast read mode program. As a result, if the read mode is normal for observations at the beginning the night, then is switched to fast, then back to normal for observations at the end of the night.  Both 20 minute wait times (40 minutes total) are overhead which are considered part of the fast read mode program.
+
 ## Details
 
 The KPF main spectrometer CCDs can be operated in two read modes: normal and fast.  The main difference is the time to read the CCDs, which is 47 sec in normal-read mode and 16 sec in fast-read mode.  In general, KPF observations should be taken in normal-read mode unless there is a highly compelling reason to operate in fast-read mode.
