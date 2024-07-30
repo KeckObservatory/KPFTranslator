@@ -233,7 +233,7 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <p>Estimate the exposure time given the stellar Jmag and which camera.</p>
+      <p>Estimate the exposure time given the stellar Gmag and which camera.</p>
 <p>Based on scaling from a single, poorly measured data point:
 For Vmag ~ 4, the SCIFVC_exptime = 1 and CAHKFVC_exptime = 15</p>
 
@@ -319,7 +319,7 @@ For Vmag ~ 4, the SCIFVC_exptime = 1 and CAHKFVC_exptime = 15</p>
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictFVCParameters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Estimate the exposure time given the stellar Jmag and which camera.</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Estimate the exposure time given the stellar Gmag and which camera.</span>
 
 <span class="sd">    Based on scaling from a single, poorly measured data point:</span>
 <span class="sd">    For Vmag ~ 4, the SCIFVC_exptime = 1 and CAHKFVC_exptime = 15</span>

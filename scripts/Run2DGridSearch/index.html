@@ -307,7 +307,9 @@ line tool, or passed in from the execution engine.</p>
 <span class="normal">79</span>
 <span class="normal">80</span>
 <span class="normal">81</span>
-<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Run2DGridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Run2DGridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Executes an engineering grid search OB.</span>
 
 <span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
@@ -330,6 +332,8 @@ line tool, or passed in from the execution engine.</p>
         <span class="n">additional_text</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">em_parameters</span> <span class="o">=</span> <span class="n">PredictExpMeterParameters</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Gmag&#39;</span><span class="p">:</span> <span class="n">Gmag</span><span class="p">})</span>
         <span class="n">fvc_parameters</span> <span class="o">=</span> <span class="n">PredictFVCParameters</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Gmag&#39;</span><span class="p">:</span> <span class="n">Gmag</span><span class="p">})</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predicted FVC parameters:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">fvc_parameters</span><span class="p">)</span>
         <span class="n">dcs</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;dcs1&#39;</span><span class="p">)</span>
         <span class="n">targname</span> <span class="o">=</span> <span class="n">dcs</span><span class="p">[</span><span class="s1">&#39;TARGNAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Template_Name&#39;</span><span class="p">:</span> <span class="s1">&#39;kpf_eng_grid&#39;</span><span class="p">,</span> <span class="s1">&#39;Template_Version&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
@@ -348,7 +352,7 @@ line tool, or passed in from the execution engine.</p>
                 <span class="s1">&#39;ExpMeter_exptime&#39;</span><span class="p">:</span> <span class="n">em_parameters</span><span class="p">[</span><span class="s1">&#39;ExpMeterExpTime&#39;</span><span class="p">],</span>
                 <span class="s1">&#39;FVCs&#39;</span><span class="p">:</span> <span class="s1">&#39;SCI,CAHK&#39;</span><span class="p">,</span>
                 <span class="p">}</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fvc_parameters</span><span class="p">)</span>
+
         <span class="n">x_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;1D in X </span><span class="si">{</span><span class="n">targname</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">additional_text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;nx&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
                   <span class="s1">&#39;ny&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>

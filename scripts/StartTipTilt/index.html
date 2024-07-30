@@ -282,9 +282,7 @@ the telescope (via OFFLOAD_DCS and OFFLOAD).</p>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartTipTilt</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartTipTilt</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Start the tip tilt control loop.  This uses the ALL_LOOPS keyword to</span>
 <span class="sd">    start all functions including DAR (via DAR_ENABLE), tip tilt calculations</span>
 <span class="sd">    (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to</span>
@@ -314,8 +312,6 @@ the telescope (via OFFLOAD_DCS and OFFLOAD).</p>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">movetime</span><span class="p">)</span>
 
         <span class="n">kpfguide</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfguide&#39;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ensuring kpfguide.DAR_ENABLE is yes&#39;</span><span class="p">)</span>
-        <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;DAR_ENABLE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Yes&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Turning kpfguide.ALL_LOOPS on&#39;</span><span class="p">)</span>
         <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;ALL_LOOPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Active&#39;</span><span class="p">)</span>
 

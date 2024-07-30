@@ -240,8 +240,7 @@ they are using.</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/SetReadModeFast.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">10</span>
-<span class="normal">11</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
@@ -265,7 +264,33 @@ they are using.</p>
 <span class="normal">32</span>
 <span class="normal">33</span>
 <span class="normal">34</span>
-<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetReadModeFast</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetReadModeFast</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Configure both detectors to fast read mode by changing the ACF files</span>
 <span class="sd">    they are using.</span>
 
@@ -279,17 +304,42 @@ they are using.</p>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">kpfgreen</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfgreen&#39;</span><span class="p">)</span>
-        <span class="n">kpfred</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfred&#39;</span><span class="p">)</span>
-        <span class="n">green_fast_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acf_files&#39;</span><span class="p">,</span> <span class="s1">&#39;green_fast&#39;</span><span class="p">)</span>
-        <span class="n">red_fast_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acf_files&#39;</span><span class="p">,</span> <span class="s1">&#39;red_fast&#39;</span><span class="p">)</span>
-        <span class="n">kpfgreen</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">green_fast_file</span><span class="p">)</span>
-        <span class="n">kpfred</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">red_fast_file</span><span class="p">)</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">green_mode</span><span class="p">,</span> <span class="n">red_mode</span> <span class="o">=</span> <span class="n">QueryReadMode</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+        <span class="k">if</span> <span class="n">green_mode</span> <span class="o">!=</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Setting Green CCD read mode fast&#39;</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c1"># Email to kpf_info</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">,</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">})</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">email_err</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending email failed&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">email_err</span><span class="p">)</span>
+            <span class="n">kpfgreen</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfgreen&#39;</span><span class="p">)</span>
+            <span class="n">green_fast_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acf_files&#39;</span><span class="p">,</span> <span class="s1">&#39;green_fast&#39;</span><span class="p">)</span>
+            <span class="n">green_ACFFILE</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">kpfgreen</span><span class="p">[</span><span class="s1">&#39;ACFFILE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">stem</span>
+            <span class="k">if</span> <span class="n">green_ACFFILE</span> <span class="o">!=</span> <span class="n">green_fast_file</span><span class="p">:</span>
+                <span class="n">kpfgreen</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">green_fast_file</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">red_mode</span> <span class="o">!=</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Setting Red CCD read mode fast&#39;</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c1"># Email to kpf_info</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">,</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">})</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">email_err</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending email failed&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">email_err</span><span class="p">)</span>
+            <span class="n">kpfred</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfred&#39;</span><span class="p">)</span>
+            <span class="n">red_fast_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acf_files&#39;</span><span class="p">,</span> <span class="s1">&#39;red_fast&#39;</span><span class="p">)</span>
+            <span class="n">red_ACFFILE</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">kpfred</span><span class="p">[</span><span class="s1">&#39;ACFFILE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">stem</span>
+            <span class="k">if</span> <span class="n">red_ACFFILE</span> <span class="o">!=</span> <span class="n">red_fast_file</span><span class="p">:</span>
+                <span class="n">kpfred</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">red_fast_file</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">QueryFastReadMode</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span> <span class="o">!=</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">green_mode</span><span class="p">,</span> <span class="n">red_mode</span> <span class="o">=</span> <span class="n">QueryReadMode</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+        <span class="k">if</span> <span class="n">green_mode</span> <span class="o">!=</span> <span class="s1">&#39;fast&#39;</span> <span class="ow">or</span> <span class="n">red_mode</span> <span class="o">!=</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">FailedPostCondition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read mode change failed&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
