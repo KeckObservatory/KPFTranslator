@@ -1,43 +1,60 @@
 class OBProperty(object):
-    def __init__(self, name, value, valuetype):
+    def __init__(self, name, value, valuetype, comment=''):
         self.name = name
-        self.value = valuetype(value)
+        self.value = value if value is None else valuetype(value)
+        #self.value = valuetype(value)
         self.valuetype = valuetype
+        self.comment = comment
 
     def get(self):
         return self.value
+
+    def get_type(self):
+        return self.valuetype
+
+    def get_comment(self):
+        return self.comment
 
     def set(self, value):
         self.value = value
 
 
 class BaseOBComponent(object):
-    def __init__(self):
-        self.OBtype = None
-        self.OBversion = 2.0
-        self.name_overrides = {'2MASSID': 'twoMASSID'}
+    def __init__(self, component_type, version, properties=[]):
+        self.type = component_type
+        self.version = version
+        self.name_overrides={'2MASSID': 'twoMASSID'}
+        self.properties = properties
+        for p in properties:
+            setattr(self, p[0], OBProperty(*p))
 
     def get(self, name):
         name = self.name_overrides.get(name, name)
-        thisOBproperty = getattr(self, name)
-        return thisOBproperty.value
+        this_property = getattr(self, name)
+        return this_property.value
 
     def set(self, name, value):
         name = self.name_overrides.get(name, name)
-        try:
-            thisOBproperty = getattr(self, name)
-            thisOBproperty.set(value)
-        except AttributeError as e:
-            print(f"AttributeError setting {name}. skipping")
+        if name in [p[0] for p in self.properties]:
+            this_property = getattr(self, name)
+            this_property.set(value)
 
-    def to_lines():
-        pass
+    def from_dict(self, input_dict):
+        for key in input_dict.keys():
+            self.set(key, input_dict[key])
+        return self
+
+    def to_lines(self, comments=False):
+        lines = []
+        for p in self.properties:
+            lines.append(f"{p[0]}: {self.get(p[0])}")
+        return lines
 
     def __str__(self):
         output = ''
-        for line in self.lines:
+        for line in self.to_lines():
             output += line+'\n'
         return output
 
     def __repr__(self):
-        self.__str__()
+        return self.__str__()
