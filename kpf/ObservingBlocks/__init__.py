@@ -47,7 +47,8 @@ class BaseOBComponent(object):
     def to_lines(self, comments=False):
         lines = []
         for p in self.properties:
-            lines.append(f"{p[0]}: {self.get(p[0])}")
+            if self.get(p[0]) is not None:
+                lines.append(f"{p[0]}: {self.get(p[0])}")
         return lines
 
     def __str__(self):
