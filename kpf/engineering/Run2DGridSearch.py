@@ -28,9 +28,22 @@ class Run2DGridSearch(KPFTranslatorFunction):
         Gmag = args.get('Gmag')
         comment = args.get('comment', '')
         em_parameters = PredictExpMeterParameters.execute({'Gmag': Gmag})
-        fvc_parameters = PredictFVCParameters.execute({'Gmag': Gmag})
-        print(f"Predicted FVC parameters:")
-        print(fvc_parameters)
+
+        # Check if FVCs are on, if so, use them
+        FVCs_that_are_on = []
+        for camera in ['SCI', 'CAHK']:
+            camnum = {'SCI': 1, 'CAHK': 2}[camera]
+            powerkw = ktl.cache('kpfpower', f'KPFFVC{camnum}')
+            if powerkw.read().lower() == 'on':
+                FVCs_that_are_on.append(camera)
+        FVCstring = ','.join(FVCs_that_are_on)
+        if len(FVCs_that_are_on) > 0:
+            fvc_parameters = PredictFVCParameters.execute({'Gmag': Gmag})
+            print(f"Predicted FVC parameters:")
+            print(fvc_parameters)
+            print('Set the FVC parameters manually and press enter to continue')
+            user_input = input()
+
         dcs = ktl.cache('dcs1')
         targname = dcs['TARGNAME'].read()
         args = {'Template_Name': 'kpf_eng_grid', 'Template_Version': 0.4,
@@ -47,9 +60,8 @@ class Run2DGridSearch(KPFTranslatorFunction):
                 'SSS_Sky': True,
                 'SSS_CalSciSky': False,
                 'ExpMeter_exptime': em_parameters['ExpMeterExpTime'],
-                'FVCs': 'SCI,CAHK',
+                'FVCs': FVCstring,
                 }
-
         x_args = {'comment': f'1D in X {targname} (G={Gmag:.1f}) {comment}',
                   'nx': n,
                   'ny': 1,
