@@ -1,3 +1,4 @@
+import time
 import os
 from pathlib import Path
 import logging
@@ -187,19 +188,29 @@ class GridSearch(KPFTranslatorFunction):
                     ##------------------------------------------------------
                     ## Tip Tilt
                     ##------------------------------------------------------
-#                     log.info(f"Turning off TIPTILT_CALC")
-#                     kpfguide['TIPTILT_CALC'].write('Inactive')
-#                     starting_current_base = kpfguide['CURRENT_BASE'].read(binary=True)
                     log.info(f"Adjusting CURRENT_BASE to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
-                    SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
-#                     dx = xs[i] - starting_current_base[0]
-#                     dy = ys[i] - starting_current_base[1]
-#                     log.info(f'Sending OFFLOAD_COMMAND: {dx:.1f} {dy:.1f}')
-#                     kpfguide['OFFLOAD_COMMAND'].write((dx, dy))
-#                     kpfguide['TIPTILT_CALC'].write('Active')
-#                     kpfguide['TIPTILT_CONTROL'].write('Active')
-                    success = ktl.waitFor("$kpfguide.TIPTILT_PHASE == 'Tracking'", timeout=5)
-
+                    max_move = 3
+                    precisison = 0.01
+                    current_base = ktl.cache('kpfguide', 'CURRENT_BASE')
+                    current_cb = current_base.read(binary=True)
+                    delta_cb = (xs[i]-current_cb[0], ys[i]-current_cb[1])
+                    while abs(delta_cb[0]) > precisison or abs(delta_cb[1]) > precisison:
+                        # Calc X move
+                        if abs(delta_cb[0]) > precisison:
+                            move_sign_X = delta_cb[0]/abs(delta_cb[0])
+                            move_mag_X = min([max_move, abs(delta_cb[0])])
+                            new_X_target = current_cb[0]+move_sign_X*move_mag_X
+                        # Calc Y move
+                        if abs(delta_cb[1]) > precisison:
+                            move_sign_Y = delta_cb[1]/abs(delta_cb[1])
+                            move_mag_Y = min([max_move, abs(delta_cb[1])])
+                            new_Y_target = current_cb[0]+move_sign_Y*move_mag_Y
+                        log.info(f"  Setting CURRENT_BASE to ({new_X_target:.2f}, {new_Y_target:.2f}")
+                        SetTipTiltTargetPixel.execute({'x': new_X_target,
+                                                       'y': new_Y_target})
+                        success = ktl.waitFor("$kpfguide.TIPTILT_PHASE == 'Tracking'", timeout=5)
+                        current_cb = current_base.read(binary=True)
+                        delta_cb = (xs[i]-current_cb[0], ys[i]-current_cb[1])
                     xpix, ypix = kpfguide['PIX_TARGET'].read(binary=True)
                     log.info(f"PIX_TARGET is {xpix:.2f}, {ypix:.2f}")
                     # Check for lost star
