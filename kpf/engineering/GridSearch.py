@@ -224,7 +224,7 @@ class GridSearch(KPFTranslatorFunction):
                             obj_choice = kpfguide['OBJECT_CHOICE'].read()
                             if obj_choice in [None, 'None']:
                                 log.error(f"  --> Lost star <--")
-                                raise KPFError('Lost Star')
+                                raise KPFException('Lost Star')
                 elif grid == 'SciADC':
                     ##------------------------------------------------------
                     ## Science ADC
