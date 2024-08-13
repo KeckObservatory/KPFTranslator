@@ -26,6 +26,7 @@ class Run2DGridSearch(KPFTranslatorFunction):
         n = args.get('n')
         d = args.get('d')
         Gmag = args.get('Gmag')
+        time_on_position = args.get('time_on_position')
         comment = args.get('comment', '')
         em_parameters = PredictExpMeterParameters.execute({'Gmag': Gmag})
 
@@ -50,7 +51,7 @@ class Run2DGridSearch(KPFTranslatorFunction):
                 'Grid': 'TipTilt',
                 'dx': d,
                 'dy': d,
-                'TimeOnPosition': 15,
+                'TimeOnPosition': time_on_position,
                 'TriggerCaHK': False,
                 'TriggerGreen': False,
                 'TriggerRed': False,
@@ -90,4 +91,7 @@ class Run2DGridSearch(KPFTranslatorFunction):
         parser.add_argument("--comment", dest="comment", type=str,
             default='',
             help="Additional comment text")
+        parser.add_argument("--time", dest="time_on_position", type=float,
+            default=15,
+            help="Dwell time at each position (s)")
         return super().add_cmdline_args(parser, cfg)
