@@ -39,7 +39,7 @@ class StartAgitator(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         startup = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
-        success = ktl.waitFor('$kpfmot.AGITATOR == Running', timeout=startup)
+        success = ktl.waitFor('$kpfmot.AGITATOR == Running', timeout=5*startup)
         if success is not True:
             agitator = ktl.cache('kpfmot', 'AGITATOR')
             raise FailedToReachDestination(agitator.read(), 'Running')
