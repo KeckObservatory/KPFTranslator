@@ -64,8 +64,7 @@ class RunCalOB(KPFTranslatorFunction):
             ConfigureForCalibrations.execute(OB)
         except ExistingScriptRunning as e:
             log.error('ExistingScriptRunning')
-            log.error(e)
-            raise e
+            sys.exit(1)
         except Exception as e:
             log.error('ConfigureForCalibrations Failed')
             log.error(e)
