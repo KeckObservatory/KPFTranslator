@@ -82,10 +82,10 @@ class Run2DGridSearch(KPFTranslatorFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser, cfg=None):
-        parser.add_argument('n', type=int,
-                            help="Number of position samples in each axis")
         parser.add_argument('d', type=float,
                             help="Separation between positions (in guder pix)")
+        parser.add_argument('n', type=int,
+                            help="Number of position samples in each axis")
         parser.add_argument('Gmag', type=float,
                             help="The G magnitude of the target")
         parser.add_argument("--comment", dest="comment", type=str,
