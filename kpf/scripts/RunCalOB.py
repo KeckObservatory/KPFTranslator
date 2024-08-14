@@ -8,7 +8,8 @@ import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input, ScriptStopTriggered)
+                 FailedToReachDestination, check_input, ScriptStopTriggered,
+                 ExistingScriptRunning)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
@@ -61,6 +62,10 @@ class RunCalOB(KPFTranslatorFunction):
         # Configure: Turn on Lamps
         try:
             ConfigureForCalibrations.execute(OB)
+        except ExistingScriptRunning as e:
+            log.error('ExistingScriptRunning')
+            log.error(e)
+            raise e
         except Exception as e:
             log.error('ConfigureForCalibrations Failed')
             log.error(e)
