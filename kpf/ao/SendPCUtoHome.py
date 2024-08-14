@@ -16,7 +16,10 @@ class SendPCUtoHome(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args, logger, cfg):
-        pass
+        PCSFSTST = ktl.cache('ao', 'PCSFSTST')
+        success = PCSFSTST.waitFor('!= "FAULT"')
+        if success is not True:
+            raise FailedPreCondition('PCSFSTST is faulted')
 
     @classmethod
     def perform(cls, args, logger, cfg):
