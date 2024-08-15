@@ -145,7 +145,9 @@ class MainWindow(QMainWindow):
         self.bad_slew_cal_time = 2.0 # hours
         # Path to OB files
         self.file_path = Path('/s/sdata1701/OBs')
-
+        # AutoND for SimulCal Limits
+        self.AutoND_Teff_low = 2700
+        self.AutoND_Teff_high = 6600
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -346,6 +348,8 @@ class MainWindow(QMainWindow):
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
         self.update_OB('AutoNDFilters', self.OB.SEQ_Observations1.get('AutoNDFilters'))
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
+        AutoND_tooltip = f'AutoND only available for {self.AutoND_Teff_low:.0f}<Teff<{self.AutoND_Teff_high:.0f}'
+        self.AutoNDFilters.setToolTip(AutoND_tooltip)
 
         self.ExtraNDLabel = self.findChild(QLabel, 'ExtraNDLabel')
         self.ExtraND = self.findChild(QComboBox, 'ExtraND')
@@ -918,7 +922,7 @@ class MainWindow(QMainWindow):
         # Teff
         Teff = float(self.OB.get('Teff'))
         self.Teff.setText(f"{Teff:.0f}")
-        if Teff < 2700 or Teff > 6600:
+        if Teff < self.AutoND_Teff_low or Teff > self.AutoND_Teff_high:
             self.OB.SEQ_Observations1.set('AutoNDFilters', False)
             self.AutoNDFilters.setChecked(False)
             self.AutoNDFilters.setEnabled(False)
