@@ -215,8 +215,12 @@ links:
         cmd: scripts.ConfigureForScience.ConfigureForScience
     EndOfNight:
         cmd: scripts.EndOfNight.EndOfNight
+    EnterLowPowerMode:
+        cmd: scripts.EnterLowPowerMode.EnterLowPowerMode
     ExecuteSlewCal:
         cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
+    RecoverFromLowPowerMode:
+        cmd: scripts.RecoverFromLowPowerMode.RecoverFromLowPowerMode
     RunCalOB:
         cmd: scripts.RunCalOB.RunCalOB
     RunSciOB:
