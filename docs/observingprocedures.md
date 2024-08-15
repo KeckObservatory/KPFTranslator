@@ -71,6 +71,12 @@ Slew cals can also be taken independently using the "Execute Slew Cal Only" butt
 
 **Important**: If you wish to halt an OB during execution, do **NOT** hit Control-c in the terminal.  Use the "Request Script STOP" button instead. The KPF scripts have checkpoints in them which are places where the script can cleanly exit and perform important cleanup operations.  The "STOP Exposure and Script" button does the same thing, but it will also terminate an exposure in progress.
 
+### Known Issues
+
+There is a known failure mode for KPF called a "start state error".  What happens is some sort of communication failure between the `kpfexpose` control software, the galil hardware which handles the timing and signaling of the detectors and shutters, and the Archon detector controllers.  The result is that one of the green or red detectors does not begin the exposure properly and that detector's data will be useless.  The `kpf.spectrograph.StartExposure` [script](scripts/StartExposure.md) will automatically detect this situation, terminate the bad exposure after a few seconds, and start a new one all without user intervention.  This will generate several WARNING level log messages, but the user does not need to take action as the correction happens automatically.
+
+Another known failure mode which can generate WARNING level log messages is a failure of the FIU to transition in to a new mode (i.e. "Observing" or "Calibration").  The `kpf.fiu.ConfigureFIU` and `kpf.fiu.WaitForConfigureFIU` [scripts](scripts/WaitForConfigureFIU.md) will automatically retry several times before giving up and erroring out.  As with the start state error above, no user action is needed, but you will see WARNING level log messages to let you know what is happening.
+
 # Switching Programs on a Split Night
 
 On a KPF/KPF split night, before starting the second KPF program, run `KPF Control Menu --> Set Program ID and Observers` from the background menu (or `kpfSetObserverFromSchedule` from the command line on any KPF machine). Enter the program ID at the terminal prompt. The script will then set program ID and observers for the second KPF program, based on the telescope schedule.
