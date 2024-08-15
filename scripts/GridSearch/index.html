@@ -241,8 +241,7 @@ line tool, or passed in from the execution engine.</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/engineering/GridSearch.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 39</span>
-<span class="normal"> 40</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 40</span>
 <span class="normal"> 41</span>
 <span class="normal"> 42</span>
 <span class="normal"> 43</span>
@@ -582,7 +581,18 @@ line tool, or passed in from the execution engine.</p>
 <span class="normal">377</span>
 <span class="normal">378</span>
 <span class="normal">379</span>
-<span class="normal">380</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Executes an engineering grid search OB.</span>
 
 <span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
@@ -733,19 +743,29 @@ line tool, or passed in from the execution engine.</p>
                     <span class="c1">##------------------------------------------------------</span>
                     <span class="c1">## Tip Tilt</span>
                     <span class="c1">##------------------------------------------------------</span>
-<span class="c1">#                     log.info(f&quot;Turning off TIPTILT_CALC&quot;)</span>
-<span class="c1">#                     kpfguide[&#39;TIPTILT_CALC&#39;].write(&#39;Inactive&#39;)</span>
-<span class="c1">#                     starting_current_base = kpfguide[&#39;CURRENT_BASE&#39;].read(binary=True)</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusting CURRENT_BASE to (</span><span class="si">{</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ys</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">) (</span><span class="si">{</span><span class="n">xis</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">yis</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-                    <span class="n">SetTipTiltTargetPixel</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">ys</span><span class="p">[</span><span class="n">j</span><span class="p">]})</span>
-<span class="c1">#                     dx = xs[i] - starting_current_base[0]</span>
-<span class="c1">#                     dy = ys[i] - starting_current_base[1]</span>
-<span class="c1">#                     log.info(f&#39;Sending OFFLOAD_COMMAND: {dx:.1f} {dy:.1f}&#39;)</span>
-<span class="c1">#                     kpfguide[&#39;OFFLOAD_COMMAND&#39;].write((dx, dy))</span>
-<span class="c1">#                     kpfguide[&#39;TIPTILT_CALC&#39;].write(&#39;Active&#39;)</span>
-<span class="c1">#                     kpfguide[&#39;TIPTILT_CONTROL&#39;].write(&#39;Active&#39;)</span>
-                    <span class="n">success</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="s2">&quot;$kpfguide.TIPTILT_PHASE == &#39;Tracking&#39;&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-
+                    <span class="n">max_move</span> <span class="o">=</span> <span class="mi">3</span>
+                    <span class="n">precisison</span> <span class="o">=</span> <span class="mf">0.01</span>
+                    <span class="n">current_base</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfguide&#39;</span><span class="p">,</span> <span class="s1">&#39;CURRENT_BASE&#39;</span><span class="p">)</span>
+                    <span class="n">current_cb</span> <span class="o">=</span> <span class="n">current_base</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">delta_cb</span> <span class="o">=</span> <span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">current_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">current_cb</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">while</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">precisison</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta_cb</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">precisison</span><span class="p">:</span>
+                        <span class="c1"># Calc X move</span>
+                        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">precisison</span><span class="p">:</span>
+                            <span class="n">move_sign_X</span> <span class="o">=</span> <span class="n">delta_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">delta_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">move_mag_X</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">max_move</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+                            <span class="n">new_X_target</span> <span class="o">=</span> <span class="n">current_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">move_sign_X</span><span class="o">*</span><span class="n">move_mag_X</span>
+                        <span class="c1"># Calc Y move</span>
+                        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta_cb</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">precisison</span><span class="p">:</span>
+                            <span class="n">move_sign_Y</span> <span class="o">=</span> <span class="n">delta_cb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">delta_cb</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                            <span class="n">move_mag_Y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">max_move</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta_cb</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
+                            <span class="n">new_Y_target</span> <span class="o">=</span> <span class="n">current_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">move_sign_Y</span><span class="o">*</span><span class="n">move_mag_Y</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Setting CURRENT_BASE to (</span><span class="si">{</span><span class="n">new_X_target</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_Y_target</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">SetTipTiltTargetPixel</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">new_X_target</span><span class="p">,</span>
+                                                       <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">new_Y_target</span><span class="p">})</span>
+                        <span class="n">success</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="s2">&quot;$kpfguide.TIPTILT_PHASE == &#39;Tracking&#39;&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+                        <span class="n">current_cb</span> <span class="o">=</span> <span class="n">current_base</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="n">delta_cb</span> <span class="o">=</span> <span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">current_cb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">current_cb</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                     <span class="n">xpix</span><span class="p">,</span> <span class="n">ypix</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;PIX_TARGET&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PIX_TARGET is </span><span class="si">{</span><span class="n">xpix</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ypix</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="c1"># Check for lost star</span>
@@ -770,7 +790,7 @@ line tool, or passed in from the execution engine.</p>
                             <span class="n">obj_choice</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;OBJECT_CHOICE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
                             <span class="k">if</span> <span class="n">obj_choice</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">]:</span>
                                 <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  --&gt; Lost star &lt;--&quot;</span><span class="p">)</span>
-                                <span class="k">raise</span> <span class="n">KPFError</span><span class="p">(</span><span class="s1">&#39;Lost Star&#39;</span><span class="p">)</span>
+                                <span class="k">raise</span> <span class="n">KPFException</span><span class="p">(</span><span class="s1">&#39;Lost Star&#39;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;SciADC&#39;</span><span class="p">:</span>
                     <span class="c1">##------------------------------------------------------</span>
                     <span class="c1">## Science ADC</span>

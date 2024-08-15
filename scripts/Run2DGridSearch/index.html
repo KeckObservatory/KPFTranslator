@@ -233,11 +233,7 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <p>Executes an engineering grid search OB.</p>
-<p>This must have arguments as input, either from a file using the <code>-f</code> command
-line tool, or passed in from the execution engine.</p>
-<h2 id="kpf.engineering.Run2DGridSearch.Run2DGridSearch--args">ARGS:</h2>
-<p>None</p>
+      
 
               <details class="quote">
                 <summary>Source code in <code>kpf/engineering/Run2DGridSearch.py</code></summary>
@@ -309,18 +305,22 @@ line tool, or passed in from the execution engine.</p>
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Run2DGridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Executes an engineering grid search OB.</span>
-
-<span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
-<span class="sd">    line tool, or passed in from the execution engine.</span>
-
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Run2DGridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">abortable</span> <span class="o">=</span> <span class="kc">True</span>
-
     <span class="nd">@classmethod</span>
     <span class="nd">@obey_scriptrun</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
@@ -328,19 +328,35 @@ line tool, or passed in from the execution engine.</p>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
         <span class="n">Gmag</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Gmag&#39;</span><span class="p">)</span>
-        <span class="n">additional_text</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">time_on_position</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;time_on_position&#39;</span><span class="p">)</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">em_parameters</span> <span class="o">=</span> <span class="n">PredictExpMeterParameters</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Gmag&#39;</span><span class="p">:</span> <span class="n">Gmag</span><span class="p">})</span>
-        <span class="n">fvc_parameters</span> <span class="o">=</span> <span class="n">PredictFVCParameters</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Gmag&#39;</span><span class="p">:</span> <span class="n">Gmag</span><span class="p">})</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predicted FVC parameters:&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">fvc_parameters</span><span class="p">)</span>
+
+        <span class="c1"># Check if FVCs are on, if so, use them</span>
+        <span class="n">FVCs_that_are_on</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">camera</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SCI&#39;</span><span class="p">,</span> <span class="s1">&#39;CAHK&#39;</span><span class="p">]:</span>
+            <span class="n">camnum</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;SCI&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;CAHK&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}[</span><span class="n">camera</span><span class="p">]</span>
+            <span class="n">powerkw</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfpower&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;KPFFVC</span><span class="si">{</span><span class="n">camnum</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">powerkw</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;on&#39;</span><span class="p">:</span>
+                <span class="n">FVCs_that_are_on</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
+        <span class="n">FVCstring</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FVCs_that_are_on</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FVCs_that_are_on</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fvc_parameters</span> <span class="o">=</span> <span class="n">PredictFVCParameters</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Gmag&#39;</span><span class="p">:</span> <span class="n">Gmag</span><span class="p">})</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predicted FVC parameters:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">fvc_parameters</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Set the FVC parameters manually and press enter to continue&#39;</span><span class="p">)</span>
+            <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+
         <span class="n">dcs</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;dcs1&#39;</span><span class="p">)</span>
         <span class="n">targname</span> <span class="o">=</span> <span class="n">dcs</span><span class="p">[</span><span class="s1">&#39;TARGNAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Template_Name&#39;</span><span class="p">:</span> <span class="s1">&#39;kpf_eng_grid&#39;</span><span class="p">,</span> <span class="s1">&#39;Template_Version&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
                 <span class="s1">&#39;Grid&#39;</span><span class="p">:</span> <span class="s1">&#39;TipTilt&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;dx&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                <span class="s1">&#39;dy&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                <span class="s1">&#39;TimeOnPosition&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                <span class="s1">&#39;dx&#39;</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span>
+                <span class="s1">&#39;dy&#39;</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span>
+                <span class="s1">&#39;TimeOnPosition&#39;</span><span class="p">:</span> <span class="n">time_on_position</span><span class="p">,</span>
                 <span class="s1">&#39;TriggerCaHK&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                 <span class="s1">&#39;TriggerGreen&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                 <span class="s1">&#39;TriggerRed&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
@@ -350,18 +366,17 @@ line tool, or passed in from the execution engine.</p>
                 <span class="s1">&#39;SSS_Sky&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                 <span class="s1">&#39;SSS_CalSciSky&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                 <span class="s1">&#39;ExpMeter_exptime&#39;</span><span class="p">:</span> <span class="n">em_parameters</span><span class="p">[</span><span class="s1">&#39;ExpMeterExpTime&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;FVCs&#39;</span><span class="p">:</span> <span class="s1">&#39;SCI,CAHK&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;FVCs&#39;</span><span class="p">:</span> <span class="n">FVCstring</span><span class="p">,</span>
                 <span class="p">}</span>
-
-        <span class="n">x_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;1D in X </span><span class="si">{</span><span class="n">targname</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">additional_text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;nx&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="n">x_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;1D in X </span><span class="si">{</span><span class="n">targname</span><span class="si">}</span><span class="s1"> (G=</span><span class="si">{</span><span class="n">Gmag</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">) </span><span class="si">{</span><span class="n">comment</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;nx&#39;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span>
                   <span class="s1">&#39;ny&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
                   <span class="p">}</span>
         <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x_args</span><span class="p">)</span>
         <span class="n">GridSearch</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="n">y_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;1D in Y </span><span class="si">{</span><span class="n">targname</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">additional_text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">y_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;1D in Y </span><span class="si">{</span><span class="n">targname</span><span class="si">}</span><span class="s1"> (G=</span><span class="si">{</span><span class="n">Gmag</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">) </span><span class="si">{</span><span class="n">comment</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;nx&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                  <span class="s1">&#39;ny&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                  <span class="s1">&#39;ny&#39;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span>
                   <span class="p">}</span>
         <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">y_args</span><span class="p">)</span>
         <span class="n">GridSearch</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
@@ -372,11 +387,18 @@ line tool, or passed in from the execution engine.</p>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Separation between positions (in guder pix)&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of position samples in each axis&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;Gmag&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
                             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The G magnitude of the target&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--comment&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Additional comment text&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--time&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;time_on_position&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Dwell time at each position (s)&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>

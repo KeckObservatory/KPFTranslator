@@ -274,7 +274,10 @@
 <span class="normal">38</span>
 <span class="normal">39</span>
 <span class="normal">40</span>
-<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SendPCUtoKPF</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SendPCUtoKPF</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Send the PCU stage to the &quot;kpf&quot; named position.</span>
 
 <span class="sd">    KTL Keywords Used:</span>
@@ -285,6 +288,9 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="n">ao</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;ao&#39;</span><span class="p">)</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">ao</span><span class="p">[</span><span class="s1">&#39;PCSFSTST&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="s1">&#39;!= &quot;FAULT&quot;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="s1">&#39;PCSFSTST is faulted&#39;</span><span class="p">)</span>
         <span class="n">success</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitfor</span><span class="p">(</span><span class="s2">&quot;($ao.PCSFSTST == INPOS)&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">success</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="s1">&#39;PCU is in motion&#39;</span><span class="p">)</span>
