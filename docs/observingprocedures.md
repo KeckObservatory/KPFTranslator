@@ -61,11 +61,7 @@ The log lines which show up in the xterm with the running OB contain useful info
 
 KPF has the option of taking a "slew cal" immediately prior to a science observation.  This is a way to make use of the time spent slewing from one target to another.  If an OB is executed with a slew cal (using the "Execute OB with Slew Cal" button in the OB GUI), then the FIU will transition to calibration mode (the FIU hatch will close and calibration light will be directed to the science and sky fibers), and a calibration exposure will be taken.  This will obscure the sky during calibration, so the OA will not be able to see the target until the slew cal is done.  This process takes around 2 minutes and so fits nicely in to long slews.
 
-Because the slew cal happens during the slew to a target, it is optimally performed with a science OB so that the guider can be configured for the science target.  This is another case where executing a science OB before the slew has completed is the most efficient observing strategy.
-
-At the moment, we recommend that slew cals are taken roughly every hour while observing.  This helps track the internal drift of the instrument itself over time scales less than 1 day and can be used by the DRP to further improve RV precision.  The instrument software keeps track of the time since the last relevant calibration and the timer is shown in the upper right of the OB GUI.  The "Time Since Cal" value will color code to orange if it exceeds 1 hour and will become red at 2 hours.  Despite this, **the choice to take slew cals is entirely up to the observer** the timer is only a recommendation.
-
-Slew cals can also be taken independently using the "Execute Slew Cal Only" button.  This is not the intended method for taking slew cals and we recommend using the "Execute OB with Slew Cal" button instead, however the slew cal only option may be useful during periods of bad weather when no observing is happening.
+An alternative to a slew cal is a simultaneous calibration (simulcal).  To use this enable the `TakeSimulCal` option in the OB or on the OB GUI and either manually set the ND filters to apply to the calibration light or enable the `AutoNDFilters` option.  See the [nighttime calibrations](nighttimecalibrations.md) page for more info on both the slew cal and simulcal options.
 
 ### Stopping Scripts or Exposures
 
