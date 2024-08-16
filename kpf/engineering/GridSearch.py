@@ -193,24 +193,26 @@ class GridSearch(KPFTranslatorFunction):
                     precisison = 0.01
                     current_base = ktl.cache('kpfguide', 'CURRENT_BASE')
                     current_cb = current_base.read(binary=True)
-                    delta_cb = (xs[i]-current_cb[0], ys[i]-current_cb[1])
+                    delta_cb = (xs[i]-current_cb[0], ys[j]-current_cb[1])
                     while abs(delta_cb[0]) > precisison or abs(delta_cb[1]) > precisison:
                         # Calc X move
+                        new_X_target = current_cb[0]
                         if abs(delta_cb[0]) > precisison:
                             move_sign_X = delta_cb[0]/abs(delta_cb[0])
                             move_mag_X = min([max_move, abs(delta_cb[0])])
-                            new_X_target = current_cb[0]+move_sign_X*move_mag_X
+                            new_X_target += move_sign_X*move_mag_X
                         # Calc Y move
+                        new_Y_target = current_cb[1]
                         if abs(delta_cb[1]) > precisison:
                             move_sign_Y = delta_cb[1]/abs(delta_cb[1])
                             move_mag_Y = min([max_move, abs(delta_cb[1])])
-                            new_Y_target = current_cb[0]+move_sign_Y*move_mag_Y
-                        log.info(f"  Setting CURRENT_BASE to ({new_X_target:.2f}, {new_Y_target:.2f}")
+                            new_Y_target += move_sign_Y*move_mag_Y
+                        log.info(f"  Setting CURRENT_BASE to {new_X_target:.2f}, {new_Y_target:.2f}")
                         SetTipTiltTargetPixel.execute({'x': new_X_target,
                                                        'y': new_Y_target})
                         success = ktl.waitFor("$kpfguide.TIPTILT_PHASE == 'Tracking'", timeout=5)
                         current_cb = current_base.read(binary=True)
-                        delta_cb = (xs[i]-current_cb[0], ys[i]-current_cb[1])
+                        delta_cb = (xs[i]-current_cb[0], ys[j]-current_cb[1])
                     xpix, ypix = kpfguide['PIX_TARGET'].read(binary=True)
                     log.info(f"PIX_TARGET is {xpix:.2f}, {ypix:.2f}")
                     # Check for lost star
