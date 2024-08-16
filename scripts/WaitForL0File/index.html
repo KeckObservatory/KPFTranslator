@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>OptimizeGuiderExposure - KPF</title>
+    <title>WaitForL0File - KPF</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "OptimizeGuiderExposure";
-        var mkdocs_page_input_path = "scripts/OptimizeGuiderExposure.md";
+        var mkdocs_page_name = "WaitForL0File";
+        var mkdocs_page_input_path = "scripts/WaitForL0File.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -211,7 +211,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">OptimizeGuiderExposure</li>
+      <li class="breadcrumb-item active">WaitForL0File</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -220,25 +220,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="optimizeguiderexposure"><code>OptimizeGuiderExposure</code></h1>
+                <h1 id="waitforl0file"><code>WaitForL0File</code></h1>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<a id="kpf.guider.OptimizeGuiderExposure.OptimizeGuiderExposure"></a>
+<a id="kpf.spectrograph.WaitForL0File.WaitForL0File"></a>
     <div class="doc doc-contents first">
             <p class="doc doc-class-bases">
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <p>Target peak = 4000 ADU
-Reasonable range = 3000-9000 ADU (0.5-1.5x target)</p>
+      <p>Wait a short time to see if <code>kpfassemble</code> writes a new L0 file.  If it
+does, print a log line with that file name.</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfassemble.LOUTFILE</code></li>
+</ul>
 
               <details class="quote">
-                <summary>Source code in <code>kpf/guider/OptimizeGuiderExposure.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
+                <summary>Source code in <code>kpf/spectrograph/WaitForL0File.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 8</span>
+<span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
 <span class="normal">12</span>
@@ -264,61 +269,13 @@ Reasonable range = 3000-9000 ADU (0.5-1.5x target)</p>
 <span class="normal">32</span>
 <span class="normal">33</span>
 <span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OptimizeGuiderExposure</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForL0File</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Wait a short time to see if `kpfassemble` writes a new L0 file.  If it</span>
+<span class="sd">    does, print a log line with that file name.</span>
 
-<span class="sd">    Target peak = 4000 ADU</span>
-<span class="sd">    Reasonable range = 3000-9000 ADU (0.5-1.5x target)</span>
+<span class="sd">    KTL Keywords Used:</span>
 
+<span class="sd">    - `kpfassemble.LOUTFILE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
@@ -326,69 +283,20 @@ Reasonable range = 3000-9000 ADU (0.5-1.5x target)</p>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running OptimizeGuiderExposure&#39;</span><span class="p">)</span>
-        <span class="n">setvalues</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;set = </span><span class="si">{</span><span class="n">setvalues</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">target_peak</span> <span class="o">=</span> <span class="mi">4000</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;target_peak = </span><span class="si">{</span><span class="n">target_peak</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="n">kpfguide</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfguide&#39;</span><span class="p">)</span>
-        <span class="n">gain</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;GAIN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># 0 Low 1 Medium 2 High</span>
-        <span class="n">fps</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;FPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">time_shim</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">fps</span> <span class="o">+</span> <span class="mf">0.5</span>
-
-        <span class="c1"># If TIPTILT_CALC is not on, turn it on</span>
-        <span class="k">if</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;TIPTILT_CALC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Inactive&#39;</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Turning TIPTILT_CALC on&#39;</span><span class="p">)</span>
-            <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;TIPTILT_CALC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Active&#39;</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">time_shim</span><span class="p">)</span>
-        <span class="c1"># Check peak value</span>
-        <span class="n">peak</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;OBJECT_PEAK&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">peak_ratio</span> <span class="o">=</span> <span class="n">peak</span><span class="o">/</span><span class="n">target_peak</span>
-        <span class="k">if</span> <span class="n">peak_ratio</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="c1"># Star is dangerously bright, increase FPS</span>
-            <span class="n">new_fps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fps</span><span class="o">*</span><span class="n">peak_ratio</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">setvalues</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Setting new FPS = </span><span class="si">{</span><span class="n">new_fps</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;FPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">new_fps</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Recommend new FPS: </span><span class="si">{</span><span class="n">new_fps</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">peak_ratio</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
-            <span class="c1"># Star is in reasonable brightness range</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="n">peak_ratio</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">:</span>
-            <span class="c1"># Star is somewhat faint, decrease FPS</span>
-            <span class="n">new_fps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fps</span><span class="o">*</span><span class="n">peak_ratio</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">setvalues</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Setting new FPS = </span><span class="si">{</span><span class="n">new_fps</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;FPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">new_fps</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Recommend new FPS: </span><span class="si">{</span><span class="n">new_fps</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">LOUTFILE</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfassemble&#39;</span><span class="p">,</span> <span class="s1">&#39;LOUTFILE&#39;</span><span class="p">)</span>
+        <span class="n">initial_LOUTFILE</span> <span class="o">=</span> <span class="n">LOUTFILE</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">found_new_file</span> <span class="o">=</span> <span class="n">LOUTFILE</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;!=&quot;</span><span class="si">{</span><span class="n">initial_LOUTFILE</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+                                          <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">found_new_file</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfassemble wrote </span><span class="si">{</span><span class="n">LOUTFILE</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Star is very faint, possibly undetected</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Star is very faint or undetected&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">gain</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">newgain</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">setvalues</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                    <span class="n">gain_string</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;medium&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;high&#39;</span><span class="p">}[</span><span class="n">newgain</span><span class="p">]</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Increasing gain to </span><span class="si">{</span><span class="n">gain_string</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;GAIN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">newgain</span><span class="p">)</span>
-                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">time_shim</span><span class="p">)</span>
-                    <span class="n">OptimizeGuiderExposure</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Recommend incrasing gain to </span><span class="si">{</span><span class="n">newgain</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;WaitForL0File did not find new file&#39;</span><span class="p">)</span>
 
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="k">pass</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--set&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;set&quot;</span><span class="p">,</span>
-                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set the resulting gain and FPS?&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 

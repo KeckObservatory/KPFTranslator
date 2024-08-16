@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Operations Scripts - KPF</title>
+    <title>RecoverFromLowPowerMode - KPF</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Operations Scripts";
-        var mkdocs_page_input_path = "scripts/scripts.md";
+        var mkdocs_page_name = "RecoverFromLowPowerMode";
+        var mkdocs_page_input_path = "scripts/RecoverFromLowPowerMode.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -187,10 +187,10 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Technical Documentation</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../KPFTranslator/">Instrument Software</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Operations Scripts</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../scripts/">Operations Scripts</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U">Troubleshooting</a>
                   </li>
@@ -211,8 +211,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Technical Documentation</li>
-      <li class="breadcrumb-item active">Operations Scripts</li>
+      <li class="breadcrumb-item active">RecoverFromLowPowerMode</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -221,206 +220,155 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="scripts">Scripts</h1>
+                <h1 id="recoverfromlowpowermode"><code>RecoverFromLowPowerMode</code></h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="kpf.scripts.RecoverFromLowPowerMode.RecoverFromLowPowerMode"></a>
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
+
+
+      <p>Recover from low power mode.</p>
 <ul>
-<li><code>kpf.ao</code><ul>
-<li><a href="../ControlAOHatch/">ControlAOHatch</a></li>
-<li><a href="../SendPCUtoHome/">SendPCUtoHome</a></li>
-<li><a href="../SendPCUtoKPF/">SendPCUtoKPF</a></li>
-<li><a href="../SetAFMtoMirror/">SetAFMtoMirror</a></li>
-<li><a href="../SetAFStoNGS/">SetAFStoNGS</a></li>
-<li><a href="../SetAODCStoSIM/">SetAODCStoSIM</a></li>
-<li><a href="../SetAORotator/">SetAORotator</a></li>
-<li><a href="../SetAORotatorManual/">SetAORotatorManual</a></li>
-<li><a href="../SetupAOforACAM/">SetupAOforACAM</a></li>
-<li><a href="../SetupAOforKPF/">SetupAOforKPF</a></li>
-<li><a href="../TurnHepaOff/">TurnHepaOff</a></li>
-<li><a href="../TurnHepaOn/">TurnHepaOn</a></li>
-<li><a href="../TurnLightSourceOff/">TurnLightSourceOff</a></li>
+<li>Power on the Ca HK systems</li>
+<li>Restore cooling to Ca HK detector</li>
+<li>Re-enable Ca HK detector</li>
+<li>Power on CRED2 systems</li>
 </ul>
-</li>
-<li><code>kpf.cahk</code><ul>
-<li><a href="../PowerCycleCaHK/">PowerCycleCaHK</a></li>
-</ul>
-</li>
-<li><code>kpf.calbench</code><ul>
-<li><a href="../CalLampPower/">CalLampPower</a></li>
-<li><a href="../IsCalSourceEnabled/">IsCalSourceEnabled</a></li>
-<li><a href="../PredictNDFilters/">PredictNDFilters</a></li>
-<li><a href="../SetCalSource/">SetCalSource</a></li>
-<li><a href="../SetFlatFieldFiberPos/">SetFlatFieldFiberPos</a></li>
-<li><a href="../SetLFCtoAstroComb/">SetLFCtoAstroComb</a></li>
-<li><a href="../SetLFCtoStandbyHigh/">SetLFCtoStandbyHigh</a></li>
-<li><a href="../SetND/">SetND</a></li>
-<li><a href="../SetND1/">SetND1</a></li>
-<li><a href="../SetND2/">SetND2</a></li>
-<li><a href="../TakeIntensityReading/">TakeIntensityReading</a></li>
-<li><a href="../WaitForCalSource/">WaitForCalSource</a></li>
-<li><a href="../WaitForFlatFieldFiberPos/">WaitForFlatFieldFiberPos</a></li>
-<li><a href="../WaitForLampWarm/">WaitForLampWarm</a></li>
-<li><a href="../WaitForLFCReady/">WaitForLFCReady</a></li>
-<li><a href="../WaitForND/">WaitForND</a></li>
-<li><a href="../WaitForND1/">WaitForND1</a></li>
-<li><a href="../WaitForND2/">WaitForND2</a></li>
-</ul>
-</li>
-<li><code>kpf.engineering</code><ul>
-<li><a href="../GridSearch/">GridSearch</a></li>
-<li><a href="../ImageBackIlluminatedFibers/">ImageBackIlluminatedFibers</a></li>
-<li><a href="../Run2DGridSearch/">Run2DGridSearch</a></li>
-<li><a href="../TakeADCGridData/">TakeADCGridData</a></li>
-<li><a href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a></li>
-<li><a href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a></li>
-<li><a href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a></li>
-<li><a href="../TriggerRedMiniFill/">TriggerRedMiniFill</a></li>
-<li><a href="../AnalyzeGridSearch/">AnalyzeGridSearch</a></li>
-<li><a href="../AnalyzeTipTiltPerformance/">AnalyzeTipTiltPerformance</a></li>
-<li><a href="../Fit2DGridSearch/">Fit2DGridSearch</a></li>
-<li><a href="../CountCameraErrors/">CountCameraErrors</a></li>
-</ul>
-</li>
-<li><code>kpf.expmeter</code><ul>
-<li><a href="../BuildMasterBias/">BuildMasterBias</a></li>
-<li><a href="../SetExpMeterExpTime/">SetExpMeterExpTime</a></li>
-<li><a href="../SetExpMeterTerminationParameters/">SetExpMeterTerminationParameters</a></li>
-<li><a href="../PredictExpMeterParameters/">PredictExpMeterParameters</a></li>
-<li><a href="../SetMasterBiasToDefault/">SetMasterBiasToDefault</a></li>
-<li><a href="../SetupExpMeter/">SetupExpMeter</a></li>
-<li><a href="../TakeExpMeterBiases/">TakeExpMeterBiases</a></li>
-</ul>
-</li>
-<li><code>kpf.fiu</code><ul>
-<li><a href="../ConfigureFIU/">ConfigureFIU</a></li>
-<li><a href="../ControlFoldMirror/">ControlFoldMirror</a></li>
-<li><a href="../ControlHatch/">ControlHatch</a></li>
-<li><a href="../InitializeTipTilt/">InitializeTipTilt</a></li>
-<li><a href="../LockFIU/">LockFIU</a></li>
-<li><a href="../UnlockFIU/">UnlockFIU</a></li>
-<li><a href="../MeasureTipTiltMirrorRange/">MeasureTipTiltMirrorRange</a></li>
-<li><a href="../SetADCAngles/">SetADCAngles</a></li>
-<li><a href="../SetADCOffsets/">SetADCOffsets</a></li>
-<li><a href="../SetTipTiltCalculations/">SetTipTiltCalculations</a></li>
-<li><a href="../SetTipTiltControl/">SetTipTiltControl</a></li>
-<li><a href="../SetTipTiltGain/">SetTipTiltGain</a></li>
-<li><a href="../SetTipTiltPosition/">SetTipTiltPosition</a></li>
-<li><a href="../SetTipTiltTargetPixel/">SetTipTiltTargetPixel</a></li>
-<li><a href="../ShutdownTipTilt/">ShutdownTipTilt</a></li>
-<li><a href="../StartTipTilt/">StartTipTilt</a></li>
-<li><a href="../StopTipTilt/">StopTipTilt</a></li>
-<li><a href="../TestTipTiltMirrorRange/">TestTipTiltMirrorRange</a></li>
-<li><a href="../VerifyCurrentBase/">VerifyCurrentBase</a></li>
-<li><a href="../WaitForConfigureFIU/">WaitForConfigureFIU</a></li>
-<li><a href="../WaitForTipTilt/">WaitForTipTilt</a></li>
-</ul>
-</li>
-<li><code>kpf.fvc</code><ul>
-<li><a href="../FVCPower/">FVCPower</a></li>
-<li><a href="../PredictFVCParameters/">PredictFVCParameters</a></li>
-<li><a href="../TakeFVCContinuous/">TakeFVCContinuous</a></li>
-<li><a href="../TakeFVCExposure/">TakeFVCExposure</a></li>
-<li><a href="../SetFVCExpTime/">SetFVCExpTime</a></li>
-</ul>
-</li>
-<li><code>kpf.guider</code><ul>
-<li><a href="../DisplayGuiderContinuous/">DisplayGuiderContinuous</a></li>
-<li><a href="../GetGaiaStars/">GetGaiaStars</a></li>
-<li><a href="../GuiderLastfile/">GuiderLastfile</a></li>
-<li><a href="../GuiderOutdir/">GuiderOutdir</a></li>
-<li><a href="../PredictGuiderParameters/">PredictGuiderParameters</a></li>
-<li><a href="../SetGuiderExpTime/">SetGuiderExpTime</a></li>
-<li><a href="../SetGuiderFPS/">SetGuiderFPS</a></li>
-<li><a href="../SetGuiderGain/">SetGuiderGain</a></li>
-<li><a href="../SetGuiderOutdir/">SetGuiderOutdir</a></li>
-<li><a href="../StartGuiderContinuous/">StartGuiderContinuous</a></li>
-<li><a href="../StartTriggerFile/">StartTriggerFile</a></li>
-<li><a href="../StopGuiderContinuous/">StopGuiderContinuous</a></li>
-<li><a href="../StopTriggerFile/">StopTriggerFile</a></li>
-<li><a href="../TakeGuiderCube/">TakeGuiderCube</a></li>
-<li><a href="../TakeGuiderExposure/">TakeGuiderExposure</a></li>
-<li><a href="../WaitForTriggerFile/">WaitForTriggerFile</a></li>
-</ul>
-</li>
-<li><code>kpf.scripts</code><ul>
-<li><a href="../CleanupAfterCalibrations/">CleanupAfterCalibrations</a></li>
-<li><a href="../CleanupAfterScience/">CleanupAfterScience</a></li>
-<li><a href="../CollectGuiderDarkCubes/">CollectGuiderDarkCubes</a></li>
-<li><a href="../ConfigureForAcquisition/">ConfigureForAcquisition</a></li>
-<li><a href="../ConfigureForCalibrations/">ConfigureForCalibrations</a></li>
-<li><a href="../ConfigureForScience/">ConfigureForScience</a></li>
-<li><a href="../EndOfNight/">EndOfNight</a></li>
-<li><a href="../EnterLowPowerMode/">EnterLowPowerMode</a></li>
-<li><a href="../ExecuteSlewCal/">ExecuteSlewCal</a></li>
-<li><a href="../RecoverFromLowPowerMode/">RecoverFromLowPowerMode</a></li>
-<li><a href="../RunCalOB/">RunCalOB</a></li>
-<li><a href="../RunSciOB/">RunSciOB</a></li>
-<li><a href="../RunSoCalObservingLoop/">RunSoCalObservingLoop</a></li>
-<li><a href="../RunTwilightRVStandard/">RunTwilightRVStandard</a></li>
-<li><a href="../StartOfNight/">StartOfNight</a></li>
-<li><a href="../StartUp/">StartUp</a></li>
-<li><a href="../WaitForConfigureCalibrations/">WaitForConfigureCalibrations</a></li>
-</ul>
-</li>
-<li><code>kpf.socal</code><ul>
-<li><a href="../DisableSoCal/">DisableSoCal</a></li>
-<li><a href="../EnableSoCal/">EnableSoCal</a></li>
-<li><a href="../IsSoCalClosed/">IsSoCalClosed</a></li>
-<li><a href="../IsSoCalOpen/">IsSoCalOpen</a></li>
-<li><a href="../IsSoCalShutDown/">IsSoCalShutDown</a></li>
-<li><a href="../ParkSoCal/">ParkSoCal</a></li>
-<li><a href="../SoCalStartAutonomous/">SoCalStartAutonomous</a></li>
-<li><a href="../SoCalStopAutonomous/">SoCalStopAutonomous</a></li>
-<li><a href="../WaitForSoCalOnTarget/">WaitForSoCalOnTarget</a></li>
-</ul>
-</li>
-<li><code>kpf.spectrograph</code><ul>
-<li><a href="../QueryReadMode/">QueryReadMode</a></li>
-<li><a href="../QueryFastReadMode/">QueryFastReadMode</a></li>
-<li><a href="../RecoverDetectors/">RecoverDetectors</a></li>
-<li><a href="../ResetCaHKDetector/">ResetCaHKDetector</a></li>
-<li><a href="../ResetExpMeterDetector/">ResetExpMeterDetector</a></li>
-<li><a href="../ResetGreenDetector/">ResetGreenDetector</a></li>
-<li><a href="../ResetRedDetector/">ResetRedDetector</a></li>
-<li><a href="../ResetDetectors/">ResetDetectors</a></li>
-<li><a href="../SetExpTime/">SetExpTime</a></li>
-<li><a href="../SetObject/">SetObject</a></li>
-<li><a href="../SetObserver/">SetObserver</a></li>
-<li><a href="../SetProgram/">SetProgram</a></li>
-<li><a href="../SetReadModeFast/">SetReadModeFast</a></li>
-<li><a href="../SetReadModeNormal/">SetReadModeNormal</a></li>
-<li><a href="../SetSourceSelectShutters/">SetSourceSelectShutters</a></li>
-<li><a href="../SetTimedShutters/">SetTimedShutters</a></li>
-<li><a href="../SetTriggeredDetectors/">SetTriggeredDetectors</a></li>
-<li><a href="../StartAgitator/">StartAgitator</a></li>
-<li><a href="../StartExposure/">StartExposure</a></li>
-<li><a href="../StopAgitator/">StopAgitator</a></li>
-<li><a href="../WaitForL0File/">WaitForL0File</a></li>
-<li><a href="../WaitForReadout/">WaitForReadout</a></li>
-<li><a href="../WaitForReady/">WaitForReady</a></li>
-</ul>
-</li>
-<li><code>kpf.utils</code><ul>
-<li><a href="../BuildOBfromQuery/">BuildOBfromQuery</a></li>
-<li><a href="../CalculateDAR/">CalculateDAR</a></li>
-<li><a href="../CheckDewarWeights/">CheckDewarWeights</a></li>
-<li><a href="../CorrectDAR/">CorrectDAR</a></li>
-<li><a href="../EstimateOBDuration/">EstimateOBDuration</a></li>
-<li><a href="../SetObserverFromSchedule/">SetObserverFromSchedule</a></li>
-<li><a href="../SetOutdirs/">SetOutdirs</a></li>
-<li><a href="../SetSimulCalSource/">SetSimulCalSource</a></li>
-<li><a href="../SetTargetInfo/">SetTargetInfo</a></li>
-<li><a href="../StartGUIs/">StartGUIs</a></li>
-<li><a href="../StopGUIs/">StopGUIs</a></li>
-<li><a href="../ZeroOutSlewCalTime/">ZeroOutSlewCalTime</a></li>
-</ul>
-</li>
-</ul>
+
+              <details class="quote">
+                <summary>Source code in <code>kpf/scripts/RecoverFromLowPowerMode.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RecoverFromLowPowerMode</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Recover from low power mode.</span>
+
+<span class="sd">    - Power on the Ca HK systems</span>
+<span class="sd">    - Restore cooling to Ca HK detector</span>
+<span class="sd">    - Re-enable Ca HK detector</span>
+<span class="sd">    - Power on CRED2 systems</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
+        <span class="n">kpfpower</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfpower&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Power up Ca HK detector systems</span>
+        <span class="n">kpf_hk</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_hk&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Powering on Ca HK detector systems&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Powering on </span><span class="si">{</span><span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_J1_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_J1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;On&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Powering on </span><span class="si">{</span><span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_J2_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_J2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;On&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Powering on </span><span class="si">{</span><span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_J5_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_J5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;On&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Turning Ca HK detector cooling on&#39;</span><span class="p">)</span>
+        <span class="n">kpf_hk</span><span class="p">[</span><span class="s1">&#39;COOLING&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;On&#39;</span><span class="p">)</span>
+        <span class="n">kpf_hk</span><span class="p">[</span><span class="s1">&#39;COOLTARG&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Enabling Ca HK detector&#39;</span><span class="p">)</span>
+        <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;CA_HK_ENABLED&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Yes&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Power up CRED2 detector systems</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Powering on CRED2 detector systems&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Powering on </span><span class="si">{</span><span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_K2_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_K2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;On&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Powering on </span><span class="si">{</span><span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_K3_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">kpfpower</span><span class="p">[</span><span class="s1">&#39;OUTLET_K3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;On&#39;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--force&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">,</span>
+                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Force change? This will terminate any running scripts.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../KPFTranslator/" class="btn btn-neutral float-left" title="Instrument Software"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../tiptiltinstructions/" class="btn btn-neutral float-right" title="Tip Tilt Instructions for OAs">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -446,10 +394,6 @@
         </span>
     
     
-      <span><a href="../../KPFTranslator/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../../tiptiltinstructions/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
