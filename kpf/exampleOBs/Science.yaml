@@ -23,7 +23,7 @@ SEQ_Observations:               #
   ExpMeterMode: control         # "monitor" or "control" (to terminate exposure based on flux)
   AutoExpMeter: False           # Set the exposure meter exposure time automatically
   ExpMeterExpTime: 0.5          # Exposure time of the Exposure Meter subframes
-  ExpMeterBin: 3                # Exposure meter wavelength bin to use for stopping exposure
+  ExpMeterBin: 604.375          # Exposure meter wavelength bin to use for stopping exposure
   ExpMeterThreshold: 1e5        # Target science flux in e-/nm
   TakeSimulCal: True            # Take simultaneous calibrations? (True/False)
   AutoNDFilters: False          # Automatically set ND filters -- Not available at this time!
