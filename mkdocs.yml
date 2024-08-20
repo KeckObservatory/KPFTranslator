@@ -48,6 +48,7 @@ nav:
     - "Daytime Calibrations": calibrations.md
     - "Observing Procedures": observingprocedures.md
     - "Nighttime Calibrations": nighttimecalibrations.md
+    - "Exposure Meter Termination": expmetertermination.md
     - "Observing Blocks":
       - "Building OBs": buildingOBs.md
       - "Science OB Parameters": SciOBparameters.md
