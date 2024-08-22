@@ -23,7 +23,6 @@ from kpf.OB_GUI.OBs import *
 from kpf.utils import BuildOBfromQuery
 from kpf.utils import SendEmail
 from kpf.utils.EstimateOBDuration import EstimateCalOBDuration, EstimateSciOBDuration
-from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 
 
 ##-------------------------------------------------------------------------
@@ -138,8 +137,6 @@ class MainWindow(QMainWindow):
         self.expmeter_bins.pop(self.expmeter_bins.index('All'))
         self.expmeter_modes = ['off', 'monitor', 'control']
 #         self.expmeter_modes = ['off', 'monitor', 'control']
-        self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
-        self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Slew Cal Time Colors/Warnings
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
@@ -205,8 +202,10 @@ class MainWindow(QMainWindow):
 #         slewcalfile_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALFILE'])
 #         slewcalfile_kw.stringCallback.connect(self.update_slewcalfile_value)
         self.read_mode = self.findChild(QLabel, 'readout_mode_value')
-#         self.red_acf_file_kw.stringCallback.connect(self.update_acffile)
-#         self.green_acf_file_kw.stringCallback.connect(self.update_acffile)
+        self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
+        self.red_acf_file_kw.stringCallback.connect(self.update_acffile)
+        self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
+        self.green_acf_file_kw.stringCallback.connect(self.update_acffile)
 
         # disabled detectors
         self.disabled_detectors_value = self.findChild(QLabel, 'disabled_detectors_value')
@@ -663,13 +662,22 @@ class MainWindow(QMainWindow):
 
     # ACF File
     def update_acffile(self, value):
-        fast = QueryFastReadMode.execute({})
-        if fast is True:
+#         [acf_files]
+#         green_normal = regular-read-green
+#         green_fast = fast-read-green
+#         red_normal = regular-read-red
+#         red_fast = fast-read-red
+        red_fast = (self.red_acf_file_kw.ktl_keyword == 'fast-read-red.acf')
+        green_fast = (self.green_acf_file_kw.ktl_keyword == 'fast-read-green.acf')
+        if red_fast and green_fast:
             self.read_mode.setText('Fast')
             self.read_mode.setStyleSheet("color:orange")
-        else:
+        elif not red_fast and not green_fast:
             self.read_mode.setText('Normal')
             self.read_mode.setStyleSheet("color:green")
+        else:
+            self.read_mode.setText('Mixed!')
+            self.read_mode.setStyleSheet("color:red")
 
     def update_ca_hk_enabled(self, value):
         self.log.debug(f"update_ca_hk_enabled: {value}")
