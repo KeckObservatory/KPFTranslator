@@ -22,7 +22,7 @@ class TurnLightSourceOff(KPFTranslatorFunction):
         ao = ktl.cache('ao')
         log.debug('Turning AO light source off')
         ao['OBSWON'].write(0)
-        ao['ASCONFIG'].write('OFF')
+#         ao['ASCONFIG'].write('OFF')
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
