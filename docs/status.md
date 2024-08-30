@@ -12,7 +12,7 @@ A detailed summary of the instrument status was presented at the September 2023 
 This is an attempt to summarize the status of various sub-systems of the instrument.  Each sub-system name is color coded to indicate the status at a glance: <font color="green">green</font> means functioning normally, <font color="orange">orange</font> means mostly normal, but with some caveats or minor issues, and <font color="red">red</font> means the sub-system is compromised in some way.
 
 - **<font color="orange">Tip Tilt Corrections</font>**: The tip tilt stage X-axis has degraded once again (as of 2024 Aug 22) and we are not making fast tip tilt corrections in X.  Troubleshooting is underway.
-- **<font color="green">Ca H&K Detector</font>**: Currently fully functional.
+- **<font color="green">Ca H&K Detector</font>**: The CA H&K detector is again experiencing problems. It is disabled for science until we can find a solution.
 - **<font color="green">Double Star Observations</font>**: Operational.
 - **<font color="green">Etalon</font>**: Operational and providing the expected flux.
 - **<font color="green">LFC</font>**: Is operating normally. 
