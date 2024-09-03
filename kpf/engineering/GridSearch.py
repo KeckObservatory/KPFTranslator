@@ -1,3 +1,4 @@
+import time
 import os
 from pathlib import Path
 import logging
@@ -114,8 +115,6 @@ class GridSearch(KPFTranslatorFunction):
         log.info('Setting TRIGCUBE Inactive')
         kpfguide['TRIGCUBE'].write('Inactive')
         if grid == 'TipTilt':
-            current_base = kpfguide['CURRENT_BASE'].read(binary=True)
-            log.info(f"CURRENT_BASE = {current_base[0]:.2f} {current_base[1]:.2f}")
             log.info(f"DAR_ENABLE = {kpfguide['DAR_ENABLE'].read()}")
             dar_offset = kpfguide['DAR_OFFSET'].read(binary=True)
             log.info(f"DAR_OFFSET = {dar_offset[0]:.2f} {dar_offset[1]:.2f}")
@@ -180,9 +179,6 @@ class GridSearch(KPFTranslatorFunction):
                 log.info(f"Setting {FVC} FVC ExpTime = {exptime:.2f} s")
                 SetFVCExpTime.execute({'camera': FVC, 'exptime': exptime})
 
-#         for i,xi in enumerate(xis):
-#             yis.reverse()
-#             for j,yi in enumerate(yis):
         for i in xindicies:
             yindicies.reverse()
             for j in yindicies:
@@ -193,10 +189,30 @@ class GridSearch(KPFTranslatorFunction):
                     ## Tip Tilt
                     ##------------------------------------------------------
                     log.info(f"Adjusting CURRENT_BASE to ({xs[i]:.2f}, {ys[j]:.2f}) ({xis[i]}, {yis[j]})")
-                    SetTipTiltTargetPixel.execute({'x': xs[i], 'y': ys[j]})
-                    sleep_time = 5
-                    log.debug(f"Sleeping {sleep_time} s to allow tip tilt loop to settle")
-                    time.sleep(sleep_time)
+                    max_move = 3
+                    precisison = 0.01
+                    current_base = ktl.cache('kpfguide', 'CURRENT_BASE')
+                    current_cb = current_base.read(binary=True)
+                    delta_cb = (xs[i]-current_cb[0], ys[j]-current_cb[1])
+                    while abs(delta_cb[0]) > precisison or abs(delta_cb[1]) > precisison:
+                        # Calc X move
+                        new_X_target = current_cb[0]
+                        if abs(delta_cb[0]) > precisison:
+                            move_sign_X = delta_cb[0]/abs(delta_cb[0])
+                            move_mag_X = min([max_move, abs(delta_cb[0])])
+                            new_X_target += move_sign_X*move_mag_X
+                        # Calc Y move
+                        new_Y_target = current_cb[1]
+                        if abs(delta_cb[1]) > precisison:
+                            move_sign_Y = delta_cb[1]/abs(delta_cb[1])
+                            move_mag_Y = min([max_move, abs(delta_cb[1])])
+                            new_Y_target += move_sign_Y*move_mag_Y
+                        log.info(f"  Setting CURRENT_BASE to {new_X_target:.2f}, {new_Y_target:.2f}")
+                        SetTipTiltTargetPixel.execute({'x': new_X_target,
+                                                       'y': new_Y_target})
+                        success = ktl.waitFor("$kpfguide.TIPTILT_PHASE == 'Tracking'", timeout=5)
+                        current_cb = current_base.read(binary=True)
+                        delta_cb = (xs[i]-current_cb[0], ys[j]-current_cb[1])
                     xpix, ypix = kpfguide['PIX_TARGET'].read(binary=True)
                     log.info(f"PIX_TARGET is {xpix:.2f}, {ypix:.2f}")
                     # Check for lost star
@@ -221,7 +237,7 @@ class GridSearch(KPFTranslatorFunction):
                             obj_choice = kpfguide['OBJECT_CHOICE'].read()
                             if obj_choice in [None, 'None']:
                                 log.error(f"  --> Lost star <--")
-                                raise KPFError('Lost Star')
+                                raise KPFException('Lost Star')
                 elif grid == 'SciADC':
                     ##------------------------------------------------------
                     ## Science ADC
@@ -364,7 +380,7 @@ class GridSearch(KPFTranslatorFunction):
         expmeter_flux.write(fluxes_file, format='ascii.csv')
 
         if grid == 'TipTilt':
-            SetTipTiltTargetPixel.execute({'x': xpix0, 'y': ypix0})
+            SetTipTiltTargetPixel.execute({'x': basex, 'y': basey})
             StopTipTilt.execute({})
         elif grid == 'SciADC':
             kpffiu['ADC1NAM'].write('Null')

@@ -23,6 +23,9 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
         success = heartbeat.waitFor('== "OK"', timeout=3)
         if success is False:
             raise FailedPreCondition(f"Menlo heartbeat is not OK: {heartbeat.read()}")
+        lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE').read()
+        if lfc_mode not in ['AstroComb', 'StandbyHigh']:
+            raise FailedPreCondition(f"LFC must be in AstroComb: {lfc_mode}")
 
     @classmethod
     def perform(cls, args, logger, cfg):

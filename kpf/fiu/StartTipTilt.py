@@ -38,8 +38,6 @@ class StartTipTilt(KPFTranslatorFunction):
             time.sleep(10*movetime)
 
         kpfguide = ktl.cache('kpfguide')
-        log.debug(f'Ensuring kpfguide.DAR_ENABLE is yes')
-        kpfguide['DAR_ENABLE'].write('Yes')
         log.info('Turning kpfguide.ALL_LOOPS on')
         kpfguide['ALL_LOOPS'].write('Active')
 

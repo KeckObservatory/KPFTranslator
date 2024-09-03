@@ -47,6 +47,7 @@ from ginga.qtw.QtHelp import QtGui, QtCore
 from ginga.qtw.ImageViewQt import CanvasView
 
 from kpf.guider.PredictGuiderParameters import PredictGuiderParameters
+from kpf.guider.TakeGuiderCube import TakeGuiderCube
 
 
 ##-------------------------------------------------------------------------
@@ -158,6 +159,7 @@ class MainWindow(QMainWindow):
         self.LASTFILE = kPyQt.kFactory(kpfguide['LASTFILE'])
         self.TIPTILT_ROIDIM = kPyQt.kFactory(kpfguide['TIPTILT_ROIDIM'])
         self.PIX_TARGET = kPyQt.kFactory(kpfguide['PIX_TARGET'])
+        self.SUB_HIGH = kPyQt.kFactory(kpfguide['SUB_HIGH'])
 
         kpffiu = ktl.cache('kpffiu')
         self.TTXSRV = kPyQt.kFactory(kpffiu['TTXSRV'])
@@ -227,12 +229,18 @@ class MainWindow(QMainWindow):
         # Guider Prediction Values
         self.ExtinctionValue = 0
         self.GuiderParameters = {}
+        # Sky Subtraction
+        self.default_sub_file = '/kroot/rel/default/data/kpfguide/kpfguide_gain_high.fits'
+        self.SkyOffsetEastValue = 10
+        self.SkyOffsetNorthValue = 10
 
     def setupUi(self):
         self.log.debug('setupUi')
         self.setWindowTitle("KPF TipTilt GUI")
 
+        # --------------------------------------
         # Menu Bar
+        # --------------------------------------
         self.actionQuit = self.findChild(QAction, 'actionQuit')
         self.actionQuit.triggered.connect(self.quit)
         self.actionrestart_kpfguide1 = self.findChild(QAction, 'actionrestart_kpfguide1')
@@ -241,49 +249,20 @@ class MainWindow(QMainWindow):
         self.actionrestart_kpfguide2.triggered.connect(self.run_restart_kpfguide2)
         self.actionrestart_kpfguide3 = self.findChild(QAction, 'actionrestart_kpfguide3')
         self.actionrestart_kpfguide3.triggered.connect(self.run_restart_kpfguide3)
+        self.actionSet_plot_span_to_10s = self.findChild(QAction, 'actionSet_plot_span_to_10s')
+        self.actionSet_plot_span_to_10s.triggered.connect(self.set_plot_times_to_10)
+        self.actionSet_plot_span_to_30s = self.findChild(QAction, 'actionSet_plot_span_to_30s')
+        self.actionSet_plot_span_to_30s.triggered.connect(self.set_plot_times_to_30)
+        self.actionSet_plot_span_to_60s = self.findChild(QAction, 'actionSet_plot_span_to_60s')
+        self.actionSet_plot_span_to_60s.triggered.connect(self.set_plot_times_to_60)
+        self.actionSet_plot_span_to_120s = self.findChild(QAction, 'actionSet_plot_span_to_120s')
+        self.actionSet_plot_span_to_120s.triggered.connect(self.set_plot_times_to_120)
+        self.actionSet_plot_span_to_300s = self.findChild(QAction, 'actionSet_plot_span_to_300s')
+        self.actionSet_plot_span_to_300s.triggered.connect(self.set_plot_times_to_300)
 
-        # Status Bar
-        self.StatusBar = self.findChild(QStatusBar, 'statusBar')
-        self.CONTINUOUSStatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.CONTINUOUSStatusLabel)
-        self.SAVEStatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.SAVEStatusLabel)
-        self.TTXSRVStatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.TTXSRVStatusLabel)
-        self.TTYSRVStatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.TTYSRVStatusLabel)
-        self.XAxisStatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.XAxisStatusLabel)
-        self.YAxisStatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.YAxisStatusLabel)
-        self.DARStatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.DARStatusLabel)
-        self.kpfguide1StatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.kpfguide1StatusLabel)
-        self.kpfguide2StatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.kpfguide2StatusLabel)
-        self.kpfguide3StatusLabel = QLabel('')
-        self.StatusBar.addPermanentWidget(self.kpfguide3StatusLabel)
-
-        # kpfmon Statuses
-        self.HB_GUIDE1STA.stringCallback.connect(self.update_kpfguide1status)
-        self.HB_GUIDE1STA.primeCallback()
-        self.ST_GUIDE1STA.stringCallback.connect(self.update_kpfguide1status)
-        self.ST_GUIDE1STA.primeCallback()
-        self.HB_GUIDE2STA.stringCallback.connect(self.update_kpfguide2status)
-        self.HB_GUIDE2STA.primeCallback()
-        self.ST_GUIDE2STA.stringCallback.connect(self.update_kpfguide2status)
-        self.ST_GUIDE2STA.primeCallback()
-        self.HB_GUIDE3STA.stringCallback.connect(self.update_kpfguide3status)
-        self.HB_GUIDE3STA.primeCallback()
-        self.ST_GUIDE3STA.stringCallback.connect(self.update_kpfguide3status)
-        self.ST_GUIDE3STA.primeCallback()
-
-        # CONTINUOUS and SAVE
-        self.CONTINUOUS.stringCallback.connect(self.update_CONTINUOUS)
-        self.CONTINUOUS.primeCallback()
-        self.SAVE.stringCallback.connect(self.update_SAVE)
-        self.SAVE.primeCallback()
+        # --------------------------------------
+        # Camera Controls Tab
+        # --------------------------------------
 
         # Target Jmag
         self.JmagValue = self.findChild(QLabel, 'JmagValue')
@@ -325,6 +304,156 @@ class MainWindow(QMainWindow):
         self.CameraFPSSelector.currentTextChanged.connect(self.set_CameraFPS)
         self.CameraFPSSelector.setEnabled(self.enable_control)
 
+        # --------------------------------------
+        # Object Detection Tab
+        # --------------------------------------
+
+        # Detect SNR
+        self.DetectSNRValue = self.findChild(QLabel, 'DetectSNRValue')
+        self.DetectSNRSelector = self.findChild(QComboBox, 'DetectSNRSelector')
+        self.DetectSNR_values = ['', '1', '2', '3', '5', '7', '15', '30']
+        self.DetectSNRSelector.addItems(self.DetectSNR_values)
+        self.OBJECT_INTENSITY.stringCallback.connect(self.update_DetectSNR)
+        self.OBJECT_INTENSITY.primeCallback()
+        self.DetectSNRSelector.currentTextChanged.connect(self.set_DetectSNR)
+        self.DetectSNRSelector.setEnabled(self.enable_control)
+
+        # Detect Area
+        self.DetectAreaValue = self.findChild(QLabel, 'DetectAreaValue')
+        self.DetectAreaSelector = self.findChild(QComboBox, 'DetectAreaSelector')
+        self.DetectArea_values = ['', '30', '50', '80', '100', '150', '200', '300']
+        self.DetectAreaSelector.addItems(self.DetectArea_values)
+        self.OBJECT_AREA.stringCallback.connect(self.update_DetectArea)
+        self.OBJECT_AREA.primeCallback()
+        self.DetectAreaSelector.currentTextChanged.connect(self.set_DetectArea)
+        self.DetectAreaSelector.setEnabled(self.enable_control)
+
+        # Deblend 
+        self.DeblendValue = self.findChild(QLabel, 'DeblendValue')
+        self.DeblendSelector = self.findChild(QComboBox, 'DeblendSelector')
+        self.Deblend_values = ['', '1.00', '0.50', '0.20', '0.10', '0.02', '0.01', '0.001']
+        self.DeblendSelector.addItems(self.Deblend_values)
+        self.OBJECT_DBCONT.stringCallback.connect(self.update_Deblend)
+        self.OBJECT_DBCONT.primeCallback()
+        self.DeblendSelector.currentTextChanged.connect(self.set_Deblend)
+        self.DeblendSelector.setEnabled(self.enable_control)
+
+        # --------------------------------------
+        # Sky Subtraction Tab
+        # --------------------------------------
+
+        # Sky Offsets
+        self.SkyOffsetEastLabel = self.findChild(QLabel, 'SkyOffsetEastLabel')
+        self.SkyOffsetEast = self.findChild(QLineEdit, 'SkyOffsetEast')
+        self.SkyOffsetEast.setText(str(self.SkyOffsetEastValue))
+        self.SkyOffsetEast.textChanged.connect(self.update_SkyOffsetEastValue)
+        self.SkyOffsetNorthLabel = self.findChild(QLabel, 'SkyOffsetNorthLabel')
+        self.SkyOffsetNorth = self.findChild(QLineEdit, 'SkyOffsetNorth')
+        self.SkyOffsetNorth.setText(str(self.SkyOffsetNorthValue))
+        self.SkyOffsetNorth.textChanged.connect(self.update_SkyOffsetNorthValue)
+
+        self.CurrentSubtractionImageLabel = self.findChild(QLabel, 'CurrentSubtractionImageLabel')
+        self.CurrentSubtractionImageValue = self.findChild(QLabel, 'CurrentSubtractionImageValue')
+        self.SUB_HIGH.stringCallback.connect(self.CurrentSubtractionImageValue.setText)
+        self.SUB_HIGH.primeCallback()
+
+        self.ObtainSkyFrameBtn = self.findChild(QPushButton, 'ObtainSkyFrameBtn')
+        self.ObtainSkyFrameBtn.clicked.connect(self.obtain_sky_frame)
+
+        self.ResetSkyFrameBtn = self.findChild(QPushButton, 'ResetSkyFrameBtn')
+        self.ResetSkyFrameBtn.clicked.connect(self.reset_sky_frame)
+
+        sky_subtraction_enabled = self.enable_control and False
+        self.SkyOffsetEastLabel.setEnabled(sky_subtraction_enabled)
+        self.SkyOffsetNorthLabel.setEnabled(sky_subtraction_enabled)
+        self.SkyOffsetEast.setEnabled(sky_subtraction_enabled)
+        self.SkyOffsetNorth.setEnabled(sky_subtraction_enabled)
+        self.CurrentSubtractionImageLabel.setEnabled(sky_subtraction_enabled)
+        self.CurrentSubtractionImageValue.setEnabled(sky_subtraction_enabled)
+        self.ObtainSkyFrameBtn.setEnabled(sky_subtraction_enabled)
+        self.ResetSkyFrameBtn.setEnabled(sky_subtraction_enabled)
+
+        # --------------------------------------
+        # Offset Guiding Tab
+        # --------------------------------------
+
+        # RAOffset
+        self.RAOffset = self.findChild(QLineEdit, 'RAOffset')
+        self.RAOffset.setEnabled(False)
+        self.RAOffsetLabel = self.findChild(QLabel, 'RAOffsetLabel')
+        self.RAOffsetLabel.setEnabled(False)
+
+        # DECOffset
+        self.DECOffset = self.findChild(QLineEdit, 'DECOffset')
+        self.DECOffset.setEnabled(False)
+        self.DECOffsetLabel = self.findChild(QLabel, 'DECOffsetLabel')
+        self.DECOffsetLabel.setEnabled(False)
+
+        # --------------------------------------
+        # Settings Tab
+        # --------------------------------------
+
+        # X Axis Control: TIPTILT_CONTROL_X
+        self.XAxisControlValue = self.findChild(QLabel, 'XAxisControlValue')
+        self.XAxisControl = self.findChild(QComboBox, 'XAxisControl')
+        self.XAxisControl.addItems(['', 'Mirror', 'Bypass'])
+        self.TIPTILT_CONTROL_X.stringCallback.connect(self.update_XAxisControl)
+        self.TIPTILT_CONTROL_X.primeCallback()
+        self.XAxisControl.currentTextChanged.connect(self.set_XAxisControl)
+        self.XAxisControl.setEnabled(self.enable_control)
+
+        # Y Axis Control: TIPTILT_CONTROL_Y
+        self.YAxisControlValue = self.findChild(QLabel, 'YAxisControlValue')
+        self.YAxisControl = self.findChild(QComboBox, 'YAxisControl')
+        self.YAxisControl.addItems(['', 'Mirror', 'Bypass'])
+        self.TIPTILT_CONTROL_Y.stringCallback.connect(self.update_YAxisControl)
+        self.TIPTILT_CONTROL_Y.primeCallback()
+        self.YAxisControl.currentTextChanged.connect(self.set_YAxisControl)
+        self.YAxisControl.setEnabled(self.enable_control)
+
+        # DAR Enabled: DAR_ENABLE
+        self.DARCorrectionValue = self.findChild(QLabel, 'DARCorrectionValue')
+        self.DAREnable = self.findChild(QComboBox, 'DAREnable')
+        self.DAREnable.addItems(['', 'Yes', 'No'])
+        self.DAR_ENABLE.stringCallback.connect(self.update_DAREnable)
+        self.DAR_ENABLE.primeCallback()
+        self.DAREnable.currentTextChanged.connect(self.set_DAREnable)
+        self.DAREnable.setEnabled(self.enable_control)
+
+        # --------------------------------------
+        # Tip Tilt Control and Telemetry Section
+        # --------------------------------------
+
+        # Tip Tilt On/Off
+        self.TipTiltOnOffButton = self.findChild(QPushButton, 'TipTiltOnOffButton')
+        self.TipTiltOnOffButton.setEnabled(self.enable_control)
+        self.TipTiltOnOffButton.clicked.connect(self.toggle_all_loops)
+
+        # Tip Tilt Calculations
+        self.CalculationCheckBox = self.findChild(QCheckBox, 'CalculationCheckBox')
+        self.TIPTILT_CALC.integerCallback.connect(self.update_TipTiltCalc)
+        self.TIPTILT_CALC.primeCallback()
+        self.CalculationCheckBox.stateChanged.connect(self.TipTiltCalc_state_change)
+        self.CalculationCheckBox.setEnabled(self.enable_control)
+
+        # Tip Tilt Control
+        self.ControlCheckBox = self.findChild(QCheckBox, 'ControlCheckBox')
+        self.TIPTILT_CONTROL.stringCallback.connect(self.update_TipTiltControl)
+        self.TIPTILT_CONTROL.primeCallback()
+        self.ControlCheckBox.stateChanged.connect(self.TipTiltControl_state_change)
+        self.ControlCheckBox.setEnabled(self.enable_control)
+
+        # Offload
+        self.OffloadCheckBox = self.findChild(QCheckBox, 'OffloadCheckBox')
+        self.OFFLOAD.stringCallback.connect(self.update_Offload)
+        self.OFFLOAD.primeCallback()
+        self.OffloadCheckBox.stateChanged.connect(self.Offload_state_change)
+        self.OffloadCheckBox.setEnabled(self.enable_control)
+
+        # Offload DCS Status
+        self.OFFLOAD_DCS.stringCallback.connect(self.update_OffloadDCS)
+        self.OFFLOAD_DCS.primeCallback()
+
         # Peak Flux
         self.PeakFlux = self.findChild(QLabel, 'PeakFlux')
         self.OBJECT_PEAK.stringCallback.connect(self.update_PeakFlux)
@@ -365,14 +494,6 @@ class MainWindow(QMainWindow):
         self.TipTiltErrorPlotFrame.setLayout(plotLayout)
         self.update_TipTiltErrorPlot()
 
-        # Tip Tilt Error Plot Time
-        self.TTErrPlotTime = self.findChild(QComboBox, 'TTErrPlotTime')
-        self.TTErrPlotTime_values = ['10', '30', '60', '120', '300']
-        self.TTErrPlotTime.addItems(self.TTErrPlotTime_values)
-        self.TTErrPlotTime.setCurrentText(f"{self.TipTiltErrorPlotAgeThreshold:.0f}")
-        self.set_TTErrPlotTime(self.TipTiltErrorPlotAgeThreshold)
-        self.TTErrPlotTime.currentTextChanged.connect(self.set_TTErrPlotTime)
-
         # Flux Plot
         self.FluxPlotFrame = self.findChild(QFrame, 'FluxPlotFrame')
         self.FluxPlotFig = plt.figure(num=2, dpi=100)
@@ -384,18 +505,14 @@ class MainWindow(QMainWindow):
         self.FluxPlotFrame.setLayout(FluxPlotLayout)
         self.update_FluxPlot()
 
-        # Flux Plot Time
-        self.FluxPlotTime = self.findChild(QComboBox, 'ObjectFluxPlotTime')
-        self.FluxPlotTime_values = ['10', '30', '60', '120', '300']
-        self.FluxPlotTime.addItems(self.FluxPlotTime_values)
-        self.FluxPlotTime.setCurrentText(f"{self.FluxPlotAgeThreshold:.0f}")
-        self.set_FluxPlotTime(self.FluxPlotAgeThreshold)
-        self.FluxPlotTime.currentTextChanged.connect(self.set_FluxPlotTime)
-
         # Plot Timer
         self.PlotTimer = QTimer()
         self.PlotTimer.timeout.connect(self.update_plots)
         self.PlotTimer.start(self.TipTiltErrorPlotUpdateTime*1000)
+
+        # --------------------------------------
+        # Image Display Section
+        # --------------------------------------
 
         # Image Display
         self.ImageDisplayFrame = self.findChild(QFrame, 'ImageDisplayFrame')
@@ -468,110 +585,15 @@ class MainWindow(QMainWindow):
         self.ImageScaling.addItems(['linear', 'log', 'neglog'])
         self.ImageScaling.currentTextChanged.connect(self.set_ImageScaling)
 
-        # Tip Tilt On/Off
-        self.TipTiltOnOffButton = self.findChild(QPushButton, 'TipTiltOnOffButton')
-        self.TipTiltOnOffButton.setEnabled(self.enable_control)
-        self.TipTiltOnOffButton.clicked.connect(self.toggle_all_loops)
-
-        # Tip Tilt Calculations
-        self.CalculationCheckBox = self.findChild(QCheckBox, 'CalculationCheckBox')
-        self.TIPTILT_CALC.integerCallback.connect(self.update_TipTiltCalc)
-        self.TIPTILT_CALC.primeCallback()
-        self.CalculationCheckBox.stateChanged.connect(self.TipTiltCalc_state_change)
-        self.CalculationCheckBox.setEnabled(self.enable_control)
-
-        # Tip Tilt Control
-        self.ControlCheckBox = self.findChild(QCheckBox, 'ControlCheckBox')
-        self.TIPTILT_CONTROL.stringCallback.connect(self.update_TipTiltControl)
-        self.TIPTILT_CONTROL.primeCallback()
-        self.ControlCheckBox.stateChanged.connect(self.TipTiltControl_state_change)
-        self.ControlCheckBox.setEnabled(self.enable_control)
-
-        # Offload
-        self.OffloadCheckBox = self.findChild(QCheckBox, 'OffloadCheckBox')
-        self.OFFLOAD.stringCallback.connect(self.update_Offload)
-        self.OFFLOAD.primeCallback()
-        self.OffloadCheckBox.stateChanged.connect(self.Offload_state_change)
-        self.OffloadCheckBox.setEnabled(self.enable_control)
-
-        # Offload DCS Status
-        self.OFFLOAD_DCS.stringCallback.connect(self.update_OffloadDCS)
-        self.OFFLOAD_DCS.primeCallback()
-
-        # Detect SNR
-        self.DetectSNRValue = self.findChild(QLabel, 'DetectSNRValue')
-        self.DetectSNRSelector = self.findChild(QComboBox, 'DetectSNRSelector')
-        self.DetectSNR_values = ['', '1', '2', '3', '5', '7', '15', '30']
-        self.DetectSNRSelector.addItems(self.DetectSNR_values)
-        self.OBJECT_INTENSITY.stringCallback.connect(self.update_DetectSNR)
-        self.OBJECT_INTENSITY.primeCallback()
-        self.DetectSNRSelector.currentTextChanged.connect(self.set_DetectSNR)
-        self.DetectSNRSelector.setEnabled(self.enable_control)
-
-        # Detect Area
-        self.DetectAreaValue = self.findChild(QLabel, 'DetectAreaValue')
-        self.DetectAreaSelector = self.findChild(QComboBox, 'DetectAreaSelector')
-        self.DetectArea_values = ['', '30', '50', '80', '100', '150', '200', '300']
-        self.DetectAreaSelector.addItems(self.DetectArea_values)
-        self.OBJECT_AREA.stringCallback.connect(self.update_DetectArea)
-        self.OBJECT_AREA.primeCallback()
-        self.DetectAreaSelector.currentTextChanged.connect(self.set_DetectArea)
-        self.DetectAreaSelector.setEnabled(self.enable_control)
-
-        # Deblend 
-        self.DeblendValue = self.findChild(QLabel, 'DeblendValue')
-        self.DeblendSelector = self.findChild(QComboBox, 'DeblendSelector')
-        self.Deblend_values = ['', '1.00', '0.50', '0.20', '0.10', '0.02', '0.01', '0.001']
-        self.DeblendSelector.addItems(self.Deblend_values)
-        self.OBJECT_DBCONT.stringCallback.connect(self.update_Deblend)
-        self.OBJECT_DBCONT.primeCallback()
-        self.DeblendSelector.currentTextChanged.connect(self.set_Deblend)
-        self.DeblendSelector.setEnabled(self.enable_control)
-
-        # RAOffset
-        self.RAOffset = self.findChild(QLineEdit, 'RAOffset')
-        self.RAOffset.setEnabled(False)
-        self.RAOffsetLabel = self.findChild(QLabel, 'RAOffsetLabel')
-        self.RAOffsetLabel.setEnabled(False)
-
-        # DECOffset
-        self.DECOffset = self.findChild(QLineEdit, 'DECOffset')
-        self.DECOffset.setEnabled(False)
-        self.DECOffsetLabel = self.findChild(QLabel, 'DECOffsetLabel')
-        self.DECOffsetLabel.setEnabled(False)
-
-        # X Axis Control: TIPTILT_CONTROL_X
-        self.XAxisControlValue = self.findChild(QLabel, 'XAxisControlValue')
-        self.XAxisControl = self.findChild(QComboBox, 'XAxisControl')
-        self.XAxisControl.addItems(['', 'Mirror', 'Bypass'])
-        self.TIPTILT_CONTROL_X.stringCallback.connect(self.update_XAxisControl)
-        self.TIPTILT_CONTROL_X.primeCallback()
-        self.XAxisControl.currentTextChanged.connect(self.set_XAxisControl)
-        self.XAxisControl.setEnabled(self.enable_control)
-
-        # Y Axis Control: TIPTILT_CONTROL_Y
-        self.YAxisControlValue = self.findChild(QLabel, 'YAxisControlValue')
-        self.YAxisControl = self.findChild(QComboBox, 'YAxisControl')
-        self.YAxisControl.addItems(['', 'Mirror', 'Bypass'])
-        self.TIPTILT_CONTROL_Y.stringCallback.connect(self.update_YAxisControl)
-        self.TIPTILT_CONTROL_Y.primeCallback()
-        self.YAxisControl.currentTextChanged.connect(self.set_YAxisControl)
-        self.YAxisControl.setEnabled(self.enable_control)
-
-        # DAR Enabled: DAR_ENABLE
-        self.DARCorrectionValue = self.findChild(QLabel, 'DARCorrectionValue')
-        self.DAREnable = self.findChild(QComboBox, 'DAREnable')
-        self.DAREnable.addItems(['', 'Yes', 'No'])
-        self.DAR_ENABLE.stringCallback.connect(self.update_DAREnable)
-        self.DAR_ENABLE.primeCallback()
-        self.DAREnable.currentTextChanged.connect(self.set_DAREnable)
-        self.DAREnable.setEnabled(self.enable_control)
-
         # Pixel Readout
         self.PixelReadout = self.findChild(QLabel, 'PixelReadout')
 
         # Pixel Target PIX_TARGET
         self.PixTargetValue = self.findChild(QLabel, 'PixTargetValue')
+
+        # --------------------------------------
+        # Instrument Status Section
+        # --------------------------------------
 
         # Script Status
         self.ScriptStatus = self.findChild(QLabel, 'ScriptValue')
@@ -594,6 +616,51 @@ class MainWindow(QMainWindow):
         self.ObjectValue = self.findChild(QLabel, 'ObjectValue')
         self.OBJECT.stringCallback.connect(self.ObjectValue.setText)
         self.OBJECT.primeCallback()
+
+        # --------------------------------------
+        # Status Bar
+        # --------------------------------------
+        self.StatusBar = self.findChild(QStatusBar, 'statusBar')
+        self.CONTINUOUSStatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.CONTINUOUSStatusLabel)
+        self.SAVEStatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.SAVEStatusLabel)
+        self.TTXSRVStatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.TTXSRVStatusLabel)
+        self.TTYSRVStatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.TTYSRVStatusLabel)
+        self.XAxisStatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.XAxisStatusLabel)
+        self.YAxisStatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.YAxisStatusLabel)
+        self.DARStatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.DARStatusLabel)
+        self.kpfguide1StatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.kpfguide1StatusLabel)
+        self.kpfguide2StatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.kpfguide2StatusLabel)
+        self.kpfguide3StatusLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.kpfguide3StatusLabel)
+
+        # kpfmon Statuses
+        self.HB_GUIDE1STA.stringCallback.connect(self.update_kpfguide1status)
+        self.HB_GUIDE1STA.primeCallback()
+        self.ST_GUIDE1STA.stringCallback.connect(self.update_kpfguide1status)
+        self.ST_GUIDE1STA.primeCallback()
+        self.HB_GUIDE2STA.stringCallback.connect(self.update_kpfguide2status)
+        self.HB_GUIDE2STA.primeCallback()
+        self.ST_GUIDE2STA.stringCallback.connect(self.update_kpfguide2status)
+        self.ST_GUIDE2STA.primeCallback()
+        self.HB_GUIDE3STA.stringCallback.connect(self.update_kpfguide3status)
+        self.HB_GUIDE3STA.primeCallback()
+        self.ST_GUIDE3STA.stringCallback.connect(self.update_kpfguide3status)
+        self.ST_GUIDE3STA.primeCallback()
+
+        # CONTINUOUS and SAVE
+        self.CONTINUOUS.stringCallback.connect(self.update_CONTINUOUS)
+        self.CONTINUOUS.primeCallback()
+        self.SAVE.stringCallback.connect(self.update_SAVE)
+        self.SAVE.primeCallback()
 
 
     ##----------------------------------------------------------
@@ -761,6 +828,54 @@ class MainWindow(QMainWindow):
 
 
     ##----------------------------------------------------------
+    ## Sky Subtraction
+    def update_SkyOffsetEastValue(self, value):
+        try:
+            self.SkyOffsetEastValue = float(value)
+        except TypeError:
+            pass
+#             self.self.SkyOffsetEast.setText(str(self.SkyOffsetEastValue))
+
+    def update_SkyOffsetNorthValue(self, value):
+        try:
+            self.SkyOffsetNorthValue = float(value)
+        except TypeError:
+            pass
+#             self.self.SkyOffsetNorth.setText(str(self.SkyOffsetNorthValue))
+
+    def reset_sky_frame(self):
+        self.log.debug(f'reset_sky_frame')
+        self.SUB_HIGH.ktl_keyword.write(self.default_sub_file)
+
+    def en(self, e, n):
+        dcs = ktl.cache('dcs1')
+        dcs['RAOFF'].write(float(e))
+        dcs['DECOFF'].write(float(n))
+        dcs['REL2CURR'].write('t')
+
+    def obtain_sky_frame(self):
+        # Offset to sky position
+        self.log.info(f'Offsetting: en {self.SkyOffsetEastValue:.1f} {self.SkyOffsetNorthValue:.1f}')
+        self.en(self.SkyOffsetEastValue, self.SkyOffsetNorthValue)
+        time.sleep(0.5)
+        # Take Image Cube to get sky
+        sky_multiplier = 4
+        duration = sky_multiplier*1/self.FPS.ktl_keyword.read(binary=True)
+        self.log.info(f'Taking sky frame: TakeGuiderImageCube {duration:.0f} seconds')
+        sky_file = TakeGuiderCube.execute({'duration': duration,
+                                           'ImageCube': False})
+        sky_file = Path(sky_file)
+        if sky_file.exists() == False:
+            self.log.error(f'Could not find {sky_file} on disk')
+        else:
+            self.log.info(f'Updating SUB_HIGH with LASTCUBEFILE')
+            self.SUB_HIGH.ktl_keyword.write(f'{sky_file}')
+        # Offset back to target
+        self.log.info(f'Offsetting: en {-self.SkyOffsetEastValue:.1f} {-self.SkyOffsetNorthValue:.1f}')
+        self.en(-self.SkyOffsetEastValue, -self.SkyOffsetNorthValue)
+
+
+    ##----------------------------------------------------------
     ## Peak Flux
     def update_PeakFlux(self, value):
         self.log.debug(f'update_PeakFlux: {value}')
@@ -804,8 +919,26 @@ class MainWindow(QMainWindow):
             self.ObjectFluxValues.append(flux)
 
 
-    def set_FluxPlotTime(self, value):
-        self.FluxPlotAgeThreshold = float(value)
+    def set_plot_times_to_10(self):
+        self.FluxPlotAgeThreshold = 10
+        self.TipTiltErrorPlotAgeThreshold = 10
+
+    def set_plot_times_to_30(self):
+        self.FluxPlotAgeThreshold = 30
+        self.TipTiltErrorPlotAgeThreshold = 30
+
+    def set_plot_times_to_60(self):
+        self.FluxPlotAgeThreshold = 60
+        self.TipTiltErrorPlotAgeThreshold = 60
+
+    def set_plot_times_to_120(self):
+        self.FluxPlotAgeThreshold = 120
+        self.TipTiltErrorPlotAgeThreshold = 120
+
+    def set_plot_times_to_300(self):
+        self.FluxPlotAgeThreshold = 300
+        self.TipTiltErrorPlotAgeThreshold = 300
+
 
     def update_FluxPlot(self):
         npoints = len(self.ObjectFluxValues)
@@ -920,10 +1053,6 @@ class MainWindow(QMainWindow):
                 self.StarPositionTime0 = ts
             new_ts_value = (ts-self.StarPositionTime0).total_seconds()
             self.StarPositionTimes.append(new_ts_value)
-
-
-    def set_TTErrPlotTime(self, value):
-        self.TipTiltErrorPlotAgeThreshold = float(value)
 
 
     def update_TipTiltErrorPlot(self):

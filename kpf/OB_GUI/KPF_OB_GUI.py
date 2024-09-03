@@ -23,7 +23,6 @@ from kpf.OB_GUI.OBs import *
 from kpf.utils import BuildOBfromQuery
 from kpf.utils import SendEmail
 from kpf.utils.EstimateOBDuration import EstimateCalOBDuration, EstimateSciOBDuration
-from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 
 
 ##-------------------------------------------------------------------------
@@ -120,7 +119,7 @@ class MainWindow(QMainWindow):
                            'SSS_Sky': True,
                            'TakeSimulCal': True,
                            'FF_FiberPos': 'Blank',
-                           'ExpMeterMode': 'monitor',
+                           'ExpMeterMode': 'off',
                            'ExpMeterExpTime': '0.5',
                            'ExpMeterBin': '710.625',
                            'ExpMeterThreshold': 50000},
@@ -138,14 +137,14 @@ class MainWindow(QMainWindow):
         self.expmeter_bins.pop(self.expmeter_bins.index('All'))
         self.expmeter_modes = ['off', 'monitor', 'control']
 #         self.expmeter_modes = ['off', 'monitor', 'control']
-        self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
-        self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Slew Cal Time Colors/Warnings
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
         # Path to OB files
         self.file_path = Path('/s/sdata1701/OBs')
-
+        # AutoND for SimulCal Limits
+        self.AutoND_Teff_low = 2700
+        self.AutoND_Teff_high = 6600
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -203,7 +202,9 @@ class MainWindow(QMainWindow):
 #         slewcalfile_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALFILE'])
 #         slewcalfile_kw.stringCallback.connect(self.update_slewcalfile_value)
         self.read_mode = self.findChild(QLabel, 'readout_mode_value')
+        self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.red_acf_file_kw.stringCallback.connect(self.update_acffile)
+        self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         self.green_acf_file_kw.stringCallback.connect(self.update_acffile)
 
         # disabled detectors
@@ -346,6 +347,8 @@ class MainWindow(QMainWindow):
         self.AutoNDFilters = self.findChild(QCheckBox, 'AutoNDFilters')
         self.update_OB('AutoNDFilters', self.OB.SEQ_Observations1.get('AutoNDFilters'))
         self.AutoNDFilters.stateChanged.connect(self.AutoNDFilters_state_change)
+        AutoND_tooltip = f'AutoND only available for {self.AutoND_Teff_low:.0f}<Teff<{self.AutoND_Teff_high:.0f}'
+        self.AutoNDFilters.setToolTip(AutoND_tooltip)
 
         self.ExtraNDLabel = self.findChild(QLabel, 'ExtraNDLabel')
         self.ExtraND = self.findChild(QComboBox, 'ExtraND')
@@ -659,13 +662,22 @@ class MainWindow(QMainWindow):
 
     # ACF File
     def update_acffile(self, value):
-        fast = QueryFastReadMode.execute({})
-        if fast is True:
+#         [acf_files]
+#         green_normal = regular-read-green
+#         green_fast = fast-read-green
+#         red_normal = regular-read-red
+#         red_fast = fast-read-red
+        red_fast = (self.red_acf_file_kw.ktl_keyword == 'fast-read-red.acf')
+        green_fast = (self.green_acf_file_kw.ktl_keyword == 'fast-read-green.acf')
+        if red_fast and green_fast:
             self.read_mode.setText('Fast')
             self.read_mode.setStyleSheet("color:orange")
-        else:
+        elif not red_fast and not green_fast:
             self.read_mode.setText('Normal')
             self.read_mode.setStyleSheet("color:green")
+        else:
+            self.read_mode.setText('Mixed!')
+            self.read_mode.setStyleSheet("color:red")
 
     def update_ca_hk_enabled(self, value):
         self.log.debug(f"update_ca_hk_enabled: {value}")
@@ -918,7 +930,7 @@ class MainWindow(QMainWindow):
         # Teff
         Teff = float(self.OB.get('Teff'))
         self.Teff.setText(f"{Teff:.0f}")
-        if Teff < 2700 or Teff > 6600:
+        if Teff < self.AutoND_Teff_low or Teff > self.AutoND_Teff_high:
             self.OB.SEQ_Observations1.set('AutoNDFilters', False)
             self.AutoNDFilters.setChecked(False)
             self.AutoNDFilters.setEnabled(False)

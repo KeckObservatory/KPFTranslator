@@ -174,8 +174,6 @@ links:
         cmd: guider.GuiderLastfile.GuiderLastfile
     GuiderOutdir:
         cmd: guider.GuiderOutdir.GuiderOutdir
-    OptimizeGuiderExposure:
-        cmd: guider.OptimizeGuiderExposure.OptimizeGuiderExposure
     PredictGuiderParameters:
         cmd: guider.PredictGuiderParameters.PredictGuiderParameters
     SetGuiderExpTime:
@@ -215,8 +213,12 @@ links:
         cmd: scripts.ConfigureForScience.ConfigureForScience
     EndOfNight:
         cmd: scripts.EndOfNight.EndOfNight
+    EnterLowPowerMode:
+        cmd: scripts.EnterLowPowerMode.EnterLowPowerMode
     ExecuteSlewCal:
         cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
+    RecoverFromLowPowerMode:
+        cmd: scripts.RecoverFromLowPowerMode.RecoverFromLowPowerMode
     RunCalOB:
         cmd: scripts.RunCalOB.RunCalOB
     RunSciOB:
@@ -253,6 +255,8 @@ links:
     # Spectrograph
     QueryFastReadMode:
         cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
+    QueryReadMode:
+        cmd: spectrograph.QueryReadMode.QueryReadMode
     RecoverDetectors:
         cmd: spectrograph.ResetDetectors.RecoverDetectors
     ResetCaHKDetector:
@@ -289,6 +293,8 @@ links:
         cmd: spectrograph.StartExposure.StartExposure
     StopAgitator:
         cmd: spectrograph.StopAgitator.StopAgitator
+    WaitForL0File:
+        cmd: spectrograph.WaitForL0File.WaitForL0File
     WaitForReadout:
         cmd: spectrograph.WaitForReadout.WaitForReadout
     WaitForReady:

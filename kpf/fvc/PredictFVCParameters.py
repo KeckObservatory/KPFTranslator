@@ -5,7 +5,7 @@ from kpf.fvc.SetFVCExpTime import SetFVCExpTime
 
 
 class PredictFVCParameters(KPFTranslatorFunction):
-    '''Estimate the exposure time given the stellar Jmag and which camera.
+    '''Estimate the exposure time given the stellar Gmag and which camera.
 
     Based on scaling from a single, poorly measured data point:
     For Vmag ~ 4, the SCIFVC_exptime = 1 and CAHKFVC_exptime = 15

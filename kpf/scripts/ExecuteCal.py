@@ -36,6 +36,7 @@ from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.StartAgitator import StartAgitator
 from kpf.spectrograph.StartExposure import StartExposure
 from kpf.spectrograph.StopAgitator import StopAgitator
+from kpf.spectrograph.WaitForL0File import WaitForL0File
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.WaitForReadout import WaitForReadout
 from kpf.fiu.ConfigureFIU import ConfigureFIU
@@ -268,6 +269,8 @@ class ExecuteCal(KPFTranslatorFunction):
             # Start next exposure
             log.info(f"Starting expoure {j+1}/{nexp} ({args.get('Object')})")
             StartExposure.execute({})
+            if exptime > 10:
+                WaitForL0File.execute({})
             WaitForReadout.execute({})
             log.info(f"Readout has begun")
             # Stop agitator after each exposure if we are in normal read mode

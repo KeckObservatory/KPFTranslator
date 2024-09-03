@@ -152,7 +152,7 @@ def get_simulcal_od(vmag, teff, exp_time, cal_fits, ref_wave=None,
     # check that the closest CAL flux level is larger than SCI:
     while cal_flux_rate_nearest > stellar_flux_rate_slice * 1.:
         # if it is, bump up to the next OD filter setting
-        print('CAL FLUX EXCEEDS STELLAR FLUX -- ADDING MORE OD')
+#         print('CAL FLUX EXCEEDS STELLAR FLUX -- ADDING MORE OD')
         index_od_nearest += 1
         od_nearest = od_values[index_od_nearest] # total OD
         cal_flux_rate_nearest =  cal_flux_rate_native * (10. ** (-od_nearest))

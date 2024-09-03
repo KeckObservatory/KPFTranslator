@@ -12,7 +12,8 @@ import ktl
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input, ScriptStopTriggered)
+                 FailedToReachDestination, check_input, ScriptStopTriggered,
+                 ExistingScriptRunning)
 
 
 ##-----------------------------------------------------------------------------
@@ -95,8 +96,8 @@ def check_script_running():
                f"then the script keywords can be cleared by running:\n"
                f"  reset_script_keywords\n"
                f"or invoking it from the FVWM background menu:\n"
-               f"  KPF Trouble Recovery --> Reset script keywords")
-        raise FailedPreCondition(msg)
+               f"  KPF Trouble Recovery --> Reset script keywords\n")
+        raise ExistingScriptRunning(msg)
 
 
 def check_scriptstop():

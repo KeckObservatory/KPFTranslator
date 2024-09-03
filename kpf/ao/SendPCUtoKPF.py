@@ -17,6 +17,9 @@ class SendPCUtoKPF(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         ao = ktl.cache('ao')
+        success = ao['PCSFSTST'].waitFor('!= "FAULT"')
+        if success is not True:
+            raise FailedPreCondition('PCSFSTST is faulted')
         success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=120)
         if success is False:
             raise FailedPreCondition('PCU is in motion')

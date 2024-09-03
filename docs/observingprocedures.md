@@ -3,6 +3,7 @@
 - [Beginning of the Night](#beginning-of-the-night)
 - [Performing Observations](#performing-observations)
 - [Switching Programs on a Split Night](#switching-programs-on-a-split-night)
+- [Bad Weather](#bad-weather)
 
 # Beginning of the Night
 
@@ -60,18 +61,24 @@ The log lines which show up in the xterm with the running OB contain useful info
 
 KPF has the option of taking a "slew cal" immediately prior to a science observation.  This is a way to make use of the time spent slewing from one target to another.  If an OB is executed with a slew cal (using the "Execute OB with Slew Cal" button in the OB GUI), then the FIU will transition to calibration mode (the FIU hatch will close and calibration light will be directed to the science and sky fibers), and a calibration exposure will be taken.  This will obscure the sky during calibration, so the OA will not be able to see the target until the slew cal is done.  This process takes around 2 minutes and so fits nicely in to long slews.
 
-Because the slew cal happens during the slew to a target, it is optimally performed with a science OB so that the guider can be configured for the science target.  This is another case where executing a science OB before the slew has completed is the most efficient observing strategy.
-
-At the moment, we recommend that slew cals are taken roughly every hour while observing.  This helps track the internal drift of the instrument itself over time scales less than 1 day and can be used by the DRP to further improve RV precision.  The instrument software keeps track of the time since the last relevant calibration and the timer is shown in the upper right of the OB GUI.  The "Time Since Cal" value will color code to orange if it exceeds 1 hour and will become red at 2 hours.  Despite this, **the choice to take slew cals is entirely up to the observer** the timer is only a recommendation.
-
-Slew cals can also be taken independently using the "Execute Slew Cal Only" button.  This is not the intended method for taking slew cals and we recommend using the "Execute OB with Slew Cal" button instead, however the slew cal only option may be useful during periods of bad weather when no observing is happening.
+An alternative to a slew cal is a simultaneous calibration (simulcal).  To use this enable the `TakeSimulCal` option in the OB or on the OB GUI and either manually set the ND filters to apply to the calibration light or enable the `AutoNDFilters` option.  See the [nighttime calibrations](nighttimecalibrations.md) page for more info on both the slew cal and simulcal options.
 
 ### Stopping Scripts or Exposures
 
 **Important**: If you wish to halt an OB during execution, do **NOT** hit Control-c in the terminal.  Use the "Request Script STOP" button instead. The KPF scripts have checkpoints in them which are places where the script can cleanly exit and perform important cleanup operations.  The "STOP Exposure and Script" button does the same thing, but it will also terminate an exposure in progress.
+
+### Known Issues
+
+There is a known failure mode for KPF called a "start state error".  What happens is some sort of communication failure between the `kpfexpose` control software, the galil hardware which handles the timing and signaling of the detectors and shutters, and the Archon detector controllers.  The result is that one of the green or red detectors does not begin the exposure properly and that detector's data will be useless.  The `kpf.spectrograph.StartExposure` [script](scripts/StartExposure.md) will automatically detect this situation, terminate the bad exposure after a few seconds, and start a new one all without user intervention.  This will generate several WARNING level log messages, but the user does not need to take action as the correction happens automatically.
+
+Another known failure mode which can generate WARNING level log messages is a failure of the FIU to transition in to a new mode (i.e. "Observing" or "Calibration").  The `kpf.fiu.ConfigureFIU` and `kpf.fiu.WaitForConfigureFIU` [scripts](scripts/WaitForConfigureFIU.md) will automatically retry several times before giving up and erroring out.  As with the start state error above, no user action is needed, but you will see WARNING level log messages to let you know what is happening.
 
 # Switching Programs on a Split Night
 
 On a KPF/KPF split night, before starting the second KPF program, run `KPF Control Menu --> Set Program ID and Observers` from the background menu (or `kpfSetObserverFromSchedule` from the command line on any KPF machine). Enter the program ID at the terminal prompt. The script will then set program ID and observers for the second KPF program, based on the telescope schedule.
 
 If you wish to set the observer names and program ID manually (i.e. without querying the telescope schedule), you can use the `kpfSetProgram` and `kpfSetObserver` scripts from the command line.  For example: `kpfSetProgram K123` will set program ID "K123" and `kpfSetObserver "E.E. Barnard, S.W. Burnham"` will set the observer name to "E.E. Barnard, S.W. Burnham".  Note that observer names should be enclosed in quotes to handle spaces in the list of names.
+
+# Bad Weather
+
+If the weather is so bad that no observing is taking place and there doesn't seem to be an immediate likelihood of observing, then we recommend that the observer runs the end of night procedure (`KPF Control Menu --> Run End of Night Script`).  The main advantage of this is that running End of Night will re-enable the automatic scheduled calibrations which happen 4 times per night when KPF is not on sky.  This means that the instrumental drift will be tracked with no action required by the observer (i.e. running slew cals).  If one of these calibration scripts is in progress and observing should resume, use the "Request Script STOP" as described above. After that, run the Start of Night script just as you would at the beginning of the night (among other things it disables the autmatic scheduled calibrations).

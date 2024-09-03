@@ -1,10 +1,10 @@
 # Referencing KPF
 
-The suggested instrument paper to use when referencing KPF is currently [Gibson et al. (2024)]() in prep.
+The suggested instrument paper to use when referencing KPF is currently [Gibson et al. (2024)](http://dx.doi.org/10.1117/12.3017841).
 
 ## Additional KPF Instrument Papers
 
-- "System Design of the Keck Planet Finder" [Gibson et al. (2024)]() in prep.
+- "System Design of the Keck Planet Finder" [Gibson et al. (2024)](http://dx.doi.org/10.1117/12.3017841).
 - "A fiber injection unit for the Keck Planet Finder: opto-mechanical design" [Lilley et al. (2022)](https://www.spiedigitallibrary.org/conference-proceedings-of-spie/12184/2628818/A-fiber-injection-unit-for-the-Keck-Planet-Finder/10.1117/12.2628818.short)
 - "Keck Planet Finder: design updates" [Gibson et al. (2020)](https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11447/2561783/Keck-Planet-Finder-design-updates/10.1117/12.2561783.short)
 - "A optical fiber double scrambler and mechanical agitator system for the Keck planet finder spectrograph" [Sirk et al (2018)](https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10702/2312945/A-optical-fiber-double-scrambler-and-mechanical-agitator-system-for/10.1117/12.2312945.short)

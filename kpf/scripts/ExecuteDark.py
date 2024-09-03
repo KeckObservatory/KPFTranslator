@@ -14,6 +14,7 @@ from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.SetExpTime import SetExpTime
 from kpf.spectrograph.StartExposure import StartExposure
+from kpf.spectrograph.WaitForL0File import WaitForL0File
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.WaitForReadout import WaitForReadout
 
@@ -71,6 +72,8 @@ class ExecuteDark(KPFTranslatorFunction):
             # Start next exposure
             log.info(f"Starting exposure {j+1}/{nexp} ({args.get('Object')})")
             StartExposure.execute({})
+            if exptime > 10:
+                WaitForL0File.execute({})
             WaitForReadout.execute({})
             log.info(f"Readout has begun")
 

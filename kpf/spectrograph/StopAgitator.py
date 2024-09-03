@@ -36,7 +36,7 @@ class StopAgitator(KPFTranslatorFunction):
     @classmethod
     def post_condition(cls, args, logger, cfg):
         timeout = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
-        success = ktl.waitFor('$kpfmot.AGITATOR == Stopped', timeout=timeout)
+        success = ktl.waitFor('$kpfmot.AGITATOR == Stopped', timeout=5*timeout)
         if success is not True:
             agitator = ktl.cache('kpfmot', 'AGITATOR')
             raise FailedToReachDestination(agitator.read(), 'Stopped')

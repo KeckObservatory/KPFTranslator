@@ -60,63 +60,12 @@ def mode(data):
     return mode
 
 
-##-------------------------------------------------------------------------
-## Utility functions
-## from Filippenko 1982 (PASP, 94:715-721, August 1982)
-##-------------------------------------------------------------------------
-def n_15760(wav):
-    '''wav in microns'''
-    foo = 64.328 + 29498.1/(146-(1/wav)**2) + 255.4/(41-(1/wav)**2)
-    n_15760 = foo/10**6 + 1
-    return n_15760
-
-def n(wav, T=7, P=600, f=8):
-    '''T air temperature in deg C
-    P air pressure in mm Hg
-    f is water vapor pressure in mm Hg
-    '''
-    n0 = (n_15760(wav) - 1) * P*(1+(1.049 - 0.0157*T)*10**-6*P) / (720.883*(1+0.003661*T)) + 1
-    reduction = (0.0624 - 0.000680/wav**2)/(1+0.003661*T)*f
-    n = ( (n0-1)*10**6 - reduction ) / 10**6 + 1
-    return n
-
-def dR(wav, z, T=7, P=600, f=8, wav0=0.5):
-    '''z is zenith angle in degrees
-    '''
-    z *= np.pi/180 # convert to radians
-    dR = 206265 * ( n(wav, T=T, P=P, f=f) - n(wav0, T=T, P=P, f=f) ) * np.tan(z)
-    return dR
-
-
-def calculate_DAR_arcsec(EL, CRED2wav=1.075, sciencewav=0.55,
-                         T0=0, P0=465, f0=4.5):
-    za = 90-EL
-    DARarcsec = dR(CRED2wav, za, T=T0, P=P0, f=f0, wav0=sciencewav)
-    return DARarcsec
-
-
-def calculate_DAR_pix(DARarcsec, va, pixel_scale=0.058):
-    dx = DARarcsec/pixel_scale*np.cos(va*np.pi/180)
-    dy = -DARarcsec/pixel_scale*np.sin(va*np.pi/180)
-    return dx, dy
-
 def parse_CRED2_image_header(cred2_file):
     cred2_image_filename = Path(cred2_file).name
-    log.debug(f"Correcting pixel position for DAR using {cred2_image_filename}")
     hdul = fits.open(cred2_file)
     EL = float(hdul[0].header.get("EL"))
-    DARarcsec = calculate_DAR_arcsec(EL)
-    log.debug(f"DAR at EL={EL:.1f} is {DARarcsec:.3f} arcsec")
     va = np.arctan(hdul[0].header.get("CD1_1Y")/hdul[0].header.get("CD1_2Y"))*180/np.pi + 90
-    DARx, DARy = calculate_DAR_pix(DARarcsec, va)
-    log.debug(f"DAR correction is {DARx:.2f}, {DARy:.2f} pix")
-    return DARx, DARy, va
-
-# Manual checks of VA calculation:
-#
-# UT time,  HST time       , EL   , VA   , CRED2 file           , CD1_1Y      , CD1_2Y      , PARANG, VA Calculation
-#  080406, Jan 13 22:04 HST, 57.0 , 123.0, kpfguide_0371200.fits, -8.77474E-06, -1.35119E-05, -1.99 , 123.00002845799975
-#  050343, Jan 13 19:03 HST, 71.14, 108.7, kpfguide_0360390.fits, -5.21867E-06, -1.52425E-05, -39.15, 108.89998589102663
+    return EL, va
 
 
 
@@ -125,7 +74,7 @@ def parse_CRED2_image_header(cred2_file):
 ## build_FITS_cube
 ##-------------------------------------------------------------------------
 def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
-                    applydar=False):
+                    dar_offset=None):
     nx = len(set(images['x']))
     ny = len(set(images['y']))
     xs = sorted(set(images['x']))
@@ -141,24 +90,17 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     nspectra = len(images[images['camera'] == camname])
     log.info(f'Building FITS cube using {nspectra} spectra')
     vas = []
+    ELs = []
     for entry in images[images['camera'] == camname]:
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
-#         print(i, entry['x'])
-#         print(j, entry['y'])
-
-        # Find CRED2 image at same position to get info for DAR correction
         this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
         cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
-        DARx, DARy, va = parse_CRED2_image_header(cred2_file)
+        EL, va = parse_CRED2_image_header(cred2_file)
+        ELs.append(EL)
         vas.append(va)
-        if mode == 'TipTilt' and applydar is True:
-            Xpix = entry['x'] - DARx
-            Ypix = entry['y'] - DARy
-            log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
-        else:
-            Xpix = entry['x']
-            Ypix = entry['y']
+        Xpix = entry['x']
+        Ypix = entry['y']
 
         # Figure out the 1d extracted exposure meter file if not recorded
         if onedspecfiles is False:
@@ -176,8 +118,6 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
         onedspec_table = Table(hdul[1].data)
         if wavs is None:
             wavs_strings = [k for k in onedspec_table.keys() if re.match('[\d\.]+', k.strip()) is not None]
-#             wavs_strings = [k for k in onedspec_table.keys() if k not in ['Date-Beg', 'Date-End']]
-#             wavs = [float(k) for k in onedspec_table.keys() if k not in ['Date-Beg', 'Date-End']]
             wavs = [float(k) for k in wavs_strings]
             dwav = [wav-wavs[i-1] for i,wav in enumerate(wavs) if i>0]
             nwav = len(wavs)
@@ -218,23 +158,18 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
 
     va = np.mean(vas)
     log.info(f"Mean VA = {va:.1f} deg")
+    EL = np.mean(ELs)
+    log.info(f"Mean EL = {EL:.1f} deg")
     norm_spec_cube = np.zeros((nwav,ny,nx))
     for w,spectral_slice in enumerate(spec_cube):
         norm_spec_cube[w,:,:] = spectral_slice / spectral_slice.mean()
 
     flux_map = np.sum(spec_cube, axis=0) / np.sum(spec_cube, axis=0).max()
-#     npix = 30
-#     color_images = np.zeros((3,ny,nx))
-#     color_images[0,:,:] = np.sum(spec_cube[index_450nm-npix:index_450nm+npix,:,:], axis=0)
-#     color_images[1,:,:] = np.sum(spec_cube[index_550nm-npix:index_550nm+npix,:,:], axis=0)
-#     color_images[2,:,:] = np.sum(spec_cube[index_650nm-npix:index_650nm+npix,:,:], axis=0)
 
     fluxcubehdu = fits.ImageHDU()
     fluxcubehdu.header.set('Name', 'Three_Color_Cube')
     fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
     wavs = np.array(wavs)
-#     wavbin_centers = [475, 525, 575, 625, 675, 725, 775, 825]
-#     delta_w = 25
     delta_w = 20
     wavbin_centers = np.arange(470,830,2*delta_w)
     color_images = np.zeros((len(wavbin_centers),ny,nx))
@@ -254,6 +189,9 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     hdu.header.set('OBJECT', 'Spectral_Cube')
     hdu.header.set('Comment', comment)
     hdu.header.set('VA', va, 'Mean Vertical Angle of input images')
+    hdu.header.set('EL', EL, 'Mean Elevation of input images')
+    hdu.header.set('DAROFF_X', dar_offset[0], 'DAR_OFFSET in X')
+    hdu.header.set('DAROFF_Y', dar_offset[1], 'DAR_OFFSET in Y')
     hdu.data = spec_cube
     normcubehdu = fits.ImageHDU()
     normcubehdu.header.set('Name', 'Normalized_Spectral_Cube')
@@ -263,12 +201,6 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     fluxmaphdu.header.set('Name', 'Normalized_Flux_Map')
     fluxmaphdu.header.set('OBJECT', 'Normalized_Flux_Map')
     fluxmaphdu.data = flux_map
-#     fluxcubehdu = fits.ImageHDU()
-#     fluxcubehdu.header.set('Name', 'Three_Color_Cube')
-#     fluxcubehdu.header.set('OBJECT', 'Three_Color_Cube')
-#     fluxcubehdu.header.set('Layer1', '450nm')
-#     fluxcubehdu.header.set('Layer2', '550nm')
-#     fluxcubehdu.header.set('Layer3', '650nm')
     fluxcubehdu.data = color_images
     colormaphdu = fits.ImageHDU()
     colormaphdu.header.set('Name', 'Color_Map_Ratios')
@@ -279,8 +211,8 @@ def build_FITS_cube(images, comment, ouput_spec_cube, mode='TipTilt',
     poshdu = fits.ImageHDU()
     poshdu.header.set('Name', 'Spatial_Positions')
     poshdu.header.set('OBJECT', 'Spatial_Positions')
-    poshdu.header.set('Comment', '1 X pixel, DAR corrected')
-    poshdu.header.set('Comment', '2 Y pixel, DAR corrected')
+    poshdu.header.set('Comment', '1 X pixel')
+    poshdu.header.set('Comment', '2 Y pixel')
     poshdu.header.set('Comment', '3 X pixel, original')
     poshdu.header.set('Comment', '4 Y pixel, original')
     poshdu.header.set('Comment', '5 mean flux map')
@@ -478,7 +410,7 @@ def build_cube_graphic(hdul, ouput_cube_graphic, mode=mode,
 ## build_CRED2_graphic
 ##-------------------------------------------------------------------------
 def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
-                        iterate=True, x0=335, y0=256, applydar=False):
+                        iterate=True, x0=335, y0=256):
     ouput_cred2_image_file = Path(ouput_cred2_image_file)
     import ccdproc
     import photutils
@@ -496,13 +428,9 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
         cred2_file = Path(entry['file'])
-        DARx, DARy, va = parse_CRED2_image_header(cred2_file)
-        if applydar is True:
-            Xpix = entry['x'] - DARx
-            Ypix = entry['y'] - DARy
-        else:
-            Xpix = entry['x']
-            Ypix = entry['y']
+        EL, va = parse_CRED2_image_header(cred2_file)
+        Xpix = entry['x']
+        Ypix = entry['y']
 
         # Create and Subtract Background
         ccddata = CCDData.read(entry['file'], unit="adu", memmap=False)
@@ -552,10 +480,6 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
             y3 = y1
         log.debug(f"  Iteration 3: {x3:.1f} {y3:.1f} ({entry['x']:.1f} {entry['y']:.1f})")
 
-        log.debug(f"  Applying DAR correction")
-        x3 -= DARx
-        y3 -= DARy
-
         # Add plot to figure
         plt.subplot(ny,nx,fig_index+1)
         cube_number = cred2_file.name.replace('kpfguide_cube_', '').replace('.fits', '')
@@ -589,7 +513,7 @@ def build_CRED2_graphic(images, comment, ouput_cred2_image_file, data_path,
 ## build_FVC_graphic
 ##-------------------------------------------------------------------------
 def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
-                      x0=335, y0=256, applydar=False):
+                      x0=335, y0=256):
     data_path = Path(data_path)
     ouput_FVC_image_file = Path(ouput_FVC_image_file)
 
@@ -605,18 +529,11 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
         i = xs.index(entry['x'])
         j = ys.index(entry['y'])
         new_fig_index = (i+1) + nx*(ny-j-1)
-
-        # Find CRED2 image at same position to get info for DAR correction
         this_grid_pos = images[np.isclose(images['x'], entry['x']) & np.isclose(images['y'], entry['y'])]
         cred2_file = this_grid_pos[this_grid_pos['camera'] == 'CRED2']['file'][0]
-        DARx, DARy, va = parse_CRED2_image_header(cred2_file)
-        if applydar is True:
-            Xpix = entry['x'] - DARx
-            Ypix = entry['y'] - DARy
-        else:
-            Xpix = entry['x']
-            Ypix = entry['y']
-        log.debug(f"DAR corrected pixel {Xpix:.2f}, {Ypix:.2f}")
+        EL, va = parse_CRED2_image_header(cred2_file)
+        Xpix = entry['x']
+        Ypix = entry['y']
 
         fvc_file = Path(entry['file'])
         hdul = fits.open(fvc_file)
@@ -649,7 +566,7 @@ def build_FVC_graphic(FVC, images, comment, ouput_FVC_image_file, data_path,
 ## analyze_grid_search
 ##-------------------------------------------------------------------------
 def analyze_grid_search(logfile, fiber='Science', model_seeing='0.7',
-                        xfit=None, yfit=None, applydar=False,
+                        xfit=None, yfit=None,
                         generate_cred2=False):
     if f"{float(model_seeing):.2f}" not in ['0.50', '0.70', '0.90']:
         print(f"Seeing models only available for 0.50, 0.70, and 0.90 arcsec")
@@ -694,36 +611,25 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing='0.7',
         with open(logfile) as FO:
             lines = FO.readlines()
         for line in lines[:60]:
-            m = re.search("comment: (.*)", line)
-            if m is not None:
-                comment = m.groups()[0].strip('\n')
+            m_comment = re.search("comment: (.*)", line)
+            if m_comment is not None:
+                comment = m_comment.groups()[0].strip('\n')
         log.info(f"  Log Comment: {comment}")
     except:
         comment = ''
-        log.error('Could not find comment in log file')
 
-    # Determine comment string from log file
+    # Determine DAR offset from log file
     try:
         with open(logfile) as FO:
             lines = FO.readlines()
         for line in lines[:60]:
-            m = re.search("DAR_ENABLE = (.*)", line)
-            if m is not None:
-                dar_enable = m.groups()[0].strip('\n')
-        log.info(f"  DAR_ENABLE: {dar_enable}")
-        if dar_enable == 'No':
-            log.warning('Applying DAR in analysis')
-            applydar = True
-        elif dar_enable == 'Yes':
-            log.info('DAR corrected at telescope')
-            applydar = False
-        else:
-            log.error(f'Unknown value for DAR_ENABLE ={dar_enable}')
+            m_daroffset = re.search("DAR_OFFSET = ([\d\.]+),? ([\d\.]+)", line)
+            if m_daroffset is not None:
+                dar_offset = (float(m_daroffset.groups()[0]), float(m_daroffset.groups()[1]))
+        log.info(f"  Log DAR Offset: {dar_offset}")
     except:
-        log.warning('Could not find DAR_ENABLE in log file')
-        applydar = True
-    log.info(f'Using applydar = {applydar}')
-
+        log.warning("  Failed to find DAR_OFFSET in log")
+        dar_offset = None
 
     # Load images table and fix old bad naming
     images = Table.read(images_file, format='ascii.csv')
@@ -738,7 +644,8 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing='0.7',
 
     # Build output FITS cube file name
     ouput_spec_cube = f"{mode}{logfile.name.replace('.log', '.fits')}"
-    hdul = build_FITS_cube(images, comment, ouput_spec_cube, mode=mode, applydar=applydar)
+    hdul = build_FITS_cube(images, comment, ouput_spec_cube, mode=mode,
+                           dar_offset=dar_offset)
 
     # Build graphic of cube fluxes
     ouput_cube_graphic = f"{mode}{logfile.name.replace('.log', '_fluxmap.png')}"
@@ -776,7 +683,7 @@ def analyze_grid_search(logfile, fiber='Science', model_seeing='0.7',
                 build_FVC_graphic(FVC, images, comment, ouput_fvc_image_file, data_path,
                                   x0=fvc_pixels[FVC][fiber][0],
                                   y0=fvc_pixels[FVC][fiber][1],
-                                  applydar=applydar)
+                                  )
     return
 
 
