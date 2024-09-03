@@ -120,28 +120,15 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         log.debug(f"Estimated SoCal observation time = {SoCal_duration}")
 
         # Prepare Etalon parameters to pass to ExecuteCal
-        Etalon_ND1 = cfg.get('SoCal', 'EtalonND1', fallback='OD 0.1')
-        Etalon_ND2 = cfg.get('SoCal', 'EtalonND2', fallback='OD 0.1')
-        Etalon_ExpTime = cfg.getfloat('SoCal', 'EtalonExpTime', fallback=60)
-        Etalon_observation = {'Template_Name': 'kpf_lamp',
-                              'Template_Version': '1.0',
-                              'TriggerCaHK': True,
-                              'TimedShutter_CaHK': True,
-                              'TriggerGreen': True,
-                              'TriggerRed': True,
-                              'TriggerExpMeter': False,
-                              'RunAgitator': True,
-                              'CalSource': 'EtalonFiber',
-                              'Object': 'slewcal',
-                              'CalND1': Etalon_ND1,
-                              'CalND2': Etalon_ND2,
-                              'ExpTime': Etalon_ExpTime,
-                              'nExp': 8,
-                              'SSS_Science': True,
-                              'SSS_Sky': True,
-                              'TakeSimulCal': True,
-                              'nointensemon': True,
-                              }
+        SLEWCALFILE = ktl.cache('kpfconfig', 'SLEWCALFILE')
+        slewcal_argsfile = Path(SLEWCALFILE.read())
+        with open(slewcal_argsfile, 'r') as file:
+            slewcal_OB = yaml.safe_load(file)
+        Etalon_observation = slewcal_OB['SEQ_Calibrations'][0]
+        # Manually set nExp to config value and nointensemon True
+        Etalon_observation['nExp'] = cfg.get('SoCal', 'Etalon_nExp', fallback=8)
+        Etalon_observation['nointensemon'] = True
+
         Etalon_duration = int(Etalon_observation['nExp'])*max([float(Etalon_observation['ExpTime']), archon_time_shim])
         Etalon_duration += int(Etalon_observation['nExp'])*readout
         log.debug(f"Estimated Etalon observation time = {Etalon_duration}")
