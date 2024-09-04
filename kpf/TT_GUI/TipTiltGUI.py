@@ -1073,8 +1073,8 @@ class MainWindow(QMainWindow):
         plt.title('Tip Tilt Error')
         if npoints <= 1:
             log.debug('update_TipTiltErrorPlot: clearing plot')
-            ax.set_ylim(-3,3)
-            plt.yticks([-2,0,2])
+            ax.set_ylim(0,3)
+            plt.yticks([0,1,2])
             plt.xticks([])
             ax.grid('major', alpha=0.4)
             ax.tick_params(axis='both', direction='in')
@@ -1097,6 +1097,8 @@ class MainWindow(QMainWindow):
 #                 n_plot_points += len(starpos_xerr)
 #                 n_plot_points += len(starpos_yerr)
 
+            fill_y2 = 0.050/self.pscale
+            plt.fill_between(tterr_times, y1=0, y2=fill_y2, color='g', alpha=0.2)
             ax.plot(tterr_times, tterr, 'ko', ms=2, drawstyle='steps')
 #             if len(self.StarPositionError) > 0:
 #                 ax.plot(starpos_times, starpos_xerr, 'gx', ms=4, alpha=0.5)
