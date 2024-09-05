@@ -1192,6 +1192,16 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_ObjectChoice: {value}')
         self.ObjectChoiceValue.setText(f"{value}")
         self.ObjectChoice.setCurrentText('')
+        if value in ['None', '', 0]:
+            self.ObjectChoiceValue.setStyleSheet('color: red;')
+        elif value == 'OBJECT1':
+            self.ObjectChoiceValue.setStyleSheet('color: green;')
+        elif value == 'OBJECT2':
+            self.ObjectChoiceValue.setStyleSheet('color: blue;')
+        elif value == 'OBJECT3':
+            self.ObjectChoiceValue.setStyleSheet('color: orange;')
+        else:
+            self.ObjectChoiceValue.setStyleSheet('color: black;')
 
     def set_ObjectChoice(self, value):
         self.log.debug(f'set_ObjectChoice: {value} ({type(value)})')
@@ -1506,7 +1516,7 @@ class MainWindow(QMainWindow):
             objectN_kfo = getattr(self, f'OBJECT{obj}')
             objectN = objectN_kfo.ktl_keyword.binary
             if objectN[0] > -998:
-                color = {1: 'blue', 2: 'green', 3: 'red'}[obj]
+                color = {1: 'green', 2: 'blue', 3: 'orange'}[obj]
                 flux = objectN[2]
                 hits = objectN[3]
                 self.add_mark(objectN[0]-self.xcent+roidim,
