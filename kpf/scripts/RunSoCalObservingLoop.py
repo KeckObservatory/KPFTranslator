@@ -127,6 +127,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             slewcal_OB = yaml.safe_load(file)
         Etalon_observation = slewcal_OB['SEQ_Calibrations'][0]
         # Manually set nExp to config value and nointensemon True
+        Etalon_observation['Template_Name'] = 'kpf_lamp'
+        Etalon_observation['Template_Version'] = '1.0'
         Etalon_observation['nExp'] = cfg.get('SoCal', 'Etalon_nExp', fallback=8)
         Etalon_observation['nointensemon'] = True
 
