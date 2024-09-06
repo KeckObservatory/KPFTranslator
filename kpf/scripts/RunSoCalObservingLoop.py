@@ -128,7 +128,12 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         Etalon_observation = slewcal_OB['SEQ_Calibrations'][0]
         # Manually set nExp to config value and nointensemon True
         Etalon_observation['Template_Name'] = 'kpf_lamp'
-        Etalon_observation['Template_Version'] = '1.0'
+        Etalon_observation['Template_Version'] = slewcal_OB['Template_Version']
+        Etalon_observation['TriggerCaHK'] = slewcal_OB['TriggerCaHK']
+        Etalon_observation['TriggerGreen'] = slewcal_OB['TriggerGreen']
+        Etalon_observation['TriggerRed'] = slewcal_OB['TriggerRed']
+        # No need to specify TimedShutter_CaHK in OB/calibration
+        Etalon_observation['TimedShutter_CaHK'] = slewcal_OB.get('TriggerCaHK', False)
         Etalon_observation['nExp'] = cfg.get('SoCal', 'Etalon_nExp', fallback=8)
         Etalon_observation['nointensemon'] = True
 
