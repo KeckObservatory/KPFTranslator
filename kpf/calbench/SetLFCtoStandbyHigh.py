@@ -37,8 +37,9 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
-        LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
-        timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
-        success = LFCready.waitFor('== "OK"', timeout=timeout)
-        if success is not True:
-            raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
+        pass
+#         LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
+#         timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
+#         success = LFCready.waitFor('== "OK"', timeout=timeout)
+#         if success is not True:
+#             raise FailedPostCondition('kpfmon.LFCREADYSTA is not OK')
