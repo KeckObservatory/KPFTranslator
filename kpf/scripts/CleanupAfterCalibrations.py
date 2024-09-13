@@ -64,7 +64,20 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
                                 'BrdbandFiber', 'WideFlat']:
                         CalLampPower.execute({'lamp': lamp, 'power': 'off'})
                     if lamp == 'LFCFiber':
-                        SetLFCtoStandbyHigh.execute({})
+                        try:
+                            SetLFCtoStandbyHigh.execute({})
+                        except Exception as e:
+                            log.error('SetLFCtoStandbyHigh failed')
+                            log.error(e)
+                            try:
+                                SendEmail.execute({'Subject': 'ExecuteCals Failed',
+                                                   'Message': f'{e}'})
+                            except Exception as email_err:
+                                log.error(f'Sending email failed')
+                                log.error(email_err)
+
+
+
 
         kpfconfig = ktl.cache('kpfconfig')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
