@@ -29,7 +29,8 @@ class WaitForLFCReady(KPFTranslatorFunction):
         expr += f"and ($kpfmon.LFCREADYSTA == 'OK')"
         expr += f"and ($kpfcal.WOBBLE == 'False')"
         expr += f"and ($kpfcal.OPERATIONMODE == 'AstroComb')"
-#         expr += f"and ($kpfcal.SPECFLAT == 'True')"
+        expr += f"and ($kpfcal.SPECFLATIR == 'True')"
+        expr += f"and ($kpfcal.SPECFLATVIS == 'True')"
         timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=300)
         success = ktl.waitFor(expr, timeout=timeout)
         return success
