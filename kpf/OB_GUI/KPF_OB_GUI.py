@@ -1021,8 +1021,10 @@ class MainWindow(QMainWindow):
 
     def estimate_OB_duration(self):
         try:
-            log.debug(f"Estimating OB duration")
+            self.log.debug(f"Estimating OB duration")
             OB_for_calc = self.OB.to_dict()
+            OB_for_calc['fast'] = self.read_mode.text() == 'Fast'
+            self.log.debug(f'Read Mode: {self.read_mode.text()}')
             OB_for_calc['SEQ_Observations'][0]['nExp'] = int(OB_for_calc['SEQ_Observations'][0]['nExp'])
             OB_for_calc['SEQ_Observations'][0]['ExpTime'] = float(OB_for_calc['SEQ_Observations'][0]['ExpTime'])
             duration = EstimateSciOBDuration.execute(OB_for_calc)
@@ -1554,8 +1556,10 @@ class MainWindow(QMainWindow):
 
     def estimate_calOB_duration(self):
         try:
-            log.debug(f"Estimating Cal OB duration")
+            self.log.debug(f"Estimating Cal OB duration")
             OB_for_calc = self.calOB.to_dict()
+            OB_for_calc['fast'] = self.read_mode.text() == 'Fast'
+            self.log.debug(f'Read Mode: {self.read_mode.text()}')
             duration = EstimateCalOBDuration.execute(OB_for_calc)
             self.CalOBDuration.setText(f"Estimated Duration: {duration/60:.0f} min")
         except:

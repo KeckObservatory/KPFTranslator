@@ -82,7 +82,7 @@ class RunSciOB(KPFTranslatorFunction):
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
 
-        # Execute the Cal Sequence
+        # Execute the Sci Sequence
         #   Wrap in try/except so that cleanup happens
         observations = OB.get('SEQ_Observations', [])
         for observation in observations:

@@ -150,7 +150,8 @@ class MainWindow(QMainWindow):
         self.OBJECT_INTENSITY = kPyQt.kFactory(kpfguide['OBJECT_INTENSITY'])
         self.OBJECT_AREA = kPyQt.kFactory(kpfguide['OBJECT_AREA'])
         self.OBJECT_DBCONT = kPyQt.kFactory(kpfguide['OBJECT_DBCONT'])
-        self.TIPTILT_PHASE = kPyQt.kFactory(kpfguide['TIPTILT_PHASE'])
+#         self.TIPTILT_PHASE = kPyQt.kFactory(kpfguide['TIPTILT_PHASE'])
+        self.TIPTILT_ROIDIM = kPyQt.kFactory(kpfguide['TIPTILT_ROIDIM'])
         self.TIPTILT_ERROR = kPyQt.kFactory(kpfguide['TIPTILT_ERROR'])
         self.TIPTILT_ERROR_RMS = kPyQt.kFactory(kpfguide['TIPTILT_ERROR_RMS'])
         self.TIPTILT_CONTROL_X = kPyQt.kFactory(kpfguide['TIPTILT_CONTROL_X'])
@@ -420,6 +421,15 @@ class MainWindow(QMainWindow):
         self.DAREnable.currentTextChanged.connect(self.set_DAREnable)
         self.DAREnable.setEnabled(self.enable_control)
 
+        # Tip Tilt ROI: TIPTILT_ROIDIM
+        self.TipTiltROIValue = self.findChild(QLabel, 'TipTiltROIValue')
+        self.TipTiltROISelector = self.findChild(QComboBox, 'TipTiltROISelector')
+        self.TipTiltROISelector.addItems(['', '96 pix', '128 pix', '160 pix', '192 pix'])
+        self.TIPTILT_ROIDIM.stringCallback.connect(self.update_ROIDIM)
+        self.TIPTILT_ROIDIM.primeCallback()
+        self.TipTiltROISelector.currentTextChanged.connect(self.set_ROIDIM)
+        self.TipTiltROISelector.setEnabled(self.enable_control)
+
         # --------------------------------------
         # Tip Tilt Control and Telemetry Section
         # --------------------------------------
@@ -470,9 +480,9 @@ class MainWindow(QMainWindow):
         self.TIPTILT_FPS.primeCallback()
 
         # Tip Tilt Phase
-        self.TipTiltPhase = self.findChild(QLabel, 'TipTiltPhase')
-        self.TIPTILT_PHASE.stringCallback.connect(self.update_TipTiltPhase)
-        self.TIPTILT_PHASE.primeCallback()
+#         self.TipTiltPhase = self.findChild(QLabel, 'TipTiltPhase')
+#         self.TIPTILT_PHASE.stringCallback.connect(self.update_TipTiltPhase)
+#         self.TIPTILT_PHASE.primeCallback()
 
         # Tip Tilt Error
         #self.TipTiltError = self.findChild(QLabel, 'TipTiltError')
@@ -729,7 +739,7 @@ class MainWindow(QMainWindow):
             self.PeakFlux.setEnabled(enabled)
             self.TotalFlux.setEnabled(enabled)
             self.TipTiltFPS.setEnabled(enabled)
-            self.TipTiltPhase.setEnabled(enabled)
+#             self.TipTiltPhase.setEnabled(enabled)
             self.TipTiltRMSValue.setEnabled(enabled)
             self.ObjectChoice.setEnabled(enabled)
             self.TipTiltOnOffButton.setEnabled(enabled)
@@ -881,7 +891,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_PeakFlux: {value}')
         self.peak_flux_value = float(value)
         if self.PeakFlux.isEnabled() == True:
-            flux_string = f'{self.peak_flux_value:,.0f} ADU'
+            flux_string = f'{self.peak_flux_value:,.0f}'
             self.PeakFlux.setText(f"{flux_string}")
             if self.peak_flux_value < self.VeryLowPeakFluxThreshold:
                 style = f'color: red;'
@@ -986,19 +996,19 @@ class MainWindow(QMainWindow):
 
     ##----------------------------------------------------------
     ## Tip Tilt Phase
-    def update_TipTiltPhase(self, value):
-        self.log.debug(f'update_TipTiltPhase: {value}')
-        if self.TipTiltPhase.isEnabled() == True:
-            self.TipTiltPhase.setText(f"{value}")
-            if value == 'Idle':
-                style = f'color: black;'
-            elif value == 'Identifying':
-                style = f'color: red;'
-            elif value == 'Acquiring':
-                style = f'color: yellow;'
-            elif value == 'Tracking':
-                style = f'color: limegreen;'
-            self.TipTiltPhase.setStyleSheet(style)
+#     def update_TipTiltPhase(self, value):
+#         self.log.debug(f'update_TipTiltPhase: {value}')
+#         if self.TipTiltPhase.isEnabled() == True:
+#             self.TipTiltPhase.setText(f"{value}")
+#             if value == 'Idle':
+#                 style = f'color: black;'
+#             elif value == 'Identifying':
+#                 style = f'color: red;'
+#             elif value == 'Acquiring':
+#                 style = f'color: yellow;'
+#             elif value == 'Tracking':
+#                 style = f'color: limegreen;'
+#             self.TipTiltPhase.setStyleSheet(style)
 
 
     ##----------------------------------------------------------
@@ -1007,7 +1017,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_TipTiltFPS: {value}')
         if self.TipTiltFPS.isEnabled() == True:
             fps = float(value)
-            fps_string = f'{fps:.1f}'
+            fps_string = f'{fps:.0f}'
             self.TipTiltFPS.setText(f"{fps_string}")
             if fps_string == '0.0':
                 style = f'color: black;'
@@ -1063,8 +1073,8 @@ class MainWindow(QMainWindow):
         plt.title('Tip Tilt Error')
         if npoints <= 1:
             log.debug('update_TipTiltErrorPlot: clearing plot')
-            ax.set_ylim(-3,3)
-            plt.yticks([-2,0,2])
+            ax.set_ylim(0,3)
+            plt.yticks([0,1,2])
             plt.xticks([])
             ax.grid('major', alpha=0.4)
             ax.tick_params(axis='both', direction='in')
@@ -1080,23 +1090,26 @@ class MainWindow(QMainWindow):
             n_plot_points = len(tterr)
 
             recent_starpos = np.where(np.array(self.TipTiltErrorTimes) > self.TipTiltErrorTimes[-1]-self.TipTiltErrorPlotAgeThreshold)[0]
-            if len(self.StarPositionError) > 0:
-                starpos_xerr = np.array(self.StarPositionError)[:,0][recent_starpos]
-                starpos_yerr = np.array(self.StarPositionError)[:,1][recent_starpos]
-                starpos_times = np.array(self.StarPositionTimes)[recent_starpos]
-                n_plot_points += len(starpos_xerr)
-                n_plot_points += len(starpos_yerr)
+#             if len(self.StarPositionError) > 0:
+#                 starpos_xerr = np.array(self.StarPositionError)[:,0][recent_starpos]
+#                 starpos_yerr = np.array(self.StarPositionError)[:,1][recent_starpos]
+#                 starpos_times = np.array(self.StarPositionTimes)[recent_starpos]
+#                 n_plot_points += len(starpos_xerr)
+#                 n_plot_points += len(starpos_yerr)
 
+            fill_y2 = 0.050/self.pscale
+            plt.fill_between(tterr_times, y1=0, y2=fill_y2, color='g', alpha=0.2)
             ax.plot(tterr_times, tterr, 'ko', ms=2, drawstyle='steps')
-            if len(self.StarPositionError) > 0:
-                ax.plot(starpos_times, starpos_xerr, 'gx', ms=4, alpha=0.5)
-                ax.plot(starpos_times, starpos_yerr, 'bv', ms=4, alpha=0.5)
-            ax.axhline(y=0, xmin=0, xmax=1, color='k', alpha=0.8)
+#             if len(self.StarPositionError) > 0:
+#                 ax.plot(starpos_times, starpos_xerr, 'gx', ms=4, alpha=0.5)
+#                 ax.plot(starpos_times, starpos_yerr, 'bv', ms=4, alpha=0.5)
+#             ax.axhline(y=0, xmin=0, xmax=1, color='k', alpha=0.8)
             try:
-                ax.set_ylim(min([min(starpos_xerr), min(starpos_yerr)])-0.5,
-                            max([max(starpos_xerr), max(starpos_yerr), max(tterr)])+0.5)
+                ax.set_ylim(0, max([2.5,max(tterr)+0.5]))
+#                 ax.set_ylim(min([min(starpos_xerr), min(starpos_yerr)])-0.5,
+#                             max([max(starpos_xerr), max(starpos_yerr), max(tterr)])+0.5)
             except:
-                ax.set_ylim(-3,3)
+                ax.set_ylim(0,2.5)
             plt.xticks([])
             ax.grid('major')
             plt.xlabel(f'Last {self.TipTiltErrorPlotAgeThreshold} s')
@@ -1179,6 +1192,16 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_ObjectChoice: {value}')
         self.ObjectChoiceValue.setText(f"{value}")
         self.ObjectChoice.setCurrentText('')
+        if value in ['None', '', 0]:
+            self.ObjectChoiceValue.setStyleSheet('color: red;')
+        elif value == 'OBJECT1':
+            self.ObjectChoiceValue.setStyleSheet('color: green;')
+        elif value == 'OBJECT2':
+            self.ObjectChoiceValue.setStyleSheet('color: blue;')
+        elif value == 'OBJECT3':
+            self.ObjectChoiceValue.setStyleSheet('color: orange;')
+        else:
+            self.ObjectChoiceValue.setStyleSheet('color: black;')
 
     def set_ObjectChoice(self, value):
         self.log.debug(f'set_ObjectChoice: {value} ({type(value)})')
@@ -1307,6 +1330,24 @@ class MainWindow(QMainWindow):
         if value != '':
             self.log.info(f'Modifying kpfguide.OBJECT_DBCONT = {value}')
             self.OBJECT_DBCONT.write(value)
+
+
+    ##----------------------------------------------------------
+    ## ROIDIM
+    def update_ROIDIM(self, value):
+        self.log.debug(f'update_ROIDIM: {value}')
+        self.TipTiltROIValue.setText(f"{value} pix")
+        if int(value) > 128:
+            self.TipTiltROIValue.setStyleSheet(f'color: orange;')
+        else:
+            self.TipTiltROIValue.setStyleSheet(f'color: black;')
+        self.TipTiltROISelector.setCurrentText('')
+
+    def set_ROIDIM(self, value):
+        if value != '':
+            int_value = int(value[:-4])
+            self.log.info(f'Modifying kpfguide.TIPTILT_ROIDIM = {int_value}')
+            self.TIPTILT_ROIDIM.write(int_value)
 
 
     ##----------------------------------------------------------
@@ -1475,7 +1516,7 @@ class MainWindow(QMainWindow):
             objectN_kfo = getattr(self, f'OBJECT{obj}')
             objectN = objectN_kfo.ktl_keyword.binary
             if objectN[0] > -998:
-                color = {1: 'blue', 2: 'green', 3: 'red'}[obj]
+                color = {1: 'green', 2: 'blue', 3: 'orange'}[obj]
                 flux = objectN[2]
                 hits = objectN[3]
                 self.add_mark(objectN[0]-self.xcent+roidim,
