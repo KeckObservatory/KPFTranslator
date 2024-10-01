@@ -1,6 +1,3 @@
-Template_Name: kpf_sci
-Template_Version: 2.0
-
 Target:
   TargetName: string              # Name
   GaiaID: DR3 nnnnnnnnnnnnnnnnnnn # Gaia ID
@@ -21,7 +18,7 @@ Target:
   DRA: float                      # Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east)
   DDEC: float                     # Non sidereal tracking rate in Dec in arcsec/hr
 Observations:
-  Object: string                  # User settable comment. Use 'default' to automatically set to TargetName
+- Object: string                  # User settable comment. Use 'default' to automatically set to TargetName
   # Science Detectors
   nExp: int                       # Number of exoposures in the OB
   ExpTime: float                  # Exposure time of the main spectrometer and CaH&K. See Exposure Meter section below.
