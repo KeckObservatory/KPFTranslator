@@ -1,13 +1,12 @@
 from kpf.ObservingBlocks import BaseOBComponent
 
-calibration_properties=[('Dark', False, bool),
+calibration_properties=[('CalSource', 'EtalonFiber', str),
                         ('Object', '', str),
                         ('nExp', 1, int),
                         ('ExpTime', 1, float),
                         ('TriggerCaHK', True, bool),
                         ('TriggerGreen', True, bool),
                         ('TriggerRed', True, bool),
-                        ('CalSource', 'EtalonFiber', str),
                         ('CalND1', 'OD 0.1', str),
                         ('CalND2', 'OD 0.1', str),
                         ('SSS_Science', True, bool),

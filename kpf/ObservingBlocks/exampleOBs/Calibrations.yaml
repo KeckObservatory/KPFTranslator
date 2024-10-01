@@ -1,29 +1,27 @@
 Calibrations:
-- Dark: True
+- CalSource: dark
   Object: dark
   nExp: 1
   ExpTime: 60
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
-- Dark: False
+- CalSource: BrdbandFiber
   Object: flat
   nExp: 1
   ExpTime: 0.2
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
-  # Cal Lamp
-  CalSource: BrdbandFiber
+  # Shutters and Filters
   CalND1: OD 0.1
   CalND2: OD 0.1
-  # Shutters
   SSS_Science: True
   SSS_Sky: False
   TakeSimulCal: False
   FF_FiberPos: Blank       # This is only needed if CalSource = WideFlat
   # Exposure Meter
-  ExpMeterMode: control    # "monitor" or "control" (to terminate exposure based on flux)
-  ExpMeterExpTime: 0.5     # This is only needed if TriggerExpMeter = True
-  ExpMeterBin: 710.625     # Exposure meter wavelength bin to use for stopping exposure
-  ExpMeterThreshold: 50000 # Target science flux in e-/nm
+  ExpMeterMode: control
+  ExpMeterExpTime: 0.5
+  ExpMeterBin: 710.625
+  ExpMeterThreshold: 50000
