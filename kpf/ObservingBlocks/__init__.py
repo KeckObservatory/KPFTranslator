@@ -51,6 +51,9 @@ class BaseOBComponent(object):
                 lines.append(f"{p[0]}: {self.get(p[0])}")
         return lines
 
+    def validate(self):
+        return True
+
     def __str__(self):
         output = ''
         for line in self.to_lines():
