@@ -35,35 +35,30 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
     :OB: `dict` A fully specified calibration observing block (OB).
     '''
     @classmethod
-    def pre_condition(cls, OB, logger, cfg):
+    def pre_condition(cls, calibrations):
         pass
 
     @classmethod
-    def perform(cls, OB, logger, cfg):
+    def perform(cls, calibrations):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
-        for key in OB:
-            if key not in ['SEQ_Darks', 'SEQ_Calibrations']:
-                log.debug(f"  {key}: {OB[key]}")
-            else:
-                log.debug(f"  {key}:")
-                for entry in OB[key]:
-                    log.debug(f"    {entry}")
+        for i,calibration in enumerate(calibrations):
+            log.debug(f"Calibration {i+1}/{len(calibrations)}")
+            for key in calibration:
+                log.debug(f"  {key}: {calibration.get(key)}")
         log.info('-------------------------')
 
         # Power off lamps
-        if OB.get('leave_lamps_on', False) == True:
-            log.info('Not turning lamps off because command line option was invoked')
+        if calibrations.get('leave_lamps_on', False) == True:
+            log.info('Not turning lamps off because leave_lamps_on option was invoked')
         else:
-            sequence = OB.get('SEQ_Calibrations', None)
-            lamps = set([x['CalSource'] for x in sequence if x['CalSource'] != 'Home'])\
-                    if sequence is not None else []
+            lamps = set([c.get('CalSource') for c in calibrations])
             for lamp in lamps:
                 if IsCalSourceEnabled.execute({'CalSource': lamp}) == True:
                     if lamp in ['Th_daily', 'Th_gold', 'U_daily', 'U_gold',
                                 'BrdbandFiber', 'WideFlat']:
                         CalLampPower.execute({'lamp': lamp, 'power': 'off'})
-                    if lamp == 'LFCFiber':
+                    elif lamp == 'LFCFiber':
                         SetLFCtoStandbyHigh.execute({})
 
         kpfconfig = ktl.cache('kpfconfig')
@@ -94,11 +89,11 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         WaitForL0File.execute({})
 
     @classmethod
-    def post_condition(cls, OB, logger, cfg):
+    def post_condition(cls, calibrations):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
                             default=False, action="store_true",
                             help='Leave the lamps on after cleanup phase?')
