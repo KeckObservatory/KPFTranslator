@@ -59,6 +59,7 @@ class SetupExpMeter(KPFTranslatorFunction):
             args['TriggerExpMeter'] = False
         elif EM_enabled == False:
             log.warning('ExpMeter is disabled')
+            args['TriggerExpMeter'] = False
         else:
             log.warning(f"ExpMeterMode {EM_mode} is not available")
             kpf_expmeter['USETHRESHOLD'].write('No')
