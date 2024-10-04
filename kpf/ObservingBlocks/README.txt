@@ -46,8 +46,6 @@ If the OB contains `Calibrations`:
 - Note: Combining `Calibrations` with a `Target` is not an intended mode, but the operational sequence here should be at least somewhat sensible.
 
 If the OB contains `Target`:
-- execute `SendTargetToMagiq`
-    - ToDo: Set kpfconfig.TARGET_GMAG and TARGET_JMAG in `SendTargetToMagiq`
 - execute `ConfigureForAcquisition`
     - This executes a slew cal if SLEWCALREQ is True
 - execute `WaitForConfigureAcquisition`
