@@ -56,21 +56,19 @@ class ExecuteCal(KPFTranslatorFunction):
 
     ARGS:
     =====
-    :args: `dict` An lamp calibration component of an observing block (OB).
+    :calibrations `kpf.ObservingBlocks.Calibration.Calibration` A calibration
+                  OB component.
     '''
-    abortable = True
+    @classmethod
+    def pre_condition(cls, calibration):
+        pass
 
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'Template_Name', allowed_values=['kpf_lamp'])
-        check_input(args, 'Template_Version', version_check=True, value_min='0.5')
-
-    @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, calibration):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
-        for key in args:
-            log.debug(f"  {key}: {args[key]}")
+        for key in calibration:
+            log.debug(f"  {key}: {calibration[key]}")
         log.info('-------------------------')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         kpfconfig = ktl.cache('kpfconfig')
@@ -81,12 +79,18 @@ class ExecuteCal(KPFTranslatorFunction):
         archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
                              fallback=2)
 
-        calsource = args.get('CalSource')
+#         log.info(f"Set Detector List")
+#         WaitForReady.execute({})
+#         SetTriggeredDetectors.execute(OB)
+
+
+
+        calsource = calibration.get('CalSource')
         # Skip this lamp if it is not enabled
-        if IsCalSourceEnabled.execute(args) == False:
+        if IsCalSourceEnabled.execute({'CalSource': calsource}) == False:
             return
-        nd1 = args.get('CalND1')
-        nd2 = args.get('CalND2')
+        nd1 = calibration.get('CalND1')
+        nd2 = calibration.get('CalND2')
         ## ----------------------------------------------------------------
         ## Configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
@@ -95,7 +99,7 @@ class ExecuteCal(KPFTranslatorFunction):
         if calsource == 'WideFlat':
             log.info('Configuring for WideFlat')
             SetCalSource.execute({'CalSource': 'Home', 'wait': False})
-            FF_FiberPos = args.get('FF_FiberPos', None)
+            FF_FiberPos = calibration.get('FF_FiberPos', None)
             SetFlatFieldFiberPos.execute({'FF_FiberPos': FF_FiberPos,
                                           'wait': False})
             SetTargetInfo.execute({})
@@ -289,12 +293,5 @@ class ExecuteCal(KPFTranslatorFunction):
             SetLFCtoStandbyHigh.execute({})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, calibration):
         pass
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        parser.add_argument('--nointensemon', dest="nointensemon",
-                            default=False, action="store_true",
-                            help='Skip the intensity monitor measurement?')
-        return super().add_cmdline_args(parser, cfg)
