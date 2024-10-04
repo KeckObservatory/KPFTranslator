@@ -25,14 +25,10 @@ from kpf.utils.SetTargetInfo import SetTargetInfo
 class CleanupAfterCalibrations(KPFTranslatorFunction):
     '''Script which cleans up after Cal OBs.
 
-    This must have arguments as input, either from a file using the `-f` command
-    line tool, or passed in from the execution engine.
-
-    Can be called by `ddoi_script_functions.post_observation_cleanup`.
-
     ARGS:
     =====
-    :OB: `dict` A fully specified calibration observing block (OB).
+    :calibrations: `list` A list of `kpf.ObservingBlocks.Calibration.Calibration`
+                   OB components.
     '''
     @classmethod
     def pre_condition(cls, calibrations):
