@@ -9,8 +9,8 @@ import ktl
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, ScriptStopTriggered)
-# from kpf.scripts import (set_script_keywords, clear_script_keywords,
-#                          add_script_log, check_script_running, check_scriptstop)
+from kpf.scripts import (set_script_keywords, clear_script_keywords,
+                         add_script_log, check_script_running, check_scriptstop)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 from kpf.utils.SendTargetToMagiq import SendTargetToMagiq
@@ -74,7 +74,16 @@ class RunSciOB(KPFTranslatorFunction):
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(OB.Observations)
 
-
     @classmethod
     def post_condition(cls, OB):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser, cfg=None):
+        parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
+                            default=False, action="store_true",
+                            help='Leave the calibration lamps on after cleanup phase?')
+        parser.add_argument('--nointensemon', dest="nointensemon",
+                            default=False, action="store_true",
+                            help='Skip the intensity monitor measurement on calibration frames?')
+        return super().add_cmdline_args(parser, cfg)

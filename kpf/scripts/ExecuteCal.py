@@ -51,12 +51,9 @@ from kpf.utils.SendEmail import SendEmail
 class ExecuteCal(KPFTranslatorFunction):
     '''Script which executes a single observation from a Calibration sequence
 
-    This must have arguments as input, either from a file using the `-f` command
-    line tool, or passed in from the execution engine.
-
     ARGS:
     =====
-    :calibrations `kpf.ObservingBlocks.Calibration.Calibration` A calibration
+    :calibration: `kpf.ObservingBlocks.Calibration.Calibration` A calibration
                   OB component.
     '''
     @classmethod
@@ -79,24 +76,26 @@ class ExecuteCal(KPFTranslatorFunction):
         archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
                              fallback=2)
 
-#         log.info(f"Set Detector List")
-#         WaitForReady.execute({})
-#         SetTriggeredDetectors.execute(OB)
-
-
-
         calsource = calibration.get('CalSource')
         # Skip this lamp if it is not enabled
         if IsCalSourceEnabled.execute({'CalSource': calsource}) == False:
             return
-        nd1 = calibration.get('CalND1')
-        nd2 = calibration.get('CalND2')
+
+
         ## ----------------------------------------------------------------
         ## Configure lamps and cal bench (may happen during readout)
         ## ----------------------------------------------------------------
         check_scriptstop() # Stop here if requested
         ## Setup WideFlat
-        if calsource == 'WideFlat':
+        if calsource.lower() == 'dark':
+            log.info('Configuring for Dark')
+            SetCalSource.execute({'CalSource': 'Home', 'wait': False})
+            SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank', 'wait': False})
+            SetTargetInfo.execute({})
+            log.info(f"Waiting for Octagon/CalSource, FF_FiberPos, FIU")
+            WaitForCalSource.execute({'CalSource': 'Home'})
+            WaitForFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
+        elif calsource == 'WideFlat':
             log.info('Configuring for WideFlat')
             SetCalSource.execute({'CalSource': 'Home', 'wait': False})
             FF_FiberPos = calibration.get('FF_FiberPos', None)
@@ -105,22 +104,22 @@ class ExecuteCal(KPFTranslatorFunction):
             SetTargetInfo.execute({})
             log.info(f"Waiting for Octagon/CalSource, FF_FiberPos, FIU")
             WaitForCalSource.execute({'CalSource': 'Home'})
-            WaitForFlatFieldFiberPos.execute(args)
-            WaitForConfigureFIU.execute({'mode': 'Calibration'})
+            WaitForFlatFieldFiberPos.execute(calibration)
         ## Setup Octagon Lamps and LFCFiber
         elif calsource in ['BrdbandFiber', 'U_gold', 'U_daily', 'Th_daily',
                            'Th_gold', 'LFCFiber', 'EtalonFiber']:
             log.info(f"Setting cal source: {calsource}")
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
             log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
+            nd1 = calibration.get('CalND1')
+            nd2 = calibration.get('CalND2')
             SetND1.execute({'CalND1': nd1, 'wait': False})
             SetND2.execute({'CalND2': nd2, 'wait': False})
             SetTargetInfo.execute({})
             log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
-            WaitForND1.execute(args)
-            WaitForND2.execute(args)
-            WaitForCalSource.execute(args)
-            WaitForConfigureFIU.execute({'mode': 'Calibration'})
+            WaitForND1.execute(calibration)
+            WaitForND2.execute(calibration)
+            WaitForCalSource.execute(calibration)
             if calsource == 'LFCFiber':
                 ## If we're using the LFC, set it to AstroComb
                 ## If that fails, skip this calibration
@@ -147,37 +146,47 @@ class ExecuteCal(KPFTranslatorFunction):
                     SetLFCtoStandbyHigh.execute({})
                     return
             # Take intensity monitor reading
-            if calsource != 'LFCFiber' and args.get('nointensemon', False) == False:
-                WaitForLampWarm.execute(args)
+            if calsource != 'LFCFiber' and not calibration.get('nointensemon', False):
+                WaitForLampWarm.execute(calibration)
                 TakeIntensityReading.execute({})
         ## Setup SoCal
         elif calsource in ['SoCal-CalFib']:
-            SetCalSource.execute({'CalSource': calsource, 'wait': False})
-            # Open SoCalCal Shutter
-            args['SSS_SoCalCal'] = True
-            # Set target info
-            SetTargetInfo.execute({'TargetName': 'Sun',
-                                   'GaiaID': '',
-                                   '2MASSID': '',
-                                   'Gmag': '-26.9',
-                                   'Jmag': '-27.9',
-                                   'Teff': '5772',
-                                   })
+#             SetCalSource.execute({'CalSource': calsource, 'wait': False})
+#             # Open SoCalCal Shutter
+#             calibration['SSS_SoCalCal'] = True
+#             log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
+#             nd1 = calibration.get('CalND1')
+#             nd2 = calibration.get('CalND2')
+#             SetND1.execute({'CalND1': nd1, 'wait': False})
+#             SetND2.execute({'CalND2': nd2, 'wait': False})
+#             log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
+#             WaitForND1.execute(calibration)
+#             WaitForND2.execute(calibration)
+#             WaitForCalSource.execute({'CalSource': calibration})
+#             # Set target info
+#             SetTargetInfo.execute({'TargetName': 'Sun',
+#                                    'GaiaID': '',
+#                                    '2MASSID': '',
+#                                    'Gmag': '-26.9',
+#                                    'Jmag': '-27.9',
+#                                    'Teff': '5772',
+#                                    })
         elif calsource in ['SoCal-SciSky']:
             # Set octagon to simulcal source
             simulcalsource = kpfconfig['SIMULCALSOURCE'].read()
             log.info(f"Setting cal source: {simulcalsource}")
             SetCalSource.execute({'CalSource': simulcalsource, 'wait': False})
             log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
+            nd1 = calibration.get('CalND1')
+            nd2 = calibration.get('CalND2')
             SetND1.execute({'CalND1': nd1, 'wait': False})
             SetND2.execute({'CalND2': nd2, 'wait': False})
             log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
-            WaitForND1.execute(args)
-            WaitForND2.execute(args)
+            WaitForND1.execute(calibration)
+            WaitForND2.execute(calibration)
             WaitForCalSource.execute({'CalSource': simulcalsource})
-            WaitForConfigureFIU.execute({'mode': 'Calibration'})
             # Open SoCalSci Shutter
-            args['SSS_SoCalSci'] = True
+            calibration['SSS_SoCalSci'] = True
             # Set target info
             SetTargetInfo.execute({'TargetName': 'Sun',
                                    'GaiaID': '',
@@ -190,15 +199,18 @@ class ExecuteCal(KPFTranslatorFunction):
         else:
             raise KPFException(f"CalSource {calsource} not recognized")
 
+
         ## ----------------------------------------------------------------
         ## Configure exposure meter
         ## ----------------------------------------------------------------
-        args = SetupExpMeter.execute(args)
-        if args.get('AutoExpMeter', False) == True:
-            raise KPFException('AutoExpMeter is not supported for calibrations')
-        if args.get('ExpMeterExpTime', None) is not None:
-            log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
-            SetExpMeterExpTime.execute(args)
+        if calibration.get('ExpMeterMode', 'off') == 'control':
+            SetExpMeterTerminationParameters.execute(calibration)
+        if calibration.get('AutoExpMeter', False) == True:
+            log.warning('AutoExpMeter is not supported for calibrations')
+        if calibration.get('ExpMeterExpTime', None) is not None:
+            log.debug(f"Setting ExpMeterExpTime = {calibration['ExpMeterExpTime']:.1f}")
+            SetExpMeterExpTime.execute(calibration)
+
 
         ## ----------------------------------------------------------------
         ## Configure kpfexpose (may not happen during readout)
@@ -210,41 +222,41 @@ class ExecuteCal(KPFTranslatorFunction):
             WaitForReady.execute({})
             log.info(f"Readout complete")
             check_scriptstop() # Stop here if requested
-        SetTriggeredDetectors.execute(args)
-        log.info(f"Set exposure time: {args.get('ExpTime'):.3f}")
-        SetExpTime.execute(args)
-        log.info(f"Setting source select shutters")
-        # No need to specify SSS_CalSciSky in OB/calibration
+        # Triggered Detectors
+        calibration['TriggerExpMeter'] = calibration.get('ExpMeterMode', 'off') != 'off'
+        log.info(f"Set Detector List")
+        SetTriggeredDetectors.execute(calibration)
+        # Source Select Shutters
         if calsource in ['SoCal-SciSky']:
-            args['SSS_CalSciSky'] = False
+            calibration['SSS_CalSciSky'] = False
         elif calsource in ['SoCal-CalFib']:
-            args['SSS_CalSciSky'] = True
+            calibration['SSS_CalSciSky'] = True
         else:
-            args['SSS_CalSciSky'] = args['SSS_Science'] or args['SSS_Sky']
-        log.debug(f"Automatically setting SSS_CalSciSky: {args['SSS_CalSciSky']}")
-        SetSourceSelectShutters.execute(args)
-
-        # No need to specify TimedShutter_Scrambler in OB/calibration
-        args['TimedShutter_Scrambler'] = args['SSS_Science'] or args['SSS_Sky']
-        log.debug(f"Automatically setting TimedShutter_Scrambler: {args['TimedShutter_Scrambler']}")
-        # No need to specify TimedShutter_FlatField in OB/calibration
-        args['TimedShutter_FlatField'] = (args['CalSource'] == 'WideFlat')
-        log.debug(f"Automatically setting TimedShutter_FlatField: {args['TimedShutter_FlatField']}")
-        # Set TimedShutter_SimulCal
-        args['TimedShutter_SimulCal'] = args.get('TakeSimulCal', False)
-        log.debug(f"Automatically setting TimedShutter_SimulCal: {args['TakeSimulCal']}")
+            calibration['SSS_CalSciSky'] = calibration['SSS_Science'] or calibration['SSS_Sky']
+        SetSourceSelectShutters.execute(calibration)
+        # Timed Shutters
+        calibration['TimedShutter_CaHK'] = calibration.get('TriggerCaHK', False)
+        calibration['TimedShutter_Scrambler'] = calibration.get('TriggerGreen', False) or calibration.get('TriggerRed', False)
+        calibration['TimedShutter_SimulCal'] = calibration.get('TakeSimulCal', False)
+        calibration['TimedShutter_FlatField'] = calibration.get('FF_FiberPos', 'Blank') != 'Blank'
         log.info(f"Setting timed shutters")
-        SetTimedShutters.execute(args)
-        log.info(f"Setting OBJECT: {args.get('Object')}")
-        SetObject.execute(args)
+        SetTimedShutters.execute(calibration)
 
+        log.info(f"Setting OBJECT: {calibration.get('Object')}")
+        SetObject.execute(calibration)
+
+        log.info(f"Set exposure time: {calibration.get('ExpTime'):.3f}")
+        SetExpTime.execute(calibration)
+
+
+        WaitForConfigureFIU.execute({'mode': 'Calibration'})
+        WaitForLampWarm.execute(calibration)
 
         ## ----------------------------------------------------------------
         ## Take actual exposures
         ## ----------------------------------------------------------------
-        WaitForLampWarm.execute(args)
-        nexp = int(args.get('nExp', 1))
-        exptime = float(args.get('ExpTime'))
+        nexp = int(calibration.get('nExp', 1))
+        exptime = float(calibration.get('ExpTime'))
         # If we are in fast read mode, turn on agitator once
         if runagitator and fast_read_mode:
             StartAgitator.execute({})
@@ -271,7 +283,7 @@ class ExecuteCal(KPFTranslatorFunction):
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
             # Start next exposure
-            log.info(f"Starting expoure {j+1}/{nexp} ({args.get('Object')})")
+            log.info(f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})")
             StartExposure.execute({})
             if exptime > 10:
                 WaitForL0File.execute({})
@@ -289,7 +301,7 @@ class ExecuteCal(KPFTranslatorFunction):
         if calsource == 'WideFlat':
             SetFlatFieldFiberPos.execute({'FF_FiberPos': 'Blank'})
         ## If we're using the LFC, set it back to StandbyHigh
-        if calsource == 'LFCFiber' and args.get('leave_lamps_on', False) is False:
+        if calsource == 'LFCFiber' and calibration.get('leave_lamps_on', False) is False:
             SetLFCtoStandbyHigh.execute({})
 
     @classmethod
