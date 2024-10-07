@@ -1,15 +1,55 @@
+from pathlib import Path
+import yaml
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.Target import Target
 
+from kpf import log, KPFException
+
 
 class ObservingBlock(object):
-    def __init__(self):
-        self.Target = None
-        self.Observations = []
-        self.Calibrations = []
-        self.Scheduling = None
-        self.Metadata = None
+    def __init__(self, OBinput):
+        if isinstance(OBinput, dict):
+            OBdict = OBinput
+        elif OBinput in ['', None]:
+            OBdict = {}
+        elif isinstance(OBinput, str):
+            file = Path(OBinput).expanduser().absolute()
+            if file.exists() is True:
+                with open(file, 'r') as f:
+                    OBdict = yaml.safe_load(f)
+            else:
+                log.error(f'Unable to locate file: {OBinput}')
+                OBdict = {}
+        else:
+            log.error(f'Unable to parse input as ObservingBlock')
+            log.error(f'{OBinput}')
+            OBdict = {}
+
+        # Target
+        target = OBdict.get('Target', None)
+        if target is None:
+            self.Target = None
+        else:
+            self.Target = Target(target)
+        # Observations
+        observations = OBdict.get('Observations', [])
+        self.Observations = [Observation(obs) for obs in observations]
+        # Calibrations
+        calibrations = OBdict.get('Calibrations', [])
+        self.Calibrations = [Calibration(cal) for cal in calibrations]
+        # Scheduling
+        scheduling = OBdict.get('Scheduling', None)
+        if scheduling is None:
+            self.Scheduling = None
+        else:
+            self.Scheduling = Scheduling(scheduling)
+        # Metadata
+        metadata = OBdict.get('Metadata', None)
+        if metadata is None:
+            self.Metadata = None
+        else:
+            self.Metadata = Metadata(metadata)
 
     def validate(self):
         # Check that components are the correct types and are individually valid
