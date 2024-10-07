@@ -44,6 +44,13 @@ class BaseOBComponent(object):
             self.set(key, input_dict[key])
         return self
 
+    def to_dict(self):
+        output = {}
+        for p in self.properties:
+            if self.get(p[0]) is not None:
+                output[p[0]] = self.get(p[0])
+        return output
+
     def to_lines(self, comments=False):
         lines = []
         for p in self.properties:

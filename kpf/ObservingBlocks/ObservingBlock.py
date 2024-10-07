@@ -26,3 +26,16 @@ class ObservingBlock(object):
         # If we have science observations, we must have a target
         if len(self.Observations) > 0:
             assert self.Target is not None
+
+    def to_dict(self):
+        OB = {}
+        if self.Target is not None:
+            OB['Target'] = self.Target.to_dict()
+        if len(self.Observations() > 0:
+            OB['Observations'] = [o.to_dict() for o in self.Observations]
+        if len(self.Calibrations() > 0:
+            OB['Calibrations'] = [c.to_dict() for c in self.Calibrations]
+        if self.Scheduling is not None:
+            OB['Scheduling'] = self.Scheduling.to_dict()
+        if self.Metadata is not None:
+            OB['Metadata'] = self.Metadata.to_dict()
