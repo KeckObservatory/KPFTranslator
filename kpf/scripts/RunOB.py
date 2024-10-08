@@ -12,16 +12,12 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running, check_scriptstop)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-
 from kpf.utils.SendTargetToMagiq import SendTargetToMagiq
-
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
-
 from kpf.scripts.ConfigureForAcquisition import ConfigureForAcquisition
 from kpf.scripts.WaitForConfigureAcquisition import WaitForConfigureAcquisition
-
 from kpf.scripts.ConfigureForScience import ConfigureForScience
 from kpf.scripts.WaitForConfigureScience import WaitForConfigureScience
 from kpf.scripts.CleanupAfterScience import CleanupAfterScience
@@ -37,8 +33,10 @@ class RunSciOB(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, OB):
-        if not isinstance(OB, ObservingBlock):
-            raise FailedPreCondition('Input is not an ObservingBlock')
+        try:
+            OB = ObservingBlock(OB)
+        except:
+            raise FailedPreCondition('Input OB could not be parsed')
         if not OB.validate():
             raise FailedPreCondition('Input ObservingBlock is invalid')
 
@@ -48,6 +46,7 @@ class RunSciOB(KPFTranslatorFunction):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
+        OB = ObservingBlock(OB)
 
         if OB.Target is not None:
             log.info(f'Sending target info to Magiq')
