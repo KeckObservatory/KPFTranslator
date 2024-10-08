@@ -4,8 +4,6 @@ import os
 import traceback
 from pathlib import Path
 
-import ktl
-
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, ScriptStopTriggered)
