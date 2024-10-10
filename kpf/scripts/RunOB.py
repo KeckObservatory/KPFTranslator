@@ -76,7 +76,7 @@ class RunSciOB(KPFTranslatorFunction):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
                             default=False, action="store_true",
                             help='Leave the calibration lamps on after cleanup phase?')
