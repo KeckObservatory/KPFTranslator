@@ -6,6 +6,7 @@ Calibrations:
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
+  FastRead: False
 - CalSource: BrdbandFiber
   Object: flat
   nExp: 1
@@ -13,6 +14,7 @@ Calibrations:
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
+  FastRead: False
   # Shutters and Filters
   CalND1: OD 0.1
   CalND2: OD 0.1

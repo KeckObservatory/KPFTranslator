@@ -27,6 +27,7 @@ Observations:
   TriggerCaHK: bool               # Include CaHK in exposure (True/False)
   TriggerGreen: bool              # Include Green CCD in exposure (True/False)
   TriggerRed: bool                # Include Red CCD in exposure (True/False)
+  FastRead: False
   BlockSky: bool                  # Close the sky fiber shutter during observations (True/False)
   # Exposure Meter 
   ExpMeterMode: string            # "monitor" or "control" (to terminate exposure based on flux)
@@ -52,6 +53,7 @@ Observations:
   TriggerCaHK: bool               # Include CaHK in exposure (True/False)
   TriggerGreen: bool              # Include Green CCD in exposure (True/False)
   TriggerRed: bool                # Include Red CCD in exposure (True/False)
+  FastRead: False
   BlockSky: bool                  # Close the sky fiber shutter during observations (True/False)
   # Exposure Meter 
   ExpMeterMode: string            # "monitor" or "control" (to terminate exposure based on flux)
