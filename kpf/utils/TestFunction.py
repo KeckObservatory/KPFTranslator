@@ -13,14 +13,17 @@ class TestFunction(KPFTranslatorFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
+        args.pop("help", None)
         print(f'Pre-condition Arguments: {args}')
 
     @classmethod
     def perform(cls, args):
+        args.pop("help", None)
         print(f'Perform Arguments: {args}')
 
     @classmethod
     def post_condition(cls, args):
+        args.pop("help", None)
         print(f'Post-condition Arguments: {args}')
 
     @classmethod
