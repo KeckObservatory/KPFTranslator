@@ -38,18 +38,6 @@ class ObservingBlock(object):
         # Calibrations
         calibrations = OBdict.get('Calibrations', [])
         self.Calibrations = [Calibration(cal) for cal in calibrations]
-        # Scheduling
-        scheduling = OBdict.get('Scheduling', None)
-        if scheduling is None:
-            self.Scheduling = None
-        else:
-            self.Scheduling = Scheduling(scheduling)
-        # Metadata
-        metadata = OBdict.get('Metadata', None)
-        if metadata is None:
-            self.Metadata = None
-        else:
-            self.Metadata = Metadata(metadata)
 
     def validate(self):
         # Check that components are the correct types and are individually valid
