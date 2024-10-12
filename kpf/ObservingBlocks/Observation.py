@@ -6,7 +6,6 @@ observation_properties=[('Object', '', str),
                         ('TriggerCaHK', True, bool),
                         ('TriggerGreen', True, bool),
                         ('TriggerRed', True, bool),
-                        ('FastRead', False, bool,)
                         ('BlockSky', False, bool),
                         ('ExpMeterMode', 'monitor', str),
                         ('AutoExpMeter', True, bool),

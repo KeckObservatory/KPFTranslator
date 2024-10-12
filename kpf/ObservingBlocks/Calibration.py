@@ -7,7 +7,6 @@ calibration_properties=[('CalSource', 'EtalonFiber', str),
                         ('TriggerCaHK', True, bool),
                         ('TriggerGreen', True, bool),
                         ('TriggerRed', True, bool),
-                        ('FastRead', False, bool,)
                         ('CalND1', 'OD 0.1', str),
                         ('CalND2', 'OD 0.1', str),
                         ('SSS_Science', True, bool),
