@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import traceback
 from logging import getLogger
+import configparser
 from argparse import Namespace, ArgumentTypeError
 import copy
 
@@ -15,7 +16,7 @@ class KPFTranslatorFunction(object):
     instrument = 'kpf'
 
     def _load_config(cls):
-        config_files = [Path(__file__).parent / f'{instrument}_inst_config.ini']
+        config_files = [Path(__file__).parent / f'{cls.instrument}_inst_config.ini']
         config = configparser.ConfigParser(inline_comment_prefixes=(';','#',))
         config.read(config_files)
         return config
@@ -49,7 +50,7 @@ class KPFTranslatorFunction(object):
             raise KPFException(msg)
 
         # read the config file
-        cfg = cls._load_config(cls, cfg, args=args)
+        cfg = cls._load_config(cls)
 
         #################
         # PRE CONDITION #
