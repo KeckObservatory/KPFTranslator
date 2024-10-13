@@ -183,7 +183,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
         while now_decimal >= start_time and now_decimal < end_time:
             log.debug('Checking if SoCal is on the Sun')
-            if args.ignorePYRIRRAD is True:
+            if args.get('ignorePYRIRRAD', False) is True:
                 on_target = True
             else:
                 on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
