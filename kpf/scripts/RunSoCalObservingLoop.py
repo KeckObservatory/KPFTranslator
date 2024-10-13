@@ -183,7 +183,10 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
         while now_decimal >= start_time and now_decimal < end_time:
             log.debug('Checking if SoCal is on the Sun')
-            on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
+            if args.ignorePYRIRRAD is True:
+                on_target = True
+            else:
+                on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
             observation = {True: SoCal_observation, False: Etalon_observation}[on_target]
             log.info(f'SoCal on target: {on_target}')
             log.info(f"Executing {observation['Object']}")
@@ -265,4 +268,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         parser.add_argument("--notscheduled", dest="scheduled",
             default=True, action="store_false",
             help="Do not respect the kpfconfig.ALLOWSCHEDULEDCALS flag.")
+        parser.add_argument("--ignorePYRIRRAD", dest="ignorePYRIRRAD",
+            default=True, action="store_false",
+            help="Ignore the PYRIRRAD value and observe the Sun regardless.")
         return super().add_cmdline_args(parser, cfg)
