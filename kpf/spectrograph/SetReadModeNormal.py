@@ -6,6 +6,7 @@ from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.spectrograph.QueryReadMode import QueryReadMode
+from kpf.utils.SendEmail import SendEmail
 
 
 class SetReadModeNormal(KPFTranslatorFunction):
