@@ -39,6 +39,7 @@ class RunSciOB(KPFTranslatorFunction):
 
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
+        raise NotImplementedError('RunSciOB is deprecated. Use RunOB instead.')
         check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
 

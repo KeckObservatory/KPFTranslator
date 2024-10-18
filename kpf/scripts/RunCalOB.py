@@ -41,6 +41,7 @@ class RunCalOB(KPFTranslatorFunction):
 
     @classmethod
     def pre_condition(cls, OB, logger, cfg):
+        raise NotImplementedError('RunCalOB is deprecated. Use RunOB instead.')
         check_input(OB, 'Template_Name', allowed_values=['kpf_cal'])
         check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
 
