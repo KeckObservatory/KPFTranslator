@@ -51,6 +51,12 @@ class KPFException(Exception):
         super().__init__(self.message)
 
 
+class InvalidObservingBlock(KPFException):
+    def __init__(self, iobmessage=""):
+        self.iobmessage = f"OB Invalid: {iobmessage}"
+        super().__init__(self.iobmessage)
+
+
 class FailedPreCondition(KPFException):
     def __init__(self, pcmessage=""):
         self.pcmessage = f"Failed PreCondition: {pcmessage}"

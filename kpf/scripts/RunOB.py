@@ -39,8 +39,7 @@ class RunSciOB(KPFTranslatorFunction):
         else:
             raise FailedPreCondition('Input must be dict or ObservingBlock')
         # Validate the OB
-        if not OB.validate():
-            raise FailedPreCondition('Input ObservingBlock is invalid')
+        OB.validate()
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))

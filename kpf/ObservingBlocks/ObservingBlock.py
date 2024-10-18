@@ -4,7 +4,7 @@ from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.Target import Target
 
-from kpf import log, KPFException
+from kpf import log, KPFException, InvalidObservingBlock
 
 
 class ObservingBlock(object):
@@ -49,18 +49,25 @@ class ObservingBlock(object):
     def validate(self):
         # Check that components are the correct types and are individually valid
         if self.Target is not None:
-            assert isinstance(self.Target, Target)
-            assert self.Target.validate()
-        for observation in self.Observations:
-            assert isinstance(observation, Observation)
-            assert observation.validate()
-        for calibration in self.Calibrations:
-            assert isinstance(calibration, Calibration)
-            assert calibration.validate()
+            if not isinstance(self.Target, Target):
+                raise InvalidObservingBlock('Target component is not a Target object')
+            if not self.Target.validate():
+                raise InvalidObservingBlock('Target component is not a valid Target object')
+        for i,observation in enumerate(self.Observations):
+            if not isinstance(observation, Observation):
+                raise InvalidObservingBlock(f'Observation component {i+1} is not a Observation object')
+            if not observation.validate():
+                raise InvalidObservingBlock('Observation component {i+1} is not a valid Observation object')
+        for i,calibration in enumerate(self.Calibrations):
+            if not isinstance(calibration, Calibration):
+                raise InvalidObservingBlock(f'Calibration component {i+1} is not a Calibration object')
+            if not calibration.validate():
+                raise InvalidObservingBlock('Calibration component {i+1} is not a valid Calibration object')
 
         # If we have science observations, we must have a target
         if len(self.Observations) > 0:
-            assert self.Target is not None
+            if self.Target is None:
+                raise InvalidObservingBlock(f"OB contains observations without a target")
 
     def to_dict(self):
         OB = {}
