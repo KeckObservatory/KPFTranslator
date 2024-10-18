@@ -11,13 +11,20 @@ class ObservingBlock(object):
     def __init__(self, OBinput):
         if isinstance(OBinput, dict):
             OBdict = OBinput
+        if isinstance(OBinput, ObservingBlock):
+            OBdict = OBinput.to_dict()
         elif OBinput in ['', None]:
             OBdict = {}
         elif isinstance(OBinput, str):
             file = Path(OBinput).expanduser().absolute()
             if file.exists() is True:
-                with open(file, 'r') as f:
-                    OBdict = yaml.safe_load(f)
+                try:
+                    with open(file, 'r') as f:
+                        OBdict = yaml.safe_load(f)
+                except Exception as e:
+                    log.error(f'Unable to parse input as yaml file')
+                    log.error(f'{OBinput}')
+                    OBdict = {}
             else:
                 log.error(f'Unable to locate file: {OBinput}')
                 OBdict = {}
@@ -63,7 +70,3 @@ class ObservingBlock(object):
             OB['Observations'] = [o.to_dict() for o in self.Observations]
         if len(self.Calibrations() > 0:
             OB['Calibrations'] = [c.to_dict() for c in self.Calibrations]
-        if self.Scheduling is not None:
-            OB['Scheduling'] = self.Scheduling.to_dict()
-        if self.Metadata is not None:
-            OB['Metadata'] = self.Metadata.to_dict()

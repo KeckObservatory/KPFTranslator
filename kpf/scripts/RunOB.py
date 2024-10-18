@@ -27,14 +27,18 @@ class RunSciOB(KPFTranslatorFunction):
 
     ARGS:
     =====
-    * __OB__ - `ObservingBlock` A fully specified observing block (OB).
+    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
     '''
     @classmethod
     def pre_condition(cls, OB):
-        try:
+        # Read the OB
+        if isinstance(OB, dict):
             OB = ObservingBlock(OB)
-        except:
-            raise FailedPreCondition('Input OB could not be parsed')
+        elif isinstance(OB, ObservingBlock):
+            pass
+        else:
+            raise FailedPreCondition('Input must be dict or ObservingBlock')
+        # Validate the OB
         if not OB.validate():
             raise FailedPreCondition('Input ObservingBlock is invalid')
 
