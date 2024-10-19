@@ -20,23 +20,27 @@ def create_KPF_log():
     LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
     LogConsoleHandler.setFormatter(LogFormat)
     log.addHandler(LogConsoleHandler)
-    ## Set up file output
-    logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
-    if logdir.exists() is False:
-        logdir.mkdir(mode=0o777, parents=True)
-    LogFileName = logdir / 'KPFTranslator.log'
-    LogFileHandler = RotatingFileHandler(LogFileName,
-                                         maxBytes=100*1024*1024, # 100 MB
-                                         backupCount=1000) # Keep old files
-    LogFileHandler.setLevel(logging.DEBUG)
-    LogFileHandler.setFormatter(LogFormat)
-    log.addHandler(LogFileHandler)
-    # Try to change permissions in case they are bad
     try:
-        os.chmod(LogFileName, 0o666)
-    except OSError as e:
+        ## Set up file output
+        logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
+        if logdir.exists() is False:
+            logdir.mkdir(mode=0o777, parents=True)
+        LogFileName = logdir / 'KPFTranslator.log'
+        LogFileHandler = RotatingFileHandler(LogFileName,
+                                             maxBytes=100*1024*1024, # 100 MB
+                                             backupCount=1000) # Keep old files
+        LogFileHandler.setLevel(logging.DEBUG)
+        LogFileHandler.setFormatter(LogFormat)
+        log.addHandler(LogFileHandler)
+        # Try to change permissions in case they are bad
+        try:
+            os.chmod(LogFileName, 0o666)
+        except OSError as e:
+            pass
+    except:
         pass
     return log
+
 
 log = create_KPF_log()
 
