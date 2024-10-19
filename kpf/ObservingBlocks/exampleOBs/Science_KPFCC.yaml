@@ -1,5 +1,5 @@
 Metadata:
-  ProgramIDs: string              # CSV list of program IDs (SnnX_Ymmm)
+  ProgramIDs: string              # 
   CommentToObserver: string       # 
 Scheduling:
   SchedulingMode: str             # 'FixedTime', 'Cadence', 'Single'
@@ -10,8 +10,10 @@ Scheduling:
   FastReadModeRequested: bool     # (FixedTime mode) Does this OB request Fast Read Mode?
   FixedTimeStart: str             # (FixedTime mode) Start of requested window
   FixedTimeEnd: str               # (FixedTime mode) End of requested window
-  MinimumElevation: float         # [degrees] defaults to 30, warn if below 30
-  WeatherBand: int                # 1, 2, or 3
+  MinimumElevation: float         # [degrees] 
+  MinimumMoonSeparation: float    # [degrees] 
+  WeatherBand: int                # [bitmap] 1, 2, or 3
+  AccessibilityMap: ??
 Target:
   TargetName: string              # Name
   GaiaID: DR3 nnnnnnnnnnnnnnnnnnn # Gaia ID
