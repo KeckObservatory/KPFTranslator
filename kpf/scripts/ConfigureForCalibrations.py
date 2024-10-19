@@ -11,6 +11,8 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.ObservingBlocks.Calibration import Calibration
+
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.fiu.ConfigureFIU import ConfigureFIU
@@ -29,7 +31,11 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, calibrations):
-        pass # OB should already have been validated by RunOB
+        if not isinstance(calibrations, list):
+            raise FailedPreCondition(f'Input should be a list of calibrations')
+        for i,cal in enumerate(calibrations):
+            if not isinstance(calibrations, Calibration):
+                raise FailedPreCondition(f'Input {i+1} is not a Calibration object')
 
     @classmethod
     def simple_perform(cls, calibrations):
