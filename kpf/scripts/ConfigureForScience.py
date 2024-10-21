@@ -31,8 +31,6 @@ class ConfigureForScience(KPFTranslatorFunction):
     This must have arguments as input, either from a file using the `-f` command
     line tool, or passed in from the execution engine.
 
-    Can be called by `ddoi_script_functions.configure_for_science`.
-
     ARGS:
     =====
     :OB: `dict` A fully specified science observing block (OB).
