@@ -415,7 +415,7 @@
         <string>Sort By:</string>
        </property>
       </widget>
-      <widget class="QListView" name="OBList">
+      <widget class="QListView" name="ListOfOBs">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -423,6 +423,15 @@
          <width>491</width>
          <height>561</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -444,26 +453,19 @@
          <x>10</x>
          <y>30</y>
          <width>311</width>
-         <height>201</height>
+         <height>501</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="2" column="1">
-         <widget class="QLabel" name="SOB_TargetRA">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QLabel" name="SOB_nExp">
+        <item row="8" column="1">
+         <widget class="QLabel" name="SOB_ExpTime">
           <property name="text">
            <string>--</string>
           </property>
          </widget>
         </item>
         <item row="5" column="1">
-         <widget class="QLabel" name="SOB_Gmag">
+         <widget class="QLabel" name="SOB_Jmag">
           <property name="text">
            <string>--</string>
           </property>
@@ -476,66 +478,199 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="TargetDecLabel">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_73">
           <property name="text">
-           <string>Dec:</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;OB Values&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QLabel" name="SOB_Jmag">
+        <item row="11" column="1">
+         <widget class="QLabel" name="SOB_ExecutionTime">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="0">
+         <widget class="QLabel" name="label_72">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Calculated Values&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="SOB_TargetRA">
           <property name="text">
            <string>--</string>
           </property>
          </widget>
         </item>
         <item row="5" column="0">
-         <widget class="QLabel" name="label_47">
-          <property name="text">
-           <string>G magnitude</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_49">
-          <property name="text">
-           <string>nExp:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="0">
-         <widget class="QLabel" name="label_51">
-          <property name="text">
-           <string>ExpTime:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="SOB_ExpTime">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
          <widget class="QLabel" name="label_45">
           <property name="text">
            <string>J magnitude:</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="4" column="0">
+         <widget class="QLabel" name="TargetDecLabel">
+          <property name="text">
+           <string>Dec (Epoch=now):</string>
+          </property>
+         </widget>
+        </item>
+        <item row="15" column="1">
+         <widget class="QLabel" name="SOB_AzSlew">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="16" column="0">
+         <widget class="QLabel" name="label_65">
+          <property name="text">
+           <string>EL Slew Distance:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="14" column="1">
+         <widget class="QLabel" name="SOB_Airmass">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QLabel" name="SOB_ExpMeterMode">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Execution Time:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
          <widget class="QLabel" name="SOB_TargetDec">
           <property name="text">
            <string>--</string>
           </property>
          </widget>
         </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_49">
+          <property name="text">
+           <string>nExp:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="SOB_GaiaID">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="1">
+         <widget class="QLabel" name="SOB_Az">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="16" column="1">
+         <widget class="QLabel" name="SOB_ELSlew">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Gaia DR3 ID:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="15" column="0">
+         <widget class="QLabel" name="label_64">
+          <property name="text">
+           <string>Az Slew Distance:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="0">
+         <widget class="QLabel" name="label_69">
+          <property name="text">
+           <string>Az:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>ExpMeterMode:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="14" column="0">
+         <widget class="QLabel" name="label_61">
+          <property name="text">
+           <string>Airmass:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="SOB_nExp">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="SOB_Gmag">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
          <widget class="QLabel" name="TargetRALabel">
           <property name="text">
-           <string>RA:</string>
+           <string>RA (Epoch=now):</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="0">
+         <widget class="QLabel" name="label_70">
+          <property name="text">
+           <string>Alt:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_47">
+          <property name="text">
+           <string>G magnitude</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QLabel" name="label_51">
+          <property name="text">
+           <string>ExpTime:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="1">
+         <widget class="QLabel" name="SOB_EL">
+          <property name="text">
+           <string>--</string>
           </property>
          </widget>
         </item>
@@ -546,137 +681,13 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_73">
-          <property name="text">
-           <string>OB Values</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="gridLayoutWidget_15">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>240</y>
-         <width>311</width>
-         <height>201</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="5" column="1">
-         <widget class="QLabel" name="SOB_TimeToSet">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_69">
-          <property name="text">
-           <string>Az:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="SOB_EL">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_61">
-          <property name="text">
-           <string>Airmass:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_64">
-          <property name="text">
-           <string>Az Slew Distance:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_70">
-          <property name="text">
-           <string>Alt:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_63">
-          <property name="text">
-           <string>Time Until Set (30 / limit):</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_67">
-          <property name="text">
-           <string>Time Until Rise:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QLabel" name="SOB_AzSlew">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLabel" name="SOB_Az">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="SOB_ELSlew">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QLabel" name="SOB_TimeToRise">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="0">
-         <widget class="QLabel" name="label_65">
-          <property name="text">
-           <string>EL Slew Distance:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLabel" name="SOB_Airmass">
-          <property name="text">
-           <string>--</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_72">
-          <property name="text">
-           <string>Calculated Values</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
       <widget class="QPushButton" name="SOB_ExecuteButton">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>450</y>
+         <y>540</y>
          <width>181</width>
          <height>23</height>
         </rect>
@@ -685,24 +696,11 @@
         <string>Execute Selected OB</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="SOB_HideButton">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>510</y>
-         <width>181</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Hide Selected OB in List</string>
-       </property>
-      </widget>
       <widget class="QPushButton" name="SOB_ExecuteWithSlewCalButton">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>480</y>
+         <y>570</y>
          <width>181</width>
          <height>23</height>
         </rect>

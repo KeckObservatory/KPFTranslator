@@ -89,6 +89,14 @@ class ObservingBlock(object):
         if len(self.Calibrations) > 0:
             OB['Calibrations'] = [c.to_dict() for c in self.Calibrations]
 
+
+    def __str__(self):
+        out = f"{self.Target.get('TargetName'):18s} {self.Target.get('RA'):14s} {self.Target.get('Dec'):14s}"
+        for obs in self.Observations:
+            out += f"{obs.get('nExp'):d}x{obs.get('ExpTime'):.0f}s"
+        return out
+
+
     @classmethod
     def get_gaia_parameters(self, gaiaid):
         r = Vizier(catalog='I/350/gaiaedr3').query_constraints(Source=gaiaid)[0]
@@ -169,13 +177,3 @@ class ObservingBlock(object):
 
 
 
-#                    ('twoMASSID', None, str),
-#                    ('Jmag', None, float),
-#                    ('', None, str, 'hh:mm:ss.ss'),
-#                    ('', None, str, 'dd:mm:ss.s'),
-#                    ('', 2000, float, 'Equinox of coordinates'),
-#                    ('', 0, float, 'Proper motion in RA in seconds-of-time/year'),
-#                    ('', 0, float, 'Proper motion in Dec in arcsec/year'),
-#                    ('', 2000, float, 'Epoch of coordinates if proper motion is to be applied'),
-#                    ('DRA', None, float, 'Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east'),
-#                    ('DDEC', None, float, 'Non sidereal tracking rate in Dec in arcsec/hr'),

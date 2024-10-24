@@ -7,7 +7,7 @@ class OBProperty(object):
         self.comment = comment
 
     def get(self):
-        return self.value
+        return self.valuetype(self.value)
 
     def get_type(self):
         return self.valuetype
@@ -16,7 +16,10 @@ class OBProperty(object):
         return self.comment
 
     def set(self, value):
-        self.value = value
+        try:
+            self.value = self.valuetype(value)
+        except TypeError:
+            raise TypeError(f"Input {value} can not be cast as {self.valuetype}")
 
 
 class BaseOBComponent(object):
