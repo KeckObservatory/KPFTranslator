@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>903</width>
-    <height>763</height>
+    <height>886</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,7 +75,7 @@
         <number>1</number>
        </property>
        <property name="text">
-        <string>scriptname.yaml</string>
+        <string>--</string>
        </property>
       </widget>
      </item>
@@ -162,7 +162,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Lamps:</string>
+        <string>Sidereal:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -177,7 +177,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Object Value:</string>
+        <string>UT:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -211,27 +211,27 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="object_current_value">
+     <item row="2" column="1">
+      <widget class="QLabel" name="SiderealTimeValue">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
-        <string>_</string>
+        <string>HH:MM:SS</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="lamps_value">
+     <item row="1" column="1">
+      <widget class="QLabel" name="UTValue">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
-        <string>_</string>
+        <string>HH:MM:SS</string>
        </property>
       </widget>
      </item>
@@ -365,58 +365,358 @@
       <x>10</x>
       <y>180</y>
       <width>891</width>
-      <height>581</height>
+      <height>681</height>
      </rect>
     </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
-    <widget class="QWidget" name="ScienceOB">
+    <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Science OB</string>
+      <string>OBs from Database</string>
      </attribute>
-     <widget class="QWidget" name="gridLayoutWidget">
+     <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
-        <width>411</width>
-        <height>51</height>
+        <y>10</y>
+        <width>511</width>
+        <height>631</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="construct_layout">
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Gaia DR3 ID:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QPushButton" name="query_gaia_btn">
-         <property name="toolTip">
-          <string>Fills Target Info section of the OB from a Vizier query of the Gaia DR3 catalog.</string>
-         </property>
-         <property name="text">
-          <string>Query Gaia ID</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h4 style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Get Target Info from Query&lt;/span&gt;&lt;/h4&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="gaia_id_query_input"/>
-       </item>
-      </layout>
+      <property name="title">
+       <string>Observing Block List</string>
+      </property>
+      <widget class="QComboBox" name="SortOBs_ComboBox">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>30</y>
+         <width>141</width>
+         <height>23</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_88">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>61</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Sort By:</string>
+       </property>
+      </widget>
+      <widget class="QListView" name="OBList">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>491</width>
+         <height>561</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>10</y>
+        <width>331</width>
+        <height>631</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Selected Observing Block Details</string>
+      </property>
+      <widget class="QWidget" name="gridLayoutWidget_14">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>311</width>
+         <height>201</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="2" column="1">
+         <widget class="QLabel" name="SOB_TargetRA">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="SOB_nExp">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLabel" name="SOB_Gmag">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="SOB_TargetName">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="TargetDecLabel">
+          <property name="text">
+           <string>Dec:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="SOB_Jmag">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_47">
+          <property name="text">
+           <string>G magnitude</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_49">
+          <property name="text">
+           <string>nExp:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_51">
+          <property name="text">
+           <string>ExpTime:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="SOB_ExpTime">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_45">
+          <property name="text">
+           <string>J magnitude:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="SOB_TargetDec">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="TargetRALabel">
+          <property name="text">
+           <string>RA:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="TargetNameLabel">
+          <property name="text">
+           <string>Target Name:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_73">
+          <property name="text">
+           <string>OB Values</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="gridLayoutWidget_15">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>240</y>
+         <width>311</width>
+         <height>201</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="5" column="1">
+         <widget class="QLabel" name="SOB_TimeToSet">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_69">
+          <property name="text">
+           <string>Az:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="SOB_EL">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_61">
+          <property name="text">
+           <string>Airmass:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_64">
+          <property name="text">
+           <string>Az Slew Distance:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_70">
+          <property name="text">
+           <string>Alt:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_63">
+          <property name="text">
+           <string>Time Until Set (30 / limit):</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_67">
+          <property name="text">
+           <string>Time Until Rise:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="SOB_AzSlew">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="SOB_Az">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="SOB_ELSlew">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="SOB_TimeToRise">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_65">
+          <property name="text">
+           <string>EL Slew Distance:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="SOB_Airmass">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_72">
+          <property name="text">
+           <string>Calculated Values</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QPushButton" name="SOB_ExecuteButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>450</y>
+         <width>181</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Execute Selected OB</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_HideButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>510</y>
+         <width>181</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Hide Selected OB in List</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_ExecuteWithSlewCalButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>480</y>
+         <width>181</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Execute OB with Slew Cal</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="ScienceOB">
+     <attribute name="title">
+      <string>Manual Science OB</string>
+     </attribute>
      <widget class="QWidget" name="gridLayoutWidget_5">
       <property name="geometry">
        <rect>
@@ -499,457 +799,6 @@
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
-     <widget class="Line" name="line_7">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>130</y>
-        <width>871</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_16">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>140</y>
-        <width>381</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>&lt;h2&gt;OB Contents&lt;/h2&gt;</string>
-      </property>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_6">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>170</y>
-        <width>421</width>
-        <height>321</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="ob_contents_layout" columnstretch="100,0,0">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
-       </property>
-       <item row="10" column="0">
-        <widget class="QCheckBox" name="TriggerCaHK">
-         <property name="text">
-          <string>Trigger CaHK</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="label_24">
-         <property name="text">
-          <string>Gaia DR3 ID</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="TargetName"/>
-       </item>
-       <item row="7" column="2">
-        <widget class="QLabel" name="label_41">
-         <property name="text">
-          <string>2MASS J magnitude</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_15">
-         <property name="text">
-          <string>&lt;h4&gt;Target Info&lt;/h4&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="GaiaID">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="2">
-        <widget class="QLabel" name="label_42">
-         <property name="text">
-          <string>K</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QLabel" name="label_27">
-         <property name="text">
-          <string>2MASS ID</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="label_35">
-         <property name="text">
-          <string>Jmag:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_31">
-         <property name="text">
-          <string>RadialVelocity:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_34">
-         <property name="text">
-          <string>Gmag:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_20">
-         <property name="text">
-          <string>Target Name:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="Parallax">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLabel" name="Jmag">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="1">
-        <widget class="QCheckBox" name="TriggerGreen">
-         <property name="text">
-          <string>Trigger Green</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="twoMASSID">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_28">
-         <property name="text">
-          <string>Parallax:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_25">
-         <property name="text">
-          <string>2MASSID:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="label_21">
-         <property name="text">
-          <string>User supplied name</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2">
-        <widget class="QLabel" name="label_40">
-         <property name="text">
-          <string>Gaia G magnitude</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="label_36">
-         <property name="text">
-          <string>Teff:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QLabel" name="label_30">
-         <property name="text">
-          <string>mas</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0">
-        <widget class="QLabel" name="label_19">
-         <property name="text">
-          <string>&lt;h4&gt;Spectrograph Setup&lt;/h4&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_22">
-         <property name="text">
-          <string>GaiaID:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QLabel" name="label_33">
-         <property name="text">
-          <string>km/s</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QLabel" name="Teff">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="2">
-        <widget class="QCheckBox" name="TriggerRed">
-         <property name="text">
-          <string>Trigger Red</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="Gmag">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLabel" name="RadialVelocity">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="0">
-        <widget class="QCheckBox" name="BlockSky">
-         <property name="text">
-          <string>BlockSky</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_7">
-      <property name="geometry">
-       <rect>
-        <x>450</x>
-        <y>170</y>
-        <width>431</width>
-        <height>311</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="obs_seq_layout" columnstretch="0,0,0,0">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
-       </property>
-       <item row="5" column="3">
-        <widget class="QLabel" name="ObjectNote">
-         <property name="text">
-          <string>OBJECT for FITS header</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QLabel" name="ExpMeterModeLabel">
-         <property name="text">
-          <string>ExpMeterMode:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLabel" name="ObjectLabel">
-         <property name="text">
-          <string>Object:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="1">
-        <widget class="QLabel" name="ExpMeterExpTimeLabel">
-         <property name="text">
-          <string>ExpMeterExpTime:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="1">
-        <widget class="QLabel" name="CalND1Label">
-         <property name="text">
-          <string>CalND1:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1" colspan="2">
-        <widget class="QLabel" name="label_44">
-         <property name="text">
-          <string>&lt;h4&gt;First Observation Sequence&lt;/h4&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="1">
-        <widget class="QLabel" name="CalND2Label">
-         <property name="text">
-          <string>CalND2:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="2">
-        <widget class="QComboBox" name="CalND2"/>
-       </item>
-       <item row="7" column="2">
-        <widget class="QLineEdit" name="ExpTimeEdit"/>
-       </item>
-       <item row="9" column="2">
-        <widget class="QLineEdit" name="ExpMeterExpTimeEdit"/>
-       </item>
-       <item row="10" column="1">
-        <widget class="QLabel" name="ExpMeterBinLabel">
-         <property name="text">
-          <string>ExpMeterBin:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="3">
-        <widget class="QCheckBox" name="AutoEMExpTime">
-         <property name="text">
-          <string>Set automatically?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="nExpLabel">
-         <property name="text">
-          <string>nExp:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLabel" name="ExpTimeLabel">
-         <property name="text">
-          <string>ExpTime:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QLineEdit" name="ObjectEdit"/>
-       </item>
-       <item row="8" column="2">
-        <widget class="QComboBox" name="ExpMeterMode"/>
-       </item>
-       <item row="6" column="3">
-        <widget class="QLabel" name="nExpNote">
-         <property name="text">
-          <string>number of exposures</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="2">
-        <widget class="QCheckBox" name="TakeSimulCal">
-         <property name="text">
-          <string>CheckBox</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="2">
-        <widget class="QComboBox" name="CalND1"/>
-       </item>
-       <item row="12" column="1">
-        <widget class="QLabel" name="TakeSimulCalLabel">
-         <property name="text">
-          <string>TakeSimulCal:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="3">
-        <widget class="QLabel" name="ExpTimeNote">
-         <property name="text">
-          <string>exposure time in seconds</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2">
-        <widget class="QLineEdit" name="nExpEdit"/>
-       </item>
-       <item row="11" column="1">
-        <widget class="QLabel" name="ExpMeterThresholdLabel">
-         <property name="text">
-          <string>ExpMeterThreshold:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="3">
-        <widget class="QLabel" name="ExpMeterBinNote">
-         <property name="text">
-          <string>Wavelength (nm)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="3">
-        <widget class="QLabel" name="ExpMeterThresholdNote">
-         <property name="text">
-          <string>Flux (e-/pix) on sci detector</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="2">
-        <widget class="QLineEdit" name="ExpMeterThresholdEdit"/>
-       </item>
-       <item row="10" column="2">
-        <widget class="QComboBox" name="ExpMeterBin"/>
-       </item>
-       <item row="12" column="3">
-        <widget class="QCheckBox" name="AutoNDFilters">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Automatic ND Filters</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="3">
-        <widget class="QLabel" name="ExtraNDLabel">
-         <property name="text">
-          <string>Add Extra ND?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="3">
-        <widget class="QComboBox" name="ExtraND"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="Line" name="line_4">
-      <property name="geometry">
-       <rect>
-        <x>430</x>
-        <y>170</y>
-        <width>20</width>
-        <height>321</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_17">
       <property name="geometry">
        <rect>
@@ -992,61 +841,13 @@
        <string>Write OB to File</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_88">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>500</y>
-        <width>141</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Other Catalog Names:</string>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="other_names">
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>500</y>
-        <width>731</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>-</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="Line" name="line_8">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>490</y>
-        <width>871</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
     </widget>
     <widget class="QWidget" name="CalibrationOB">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <attribute name="title">
-      <string>Calibration OB</string>
+      <string>Manual Calibration OB</string>
      </attribute>
      <widget class="QLabel" name="label_56">
       <property name="enabled">
@@ -1076,358 +877,6 @@
       <property name="text">
        <string>Load OB from File</string>
       </property>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_4">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>110</y>
-        <width>421</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="detector_triggers_layout">
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="TriggerCaHK_cal">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Trigger CaHK</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QCheckBox" name="TriggerGreen_cal">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Trigger Green</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QCheckBox" name="TriggerRed_cal">
-         <property name="text">
-          <string>Trigger Red</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_9">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>160</y>
-        <width>421</width>
-        <height>111</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="dark_seq_1_layout">
-       <item row="1" column="0">
-        <widget class="QLabel" name="Object_dark_seq1_label">
-         <property name="text">
-          <string>Object:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="Object_dark_seq1"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="ExpTime_dark_seq1_label">
-         <property name="text">
-          <string>ExpTime:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="nExp_dark_seq1"/>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="ExpTime_dark_seq1"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="nExp_dark_seq1_label">
-         <property name="text">
-          <string>nExp:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="Object_dark_seq1_note">
-         <property name="text">
-          <string>for FITS header</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="nExp_dark_seq1_note">
-         <property name="text">
-          <string>number of exposures</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QLabel" name="ExpTime_dark_seq1_note">
-         <property name="text">
-          <string>Exposure Time (s)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QCheckBox" name="enable_dark_seq1">
-         <property name="text">
-          <string>Enable?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_58">
-         <property name="text">
-          <string>&lt;h3&gt;Dark Sequence 1&lt;/h3&gt;</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_10">
-      <property name="geometry">
-       <rect>
-        <x>450</x>
-        <y>160</y>
-        <width>369</width>
-        <height>111</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="dark_seq_2_layout">
-       <item row="1" column="0">
-        <widget class="QLabel" name="Object_dark_seq2_label">
-         <property name="text">
-          <string>Object:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="Object_dark_seq2"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="ExpTime_dark_seq2_label">
-         <property name="text">
-          <string>ExpTime:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="nExp_dark_seq2"/>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="ExpTime_dark_seq2"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="nExp_dark_seq2_label">
-         <property name="text">
-          <string>nExp:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="Object_dark_seq2_note">
-         <property name="text">
-          <string>for FITS header</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="nExp_dark_seq2_note">
-         <property name="text">
-          <string>number of exposures</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QLabel" name="ExpTime_dark_seq2_note">
-         <property name="text">
-          <string>Exposure Time (s)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QCheckBox" name="enable_dark_seq2">
-         <property name="text">
-          <string>Enable?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_71">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h3 style=&quot; margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;Dark Sequence 2&lt;/span&gt;&lt;/h3&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_11">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>290</y>
-        <width>421</width>
-        <height>321</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="cal_seq_layout">
-       <item row="5" column="0">
-        <widget class="QLabel" name="nExp_cal_seq1_label">
-         <property name="text">
-          <string>nExp:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="SSS_Sky_cal_seq1_label">
-         <property name="text">
-          <string>SSS_Sky:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="ExpTime_cal_seq1_label">
-         <property name="text">
-          <string>ExpTime:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_78">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h3 style=&quot; margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;Cal Sequence 1&lt;/span&gt;&lt;/h3&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="Object_cal_seq1_label">
-         <property name="text">
-          <string>Object:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="CalND2_cal_seq1_label">
-         <property name="text">
-          <string>CalND2:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="CalND1_cal_seq1"/>
-       </item>
-       <item row="0" column="2">
-        <widget class="QCheckBox" name="enable_cal_seq1">
-         <property name="text">
-          <string>Enable?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="warm_up_warning">
-         <property name="text">
-          <string>warm up?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0">
-        <widget class="QLabel" name="TakeSimulCal_cal_seq1_label">
-         <property name="text">
-          <string>TakeSimulCal:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="SSS_Science_cal_seq1_label">
-         <property name="text">
-          <string>SSS_Science:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QComboBox" name="CalND2_cal_seq1"/>
-       </item>
-       <item row="5" column="2">
-        <widget class="QLabel" name="nExp_cal_seq1_note">
-         <property name="text">
-          <string>number of exposures</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="CalND1_cal_seq1_label">
-         <property name="text">
-          <string>CalND1:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="CalSource_cal_seq1"/>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLineEdit" name="ExpTime_cal_seq1"/>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="Object_cal_seq1_note">
-         <property name="text">
-          <string>for FITS header</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="CalSource_cal_seq1_label">
-         <property name="text">
-          <string>CalSource:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <layout class="QGridLayout" name="gridLayout"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="Object_cal_seq1"/>
-       </item>
-       <item row="6" column="2">
-        <widget class="QLabel" name="ExpTime_cal_seq1_note">
-         <property name="text">
-          <string>Exposure Time (s)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="nExp_cal_seq1"/>
-       </item>
-       <item row="7" column="1" colspan="2">
-        <widget class="QCheckBox" name="SSS_Science_cal_seq1">
-         <property name="text">
-          <string>Open Science Source Select Shutter?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1" colspan="2">
-        <widget class="QCheckBox" name="SSS_Sky_cal_seq1">
-         <property name="text">
-          <string>Open Sky Source Select Shutter?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="1" colspan="2">
-        <widget class="QCheckBox" name="TakeSimulCal_cal_seq1">
-         <property name="text">
-          <string>Enable Simultaneous Calibration Fiber?</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </widget>
      <widget class="QPushButton" name="write_to_file_btn_for_cal">
       <property name="enabled">
@@ -1494,58 +943,6 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="QLabel" name="label_59">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>80</y>
-        <width>381</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>&lt;h2&gt;OB Contents&lt;/h2&gt;</string>
-      </property>
-     </widget>
-     <widget class="Line" name="line_10">
-      <property name="geometry">
-       <rect>
-        <x>430</x>
-        <y>160</y>
-        <width>20</width>
-        <height>111</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-     <widget class="Line" name="line_11">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>140</y>
-        <width>791</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-     <widget class="Line" name="line_12">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>270</y>
-        <width>871</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
      <widget class="QPushButton" name="load_slewcal_btn">
       <property name="geometry">
        <rect>
@@ -1559,108 +956,12 @@
        <string>Load Standard Slew Cal</string>
       </property>
      </widget>
-     <widget class="QWidget" name="gridLayoutWidget_13">
-      <property name="geometry">
-       <rect>
-        <x>451</x>
-        <y>350</y>
-        <width>431</width>
-        <height>161</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="3" column="0">
-        <widget class="QLabel" name="ExpMeterBin_cal_seq1_label">
-         <property name="text">
-          <string>ExpMeterBin:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QLabel" name="ExpMeterThreshold_cal_seq1_note">
-         <property name="text">
-          <string>Flux (e-/nm) in sci detector</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="ExpMeterBin_cal_seq1"/>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="FF_FiberPos_cal_seq1_label">
-         <property name="text">
-          <string>FF_FiberPos:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="ExpMeterThreshold_cal_seq1"/>
-       </item>
-       <item row="3" column="2">
-        <widget class="QLabel" name="ExpMeterBin_cal_seq1_note">
-         <property name="text">
-          <string>Wavelength (nm)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="FF_FiberPos_cal_seq1"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="ExpMeterExpTime_cal_seq1_label">
-         <property name="text">
-          <string>ExpMeterExpTime:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="ExpMeterExpTime_cal_seq1_note">
-         <property name="text">
-          <string>EM Exp Time (s)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="ExpMeterThreshold_cal_seq1_label">
-         <property name="text">
-          <string>ExpMeterThreshold:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="ExpMeterExpTime_cal_seq1"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="ExpMeterMode_cal_seq1_label">
-         <property name="text">
-          <string>ExpMeterMode:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="ExpMeterMode_cal_seq1"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="Line" name="line_14">
-      <property name="geometry">
-       <rect>
-        <x>430</x>
-        <y>320</y>
-        <width>20</width>
-        <height>291</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
     </widget>
    </widget>
    <widget class="QLabel" name="label_89">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>200</x>
       <y>40</y>
       <width>81</width>
       <height>21</height>
@@ -1696,9 +997,9 @@
    <widget class="QLabel" name="Observer">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>280</x>
       <y>40</y>
-      <width>591</width>
+      <width>571</width>
       <height>21</height>
      </rect>
     </property>
@@ -1724,25 +1025,60 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="progID">
+   <widget class="QComboBox" name="ProgID_ComboBox">
     <property name="geometry">
      <rect>
       <x>110</x>
       <y>40</y>
-      <width>59</width>
-      <height>21</height>
+      <width>79</width>
+      <height>23</height>
      </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>-</string>
     </property>
    </widget>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>903</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>Load OBs</string>
+    </property>
+    <addaction name="actionLoad_OBs_from_file"/>
+    <addaction name="actionRefresh_OBs_from_Database"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <action name="actionLoad_Targets">
+   <property name="text">
+    <string>Load Targets</string>
+   </property>
+  </action>
+  <action name="actionLoad_Configurations">
+   <property name="text">
+    <string>Load Configurations</string>
+   </property>
+  </action>
+  <action name="actionLoad_Complete_OBs">
+   <property name="text">
+    <string>Load Observing Blocks</string>
+   </property>
+  </action>
+  <action name="actionLoad_OBs_from_file">
+   <property name="text">
+    <string>Load OBs from file</string>
+   </property>
+  </action>
+  <action name="actionRefresh_OBs_from_Database">
+   <property name="text">
+    <string>Refresh OBs from Database</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
