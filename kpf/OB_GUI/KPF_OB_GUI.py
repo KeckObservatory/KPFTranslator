@@ -87,6 +87,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug('setupUi')
         self.setWindowTitle("KPF OB GUI")
 
+        # Program ID
+        self.ProgID = self.findChild(QtWidgets.QComboBox, 'ProgID')
+        self.ProgID.addItems(self.get_progIDs())
+        self.ProgID.currentTextChanged.connect(self.set_ProgID)
+
         # Observer
         self.Observer = self.findChild(QtWidgets.QLabel, 'Observer')
         observer_kw = kPyQt.kFactory(ktl.cache('kpfexpose', 'OBSERVER'))
@@ -185,6 +190,20 @@ class MainWindow(QtWidgets.QMainWindow):
             self.expose_status_value.setStyleSheet("color:green")
         elif value in ['Start', 'InProgress', 'Readout']:
             self.expose_status_value.setStyleSheet("color:orange")
+
+
+    ##-------------------------------------------
+    ## Methods to get data from DB or Schedule
+    ##-------------------------------------------
+    def get_progIDs(self):
+        progIDs = ['KPF-CC']
+        # Go get list of available program IDs for Instrument=KPF
+        return progIDs + ['E123', 'E456']
+
+    def set_ProgID(self, value):
+        
+        self.ProgID.setCurrentText(value)
+
 
     ##-------------------------------------------
     ## Methods for OB List
