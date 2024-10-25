@@ -35,3 +35,15 @@ class Calibration(BaseOBComponent):
                             'ExpMeterExpTime', 'ExpMeterBin', 'ExpMeterThreshold']:
                     self.set(p[0], None)
         return self
+
+    def to_lines(self, comments=False):
+        lines = []
+        i = 0
+        for p in self.properties:
+            if self.get(p[0]) is not None:
+                i += 1
+                if i == 1:
+                    lines.append(f"- {p[0]}: {self.get(p[0])}")
+                else:
+                    lines.append(f"  {p[0]}: {self.get(p[0])}")
+        return lines

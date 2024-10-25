@@ -39,6 +39,21 @@ class Target(BaseOBComponent):
                               obstime=Time(self.Epoch.value, format='decimalyear'),
                               )
 
+    def to_lines(self, comments=False):
+        lines = []
+#         for p in self.properties:
+#             if self.get(p[0]) is not None:
+#                 lines.append(f"  {p[0]}: {self.get(p[0])}")
+        for ptuple in self.properties:
+            pname = ptuple[0]
+            if self.get(pname) is not None:
+                p = getattr(self, pname)
+                lines.append(f"  {pname}: {str(p)}")
+        return lines
+
+    def __str__(self):
+        return f"{self.TargetName.value:16s} {self.RA.value:13s} {self.Dec.value:13s}"
+
     @classmethod
     def get_gaia_parameters(self, gaiaid):
         r = Vizier(catalog='I/350/gaiaedr3').query_constraints(Source=gaiaid)[0]
@@ -59,7 +74,6 @@ class Target(BaseOBComponent):
                                 obstime=Time(2016.0, format='decimalyear'),
                                 unit=(u.deg, u.deg),
                                 )
-
         return target_coord, gaia_params
 
     @classmethod

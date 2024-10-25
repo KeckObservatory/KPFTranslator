@@ -11,6 +11,7 @@ import yaml
 import datetime
 from copy import deepcopy
 from astropy.coordinates import SkyCoord
+from astropy.time import Time
 
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
@@ -196,11 +197,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_SOB_display(self, SOB):
         self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
-        self.SOB_TargetName.setText(SOB.Target.get('GaiaID'))
+        self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
         self.SOB_TargetRA.setText(SOB.Target.get('RA'))
         self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
-        self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
-        self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
+#         try:
+        now = Time(datetime.datetime.utcnow())
+        print(SOB.Target)
+        print(SOB.Target.coord)
+        coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
+        print(coord_now)
+        coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
+        self.SOB_Jmag.setText(coord_now_string.split()[0])
+        self.SOB_Gmag.setText(coord_now_string.split()[1])
+#         except:
+#             self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
+#             self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
         self.SOB_nExp.setText(f"{SOB.Observations[0].get('nExp'):d}")
         self.SOB_ExpTime.setText(f"{SOB.Observations[0].get('ExpTime'):.1f} s")
         self.SOB_ExpMeterMode.setText(SOB.Observations[0].get('ExpMeterMode'))

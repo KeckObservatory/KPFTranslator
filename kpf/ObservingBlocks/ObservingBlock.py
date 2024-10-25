@@ -85,7 +85,25 @@ class ObservingBlock(object):
 
 
     def __str__(self):
-        out = f"{self.Target.get('TargetName'):16s} {self.Target.get('RA'):14s} {self.Target.get('Dec'):14s}"
+        if self.Target is not None:
+            out = f"{self.Target}"
+        else:
+            out = 'unknown        unknown       unknown '
         for obs in self.Observations:
-            out += f"{obs.get('nExp'):d}x{obs.get('ExpTime'):.0f}s"
+            out += f" {obs}"
         return out
+
+    def __repr__(self):
+        lines = []
+        if self.Target is not None:
+            lines += ['Target:']
+            lines += self.Target.to_lines()
+        if len(self.Observations) > 0:
+            lines += ['Observations:']
+            for obs in self.Observations:
+                lines += obs.to_lines()
+        if len(self.Calibrations) > 0:
+            lines += ['Calibrations:']
+            for cal in self.Calibrations:
+                lines += cal.to_lines()
+        return '\n'.join(lines)
