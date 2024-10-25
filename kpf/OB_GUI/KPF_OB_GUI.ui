@@ -1023,7 +1023,7 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QComboBox" name="ProgID_ComboBox">
+   <widget class="QComboBox" name="ProgID">
     <property name="geometry">
      <rect>
       <x>110</x>
