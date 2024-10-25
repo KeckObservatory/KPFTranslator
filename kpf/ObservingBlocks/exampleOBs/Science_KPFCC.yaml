@@ -10,10 +10,10 @@ Scheduling:
   FastReadModeRequested: bool     # (FixedTime mode) Does this OB request Fast Read Mode?
   FixedTimeStart: str             # (FixedTime mode) Start of requested window
   FixedTimeEnd: str               # (FixedTime mode) End of requested window
-  MinimumElevation: float         # [degrees] 
-  MinimumMoonSeparation: float    # [degrees] 
-  WeatherBand: int                # [bitmap] 1, 2, or 3
-  AccessibilityMap: ??
+  WeatherBand: bitmap             # [bitmap] 1, 2, or 3
+  AccessibilityMap: bitmap        # If custom map is input, this is the OR with the default map based on inputs below
+  MinimumElevation: float         # [deg]
+  MinimumMoonSeparation: float    # [deg]
 Target:
   TargetName: string              # Name
   GaiaID: DR3 nnnnnnnnnnnnnnnnnnn # Gaia ID
