@@ -1,25 +1,32 @@
 class OBProperty(object):
-    def __init__(self, name, value, valuetype, comment=''):
+    def __init__(self, name, value, valuetype, comment='', precision=None):
         self.name = name
-        self.value = value if value is None else valuetype(value)
-        #self.value = valuetype(value)
+        self._value = value if value is None else valuetype(value)
         self.valuetype = valuetype
         self.comment = comment
 
     def get(self):
-        return self.valuetype(self.value)
-
-    def get_type(self):
-        return self.valuetype
-
-    def get_comment(self):
-        return self.comment
+        if self._value is not None:
+            return self.valuetype(self._value)
+        else:
+            return self._value
 
     def set(self, value):
         try:
-            self.value = self.valuetype(value)
+            self._value = self.valuetype(value)
         except TypeError:
             raise TypeError(f"Input {value} can not be cast as {self.valuetype}")
+
+    def __str__(self):
+        if self.valuetype == float and precision is not None:
+            return ('{0:.%df}' % precision).format(self._value)
+        return f"{self._value}"
+
+    def __repr__(self):
+        return f"{self._value}"
+
+    # creating a property object
+    value = property(get, set)
 
 
 class BaseOBComponent(object):
