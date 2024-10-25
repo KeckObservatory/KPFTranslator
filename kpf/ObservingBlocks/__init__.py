@@ -1,5 +1,6 @@
 class OBProperty(object):
-    def __init__(self, name, value, valuetype, comment='', precision=None):
+    def __init__(self, name='', value=None, valuetype=None,
+                 comment='', precision=None):
         self.name = name
         self._value = value if value is None else valuetype(value)
         self.valuetype = valuetype
@@ -37,7 +38,7 @@ class BaseOBComponent(object):
         self.name_overrides={'2MASSID': 'twoMASSID'}
         self.properties = properties
         for p in properties:
-            setattr(self, p[0], OBProperty(*p))
+            setattr(self, p['name'], OBProperty(**p))
 
     def get(self, name):
         name = self.name_overrides.get(name, name)
@@ -46,7 +47,7 @@ class BaseOBComponent(object):
 
     def set(self, name, value):
         name = self.name_overrides.get(name, name)
-        if name in [p[0] for p in self.properties]:
+        if name in [p['name'] for p in self.properties]:
             this_property = getattr(self, name)
             this_property.set(value)
 
@@ -58,15 +59,15 @@ class BaseOBComponent(object):
     def to_dict(self):
         output = {}
         for p in self.properties:
-            if self.get(p[0]) is not None:
-                output[p[0]] = self.get(p[0])
+            if self.get(p['name']) is not None:
+                output[p['name']] = self.get(p['name'])
         return output
 
     def to_lines(self, comments=False):
         lines = []
         for p in self.properties:
-            if self.get(p[0]) is not None:
-                lines.append(f"{p[0]}: {self.get(p[0])}")
+            if self.get(p['name']) is not None:
+                lines.append(f"{p['name']}: {self.get(p['name'])}")
         return lines
 
     def validate(self):
