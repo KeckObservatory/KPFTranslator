@@ -4,6 +4,7 @@ class OBProperty(object):
         self._value = value if value is None else valuetype(value)
         self.valuetype = valuetype
         self.comment = comment
+        self.precision = precision
 
     def get(self):
         if self._value is not None:
@@ -18,8 +19,8 @@ class OBProperty(object):
             raise TypeError(f"Input {value} can not be cast as {self.valuetype}")
 
     def __str__(self):
-        if self.valuetype == float and precision is not None:
-            return ('{0:.%df}' % precision).format(self._value)
+        if self.valuetype == float and self.precision is not None:
+            return ('{0:.%df}' % self.precision).format(self._value)
         return f"{self._value}"
 
     def __repr__(self):
@@ -78,4 +79,7 @@ class BaseOBComponent(object):
         return output
 
     def __repr__(self):
-        return self.__str__()
+        output = ''
+        for line in self.to_lines():
+            output += line+'\n'
+        return output
