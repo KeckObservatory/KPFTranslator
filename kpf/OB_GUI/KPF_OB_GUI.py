@@ -9,7 +9,6 @@ import re
 import subprocess
 import yaml
 import datetime
-from copy import deepcopy
 import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
