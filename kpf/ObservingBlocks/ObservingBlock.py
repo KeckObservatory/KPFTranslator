@@ -83,7 +83,6 @@ class ObservingBlock(object):
         if len(self.Calibrations) > 0:
             OB['Calibrations'] = [c.to_dict() for c in self.Calibrations]
 
-
     def __str__(self):
         if self.Target is not None:
             out = f"{self.Target}"
@@ -107,3 +106,18 @@ class ObservingBlock(object):
             for cal in self.Calibrations:
                 lines += cal.to_lines()
         return '\n'.join(lines)
+
+
+def convert_v1_to_v2(OBinput):
+    if type(OBinput) in [str, Path]:
+        with open(OBinput, 'r') as f:
+            OBv1 = yaml.safe_load(f.read())
+    t = Target.resolve_target_name(f"Gaia {OB['GaiaID']}")
+    t['TargetName'] = OBv1['TargetName']
+    OB = ObservingBlock()
+    OB.Target = t
+    for obs_v1 in OBv1['SEQ_Observations']:
+        obs = Observation(obs_v1)
+        OB.Observations.append(obs)
+
+    return OB
