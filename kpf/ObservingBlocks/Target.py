@@ -72,6 +72,7 @@ class Target(BaseOBComponent):
     def __init__(self, input_dict):
         super().__init__('Target', '2.0', properties=target_properties)
         self.from_dict(input_dict)
+        # Build astropy.coordinates.SkyCoord
         ra = Angle(self.RA.value, unit=u.hourangle)
         dec = Angle(self.Dec.value, unit=u.degree)
         pm_ra_cosdec = (self.PMRA.value*15*np.cos(dec.to(u.radian).value))*u.arcsec/u.yr
@@ -91,7 +92,10 @@ class Target(BaseOBComponent):
         return lines
 
     def __str__(self):
-        return f"{self.TargetName.value:16s} {self.RA.value:13s} {self.Dec.value:13s}"
+        radec_str = self.coord.to_string('hmsdms', sep=':', precision=2)
+        out = (f"{self.TargetName.value:16s} {radec_str} "
+               f"{str(self.Gmag):5s} {str(self.Jmag):5s}")
+        return out
 
     @classmethod
     def get_gaia_parameters(self, gaiaid):

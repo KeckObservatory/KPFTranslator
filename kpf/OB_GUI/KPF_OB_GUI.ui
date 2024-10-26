@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>903</width>
+    <width>1026</width>
     <height>886</height>
    </rect>
   </property>
@@ -364,7 +364,7 @@
      <rect>
       <x>10</x>
       <y>180</y>
-      <width>891</width>
+      <width>1011</width>
       <height>681</height>
      </rect>
     </property>
@@ -380,14 +380,14 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>511</width>
+        <width>641</width>
         <height>631</height>
        </rect>
       </property>
       <property name="title">
        <string>Observing Block List</string>
       </property>
-      <widget class="QComboBox" name="SortOBs_ComboBox">
+      <widget class="QComboBox" name="SortOBs">
        <property name="geometry">
         <rect>
          <x>80</x>
@@ -397,7 +397,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLabel" name="label_88">
+      <widget class="QLabel" name="SortOBsLabel">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -419,9 +419,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>60</y>
-         <width>491</width>
-         <height>561</height>
+         <y>80</y>
+         <width>621</width>
+         <height>541</height>
         </rect>
        </property>
        <property name="font">
@@ -434,11 +434,58 @@
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QLabel" name="WeatherBandLabel">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>30</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Weather Band:</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="WeatherBand">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>30</y>
+         <width>111</width>
+         <height>23</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="OBListHeader">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>621</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>TargetName       RA          Dec          Gmag</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_2">
       <property name="geometry">
        <rect>
-        <x>540</x>
+        <x>670</x>
         <y>10</y>
         <width>331</width>
         <height>631</height>
@@ -453,7 +500,7 @@
          <x>10</x>
          <y>30</y>
          <width>311</width>
-         <height>501</height>
+         <height>421</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
@@ -1039,7 +1086,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>903</width>
+     <width>1026</width>
      <height>20</height>
     </rect>
    </property>

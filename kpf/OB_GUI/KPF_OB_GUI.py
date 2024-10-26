@@ -10,6 +10,7 @@ import subprocess
 import yaml
 import datetime
 from copy import deepcopy
+import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 
@@ -55,13 +56,38 @@ class OBListModel(QtCore.QAbstractListModel):
     def __init__(self, *args, OBs=[], **kwargs):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = OBs
+        self.start_times = None
 
     def data(self, index, role):
         if role == Qt.DisplayRole:
-            return str(self.OBs[index.row()])
+            if self.start_times is None:
+                return str(self.OBs[index.row()])
+            else:
+                start_time_decimal = self.start_times[index.row()]
+                sthr = int(np.floor(start_time_decimal))
+                stmin = (start_time_decimal-sthr)*60
+                start_time_str = f"{sthr:02d}:{stmin:02.0f} UT"
+                return f"{start_time_str}  {str(self.OBs[index.row()]):s}"
 
     def rowCount(self, index):
         return len(self.OBs)
+
+    def sort(self, sortkey):
+        if self.start_times is not None:
+            zipped = [z for z in zip(self.start_times, self.OBs)]
+            zipped.sort(key=lambda z: z[0])
+            self.OBs = [z[1] for z in zipped]
+            self.start_times = [z[0] for z in zipped]
+        elif sortkey == 'Name':
+            self.OBs.sort(key=lambda o: o.Target.TargetName.value, reverse=False)
+        elif sortkey == 'RA':
+            self.OBs.sort(key=lambda o: o.Target.coord.ra.deg, reverse=False)
+        elif sortkey == 'Dec':
+            self.OBs.sort(key=lambda o: o.Target.coord.dec.deg, reverse=False)
+        elif sortkey == 'Gmag':
+            self.OBs.sort(key=lambda o: o.Target.Gmag.value, reverse=False)
+        elif sortkey == 'Jmag':
+            self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
 
 ##-------------------------------------------------------------------------
 ## Define Application MainWindow
@@ -76,11 +102,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug('Initializing MainWindow')
         # Keywords
         self.dcs = 'dcs1'
-        # OBs
-        self.OBs = [ObservingBlock('~/joshw/OBs_v2/219134.yaml'),
-                    ObservingBlock('~/joshw/OBs_v2/156279.yaml'),
-                    ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml'),
-                    ]
 
 
     def setupUi(self):
@@ -151,10 +172,27 @@ class MainWindow(QtWidgets.QMainWindow):
 #         expmeter_enabled_kw.stringCallback.connect(self.update_expmeter_enabled)
 
         # List of Observing Blocks
+        self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
+        self.hdr = 'TargetName       RA           Dec         Gmag  Jmag  Observations'
+        self.OBListHeader.setText(self.hdr)
+
         self.ListOfOBs = self.findChild(QtWidgets.QListView, 'ListOfOBs')
-        self.model = OBListModel(OBs=self.OBs)
+        self.model = OBListModel(OBs=[])
         self.ListOfOBs.setModel(self.model)
         self.ListOfOBs.selectionModel().selectionChanged.connect(self.select_OB)
+
+        # Sorting
+        self.SortOBs = self.findChild(QtWidgets.QComboBox, 'SortOBs')
+        self.SortOBs.addItems(['', 'Name', 'RA', 'Dec', 'Gmag', 'Jmag'])
+        self.SortOBs.currentTextChanged.connect(self.sort_OB_list)
+
+        # Weather Band
+        self.WeatherBandLabel = self.findChild(QtWidgets.QLabel, 'WeatherBandLabel')
+        self.WeatherBand = self.findChild(QtWidgets.QComboBox, 'WeatherBand')
+        self.WeatherBand.addItems(['1', '2', '3'])
+        self.WeatherBand.currentTextChanged.connect(self.set_weather_band)
+        self.WeatherBand.setEnabled(False)
+        self.WeatherBandLabel.setEnabled(False)
 
         # Selected Observing Block Details
         self.SOB_TargetName = self.findChild(QtWidgets.QLabel, 'SOB_TargetName')
@@ -196,13 +234,50 @@ class MainWindow(QtWidgets.QMainWindow):
     ## Methods to get data from DB or Schedule
     ##-------------------------------------------
     def get_progIDs(self):
-        progIDs = ['KPF-CC']
+        progIDs = ['', 'KPF-CC']
         # Go get list of available program IDs for Instrument=KPF
         return progIDs + ['E123', 'E456']
 
     def set_ProgID(self, value):
-        
+        print(f"set_ProgID: '{value}'")
+        if value == '':
+            self.OBListHeader.setText(hdr)
+            self.model.OBs = []
+            self.model.start_times = None
+            self.model.layoutChanged.emit()
+            self.SortOBs.setEnabled(False)
+            self.SortOBsLabel.setEnabled(False)
+            self.WeatherBand.setEnabled(False)
+            self.WeatherBandLabel.setEnabled(False)
+        elif value == 'KPF-CC':
+            self.OBListHeader.setText('StartTime '+self.hdr)
+            self.model.OBs = [ObservingBlock('~/joshw/OBs_v2/219134.yaml'),
+                              ObservingBlock('~/joshw/OBs_v2/156279.yaml'),
+                              ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml'),
+                              ]
+            self.model.start_times = [8.1, 5.2, 6.3]
+            self.model.sort('time')
+            self.model.layoutChanged.emit()
+            self.SortOBs.setEnabled(False)
+            self.SortOBsLabel.setEnabled(False)
+            self.WeatherBand.setEnabled(True)
+            self.WeatherBandLabel.setEnabled(True)
+        else:
+            self.OBListHeader.setText(self.hdr)
+            self.model.OBs = [ObservingBlock('~/joshw/OBs_v2/219134.yaml'),
+                              ObservingBlock('~/joshw/OBs_v2/156279.yaml'),
+                              ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml'),
+                              ]
+            self.model.start_times = None
+            self.model.layoutChanged.emit()
+            self.SortOBs.setEnabled(True)
+            self.SortOBsLabel.setEnabled(True)
+            self.WeatherBand.setEnabled(False)
+            self.WeatherBandLabel.setEnabled(False)
         self.ProgID.setCurrentText(value)
+
+    def set_weather_band(self, value):
+        self.WeatherBand.setCurrentText(value)
 
 
     ##-------------------------------------------
@@ -211,29 +286,34 @@ class MainWindow(QtWidgets.QMainWindow):
     def select_OB(self, selected, deselected):
         selected_index = selected.indexes()[0].row()
         print(f"Selection changed to {selected_index}")
-        SOB = self.OBs[selected_index]
+        SOB = self.model.OBs[selected_index]
         self.update_SOB_display(SOB)
 
     def update_SOB_display(self, SOB):
         self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
         self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
-        self.SOB_TargetRA.setText(SOB.Target.get('RA'))
-        self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
-#         try:
-        now = Time(datetime.datetime.utcnow())
-        print(SOB.Target)
-        print(SOB.Target.coord)
-        coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
-        print(coord_now)
-        coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
-        self.SOB_Jmag.setText(coord_now_string.split()[0])
-        self.SOB_Gmag.setText(coord_now_string.split()[1])
-#         except:
-#             self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
-#             self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
+        if abs(SOB.Target.PMRA.value) > 0.0001 or abs(SOB.Target.PMDEC.value) > 0.0001:
+            try:
+                now = Time(datetime.datetime.utcnow())
+                coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
+                coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
+                self.SOB_TargetRA.setText(coord_now_string.split()[0])
+                self.SOB_TargetDec.setText(coord_now_string.split()[1])
+            except:
+                self.SOB_TargetRA.setText(SOB.Target.get('RA'))
+                self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
+        else:
+            self.SOB_TargetRA.setText(SOB.Target.get('RA'))
+            self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
+        self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
+        self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
         self.SOB_nExp.setText(f"{SOB.Observations[0].get('nExp'):d}")
         self.SOB_ExpTime.setText(f"{SOB.Observations[0].get('ExpTime'):.1f} s")
         self.SOB_ExpMeterMode.setText(SOB.Observations[0].get('ExpMeterMode'))
+
+    def sort_OB_list(self, value):
+        self.model.sort(value)
+        self.model.layoutChanged.emit()
 
 
 ##-------------------------------------------------------------------------

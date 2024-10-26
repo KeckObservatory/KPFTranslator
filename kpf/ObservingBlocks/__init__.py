@@ -51,6 +51,7 @@ class BaseOBComponent(object):
             this_property = getattr(self, name)
             this_property.set(value)
 
+    @classmethod
     def from_dict(self, input_dict):
         for key in input_dict.keys():
             self.set(key, input_dict[key])

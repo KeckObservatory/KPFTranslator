@@ -85,6 +85,4 @@ class Observation(BaseOBComponent):
                     lines.append(f"- {pdict['name']}: {str(p)}")
                 else:
                     lines.append(f"  {pdict['name']}: {str(p)}")
-
-
         return lines
