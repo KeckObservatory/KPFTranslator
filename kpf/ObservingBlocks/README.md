@@ -1,5 +1,7 @@
 # KPF Observing Blocks (v2.0)
 
+## Components
+
 Observing blocks consist of some subset of the following parts:
 - Metadata describing the OB
 - Calibrations
@@ -7,28 +9,27 @@ Observing blocks consist of some subset of the following parts:
 - Observations
 - ScheduleData
 
-
-## Metadata
+### Metadata
 
 The metadata consists of a few key-value pairs. It is not used in OB execution.
 
-## Calibrations
+### Calibrations
 
 The calibrations element contains a list of dictionaries, each element of the list describes a single calibration.
 
-## Target
+### Target
 
 The target element is a single dictionary containing the target information.
 
-## Observations
+### Observations
 
 The observations element contains a list of dictionaries, each element of the list describes a single on sky observation.
 
-## ScheduleData
+### ScheduleData
 
 The schedule data element is a single dictionary containing the scheduling information.  This is not used in OB execution.
 
-# Types of OBs?
+## Types of OBs?
 
 In this version of the KPF execution system, we are no longer explicitly setting an OB "type" (i.e. a `Template_Name` value).  OBs will be parsed to see which of the above entries they contain and will be executed appropriately.  In the execution of an OB, only `Target`, `Calibrations`, and `Observations` are used.
 
@@ -101,14 +102,14 @@ See ObservationProperties.yaml
 See CalibrationProperties.yaml
 
 
-## OB Execution History
+## ExecutionHistory
 
 * OB Unique ID: 
 * Timestamp: timestamp
 * Exposures: list of floats
 
 
-## OB Comment History
+## ExecutionComments
 
 * OB Unique ID: 
 * Timestamp: timestamp
