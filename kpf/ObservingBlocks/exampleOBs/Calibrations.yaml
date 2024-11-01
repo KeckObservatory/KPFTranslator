@@ -6,7 +6,6 @@ Calibrations:
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
-  FastRead: False
 - CalSource: BrdbandFiber
   Object: flat
   nExp: 1
