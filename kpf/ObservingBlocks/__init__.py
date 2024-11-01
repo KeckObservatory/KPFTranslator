@@ -1,8 +1,8 @@
 class OBProperty(object):
-    def __init__(self, name='', value=None, valuetype=None,
+    def __init__(self, name='', defaultvalue=None, valuetype=None,
                  comment='', precision=None):
         self.name = name
-        self._value = value if value is None else valuetype(value)
+        self._value = None if defaultvalue is None else valuetype(defaultvalue)
         self.valuetype = valuetype
         self.comment = comment
         self.precision = precision
