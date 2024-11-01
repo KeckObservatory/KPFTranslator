@@ -1,3 +1,5 @@
+from pathlib import Path
+import yaml
 import numpy as np
 from astropy import units as u
 from astropy.time import Time
@@ -9,68 +11,12 @@ from astroquery.simbad import Simbad
 from kpf.ObservingBlocks import BaseOBComponent
 
 
-target_properties = [{'name': 'TargetName', 'value': '', 'valuetype': str,
-                      'comment': ''},
-                     {'name': 'GaiaID', 'value': '', 'valuetype': str,
-                      'comment': ''},
-                     {'name': 'twoMASSID', 'value': '', 'valuetype': str,
-                      'comment': ''},
-                     {'name': 'Parallax', 'value': 0, 'valuetype': float,
-                      'comment': '[arcsec]', 'precision': 3},
-                     {'name': 'RadialVelocity', 'value': 0, 'valuetype': float,
-                      'comment': '[km/s]', 'precision': 3},
-                     {'name': 'Gmag', 'value': 0, 'valuetype': float,
-                      'comment': '[magnitude]', 'precision': 2},
-                     {'name': 'Jmag', 'value': 0, 'valuetype': float,
-                      'comment': '[magnitude]', 'precision': 2},
-                     {'name': 'Teff', 'value': 0, 'valuetype': float,
-                      'comment': '[K]', 'precision': 0},
-                     {'name': 'RA', 'value': '', 'valuetype': str,
-                      'comment': '[hh:mm:ss.ss]'},
-                     {'name': 'Dec', 'value': '', 'valuetype': str,
-                      'comment': '[dd:mm:ss.ss]'},
-                     {'name': 'Equinox', 'value': 2000, 'valuetype': float,
-                      'comment': '[decimal year] Equinox of the coordinate system (typically 2000)',
-                      'precision': 1},
-                     {'name': 'PMRA', 'value': 0, 'valuetype': float,
-                      'comment': '[seconds-of-time/year] Proper motion in RA',
-                      'precision': 3},
-                     {'name': 'PMDEC', 'value': 0, 'valuetype': float,
-                      'comment': '[arcsec/year] Proper motion in Dec',
-                      'precision': 3},
-                     {'name': 'Epoch', 'value': 2000, 'valuetype': float,
-                      'comment': '[decimal year] Epoch of the coordinate measurement',
-                      'precision': 2},
-                     {'name': 'DRA', 'value': 0, 'valuetype': float,
-                      'comment': '[arcsec/hr divided by 15] Non sidereal tracking rate in RA',
-                      'precision': 3},
-                     {'name': 'DDEC', 'value': 0, 'valuetype': float,
-                      'comment': '[arcsec/hr] Non sidereal tracking rate in Dec',
-                      'precision': 3},
-                    ]
-
-
-# target_properties=[('TargetName', None, str, '', None),
-#                    ('GaiaID', None, str, '', None),
-#                    ('twoMASSID', None, str, '', None),
-#                    ('Parallax', 0, float, '', 2),
-#                    ('RadialVelocity', 0, float, '', 3),
-#                    ('Gmag', None, float, '', 2),
-#                    ('Jmag', None, float, '', 2),
-#                    ('Teff', None, float, '', 0),
-#                    ('RA', None, str, 'hh:mm:ss.ss', None),
-#                    ('Dec', None, str, 'dd:mm:ss.s', None),
-#                    ('Equinox', 2000, float, 'Equinox of coordinates', 0),
-#                    ('PMRA', 0, float, 'Proper motion in RA in seconds-of-time/year', 3),
-#                    ('PMDEC', 0, float, 'Proper motion in Dec in arcsec/year', 3),
-#                    ('Epoch', 2000, float, 'Epoch of coordinates if proper motion is to be applied', 0),
-#                    ('DRA', None, float, 'Non sidereal tracking rate in RA in arcsec/hr divided by 15 (positive implies moving east'),
-#                    ('DDEC', None, float, 'Non sidereal tracking rate in Dec in arcsec/hr'),
-#                     ]
-
 class Target(BaseOBComponent):
     def __init__(self, input_dict):
-        super().__init__('Target', '2.0', properties=target_properties)
+        properties_file = Path(__file__).parent / 'TargetProperties.yaml'
+        with open(properties_file, 'r') as f:
+            properties = yaml.safe_load(f.read())
+        super().__init__('Target', '2.0', properties=properties)
         self.from_dict(input_dict)
         # Build astropy.coordinates.SkyCoord
         ra = Angle(self.RA.value, unit=u.hourangle)

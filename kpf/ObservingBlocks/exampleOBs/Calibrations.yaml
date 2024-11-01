@@ -14,14 +14,12 @@ Calibrations:
   TriggerGreen: True
   TriggerRed: True
   IntensityMonitor: False
-  # Shutters and Filters
   CalND1: OD 0.1
   CalND2: OD 0.1
   SSS_Science: True
   SSS_Sky: False
   TakeSimulCal: False
-  FF_FiberPos: Blank       # This is only needed if CalSource = WideFlat
-  # Exposure Meter
+  FF_FiberPos: Blank
   ExpMeterMode: control
   ExpMeterExpTime: 0.5
   ExpMeterBin: 710.625

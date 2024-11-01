@@ -34,6 +34,10 @@ class ObservingBlock(object):
             log.error(f'{OBinput}')
             OBdict = {}
 
+        # OB Metadata
+        self.ProgramID = OBdict.get('ProgramID', '')
+        self.AssociatedPrograms = OBdict.get('AssociatedPrograms', '')
+        self.CommentToObserver = OBdict.get('CommentToObserver', '')
         # Target
         target = OBdict.get('Target', None)
         if target is None:
