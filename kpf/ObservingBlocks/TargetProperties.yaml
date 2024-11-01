@@ -3,7 +3,7 @@
   valuetype: str
   defaultvalue: ''
 - name: 'GaiaID'
-  comment: 'Gaia ID of the target (e.g. DR3 1234567890)'
+  comment: 'Gaia ID of the target (e.g. DR3 123456789012345678)'
   valuetype: str
   defaultvalue: ''
 - name: 'twoMASSID'
@@ -33,7 +33,7 @@
 - name: 'Teff'
   comment: '[K] Effective temperature of the target'
   valuetype: float
-  defaultvalue: 0
+  defaultvalue: 45000
   precision: 0
 - name: 'RA'
   comment: '[hh:mm:ss.ss] Right Ascension of the target (at Epoch)'
