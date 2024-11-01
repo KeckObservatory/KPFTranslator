@@ -1,5 +1,6 @@
 Metadata:
-  ProgramIDs: string              # 
+  ProgramID: string               # 
+  AssociatedPrograms: string      # 
   CommentToObserver: string       # 
 Scheduling:
   SchedulingMode: str             # 'FixedTime', 'Cadence', 'Single'
@@ -27,7 +28,7 @@ Target:
   ## Coordinates
   RA: hh:mm:ss.ss                 # Right Ascension
   DEC: dd:mm:ss.s                 # Declination
-  Equinox: 2000                   # Equinox of coordinates
+  Equinox: float                   # Equinox of coordinates
   PMRA: float                     # Proper motion in RA in seconds-of-time/year
   PMDEC: float                    # Proper motion in Dec in arcsec/year
   Epoch: float                    # Epoch of coordinates if proper motion is to be applied
