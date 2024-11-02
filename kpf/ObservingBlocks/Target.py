@@ -18,15 +18,19 @@ class Target(BaseOBComponent):
             properties = yaml.safe_load(f.read())
         super().__init__('Target', '2.0', properties=properties)
         self.from_dict(input_dict)
+        self.name_overrides={'2MASSID': 'twoMASSID'}
         # Build astropy.coordinates.SkyCoord
-        ra = Angle(self.RA.value, unit=u.hourangle)
-        dec = Angle(self.Dec.value, unit=u.degree)
-        pm_ra_cosdec = (self.PMRA.value*15*np.cos(dec.to(u.radian).value))*u.arcsec/u.yr
-        self.coord = SkyCoord(ra, dec,
-                              pm_ra_cosdec=pm_ra_cosdec,
-                              pm_dec=self.PMDEC.value*u.arcsec/u.yr,
-                              obstime=Time(self.Epoch.value, format='decimalyear'),
-                              )
+        try:
+            ra = Angle(self.RA.value, unit=u.hourangle)
+            dec = Angle(self.Dec.value, unit=u.degree)
+            pm_ra_cosdec = (self.PMRA.value*15*np.cos(dec.to(u.radian).value))*u.arcsec/u.yr
+            self.coord = SkyCoord(ra, dec,
+                                  pm_ra_cosdec=pm_ra_cosdec,
+                                  pm_dec=self.PMDEC.value*u.arcsec/u.yr,
+                                  obstime=Time(self.Epoch.value, format='decimalyear'),
+                                  )
+        except:
+            self.coord = None
 
     def to_lines(self, comments=False):
         lines = []
@@ -38,7 +42,10 @@ class Target(BaseOBComponent):
         return lines
 
     def __str__(self):
-        radec_str = self.coord.to_string('hmsdms', sep=':', precision=2)
+        try:
+            radec_str = self.coord.to_string('hmsdms', sep=':', precision=2)
+        except:
+            radec_str = f"{str(self.RA)} {str(self.Dec)}"
         out = (f"{self.TargetName.value:16s} {radec_str} "
                f"{str(self.Gmag):5s} {str(self.Jmag):5s}")
         return out
@@ -57,12 +64,15 @@ class Target(BaseOBComponent):
                        'Teff': Teff,
                        }
 
-        target_coord = SkyCoord(float(r['RA_ICRS']), float(r['DE_ICRS']),
-                                pm_ra_cosdec=float(r['pmRA'])*u.mas/u.yr,
-                                pm_dec=float(r['pmDE'])*u.mas/u.yr,
-                                obstime=Time(2016.0, format='decimalyear'),
-                                unit=(u.deg, u.deg),
-                                )
+        try:
+            target_coord = SkyCoord(float(r['RA_ICRS']), float(r['DE_ICRS']),
+                                    pm_ra_cosdec=float(r['pmRA'])*u.mas/u.yr,
+                                    pm_dec=float(r['pmDE'])*u.mas/u.yr,
+                                    obstime=Time(2016.0, format='decimalyear'),
+                                    unit=(u.deg, u.deg),
+                                    )
+        except:
+            target_coord = None
         return target_coord, gaia_params
 
     @classmethod
@@ -95,16 +105,18 @@ class Target(BaseOBComponent):
         target_dict['2MASSID'] = twoMASSID
         target_dict['Jmag'] = Jmag
 
-        ra_dec_string = target_coord.to_string('hmsdms', sep=':', precision=2)
-        target_dict['RA'] = ra_dec_string.split()[0]
-        target_dict['Dec'] = ra_dec_string.split()[1]
-        target_dict['Equinox'] = 2000
-        target_dict['PMRA'] = target_coord.pm_ra_cosdec.to(u.arcsec/u.year).value*15
-        target_dict['PMDEC'] = target_coord.pm_dec.to(u.arcsec/u.year).value
-        target_dict['Epoch'] = target_coord.obstime.decimalyear
+        try:
+            ra_dec_string = target_coord.to_string('hmsdms', sep=':', precision=2)
+            target_dict['RA'] = ra_dec_string.split()[0]
+            target_dict['Dec'] = ra_dec_string.split()[1]
+            target_dict['Equinox'] = 2000
+            target_dict['PMRA'] = target_coord.pm_ra_cosdec.to(u.arcsec/u.year).value*15
+            target_dict['PMDEC'] = target_coord.pm_dec.to(u.arcsec/u.year).value
+            target_dict['Epoch'] = target_coord.obstime.decimalyear
+        except:
+            pass
 
         target_dict.update(gaia_params)
-
         newtarg = Target(target_dict)
 
         return newtarg
