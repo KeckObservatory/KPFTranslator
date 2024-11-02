@@ -16,7 +16,7 @@ class ObservingBlock(object):
             OBdict = OBinput.to_dict()
         elif OBinput in ['', None]:
             OBdict = {}
-        elif isinstance(OBinput, str):
+        elif isinstance(OBinput, str) or isinstance(OBinput, Path):
             file = Path(OBinput).expanduser().absolute()
             if file.exists() is True:
                 try:
