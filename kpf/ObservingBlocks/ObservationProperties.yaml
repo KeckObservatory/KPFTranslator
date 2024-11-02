@@ -1,6 +1,6 @@
 - name: 'Object'
   comment: 'Object name for the FITS header'
-  valuetype: str,
+  valuetype: str
   defaultvalue: ''
 - name: 'nExp'
   comment: 'Number of Exposures'
