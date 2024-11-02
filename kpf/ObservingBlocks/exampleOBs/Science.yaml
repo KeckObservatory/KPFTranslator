@@ -1,0 +1,75 @@
+Target:
+  TargetName: HR 4710
+  GaiaID: 5859393710380907776
+  twoMASSID: J12231377-6737534
+  Parallax: 19.730
+  RadialVelocity: 33.910
+  Gmag: 6.11
+  Jmag: 4.97
+  Teff: 4750
+  RA: 12:23:11.79
+  Dec: -67:37:49.47
+  Equinox: 2000.0
+  PMRA: -11.258
+  PMDEC: 0.256
+  Epoch: 2016.00
+  DRA: 0.000
+  DDEC: 0.000
+Observations:
+- Object: test1
+  nExp: 1
+  ExpTime: 60
+  TriggerCaHK: True
+  TriggerGreen: True
+  TriggerRed: True
+  BlockSky: False
+  ExpMeterMode: monitor
+  AutoExpMeter: True
+  ExpMeterExpTime: 1.0
+  ExpMeterBin: 1
+  ExpMeterThreshold: 50000
+  TakeSimulCal: True
+  AutoNDFilters: True
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  NodN: 0.00
+  NodE: 0.00
+  GuideHere: True
+- Object: test2
+  nExp: 1
+  ExpTime: 60
+  TriggerCaHK: True
+  TriggerGreen: True
+  TriggerRed: True
+  BlockSky: False
+  ExpMeterMode: 'off'
+  AutoExpMeter: True
+  ExpMeterExpTime: 1.0
+  ExpMeterBin: 1
+  ExpMeterThreshold: 50000
+  TakeSimulCal: True
+  AutoNDFilters: True
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  NodN: 0.00
+  NodE: 0.00
+  GuideHere: True
+- Object: test3
+  nExp: 1
+  ExpTime: 60
+  TriggerCaHK: True
+  TriggerGreen: True
+  TriggerRed: True
+  BlockSky: False
+  ExpMeterMode: 'off'
+  AutoExpMeter: True
+  ExpMeterExpTime: 1.0
+  ExpMeterBin: 1
+  ExpMeterThreshold: 50000
+  TakeSimulCal: True
+  AutoNDFilters: False
+  CalND1: OD 0.1
+  CalND2: OD 0.1
+  NodN: 0.00
+  NodE: 0.00
+  GuideHere: True

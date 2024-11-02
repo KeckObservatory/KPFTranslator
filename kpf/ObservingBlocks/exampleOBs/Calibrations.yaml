@@ -6,21 +6,21 @@ Calibrations:
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
-- CalSource: BrdbandFiber
-  Object: flat
+- CalSource: EtalonFiber
+  Object: 
   nExp: 1
-  ExpTime: 0.2
+  ExpTime: 1.0
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
   IntensityMonitor: False
   CalND1: OD 0.1
   CalND2: OD 0.1
-  SSS_Science: True
-  SSS_Sky: False
-  TakeSimulCal: False
-  FF_FiberPos: Blank
-  ExpMeterMode: control
-  ExpMeterExpTime: 0.5
-  ExpMeterBin: 710.625
-  ExpMeterThreshold: 50000
+  OpenScienceShutter: True
+  OpenSkyShutter: True
+  TakeSimulCal: True
+  WideFlatPos: 
+  ExpMeterMode: False
+  ExpMeterExpTime: 1.0
+  ExpMeterBin: 1
+  ExpMeterThreshold: 50000.0
