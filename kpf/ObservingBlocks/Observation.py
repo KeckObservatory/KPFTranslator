@@ -12,10 +12,28 @@ class Observation(BaseOBComponent):
         super().__init__('Observation', '2.0', properties=properties)
         self.from_dict(input_dict)
 
+    def prune(self):
+        if self.get('ExpMeterMode') in ['monitor', 'off']:
+            for pname in ['ExpMeterBin', 'ExpMeterThreshold']:
+                self.set(pname, None)
+        if self.get('AutoExpMeter') is True:
+            for pname in ['ExpMeterExpTime']:
+                self.set(pname, None)
+        if self.get('ExpMeterMode') in ['off']:
+            for pname in ['AutoExpMeter', 'ExpMeterExpTime']:
+                self.set(pname, None)
+        if self.get('AutoNDFilters') is True:
+            for pname in ['CalND1', 'CalND2']:
+                self.set(pname, None)
+        if self.get('TakeSimulCal') is False:
+            for pname in ['AutoNDFilters']:
+                self.set(pname, None)
+
     def __str__(self):
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s"
 
     def to_lines(self, comments=False):
+        self.prune()
         lines = []
         i = 0
         for pdict in self.properties:

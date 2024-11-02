@@ -2,8 +2,8 @@ class OBProperty(object):
     def __init__(self, name='', defaultvalue=None, valuetype=None,
                  comment='', precision=None):
         self.name = name
-        self._value = None if defaultvalue is None else valuetype(defaultvalue)
-        self.valuetype = valuetype
+        self.valuetype = eval(valuetype)
+        self._value = None if defaultvalue is None else self.valuetype(defaultvalue)
         self.comment = comment
         self.precision = precision
 
@@ -14,10 +14,13 @@ class OBProperty(object):
             return self._value
 
     def set(self, value):
-        try:
-            self._value = self.valuetype(value)
-        except TypeError:
-            raise TypeError(f"Input {value} can not be cast as {self.valuetype}")
+        if value is None:
+            self._value = None
+        else:
+            try:
+                self._value = self.valuetype(value)
+            except TypeError:
+                raise TypeError(f"Input {value} can not be cast as {self.valuetype}")
 
     def __str__(self):
         if self.valuetype == float and self.precision is not None:
@@ -40,6 +43,9 @@ class BaseOBComponent(object):
         for p in properties:
             setattr(self, p['name'], OBProperty(**p))
 
+    def prune(self):
+        pass
+
     def get(self, name):
         name = self.name_overrides.get(name, name)
         this_property = getattr(self, name)
@@ -51,13 +57,17 @@ class BaseOBComponent(object):
             this_property = getattr(self, name)
             this_property.set(value)
 
-    @classmethod
     def from_dict(self, input_dict):
         for key in input_dict.keys():
-            self.set(key, input_dict[key])
+            input_value = input_dict[key]
+            key = self.name_overrides.get(key, key)
+            this_property = getattr(self, key)
+            this_property.set(input_value)
+        self.prune()
         return self
 
     def to_dict(self):
+        self.prune()
         output = {}
         for p in self.properties:
             if self.get(p['name']) is not None:
@@ -65,6 +75,7 @@ class BaseOBComponent(object):
         return output
 
     def to_lines(self, comments=False):
+        self.prune()
         lines = []
         for p in self.properties:
             if self.get(p['name']) is not None:
@@ -72,6 +83,7 @@ class BaseOBComponent(object):
         return lines
 
     def validate(self):
+        self.prune()
         return True
 
     def __str__(self):
