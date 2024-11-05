@@ -12,13 +12,13 @@
   defaultvalue: 1
 - name: 'InterNightCadenceMin'
   comment: '(Cadence mode) Minimum Inter-Night Cadence (hours)'
-  valuetype: float,
+  valuetype: int,
   defaultvalue: 0
-  precision: 2
 - name: 'IntraNightCadenceMin'
   comment: '(Cadence mode) Minimum Intra-Night Cadence (days)'
-  valuetype: int,
+  valuetype: float,
   defaultvalue: 1
+  precision: 2
 - name: 'FastReadModeRequested'
   comment: '(FixedTime mode) Does this OB request Fast Read Mode?'
   valuetype: bool,
@@ -36,7 +36,7 @@
   valuetype: int,
   defaultvalue: 7
 - name: 'AccessibilityMap'
-  comment: 'If custom map is input, this is the OR with the default map based on inputs below'
+  comment: 'If custom map is input, this is the AND with the default map based on inputs below'
   valuetype: int,
   defaultvalue: 0
 - name: 'MinimumElevation'
