@@ -239,6 +239,26 @@ class PredictNDFilters(KPFTranslatorFunction):
         log.debug(f'  Gmag={gmag:.2f} --> Vmag={vmag:.2f}')
         obs_exp_time = args.get('ExpTime')
 
+        # Force values in to allowed ranges for KPF-etc
+        if vmag > 19:
+            log.warning(f"Vmag = {vmag:.2f} is outside allowed range for ETC (1-19)")
+            vmag = 19
+        if vmag < 1:
+            log.warning(f"Vmag = {vmag:.2f} is outside allowed range for ETC (1-19)")
+            vmag = 1
+        if obs_exp_time > 3600:
+            log.warning(f"ExpTime = {obs_exp_time:.0f} is outside allowed range for ETC (1-3600)")
+            obs_exp_time = 3600
+        if obs_exp_time < 1:
+            log.warning(f"ExpTime = {obs_exp_time:.0f} is outside allowed range for ETC (1-3600)")
+            obs_exp_time = 1
+        if teff > 6600:
+            log.warning(f"Teff = {teff:.0f} is outside allowed range for ETC (2700-6600)")
+            teff = 6600
+        if teff < 2700:
+            log.warning(f"Teff = {teff:.0f} is outside allowed range for ETC (2700-6600)")
+            teff = 2700
+
         # reference calibration file to scale up/down
         #cal_file = 'KP.20240529.80736.43_L1.fits' # reference etalon L1 file
         data_dir = Path(__file__).parent.parent.parent / 'data'
