@@ -59,7 +59,7 @@ If the OB contains `Observations`:
 
 # KPF Database
 
-The OBs for KPF will be stored in a database for Community Cadence (KPF-CC) operations.  The sections below describe tables in that database most tables correspond to one of the OB elements above.
+The OBs for KPF will be stored in a database for Community Cadence (KPF-CC) operations.  The sections below describe tables in that database, most tables correspond to one of the OB elements above.
 
 ## ObservingBlock
 

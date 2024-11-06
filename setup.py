@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='KPFTranslator',
-    version='1.4.2dev',    
+    version='2.0.0dev',    
     description='KPFTranslator',
     url='https://github.com/KeckObservatory/KPFTranslator',
     author='Josh Walawender',
