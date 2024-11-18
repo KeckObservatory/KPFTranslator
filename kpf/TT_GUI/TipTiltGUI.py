@@ -232,8 +232,8 @@ class MainWindow(QMainWindow):
         self.GuiderParameters = {}
         # Sky Subtraction
         self.default_sub_file = '/kroot/rel/default/data/kpfguide/kpfguide_gain_high.fits'
-        self.SkyOffsetEastValue = 10
-        self.SkyOffsetNorthValue = 10
+        self.SkyOffsetEastValue = 8
+        self.SkyOffsetNorthValue = 8
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -364,7 +364,7 @@ class MainWindow(QMainWindow):
         self.ResetSkyFrameBtn = self.findChild(QPushButton, 'ResetSkyFrameBtn')
         self.ResetSkyFrameBtn.clicked.connect(self.reset_sky_frame)
 
-        sky_subtraction_enabled = self.enable_control and False
+        sky_subtraction_enabled = self.enable_control
         self.SkyOffsetEastLabel.setEnabled(sky_subtraction_enabled)
         self.SkyOffsetNorthLabel.setEnabled(sky_subtraction_enabled)
         self.SkyOffsetEast.setEnabled(sky_subtraction_enabled)
@@ -830,6 +830,7 @@ class MainWindow(QMainWindow):
         self.CameraFPSValue.setText(f"{float(value):.1f}")
         self.CameraFPSSelector.setCurrentText('')
         self.colorize_recommended_values()
+        
 
     def set_CameraFPS(self, value):
         if value != '':
@@ -842,14 +843,14 @@ class MainWindow(QMainWindow):
     def update_SkyOffsetEastValue(self, value):
         try:
             self.SkyOffsetEastValue = float(value)
-        except TypeError:
+        except ValueError:
             pass
 #             self.self.SkyOffsetEast.setText(str(self.SkyOffsetEastValue))
 
     def update_SkyOffsetNorthValue(self, value):
         try:
             self.SkyOffsetNorthValue = float(value)
-        except TypeError:
+        except ValueError:
             pass
 #             self.self.SkyOffsetNorth.setText(str(self.SkyOffsetNorthValue))
 
@@ -859,27 +860,46 @@ class MainWindow(QMainWindow):
 
     def en(self, e, n):
         dcs = ktl.cache('dcs1')
+        self.log.info(f'RAOFF={float(e):.3f}')
         dcs['RAOFF'].write(float(e))
+        self.log.info(f'DECOFF={float(n):.3f}')
         dcs['DECOFF'].write(float(n))
+        self.log.info('REL2CURR=t')
         dcs['REL2CURR'].write('t')
+        self.log.info('Sleep 2')
+        time.sleep(2)
+        self.log.info('WaitFor AXESTAT==tracking')
+        dcs['AXESTAT'].waitFor('==tracking')
+        self.log.info('Sleep 2')
+        time.sleep(2)
 
     def obtain_sky_frame(self):
+        # Turn loops off while we go get a sky frame
+        self.ALL_LOOPS.write('Inactive')
         # Offset to sky position
         self.log.info(f'Offsetting: en {self.SkyOffsetEastValue:.1f} {self.SkyOffsetNorthValue:.1f}')
         self.en(self.SkyOffsetEastValue, self.SkyOffsetNorthValue)
         time.sleep(0.5)
+        # Set SUB_HIGH to nothing to make sure bias remains in the resulting subtracted frame
+        self.SUB_HIGH.ktl_keyword.write('')
         # Take Image Cube to get sky
-        sky_multiplier = 4
+        sky_multiplier = 9
         duration = sky_multiplier*1/self.FPS.ktl_keyword.read(binary=True)
-        self.log.info(f'Taking sky frame: TakeGuiderImageCube {duration:.0f} seconds')
-        sky_file = TakeGuiderCube.execute({'duration': duration,
+        self.log.info(f'Taking sky frame: TakeGuiderImageCube {duration:.1f} seconds')
+        trigger_file = TakeGuiderCube.execute({'duration': duration,
                                            'ImageCube': False})
-        sky_file = Path(sky_file)
-        if sky_file.exists() == False:
-            self.log.error(f'Could not find {sky_file} on disk')
+        trigger_file = Path(trigger_file)
+        if trigger_file.exists() == False:
+            self.log.error(f'Could not find {trigger_file} on disk')
         else:
-            self.log.info(f'Updating SUB_HIGH with LASTCUBEFILE')
+            trigger_file_hdul = fits.open(trigger_file)
+            sky_file_hdu = fits.PrimaryHDU(data=trigger_file_hdul[1].data)
+            sky_file_hdul = fits.HDUList([sky_file_hdu])
+            sky_file = trigger_file.parent / 'sky.fits'
+            sky_file_hdul.writeto(sky_file, overwrite=True)
+            self.log.info(f'Updating SUB_HIGH')
             self.SUB_HIGH.ktl_keyword.write(f'{sky_file}')
+
         # Offset back to target
         self.log.info(f'Offsetting: en {-self.SkyOffsetEastValue:.1f} {-self.SkyOffsetNorthValue:.1f}')
         self.en(-self.SkyOffsetEastValue, -self.SkyOffsetNorthValue)
