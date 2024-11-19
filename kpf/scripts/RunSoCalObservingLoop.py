@@ -269,6 +269,6 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             default=True, action="store_false",
             help="Do not respect the kpfconfig.ALLOWSCHEDULEDCALS flag.")
         parser.add_argument("--ignorePYRIRRAD", dest="ignorePYRIRRAD",
-            default=True, action="store_false",
+            default=False, action="store_true",
             help="Ignore the PYRIRRAD value and observe the Sun regardless.")
         return super().add_cmdline_args(parser, cfg)
