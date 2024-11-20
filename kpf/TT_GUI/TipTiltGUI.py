@@ -762,6 +762,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_CameraGain: {value}')
         self.CameraGainValue.setText(f'{value}')
         self.CameraGain.setCurrentText('')
+        self.reset_sky_frame()
         self.colorize_recommended_values()
 
     def set_CameraGain(self, value):
