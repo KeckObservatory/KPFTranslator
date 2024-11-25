@@ -831,7 +831,7 @@ class MainWindow(QMainWindow):
         self.CameraFPSValue.setText(f"{float(value):.1f}")
         self.CameraFPSSelector.setCurrentText('')
         self.colorize_recommended_values()
-        
+        self.reset_sky_frame()
 
     def set_CameraFPS(self, value):
         if value != '':
