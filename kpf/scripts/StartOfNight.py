@@ -91,6 +91,10 @@ class StartOfNight(KPFTranslatorFunction):
         kpfconfig = ktl.cache('kpfconfig')
         kpfconfig['ALLOWSCHEDULEDCALS'].write('No')
 
+        HKCOOLING = ktl.cache('kpf_hk', 'COOLING')
+        if HKCOOLING.read() != 'On':
+            log.warning('HK Detector Cooling is not On')
+
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
