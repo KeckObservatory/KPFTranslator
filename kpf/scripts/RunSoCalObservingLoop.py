@@ -147,7 +147,8 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         # Start Loop
         max_wait_per_iteration = 60
         start_time = args.get('StartTimeHST', 9)
-        end_time = args.get('EndTimeHST', 12) - SoCal_duration/3600 - 0.05
+        # End time subtracts off max duration of observation and 3 minutes of buffer
+        end_time = args.get('EndTimeHST', 12) - max([SoCal_duration, Etalon_duration])/3600 - 0.05
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
         if now_decimal < start_time:
