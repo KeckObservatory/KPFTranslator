@@ -238,6 +238,7 @@
       <p>Send KPF in to an end of night configuration.</p>
 <ul>
 <li>kpffiu.MODE = Stowed</li>
+<li>reset guider bias/sky subtraction file to default</li>
 <li>Power off FVCs</li>
 <li>Power off LED back illuminators</li>
 <li>close AO hatch</li>
@@ -337,10 +338,16 @@
 <span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span>
-<span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Send KPF in to an end of night configuration.</span>
 
 <span class="sd">    - kpffiu.MODE = Stowed</span>
+<span class="sd">    - reset guider bias/sky subtraction file to default</span>
 <span class="sd">    - Power off FVCs</span>
 <span class="sd">    - Power off LED back illuminators</span>
 <span class="sd">    - close AO hatch</span>
@@ -365,6 +372,10 @@
         <span class="c1"># Start FIU stow</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting FIU mode to Stowed&#39;</span><span class="p">)</span>
         <span class="n">ConfigureFIU</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Stowed&#39;</span><span class="p">,</span> <span class="s1">&#39;wait&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+        <span class="c1"># Reset CRED2 subtraction file to default</span>
+        <span class="n">kpfguide</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfguide&#39;</span><span class="p">)</span>
+        <span class="n">kpfguide</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;SUB_HIGH&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/kroot/rel/default/data/kpfguide/kpfguide_gain_high.fits&#39;</span><span class="p">)</span>
 
         <span class="c1"># ---------------------------------</span>
         <span class="c1"># User Verification for AO Shutdown</span>

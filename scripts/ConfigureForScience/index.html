@@ -243,7 +243,6 @@
 </ul>
 <p>This must have arguments as input, either from a file using the <code>-f</code> command
 line tool, or passed in from the execution engine.</p>
-<p>Can be called by <code>ddoi_script_functions.configure_for_science</code>.</p>
 <h2 id="kpf.scripts.ConfigureForScience.ConfigureForScience--args">ARGS:</h2>
 <p>:OB: <code>dict</code> A fully specified science observing block (OB).</p>
 
@@ -338,9 +337,7 @@ line tool, or passed in from the execution engine.</p>
 <span class="normal">110</span>
 <span class="normal">111</span>
 <span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureForScience</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">113</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureForScience</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which configures the instrument for Science observations.</span>
 
 <span class="sd">    - Sets octagon / simulcal source</span>
@@ -349,8 +346,6 @@ line tool, or passed in from the execution engine.</p>
 
 <span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
 <span class="sd">    line tool, or passed in from the execution engine.</span>
-
-<span class="sd">    Can be called by `ddoi_script_functions.configure_for_science`.</span>
 
 <span class="sd">    ARGS:</span>
 <span class="sd">    =====</span>

@@ -324,7 +324,20 @@ line tool, or passed in from the execution engine.</p>
 <span class="normal">102</span>
 <span class="normal">103</span>
 <span class="normal">104</span>
-<span class="normal">105</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CleanupAfterCalibrations</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CleanupAfterCalibrations</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which cleans up after Cal OBs.</span>
 
 <span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
@@ -366,7 +379,20 @@ line tool, or passed in from the execution engine.</p>
                                 <span class="s1">&#39;BrdbandFiber&#39;</span><span class="p">,</span> <span class="s1">&#39;WideFlat&#39;</span><span class="p">]:</span>
                         <span class="n">CalLampPower</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;lamp&#39;</span><span class="p">:</span> <span class="n">lamp</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">:</span> <span class="s1">&#39;off&#39;</span><span class="p">})</span>
                     <span class="k">if</span> <span class="n">lamp</span> <span class="o">==</span> <span class="s1">&#39;LFCFiber&#39;</span><span class="p">:</span>
-                        <span class="n">SetLFCtoStandbyHigh</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">SetLFCtoStandbyHigh</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;SetLFCtoStandbyHigh failed&#39;</span><span class="p">)</span>
+                            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="s1">&#39;ExecuteCals Failed&#39;</span><span class="p">,</span>
+                                                   <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
+                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">email_err</span><span class="p">:</span>
+                                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending email failed&#39;</span><span class="p">)</span>
+                                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">email_err</span><span class="p">)</span>
+
+
+
 
         <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
         <span class="n">runagitator</span> <span class="o">=</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;USEAGITATOR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

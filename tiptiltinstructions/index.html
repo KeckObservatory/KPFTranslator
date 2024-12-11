@@ -232,9 +232,9 @@
 <li><a href="#gui-layout">GUI Layout</a></li>
 <li><a href="#camera-controls-tab">Camera Controls Tab</a></li>
 <li><a href="#object-detection-tab">Object Detection Tab</a></li>
+<li><a href="#sky-subtraction-tab">Sky Subtraction Tab</a></li>
 <li><a href="#offset-guiding-tab">Offset Guiding Tab</a></li>
 <li><a href="#settings-tab">Settings Tab</a></li>
-<li><a href="#plot-time-spans-tab">Plot Time Spans Tab</a></li>
 <li><a href="#tip-tilt-control-and-telemetry">Tip Tilt Control and Telemetry</a></li>
 <li><a href="#image-display">Image Display</a></li>
 <li><a href="#instrument-status">Instrument Status</a></li>
@@ -307,6 +307,13 @@
 </blockquote>
 <p>This is where you can set the object detection and deblending parameters discussed in the <a href="#star-detection-algorithm">Star Detection Algorithm</a> section below.  The pulldowns will set the requested value.</p>
 <p>You can set these values on the command line by modifying the relevant keywords: <code>kpgduide.OBJECT_INTENSITY</code>, <code>kpfguide.OBJECT_AREA</code>, and <code>kpfguide.OBJECT_DBCONT</code>.</p>
+<h4 id="sky-subtraction-tab">Sky Subtraction Tab</h4>
+<p><img alt="A screenshot of the Tip Tilt GUI's Sky Subtraction tab." src="../figures/TipTiltGUI_SkySubtraction.png" /></p>
+<blockquote>
+<p>A screenshot of the Tip Tilt GUI's Sky Subtraction tab.</p>
+</blockquote>
+<p>Detection of faint targets when the gain is high and the FPS is low (of order 2 FPS or less) might be enhanced by subtracting the sky background. To do this, once the target has been acquired to the KPF PO, click the "Obtain Sky Frame" button.  The telescope will offset by the amounts specified in the Sky Offset East and North fields, take a set of images there, and use that for sky subtraction.  This will <strong>not</strong> necessarily increase the flux value, but may improve object detection because the background will be smoother and less noisy.</p>
+<p>The "Reset Sky Frame" button will reset the subtraction file to default (a bias frame).  Any time the camera gain or FPS are changed, the sky frame will be reset to default.</p>
 <h4 id="offset-guiding-tab">Offset Guiding Tab</h4>
 <p>Not currently implemented.</p>
 <h4 id="settings-tab">Settings Tab</h4>
@@ -314,15 +321,10 @@
 <blockquote>
 <p>A screenshot of the Tip Tilt GUI's Settings tab.</p>
 </blockquote>
-<p>The three options here control various settings for the <code>kpfguide</code> algorithms.</p>
+<p>The options here control various settings for the <code>kpfguide</code> algorithms.</p>
 <p>The "X Axis" and "Y Axis" settings allow you to bypass the tip tilt mirror and control the star position only using offloads to the telescope (conceptually similar to normal Magiq guiding). These values should be "Mirror" unless there is a problem with the tip tilt system.</p>
 <p>The "DAR" setting determines whether the target pixel for the star is modified to account for differential atmospheric refraction (DAR) between the guide wavelengths (950-1200nm) and the science wavelengths (centered on 550nm).  This should be set to "Yes" under normal observing conditions.</p>
-<h4 id="plot-time-spans-tab">Plot Time Spans Tab</h4>
-<p><img alt="A screenshot of the Tip Tilt GUI's Plot Time Spans tab." src="../figures/TipTiltGUI_PlotTimeSpans.png" /></p>
-<blockquote>
-<p>A screenshot of the Tip Tilt GUI's Plot Time Spans tab.</p>
-</blockquote>
-<p>These two pulldowns allow you to change the time span of the two plots in the <a href="#tip-tilt-control-and-telemetry">Tip Tilt Control and Telemetry</a> region of the GUI.  They have no effect on the tip tilt performance, only the plots.</p>
+<p>The "Tip Tilt ROI Size" can be adjusted using the pulldown.  The default value of 128 pix is recommended, but in bad seeing conditions, going to larget frames may help, but processing the extra pixels might slow down the tip tilt calculations, so keep an eye on the "Tip Tilt FPS" value and make sure it does not stay below the camera FPS value.</p>
 <h4 id="tip-tilt-control-and-telemetry">Tip Tilt Control and Telemetry</h4>
 <p>This section of the GUI is how the tip tilt loops are opened and closed.  The "Tip Tilt On/Off" button will likely be the primary interface as it toggles all of the components off the system on and off together, but the checkboxes to the right allow each to be toggled individually.  Note that the "Offloads" checkbox will be color coded red when <code>kpfguide.OFFLOAD_DCS</code> is "No".</p>
 <p>The "Tip Tilt Phase" is meant to summarise whether the system has fully controlled the star's position to the point where the observers can begin exposing.  It will begin in "Identifying", then move to "Acquiring" once a star has been identified and is being moved to the target pixel, and finally reach "Tracking" when the star is in position.  These stages are based on the position error of the star and so may not be a perfect guide, but should be useful under normal conditions.</p>

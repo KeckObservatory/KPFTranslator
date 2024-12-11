@@ -277,7 +277,8 @@ mode</p>
 <span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
-<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForLFCReady</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">39</span>
+<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForLFCReady</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Wait for the Laser Frequency Comb (LFC) to be ready and in &quot;AstroComb&quot;</span>
 <span class="sd">    mode</span>
 
@@ -299,7 +300,8 @@ mode</p>
         <span class="n">expr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and ($kpfmon.LFCREADYSTA == &#39;OK&#39;)&quot;</span>
         <span class="n">expr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and ($kpfcal.WOBBLE == &#39;False&#39;)&quot;</span>
         <span class="n">expr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and ($kpfcal.OPERATIONMODE == &#39;AstroComb&#39;)&quot;</span>
-        <span class="n">expr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and ($kpfcal.SPECFLAT == &#39;True&#39;)&quot;</span>
+        <span class="n">expr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and ($kpfcal.SPECFLATIR == &#39;True&#39;)&quot;</span>
+        <span class="n">expr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and ($kpfcal.SPECFLATVIS == &#39;True&#39;)&quot;</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;LFC_startup_time&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
         <span class="n">success</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">success</span>

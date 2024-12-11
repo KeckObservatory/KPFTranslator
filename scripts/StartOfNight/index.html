@@ -238,6 +238,7 @@
       <p>Send KPF in to a reasonable starting configuration</p>
 <ul>
 <li>set FIU mode to observing</li>
+<li>reset guider bias/sky subtraction file to default</li>
 <li>Setup AO for KPF</li>
 <li>Configure DCS (ROTDEST and ROTMODE)</li>
 </ul>
@@ -430,10 +431,21 @@
 <span class="normal">203</span>
 <span class="normal">204</span>
 <span class="normal">205</span>
-<span class="normal">206</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartOfNight</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartOfNight</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Send KPF in to a reasonable starting configuration</span>
 
 <span class="sd">    - set FIU mode to observing</span>
+<span class="sd">    - reset guider bias/sky subtraction file to default</span>
 <span class="sd">    - Setup AO for KPF</span>
 <span class="sd">    - Configure DCS (ROTDEST and ROTMODE)</span>
 
@@ -499,9 +511,18 @@
         <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
         <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;ALLOWSCHEDULEDCALS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;No&#39;</span><span class="p">)</span>
 
+        <span class="n">HKCOOLING</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_hk&#39;</span><span class="p">,</span> <span class="s1">&#39;COOLING&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">HKCOOLING</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;On&#39;</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;HK Detector Cooling is not On&#39;</span><span class="p">)</span>
+
         <span class="c1"># Configure FIU</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configure FIU for &quot;Observing&quot;&#39;</span><span class="p">)</span>
         <span class="n">ConfigureFIU</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Observing&#39;</span><span class="p">})</span>
+
+        <span class="c1"># Reset CRED2 subtraction file to default</span>
+        <span class="n">kpfguide</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfguide&#39;</span><span class="p">)</span>
+        <span class="n">kpfguide</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;SUB_HIGH&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/kroot/rel/default/data/kpfguide/kpfguide_gain_high.fits&#39;</span><span class="p">)</span>
+
         <span class="c1"># Set DCS rotator parameters</span>
         <span class="n">dcs</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;dcs1&#39;</span><span class="p">)</span>
         <span class="n">inst</span> <span class="o">=</span> <span class="n">dcs</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>

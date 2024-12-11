@@ -348,7 +348,27 @@
 <span class="normal">294</span>
 <span class="normal">295</span>
 <span class="normal">296</span>
-<span class="normal">297</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictNDFilters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PredictNDFilters</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Predict which ND filters should be used for simultaneous calibrations.</span>
 
 <span class="sd">    Args:</span>
@@ -373,6 +393,26 @@
         <span class="n">vmag</span> <span class="o">=</span> <span class="n">gmag</span> <span class="o">-</span> <span class="n">get_GminusV</span><span class="p">(</span><span class="n">teff</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  Gmag=</span><span class="si">{</span><span class="n">gmag</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> --&gt; Vmag=</span><span class="si">{</span><span class="n">vmag</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">obs_exp_time</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ExpTime&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Force values in to allowed ranges for KPF-etc</span>
+        <span class="k">if</span> <span class="n">vmag</span> <span class="o">&gt;</span> <span class="mi">19</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vmag = </span><span class="si">{</span><span class="n">vmag</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> is outside allowed range for ETC (1-19)&quot;</span><span class="p">)</span>
+            <span class="n">vmag</span> <span class="o">=</span> <span class="mi">19</span>
+        <span class="k">if</span> <span class="n">vmag</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vmag = </span><span class="si">{</span><span class="n">vmag</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> is outside allowed range for ETC (1-19)&quot;</span><span class="p">)</span>
+            <span class="n">vmag</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">obs_exp_time</span> <span class="o">&gt;</span> <span class="mi">3600</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ExpTime = </span><span class="si">{</span><span class="n">obs_exp_time</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> is outside allowed range for ETC (1-3600)&quot;</span><span class="p">)</span>
+            <span class="n">obs_exp_time</span> <span class="o">=</span> <span class="mi">3600</span>
+        <span class="k">if</span> <span class="n">obs_exp_time</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ExpTime = </span><span class="si">{</span><span class="n">obs_exp_time</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> is outside allowed range for ETC (1-3600)&quot;</span><span class="p">)</span>
+            <span class="n">obs_exp_time</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">teff</span> <span class="o">&gt;</span> <span class="mi">6600</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Teff = </span><span class="si">{</span><span class="n">teff</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> is outside allowed range for ETC (2700-6600)&quot;</span><span class="p">)</span>
+            <span class="n">teff</span> <span class="o">=</span> <span class="mi">6600</span>
+        <span class="k">if</span> <span class="n">teff</span> <span class="o">&lt;</span> <span class="mi">2700</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Teff = </span><span class="si">{</span><span class="n">teff</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> is outside allowed range for ETC (2700-6600)&quot;</span><span class="p">)</span>
+            <span class="n">teff</span> <span class="o">=</span> <span class="mi">2700</span>
 
         <span class="c1"># reference calibration file to scale up/down</span>
         <span class="c1">#cal_file = &#39;KP.20240529.80736.43_L1.fits&#39; # reference etalon L1 file</span>
