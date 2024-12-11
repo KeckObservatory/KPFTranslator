@@ -104,6 +104,15 @@ This is where you can set the object detection and deblending parameters discuss
 
 You can set these values on the command line by modifying the relevant keywords: `kpgduide.OBJECT_INTENSITY`, `kpfguide.OBJECT_AREA`, and `kpfguide.OBJECT_DBCONT`.
 
+#### Sky Subtraction Tab
+
+![A screenshot of the Tip Tilt GUI's Sky Subtraction tab.](figures/TipTiltGUI_SkySubtraction.png)
+>  A screenshot of the Tip Tilt GUI's Sky Subtraction tab.
+
+Detection of faint targets when the gain is high and the FPS is low (of order 2 FPS or less) might be enhanced by subtracting the sky background. To do this, once the target has been acquired to the KPF PO, click the "Obtain Sky Frame" button.  The telescope will offset by the amounts specified in the Sky Offset East and North fields, take a set of images there, and use that for sky subtraction.  This will **not** necessarily increase the flux value, but may improve object detection because the background will be smoother and less noisy.
+
+The "Reset Sky Frame" button will reset the subtraction file to default (a bias frame).  Any time the camera gain or FPS are changed, the sky frame will be reset to default.
+
 #### Offset Guiding Tab
 
 Not currently implemented.
@@ -113,18 +122,13 @@ Not currently implemented.
 ![A screenshot of the Tip Tilt GUI's Settings tab.](figures/TipTiltGUI_Settings.png)
 >  A screenshot of the Tip Tilt GUI's Settings tab.
 
-The three options here control various settings for the `kpfguide` algorithms.
+The options here control various settings for the `kpfguide` algorithms.
 
 The "X Axis" and "Y Axis" settings allow you to bypass the tip tilt mirror and control the star position only using offloads to the telescope (conceptually similar to normal Magiq guiding). These values should be "Mirror" unless there is a problem with the tip tilt system.
 
 The "DAR" setting determines whether the target pixel for the star is modified to account for differential atmospheric refraction (DAR) between the guide wavelengths (950-1200nm) and the science wavelengths (centered on 550nm).  This should be set to "Yes" under normal observing conditions.
 
-#### Plot Time Spans Tab
-
-![A screenshot of the Tip Tilt GUI's Plot Time Spans tab.](figures/TipTiltGUI_PlotTimeSpans.png)
->  A screenshot of the Tip Tilt GUI's Plot Time Spans tab.
-
-These two pulldowns allow you to change the time span of the two plots in the [Tip Tilt Control and Telemetry](#tip-tilt-control-and-telemetry) region of the GUI.  They have no effect on the tip tilt performance, only the plots.
+The "Tip Tilt ROI Size" can be adjusted using the pulldown.  The default value of 128 pix is recommended, but in bad seeing conditions, going to larget frames may help, but processing the extra pixels might slow down the tip tilt calculations, so keep an eye on the "Tip Tilt FPS" value and make sure it does not stay below the camera FPS value.
 
 #### Tip Tilt Control and Telemetry
 
