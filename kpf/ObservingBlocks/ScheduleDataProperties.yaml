@@ -1,51 +1,51 @@
 - name: 'SchedulingMode'
   comment: 'FixedTime, Cadence, or Single'
-  valuetype: str,
+  valuetype: str
   defaultvalue: 'Single'
 - name: 'VisitsPerNight'
   comment: 'Cadence mode) Number of Visits per Night'
-  valuetype: int,
+  valuetype: int
   defaultvalue: 1
 - name: 'NightsPerSemester'
   comment: '(Cadence mode) Number of of Nights Per Semester'
-  valuetype: int,
+  valuetype: int
   defaultvalue: 1
 - name: 'InterNightCadenceMin'
   comment: '(Cadence mode) Minimum Inter-Night Cadence (hours)'
-  valuetype: int,
+  valuetype: int
   defaultvalue: 0
 - name: 'IntraNightCadenceMin'
   comment: '(Cadence mode) Minimum Intra-Night Cadence (days)'
-  valuetype: float,
+  valuetype: float
   defaultvalue: 1
   precision: 2
 - name: 'FastReadModeRequested'
   comment: '(FixedTime mode) Does this OB request Fast Read Mode?'
-  valuetype: bool,
+  valuetype: bool
   defaultvalue: False
 - name: 'FixedTimeStart'
   comment: '(FixedTime mode) Start of requested window'
-  valuetype: str,
+  valuetype: str
   defaultvalue: ''
 - name: 'FixedTimeEnd'
   comment: '(FixedTime mode) End of requested window'
-  valuetype: str,
+  valuetype: str
   defaultvalue: ''
 - name: 'WeatherBand'
   comment: '[bitmap] 3 bits for to bands 1, 2, and 3'
-  valuetype: int,
+  valuetype: int
   defaultvalue: 7
 - name: 'AccessibilityMap'
-  comment: 'If custom map is input, this is the AND with the default map based on inputs below'
-  valuetype: int,
+  comment: '[bitmap] If custom map is input, this is the AND with the default map based on inputs below'
+  valuetype: int
   defaultvalue: 0
 - name: 'MinimumElevation'
   comment: '[deg] Below 30 degrees elevation, the ADC performance degrades dramatically.'
-  valuetype: float,
+  valuetype: float
   defaultvalue: 30
   precision: 1
 - name: 'MinimumMoonSeparation'
   comment: '[deg]'
-  valuetype: float,
+  valuetype: float
   defaultvalue: 15
   precision: 1
