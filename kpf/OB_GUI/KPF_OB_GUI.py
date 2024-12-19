@@ -9,7 +9,6 @@ import re
 import subprocess
 import yaml
 import datetime
-from copy import deepcopy
 from astropy.coordinates import SkyCoord
 
 import ktl                      # provided by kroot/ktl/keyword/python
@@ -966,6 +965,7 @@ class MainWindow(QMainWindow):
         self.TakeSimulCal.setText(f"{self.OB.SEQ_Observations1.get('TakeSimulCal')}")
         take_simulcal = self.OB.SEQ_Observations1.get('TakeSimulCal')
         auto_nd = self.OB.SEQ_Observations1.get('AutoNDFilters')
+        self.AutoNDFilters.setChecked(take_simulcal and auto_nd)
         self.CalND1Label.setEnabled(take_simulcal and not auto_nd)
         self.CalND2Label.setEnabled(take_simulcal and not auto_nd)
         self.CalND1.setEnabled(take_simulcal and not auto_nd)
