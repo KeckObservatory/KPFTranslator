@@ -740,11 +740,10 @@ class MainWindow(QMainWindow):
     ## update SENSORTEMP
     def update_SENSORTEMP(self, value):
         deltaT = self.SENSORTEMP.ktl_keyword.binary - self.SENSORSETP.ktl_keyword.binary
+        self.CRED2TemperatureLabel.setText(f'CRED2 deltaT={deltaT:+3.1f} C')
         if abs(deltaT) > 1:
-            self.CRED2TemperatureLabel.setText(f'CRED2 deltaT={deltaT:.1f}')
             self.CRED2TemperatureLabel.setStyleSheet('background-color: red;')
         else:
-            self.CRED2TemperatureLabel.setText('')
             self.CRED2TemperatureLabel.setStyleSheet('background-color: transparent;')
 
 
