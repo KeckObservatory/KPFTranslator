@@ -161,6 +161,8 @@ class MainWindow(QMainWindow):
         self.TIPTILT_ROIDIM = kPyQt.kFactory(kpfguide['TIPTILT_ROIDIM'])
         self.PIX_TARGET = kPyQt.kFactory(kpfguide['PIX_TARGET'])
         self.SUB_HIGH = kPyQt.kFactory(kpfguide['SUB_HIGH'])
+        self.SENSORSETP = kPyQt.kFactory(kpfguide['SENSORSETP'])
+        self.SENSORTEMP = kPyQt.kFactory(kpfguide['SENSORTEMP'])
 
         kpffiu = ktl.cache('kpffiu')
         self.TTXSRV = kPyQt.kFactory(kpffiu['TTXSRV'])
@@ -651,6 +653,8 @@ class MainWindow(QMainWindow):
         self.StatusBar.addPermanentWidget(self.kpfguide2StatusLabel)
         self.kpfguide3StatusLabel = QLabel('')
         self.StatusBar.addPermanentWidget(self.kpfguide3StatusLabel)
+        self.CRED2TemperatureLabel = QLabel('')
+        self.StatusBar.addPermanentWidget(self.CRED2TemperatureLabel)
 
         # kpfmon Statuses
         self.HB_GUIDE1STA.stringCallback.connect(self.update_kpfguide1status)
@@ -666,11 +670,15 @@ class MainWindow(QMainWindow):
         self.ST_GUIDE3STA.stringCallback.connect(self.update_kpfguide3status)
         self.ST_GUIDE3STA.primeCallback()
 
-        # CONTINUOUS and SAVE
+        # kpfguide keyword callbacks
         self.CONTINUOUS.stringCallback.connect(self.update_CONTINUOUS)
         self.CONTINUOUS.primeCallback()
         self.SAVE.stringCallback.connect(self.update_SAVE)
         self.SAVE.primeCallback()
+        self.SENSORSETP.stringCallback.connect(self.update_SENSORTEMP)
+        self.SENSORSETP.primeCallback()
+        self.SENSORTEMP.stringCallback.connect(self.update_SENSORTEMP)
+        self.SENSORTEMP.primeCallback()
 
 
     ##----------------------------------------------------------
@@ -726,6 +734,18 @@ class MainWindow(QMainWindow):
         else:
             self.SAVEStatusLabel.setText('')
             self.SAVEStatusLabel.setStyleSheet('background-color: transparent;')
+
+
+    ##----------------------------------------------------------
+    ## update SENSORTEMP
+    def update_SENSORTEMP(self, value):
+        deltaT = self.SENSORTEMP.ktl_keyword.binary - self.SENSORSETP.ktl_keyword.binary
+        if abs(deltaT) > 1:
+            self.CRED2TemperatureLabel.setText(f'CRED2 deltaT={deltaT:.1f}')
+            self.CRED2TemperatureLabel.setStyleSheet('background-color: red;')
+        else:
+            self.CRED2TemperatureLabel.setText('')
+            self.CRED2TemperatureLabel.setStyleSheet('background-color: transparent;')
 
 
     ##----------------------------------------------------------
