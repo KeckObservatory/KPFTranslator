@@ -781,7 +781,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f'update_CameraGain: {value}')
         self.CameraGainValue.setText(f'{value}')
         self.CameraGain.setCurrentText('')
-        self.reset_sky_frame()
+#         self.reset_sky_frame()
         self.colorize_recommended_values()
 
     def set_CameraGain(self, value):
@@ -850,7 +850,7 @@ class MainWindow(QMainWindow):
         self.CameraFPSValue.setText(f"{float(value):.1f}")
         self.CameraFPSSelector.setCurrentText('')
         self.colorize_recommended_values()
-        self.reset_sky_frame()
+#         self.reset_sky_frame()
 
     def set_CameraFPS(self, value):
         if value != '':
