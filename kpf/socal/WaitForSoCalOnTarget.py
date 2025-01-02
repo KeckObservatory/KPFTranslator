@@ -37,23 +37,23 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
         if on_target == False:
             kpfsocal = ktl.cache('kpfsocal')
             if kpfsocal['ENCSTA'].read(binary=True) != 0:
-                log.debug(f'ENCSTA != 0')
+                log.info(f'ENCSTA != 0')
             if kpfsocal['EKOONLINE'].read() != 'Online':
-                log.debug(f'EKOONLINE != Online')
+                log.info(f'EKOONLINE != Online')
             if kpfsocal['EKOMODE'].read(binary=True) != 3:
-                log.debug(f'EKOMODE != 3')
+                log.info(f'EKOMODE != 3')
             if kpfsocal['PYRIRRAD'].read(binary=True) < pyrirrad_threshold:
-                log.debug(f'PYRIRRAD < {pyrirrad_threshold}')
+                log.info(f'PYRIRRAD < {pyrirrad_threshold}')
             if kpfsocal['AUTONOMOUS'].read(binary=True) != 1:
-                log.debug(f'AUTONOMOUS != 1')
+                log.info(f'AUTONOMOUS != 1')
             if kpfsocal['IS_OPEN'].read(binary=True) != True:
-                log.debug(f'IS_OPEN != True')
+                log.info(f'IS_OPEN != True')
             if kpfsocal['IS_TRACKING'].read(binary=True) != True:
-                log.debug(f'IS_TRACKING != True')
+                log.info(f'IS_TRACKING != True')
             if kpfsocal['ONLINE'].read(binary=True) != True:
-                log.debug(f'ONLINE != True')
+                log.info(f'ONLINE != True')
             if kpfsocal['STATE'].read() != 'Tracking':
-                log.debug(f'STATE != Tracking')
+                log.info(f'STATE != Tracking')
         return on_target
 
     @classmethod
