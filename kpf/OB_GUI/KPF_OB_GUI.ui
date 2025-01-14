@@ -492,7 +492,7 @@
        </rect>
       </property>
       <property name="title">
-       <string>Selected Observing Block Details</string>
+       <string>Selected Observing Block Summary</string>
       </property>
       <widget class="QWidget" name="gridLayoutWidget_14">
        <property name="geometry">
@@ -734,7 +734,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>540</y>
+         <y>570</y>
          <width>181</width>
          <height>23</height>
         </rect>
@@ -747,13 +747,26 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>570</y>
+         <y>600</y>
          <width>181</width>
          <height>23</height>
         </rect>
        </property>
        <property name="text">
         <string>Execute OB with Slew Cal</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_ShowButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>540</y>
+         <width>181</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Show Full OB Details</string>
        </property>
       </widget>
      </widget>
