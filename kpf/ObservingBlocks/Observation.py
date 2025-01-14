@@ -30,7 +30,11 @@ class Observation(BaseOBComponent):
                 self.set(pname, None)
 
     def __str__(self):
-        return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s"
+#         EMstr = '<=' if self.get('ExpMeterMode') == 'control' else ''
+#         return f"{self.nExp.value:d}x{EMstr}{self.ExpTime.value:.0f}s"
+        EMstr = '(max)' if self.get('ExpMeterMode') == 'control' else ''
+        return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{EMstr}"
+
 
     def to_lines(self, comments=False):
         self.prune()

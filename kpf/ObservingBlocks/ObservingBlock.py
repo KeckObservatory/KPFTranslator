@@ -43,6 +43,7 @@ class ObservingBlock(object):
         if target is None:
             self.Target = None
         else:
+            print(target)
             self.Target = Target(target)
         # Observations
         observations = OBdict.get('Observations', [])

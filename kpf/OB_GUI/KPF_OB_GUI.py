@@ -101,6 +101,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug('Initializing MainWindow')
         # Keywords
         self.dcs = 'dcs1'
+        # Selected OB
+        self.SOB = None
 
 
     def setupUi(self):
@@ -204,6 +206,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ExpTime = self.findChild(QtWidgets.QLabel, 'SOB_ExpTime')
         self.SOB_ExpMeterMode = self.findChild(QtWidgets.QLabel, 'SOB_ExpMeterMode')
 
+        # SOB Execution
+        self.SOB_ShowButton = self.findChild(QtWidgets.QPushButton, 'SOB_ShowButton')
+        self.SOB_ShowButton.clicked.connect(self.show_SOB)
+
 
     ##-------------------------------------------
     ## Methods to display updates from keywords
@@ -285,8 +291,8 @@ class MainWindow(QtWidgets.QMainWindow):
     def select_OB(self, selected, deselected):
         selected_index = selected.indexes()[0].row()
         print(f"Selection changed to {selected_index}")
-        SOB = self.model.OBs[selected_index]
-        self.update_SOB_display(SOB)
+        self.SOB = self.model.OBs[selected_index]
+        self.update_SOB_display(self.SOB)
 
     def update_SOB_display(self, SOB):
         self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
@@ -313,6 +319,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def sort_OB_list(self, value):
         self.model.sort(value)
         self.model.layoutChanged.emit()
+
+
+    def show_SOB(self):
+        if self.SOB is not None:
+            popup = QtWidgets.QMessageBox()
+            popup.setWindowTitle(f"Full OB Contents: {str(self.SOB)}")
+            popup.setText(self.SOB.__repr__())
+            popup.exec_()
 
 
 ##-------------------------------------------------------------------------
