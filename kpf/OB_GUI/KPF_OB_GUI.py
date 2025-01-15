@@ -333,6 +333,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_ExpMeterMode.setText('--')
             self.SOB_EL.setText('--')
             self.SOB_EL.setStyleSheet("color:black")
+            self.SOB_EL.setToolTip("")
             self.SOB_Az.setText('--')
             self.SOB_Airmass.setText('--')
         else:
@@ -358,7 +359,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_ExpMeterMode.setText(SOB.Observations[0].get('ExpMeterMode'))
             # Calculate AltAz Position
             if self.SOB.Target.coord is not None:
-                self.log.debug('Generating AltAzSystem')
                 AltAzSystem = AltAz(obstime=Time.now(), location=self.keck)
                 self.log.debug('Calculating target AltAz coordinates')
                 target_altz = self.SOB.Target.coord.transform_to(AltAzSystem)
@@ -367,10 +367,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
                 if above_horizon(target_altz.az.deg, target_altz.alt.deg):
                     self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
-                    self.SOB_EL.setStyleSheet("color:black")
+                    if target_altz.alt.deg > 30:
+                        self.SOB_EL.setStyleSheet("color:black")
+                        self.SOB_EL.setToolTip("")
+                    else:
+                        self.SOB_EL.setStyleSheet("color:orange")
+                        self.SOB_EL.setToolTip("ADC correction is poor below EL~30")
                 else:
                     self.SOB_Airmass.setText("--")
-                    self.SOB_EL.setStyleSheet("color:orange")
+                    self.SOB_EL.setStyleSheet("color:red")
+                    self.SOB_EL.setToolTip("Below Keck horizon")
 
     def sort_OB_list(self, value):
         self.model.sort(value)
