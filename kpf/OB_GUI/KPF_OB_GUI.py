@@ -90,6 +90,25 @@ class OBListModel(QtCore.QAbstractListModel):
 
 
 ##-------------------------------------------------------------------------
+## Scrollable QMessageBox
+##-------------------------------------------------------------------------
+class ScrollMessageBox(QtWidgets.QMessageBox):
+    def __init__(self, l, *args, **kwargs):
+        QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
+        scroll = QtWidgets.QScrollArea(self)
+        scroll.setWidgetResizable(True)
+        self.content = QtWidgets.QWidget()
+        scroll.setWidget(self.content)
+        lay = QtWidgets.QVBoxLayout(self.content)
+        for item in l:
+            line_label = QtWidgets.QLabel(item, self)
+            line_label.setFont(QtGui.QFont('Courier New', 11))
+            lay.addWidget(line_label)
+        self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
+        self.setStyleSheet("QScrollArea{min-width:300 px; min-height: 700px}")
+
+
+##-------------------------------------------------------------------------
 ## Keck Horizon
 ##-------------------------------------------------------------------------
 def above_horizon(az, el):
@@ -271,7 +290,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return progIDs + ['E123', 'E456']
 
     def set_ProgID(self, value):
-        print(f"set_ProgID: '{value}'")
+        self.log.info(f"set_ProgID: '{value}'")
         if value == '':
             self.OBListHeader.setText(hdr)
             self.model.OBs = []
@@ -318,7 +337,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def select_OB(self, selected, deselected):
         if len(selected.indexes()) > 0:
             selected_index = selected.indexes()[0].row()
-            print(f"Selection changed to {selected_index}")
+            self.log.debug(f"Selection changed to {selected_index}")
             self.SOB = self.model.OBs[selected_index]
             self.update_SOB_display(self.SOB)
 
@@ -418,10 +437,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def show_SOB(self):
         if self.SOB is not None:
-            popup = QtWidgets.QMessageBox()
+            lines = self.SOB.__repr__().split('\n')
+            popup = ScrollMessageBox(lines)
             popup.setWindowTitle(f"Full OB Contents: {str(self.SOB)}")
-            popup.setText(self.SOB.__repr__())
-            popup.setFont(QtGui.QFont('Courier New', 12))
             popup.exec_()
 
 
