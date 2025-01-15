@@ -10,7 +10,7 @@ import subprocess
 import yaml
 import datetime
 import numpy as np
-from astropy.coordinates import SkyCoord
+from astropy.coordinates import SkyCoord, EarthLocation, AltAz
 from astropy.time import Time
 
 import ktl                      # provided by kroot/ktl/keyword/python
@@ -88,6 +88,22 @@ class OBListModel(QtCore.QAbstractListModel):
         elif sortkey == 'Jmag':
             self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
 
+
+##-------------------------------------------------------------------------
+## Keck Horizon
+##-------------------------------------------------------------------------
+def above_horizon(az, el):
+    '''From https://www2.keck.hawaii.edu/inst/common/TelLimits.html
+    Az 5.3 to 146.2, 33.3
+    Az Elsewhere, 18
+    '''
+    if az >= 5.3 and az <= 146.2:
+        horizon = 33.3
+    else:
+        horizon = 18
+    return el > horizon
+
+
 ##-------------------------------------------------------------------------
 ## Define Application MainWindow
 ##-------------------------------------------------------------------------
@@ -103,6 +119,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dcs = 'dcs1'
         # Selected OB
         self.SOB = None
+        # Coordinate Systems
+        self.keck = EarthLocation.of_site('Keck Observatory')
 
 
     def setupUi(self):
@@ -205,6 +223,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_nExp = self.findChild(QtWidgets.QLabel, 'SOB_nExp')
         self.SOB_ExpTime = self.findChild(QtWidgets.QLabel, 'SOB_ExpTime')
         self.SOB_ExpMeterMode = self.findChild(QtWidgets.QLabel, 'SOB_ExpMeterMode')
+        # Calculated Values
+        self.SOB_ExecutionTime = self.findChild(QtWidgets.QLabel, 'SOB_ExecutionTime')
+        self.SOB_EL = self.findChild(QtWidgets.QLabel, 'SOB_EL')
+        self.SOB_Az = self.findChild(QtWidgets.QLabel, 'SOB_Az')
+        self.SOB_Airmass = self.findChild(QtWidgets.QLabel, 'SOB_Airmass')
+        self.SOB_AzSlew = self.findChild(QtWidgets.QLabel, 'SOB_AzSlew')
+        self.SOB_ELSlew = self.findChild(QtWidgets.QLabel, 'SOB_ELSlew')
 
         # SOB Execution
         self.SOB_ShowButton = self.findChild(QtWidgets.QPushButton, 'SOB_ShowButton')
@@ -289,37 +314,70 @@ class MainWindow(QtWidgets.QMainWindow):
     ## Methods for OB List
     ##-------------------------------------------
     def select_OB(self, selected, deselected):
-        selected_index = selected.indexes()[0].row()
-        print(f"Selection changed to {selected_index}")
-        self.SOB = self.model.OBs[selected_index]
-        self.update_SOB_display(self.SOB)
+        if len(selected.indexes()) > 0:
+            selected_index = selected.indexes()[0].row()
+            print(f"Selection changed to {selected_index}")
+            self.SOB = self.model.OBs[selected_index]
+            self.update_SOB_display(self.SOB)
 
     def update_SOB_display(self, SOB):
-        self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
-        self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
-        if abs(SOB.Target.PMRA.value) > 0.0001 or abs(SOB.Target.PMDEC.value) > 0.0001:
-            try:
-                now = Time(datetime.datetime.utcnow())
-                coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
-                coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
-                self.SOB_TargetRA.setText(coord_now_string.split()[0])
-                self.SOB_TargetDec.setText(coord_now_string.split()[1])
-            except:
+        if self.SOB is None:
+            self.SOB_TargetName.setText('--')
+            self.SOB_GaiaID.setText('--')
+            self.SOB_TargetRA.setText('--')
+            self.SOB_TargetDec.setText('--')
+            self.SOB_Jmag.setText('--')
+            self.SOB_Gmag.setText('--')
+            self.SOB_nExp.setText('--')
+            self.SOB_ExpTime.setText('--')
+            self.SOB_ExpMeterMode.setText('--')
+            self.SOB_EL.setText('--')
+            self.SOB_EL.setStyleSheet("color:black")
+            self.SOB_Az.setText('--')
+            self.SOB_Airmass.setText('--')
+        else:
+            self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
+            self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
+            if abs(SOB.Target.PMRA.value) > 0.0001 or abs(SOB.Target.PMDEC.value) > 0.0001:
+                try:
+                    now = Time(datetime.datetime.utcnow())
+                    coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
+                    coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
+                    self.SOB_TargetRA.setText(coord_now_string.split()[0])
+                    self.SOB_TargetDec.setText(coord_now_string.split()[1])
+                except:
+                    self.SOB_TargetRA.setText(SOB.Target.get('RA'))
+                    self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
+            else:
                 self.SOB_TargetRA.setText(SOB.Target.get('RA'))
                 self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
-        else:
-            self.SOB_TargetRA.setText(SOB.Target.get('RA'))
-            self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
-        self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
-        self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
-        self.SOB_nExp.setText(f"{SOB.Observations[0].get('nExp'):d}")
-        self.SOB_ExpTime.setText(f"{SOB.Observations[0].get('ExpTime'):.1f} s")
-        self.SOB_ExpMeterMode.setText(SOB.Observations[0].get('ExpMeterMode'))
+            self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
+            self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
+            self.SOB_nExp.setText(f"{SOB.Observations[0].get('nExp'):d}")
+            self.SOB_ExpTime.setText(f"{SOB.Observations[0].get('ExpTime'):.1f} s")
+            self.SOB_ExpMeterMode.setText(SOB.Observations[0].get('ExpMeterMode'))
+            # Calculate AltAz Position
+            if self.SOB.Target.coord is not None:
+                self.log.debug('Generating AltAzSystem')
+                AltAzSystem = AltAz(obstime=Time.now(), location=self.keck)
+                self.log.debug('Calculating target AltAz coordinates')
+                target_altz = self.SOB.Target.coord.transform_to(AltAzSystem)
+                self.log.debug('done')
+                self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
+                self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
+                if above_horizon(target_altz.az.deg, target_altz.alt.deg):
+                    self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
+                    self.SOB_EL.setStyleSheet("color:black")
+                else:
+                    self.SOB_Airmass.setText("--")
+                    self.SOB_EL.setStyleSheet("color:orange")
 
     def sort_OB_list(self, value):
         self.model.sort(value)
         self.model.layoutChanged.emit()
-
+        self.ListOfOBs.selectionModel().clearSelection()
+        self.SOB = None
+        self.update_SOB_display(self.SOB)
 
     def show_SOB(self):
         if self.SOB is not None:
