@@ -100,18 +100,20 @@ class ObservingBlock(object):
                 out += f",{obs}"
         return out
 
-    def __repr__(self):
+    def __repr__(self, comments=True):
         lines = []
         if self.Target is not None:
             lines += ['Target:']
             lines += self.Target.to_lines()
         if len(self.Observations) > 0:
             lines += ['Observations:']
-            for obs in self.Observations:
+            for i,obs in enumerate(self.Observations):
+                lines.append(f'# Observation {i+1}')
                 lines += obs.to_lines()
         if len(self.Calibrations) > 0:
             lines += ['Calibrations:']
-            for cal in self.Calibrations:
+            for j,cal in enumerate(self.Calibrations):
+                lines.append(f'# Calibration {i+1}')
                 lines += cal.to_lines()
         return '\n'.join(lines)
 

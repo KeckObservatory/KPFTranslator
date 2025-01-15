@@ -55,7 +55,7 @@ class Observation(BaseOBComponent):
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
 
-    def to_lines(self, comments=False):
+    def to_lines(self):
         self.prune()
         lines = []
         i = 0
