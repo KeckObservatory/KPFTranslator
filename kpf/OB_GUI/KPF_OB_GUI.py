@@ -220,9 +220,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_TargetDec = self.findChild(QtWidgets.QLabel, 'SOB_TargetDec')
         self.SOB_Jmag = self.findChild(QtWidgets.QLabel, 'SOB_Jmag')
         self.SOB_Gmag = self.findChild(QtWidgets.QLabel, 'SOB_Gmag')
-        self.SOB_nExp = self.findChild(QtWidgets.QLabel, 'SOB_nExp')
-        self.SOB_ExpTime = self.findChild(QtWidgets.QLabel, 'SOB_ExpTime')
-        self.SOB_ExpMeterMode = self.findChild(QtWidgets.QLabel, 'SOB_ExpMeterMode')
+        self.SOB_Observation1 = self.findChild(QtWidgets.QLabel, 'SOB_Observation1')
+        self.SOB_Observation2 = self.findChild(QtWidgets.QLabel, 'SOB_Observation2')
+        self.SOB_Observation3 = self.findChild(QtWidgets.QLabel, 'SOB_Observation3')
         # Calculated Values
         self.SOB_ExecutionTime = self.findChild(QtWidgets.QLabel, 'SOB_ExecutionTime')
         self.SOB_EL = self.findChild(QtWidgets.QLabel, 'SOB_EL')
@@ -328,9 +328,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_TargetDec.setText('--')
             self.SOB_Jmag.setText('--')
             self.SOB_Gmag.setText('--')
-            self.SOB_nExp.setText('--')
-            self.SOB_ExpTime.setText('--')
-            self.SOB_ExpMeterMode.setText('--')
+            self.SOB_Observation1.setText('--')
+            self.SOB_Observation2.setText('--')
+            self.SOB_Observation3.setText('--')
             self.SOB_EL.setText('--')
             self.SOB_EL.setStyleSheet("color:black")
             self.SOB_EL.setToolTip("")
@@ -354,9 +354,21 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
             self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
             self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
-            self.SOB_nExp.setText(f"{SOB.Observations[0].get('nExp'):d}")
-            self.SOB_ExpTime.setText(f"{SOB.Observations[0].get('ExpTime'):.1f} s")
-            self.SOB_ExpMeterMode.setText(SOB.Observations[0].get('ExpMeterMode'))
+            if len(self.SOB.Observations) >= 1:
+                self.SOB_Observation1.setText(f"{self.SOB.Observations[0].summary()}")
+            else:
+                self.SOB_Observation1.setText('--')
+
+            if len(self.SOB.Observations) >= 2:
+                self.SOB_Observation2.setText(f"{self.SOB.Observations[1].summary()}")
+            else:
+                self.SOB_Observation2.setText('--')
+
+            if len(self.SOB.Observations) >= 3:
+                obs_txt = [obs.summary() for obs in self.SOB.Observations[2:]]
+                self.SOB_Observation3.setText(', '.join(obs_txt))
+            else:
+                self.SOB_Observation3.setText('--')
             # Calculate AltAz Position
             if self.SOB.Target.coord is not None:
                 AltAzSystem = AltAz(obstime=Time.now(), location=self.keck)

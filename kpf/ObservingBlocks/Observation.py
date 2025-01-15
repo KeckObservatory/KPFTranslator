@@ -33,11 +33,26 @@ class Observation(BaseOBComponent):
                 self.set(pname, None)
 
 
+    def summary(self):
+        details = []
+        if self.get('TakeSimulCal') == True:
+            details.append(f'simulcal')
+        if self.get('ExpMeterMode') == 'control':
+            details.append(f'EM={self.get("ExpMeterBin")}:{self.get("ExpMeterThreshold"):.0f}')
+        if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
+            details.append('offset')
+        details = f"({','.join(details)})" if len(details) > 0 else ''
+        return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
+
+
     def __str__(self):
-#         EMstr = '<=' if self.get('ExpMeterMode') == 'control' else ''
-#         return f"{self.nExp.value:d}x{EMstr}{self.ExpTime.value:.0f}s"
-        EMstr = '(max)' if self.get('ExpMeterMode') == 'control' else ''
-        return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{EMstr}"
+        details = []
+        if self.get('ExpMeterMode') == 'control':
+            details.append('max')
+        if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
+            details.append('offset')
+        details = f"({','.join(details)})" if len(details) > 0 else ''
+        return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
 
     def to_lines(self, comments=False):
