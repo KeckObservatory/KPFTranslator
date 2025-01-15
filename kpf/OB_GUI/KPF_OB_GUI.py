@@ -93,17 +93,16 @@ class OBListModel(QtCore.QAbstractListModel):
 ## Scrollable QMessageBox
 ##-------------------------------------------------------------------------
 class ScrollMessageBox(QtWidgets.QMessageBox):
-    def __init__(self, l, *args, **kwargs):
+    def __init__(self, contents, *args, **kwargs):
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
         scroll = QtWidgets.QScrollArea(self)
         scroll.setWidgetResizable(True)
         self.content = QtWidgets.QWidget()
         scroll.setWidget(self.content)
         lay = QtWidgets.QVBoxLayout(self.content)
-        for item in l:
-            line_label = QtWidgets.QLabel(item, self)
-            line_label.setFont(QtGui.QFont('Courier New', 11))
-            lay.addWidget(line_label)
+        contents_label = QtWidgets.QLabel(contents, self)
+        contents_label.setFont(QtGui.QFont('Courier New', 11))
+        lay.addWidget(contents_label)
         self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
         self.setStyleSheet("QScrollArea{min-width:300 px; min-height: 700px}")
 
@@ -437,8 +436,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def show_SOB(self):
         if self.SOB is not None:
-            lines = self.SOB.__repr__().split('\n')
-            popup = ScrollMessageBox(lines)
+            popup = ScrollMessageBox(self.SOB.__repr__())
             popup.setWindowTitle(f"Full OB Contents: {str(self.SOB)}")
             popup.exec_()
 
