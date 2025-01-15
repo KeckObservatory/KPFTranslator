@@ -117,6 +117,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug('Initializing MainWindow')
         # Keywords
         self.dcs = 'dcs1'
+        WAVEBINS = ktl.cache('kpf_expmeter', 'WAVEBINS')
+        self.expmeter_bands = [f"{float(b):.0f}nm" for b in WAVEBINS.read().split()]
         # Selected OB
         self.SOB = None
         # Coordinate Systems
@@ -355,18 +357,35 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
             self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
             if len(self.SOB.Observations) >= 1:
-                self.SOB_Observation1.setText(f"{self.SOB.Observations[0].summary()}")
+                obs_txt = f"{self.SOB.Observations[0].summary()}"
+                matchEMbin = re.search('(\d):\d+', obs_txt)
+                if matchEMbin is not None:
+                    new_str = self.expmeter_bands[int(matchEMbin.group(1))]
+                    obs_txt = obs_txt[0:matchEMbin.start(1)]+new_str+obs_txt[matchEMbin.end(1):]
+                self.SOB_Observation1.setText(obs_txt)
             else:
                 self.SOB_Observation1.setText('--')
 
             if len(self.SOB.Observations) >= 2:
-                self.SOB_Observation2.setText(f"{self.SOB.Observations[1].summary()}")
+                obs_txt = f"{self.SOB.Observations[1].summary()}"
+                matchEMbin = re.search('(\d):\d+', obs_txt)
+                if matchEMbin is not None:
+                    new_str = self.expmeter_bands[int(matchEMbin.group(1))]
+                    obs_txt = obs_txt[0:matchEMbin.start(1)]+new_str+obs_txt[matchEMbin.end(1):]
+                self.SOB_Observation2.setText(obs_txt)
             else:
                 self.SOB_Observation2.setText('--')
 
             if len(self.SOB.Observations) >= 3:
-                obs_txt = [obs.summary() for obs in self.SOB.Observations[2:]]
-                self.SOB_Observation3.setText(', '.join(obs_txt))
+                remaining_obs_txt = []
+                for obs in self.SOB.Observations[2:]:
+                    obs_txt = obs.summary()
+                    matchEMbin = re.search('(\d):\d+', obs_txt)
+                    if matchEMbin is not None:
+                        new_str = self.expmeter_bands[int(matchEMbin.group(1))]
+                        obs_txt = obs_txt[0:matchEMbin.start(1)]+new_str+obs_txt[matchEMbin.end(1):]
+                    remaining_obs_txt.append(obs_txt)
+                self.SOB_Observation3.setText(', '.join(remaining_obs_txt))
             else:
                 self.SOB_Observation3.setText('--')
             # Calculate AltAz Position
