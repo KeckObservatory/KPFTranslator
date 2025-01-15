@@ -43,7 +43,7 @@ class Target(BaseOBComponent):
 
     def __str__(self):
         try:
-            radec_str = self.coord.to_string('hmsdms', sep=':', precision=2)
+            radec_str = self.coord.to_string('hmsdms', sep=':', precision=1)
         except:
             radec_str = f"{str(self.RA)} {str(self.Dec)}"
         out = (f"{self.TargetName.value:16s} {radec_str} "
