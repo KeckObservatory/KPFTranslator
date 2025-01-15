@@ -47,7 +47,7 @@ class Target(BaseOBComponent):
         except:
             radec_str = f"{str(self.RA)} {str(self.Dec)}"
         out = (f"{self.TargetName.value:16s} {radec_str} "
-               f"{str(self.Gmag):5s} {str(self.Jmag):5s}")
+               f"{str(self.Gmag):>5s} {str(self.Jmag):>5s}")
         return out
 
     @classmethod

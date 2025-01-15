@@ -28,6 +28,10 @@ class Observation(BaseOBComponent):
         if self.get('TakeSimulCal') is False:
             for pname in ['AutoNDFilters']:
                 self.set(pname, None)
+        if self.get('NodE') is None and self.get('NodN') is None:
+            for pname in ['NodE', 'NodN']:
+                self.set(pname, None)
+
 
     def __str__(self):
 #         EMstr = '<=' if self.get('ExpMeterMode') == 'control' else ''

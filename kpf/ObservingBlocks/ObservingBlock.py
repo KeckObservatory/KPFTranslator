@@ -93,8 +93,11 @@ class ObservingBlock(object):
             out = f"{self.Target}"
         else:
             out = 'unknown        unknown       unknown '
-        for obs in self.Observations:
-            out += f" {obs}"
+        for i,obs in enumerate(self.Observations):
+            if i == 0:
+                out += f" {obs}"
+            else:
+                out += f",{obs}"
         return out
 
     def __repr__(self):

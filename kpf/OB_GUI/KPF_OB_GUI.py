@@ -15,7 +15,7 @@ from astropy.time import Time
 
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
-from PyQt5 import uic, QtWidgets, QtCore
+from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import Qt
 
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
@@ -326,6 +326,7 @@ class MainWindow(QtWidgets.QMainWindow):
             popup = QtWidgets.QMessageBox()
             popup.setWindowTitle(f"Full OB Contents: {str(self.SOB)}")
             popup.setText(self.SOB.__repr__())
+            popup.setFont(QtGui.QFont('Courier New', 12))
             popup.exec_()
 
 
