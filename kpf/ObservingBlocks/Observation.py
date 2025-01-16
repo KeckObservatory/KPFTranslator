@@ -1,6 +1,10 @@
 from pathlib import Path
 import yaml
 
+try:
+    import ktl
+except:
+    ktl = None
 from kpf.ObservingBlocks import BaseOBComponent
 
 
@@ -11,6 +15,13 @@ class Observation(BaseOBComponent):
             properties = yaml.safe_load(f.read())
         super().__init__('Observation', '2.0', properties=properties)
         self.from_dict(input_dict)
+        
+        try:
+            WAVEBINS = ktl.cache('kpf_expmeter', 'WAVEBINS')
+            self.expmeter_bands = [f"{float(b):.0f}nm" for b in WAVEBINS.read().split()]
+        except:
+            self.expmeter_bands = [f"{float(b):.0f}nm" for b in [498.12, 604.38, 710.62, 816.88]]
+
 
     def prune(self):
         if self.get('ExpMeterMode') in ['monitor', 'off']:
@@ -38,10 +49,12 @@ class Observation(BaseOBComponent):
         if self.get('TakeSimulCal') == True:
             details.append(f'simulcal')
         if self.get('ExpMeterMode') == 'control':
-            details.append(f'EM={self.get("ExpMeterBin")}:{self.get("ExpMeterThreshold"):.0f}')
+            thresh_str = f'{self.get("ExpMeterThreshold")/1e3:,.0f}k'
+            bin_str = self.expmeter_bands[self.get("ExpMeterBin")]
+            details.append(f'{thresh_str}@{bin_str}')
         if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
             details.append('offset')
-        details = f"({','.join(details)})" if len(details) > 0 else ''
+        details = f"({';'.join(details)})" if len(details) > 0 else ''
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
 
@@ -51,7 +64,7 @@ class Observation(BaseOBComponent):
             details.append('max')
         if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
             details.append('offset')
-        details = f"({','.join(details)})" if len(details) > 0 else ''
+        details = f"({';'.join(details)})" if len(details) > 0 else ''
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
 
