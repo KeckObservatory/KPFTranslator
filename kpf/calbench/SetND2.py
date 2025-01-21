@@ -10,7 +10,7 @@ class SetND2(KPFTranslatorFunction):
     octagon) via the `kpfcal.ND2POS` keyword.
 
     Args:
-        CalND2 (str): The neutral density filter to put in the first filter
+        CalND2 (str): The neutral density filter to put in the second filter
             wheel. This affects only the light injected in to the simultaneous
             calibration fiber. Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`,
             `OD 0.8`, `OD 1.0`, `OD 4.0`
