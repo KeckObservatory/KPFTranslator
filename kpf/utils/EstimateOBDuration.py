@@ -95,14 +95,14 @@ def estimate_observation_time(observations, cfg, fast=False):
 ## EstimateOBDuration
 ##-----------------------------------------------------------------------------
 class EstimateOBDuration(KPFTranslatorFunction):
-    '''Estimate the duration of the input OB.
-
-    This script will determine the OB type (science or calibration) and invoke
-    either `EstimateCalOBDuration` or `EstimateSciOBDuration`
+    '''Estimate the duration of the input OB. Uses estimates of instrument
+    configuration time, slew time, acquire time, and readout time and combines
+    those with the information in the observing block to estimate how long it
+    will take to execute the observing block.
 
     ARGS:
     =====
-    :OB: `dict` A fully specified observing block (OB).
+    :OB: `dict` or `ObservingBlock` A fully specified observing block (OB).
     '''
     @classmethod
     def pre_condition(cls, OB):
