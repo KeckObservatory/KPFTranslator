@@ -86,4 +86,4 @@ class RunSciOB(KPFTranslatorFunction):
         parser.add_argument('--nointensemon', dest="nointensemon",
                             default=False, action="store_true",
                             help='Skip the intensity monitor measurement on calibration frames?')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
