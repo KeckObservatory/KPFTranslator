@@ -162,7 +162,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Sidereal Time:</string>
+        <string>Sidereal Time (LST):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
