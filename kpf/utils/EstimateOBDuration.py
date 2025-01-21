@@ -1,3 +1,5 @@
+import numpy as np
+
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
@@ -6,16 +8,21 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.calbench import standardize_lamp_name
 
 
+def get_readout_time(sequences, cfg, fast=False):
+    trigger_red = np.any([seq.get('TriggerRed') for seq in sequences])
+    trigger_green = np.any([seq.get('TriggerGreen') for seq in sequences])
+    trigger_cahk = np.any([seq.get('TriggerCaHK') for seq in sequences])
+    fast_str = '' if fast is False else '_fast'
+    readouts = [cfg.getfloat('time_estimates', f'readout_red{fast_str}', fallback=60) if trigger_red else 0,
+                cfg.getfloat('time_estimates', f'readout_green{fast_str}', fallback=60) if trigger_green else 0,
+                cfg.getfloat('time_estimates', f'readout_cahk', fallback=1) if trigger_cahk else 0]
+    return max(readouts)
+
+
+
 def estimate_calibration_time(calibrations, cfg, fast=False):
     duration = 0
-    fast_str = '' if fast is False else '_fast'
-    readout_red = 0 if OB['TriggerRed'] == False else\
-                  cfg.getfloat('time_estimates', f'readout_red{fast_str}', fallback=60)
-    readout_green = 0 if OB['TriggerGreen'] == False else\
-                    cfg.getfloat('time_estimates', f'readout_green{fast_str}', fallback=60)
-    readout_cahk = 0 if OB['TriggerCaHK'] == False else\
-                   cfg.getfloat('time_estimates', 'readout_cahk', fallback=1)
-    readout = max([readout_red, readout_green, readout_cahk])
+    readout = get_readout_time(calibrations, cfg, fast=False)
 
     # ConfigureForCalibrations
     lamps = set([cal.get('CalSource') for cal in calibrations
@@ -40,8 +47,8 @@ def estimate_calibration_time(calibrations, cfg, fast=False):
         duration += cfg.getfloat('time_estimates', 'octagon_move',
                             fallback=60)
         if cal.get('CalSource') in ['Dark', 'Home']:
-            duration += int(cal['nExp'])*float(cal['ExpTime'])
-            duration += int(cal['nExp'])*readout
+            duration += int(cal.get('nExp'))*float(cal.get('ExpTime'))
+            duration += int(cal.get('nExp'))*readout
 
         elif lamp in lamps_that_need_warmup:
             # Add warm up time
@@ -65,31 +72,20 @@ def estimate_calibration_time(calibrations, cfg, fast=False):
 
 def estimate_observation_time(observations, cfg, fast=False):
     duration = 0
-    fast_str = '' if fast is False else '_fast'
-    readout_red = 0 if OB['TriggerRed'] == False else\
-                  cfg.getfloat('time_estimates', f'readout_red{fast_str}', fallback=60)
-    readout_green = 0 if OB['TriggerGreen'] == False else\
-                    cfg.getfloat('time_estimates', f'readout_green{fast_str}', fallback=60)
-    readout_cahk = 0 if OB['TriggerCaHK'] == False else\
-                   cfg.getfloat('time_estimates', 'readout_cahk', fallback=1)
-    readout = max([readout_red, readout_green, readout_cahk])
+    readout = get_readout_time(observations, cfg, fast=False)
 
     # Configure FIU
-    duration += cfg.getfloat('time_estimates', 'FIU_mode_change',
-                             fallback=20)
+    duration += cfg.getfloat('time_estimates', 'FIU_mode_change', fallback=20)
     # Slew
-    duration += cfg.getfloat('time_estimates', 'slew_time',
-                         fallback=120)
+    duration += cfg.getfloat('time_estimates', 'slew_time', fallback=120)
     # Acquire
-    duration += cfg.getfloat('time_estimates', 'acquire_time',
-                        fallback=10)
+    duration += cfg.getfloat('time_estimates', 'acquire_time', fallback=10)
     # Close Tip Tilt Loops
-    duration += cfg.getfloat('time_estimates', 'tip_tilt_loop_closure',
-                        fallback=3)
+    duration += cfg.getfloat('time_estimates', 'tip_tilt_loop_closure', fallback=3)
     # Execute Observations
     for observation in observations:
-        duration += observation['nExp']*observation['ExpTime']
-        duration += observation['nExp']*readout
+        duration += observation.get('nExp')*observation.get('ExpTime')
+        duration += observation.get('nExp')*readout
 
     return duration
 
@@ -135,7 +131,7 @@ class EstimateOBDuration(KPFTranslatorFunction):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('--fast', '--fastread',
                             dest="fast",
                             default=False, action="store_true",
