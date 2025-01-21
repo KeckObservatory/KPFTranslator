@@ -19,6 +19,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import Qt
 
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
+from kpf.utils.EstimateOBDuration import EstimateOBDuration
 
 
 
@@ -412,6 +413,9 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.SOB_Airmass.setText("--")
                     self.SOB_EL.setStyleSheet("color:red")
                     self.SOB_EL.setToolTip("Below Keck horizon")
+            # Calculate OB Duration
+            duration = EstimateOBDuration.execute(self.SOB)
+            self.SOB_ExecutionTime.setText(f"{duration/60:.0f} min")
 
     def sort_OB_list(self, value):
         self.model.sort(value)
