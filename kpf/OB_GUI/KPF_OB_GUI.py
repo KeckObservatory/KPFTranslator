@@ -180,12 +180,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # Universal Time
         self.UTValue = self.findChild(QtWidgets.QLabel, 'UTValue')
         UT_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'UT'))
-        UT_kw.stringCallback.connect(self.UTValue.setText)
+        UT_kw.stringCallback.connect(self.update_UT)
 
         # Sidereal Time
         self.SiderealTimeValue = self.findChild(QtWidgets.QLabel, 'SiderealTimeValue')
         LST_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'LST'))
-        LST_kw.stringCallback.connect(self.SiderealTimeValue.setText)
+        LST_kw.stringCallback.connect(self.update_LST)
 
         # time since last cal
 #         self.slewcaltime_value = self.findChild(QtWidgets.QLabel, 'slewcaltime_value')
@@ -277,6 +277,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.expose_status_value.setStyleSheet("color:green")
         elif value in ['Start', 'InProgress', 'Readout']:
             self.expose_status_value.setStyleSheet("color:orange")
+
+
+    def update_UT(self, value):
+        self.UTValue.setText(value[:-3])
+
+
+    def update_LST(self, value):
+        self.SiderealTimeValue.setText(value[:-3])
 
 
     ##-------------------------------------------
