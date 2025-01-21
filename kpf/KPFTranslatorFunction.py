@@ -8,6 +8,7 @@ from argparse import Namespace, ArgumentTypeError
 import ktl
 
 from kpf import log, KPFException
+from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 
 class KPFTranslatorFunction(object):
@@ -45,8 +46,8 @@ class KPFTranslatorFunction(object):
         """
         if type(args) == Namespace:
             args = vars(args)
-        elif type(args) != dict:
-            msg = "argument type must be either Dict or Argparser.Namespace"
+        elif type(args) not in [dict, ObservingBlock]:
+            msg = "argument type must be either ObservingBlock, Dict or Argparser.Namespace"
             raise KPFException(msg)
 
         # read the config file

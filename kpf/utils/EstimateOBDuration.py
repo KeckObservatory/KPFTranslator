@@ -110,10 +110,8 @@ class EstimateOBDuration(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, OB):
-        log.info('-------------------------')
-        log.info(f"Running {cls.__name__}")
-        log.info('-------------------------')
-        OB = ObservingBlock(OB)
+        if type(OB) != ObservingBlock:
+            OB = ObservingBlock(OB)
         cfg = cls._load_config()
         duration = 0
 
