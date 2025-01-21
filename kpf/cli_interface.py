@@ -8,6 +8,7 @@ from argparse import ArgumentParser, ArgumentError
 import logging
 from datetime import datetime, timedelta
 import yaml
+from typing import Dict, List, Tuple
 
 from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 
@@ -211,7 +212,7 @@ def create_logger():
 
     return log
 
-def main(table_loc, args):
+def main(table_loc, parsed_args, function_args):
 
     #
     # Logging
@@ -240,14 +241,14 @@ def main(table_loc, args):
     # Handle command line arguments
     #
 
-    cli_parser = ArgumentParser(add_help=False, conflict_handler="resolve")
-    cli_parser.add_argument("-l", "--list", dest="list", action="store_true", help="List functions in this module")
-    cli_parser.add_argument("-n", "--dry-run", dest="dry_run", action="store_true", help="Print what function would be called with what arguments, with no actual invocation")
-    cli_parser.add_argument("-h", "--help", dest="help", action="store_true")
-    # cli_parser.add_argument("function_args", nargs="*", help="Function to be executed, and any needed arguments")
-    logger.debug("Parsing cli_interface.py arguments...")
-    parsed_args, function_args = cli_parser.parse_known_args(args)
-    logger.debug("Parsed.")
+#     cli_parser = ArgumentParser(add_help=False, conflict_handler="resolve")
+#     cli_parser.add_argument("-l", "--list", dest="list", action="store_true", help="List functions in this module")
+#     cli_parser.add_argument("-n", "--dry-run", dest="dry_run", action="store_true", help="Print what function would be called with what arguments, with no actual invocation")
+#     cli_parser.add_argument("-h", "--help", dest="help", action="store_true")
+#     # cli_parser.add_argument("function_args", nargs="*", help="Function to be executed, and any needed arguments")
+#     logger.debug("Parsing cli_interface.py arguments...")
+#     parsed_args, function_args = cli_parser.parse_known_args(args)
+#     logger.debug("Parsed.")
 
     # Handle help:
     if parsed_args.help:
