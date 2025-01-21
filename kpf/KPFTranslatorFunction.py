@@ -14,6 +14,7 @@ class KPFTranslatorFunction(object):
 
     instrument = 'kpf'
 
+    @classmethod
     def _load_config(cls):
         config_files = [Path(__file__).parent / f'{cls.instrument}_inst_config.ini']
         config = configparser.ConfigParser(inline_comment_prefixes=(';','#',))
@@ -49,7 +50,7 @@ class KPFTranslatorFunction(object):
             raise KPFException(msg)
 
         # read the config file
-        cfg = cls._load_config(cls)
+        cfg = cls._load_config()
 
         #################
         # PRE CONDITION #

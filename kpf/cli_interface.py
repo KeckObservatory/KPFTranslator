@@ -260,8 +260,8 @@ def main(table_loc, parsed_args, function_args):
                     linking_tbl, function_args[0], logger)
                 func_parser = ArgumentParser(add_help=False)
                 func_parser = function.add_cmdline_args(func_parser)
-                func_parser.print_help()
                 print(function.__doc__)
+                func_parser.print_help()
                 if preset_args and len(preset_args) > 0:
                     print("Preset arguments:")
                     print(preset_args)
@@ -354,7 +354,7 @@ def main(table_loc, parsed_args, function_args):
 
         else:
             logger.debug(f"Executing {mod_str} {' '.join(final_args)}")
-            function.execute(parsed_func_args, logger=logger)
+            function.execute(parsed_func_args)
 
     except ImportError as e:
         logger.error("Found translator module, but failed to import it")
