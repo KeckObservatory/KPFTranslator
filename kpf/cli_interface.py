@@ -436,14 +436,14 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
         logger.debug('Requested function is a script')
         parser.add_argument("-f", "--file", dest="file", type=str,
             help="The OB file to run.")
-        parser.add_argument("-d", "--db", dest="db", type=str,
+        parser.add_argument("-d", "--db", dest="dbid", type=str,
             help="The unique database ID of the OB to run.")
 
     if parsed_args.help is True:
-        print(f'# Doc string for {function_args[0]}:\n')
         print(function.__doc__)
-        print(f'# Command line arguments help for {function_args[0]}:\n')
-        parser.print_help()
+        help_str = parser.format_help()
+        help_str = help_str.replace('usage: kpfdo', f'usage: kpfdo {function_args[0]}')
+        print(help_str)
         return
 
     try:
