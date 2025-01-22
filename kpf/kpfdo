@@ -28,8 +28,10 @@ p.add_argument("-n", "--dry-run", dest="dry_run",
     default=False, action="store_true",
     help="Print what function would be called with what arguments, with no actual invocation.")
 ## add options
-p.add_argument("-f", "--file", dest="file", type=str,
-    help="The OB file to run if the requested function takes one as input.")
+# p.add_argument("-f", "--file", dest="file", type=str,
+#     help="The OB file to run if the requested function takes an OB as input.")
+# p.add_argument("-d", "--db", dest="db", type=str,
+#     help="The unique database ID of the OB to run if the requested function takes an OB as input.")
 p.add_argument("-v", "--version", dest="version", type=str,
     default='2-0-0',
     help="The version of KPFTranslator to use.")

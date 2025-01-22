@@ -419,43 +419,21 @@ def main(table_loc, parsed_args, function_args):
         logger.error(traceback.format_exc())
         sys.exit(1)
 
-
-    OB = None
-    script = function.__mro__[1] == KPFTranslatorScript
-    if script is True:
-        logger.debug('Requested function is a script')
-        if parsed_args.file:
-            logger.debug(f"Found an input file: {parsed_args.file}")
-            # Load the file
-            if ".yml" in parsed_args.file or ".yaml" in parsed_args.file:
-                import yaml
-                with open(parsed_args.file, "r") as stream:
-                    try:
-                        OBdict = yaml.safe_load(stream)
-                    except yaml.YAMLError as e:
-                        logger.error(f"Failed to load {parsed_args.file}")
-                        logger.error(e)
-                        return
-            elif ".json" in parsed_args.file:
-                import json
-                with open(parsed_args.file, "r") as stream:
-                    try:
-                        OBdict = json.load(stream)
-                    except json.JSONDecodeError as e:
-                        logger.error(f"Failed to load {parsed_args.file}")
-                        logger.error(e)
-                        return
-            else:
-                logger.error("Filetype not supported. Must be .yaml, .yml, or .json")
-                return
-            OB = ObservingBlock(OBdict)
-
     # Build an ArgumentParser and attach the function's arguments
     final_args = function_args[1:]
     parser = ArgumentParser(add_help=False)
     logger.debug(f"Adding CLI args to parser")
     parser = function.add_cmdline_args(parser)
     logger.debug("Parsing function arguments...")
+
+    script = function.__mro__[1] == KPFTranslatorScript
+    if script is True:
+        logger.debug('Requested function is a script')
+        parser.add_argument("-f", "--file", dest="file", type=str,
+            help="The OB file to run.")
+        parser.add_argument("-d", "--db", dest="db", type=str,
+            help="The unique database ID of the OB to run.")
+
     try:
         # Append these parsed args onto whatever was (or wasn't)
         # found in the input file (i.e. if -f was used)
@@ -466,6 +444,34 @@ def main(table_loc, parsed_args, function_args):
         logger.error(e)
         logger.error(traceback.format_exc())
         sys.exit(1)
+
+    if script is True:
+        input_file = parsed_func_args.get('file', None)
+        if input_file is not None:
+            logger.debug(f"Found an input file: {input_file}")
+            # Load the file
+            if ".yml" in input_file or ".yaml" in input_file:
+                import yaml
+                with open(input_file, "r") as stream:
+                    try:
+                        OBdict = yaml.safe_load(stream)
+                    except yaml.YAMLError as e:
+                        logger.error(f"Failed to load {parsed_args.file}")
+                        logger.error(e)
+                        return
+            elif ".json" in input_file:
+                import json
+                with open(input_file, "r") as stream:
+                    try:
+                        OBdict = json.load(stream)
+                    except json.JSONDecodeError as e:
+                        logger.error(f"Failed to load {parsed_args.file}")
+                        logger.error(e)
+                        return
+            else:
+                logger.error("Filetype not supported. Must be .yaml, .yml, or .json")
+                return
+            OB = ObservingBlock(OBdict)
 
 #     print()
 #     print(f"Args Passed to Translator: {parsed_func_args}")
