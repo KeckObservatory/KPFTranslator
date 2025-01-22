@@ -14,6 +14,8 @@ if base_translator_path.exists() is False:
     print(f'{base_translator_path} not found!')
     sys.exit(1)
 
+default_version = Path(__file__).parts[-4]
+
 ## Parse Command Line Arguments
 kpfdo_parser = argparse.ArgumentParser(add_help=False, description='''
 ''')
@@ -29,7 +31,7 @@ kpfdo_parser.add_argument("-n", "--dry-run", dest="dry_run",
     help="Print what function would be called with what arguments, with no actual invocation.")
 ## add options
 kpfdo_parser.add_argument("-v", "--version", dest="version", type=str,
-    default='2-0-0', # Change this back to "default" when released, this is for ease of use when testing
+    default=default_version,
     help="The version of KPFTranslator to use.")
 parsed_args, function_args = kpfdo_parser.parse_known_args()
 
