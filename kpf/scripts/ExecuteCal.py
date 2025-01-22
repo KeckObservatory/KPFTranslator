@@ -150,7 +150,7 @@ class ExecuteCal(KPFTranslatorFunction):
                 WaitForLampWarm.execute(calibration)
                 TakeIntensityReading.execute({})
         ## Setup SoCal
-        elif calsource in ['SoCal-CalFib']:
+#         elif calsource in ['SoCal-CalFib']:
 #             SetCalSource.execute({'CalSource': calsource, 'wait': False})
 #             # Open SoCalCal Shutter
 #             calibration['SSS_SoCalCal'] = True

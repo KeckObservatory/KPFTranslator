@@ -4,7 +4,7 @@ import os
 import traceback
 from pathlib import Path
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorScript 
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, ScriptStopTriggered)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
@@ -22,7 +22,7 @@ from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.scripts.ExecuteSci import ExecuteSci
 
 
-class RunSciOB(KPFTranslatorFunction):
+class RunOB(KPFTranslatorScript):
     '''Script to run an OB from the command line.
 
     ARGS:

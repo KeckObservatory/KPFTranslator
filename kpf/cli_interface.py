@@ -10,7 +10,8 @@ from datetime import datetime, timedelta
 import yaml
 from typing import Dict, List, Tuple
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorFunction, KPFTranslatorScript
+from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 
 class LinkingTable():
@@ -146,7 +147,8 @@ def get_linked_function(linking_tbl, key, logger) -> Tuple[KPFTranslatorFunction
     # Check to see if there is an entry matching the given key
     if key not in linking_tbl.get_entry_points():
         raise Exception(f"Unable to find an import for {key}")
-    link, default_args = linking_tbl.get_link_and_args(key)
+#     link, default_args = linking_tbl.get_link_and_args(key)
+    link = linking_tbl.get_link(key)
 
     # Get only the module path
     link_elements = link.split(".")
@@ -160,15 +162,17 @@ def get_linked_function(linking_tbl, key, logger) -> Tuple[KPFTranslatorFunction
         mod = importlib.import_module(module_str)
 
         try:
-            return getattr(mod, class_str), default_args, link
+#             return getattr(mod, class_str), default_args, link
+            return getattr(mod, class_str), link
         except:
             logger.error("Failed to find a class with a perform method")
-            return None, None, None
+            logger.error(traceback.format_exc())
+            return None, None
 
     except ImportError as e:
         logger.error(f"Failed to import {module_str}")
         logger.error(traceback.format_exc())
-        return None, None, None
+        return None, None
 
 def create_logger():
     log = logging.getLogger('cli_interface')
@@ -212,7 +216,7 @@ def create_logger():
 
     return log
 
-def main(table_loc, parsed_args, function_args):
+def oldmain(table_loc, parsed_args, function_args):
 
     #
     # Logging
@@ -369,6 +373,97 @@ def main(table_loc, parsed_args, function_args):
         logger.error(e)
         logger.error(traceback.format_exc())
         sys.exit(1)
+
+
+def main(table_loc, parsed_args, function_args):
+
+    # Logging
+    logger = create_logger()
+    logger.debug("Created logger")
+    invocation = ' '.join(sys.argv)
+    logger.debug(f"Invocation: {invocation}")
+
+    # Build the linking table
+    table_loc = Path(table_loc)
+    if not table_loc.suffix in [".yml", ".yaml"]:
+        logger.error("Linking table must be a .yml or .yaml file! Exiting...")
+        sys.exit(1)
+    if not table_loc.exists():
+        logger.error(f"Failed to find a linking table at {str(table_loc)}. Exiting...")
+        sys.exit(1)
+    linking_tbl = LinkingTable(table_loc, logger)
+
+    # Handle list
+    if parsed_args.list:
+        logger.debug("Printing list...")
+        linking_tbl.print_entry_points()
+        return
+
+    # Get the function
+    try:
+        logger.debug(f"Fetching {function_args[0]}...")
+        function, mod_str = get_linked_function(
+            linking_tbl, function_args[0], logger)
+        logger.debug(f"Found at {mod_str}")
+    except ImportError as e:
+        logger.error("Found translator module, but failed to import it")
+        logger.error(e)
+        logger.error(traceback.format_exc())
+        sys.exit(1)
+    except TypeError as e:
+        logger.error(traceback.format_exc())
+        sys.exit(1)
+    except Exception as e:
+        logger.error("Unexpected exception encountered in CLI:")
+        logger.error(e)
+        logger.error(traceback.format_exc())
+        sys.exit(1)
+
+
+    OB = None
+    if function.__mro__[1] == KPFTranslatorScript:
+        logger.debug('Requested function is a script')
+        print('Requested function is a script')
+        if parsed_args.file:
+            logger.debug(f"Found an input file: {parsed_args.file}")
+            # Load the file
+            if ".yml" in parsed_args.file or ".yaml" in parsed_args.file:
+                import yaml
+                with open(parsed_args.file, "r") as stream:
+                    try:
+                        OBdict = yaml.safe_load(stream)
+                    except yaml.YAMLError as e:
+                        logger.error(f"Failed to load {parsed_args.file}")
+                        logger.error(e)
+                        return
+            elif ".json" in parsed_args.file:
+                import json
+                with open(parsed_args.file, "r") as stream:
+                    try:
+                        OBdict = json.load(stream)
+                    except json.JSONDecodeError as e:
+                        logger.error(f"Failed to load {parsed_args.file}")
+                        logger.error(e)
+                        return
+            else:
+                logger.error("Filetype not supported. Must be .yaml, .yml, or .json")
+                return
+            OB = ObservingBlock(OBdict)
+
+    print(f"Parsed Args: {parsed_args}")
+    print(f"Args Passed to Translator: {function_args[1:]}")
+    print(f"OB: {str(OB)}")
+
+    #
+    # Handle command line arguments
+    #
+
+    cli_parser = ArgumentParser(add_help=False, conflict_handler="resolve")
+    cli_parser.add_argument("function_args", nargs="*", help="Function to be executed, and any needed arguments")
+    logger.debug("Parsing cli_interface.py arguments...")
+    parsed_args, function_args = cli_parser.parse_known_args(args)
+    logger.debug("Parsed.")
+
 
 
 if __name__ == "__main__":

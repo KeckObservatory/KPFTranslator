@@ -12,8 +12,23 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 
 class KPFTranslatorFunction(object):
-
+    '''A KPFTranslatorFunction expects a dict of arguments as its input.
+    '''
     instrument = 'kpf'
+
+    @classmethod
+    def _check_args(cls, args):
+        if type(args) == Namespace:
+            args = vars(args)
+        elif type(args) not in [dict]:
+            msg = "argument type must be either Dict or Argparser.Namespace"
+            raise KPFException(msg)
+
+    @classmethod
+    def _check_OB(cls, OB):
+        if type(args) not in [dict, ObservingBlock]:
+            msg = "OB argument type must be dict or ObservingBlock"
+            raise KPFException(msg)
 
     @classmethod
     def _load_config(cls):
@@ -23,19 +38,19 @@ class KPFTranslatorFunction(object):
         return config
 
     @classmethod
-    def pre_condition(cls, args):
+    def pre_condition(cls, args, OB=None):
         pass
 
     @classmethod
-    def post_condition(cls, args):
+    def post_condition(cls, args, OB=None):
         pass
 
     @classmethod
-    def perform(cls, args):
+    def perform(cls, args, OB=None):
         pass
 
     @classmethod
-    def execute(cls, args):
+    def execute(cls, args, OB=None):
         """Carries out this function in its entirety (pre and post conditions
            included)
 
@@ -44,36 +59,27 @@ class KPFTranslatorFunction(object):
         args : dict
             The arguments in dictionary form
         """
-        if type(args) == Namespace:
-            args = vars(args)
-        elif type(args) not in [dict, ObservingBlock]:
-            msg = "argument type must be either ObservingBlock, Dict or Argparser.Namespace"
-            raise KPFException(msg)
-
+        cls._check_args(args)
+        if OB is not None:
+            cls._check_OB(OB)
         # read the config file
         cfg = cls._load_config()
 
-        #################
         # PRE CONDITION #
-        #################
         try:
             cls.pre_condition(args)
         except Exception as e:
             log.error(f"Exception encountered in pre-condition: {e}", exc_info=True)
             raise e
 
-        ###########
-        # EXECUTE #
-        ###########
+        # PERFORM #
         try:
             return_value = cls.perform(args)
         except Exception as e:
             log.error(f"Exception encountered in perform: {e}", exc_info=True)
             raise e
 
-        ##################
         # POST CONDITION #
-        ##################
         try:
             cls.post_condition(args)
         except Exception as e:
@@ -106,3 +112,9 @@ class KPFTranslatorFunction(object):
                             help='show this help message and exit')
 
         return parser
+
+
+class KPFTranslatorScript(KPFTranslatorFunction):
+    '''A KPFTranslatorScript expects an OB data model as one if its inputs in
+    addition to a dict of arguments.
+    '''
