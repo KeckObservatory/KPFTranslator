@@ -440,7 +440,7 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
             help="The unique database ID of the OB to run.")
 
     if parsed_args.help is True:
-        print(function.__doc__)
+        print('    '+function.__doc__)
         help_str = parser.format_help()
         help_str = help_str.replace('usage: kpfdo', f'usage: kpfdo {function_args[0]}')
         print(help_str)
