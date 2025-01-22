@@ -1,6 +1,6 @@
 import numpy as np
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFTranslatorScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
@@ -19,10 +19,9 @@ def get_readout_time(sequences, cfg, fast=False):
     return max(readouts)
 
 
-
 def estimate_calibration_time(calibrations, cfg, fast=False):
     duration = 0
-    readout = get_readout_time(calibrations, cfg, fast=False)
+    readout = get_readout_time(calibrations, cfg, fast=fast)
 
     # ConfigureForCalibrations
     lamps = set([cal.get('CalSource') for cal in calibrations
@@ -46,11 +45,7 @@ def estimate_calibration_time(calibrations, cfg, fast=False):
         # Move Octagon
         duration += cfg.getfloat('time_estimates', 'octagon_move',
                             fallback=60)
-        if cal.get('CalSource') in ['Dark', 'Home']:
-            duration += int(cal.get('nExp'))*float(cal.get('ExpTime'))
-            duration += int(cal.get('nExp'))*readout
-
-        elif lamp in lamps_that_need_warmup:
+        if lamp in lamps_that_need_warmup:
             # Add warm up time
             try:
                 import ktl
@@ -63,16 +58,14 @@ def estimate_calibration_time(calibrations, cfg, fast=False):
                 print(f"  {lamp} warm up {warm_up_wait/60:.0f} min")
                 duration += warm_up_wait
             lamps_that_need_warmup.pop(lamps_that_need_warmup.index(lamp))
-        
-        duration += int(cal.get('nExp'))*float(cal.get('ExpTime'))
-        duration += int(cal.get('nExp'))*readout
+        duration += int(cal.get('nExp'))*(float(cal.get('ExpTime'))+readout)
 
     return duration
 
 
 def estimate_observation_time(observations, cfg, fast=False):
     duration = 0
-    readout = get_readout_time(observations, cfg, fast=False)
+    readout = get_readout_time(observations, cfg, fast=fast)
 
     # Configure FIU
     duration += cfg.getfloat('time_estimates', 'FIU_mode_change', fallback=20)
@@ -83,9 +76,8 @@ def estimate_observation_time(observations, cfg, fast=False):
     # Close Tip Tilt Loops
     duration += cfg.getfloat('time_estimates', 'tip_tilt_loop_closure', fallback=3)
     # Execute Observations
-    for observation in observations:
-        duration += observation.get('nExp')*observation.get('ExpTime')
-        duration += observation.get('nExp')*readout
+    for obs in observations:
+        duration += obs.get('nExp')*(obs.get('ExpTime')+readout)
 
     return duration
 
@@ -94,7 +86,7 @@ def estimate_observation_time(observations, cfg, fast=False):
 ##-----------------------------------------------------------------------------
 ## EstimateOBDuration
 ##-----------------------------------------------------------------------------
-class EstimateOBDuration(KPFTranslatorFunction):
+class EstimateOBDuration(KPFTranslatorScript):
     '''Estimate the duration of the input OB. Uses estimates of instrument
     configuration time, slew time, acquire time, and readout time and combines
     those with the information in the observing block to estimate how long it
@@ -105,27 +97,28 @@ class EstimateOBDuration(KPFTranslatorFunction):
     :OB: `dict` or `ObservingBlock` A fully specified observing block (OB).
     '''
     @classmethod
-    def pre_condition(cls, OB):
+    def pre_condition(cls, args, OB=None):
         pass
 
     @classmethod
-    def perform(cls, OB):
-        if type(OB) != ObservingBlock:
+    def perform(cls, args, OB=None):
+        if OB is not None and type(OB) != ObservingBlock:
             OB = ObservingBlock(OB)
         cfg = cls._load_config()
+        fast = args.get('fast', False)
         duration = 0
 
-        if len(OB.Calibrations) > 0:
-            duration += estimate_calibration_time(OB.Calibrations, cfg, fast=False)
+        if OB.Calibrations is not None:
+            duration += estimate_calibration_time(OB.Calibrations, cfg, fast=fast)
 
-        if len(OB.Observations) > 0:
-            duration += estimate_observation_time(OB.Observations, cfg, fast=False)
+        if OB.Observations is not None:
+            duration += estimate_observation_time(OB.Observations, cfg, fast=fast)
 
         print(f"{duration/60:.0f} min")
         return duration
 
     @classmethod
-    def post_condition(cls, OB):
+    def post_condition(cls, args, OB=None):
         pass
 
     @classmethod
