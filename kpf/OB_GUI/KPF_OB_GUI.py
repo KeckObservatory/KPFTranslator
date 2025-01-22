@@ -162,6 +162,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
         self.ADC_horizon = 30
+        self.fast = False
         # Tracked values
         self.disabled_detectors = []
 
@@ -320,8 +321,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def update_acffile(self, value):
-        fast = QueryFastReadMode.execute({})
-        if fast is True:
+        self.fast = QueryFastReadMode.execute({})
+        if self.fast is True:
             self.read_mode.setText('Fast')
             self.read_mode.setStyleSheet("color:orange")
         else:
@@ -540,7 +541,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.SOB_EL.setStyleSheet("color:red")
                     self.SOB_EL.setToolTip("Below Keck horizon")
             # Calculate OB Duration
-            duration = EstimateOBDuration.execute(self.SOB)
+            duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.SOB)
             self.SOB_ExecutionTime.setText(f"{duration/60:.0f} min")
 
     def sort_OB_list(self, value):
