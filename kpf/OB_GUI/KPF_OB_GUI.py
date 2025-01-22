@@ -57,17 +57,29 @@ class OBListModel(QtCore.QAbstractListModel):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = OBs
         self.start_times = None
+        now = datetime.datetime.utcnow()
+        self.now = now.hour + now.minute/60 + now.second/3600
 
     def data(self, index, role):
         if role == Qt.DisplayRole:
             if self.start_times is None:
-                return str(self.OBs[index.row()])
+                status, text = self.OBs[index.row()]
+                return str(text)
             else:
+                status, text = self.OBs[index.row()]
                 start_time_decimal = self.start_times[index.row()]
                 sthr = int(np.floor(start_time_decimal))
                 stmin = (start_time_decimal-sthr)*60
                 start_time_str = f"{sthr:02d}:{stmin:02.0f} UT"
-                return f"{start_time_str}  {str(self.OBs[index.row()]):s}"
+                return f"{start_time_str}  {str(text):s}"
+        if role == Qt.DecorationRole:
+            status, text = self.OBs[index.row()]
+            if status == 'new':
+                return QtGui.QColor('green')
+            elif status == 'started':
+                return QtGui.QColor('gray')
+            elif status == 'completed':
+                return QtGui.QColor('black')
 
     def rowCount(self, index):
         return len(self.OBs)
@@ -79,15 +91,15 @@ class OBListModel(QtCore.QAbstractListModel):
             self.OBs = [z[1] for z in zipped]
             self.start_times = [z[0] for z in zipped]
         elif sortkey == 'Name':
-            self.OBs.sort(key=lambda o: o.Target.TargetName.value, reverse=False)
+            self.OBs.sort(key=lambda o: o[1].Target.TargetName.value, reverse=False)
         elif sortkey == 'RA':
-            self.OBs.sort(key=lambda o: o.Target.coord.ra.deg, reverse=False)
+            self.OBs.sort(key=lambda o: o[1].Target.coord.ra.deg, reverse=False)
         elif sortkey == 'Dec':
-            self.OBs.sort(key=lambda o: o.Target.coord.dec.deg, reverse=False)
+            self.OBs.sort(key=lambda o: o[1].Target.coord.dec.deg, reverse=False)
         elif sortkey == 'Gmag':
-            self.OBs.sort(key=lambda o: o.Target.Gmag.value, reverse=False)
+            self.OBs.sort(key=lambda o: o[1].Target.Gmag.value, reverse=False)
         elif sortkey == 'Jmag':
-            self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
+            self.OBs.sort(key=lambda o: o[1].Target.Jmag.value, reverse=False)
 
 
 ##-------------------------------------------------------------------------
@@ -137,6 +149,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Keywords
         self.dcs = 'dcs1'
         # Selected OB
+        self.SOBindex = 0
         self.SOB = None
         # Coordinate Systems
         self.keck = EarthLocation.of_site('Keck Observatory')
@@ -253,6 +266,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # SOB Execution
         self.SOB_ShowButton = self.findChild(QtWidgets.QPushButton, 'SOB_ShowButton')
         self.SOB_ShowButton.clicked.connect(self.show_SOB)
+        self.SOB_ExecuteButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteButton')
+        self.SOB_ExecuteButton.clicked.connect(self.execute_SOB)
+        self.SOB_ExecuteWithSlewCalButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteWithSlewCalButton')
+        self.SOB_ExecuteWithSlewCalButton.clicked.connect(self.execute_with_slew_cal_SOB)
 
 
     ##-------------------------------------------
@@ -308,9 +325,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBandLabel.setEnabled(False)
         elif value == 'KPF-CC':
             self.OBListHeader.setText('StartTime '+self.hdr)
-            self.model.OBs = [ObservingBlock('~/joshw/OBs_v2/219134.yaml'),
-                              ObservingBlock('~/joshw/OBs_v2/156279.yaml'),
-                              ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml'),
+            self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
+                              ['new', ObservingBlock('~/joshw/OBs_v2/156279.yaml')],
+                              ['new', ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml')],
                               ]
             self.model.start_times = [8.1, 5.2, 6.3]
             self.model.sort('time')
@@ -321,9 +338,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBandLabel.setEnabled(True)
         else:
             self.OBListHeader.setText(self.hdr)
-            self.model.OBs = [ObservingBlock('~/joshw/OBs_v2/219134.yaml'),
-                              ObservingBlock('~/joshw/OBs_v2/156279.yaml'),
-                              ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml'),
+            self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
+                              ['new', ObservingBlock('~/joshw/OBs_v2/156279.yaml')],
+                              ['new', ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml')],
                               ]
             self.model.start_times = None
             self.model.layoutChanged.emit()
@@ -342,9 +359,9 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     def select_OB(self, selected, deselected):
         if len(selected.indexes()) > 0:
-            selected_index = selected.indexes()[0].row()
-            self.log.debug(f"Selection changed to {selected_index}")
-            self.SOB = self.model.OBs[selected_index]
+            self.SOBindex = selected.indexes()[0].row()
+            self.log.debug(f"Selection changed to {self.SOBindex}")
+            self.SOB = self.model.OBs[self.SOBindex][1]
             self.update_SOB_display(self.SOB)
 
     def update_SOB_display(self, SOB):
@@ -429,6 +446,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.model.sort(value)
         self.model.layoutChanged.emit()
         self.ListOfOBs.selectionModel().clearSelection()
+        self.SOBindex = 0
         self.SOB = None
         self.update_SOB_display(self.SOB)
 
@@ -437,6 +455,17 @@ class MainWindow(QtWidgets.QMainWindow):
             popup = ScrollMessageBox(self.SOB.__repr__())
             popup.setWindowTitle(f"Full OB Contents: {str(self.SOB)}")
             popup.exec_()
+
+
+    def execute_SOB(self, slewcal=False):
+        if self.SOB is not None:
+            print('Executing OB:')
+            print(str(self.SOB))
+            self.model.OBs[self.SOBindex][0] = 'started'
+            self.model.layoutChanged.emit()
+
+    def execute_with_slew_cal_SOB(self):
+        self.execute_SOB(slewcal=True)
 
 
 ##-------------------------------------------------------------------------
