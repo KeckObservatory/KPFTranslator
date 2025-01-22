@@ -421,7 +421,8 @@ def main(table_loc, parsed_args, function_args):
 
 
     OB = None
-    if function.__mro__[1] == KPFTranslatorScript:
+    script = function.__mro__[1] == KPFTranslatorScript
+    if script is True:
         logger.debug('Requested function is a script')
         if parsed_args.file:
             logger.debug(f"Found an input file: {parsed_args.file}")
@@ -448,10 +449,6 @@ def main(table_loc, parsed_args, function_args):
                 logger.error("Filetype not supported. Must be .yaml, .yml, or .json")
                 return
             OB = ObservingBlock(OBdict)
-
-#     print(f"Parsed Args: {parsed_args}")
-#     print(f"Args Passed to Translator's Parser: {function_args[1:]}")
-#     print(f"OB: {str(OB)}")
 
     # Build an ArgumentParser and attach the function's arguments
     final_args = function_args[1:]
@@ -481,7 +478,10 @@ def main(table_loc, parsed_args, function_args):
         logger.info(f"Args dict: {parsed_func_args}")
     else:
         logger.debug(f"Executing {mod_str} {' '.join(final_args)}")
-        function.execute(parsed_func_args, OB=OB)
+        if script is True:
+            function.execute(parsed_func_args, OB=OB)
+        else:
+            function.execute(parsed_func_args)
 
 
 if __name__ == "__main__":

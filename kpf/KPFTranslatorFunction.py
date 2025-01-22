@@ -25,12 +25,6 @@ class KPFTranslatorFunction(object):
             raise KPFException(msg)
 
     @classmethod
-    def _check_OB(cls, OB):
-        if type(OB) not in [dict, ObservingBlock]:
-            msg = "OB argument type must be dict or ObservingBlock"
-            raise KPFException(msg)
-
-    @classmethod
     def _load_config(cls):
         config_files = [Path(__file__).parent / f'{cls.instrument}_inst_config.ini']
         config = configparser.ConfigParser(inline_comment_prefixes=(';','#',))
@@ -38,16 +32,89 @@ class KPFTranslatorFunction(object):
         return config
 
     @classmethod
-    def pre_condition(cls, args, OB=None):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def post_condition(cls, args, OB=None):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, OB=None):
+    def perform(cls, args):
         pass
+
+    @classmethod
+    def execute(cls, args):
+        """Carries out this function in its entirety (pre and post conditions
+           included)
+
+        Parameters
+        ----------
+        args : dict
+            The arguments in dictionary form
+        """
+        cls._check_args(args)
+        # read the config file
+        cfg = cls._load_config()
+
+        # PRE CONDITION #
+        try:
+            cls.pre_condition(args)
+        except Exception as e:
+            log.error(f"Exception encountered in pre-condition: {e}", exc_info=True)
+            raise e
+
+        # PERFORM #
+        try:
+            return_value = cls.perform(args)
+        except Exception as e:
+            log.error(f"Exception encountered in perform: {e}", exc_info=True)
+            raise e
+
+        # POST CONDITION #
+        try:
+            cls.post_condition(args)
+        except Exception as e:
+            log.error(f"Exception encountered in post-condition: {e}")
+            logger.error(traceback.format_exc(), exc_info=True)
+            raise e
+
+        return return_value
+
+
+    """
+    Command line Argument Section for use with CLI (Command Line Interface)
+    
+        parser = argparse.ArgumentParser()
+        args = Function.add_cmdline_args(parser)
+        result = Function.execute(args)
+    """
+    @classmethod
+    def add_cmdline_args(cls, parser):
+        """
+        The arguments to add to the command line interface.
+
+        :param parser: <ArgumentParser>
+            the instance of the parser to add the arguments to .
+
+        :return: <ArgumentParser>
+        """
+        # add: return super().add_cmdline_args(parser) to the end of extended method
+        parser.add_argument('-h', '--help', action='help', default='==SUPPRESS==',
+                            help='show this help message and exit')
+
+        return parser
+
+
+class KPFTranslatorScript(KPFTranslatorFunction):
+    '''A KPFTranslatorScript expects an OB data model as one if its inputs in
+    addition to a dict of arguments.
+    '''
+    @classmethod
+    def _check_OB(cls, OB):
+        if type(OB) not in [dict, ObservingBlock]:
+            msg = "OB argument type must be dict or ObservingBlock"
+            raise KPFException(msg)
 
     @classmethod
     def execute(cls, args, OB=None):
@@ -88,33 +155,3 @@ class KPFTranslatorFunction(object):
             raise e
 
         return return_value
-
-
-    """
-    Command line Argument Section for use with CLI (Command Line Interface)
-    
-        parser = argparse.ArgumentParser()
-        args = Function.add_cmdline_args(parser)
-        result = Function.execute(args)
-    """
-    @classmethod
-    def add_cmdline_args(cls, parser):
-        """
-        The arguments to add to the command line interface.
-
-        :param parser: <ArgumentParser>
-            the instance of the parser to add the arguments to .
-
-        :return: <ArgumentParser>
-        """
-        # add: return super().add_cmdline_args(parser) to the end of extended method
-        parser.add_argument('-h', '--help', action='help', default='==SUPPRESS==',
-                            help='show this help message and exit')
-
-        return parser
-
-
-class KPFTranslatorScript(KPFTranslatorFunction):
-    '''A KPFTranslatorScript expects an OB data model as one if its inputs in
-    addition to a dict of arguments.
-    '''
