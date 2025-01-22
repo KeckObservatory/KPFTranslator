@@ -26,7 +26,7 @@ class KPFTranslatorFunction(object):
 
     @classmethod
     def _check_OB(cls, OB):
-        if type(args) not in [dict, ObservingBlock]:
+        if type(OB) not in [dict, ObservingBlock]:
             msg = "OB argument type must be dict or ObservingBlock"
             raise KPFException(msg)
 
@@ -67,21 +67,21 @@ class KPFTranslatorFunction(object):
 
         # PRE CONDITION #
         try:
-            cls.pre_condition(args)
+            cls.pre_condition(args, OB=OB)
         except Exception as e:
             log.error(f"Exception encountered in pre-condition: {e}", exc_info=True)
             raise e
 
         # PERFORM #
         try:
-            return_value = cls.perform(args)
+            return_value = cls.perform(args, OB=OB)
         except Exception as e:
             log.error(f"Exception encountered in perform: {e}", exc_info=True)
             raise e
 
         # POST CONDITION #
         try:
-            cls.post_condition(args)
+            cls.post_condition(args, OB=OB)
         except Exception as e:
             log.error(f"Exception encountered in post-condition: {e}")
             logger.error(traceback.format_exc(), exc_info=True)

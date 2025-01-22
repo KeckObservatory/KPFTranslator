@@ -481,7 +481,7 @@ def main(table_loc, parsed_args, function_args):
         logger.info(f"Args dict: {parsed_func_args}")
     else:
         logger.debug(f"Executing {mod_str} {' '.join(final_args)}")
-        function.execute(parsed_func_args)
+        function.execute(parsed_func_args, OB=OB)
 
 
 if __name__ == "__main__":
