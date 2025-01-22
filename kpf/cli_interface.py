@@ -423,7 +423,6 @@ def main(table_loc, parsed_args, function_args):
     OB = None
     if function.__mro__[1] == KPFTranslatorScript:
         logger.debug('Requested function is a script')
-        print('Requested function is a script')
         if parsed_args.file:
             logger.debug(f"Found an input file: {parsed_args.file}")
             # Load the file
@@ -450,20 +449,39 @@ def main(table_loc, parsed_args, function_args):
                 return
             OB = ObservingBlock(OBdict)
 
-    print(f"Parsed Args: {parsed_args}")
-    print(f"Args Passed to Translator: {function_args[1:]}")
-    print(f"OB: {str(OB)}")
+#     print(f"Parsed Args: {parsed_args}")
+#     print(f"Args Passed to Translator's Parser: {function_args[1:]}")
+#     print(f"OB: {str(OB)}")
 
-    #
-    # Handle command line arguments
-    #
+    # Build an ArgumentParser and attach the function's arguments
+    final_args = function_args[1:]
+    parser = ArgumentParser(add_help=False)
+    logger.debug(f"Adding CLI args to parser")
+    parser = function.add_cmdline_args(parser)
+    logger.debug("Parsing function arguments...")
+    try:
+        # Append these parsed args onto whatever was (or wasn't)
+        # found in the input file (i.e. if -f was used)
+        parsed_func_args = vars(parser.parse_args(final_args))
+        logger.debug("Parsed.")
+    except ArgumentError as e:
+        logger.error("Failed to parse arguments!")
+        logger.error(e)
+        logger.error(traceback.format_exc())
+        sys.exit(1)
 
-    cli_parser = ArgumentParser(add_help=False, conflict_handler="resolve")
-    cli_parser.add_argument("function_args", nargs="*", help="Function to be executed, and any needed arguments")
-    logger.debug("Parsing cli_interface.py arguments...")
-    parsed_args, function_args = cli_parser.parse_known_args(args)
-    logger.debug("Parsed.")
+#     print()
+#     print(f"Args Passed to Translator: {parsed_func_args}")
+#     print(f"OB: {str(OB)}")
 
+    if parsed_args.dry_run:
+        logger.info("Dry run:")
+        logger.info(f"Function: {mod_str}")
+        logger.info(f"Args string: {' '.join(final_args)}")
+        logger.info(f"Args dict: {parsed_func_args}")
+    else:
+        logger.debug(f"Executing {mod_str} {' '.join(final_args)}")
+        function.execute(parsed_func_args)
 
 
 if __name__ == "__main__":
