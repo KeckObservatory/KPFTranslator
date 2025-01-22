@@ -1,0 +1,58 @@
+#! /usr/bin/env kpython3
+
+import sys
+from pathlib import Path
+import argparse
+import importlib
+
+
+# What instrument is this?
+inst = 'KPF'
+# Where are translator modules located?
+base_translator_path = Path("/home/kpfeng/ddoi/")
+if base_translator_path.exists() is False:
+    print(f'{base_translator_path} not found!')
+    sys.exit(1)
+
+## Parse Command Line Arguments
+p = argparse.ArgumentParser(add_help=False, description='''
+''')
+## add flags
+p.add_argument("-l", "--list", dest="list",
+    default=False, action="store_true",
+    help="List all scripts available.")
+p.add_argument("-h", "--help", dest="help",
+    default=False, action="store_true",
+    help="Print help text.")
+p.add_argument("-n", "--dry-run", dest="dry_run",
+    default=False, action="store_true",
+    help="Print what function would be called with what arguments, with no actual invocation.")
+## add options
+p.add_argument("-f", "--file", dest="file", type=str,
+    help="The OB file to run if the requested function takes one as input.")
+p.add_argument("-v", "--version", dest="version", type=str,
+    default='default',
+    help="The version of KPFTranslator to use.")
+parsed_args, function_args = p.parse_known_args()
+# print(sys.argv)
+# print(f"Parsed Args: {parsed_args}")
+# print(f"Function Args: {function_args}")
+
+# Where is the translator module, starting from the root directory of the server?
+translator_module_location = base_translator_path / f"{inst}Translator/{parsed_args.version}/{inst}Translator"
+if translator_module_location.exists() is False:
+    print(f'{translator_module_location} not found!')
+    sys.exit(1)
+
+# Where is the linking table?
+linking_table_location = translator_module_location / f"{inst.lower()}/linking_table.yml"
+if linking_table_location.exists() is False:
+    print(f'{linking_table_location} not found!')
+    sys.exit(1)
+
+# Add the cli script to import path
+sys.path.insert(0, f"{translator_module_location}")
+cli = importlib.import_module(f"{inst.lower()}.cli_interface")
+
+# Call main with the linking table location and arguments
+cli.main(linking_table_location, parsed_args, function_args)
