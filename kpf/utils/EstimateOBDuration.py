@@ -94,6 +94,7 @@ class EstimateOBDuration(KPFTranslatorScript):
 
     ARGS:
     =====
+    :fast: `bool` Estimate the duration assuming fast read mode?
     :OB: `dict` or `ObservingBlock` A fully specified observing block (OB).
     '''
     @classmethod
