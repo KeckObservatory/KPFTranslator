@@ -20,6 +20,7 @@ from PyQt5.QtCore import Qt
 
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.utils.EstimateOBDuration import EstimateOBDuration
+from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 
 
 
@@ -148,11 +149,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug('Initializing MainWindow')
         # Keywords
         self.dcs = 'dcs1'
+        self.log.debug('Cacheing keyword services')
+        self.kpfconfig = ktl.cache('kpfconfig')
+        self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
+        self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Selected OB
         self.SOBindex = 0
         self.SOB = None
         # Coordinate Systems
         self.keck = EarthLocation.of_site('Keck Observatory')
+        # Settings
+        self.good_slew_cal_time = 1.0 # hours
+        self.bad_slew_cal_time = 2.0 # hours
+        # Tracked values
+        self.disabled_detectors = []
 
 
     def setupUi(self):
@@ -201,26 +211,26 @@ class MainWindow(QtWidgets.QMainWindow):
         LST_kw.stringCallback.connect(self.update_LST)
 
         # time since last cal
-#         self.slewcaltime_value = self.findChild(QtWidgets.QLabel, 'slewcaltime_value')
-#         slewcaltime_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALTIME'])
-#         slewcaltime_kw.stringCallback.connect(self.update_slewcaltime_value)
+        self.slewcaltime_value = self.findChild(QtWidgets.QLabel, 'slewcaltime_value')
+        slewcaltime_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALTIME'])
+        slewcaltime_kw.stringCallback.connect(self.update_slewcaltime_value)
 
         # readout mode
-#         self.read_mode = self.findChild(QtWidgets.QLabel, 'readout_mode_value')
-#         self.red_acf_file_kw.stringCallback.connect(self.update_acffile)
-#         self.green_acf_file_kw.stringCallback.connect(self.update_acffile)
+        self.read_mode = self.findChild(QtWidgets.QLabel, 'readout_mode_value')
+        self.red_acf_file_kw.stringCallback.connect(self.update_acffile)
+        self.green_acf_file_kw.stringCallback.connect(self.update_acffile)
 
         # disabled detectors
-#         self.disabled_detectors_value = self.findChild(QtWidgets.QLabel, 'disabled_detectors_value')
-#         self.disabled_detectors_value.setText('')
-#         cahk_enabled_kw = kPyQt.kFactory(self.kpfconfig['CA_HK_ENABLED'])
-#         cahk_enabled_kw.stringCallback.connect(self.update_ca_hk_enabled)
-#         green_enabled_kw = kPyQt.kFactory(self.kpfconfig['GREEN_ENABLED'])
-#         green_enabled_kw.stringCallback.connect(self.update_green_enabled)
-#         red_enabled_kw = kPyQt.kFactory(self.kpfconfig['RED_ENABLED'])
-#         red_enabled_kw.stringCallback.connect(self.update_red_enabled)
-#         expmeter_enabled_kw = kPyQt.kFactory(self.kpfconfig['EXPMETER_ENABLED'])
-#         expmeter_enabled_kw.stringCallback.connect(self.update_expmeter_enabled)
+        self.disabled_detectors_value = self.findChild(QtWidgets.QLabel, 'disabled_detectors_value')
+        self.disabled_detectors_value.setText('')
+        cahk_enabled_kw = kPyQt.kFactory(self.kpfconfig['CA_HK_ENABLED'])
+        cahk_enabled_kw.stringCallback.connect(self.update_ca_hk_enabled)
+        green_enabled_kw = kPyQt.kFactory(self.kpfconfig['GREEN_ENABLED'])
+        green_enabled_kw.stringCallback.connect(self.update_green_enabled)
+        red_enabled_kw = kPyQt.kFactory(self.kpfconfig['RED_ENABLED'])
+        red_enabled_kw.stringCallback.connect(self.update_red_enabled)
+        expmeter_enabled_kw = kPyQt.kFactory(self.kpfconfig['EXPMETER_ENABLED'])
+        expmeter_enabled_kw.stringCallback.connect(self.update_expmeter_enabled)
 
         # List of Observing Blocks
         self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
@@ -294,6 +304,92 @@ class MainWindow(QtWidgets.QMainWindow):
             self.expose_status_value.setStyleSheet("color:green")
         elif value in ['Start', 'InProgress', 'Readout']:
             self.expose_status_value.setStyleSheet("color:orange")
+
+
+    def update_slewcaltime_value(self, value):
+        '''Updates value in QLabel and sets color'''
+        value = float(value)
+        self.slewcaltime_value.setText(f"{value:.1f} hrs")
+        if value < self.good_slew_cal_time:
+            self.slewcaltime_value.setStyleSheet("color:green")
+        elif value >= self.good_slew_cal_time and value <= self.bad_slew_cal_time:
+            self.slewcaltime_value.setStyleSheet("color:orange")
+        elif value > self.bad_slew_cal_time:
+            self.slewcaltime_value.setStyleSheet("color:red")
+
+
+    def update_acffile(self, value):
+        fast = QueryFastReadMode.execute({})
+        if fast is True:
+            self.read_mode.setText('Fast')
+            self.read_mode.setStyleSheet("color:orange")
+        else:
+            self.read_mode.setText('Normal')
+            self.read_mode.setStyleSheet("color:green")
+
+
+    def update_ca_hk_enabled(self, value):
+        self.log.debug(f"update_ca_hk_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'Ca_HK' in self.disabled_detectors:
+                self.log.debug(f"Removing Ca HK from disbaled detectors")
+                id = self.disabled_detectors.index('Ca_HK')
+                self.log.debug(f"  List index = {id}")
+                self.log.debug(f"  {self.disabled_detectors}")
+                self.disabled_detectors.pop(id)
+                self.log.debug(f"  {self.disabled_detectors}")
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'Ca_HK' not in self.disabled_detectors:
+                self.disabled_detectors.append('Ca_HK')
+                self.update_disabled_detectors_value()
+
+    def update_green_enabled(self, value):
+        self.log.debug(f"update_green_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'Green' in self.disabled_detectors:
+                self.disabled_detectors.pop(self.disabled_detectors.index('Green'))
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'Green' not in self.disabled_detectors:
+                self.disabled_detectors.append('Green')
+                self.update_disabled_detectors_value()
+
+    def update_red_enabled(self, value):
+        self.log.debug(f"update_red_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'Red' in self.disabled_detectors:
+                self.disabled_detectors.pop(self.disabled_detectors.index('Red'))
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'Red' not in self.disabled_detectors:
+                self.disabled_detectors.append('Red')
+                self.update_disabled_detectors_value()
+
+    def update_expmeter_enabled(self, value):
+        self.log.debug(f"update_expmeter_enabled: {value}")
+        if value in ['Yes', True]:
+            if 'ExpMeter' in self.disabled_detectors:
+                self.disabled_detectors.pop(self.disabled_detectors.index('ExpMeter'))
+                self.update_disabled_detectors_value()
+        elif value in ['No', False]:
+            if 'ExpMeter' not in self.disabled_detectors:
+                self.disabled_detectors.append('ExpMeter')
+                self.update_disabled_detectors_value()
+
+    def update_disabled_detectors_value(self):
+        self.log.debug(f"update_disabled_detectors_value")
+        self.log.debug(f"  disabled detector list: {self.disabled_detectors}")
+        if isinstance(self.disabled_detectors, list) is True:
+            if len(self.disabled_detectors) > 0:
+                self.disabled_detectors_value.setText(",".join(self.disabled_detectors))
+                self.disabled_detectors_value.setStyleSheet("color:red")
+            else:
+                self.disabled_detectors_value.setText('')
+                self.disabled_detectors_value.setStyleSheet("color:black")
+        else:
+            self.disabled_detectors_value.setText('')
+            self.disabled_detectors_value.setStyleSheet("color:red")
 
 
     def update_UT(self, value):

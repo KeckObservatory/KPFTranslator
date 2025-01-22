@@ -14,15 +14,16 @@ class QueryFastReadMode(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfgreen = ktl.cache('kpfgreen')
         kpfred = ktl.cache('kpfred')
         green_ACF = kpfgreen['ACF'].read()
         red_ACF = kpfred['ACF'].read()
+        cfg = cls._load_config()
 
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')
@@ -41,5 +42,5 @@ class QueryFastReadMode(KPFTranslatorFunction):
         return mode == 'fast'
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
