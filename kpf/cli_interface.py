@@ -209,8 +209,13 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
         linking_tbl.print_entry_points()
         return
 
-    if parsed_args.help is True or len(function_args) < 1:
+    if parsed_args.help is True and len(function_args) < 1:
         logger.debug('Printing kpfdo help')
+        kpfdo_parser.print_help()
+        return
+
+    if len(function_args) < 1:
+        logger.debug('No function given and no options invoked')
         kpfdo_parser.print_help()
         return
 
