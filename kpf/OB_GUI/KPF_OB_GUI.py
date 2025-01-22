@@ -10,6 +10,7 @@ import subprocess
 import yaml
 import datetime
 import numpy as np
+from astropy import units as u
 from astropy.coordinates import SkyCoord, EarthLocation, AltAz
 from astropy.time import Time
 
@@ -522,7 +523,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_Observation3.setText('--')
             # Calculate AltAz Position
             if self.SOB.Target.coord is not None:
-                AltAzSystem = AltAz(obstime=Time.now(), location=self.keck)
+                AltAzSystem = AltAz(obstime=Time.now(), location=self.keck,
+                                    pressure=620*u.mbar, temperature=0*u.Celsius)
                 self.log.debug('Calculating target AltAz coordinates')
                 target_altz = self.SOB.Target.coord.transform_to(AltAzSystem)
                 self.log.debug('done')
