@@ -161,6 +161,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Settings
         self.good_slew_cal_time = 1.0 # hours
         self.bad_slew_cal_time = 2.0 # hours
+        self.ADC_horizon = 30
         # Tracked values
         self.disabled_detectors = []
 
@@ -528,12 +529,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
                 if above_horizon(target_altz.az.deg, target_altz.alt.deg):
                     self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
-                    if target_altz.alt.deg > 30:
+                    if target_altz.alt.deg > self.ADC_horizon:
                         self.SOB_EL.setStyleSheet("color:black")
                         self.SOB_EL.setToolTip("")
                     else:
                         self.SOB_EL.setStyleSheet("color:orange")
-                        self.SOB_EL.setToolTip("ADC correction is poor below EL~30")
+                        self.SOB_EL.setToolTip(f"ADC correction is poor below EL~{self.ADC_horizon:.0f}")
                 else:
                     self.SOB_Airmass.setText("--")
                     self.SOB_EL.setStyleSheet("color:red")
