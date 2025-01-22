@@ -486,10 +486,6 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
                 return
             OB = ObservingBlock(OBdict)
 
-#     print()
-#     print(f"Args Passed to Translator: {parsed_func_args}")
-#     print(f"OB: {str(OB)}")
-
     if parsed_args.dry_run:
         logger.info("Dry run:")
         logger.info(f"Function: {mod_str}")
@@ -501,7 +497,3 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
             function.execute(parsed_func_args, OB=OB)
         else:
             function.execute(parsed_func_args)
-
-
-if __name__ == "__main__":
-    main()
