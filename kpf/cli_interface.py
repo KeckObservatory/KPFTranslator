@@ -375,7 +375,7 @@ def oldmain(table_loc, parsed_args, function_args):
         sys.exit(1)
 
 
-def main(table_loc, parsed_args, function_args):
+def main(table_loc, parsed_args, function_args, kpfdo_parser):
 
     # Logging
     logger = create_logger()
@@ -397,6 +397,11 @@ def main(table_loc, parsed_args, function_args):
     if parsed_args.list:
         logger.debug("Printing list...")
         linking_tbl.print_entry_points()
+        return
+
+    if parsed_args.help is True and len(function_args) < 1:
+        logger.debug('Printing kpfdo help')
+        kpfdo_parser.print_help()
         return
 
     # Get the function
@@ -434,6 +439,13 @@ def main(table_loc, parsed_args, function_args):
         parser.add_argument("-d", "--db", dest="db", type=str,
             help="The unique database ID of the OB to run.")
 
+    if parsed_args.help is True:
+        print(f'# Doc string for {function_args[0]}:\n')
+        print(function.__doc__)
+        print(f'# Command line arguments help for {function_args[0]}:\n')
+        parser.print_help()
+        return
+
     try:
         # Append these parsed args onto whatever was (or wasn't)
         # found in the input file (i.e. if -f was used)
@@ -446,6 +458,7 @@ def main(table_loc, parsed_args, function_args):
         sys.exit(1)
 
     if script is True:
+        OB = None
         input_file = parsed_func_args.get('file', None)
         if input_file is not None:
             logger.debug(f"Found an input file: {input_file}")
