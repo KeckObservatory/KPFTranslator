@@ -11,6 +11,7 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log, clear_script_keywords)
+from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetLFCtoStandbyHigh import SetLFCtoStandbyHigh

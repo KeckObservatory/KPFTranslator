@@ -30,11 +30,7 @@ class ConfigureForCalibrations(KPFScript):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, args, OB=None):
-        if not isinstance(calibrations, list):
-            raise FailedPreCondition(f'Input should be a list of calibrations')
-        for i,cal in enumerate(calibrations):
-            if not isinstance(calibrations, Calibration):
-                raise FailedPreCondition(f'Input {i+1} is not a Calibration object')
+        pass
 
     @classmethod
     def perform(cls, args, OB=None):
