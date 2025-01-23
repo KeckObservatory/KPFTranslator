@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 import yaml
 from typing import Dict, List, Tuple
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction, KPFTranslatorScript
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 

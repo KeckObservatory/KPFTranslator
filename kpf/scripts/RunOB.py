@@ -4,7 +4,7 @@ import os
 import traceback
 from pathlib import Path
 
-from kpf.KPFTranslatorFunction import KPFTranslatorScript 
+from kpf.KPFTranslatorFunction import KPFScript 
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, ScriptStopTriggered)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
@@ -22,15 +22,16 @@ from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.scripts.ExecuteSci import ExecuteSci
 
 
-class RunOB(KPFTranslatorScript):
-    '''Script to run an OB from the command line.
+class RunOB(KPFScript):
+    '''Script to run an OB.
 
     ARGS:
     =====
+    * __leave_lamps_on__ - `bool` Leave calibration lamps on when done?
     * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
     '''
     @classmethod
-    def pre_condition(cls, OB):
+    def pre_condition(cls, args, OB=None):
         # Read the OB
         if isinstance(OB, dict):
             OB = ObservingBlock(OB)
@@ -43,27 +44,28 @@ class RunOB(KPFTranslatorScript):
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
-    def perform(cls, OB):
+    def perform(cls, args, OB=None):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
-        OB = ObservingBlock(OB)
+        if isinstance(OB, dict):
+            OB = ObservingBlock(OB)
 
         if OB.Target is not None:
             log.info(f'Sending target info to Magiq')
-            SendTargetToMagiq.execute(OB.Target)
+            SendTargetToMagiq.execute(OB)
         if len(OB.Calibrations) > 0:
             log.info(f'Executing Calibrations')
-            ConfigureForCalibrations.execute(OB.Calibrations)
+            ConfigureForCalibrations.execute(OB)
             for i,calibration in enumerate(OB.Calibrations):
                 log.info(f'Executing Calibration {i+1}/{len(OB.Calibrations)}')
-                ExecuteCal.execute(calibration)
+                ExecuteCal.execute(calibration.to_dict())
             log.info(f'Cleaning up after Calibrations')
-            CleanupAfterCalibrations.execute(OB.Calibrations)
+            CleanupAfterCalibrations.execute(OB)
         if OB.Target is not None:
             log.info(f'Configuring for Acquisition')
-            ConfigureForAcquisition.execute(OB.Target)
-            WaitForConfigureAcquisition.execute(OB.Target)
+            ConfigureForAcquisition.execute(OB)
+            WaitForConfigureAcquisition.execute(OB)
         if len(OB.Observations) > 0:
             log.info(f'Configuring for Observations')
             ConfigureForScience.execute(OB.Observations)
@@ -75,7 +77,7 @@ class RunOB(KPFTranslatorScript):
             CleanupAfterScience.execute(OB.Observations)
 
     @classmethod
-    def post_condition(cls, OB):
+    def post_condition(cls, args, OB=None):
         pass
 
     @classmethod
@@ -83,7 +85,4 @@ class RunOB(KPFTranslatorScript):
         parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
                             default=False, action="store_true",
                             help='Leave the calibration lamps on after cleanup phase?')
-        parser.add_argument('--nointensemon', dest="nointensemon",
-                            default=False, action="store_true",
-                            help='Skip the intensity monitor measurement on calibration frames?')
         return super().add_cmdline_args(parser)

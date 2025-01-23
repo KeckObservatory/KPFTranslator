@@ -6,7 +6,7 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -20,17 +20,16 @@ from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.WaitForReady import WaitForReady
 
 
-class ConfigureForCalibrations(KPFTranslatorFunction):
+class ConfigureForCalibrations(KPFScript):
     '''Script which configures the instrument for Cal OBs.
 
     ARGS:
     =====
-    :calibrations: `list` A list of `kpf.ObservingBlocks.Calibration.Calibration`
-                   OB components.
+    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
     '''
     @classmethod
     @obey_scriptrun
-    def pre_condition(cls, calibrations):
+    def pre_condition(cls, args, OB=None):
         if not isinstance(calibrations, list):
             raise FailedPreCondition(f'Input should be a list of calibrations')
         for i,cal in enumerate(calibrations):
@@ -38,7 +37,10 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
                 raise FailedPreCondition(f'Input {i+1} is not a Calibration object')
 
     @classmethod
-    def simple_perform(cls, calibrations):
+    def perform(cls, args, OB=None):
+        if isinstance(OB, dict):
+            OB = ObservingBlock(OB)
+        calibrations = OB.Calibrations
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         for i,calibration in enumerate(calibrations):
@@ -73,14 +75,5 @@ class ConfigureForCalibrations(KPFTranslatorFunction):
         check_scriptstop()
 
     @classmethod
-    def perform(cls, calibrations):
-        try:
-            cls.simple_perform(calibrations)
-        except Exception as e:
-            log.error('Running CleanupAfterCalibrations and exiting')
-            CleanupAfterCalibrations.execute([calibration])
-            raise e
-
-    @classmethod
-    def post_condition(cls, OB, logger, cfg):
+    def post_condition(cls, args, OB=None):
         pass

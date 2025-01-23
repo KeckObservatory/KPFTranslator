@@ -1,6 +1,4 @@
-import ktl
-
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -8,17 +6,17 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
 ##-------------------------------------------------------------------------
 ## SendTargetToMagiq
 ##-------------------------------------------------------------------------
-class SendTargetToMagiq(KPFTranslatorFunction):
+class SendTargetToMagiq(KPFScript):
     '''
     '''
     @classmethod
-    def pre_condition(cls, target):
+    def pre_condition(cls, args, OB=None):
         pass
 
     @classmethod
-    def perform(cls, target):
+    def perform(cls, args, OB=None):
         pass
 
     @classmethod
-    def post_condition(cls, target):
+    def post_condition(cls, args, OB=None):
         pass

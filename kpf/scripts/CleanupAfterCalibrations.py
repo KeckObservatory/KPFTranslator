@@ -6,7 +6,7 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -22,20 +22,23 @@ from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.utils.SetTargetInfo import SetTargetInfo
 
 
-class CleanupAfterCalibrations(KPFTranslatorFunction):
-    '''Script which cleans up after Cal OBs.
+class CleanupAfterCalibrations(KPFScript):
+    '''Script which cleans up after OBs with calibrations.
 
     ARGS:
     =====
-    :calibrations: `list` A list of `kpf.ObservingBlocks.Calibration.Calibration`
-                   OB components.
+    * __leave_lamps_on__ - `bool` Leave calibration lamps on when done?
+    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
     '''
     @classmethod
-    def pre_condition(cls, calibrations):
+    def pre_condition(cls, args, OB=None):
         pass
 
     @classmethod
-    def perform(cls, calibrations):
+    def perform(cls, args, OB=None):
+        if isinstance(OB, dict):
+            OB = ObservingBlock(OB)
+        calibrations = OB.Calibrations
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         for i,calibration in enumerate(calibrations):
@@ -85,7 +88,7 @@ class CleanupAfterCalibrations(KPFTranslatorFunction):
         WaitForL0File.execute({})
 
     @classmethod
-    def post_condition(cls, calibrations):
+    def post_condition(cls, args, OB=None):
         pass
 
     @classmethod

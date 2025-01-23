@@ -1,6 +1,6 @@
 import numpy as np
 
-from kpf.KPFTranslatorFunction import KPFTranslatorScript
+from kpf.KPFTranslatorFunction import KPFScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
@@ -86,7 +86,7 @@ def estimate_observation_time(observations, cfg, fast=False):
 ##-----------------------------------------------------------------------------
 ## EstimateOBDuration
 ##-----------------------------------------------------------------------------
-class EstimateOBDuration(KPFTranslatorScript):
+class EstimateOBDuration(KPFScript):
     '''Estimate the duration of the input OB. Uses estimates of instrument
     configuration time, slew time, acquire time, and readout time and combines
     those with the information in the observing block to estimate how long it

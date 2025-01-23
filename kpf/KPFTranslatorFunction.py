@@ -11,8 +11,8 @@ from kpf import log, KPFException
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 
-class KPFTranslatorFunction(object):
-    '''A KPFTranslatorFunction expects a dict of arguments as its input.
+class KPFFunction(object):
+    '''A KPFFunction expects a dict of arguments as its input.
     '''
     instrument = 'kpf'
 
@@ -106,8 +106,8 @@ class KPFTranslatorFunction(object):
         return parser
 
 
-class KPFTranslatorScript(KPFTranslatorFunction):
-    '''A KPFTranslatorScript expects an OB data model as one if its inputs in
+class KPFScript(KPFFunction):
+    '''A KPFScript expects an OB data model as one if its inputs in
     addition to a dict of arguments.
     '''
     @classmethod

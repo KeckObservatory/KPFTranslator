@@ -6,7 +6,7 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -48,13 +48,14 @@ from kpf.expmeter.SetupExpMeter import SetupExpMeter
 from kpf.utils.SendEmail import SendEmail
 
 
-class ExecuteCal(KPFTranslatorFunction):
+class ExecuteCal(KPFFunction):
     '''Script which executes a single observation from a Calibration sequence
 
     ARGS:
     =====
-    :calibration: `kpf.ObservingBlocks.Calibration.Calibration` A calibration
-                  OB component.
+    :calibration: `dict` A calibration OB component in dictionary format (e.g.
+                         using the output of the `.to_dict()` method of a
+                         `kpf.ObservingBlocks.Calibration.Calibration` instance).
     '''
     @classmethod
     def pre_condition(cls, calibration):

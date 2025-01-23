@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class QueryFastReadMode(KPFTranslatorFunction):
+class QueryFastReadMode(KPFFunction):
     '''Returns True if both ACF files are consistent with fast read mode.
 
     ARGS:

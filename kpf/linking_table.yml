@@ -215,6 +215,8 @@ links:
         cmd: scripts.ConfigureForScience.ConfigureForScience
     EndOfNight:
         cmd: scripts.EndOfNight.EndOfNight
+    EstimateOBDuration:
+        cmd: scripts.EstimateOBDuration.EstimateOBDuration
     ExecuteSlewCal:
         cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
     RunOB:
@@ -302,8 +304,6 @@ links:
         cmd: utils.CheckDewarWeights.CheckDewarWeights
     CorrectDAR:
         cmd: utils.CorrectDAR.CorrectDAR
-    EstimateOBDuration:
-        cmd: utils.EstimateOBDuration.EstimateOBDuration
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
