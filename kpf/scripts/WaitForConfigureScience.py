@@ -6,7 +6,7 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.calbench.WaitForCalSource import WaitForCalSource
@@ -14,20 +14,20 @@ from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from kpf.spectrograph.WaitForReady import WaitForReady
 
 
-class WaitForConfigureScience(KPFTranslatorFunction):
-    '''Script which waits for the instrument to be configured for Science observations.
+class WaitForConfigureScience(KPFScript):
+    '''Script which waits for the instrument to be configured for Science
+    observations.
 
     ARGS:
     =====
     None
     '''
     @classmethod
-    def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
+    def pre_condition(cls, args, OB=None):
+        pass
 
     @classmethod
-    def perform(cls, OB, logger, cfg):
+    def perform(cls, args, OB=None):
         kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         WaitForCalSource.execute({'CalSource': calsource})
@@ -35,5 +35,5 @@ class WaitForConfigureScience(KPFTranslatorFunction):
         WaitForReady.execute({})
 
     @classmethod
-    def post_condition(cls, OB, logger, cfg):
+    def post_condition(cls, args, OB=None):
         pass

@@ -215,8 +215,6 @@ links:
         cmd: scripts.ConfigureForScience.ConfigureForScience
     EstimateOBDuration:
         cmd: scripts.EstimateOBDuration.EstimateOBDuration
-    ExecuteSlewCal:
-        cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
     RunOB:
         cmd: scripts.RunOB.RunOB
     RunSoCalObservingLoop:

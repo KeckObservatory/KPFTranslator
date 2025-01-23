@@ -7,7 +7,7 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
@@ -21,14 +21,13 @@ class WaitForConfigureAcquisition(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
+    def pre_condition(cls, args, OB=None):
+        pass
 
     @classmethod
-    def perform(cls, OB, logger, cfg):
-        WaitForConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+    def perform(cls, args, OB=None):
+        WaitForConfigureFIU.execute({'mode': 'Observing'})
 
     @classmethod
-    def post_condition(cls, OB, logger, cfg):
+    def post_condition(cls, args, OB=None):
         pass
