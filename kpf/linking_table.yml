@@ -223,8 +223,6 @@ links:
         cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
     RunTwilightRVStandard:
         cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
-    WaitForConfigureCalibrations:
-        cmd: scripts.WaitForConfigureCalibrations.WaitForConfigureCalibrations
     # SoCal
     DisableSoCal:
         cmd: socal.DisableSoCal.DisableSoCal
