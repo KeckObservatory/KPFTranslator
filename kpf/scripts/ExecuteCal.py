@@ -151,27 +151,27 @@ class ExecuteCal(KPFFunction):
                 WaitForLampWarm.execute(calibration)
                 TakeIntensityReading.execute({})
         ## Setup SoCal
-#         elif calsource in ['SoCal-CalFib']:
-#             SetCalSource.execute({'CalSource': calsource, 'wait': False})
-#             # Open SoCalCal Shutter
-#             calibration['SSS_SoCalCal'] = True
-#             log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
-#             nd1 = calibration.get('CalND1')
-#             nd2 = calibration.get('CalND2')
-#             SetND1.execute({'CalND1': nd1, 'wait': False})
-#             SetND2.execute({'CalND2': nd2, 'wait': False})
-#             log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
-#             WaitForND1.execute(calibration)
-#             WaitForND2.execute(calibration)
-#             WaitForCalSource.execute({'CalSource': calibration})
-#             # Set target info
-#             SetTargetInfo.execute({'TargetName': 'Sun',
-#                                    'GaiaID': '',
-#                                    '2MASSID': '',
-#                                    'Gmag': '-26.9',
-#                                    'Jmag': '-27.9',
-#                                    'Teff': '5772',
-#                                    })
+        elif calsource in ['SoCal-CalFib']:
+            SetCalSource.execute({'CalSource': calsource, 'wait': False})
+            # Open SoCalCal Shutter
+            calibration['SSS_SoCalCal'] = True
+            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
+            nd1 = calibration.get('CalND1')
+            nd2 = calibration.get('CalND2')
+            SetND1.execute({'CalND1': nd1, 'wait': False})
+            SetND2.execute({'CalND2': nd2, 'wait': False})
+            log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
+            WaitForND1.execute(calibration)
+            WaitForND2.execute(calibration)
+            WaitForCalSource.execute({'CalSource': calibration})
+            # Set target info
+            SetTargetInfo.execute({'TargetName': 'Sun',
+                                   'GaiaID': '',
+                                   '2MASSID': '',
+                                   'Gmag': '-26.9',
+                                   'Jmag': '-27.9',
+                                   'Teff': '5772',
+                                   })
         elif calsource in ['SoCal-SciSky']:
             # Set octagon to simulcal source
             simulcalsource = kpfconfig['SIMULCALSOURCE'].read()
@@ -248,7 +248,6 @@ class ExecuteCal(KPFFunction):
 
         log.info(f"Set exposure time: {calibration.get('ExpTime'):.3f}")
         SetExpTime.execute(calibration)
-
 
         WaitForConfigureFIU.execute({'mode': 'Calibration'})
         WaitForLampWarm.execute(calibration)
