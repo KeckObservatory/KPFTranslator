@@ -219,8 +219,6 @@ links:
         cmd: scripts.RunOB.RunOB
     RunSoCalObservingLoop:
         cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
-    RunTwilightRVStandard:
-        cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
     # SoCal
     DisableSoCal:
         cmd: socal.DisableSoCal.DisableSoCal
