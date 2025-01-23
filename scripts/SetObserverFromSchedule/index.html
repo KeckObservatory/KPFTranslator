@@ -314,12 +314,7 @@ the progname input (see below) or query the user if no progname is given.</p>
 <span class="normal">83</span>
 <span class="normal">84</span>
 <span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetObserverFromSchedule</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetObserverFromSchedule</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Look up the telescope schedule and try to determine the observer names</span>
 <span class="sd">    based on the current date and the scheduled programs.</span>
 
@@ -345,27 +340,22 @@ the progname input (see below) or query the user if no progname is given.</p>
         <span class="n">nKPFprograms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">KPF_programs</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">nKPFprograms</span><span class="si">}</span><span class="s2"> KPF programs in schedule for tonight&quot;</span><span class="p">)</span>
         <span class="n">project_codes</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;ProjCode&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">KPF_programs</span><span class="p">]</span>
+        <span class="n">ToO_project_codes</span><span class="p">,</span> <span class="n">ToO_PIs</span> <span class="o">=</span> <span class="n">get_ToO_programs</span><span class="p">()</span>
 
-        <span class="c1"># Look at the schedule to find programs scheduled for tonight</span>
-        <span class="k">if</span> <span class="n">nKPFprograms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No KPF programs found on schedule&quot;</span><span class="p">)</span>
-            <span class="n">progname</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">elif</span> <span class="n">nKPFprograms</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">progname</span> <span class="o">=</span> <span class="n">KPF_programs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ProjCode&#39;</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">nKPFprograms</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">progname</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;progname&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">progname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">()</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;########################################&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Found </span><span class="si">{</span><span class="n">nKPFprograms</span><span class="si">}</span><span class="s2"> KPF programs for tonight:&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">project_code</span> <span class="ow">in</span> <span class="n">project_codes</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">project_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Please enter the program ID for your observations:&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;########################################&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">()</span>
-                <span class="n">progname</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">progname</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">project_codes</span><span class="p">:</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Project code </span><span class="si">{</span><span class="n">progname</span><span class="si">}</span><span class="s2"> not on schedule&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;########################################&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Found </span><span class="si">{</span><span class="n">nKPFprograms</span><span class="si">}</span><span class="s2"> KPF programs scheduled for tonight:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">project_code</span> <span class="ow">in</span> <span class="n">project_codes</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">project_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ToO_project_codes</span><span class="p">)</span><span class="si">}</span><span class="s2"> ToO programs:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">project_code</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ToO_project_codes</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">project_code</span><span class="si">}</span><span class="s2"> (PI </span><span class="si">{</span><span class="n">ToO_PIs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Please enter the program ID for your observations:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;########################################&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="n">progname</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">progname</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">project_codes</span><span class="o">+</span><span class="n">ToO_project_codes</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Project code </span><span class="si">{</span><span class="n">progname</span><span class="si">}</span><span class="s2"> not on schedule&quot;</span><span class="p">)</span>
 
         <span class="c1"># Set the program</span>
         <span class="k">if</span> <span class="n">progname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
