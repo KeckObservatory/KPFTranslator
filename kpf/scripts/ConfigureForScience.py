@@ -7,7 +7,7 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -21,7 +21,7 @@ from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.WaitForReady import WaitForReady
 
 
-class ConfigureForScience(KPFTranslatorFunction):
+class ConfigureForScience(KPFScript):
     '''Script which configures the instrument for Science observations.
 
     - Sets octagon / simulcal source
@@ -39,13 +39,13 @@ class ConfigureForScience(KPFTranslatorFunction):
     '''
     @classmethod
     @obey_scriptrun
-    def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
-        return True
+    def pre_condition(cls, args, OB=None):
+        pass
 
     @classmethod
-    def perform(cls, OB, logger, cfg):
+    def perform(cls, args, OB=None):
+        if isinstance(OB, dict):
+            OB = ObservingBlock(OB)
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         for key in OB:
@@ -111,5 +111,5 @@ class ConfigureForScience(KPFTranslatorFunction):
         check_scriptstop()
 
     @classmethod
-    def post_condition(cls, OB, logger, cfg):
+    def post_condition(cls, args, OB=None):
         pass

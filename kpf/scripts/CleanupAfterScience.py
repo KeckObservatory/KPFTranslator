@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFScript
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -22,11 +22,13 @@ class CleanupAfterScience(KPFTranslatorFunction):
     :OB: `dict` A fully specified science observing block (OB).
     '''
     @classmethod
-    def pre_condition(cls, OB, logger, cfg):
+    def pre_condition(cls, args, OB=None):
         pass
 
     @classmethod
-    def perform(cls, OB, logger, cfg):
+    def perform(cls, args, OB=None):
+        if isinstance(OB, dict):
+            OB = ObservingBlock(OB)
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
@@ -53,5 +55,5 @@ class CleanupAfterScience(KPFTranslatorFunction):
         clear_script_keywords()
 
     @classmethod
-    def post_condition(cls, OB, logger, cfg):
+    def post_condition(cls, args, OB=None):
         pass
