@@ -31,6 +31,7 @@ class RunOB(KPFScript):
     * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
     '''
     @classmethod
+    @obey_scriptrun
     def pre_condition(cls, args, OB=None):
         # Read the OB
         if isinstance(OB, dict):
@@ -43,6 +44,7 @@ class RunOB(KPFScript):
         OB.validate()
 
     @classmethod
+    @register_script(Path(__file__).name, os.getpid())
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, OB=None):
         log.info('-------------------------')
