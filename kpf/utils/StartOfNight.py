@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
@@ -21,7 +21,7 @@ from kpf.utils.SetOutdirs import SetOutdirs
 from kpf.utils.SetObserverFromSchedule import SetObserverFromSchedule
 
 
-class StartOfNight(KPFTranslatorFunction):
+class StartOfNight(KPFFunction):
     '''Send KPF in to a reasonable starting configuration
     
     - set FIU mode to observing
@@ -33,12 +33,12 @@ class StartOfNight(KPFTranslatorFunction):
     * __AO__ - `bool` Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         log.info(f"Running KPF Start of Night script")
 
         # Check Scripts
@@ -195,11 +195,11 @@ class StartOfNight(KPFTranslatorFunction):
                     print()
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--noAO", dest="AO",
                             default=True, action="store_false",
                             help="Skip configuring AO?")

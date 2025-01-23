@@ -2,7 +2,7 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
@@ -24,7 +24,7 @@ from kpf.fvc.FVCPower import FVCPower
 from kpf.fiu.StopTipTilt import StopTipTilt
 
 
-class EndOfNight(KPFTranslatorFunction):
+class EndOfNight(KPFFunction):
     '''Send KPF in to an end of night configuration.
 
     - kpffiu.MODE = Stowed
@@ -40,12 +40,12 @@ class EndOfNight(KPFTranslatorFunction):
     '''
     @classmethod
     @obey_scriptrun
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         StopTipTilt.execute({})
         StopAgitator.execute({})
 
@@ -111,5 +111,5 @@ class EndOfNight(KPFTranslatorFunction):
         kpfconfig['ALLOWSCHEDULEDCALS'].write('Yes')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

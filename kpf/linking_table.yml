@@ -213,8 +213,6 @@ links:
         cmd: scripts.ConfigureForCalibrations.ConfigureForCalibrations
     ConfigureForScience:
         cmd: scripts.ConfigureForScience.ConfigureForScience
-    EndOfNight:
-        cmd: scripts.EndOfNight.EndOfNight
     EstimateOBDuration:
         cmd: scripts.EstimateOBDuration.EstimateOBDuration
     ExecuteSlewCal:
@@ -225,10 +223,6 @@ links:
         cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
     RunTwilightRVStandard:
         cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
-    StartOfNight:
-        cmd: scripts.StartOfNight.StartOfNight
-    StartUp:
-        cmd: scripts.StartUp.StartUp
     WaitForConfigureCalibrations:
         cmd: scripts.WaitForConfigureCalibrations.WaitForConfigureCalibrations
     # SoCal
@@ -304,6 +298,8 @@ links:
         cmd: utils.CheckDewarWeights.CheckDewarWeights
     CorrectDAR:
         cmd: utils.CorrectDAR.CorrectDAR
+    EndOfNight:
+        cmd: scripts.EndOfNight.EndOfNight
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
@@ -314,6 +310,8 @@ links:
         cmd: utils.SetTargetInfo.SetTargetInfo
     StartGUIs:
         cmd: utils.StartGUIs.StartGUIs
+    StartOfNight:
+        cmd: utils.StartOfNight.StartOfNight
     StopGUIs:
         cmd: utils.StopGUIs.StopGUIs
     TestFunction:
