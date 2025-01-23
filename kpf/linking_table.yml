@@ -292,12 +292,8 @@ links:
     # Utils
     BuildOBfromQuery:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
-    CalculateDAR:
-        cmd: utils.CalculateDAR.CalculateDAR
     CheckDewarWeights:
         cmd: utils.CheckDewarWeights.CheckDewarWeights
-    CorrectDAR:
-        cmd: utils.CorrectDAR.CorrectDAR
     EndOfNight:
         cmd: scripts.EndOfNight.EndOfNight
     SetObserverFromSchedule:
