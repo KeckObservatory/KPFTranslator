@@ -10,7 +10,6 @@ import re
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input, ScriptStopTriggered)
 
