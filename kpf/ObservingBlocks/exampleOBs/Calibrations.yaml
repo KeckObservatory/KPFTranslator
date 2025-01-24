@@ -19,8 +19,8 @@ Calibrations:
   OpenScienceShutter: True
   OpenSkyShutter: True
   TakeSimulCal: True
-  WideFlatPos: 
-  ExpMeterMode: False
+  ExpMeterMode: off
   ExpMeterExpTime: 1.0
   ExpMeterBin: 1
   ExpMeterThreshold: 50000.0
+  WideFlatPos: 
