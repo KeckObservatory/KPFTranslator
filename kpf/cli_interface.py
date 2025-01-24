@@ -95,7 +95,7 @@ class LinkingTable():
             output += "." + self.suffix
         return output
 
-def get_linked_function(linking_tbl, key, logger) -> Tuple[KPFTranslatorFunction, str]:
+def get_linked_function(linking_tbl, key, logger):
     """Searches a linking table for a given key, and attempts to fetch the
     associated python module
 
@@ -246,7 +246,7 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
     parser = function.add_cmdline_args(parser)
     logger.debug("Parsing function arguments...")
 
-    script = function.__mro__[1] == KPFTranslatorScript
+    script = function.__mro__[1] == KPFScript
     if script is True:
         logger.debug('Requested function is a script')
         parser.add_argument("-f", "--file", dest="file", type=str,
