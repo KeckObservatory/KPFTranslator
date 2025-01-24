@@ -7,8 +7,7 @@ from pathlib import Path
 from kpf.KPFTranslatorFunction import KPFScript 
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, ScriptStopTriggered)
-from kpf.scripts import (set_script_keywords, clear_script_keywords,
-                         add_script_log, check_script_running, check_scriptstop)
+from kpf.scripts import obey_scriptrun, register_script, add_script_log
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.utils.SendTargetToMagiq import SendTargetToMagiq
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
@@ -18,8 +17,8 @@ from kpf.scripts.ConfigureForAcquisition import ConfigureForAcquisition
 from kpf.scripts.WaitForConfigureAcquisition import WaitForConfigureAcquisition
 from kpf.scripts.ConfigureForScience import ConfigureForScience
 from kpf.scripts.WaitForConfigureScience import WaitForConfigureScience
-from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.scripts.ExecuteSci import ExecuteSci
+from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 
 
 class RunOB(KPFScript):
