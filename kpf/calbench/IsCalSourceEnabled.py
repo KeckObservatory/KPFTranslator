@@ -1,12 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf.KPFTranslatorFunction import KPFFunction
+from kpf import log, check_input
 from kpf.calbench import standardize_lamp_name
 
 
-class IsCalSourceEnabled(KPFTranslatorFunction):
+class IsCalSourceEnabled(KPFFunction):
     '''Return a boolean indicating whether the input CalSource is enabled as
     reported by the kpfconfig.%_ENABLED keywords.
 
@@ -33,7 +32,7 @@ class IsCalSourceEnabled(KPFTranslatorFunction):
     - `kpfconfig.SKYLED_ENABLED`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpfcal', 'OCTAGON')
         allowed_values = list(keyword._getEnumerators())
         if 'Unknown' in allowed_values:
@@ -43,7 +42,7 @@ class IsCalSourceEnabled(KPFTranslatorFunction):
         check_input(args, 'CalSource', allowed_values=allowed_values)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         calsource = args.get('CalSource')
         if calsource in ['BrdbandFiber', 'WideFlat', 'Th_daily', 'Th_gold', 'U_daily', 'U_gold']:
             lamp_name = standardize_lamp_name(calsource)
@@ -58,20 +57,21 @@ class IsCalSourceEnabled(KPFTranslatorFunction):
         lamp_enabled = lamp_enabledkw.read(binary=True)
         if lamp_enabled is True:
             log.debug(f"Cal source {calsource} is enabled")
+            print(f"Cal source {calsource} is enabled")
         else:
             log.warning(f"Cal source {calsource} is disabled")
         return lamp_enabled
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('CalSource', type=str,
                             choices=['BrdbandFiber', 'WideFlat', 'Th_daily',
                                      'Th_gold', 'U_daily', 'U_gold',
                                      'LFCFiber', 'EtalonFiber', 
                                      'SoCal-CalFib', 'SoCal-SciSky'],
                             help='Which lamp to check?')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

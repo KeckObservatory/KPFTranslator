@@ -2,16 +2,15 @@ import ktl
 import time
 from datetime import datetime, timedelta
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf.KPFTranslatorFunction import KPFFunction
+from kpf import log, FailedToReachDestination, check_input
 from kpf.fiu.ConfigureFIU import ConfigureFIUOnce
 
 
 ##-----------------------------------------------------------------------------
 ## WaitForConfigureFIU Once
 ##-----------------------------------------------------------------------------
-class WaitForConfigureFIUOnce(KPFTranslatorFunction):
+class WaitForConfigureFIUOnce(KPFFunction):
     '''Wait for the FIU to reach specified mode (kpffiu.MODE)
 
     This is intended to be wrapped by :py:func:`ConfigureFIU` to handle retries.
@@ -68,7 +67,7 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
     - `kpf.calbench.ConfigureFIUOnce`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpffiu', 'MODE')
         allowed_values = list(keyword._getEnumerators())
         if 'None' in allowed_values:
@@ -77,7 +76,7 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
         return True
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         dest = args.get('mode')
         ntries = cfg.getint('retries', 'fiu_mode_tries', fallback=2)
         shim_time = cfg.getfloat('times', 'fiu_mode_shim_time', fallback=2)
@@ -91,7 +90,7 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
                 break
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         dest = args.get('mode')
         kpffiu = ktl.cache('kpffiu')
         modes = kpffiu['MODE'].read()
@@ -101,10 +100,10 @@ class WaitForConfigureFIU(KPFTranslatorFunction):
             log.info(f"FIU mode is now {dest}")
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('mode', type=str,
                             choices=['Stowed', 'Alignment', 'Acquisition',
                                      'Observing', 'Calibration'],
                             help='Desired mode (see kpffiu.MODE)')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
 

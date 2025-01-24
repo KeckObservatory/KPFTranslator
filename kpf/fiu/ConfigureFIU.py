@@ -1,9 +1,8 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf.KPFTranslatorFunction import KPFFunction
+from kpf import log, check_input
 from kpf.fiu.ConfigureFIUOnce import ConfigureFIUOnce
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 
@@ -11,7 +10,7 @@ from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 ##-----------------------------------------------------------------------------
 ## Configure FIU
 ##-----------------------------------------------------------------------------
-class ConfigureFIU(KPFTranslatorFunction):
+class ConfigureFIU(KPFFunction):
     '''Set the FIU mode (kpffiu.MODE). If the wait option is fale this will
     retry the move if it fails with a configurable number of retries.
 
@@ -30,7 +29,7 @@ class ConfigureFIU(KPFTranslatorFunction):
     - `kpf.calbench.WaitForConfigureFIU`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpffiu', 'MODE')
         allowed_values = list(keyword._getEnumerators())
         if 'None' in allowed_values:
@@ -38,7 +37,7 @@ class ConfigureFIU(KPFTranslatorFunction):
         check_input(args, 'mode', allowed_values=allowed_values)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         dest = args.get('mode')
         wait = args.get('wait', True)
         log.info(f"Configuring FIU for {dest}")
@@ -47,11 +46,11 @@ class ConfigureFIU(KPFTranslatorFunction):
             WaitForConfigureFIU.execute({'mode': dest})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('mode', type=str,
                             choices=['Stowed', 'Alignment', 'Acquisition',
                                      'Observing', 'Calibration'],
@@ -59,4 +58,4 @@ class ConfigureFIU(KPFTranslatorFunction):
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",
                             help="Send move and return immediately?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
