@@ -7,14 +7,12 @@ import numpy as np
 import ktl
 
 from kpf.KPFTranslatorFunction import KPFScript
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
-from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
-                         add_script_log)
-from kpf.ObservingBlocks.Calibration import Calibration
+from kpf import log
+from kpf.scripts import obey_scriptrun, check_scriptstop
+from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
+from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 
 from kpf.calbench.CalLampPower import CalLampPower
-from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.WaitForReady import WaitForReady
@@ -41,7 +39,7 @@ class ConfigureForCalibrations(KPFScript):
         log.info(f"Running {cls.__name__}")
         for i,calibration in enumerate(calibrations):
             log.debug(f"Calibration {i+1}/{len(calibrations)}")
-            for key in calibration:
+            for key in calibration.to_dict():
                 log.debug(f"  {key}: {calibration.get(key)}")
         log.info('-------------------------')
 
