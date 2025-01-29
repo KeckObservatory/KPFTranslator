@@ -1,13 +1,13 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.calbench.SetND1 import SetND1
 from kpf.calbench.SetND2 import SetND2
 
 
-class SetND(KPFTranslatorFunction):
+class SetND(KPFFunction):
     '''Set the filter in the ND1 & ND2 filter wheels via the `kpfcal.ND1POS` and
     `kpfcal.ND2POS` keywords.
 
@@ -29,20 +29,20 @@ class SetND(KPFTranslatorFunction):
      - `kpf.calbench.SetND2`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         SetND1.execute(args)
         SetND2.execute(args)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('CalND1', type=str,
                             choices=["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0",
                                      "OD 3.0", "OD 4.0"],
@@ -54,5 +54,5 @@ class SetND(KPFTranslatorFunction):
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",
                             help="Send move and return immediately?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
 

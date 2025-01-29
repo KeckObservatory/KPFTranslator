@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class SetND1(KPFTranslatorFunction):
+class SetND1(KPFFunction):
     '''Set the filter in the ND1 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND1POS` keyword.
 
@@ -22,7 +22,7 @@ class SetND1(KPFTranslatorFunction):
     - `kpfcal.ND1POS`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpfcal', 'ND1POS')
         allowed_values = list(keyword._getEnumerators())
         if 'Unknown' in allowed_values:
@@ -30,14 +30,15 @@ class SetND1(KPFTranslatorFunction):
         check_input(args, 'CalND1', allowed_values=allowed_values)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         target = args.get('CalND1')
         log.debug(f"Setting ND1POS to {target}")
         kpfcal = ktl.cache('kpfcal')
         kpfcal['ND1POS'].write(target, wait=args.get('wait', True))
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
+        cfg = cls._load_config()
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         ND1target = args.get('CalND1')
         ND1POS = ktl.cache('kpfcal', 'ND1POS')
@@ -45,7 +46,7 @@ class SetND1(KPFTranslatorFunction):
             raise FailedToReachDestination(ND1POS.read(), ND1target)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('CalND1', type=str,
                             choices=["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0",
                                      "OD 3.0", "OD 4.0"],
@@ -53,5 +54,5 @@ class SetND1(KPFTranslatorFunction):
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",
                             help="Send move and return immediately?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
 

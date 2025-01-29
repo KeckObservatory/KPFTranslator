@@ -51,6 +51,7 @@ class CalLampPower(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
+        cfg = cls._load_config()
         lamp = standardize_lamp_name(args.get('lamp'))
         pwr = args.get('power')
         timeout = cfg.getfloat('times', 'lamp_timeout', fallback=1)

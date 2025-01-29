@@ -95,4 +95,4 @@ class CleanupAfterCalibrations(KPFScript):
         parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
                             default=False, action="store_true",
                             help='Leave the lamps on after cleanup phase?')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

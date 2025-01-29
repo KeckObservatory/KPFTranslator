@@ -41,7 +41,7 @@ from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.WaitForReadout import WaitForReadout
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
-from kpf.utils.SetTargetInfo import SetTargetInfo
+from kpf.scripts.SetTargetInfo import SetTargetInfo
 from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 from kpf.expmeter.SetupExpMeter import SetupExpMeter
@@ -63,6 +63,7 @@ class ExecuteCal(KPFFunction):
 
     @classmethod
     def perform(cls, calibration):
+        cfg = cls._load_config()
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         for key in calibration:
