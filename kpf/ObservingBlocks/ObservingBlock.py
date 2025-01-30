@@ -1,11 +1,11 @@
 from pathlib import Path
 import yaml
 
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.Target import Target
-
-from kpf import log, KPFException, InvalidObservingBlock
 
 
 class ObservingBlock(object):
