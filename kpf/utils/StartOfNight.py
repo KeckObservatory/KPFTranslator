@@ -33,10 +33,12 @@ class StartOfNight(KPFFunction):
     * __AO__ - `bool` Open AO hatch, send PCU to KPF, and turn on HEPA? (default=True)
     '''
     @classmethod
+    @obey_scriptrun
     def pre_condition(cls, args):
         pass
 
     @classmethod
+    @register_script(Path(__file__).name, os.getpid())
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args):
         log.info(f"Running KPF Start of Night script")

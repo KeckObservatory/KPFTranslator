@@ -44,6 +44,7 @@ class EndOfNight(KPFFunction):
         pass
 
     @classmethod
+    @register_script(Path(__file__).name, os.getpid())
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args):
         StopTipTilt.execute({})
