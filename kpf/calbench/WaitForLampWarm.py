@@ -1,8 +1,8 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import check_scriptstop
 from kpf.calbench import standardize_lamp_name
 from kpf.calbench.CalLampPower import CalLampPower

@@ -1,10 +1,9 @@
 import numpy as np
 
-from kpf.KPFTranslatorFunction import KPFScript
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-
 from kpf.calbench import standardize_lamp_name
 
 

@@ -2,8 +2,9 @@ from time import sleep
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFFunction
-from kpf import log, cfg, FailedToReachDestination
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 class SetTimedShutters(KPFFunction):

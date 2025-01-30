@@ -1,8 +1,9 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFFunction
-from kpf import log, cfg
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 class QueryFastReadMode(KPFFunction):

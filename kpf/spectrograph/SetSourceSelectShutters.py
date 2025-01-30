@@ -3,9 +3,9 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 class SetSourceSelectShutters(KPFFunction):
@@ -26,7 +26,6 @@ class SetSourceSelectShutters(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        cfg = cls._load_config()
         shutter_list = []
         if args.get('SSS_Science', False) is True:
             shutter_list.append('SciSelect')
@@ -47,7 +46,6 @@ class SetSourceSelectShutters(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         kpfexpose = ktl.cache('kpfexpose')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)

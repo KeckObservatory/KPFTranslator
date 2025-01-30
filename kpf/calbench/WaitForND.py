@@ -1,8 +1,8 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
 

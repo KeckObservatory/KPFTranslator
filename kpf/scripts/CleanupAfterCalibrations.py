@@ -6,8 +6,9 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFScript
-from kpf import log
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import clear_script_keywords
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.calbench.CalLampPower import CalLampPower

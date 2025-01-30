@@ -4,9 +4,9 @@ import os
 import traceback
 from pathlib import Path
 
-from kpf.KPFTranslatorFunction import KPFScript 
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, ScriptStopTriggered)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import obey_scriptrun, register_script, add_script_log
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.utils.SendTargetToMagiq import SendTargetToMagiq
