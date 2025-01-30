@@ -7,7 +7,8 @@ from argparse import Namespace, ArgumentTypeError
 
 import ktl
 
-from kpf import log, KPFException
+from kpf import log
+from kpf.exceptions import *
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 
