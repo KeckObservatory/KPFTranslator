@@ -25,13 +25,6 @@ class KPFFunction(object):
             raise KPFException(msg)
 
     @classmethod
-    def _load_config(cls):
-        config_files = [Path(__file__).parent / f'{cls.instrument}_inst_config.ini']
-        config = configparser.ConfigParser(inline_comment_prefixes=(';','#',))
-        config.read(config_files)
-        return config
-
-    @classmethod
     def pre_condition(cls, args):
         pass
 
@@ -127,8 +120,6 @@ class KPFScript(KPFFunction):
         cls._check_args(args)
         if OB is not None:
             cls._check_OB(OB)
-        # read the config file
-        cfg = cls._load_config()
 
         # PRE CONDITION #
         try:

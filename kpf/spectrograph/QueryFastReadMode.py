@@ -2,8 +2,7 @@ import time
 import ktl
 
 from kpf.KPFTranslatorFunction import KPFFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
 
 
 class QueryFastReadMode(KPFFunction):

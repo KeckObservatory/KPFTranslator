@@ -3,8 +3,7 @@ from time import sleep
 import ktl
 
 from kpf.KPFTranslatorFunction import KPFFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, FailedToReachDestination
 
 
 class SetTimedShutters(KPFFunction):
@@ -24,7 +23,6 @@ class SetTimedShutters(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        cfg = cls._load_config()
         # Scrambler 2 SimulCal 3 FF_Fiber 4 Ca_HK
         timed_shutters_list = []
         if args.get('TimedShutter_Scrambler', False) is True:
@@ -44,7 +42,6 @@ class SetTimedShutters(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         kpfexpose = ktl.cache('kpfexpose')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)

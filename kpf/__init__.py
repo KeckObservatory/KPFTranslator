@@ -1,11 +1,24 @@
 import os
 from pathlib import Path
+import configparser
 import logging
 from logging.handlers import RotatingFileHandler
 import datetime
 from packaging import version
 import yaml
 import traceback
+
+
+##-------------------------------------------------------------------------
+## Load configuration values
+##-------------------------------------------------------------------------
+def load_config(instrument='kpf'):
+    config_files = [Path(__file__).parent / f'{instrument}_inst_config.ini']
+    config = configparser.ConfigParser(inline_comment_prefixes=(';','#',))
+    config.read(config_files)
+    return config
+
+cfg = load_config(instrument='kpf')
 
 
 ##-------------------------------------------------------------------------
