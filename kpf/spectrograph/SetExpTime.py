@@ -27,7 +27,6 @@ class SetExpTime(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         log.debug("Checking for success")
         exptime = args.get('ExpTime')
         tol = cfg.getfloat('tolerances', 'kpfexpose_exptime_tolerance', fallback=0.01)

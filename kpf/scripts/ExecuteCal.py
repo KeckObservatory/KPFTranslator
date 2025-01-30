@@ -63,7 +63,6 @@ class ExecuteCal(KPFFunction):
 
     @classmethod
     def perform(cls, calibration):
-        cfg = cls._load_config()
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         for key in calibration:

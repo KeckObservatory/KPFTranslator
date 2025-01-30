@@ -30,7 +30,6 @@ class TakeIntensityReading(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        cfg = cls._load_config()
         kpfcal = ktl.cache('kpfcal')
         intensemon = ktl.cache('kpflamps', 'INTENSEMON')
 

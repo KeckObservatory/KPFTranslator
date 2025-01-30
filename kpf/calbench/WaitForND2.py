@@ -31,7 +31,6 @@ class WaitForND2(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        cfg = cls._load_config()
         target = args.get('CalND2')
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.ND2POS == '{target}')"
@@ -41,7 +40,6 @@ class WaitForND2(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         ND2target = args.get('CalND2')
         ND2POS = ktl.cache('kpfcal', 'ND2POS')

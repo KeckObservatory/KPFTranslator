@@ -36,7 +36,6 @@ class SetFlatFieldFiberPos(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         target = args.get('FF_FiberPos')
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.FF_FiberPos == '{target}')"

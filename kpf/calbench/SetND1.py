@@ -38,7 +38,6 @@ class SetND1(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         ND1target = args.get('CalND1')
         ND1POS = ktl.cache('kpfcal', 'ND1POS')

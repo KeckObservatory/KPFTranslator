@@ -104,7 +104,6 @@ class EstimateOBDuration(KPFScript):
     def perform(cls, args, OB=None):
         if OB is not None and type(OB) != ObservingBlock:
             OB = ObservingBlock(OB)
-        cfg = cls._load_config()
         fast = args.get('fast', False)
         duration = 0
 

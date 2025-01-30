@@ -29,7 +29,6 @@ class WaitForCalSource(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        cfg = cls._load_config()
         target = args.get('CalSource')
         timeout = cfg.getfloat('times', 'octagon_move_time', fallback=60)
         expr = f"($kpfcal.OCTAGON == {target})"
@@ -39,7 +38,6 @@ class WaitForCalSource(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         target = args.get('CalSource')
         timeout = cfg.getfloat('times', 'octagon_move_time', fallback=60)
         expr = f"($kpfcal.OCTAGON == {target})"

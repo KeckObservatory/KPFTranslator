@@ -29,7 +29,6 @@ class SetLFCtoStandbyHigh(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        cfg = cls._load_config()
         lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE')
         log.info('Setting LFC to StandbyHigh')
         lfc_mode.write('StandbyHigh')

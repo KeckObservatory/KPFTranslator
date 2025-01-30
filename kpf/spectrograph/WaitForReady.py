@@ -24,7 +24,6 @@ class WaitForReady(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        cfg = cls._load_config()
         kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfexpose['EXPOSURE'].read(binary=True)
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
@@ -69,7 +68,6 @@ class WaitForReady(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         expr = "($kpfexpose.EXPOSE == 'Ready')"
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         ok = ktl.waitFor(expr, timeout=timeout)

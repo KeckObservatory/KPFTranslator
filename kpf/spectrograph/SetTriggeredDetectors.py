@@ -24,7 +24,6 @@ class SetTriggeredDetectors(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        cfg = cls._load_config()
         kpfconfig = ktl.cache('kpfconfig')
         detector_list = []
         if args.get('TriggerRed', False) is True:
@@ -59,7 +58,6 @@ class SetTriggeredDetectors(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        cfg = cls._load_config()
         kpfconfig = ktl.cache('kpfconfig')
         kpfexpose = ktl.cache('kpfexpose')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
