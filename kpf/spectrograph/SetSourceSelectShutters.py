@@ -3,12 +3,12 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class SetSourceSelectShutters(KPFTranslatorFunction):
+class SetSourceSelectShutters(KPFFunction):
     '''Opens and closes the source select shutters via the 
     `kpfexpose.SRC_SHUTTERS` keyword.
     
@@ -21,11 +21,12 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
     :SSS_SoCalCal: `bool` Open the SoCalCal shutter? (default=False)
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
+        cfg = cls._load_config()
         shutter_list = []
         if args.get('SSS_Science', False) is True:
             shutter_list.append('SciSelect')
@@ -45,7 +46,8 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         sleep(shim_time)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
+        cfg = cls._load_config()
         kpfexpose = ktl.cache('kpfexpose')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)
@@ -63,7 +65,7 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
                 raise FailedToReachDestination(shutter_status, shutter_target)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--Science", "--Sci", "--science", "--sci",
                             dest="SSS_Science",
                             default=False, action="store_true",
@@ -80,4 +82,4 @@ class SetSourceSelectShutters(KPFTranslatorFunction):
         parser.add_argument("--SoCalCal", dest="SSS_SoCalCal",
                             default=False, action="store_true",
                             help="Open the SoCalCal shutter?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

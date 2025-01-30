@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class SetObject(KPFTranslatorFunction):
+class SetObject(KPFFunction):
     '''Sets the OBJECT keyword for the science detectors in the kpfexpose
     keyword service.
     
@@ -15,11 +15,11 @@ class SetObject(KPFTranslatorFunction):
     :Object: `str` The desired object keyword value.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfexpose = ktl.cache('kpfexpose')
         obj = args.get('Object', '')
         if obj is None:
@@ -30,7 +30,7 @@ class SetObject(KPFTranslatorFunction):
         time.sleep(time_shim)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         obj = args.get('Object', '')
         if obj is None:
             obj = ''
@@ -42,7 +42,7 @@ class SetObject(KPFTranslatorFunction):
             raise FailedToReachDestination(objectkw.read(), obj)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('Object', type=str,
                             help='The OBJECT keyword')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

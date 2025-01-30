@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class SetExpMeterExpTime(KPFTranslatorFunction):
+class SetExpMeterExpTime(KPFFunction):
     '''Sets the exposure time for the exposure meter
 
     Args:
@@ -17,18 +17,18 @@ class SetExpMeterExpTime(KPFTranslatorFunction):
     - `kpf_expmeter.EXPOSURE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'ExpMeterExpTime', allowed_types=[int, float])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpf_expmeter = ktl.cache('kpf_expmeter')
         exptime = args.get('ExpMeterExpTime')
         log.debug(f"Setting exposure time to {exptime:.3f}")
         kpf_expmeter['EXPOSURE'].write(exptime)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         log.debug("Checking for success")
         exptime = args.get('ExpMeterExpTime')
         tol = cfg.getfloat('tolerances', 'kpfexpose_exptime_tolerance', fallback=0.01)
@@ -42,7 +42,7 @@ class SetExpMeterExpTime(KPFTranslatorFunction):
             raise FailedToReachDestination(exposure.read(), exptime)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('ExpMeterExpTime', type=float,
                             help="The exposure time in seconds")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

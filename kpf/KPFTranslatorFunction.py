@@ -54,8 +54,6 @@ class KPFFunction(object):
             The arguments in dictionary form
         """
         cls._check_args(args)
-        # read the config file
-        cfg = cls._load_config()
 
         # PRE CONDITION #
         try:

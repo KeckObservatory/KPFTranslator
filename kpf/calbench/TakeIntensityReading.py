@@ -1,13 +1,13 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.utils.SendEmail import SendEmail
 
 
-class TakeIntensityReading(KPFTranslatorFunction):
+class TakeIntensityReading(KPFFunction):
     '''Insert the intensity monitor (aka "cal diode") in to the beam and record
     a measurement of the cal lamp intensity.
 
@@ -25,11 +25,12 @@ class TakeIntensityReading(KPFTranslatorFunction):
     - `kpf.utils.SendEmail`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
+        cfg = cls._load_config()
         kpfcal = ktl.cache('kpfcal')
         intensemon = ktl.cache('kpflamps', 'INTENSEMON')
 
@@ -91,5 +92,5 @@ class TakeIntensityReading(KPFTranslatorFunction):
         kpfcal['SERIALCONN'].write('Off')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

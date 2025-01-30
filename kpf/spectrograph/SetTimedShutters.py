@@ -2,12 +2,12 @@ from time import sleep
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-class SetTimedShutters(KPFTranslatorFunction):
+class SetTimedShutters(KPFFunction):
     '''Selects which timed shutters will be triggered by setting the
     `kpfexpose.TIMED_SHUTTERS` keyword value.
     
@@ -19,14 +19,14 @@ class SetTimedShutters(KPFTranslatorFunction):
     :TimedShutter_FlatField: `bool` Open the TimedShutter_FlatField shutter? (default=False)
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
+        cfg = cls._load_config()
         # Scrambler 2 SimulCal 3 FF_Fiber 4 Ca_HK
         timed_shutters_list = []
-        
         if args.get('TimedShutter_Scrambler', False) is True:
             timed_shutters_list.append('Scrambler')
         if args.get('TimedShutter_SimulCal', False) is True:
@@ -43,7 +43,8 @@ class SetTimedShutters(KPFTranslatorFunction):
         sleep(shim_time)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
+        cfg = cls._load_config()
         kpfexpose = ktl.cache('kpfexpose')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)
@@ -61,7 +62,7 @@ class SetTimedShutters(KPFTranslatorFunction):
                 raise FailedToReachDestination(shutter_status, shutter_target)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--Scrambler", "--scrambler",
                             dest="TimedShutter_Scrambler",
                             default=False, action="store_true",
@@ -78,4 +79,4 @@ class SetTimedShutters(KPFTranslatorFunction):
                             dest="TimedShutter_FlatField",
                             default=False, action="store_true",
                             help="Open the FlatField Timed Shutter during exposure?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

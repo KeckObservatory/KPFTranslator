@@ -1,7 +1,7 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
@@ -15,7 +15,7 @@ def expeter_flux_target(spectrograph_flux, band):
     return expmeter_flux
 
 
-class SetExpMeterTerminationParameters(KPFTranslatorFunction):
+class SetExpMeterTerminationParameters(KPFFunction):
     '''Sets the exposure meter exposure termination control parameters
 
     Args:
@@ -30,7 +30,7 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
     - `kpf_expmeter.USETHRESHOLD`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'ExpMeterThreshold', allowed_types=[int, float],
                     value_min=0)
         check_input(args, 'ExpMeterBin')
@@ -47,7 +47,7 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
             raise FailedPreCondition(f"ExpMeterBin '{band}' could not be parsed")
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         band = str(args.get('ExpMeterBin'))
         spectrograph_flux = args.get('ExpMeterThreshold')
         expmeter_flux = expeter_flux_target(spectrograph_flux, band)
@@ -57,14 +57,14 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
         kpf_expmeter['USETHRESHOLD'].write('Yes')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('ExpMeterBin', type=int,
                             choices=[1,2,3,4],
                             help="Which exposure meter band to use (1, 2, 3, or 4)")
         parser.add_argument('ExpMeterThreshold', type=float,
                             help="Threshold flux in e-/nm in the main spectrograph")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

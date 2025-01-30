@@ -1,6 +1,6 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
+from kpf.KPFTranslatorFunction import KPFFunction
 from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 from kpf.scripts import check_scriptstop
@@ -8,7 +8,7 @@ from kpf.calbench import standardize_lamp_name
 from kpf.calbench.CalLampPower import CalLampPower
 
 
-class WaitForLampWarm(KPFTranslatorFunction):
+class WaitForLampWarm(KPFFunction):
     '''Wait for the specified lamp to be warm.
 
     Args:
@@ -41,11 +41,11 @@ class WaitForLampWarm(KPFTranslatorFunction):
     - `kpf.calbench.CalLampPower`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'CalSource')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         lamp = standardize_lamp_name(args.get('CalSource'))
         lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
                                   'TH_GOLD', 'U_DAILY', 'U_GOLD']
@@ -84,7 +84,7 @@ class WaitForLampWarm(KPFTranslatorFunction):
                         lamp_timeon = new_lamp_timeton
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         lamp = standardize_lamp_name(args.get('CalSource'))
         lamps_that_need_warmup = ['FF_FIBER', 'BRDBANDFIBER', 'TH_DAILY',
                                   'TH_GOLD', 'U_DAILY', 'U_GOLD']
@@ -95,9 +95,9 @@ class WaitForLampWarm(KPFTranslatorFunction):
                 raise FailedPostCondition(f"Lamp {lamp} should be warm: {lamp_status}")
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('lamp', type=str,
                             choices=['BrdbandFiber', 'U_gold', 'U_daily',
                                      'Th_daily', 'Th_gold', 'WideFlat'],
                             help='Which lamp are we waiting on?')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
