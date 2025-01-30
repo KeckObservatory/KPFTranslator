@@ -8,12 +8,6 @@ import importlib
 
 # What instrument is this?
 inst = 'KPF'
-# Where are translator modules located?
-# base_translator_path = Path("/home/kpfeng/ddoi/")
-base_translator_path = [x for x in Path(__file__).parents][4]
-if base_translator_path.exists() is False:
-    print(f'{base_translator_path} not found!')
-    sys.exit(1)
 
 default_version = Path(__file__).parts[-4]
 
@@ -37,13 +31,15 @@ kpfdo_parser.add_argument("-v", "--version", dest="version", type=str,
 parsed_args, function_args = kpfdo_parser.parse_known_args()
 
 # Where is the translator module, starting from the root directory of the server?
-translator_module_location = base_translator_path / f"{inst}Translator/{parsed_args.version}/{inst}Translator"
+# translator_module_location = base_translator_path / f"{inst}Translator/{parsed_args.version}/{inst}Translator"
+translator_module_location = [x for x in Path(__file__).parents][1]
 if translator_module_location.exists() is False:
     print(f'{translator_module_location} not found!')
     sys.exit(1)
 
 # Where is the linking table?
-linking_table_location = translator_module_location / f"{inst.lower()}/linking_table.yml"
+# linking_table_location = translator_module_location / f"{inst.lower()}/linking_table.yml"
+linking_table_location = Path(__file__).parent / 'linking_table.yml'
 if linking_table_location.exists() is False:
     print(f'{linking_table_location} not found!')
     sys.exit(1)
