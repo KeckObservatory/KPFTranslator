@@ -9,8 +9,6 @@ import importlib
 # What instrument is this?
 inst = 'KPF'
 
-default_version = Path(__file__).parts[-4]
-
 ## Parse Command Line Arguments
 kpfdo_parser = argparse.ArgumentParser(add_help=False, description='''
 ''')
@@ -24,21 +22,15 @@ kpfdo_parser.add_argument("-h", "--help", dest="help",
 kpfdo_parser.add_argument("-n", "--dry-run", dest="dry_run",
     default=False, action="store_true",
     help="Print what function would be called with what arguments, with no actual invocation.")
-## add options
-kpfdo_parser.add_argument("-v", "--version", dest="version", type=str,
-    default=default_version,
-    help="The version of KPFTranslator to use.")
 parsed_args, function_args = kpfdo_parser.parse_known_args()
 
 # Where is the translator module, starting from the root directory of the server?
-# translator_module_location = base_translator_path / f"{inst}Translator/{parsed_args.version}/{inst}Translator"
 translator_module_location = [x for x in Path(__file__).parents][1]
 if translator_module_location.exists() is False:
     print(f'{translator_module_location} not found!')
     sys.exit(1)
 
 # Where is the linking table?
-# linking_table_location = translator_module_location / f"{inst.lower()}/linking_table.yml"
 linking_table_location = Path(__file__).parent / 'linking_table.yml'
 if linking_table_location.exists() is False:
     print(f'{linking_table_location} not found!')
