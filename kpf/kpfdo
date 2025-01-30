@@ -9,7 +9,8 @@ import importlib
 # What instrument is this?
 inst = 'KPF'
 # Where are translator modules located?
-base_translator_path = Path("/home/kpfeng/ddoi/")
+# base_translator_path = Path("/home/kpfeng/ddoi/")
+base_translator_path = [x for x in Path(__file__).parents][4]
 if base_translator_path.exists() is False:
     print(f'{base_translator_path} not found!')
     sys.exit(1)
