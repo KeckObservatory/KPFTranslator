@@ -6,21 +6,23 @@ import traceback
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input, ScriptStopTriggered)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
+from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.socal.ParkSoCal import ParkSoCal
 from kpf.socal.SoCalStartAutonomous import SoCalStartAutonomous
 from kpf.socal.WaitForSoCalOnTarget import WaitForSoCalOnTarget
 
 
-class RunSoCalObservingLoop(KPFTranslatorFunction):
+class RunSoCalObservingLoop(KPFScript):
     '''This script runs a control loop to execute SoCal observations.
 
     When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means
@@ -69,88 +71,48 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
                 `kpfconfig.ALLOWSCHEDULEDCALS` is "No".
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args, OB=None):
         pass
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args, OB=None):
         # Check the ALLOWSCHEDULEDCALS value
         if args.get('scheduled', True) is True:
-            ALLOWSCHEDULED = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS').read()
-            if ALLOWSCHEDULED == 'No':
+            ALLOWSCHEDULED = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
+            if ALLOWSCHEDULED.read() == 'No':
                 return
-
-        log.info('-------------------------')
-        log.info(f"Running {cls.__name__}")
-        log.info('-------------------------')
-
-        # Prepare SoCal parameters to pass to ExecuteCal
-        socal_ND1 = cfg.get('SoCal', 'ND1', fallback='OD 0.1')
-        socal_ND2 = cfg.get('SoCal', 'ND2', fallback='OD 0.1')
-        socal_ExpTime = cfg.getfloat('SoCal', 'ExpTime', fallback=12)
-        SoCal_observation = {'Template_Name': 'kpf_lamp',
-                             'Template_Version': '1.0',
-                             'TargetName': 'Sun',
-                             'TriggerCaHK': False,
-                             'TimedShutter_CaHK': False,
-                             'TriggerGreen': True,
-                             'TriggerRed': True,
-                             'TriggerExpMeter': False,
-                             'RunAgitator': True,
-                             'CalSource': 'SoCal-SciSky',
-                             'Object': 'SoCal',
-                             'CalND1': socal_ND1,
-                             'CalND2': socal_ND2,
-                             'ExpTime': socal_ExpTime,
-                             'nExp': 15,
-                             'SSS_Science': True,
-                             'SSS_Sky': True,
-                             'TakeSimulCal': True,
-                             'nointensemon': True,
-                             }
-        readout_red = cfg.getfloat('time_estimates', f'readout_red', fallback=60)
-        readout_green = cfg.getfloat('time_estimates', f'readout_green', fallback=60)
-        readout_cahk = cfg.getfloat('time_estimates', 'readout_cahk', fallback=1)
-        archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
-                             fallback=2)
-        readout = max([readout_red, readout_green, readout_cahk])
-        SoCal_duration = int(SoCal_observation['nExp'])*max([float(SoCal_observation['ExpTime']), archon_time_shim])
-        SoCal_duration += int(SoCal_observation['nExp'])*readout
-        log.debug(f"Estimated SoCal observation time = {SoCal_duration}")
-
-        # Prepare Etalon parameters to pass to ExecuteCal
-        Etalon_ND1 = cfg.get('SoCal', 'EtalonND1', fallback='OD 0.1')
-        Etalon_ND2 = cfg.get('SoCal', 'EtalonND2', fallback='OD 0.1')
-        Etalon_ExpTime = cfg.getfloat('SoCal', 'EtalonExpTime', fallback=60)
-        Etalon_observation = {'Template_Name': 'kpf_lamp',
-                              'Template_Version': '1.0',
-                              'TriggerCaHK': True,
-                              'TimedShutter_CaHK': True,
-                              'TriggerGreen': True,
-                              'TriggerRed': True,
-                              'TriggerExpMeter': False,
-                              'RunAgitator': True,
-                              'CalSource': 'EtalonFiber',
-                              'Object': 'slewcal',
-                              'CalND1': Etalon_ND1,
-                              'CalND2': Etalon_ND2,
-                              'ExpTime': Etalon_ExpTime,
-                              'nExp': 8,
-                              'SSS_Science': True,
-                              'SSS_Sky': True,
-                              'TakeSimulCal': True,
-                              'nointensemon': True,
-                              }
-        Etalon_duration = int(Etalon_observation['nExp'])*max([float(Etalon_observation['ExpTime']), archon_time_shim])
-        Etalon_duration += int(Etalon_observation['nExp'])*readout
-        log.debug(f"Estimated Etalon observation time = {Etalon_duration}")
 
         # Start SoCal in autonomous mode
         SoCalStartAutonomous.execute({})
 
+        # If requested wait for an existing script to complete
+        if args.get('waitforscript', False) is True:
+            newscript = f'{Path(__file__).name.replace(".py", "")}(PID {os.getpid()})'
+            wait_for_script(newscript=newscript)
+        set_script_keywords(Path(__file__).name, os.getpid())
+
+        log.info('-------------------------')
+        log.info(f"Running {cls.__name__}")
+        log.info('-------------------------')
+        if isinstance(OB, dict):
+            SoCal_OB = ObservingBlock(OB)
+
+        # Estimate time to Run SoCal OB
+        SoCal_duration = EstimateOBDuration.execute({}, OB=SoCal_OB)
+
+        # Estimate time to run Etalon OB
+        slewcal_OBfile = Path(kpfconfig['SLEWCALFILE'].read())
+        log.info('Slewcal has been requested')
+        log.debug(f"Reading: {slewcal_OBfile}")
+        with open(slewcal_OBfile, 'r') as file:
+            slewcal_OBdict = yaml.safe_load(file)
+            SlewCal_OB = ObservingBlock(slewcal_OBdict)
+        Etalon_duration = EstimateOBDuration.execute({}, OB=SlewCal_OB)
+        log.debug(f"Estimated Etalon observation time = {Etalon_duration}")
+
+
         # Start Loop
-        max_wait_per_iteration = 60
         start_time = args.get('StartTimeHST', 9)
         end_time = args.get('EndTimeHST', 12) - SoCal_duration/3600 - 0.05
         now = datetime.datetime.now()
@@ -163,18 +125,9 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             log.info("End time for today's SoCal window has passed")
             return
 
-        SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
-        if SCRIPTPID.read(binary=True) >= 0:
-            SCRIPTNAME = ktl.cache('kpfconfig', 'SCRIPTNAME').read()
-            waittime = (end_time-now_decimal)*3600 - SoCal_duration - 180
-            log.warning(f'Script is currently running: {SCRIPTNAME}')
-            if waittime > 0:
-                log.info(f'Waiting up to {waittime:.0f}s for running script to end')
-                SCRIPTPID.waitFor("==-1", timeout=waittime)
-                time.sleep(10) # time shim
-
         check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
+        ConfigureFIU.execute({'mode': 'Calibration'})
         log.info(f'Starting SoCal observation loop')
         log.info(f'Start time: {start_time:.2f} HST')
         log.info(f'End Time: {end_time:.2f} HST')
@@ -188,13 +141,13 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
         while now_decimal >= start_time and now_decimal < end_time:
             log.debug('Checking if SoCal is on the Sun')
-            on_target = WaitForSoCalOnTarget.execute({'timeout': max_wait_per_iteration})
-            observation = {True: SoCal_observation, False: Etalon_observation}[on_target]
+            on_target = WaitForSoCalOnTarget.execute({'timeout': 30})
+            OB = {True: SoCal_OB, Flase: SlewCal_OB}[on_target]
             log.info(f'SoCal on target: {on_target}')
-            log.info(f"Executing {observation['Object']}")
             try:
                 check_scriptstop()
-                ExecuteCal.execute(observation)
+                for i,calibration in enumerate(OB.Calibrations):
+                    ExecuteCal.execute(calibration.to_dict())
                 if on_target == True:
                     nSoCalObs += 1
                 else:
@@ -231,7 +184,7 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
 
         # Cleanup
         try:
-            CleanupAfterCalibrations.execute(Etalon_observation)
+            CleanupAfterCalibrations.execute({}, OB=SlewCal_OB)
         except Exception as e:
             log.error("CleanupAfterCalibrations failed:")
             log.error(e)
@@ -255,11 +208,11 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
             ParkSoCal.execute({})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args, OB=None):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('StartTimeHST', type=float,
             help='Start of daily observing window in decimal hours HST.')
         parser.add_argument('EndTimeHST', type=float,
@@ -267,7 +220,10 @@ class RunSoCalObservingLoop(KPFTranslatorFunction):
         parser.add_argument("--park", dest="park",
             default=False, action="store_true",
             help="Close and park SoCal when done?")
+        parser.add_argument('--waitforscript', dest="waitforscript",
+            default=False, action="store_true",
+            help='Wait for running script to end before starting?')
         parser.add_argument("--notscheduled", dest="scheduled",
             default=True, action="store_false",
             help="Do not respect the kpfconfig.ALLOWSCHEDULEDCALS flag.")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
