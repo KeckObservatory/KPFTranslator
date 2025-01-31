@@ -48,7 +48,7 @@ class CleanupAfterCalibrations(KPFScript):
         log.info('-------------------------')
 
         # Power off lamps
-        if calibrations.get('leave_lamps_on', False) == True:
+        if args.get('leave_lamps_on', False) == True:
             log.info('Not turning lamps off because leave_lamps_on option was invoked')
         else:
             lamps = set([c.get('CalSource') for c in calibrations])
