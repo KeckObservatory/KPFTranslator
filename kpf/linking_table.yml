@@ -304,7 +304,5 @@ links:
         cmd: utils.StartOfNight.StartOfNight
     StopGUIs:
         cmd: utils.StopGUIs.StopGUIs
-    TestFunction:
-        cmd: utils.TestFunction.TestFunction
     ZeroOutSlewCalTime:
         cmd: utils.ZeroOutSlewCalTime.ZeroOutSlewCalTime

@@ -57,15 +57,6 @@ class ConfigureForAcquisition(KPFScript):
             log.info(f"Set CalSource/Octagon: {calsource}")
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
-        ## Execute Slew Cal if Requested
-#         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
-#             slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
-#             log.debug(f"Using: {slewcal_argsfile}")
-#             with open(slewcal_argsfile, 'r') as file:
-#                 slewcal_OBdict = yaml.safe_load(file)
-#                 slewcal_OB = ObservingBlock(slewcal_OBdict)
-#             ExecuteSlewCal.execute({}, OB=slewcal_OB)
-
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
