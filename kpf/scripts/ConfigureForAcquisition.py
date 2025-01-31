@@ -11,7 +11,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import register_script, check_scriptstop, add_script_log
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.scripts.ExecuteSlewCal import ExecuteSlewCal
+# from kpf.scripts.ExecuteSlewCal import ExecuteSlewCal
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.fiu.InitializeTipTilt import InitializeTipTilt
 from kpf.fiu.ConfigureFIU import ConfigureFIU
@@ -50,7 +50,6 @@ class ConfigureForAcquisition(KPFScript):
         kpf_expmeter = ktl.cache('kpf_expmeter')
 
         # Set Octagon
-        kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         octagon = ktl.cache('kpfcal', 'OCTAGON').read()
         log.debug(f"Current OCTAGON = {octagon}, desired = {calsource}")
@@ -59,13 +58,14 @@ class ConfigureForAcquisition(KPFScript):
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
         ## Execute Slew Cal if Requested
-        if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
-            slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
-            log.debug(f"Using: {slewcal_argsfile}")
-            with open(slewcal_argsfile, 'r') as file:
-                slewcal_OBdict = yaml.safe_load(file)
-                slewcal_OB = ObservingBlock(slewcal_OBdict)
-            ExecuteSlewCal.execute({}, OB=slewcal_OB)
+#         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+#             slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
+#             log.debug(f"Using: {slewcal_argsfile}")
+#             with open(slewcal_argsfile, 'r') as file:
+#                 slewcal_OBdict = yaml.safe_load(file)
+#                 slewcal_OB = ObservingBlock(slewcal_OBdict)
+#             ExecuteSlewCal.execute({}, OB=slewcal_OB)
+
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})

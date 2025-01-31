@@ -4,6 +4,8 @@ import os
 import traceback
 from pathlib import Path
 
+import ktl
+
 from kpf import log, cfg, check_input
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
@@ -59,9 +61,23 @@ class RunOB(KPFScript):
         if isinstance(OB, dict):
             OB = ObservingBlock(OB)
 
+        # Send Target info to Magiq for OA
         if OB.Target is not None:
             log.info(f'Sending target info to Magiq')
             SendTargetToMagiq.execute(args, OB=OB)
+
+        # Add slew cal to OB if keywords indicate one is requested
+        kpfconfig = ktl.cache('kpfconfig')
+        if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+            slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
+            log.info('Slewcal has been requested')
+            log.debug(f"Reading: {slewcal_argsfile}")
+            with open(slewcal_argsfile, 'r') as file:
+                slewcal_OBdict = yaml.safe_load(file)
+                slewcal_OB = ObservingBlock(slewcal_OBdict)
+            OB.Calibrations.extend(slewcal_OB.Calibrations)
+
+        # Execute calibrations
         if len(OB.Calibrations) > 0:
             log.info(f'Executing Calibrations')
             ConfigureForCalibrations.execute(args, OB=OB)
@@ -70,10 +86,14 @@ class RunOB(KPFScript):
                 ExecuteCal.execute(calibration.to_dict())
             log.info(f'Cleaning up after Calibrations')
             CleanupAfterCalibrations.execute(args, OB=OB)
+
+        # Configure for Acquisition
         if OB.Target is not None:
             log.info(f'Configuring for Acquisition')
             ConfigureForAcquisition.execute(args, OB=OB)
             WaitForConfigureAcquisition.execute(args, OB=OB)
+
+        # Execute science observations
         if len(OB.Observations) > 0:
             log.info(f'Configuring for Observations')
             ConfigureForScience.execute(args, OB=OB)
