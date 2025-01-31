@@ -51,8 +51,6 @@ class RunOB(KPFScript):
         if args.get('waitforscript', False) is True:
             newscript = f'{Path(__file__).name.replace(".py", "")}(PID {os.getpid()})'
             wait_for_script(newscript=newscript)
-            print('Done')
-            return
         set_script_keywords(Path(__file__).name, os.getpid())
 
         log.info('-------------------------')

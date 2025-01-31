@@ -9,8 +9,7 @@ import ktl
 from kpf import log, cfg, check_input
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
-                         add_script_log)
+from kpf.scripts import register_script, check_scriptstop, add_script_log
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.scripts.ExecuteSlewCal import ExecuteSlewCal
 from kpf.calbench.SetCalSource import SetCalSource
@@ -31,7 +30,6 @@ class ConfigureForAcquisition(KPFScript):
     :OB: `dict` A fully specified science observing block (OB).
     '''
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, args, OB=None):
         # Check Slewcals
         kpfconfig = ktl.cache('kpfconfig')

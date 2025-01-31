@@ -111,9 +111,9 @@ class ExecuteCal(KPFFunction):
                            'Th_gold', 'LFCFiber', 'EtalonFiber']:
             log.info(f"Setting cal source: {calsource}")
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
-            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
             nd1 = calibration.get('CalND1')
             nd2 = calibration.get('CalND2')
+            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
             SetND1.execute({'CalND1': nd1, 'wait': False})
             SetND2.execute({'CalND2': nd2, 'wait': False})
             SetTargetInfo.execute({})
@@ -155,9 +155,9 @@ class ExecuteCal(KPFFunction):
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
             # Open SoCalCal Shutter
             calibration['SSS_SoCalCal'] = True
-            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
             nd1 = calibration.get('CalND1')
             nd2 = calibration.get('CalND2')
+            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
             SetND1.execute({'CalND1': nd1, 'wait': False})
             SetND2.execute({'CalND2': nd2, 'wait': False})
             log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
@@ -177,9 +177,9 @@ class ExecuteCal(KPFFunction):
             simulcalsource = kpfconfig['SIMULCALSOURCE'].read()
             log.info(f"Setting cal source: {simulcalsource}")
             SetCalSource.execute({'CalSource': simulcalsource, 'wait': False})
-            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
             nd1 = calibration.get('CalND1')
             nd2 = calibration.get('CalND2')
+            log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
             SetND1.execute({'CalND1': nd1, 'wait': False})
             SetND2.execute({'CalND2': nd2, 'wait': False})
             log.info(f"Waiting for Octagon/CalSource, ND1, ND2, FIU")
@@ -233,13 +233,13 @@ class ExecuteCal(KPFFunction):
         elif calsource in ['SoCal-CalFib']:
             calibration['SSS_CalSciSky'] = True
         else:
-            calibration['SSS_CalSciSky'] = calibration['SSS_Science'] or calibration['SSS_Sky']
+            calibration['SSS_CalSciSky'] = calibration['OpenScienceShutter'] or calibration['OpenSkyShutter']
         SetSourceSelectShutters.execute(calibration)
         # Timed Shutters
         calibration['TimedShutter_CaHK'] = calibration.get('TriggerCaHK', False)
         calibration['TimedShutter_Scrambler'] = calibration.get('TriggerGreen', False) or calibration.get('TriggerRed', False)
         calibration['TimedShutter_SimulCal'] = calibration.get('TakeSimulCal', False)
-        calibration['TimedShutter_FlatField'] = calibration.get('FF_FiberPos', 'Blank') != 'Blank'
+        calibration['TimedShutter_FlatField'] = calibration.get('WideFlatPos', 'Blank') != 'Blank'
         log.info(f"Setting timed shutters")
         SetTimedShutters.execute(calibration)
 

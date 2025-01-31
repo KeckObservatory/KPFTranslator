@@ -22,7 +22,7 @@ class WaitForConfigureFIUOnce(KPFFunction):
            Stowed, Alignment, Acquisition, Observing, Calibration
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpffiu', 'MODE')
         allowed_values = list(keyword._getEnumerators())
         if 'None' in allowed_values:
@@ -30,7 +30,7 @@ class WaitForConfigureFIUOnce(KPFFunction):
         check_input(args, 'mode', allowed_values=allowed_values)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         dest = args.get('mode')
         fiumode = ktl.cache('kpffiu', 'MODE')
         modes = fiumode.read()
@@ -44,7 +44,7 @@ class WaitForConfigureFIUOnce(KPFFunction):
         return dest.lower() in modes.lower().split(',')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
 

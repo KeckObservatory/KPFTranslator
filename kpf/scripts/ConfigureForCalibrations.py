@@ -9,7 +9,7 @@ import ktl
 from kpf import log, cfg, check_input
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.scripts import obey_scriptrun, check_scriptstop
+from kpf.scripts import check_scriptstop
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 
@@ -27,7 +27,6 @@ class ConfigureForCalibrations(KPFScript):
     * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
     '''
     @classmethod
-    @obey_scriptrun
     def pre_condition(cls, args, OB=None):
         pass
 
