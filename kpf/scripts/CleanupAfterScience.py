@@ -15,8 +15,6 @@ from kpf.scripts.SetTargetInfo import SetTargetInfo
 class CleanupAfterScience(KPFScript):
     '''Script which cleans up at the end of Science OBs.
 
-    Can be called by `ddoi_script_functions.post_observation_cleanup`.
-
     ARGS:
     =====
     :OB: `dict` A fully specified science observing block (OB).
