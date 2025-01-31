@@ -1,3 +1,5 @@
+from kpf import log
+
 class KPFException(Exception):
     def __init__(self, message=""):
         self.message = message

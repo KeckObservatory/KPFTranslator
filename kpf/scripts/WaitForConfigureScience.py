@@ -6,9 +6,9 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFScript
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.calbench.WaitForCalSource import WaitForCalSource
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from kpf.spectrograph.WaitForReady import WaitForReady

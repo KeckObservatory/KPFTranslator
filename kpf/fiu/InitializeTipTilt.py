@@ -2,12 +2,12 @@ import time
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class InitializeTipTilt(KPFTranslatorFunction):
+class InitializeTipTilt(KPFFunction):
     '''Initialize the tip tilt system by setting the control mode to closed loop
     and setting the target values in X and Y to 0.
 
@@ -20,11 +20,11 @@ class InitializeTipTilt(KPFTranslatorFunction):
     - `kpffiu.TTYVAX`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         log.debug(f"Initializing tip tilt mirror")
         kpffiu = ktl.cache('kpffiu')
         tthome = ktl.cache('kpfguide', 'TIPTILT_HOME')
@@ -37,7 +37,7 @@ class InitializeTipTilt(KPFTranslatorFunction):
         kpffiu['TTYVAX'].write(home[1])
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         kpffiu = ktl.cache('kpffiu')
         tthome = ktl.cache('kpfguide', 'TIPTILT_HOME')
         home = tthome.read(binary=True)

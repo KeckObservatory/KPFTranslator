@@ -2,13 +2,13 @@ import traceback
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTerminationParameters
 
 
-class SetupExpMeter(KPFTranslatorFunction):
+class SetupExpMeter(KPFFunction):
     '''Configure the exposure meter using the given OB arguments.
 
     Args:
@@ -27,12 +27,12 @@ class SetupExpMeter(KPFTranslatorFunction):
     abortable = False
 
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'Template_Name', allowed_values=['kpf_lamp', 'kpf_sci'])
         check_input(args, 'Template_Version', version_check=True, value_min='0.5')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpf_expmeter = ktl.cache('kpf_expmeter')
         kpfconfig = ktl.cache('kpfconfig')
 
@@ -69,12 +69,12 @@ class SetupExpMeter(KPFTranslatorFunction):
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('--nointensemon', dest="nointensemon",
                             default=False, action="store_true",
                             help='Skip the intensity monitor measurement?')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

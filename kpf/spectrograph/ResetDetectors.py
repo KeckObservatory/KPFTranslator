@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class ResetCaHKDetector(KPFTranslatorFunction):
+class ResetCaHKDetector(KPFFunction):
     '''Resets the Ca HK detector by aborting the exposure
 
     ARGS:
@@ -14,18 +14,18 @@ class ResetCaHKDetector(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         expose = ktl.cache('kpf_hk', 'EXPOSE')
         log.warning(f"Resetting/Aborting: kpf_hk.EXPOSE = abort")
         expose.write('abort')
         log.debug('Reset/abort command sent')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         expstate = ktl.cache('kpf_hk', 'EXPSTATE')
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         log.warning(f"Waiting for kpf_hk to be Ready")
@@ -34,7 +34,7 @@ class ResetCaHKDetector(KPFTranslatorFunction):
             raise FailedToReachDestination(expstate.read(), 'Ready')
 
 
-class ResetExpMeterDetector(KPFTranslatorFunction):
+class ResetExpMeterDetector(KPFFunction):
     '''Resets the exposure meter detector
 
     ARGS:
@@ -42,18 +42,18 @@ class ResetExpMeterDetector(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         expose = ktl.cache('kpf_expmeter', 'EXPOSE')
         log.warning(f"Resetting: kpf_expmeter.EXPOSE = abort")
         expose.write('Reset')
         log.debug('Reset command sent')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         expstate = ktl.cache('kpf_expmeter', 'EXPSTATE')
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         log.warning(f"Waiting for kpf_expmeter to be Ready")
@@ -62,7 +62,7 @@ class ResetExpMeterDetector(KPFTranslatorFunction):
             raise FailedToReachDestination(expstate.read(), 'Ready')
 
 
-class ResetGreenDetector(KPFTranslatorFunction):
+class ResetGreenDetector(KPFFunction):
     '''Resets the kpfgreen detector
 
     ARGS:
@@ -70,11 +70,11 @@ class ResetGreenDetector(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         # Check if the auto reset is already doing this
         current_expstate  = ktl.cache('kpfgreen', 'EXPSTATE')
         current_expstate.read()
@@ -90,7 +90,7 @@ class ResetGreenDetector(KPFTranslatorFunction):
         log.debug('Reset command sent')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         log.warning(f"Waiting for kpfgreen to be Readout or Ready")
         expr = f"($kpfgreen.EXPOSE == 'Ready') or ($kpfgreen.EXPOSE == 'Readout')"
@@ -106,7 +106,7 @@ class ResetGreenDetector(KPFTranslatorFunction):
             log.info(f"kpfexpose.EXPLAINNR = {kpfexpose['EXPLAINNR'].read()}")
 
 
-class ResetRedDetector(KPFTranslatorFunction):
+class ResetRedDetector(KPFFunction):
     '''Resets the kpfred detector
 
     ARGS:
@@ -114,11 +114,11 @@ class ResetRedDetector(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         # Check if the auto reset is already doing this
         current_expstate = ktl.cache('kpfred', 'EXPSTATE')
         current_expstate.read()
@@ -134,7 +134,7 @@ class ResetRedDetector(KPFTranslatorFunction):
         log.debug('Reset command sent')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         log.warning(f"Waiting for kpfred to be Readout or Ready")
         expr = f"($kpfred.EXPOSE == 'Ready') or ($kpfred.EXPOSE == 'Readout')"
@@ -150,7 +150,7 @@ class ResetRedDetector(KPFTranslatorFunction):
             log.info(f"kpfexpose.EXPLAINNR = {kpfexpose['EXPLAINNR'].read()}")
 
 
-class ResetDetectors(KPFTranslatorFunction):
+class ResetDetectors(KPFFunction):
     '''Resets the kpfexpose service by setting kpfexpose.EXPOSE = Reset
 
     Description from Will Deich:
@@ -164,18 +164,18 @@ class ResetDetectors(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfexpose = ktl.cache('kpfexpose')
         log.warning(f"Resetting: kpfexpose.EXPOSE = Reset")
         kpfexpose['EXPOSE'].write('Reset')
         log.debug('Reset command sent')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         log.debug(f'Waiting {timeout:.1f} s for EXPOSE to be Readout or Ready')
         expr = f"($kpfexpose.EXPOSE == 'Ready') or ($kpfexpose.EXPOSE == 'Readout')"
@@ -192,7 +192,7 @@ class ResetDetectors(KPFTranslatorFunction):
             log.info(f"kpfexpose.EXPLAINNR = {kpfexpose['EXPLAINNR'].read()}")
 
 
-class RecoverDetectors(KPFTranslatorFunction):
+class RecoverDetectors(KPFFunction):
     '''Try to examine the state of all detectors an run the appropriate recovery
     
     ARGS:
@@ -200,11 +200,11 @@ class RecoverDetectors(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         log.warning('Attempting a detector recovery')
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         kpfmon = ktl.cache('kpfmon')
@@ -229,7 +229,7 @@ class RecoverDetectors(KPFTranslatorFunction):
             log.warning(f'kpfmon.CAMSTATESTA={camera_status}. No action taken.')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         log.debug(f'Waiting {timeout:.1f} s for EXPOSE to be Readout or Ready')
         expr = f"($kpfexpose.EXPOSE == 'Ready') or ($kpfexpose.EXPOSE == 'Readout')"

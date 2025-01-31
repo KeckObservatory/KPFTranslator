@@ -6,9 +6,9 @@ import yaml
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFScript
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
@@ -16,7 +16,7 @@ from kpf.scripts.ExecuteSlewCal import ExecuteSlewCal
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.fiu.InitializeTipTilt import InitializeTipTilt
 from kpf.fiu.ConfigureFIU import ConfigureFIU
-from kpf.utils.SetTargetInfo import SetTargetInfo
+from kpf.scripts.SetTargetInfo import SetTargetInfo
 
 
 class ConfigureForAcquisition(KPFScript):
@@ -67,7 +67,7 @@ class ConfigureForAcquisition(KPFScript):
             with open(slewcal_argsfile, 'r') as file:
                 slewcal_OBdict = yaml.safe_load(file)
                 slewcal_OB = ObservingBlock(slewcal_OBdict)
-            ExecuteSlewCal.execute({}, OB=slewcal_OB})
+            ExecuteSlewCal.execute({}, OB=slewcal_OB)
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})

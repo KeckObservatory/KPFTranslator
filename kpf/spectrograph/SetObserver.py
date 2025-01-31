@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetObserver(KPFTranslatorFunction):
+class SetObserver(KPFFunction):
     '''Sets the OBSERVER keyword for the science detectors in the kpfexpose
     keyword service.
     
@@ -15,11 +15,11 @@ class SetObserver(KPFTranslatorFunction):
     :observer: `str` The desired value of the OBSERVER keyword.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'observer')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfexpose = ktl.cache('kpfexpose')
         observer = args.get('observer')
         log.info(f"Setting OBSERVER to {observer}")
@@ -28,7 +28,7 @@ class SetObserver(KPFTranslatorFunction):
         time.sleep(time_shim)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         observer = args.get('observer')
         timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
         expr = f'($kpfexpose.OBSERVER == "{observer}")'
@@ -39,7 +39,7 @@ class SetObserver(KPFTranslatorFunction):
                                            observer.strip())
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('observer', type=str,
                             help='The OBSERVER keyword')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

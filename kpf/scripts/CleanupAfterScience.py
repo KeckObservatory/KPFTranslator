@@ -2,17 +2,17 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFScript
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log, clear_script_keywords)
 from kpf.fiu.StopTipTilt import StopTipTilt
 from kpf.spectrograph.StopAgitator import StopAgitator
-from kpf.utils.SetTargetInfo import SetTargetInfo
+from kpf.scripts.SetTargetInfo import SetTargetInfo
 
 
-class CleanupAfterScience(KPFTranslatorFunction):
+class CleanupAfterScience(KPFScript):
     '''Script which cleans up at the end of Science OBs.
 
     Can be called by `ddoi_script_functions.post_observation_cleanup`.

@@ -5,9 +5,9 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFScript
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
@@ -34,7 +34,7 @@ from kpf.spectrograph.WaitForReadout import WaitForReadout
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
-from kpf.utils.SetTargetInfo import SetTargetInfo
+from kpf.scripts.SetTargetInfo import SetTargetInfo
 
 
 class ExecuteSlewCal(KPFScript):

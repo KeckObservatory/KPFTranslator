@@ -2,12 +2,12 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class VerifyCurrentBase(KPFTranslatorFunction):
+class VerifyCurrentBase(KPFFunction):
     '''Check whether the tip tilt system's target pixel (kpffiu.CURRENT_BASE)
     is consistent with the selected pointing origin (dcs.PONAME)
 
@@ -19,11 +19,11 @@ class VerifyCurrentBase(KPFTranslatorFunction):
     - `kpfguide.SKY_BASE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         ponamekw = ktl.cache('dcs1', 'PONAME')
         poname = ponamekw.read().upper()
 
@@ -58,5 +58,5 @@ class VerifyCurrentBase(KPFTranslatorFunction):
         return poname_match
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

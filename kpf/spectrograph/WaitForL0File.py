@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class WaitForL0File(KPFTranslatorFunction):
+class WaitForL0File(KPFFunction):
     '''Wait a short time to see if `kpfassemble` writes a new L0 file.  If it
     does, print a log line with that file name.
     
@@ -14,11 +14,11 @@ class WaitForL0File(KPFTranslatorFunction):
     - `kpfassemble.LOUTFILE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         LOUTFILE = ktl.cache('kpfassemble', 'LOUTFILE')
         initial_LOUTFILE = LOUTFILE.read()
         timeout = 10
@@ -31,5 +31,5 @@ class WaitForL0File(KPFTranslatorFunction):
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

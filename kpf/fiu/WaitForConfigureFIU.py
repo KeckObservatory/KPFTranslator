@@ -51,7 +51,7 @@ class WaitForConfigureFIUOnce(KPFFunction):
 ##-----------------------------------------------------------------------------
 ## WaitForConfigureFIU
 ##-----------------------------------------------------------------------------
-class WaitForConfigureFIU(KPFTranslatorFunction):
+class WaitForConfigureFIU(KPFFunction):
     '''Wait for the FIU to reach specified mode (kpffiu.MODE). This will retry
     the configure command if the system fails to reach its destination.
 

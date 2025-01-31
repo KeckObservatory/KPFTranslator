@@ -4,12 +4,12 @@ import re
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class FVCPower(KPFTranslatorFunction):
+class FVCPower(KPFFunction):
     '''Turn on or off the power for the specified FVC camera.
 
     Args:
@@ -23,11 +23,11 @@ class FVCPower(KPFTranslatorFunction):
     - `kpfpower.KPFFVC3`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL'])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         camera = args.get('camera')
         camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3}[camera]
         powerkw = ktl.cache('kpfpower', f'KPFFVC{camnum}')
@@ -39,7 +39,7 @@ class FVCPower(KPFTranslatorFunction):
             time.sleep(shim)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         camera = args.get('camera')
         camnum = {'SCI': 1, 'CAHK': 2, 'CAL': 3}[camera]
         powerkw = ktl.cache('kpfpower', f'KPFFVC{camnum}')
@@ -50,11 +50,11 @@ class FVCPower(KPFTranslatorFunction):
             raise FailedToReachDestination(powerkw.read(), dest)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('camera', type=str,
                             choices=['SCI', 'CAHK', 'CAL'],
                             help='The FVC camera')
         parser.add_argument('power', type=str,
                             choices=['on', 'off'],
                             help='Desired power state: "on" or "off"')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

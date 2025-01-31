@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class StopTipTilt(KPFTranslatorFunction):
+class StopTipTilt(KPFFunction):
     '''Stop the tip tilt control loop.  This uses the ALL_LOOPS keyword to
     stop all functions including DAR (via DAR_ENABLE), tip tilt calculations
     (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to
@@ -19,16 +19,16 @@ class StopTipTilt(KPFTranslatorFunction):
     - `kpfguide.ALL_LOOPS`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         kpfguide['ALL_LOOPS'].write('Inactive')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         TIPTILT_CALC = ktl.cache('kpfguide', 'TIPTILT_CALC')
         success = TIPTILT_CALC.waitFor("== 'Inactive'")

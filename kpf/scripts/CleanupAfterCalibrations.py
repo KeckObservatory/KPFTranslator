@@ -19,7 +19,7 @@ from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.StopAgitator import StopAgitator
 from kpf.spectrograph.WaitForL0File import WaitForL0File
 from kpf.spectrograph.WaitForReady import WaitForReady
-from kpf.utils.SetTargetInfo import SetTargetInfo
+from kpf.scripts.SetTargetInfo import SetTargetInfo
 
 
 class CleanupAfterCalibrations(KPFScript):
