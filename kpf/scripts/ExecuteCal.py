@@ -147,7 +147,7 @@ class ExecuteCal(KPFFunction):
                     SetLFCtoStandbyHigh.execute({})
                     return
             # Take intensity monitor reading
-            if calsource != 'LFCFiber' and not calibration.get('nointensemon', False):
+            if calsource != 'LFCFiber' and calibration.get('IntensityMonitor', False):
                 WaitForLampWarm.execute(calibration)
                 TakeIntensityReading.execute({})
         ## Setup SoCal
