@@ -20,7 +20,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import Qt
 
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.utils.EstimateOBDuration import EstimateOBDuration
+from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 
 
