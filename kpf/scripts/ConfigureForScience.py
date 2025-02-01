@@ -13,6 +13,7 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import register_script, check_scriptstop, add_script_log
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.SetCalSource import SetCalSource
+from kpf.calbench.SetSimulCalSource import SetSimulCalSource
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.fiu.VerifyCurrentBase import VerifyCurrentBase
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
@@ -77,13 +78,7 @@ class ConfigureForScience(KPFScript):
         check_scriptstop()
 
         # Set Octagon
-        kpfconfig = ktl.cache('kpfconfig')
-        calsource = kpfconfig['SIMULCALSOURCE'].read()
-        octagon = ktl.cache('kpfcal', 'OCTAGON').read()
-        log.debug(f"Current OCTAGON = {octagon}, desired = {calsource}")
-        if octagon != calsource:
-            log.info(f"Set CalSource/Octagon: {calsource}")
-            SetCalSource.execute({'CalSource': calsource, 'wait': False})
+        SetSimulCalSource.execute({})
 
         check_scriptstop()
 

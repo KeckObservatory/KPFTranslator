@@ -54,6 +54,8 @@ links:
         cmd: calbench.SetND1.SetND1
     SetND2:
         cmd: calbench.SetND2.SetND2
+    SetSimulCalSource:
+        cmd: calbench.SetSimulCalSource.SetSimulCalSource
     TakeIntensityReading:
         cmd: calbench.TakeIntensityReading.TakeIntensityReading
     WaitForCalSource:
@@ -290,8 +292,6 @@ links:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
         cmd: utils.SetOutdirs.SetOutdirs
-    SetSimulCalSource:
-        cmd: utils.SetSimulCalSource.SetSimulCalSource
     SetTargetInfo:
         cmd: utils.SetTargetInfo.SetTargetInfo
     StartGUIs:
