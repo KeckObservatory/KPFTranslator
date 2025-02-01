@@ -164,6 +164,8 @@ links:
     SetFVCExpTime:
         cmd: fvc.SetFVCExpTime.SetFVCExpTime
     # Guider
+    CollectGuiderDarkCubes:
+        cmd: scripts.CollectGuiderDarkCubes.CollectGuiderDarkCubes
     DisplayGuiderContinuous:
         cmd: guider.DisplayGuiderContinuous.DisplayGuiderContinuous
     GetGaiaStars:
@@ -201,8 +203,6 @@ links:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations
     CleanupAfterScience:
         cmd: scripts.CleanupAfterScience.CleanupAfterScience
-    CollectGuiderDarkCubes:
-        cmd: scripts.CollectGuiderDarkCubes.CollectGuiderDarkCubes
     ConfigureForAcquisition:
         cmd: scripts.ConfigureForAcquisition.ConfigureForAcquisition
     ConfigureForCalibrations:

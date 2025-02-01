@@ -5,9 +5,9 @@ import datetime
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log, clear_script_keywords)
 from kpf.fiu.ConfigureFIU import ConfigureFIU
@@ -16,7 +16,7 @@ from kpf.guider.SetGuiderGain import SetGuiderGain
 from kpf.guider.TakeGuiderCube import TakeGuiderCube
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 
-class CollectGuiderDarkCubes(KPFTranslatorFunction):
+class CollectGuiderDarkCubes(KPFFunction):
     '''Obtains CRED2 "trigger file" data cubes under dark conditions at each of
     the three gain settings for the detector.
 
@@ -40,13 +40,13 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
     '''
     @classmethod
     @obey_scriptrun
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
     @register_script(Path(__file__).name, os.getpid())
     @add_script_log(Path(__file__).name.replace(".py", ""))
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         output_file = Path('/s/sdata1701/CRED2DarkCubes/CRED2_dark_cubes.txt')
         OUTDIR = ktl.cache('kpfguide', 'OUTDIR')
         original_OUTDIR = OUTDIR.read()
@@ -119,5 +119,5 @@ class CollectGuiderDarkCubes(KPFTranslatorFunction):
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
