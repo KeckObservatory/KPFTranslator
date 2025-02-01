@@ -96,9 +96,9 @@ class RunOB(KPFScript):
         # Execute science observations
         if len(OB.Observations) > 0:
             log.info(f'Configuring for Observations')
-            ConfigureForScience.execute(args, OB=OB)
-            WaitForConfigureScience.execute(args, OB=OB)
             for i,observation in enumerate(OB.Observations):
+                ConfigureForScience.execute(observation)
+                WaitForConfigureScience.execute(observation)
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
                 ExecuteSci.execute(observation)
             log.info(f'Cleaning up after Observations')

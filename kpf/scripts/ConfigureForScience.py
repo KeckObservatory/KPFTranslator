@@ -21,37 +21,25 @@ from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.WaitForReady import WaitForReady
 
 
-class ConfigureForScience(KPFScript):
+class ConfigureForScience(KPFFunction):
     '''Script which configures the instrument for Science observations.
 
     - Sets octagon / simulcal source
     - Sets source select shutters
     - Set triggered detectors
 
-    This must have arguments as input, either from a file using the `-f` command
-    line tool, or passed in from the execution engine.
-
     ARGS:
     =====
-    :OB: `dict` A fully specified science observing block (OB).
+
     '''
     @classmethod
-    def pre_condition(cls, args, OB=None):
+    def pre_condition(cls, observation):
         pass
 
     @classmethod
-    def perform(cls, args, OB=None):
-        if isinstance(OB, dict):
-            OB = ObservingBlock(OB)
+    def perform(cls, observation):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
-        for key in OB:
-            if key not in ['SEQ_Observations']:
-                log.debug(f"  {key}: {OB[key]}")
-            else:
-                log.debug(f"  {key}:")
-                for entry in OB[key]:
-                    log.debug(f"    {entry}")
         log.info('-------------------------')
 
         check_scriptstop()
@@ -75,8 +63,6 @@ class ConfigureForScience(KPFScript):
             if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
                 raise KPFException("User chose to halt execution")
 
-        check_scriptstop()
-
         # Set Octagon
         SetSimulCalSource.execute({})
 
@@ -90,17 +76,17 @@ class ConfigureForScience(KPFScript):
         # Set source select shutters
         log.info(f"Set Source Select Shutters")
         SetSourceSelectShutters.execute({'SSS_Science': True,
-                                         'SSS_Sky': not OB.get('BlockSky', False),
+                                         'SSS_Sky': not observation.get('BlockSky', False),
                                          'SSS_SoCalSci': False,
                                          'SSS_SoCalCal': False,
                                          'SSS_CalSciSky': False})
 
         # Set Triggered Detectors
-        OB['TriggerGuide'] = True
-        SetTriggeredDetectors.execute(OB)
+        observation['TriggerGuide'] = True
+        SetTriggeredDetectors.execute(observation)
 
         check_scriptstop()
 
     @classmethod
-    def post_condition(cls, args, OB=None):
+    def post_condition(cls, observation):
         pass
