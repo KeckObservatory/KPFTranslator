@@ -25,10 +25,25 @@ from kpf.scripts.SetTargetInfo import SetTargetInfo
 class CleanupAfterCalibrations(KPFScript):
     '''Script which cleans up after OBs with calibrations.
 
-    ARGS:
-    =====
-    * __leave_lamps_on__ - `bool` Leave calibration lamps on when done?
-    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
+    Args:
+        leave_lamps_on (bool): Leave calibration lamps on when done?
+        OB (ObservingBlock): A valid observing block (OB).
+
+    KTL Keywords Used:
+
+    - `kpfconfig.USEAGITATOR`
+    - `kpf_expmeter.USETHRESHOLD`
+
+    Functions Called:
+    - `kpf.calbench.CalLampPower`
+    - `kpf.calbench.IsCalSourceEnabled`
+    - `kpf.calbench.SetLFCtoStandbyHigh`
+    - `kpf.fiu.ConfigureFIU`
+    - `kpf.spectrograph.SetObject`
+    - `kpf.spectrograph.StopAgitator`
+    - `kpf.spectrograph.WaitForL0File`
+    - `kpf.spectrograph.WaitForReady`
+    - `kpf.scripts.SetTargetInfo`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):
@@ -60,8 +75,7 @@ class CleanupAfterCalibrations(KPFScript):
                     elif lamp == 'LFCFiber':
                         SetLFCtoStandbyHigh.execute({})
 
-        kpfconfig = ktl.cache('kpfconfig')
-        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        runagitator = ktl.cache('kpfconfig', 'USEAGITATOR').read(binary=True)
         if runagitator is True:
             StopAgitator.execute({})
 
@@ -70,8 +84,8 @@ class CleanupAfterCalibrations(KPFScript):
 
         # Turn off exposure meter controlled exposure
         log.debug('Clearing kpf_expmeter.USETHRESHOLD')
-        kpf_expmeter = ktl.cache('kpf_expmeter')
-        kpf_expmeter['USETHRESHOLD'].write('No')
+        USETHRESHOLD = ktl.cache('kpf_expmeter', 'USETHRESHOLD')
+        USETHRESHOLD.write('No')
 
         # Set OBJECT back to empty string
         log.info('Waiting for readout to finish')

@@ -29,7 +29,7 @@ class PredictGuiderParameters(KPFFunction):
     Args:
         Jmag (float): The J magnitude of the target.
 
-    Scripts Called:
+    Functions Called:
 
      - `kpf.guider.SetGuiderGain`
      - `kpf.guider.SetGuiderFPS`

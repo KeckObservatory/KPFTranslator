@@ -15,9 +15,20 @@ from kpf.scripts.SetTargetInfo import SetTargetInfo
 class CleanupAfterScience(KPFScript):
     '''Script which cleans up at the end of Science OBs.
 
-    ARGS:
-    =====
-    :OB: `dict` A fully specified science observing block (OB).
+    Args:
+        OB (ObservingBlock): A valid observing block (OB).
+
+    KTL Keywords Used:
+
+    - `kpfconfig.USEAGITATOR`
+    - `kpf_expmeter.USETHRESHOLD`
+    - `kpfguide.SKY_OFFSET`
+
+    Functions Called:
+
+    - `kpf.fiu.StopTipTilt`
+    - `kpf.spectrograph.StopAgitator`
+    - `kpf.scripts.SetTargetInfo`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):
@@ -33,8 +44,7 @@ class CleanupAfterScience(KPFScript):
 
         StopTipTilt.execute({})
 
-        kpfconfig = ktl.cache('kpfconfig')
-        runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
+        runagitator = ktl.cache('kpfconfig', 'USEAGITATOR').read(binary=True)
         if runagitator is True:
             StopAgitator.execute({})
 
@@ -43,8 +53,8 @@ class CleanupAfterScience(KPFScript):
         SetTargetInfo.execute({})
         # Turn off exposure meter controlled exposure
         log.debug('Clearing kpf_expmeter.USETHRESHOLD')
-        kpf_expmeter = ktl.cache('kpf_expmeter')
-        kpf_expmeter['USETHRESHOLD'].write('No')
+        USETHRESHOLD = ktl.cache('kpf_expmeter', 'USETHRESHOLD')
+        USETHRESHOLD.write('No')
         # Set SKY_OFFSET back to 0 0
         log.debug('Clearing kpfguide.SKY_OFFSET')
         sky_offset = ktl.cache('kpfguide', 'SKY_OFFSET')

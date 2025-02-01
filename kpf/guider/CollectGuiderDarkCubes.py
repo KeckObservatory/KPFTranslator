@@ -33,10 +33,6 @@ class CollectGuiderDarkCubes(KPFFunction):
     - Set GAIN = Low
     - Take 10s trigger cube
     - Set kpfguide.SENSORSETP = 0
-
-    ARGS:
-    =====
-    None
     '''
     @classmethod
     @obey_scriptrun

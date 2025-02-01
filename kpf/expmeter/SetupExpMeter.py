@@ -20,7 +20,7 @@ class SetupExpMeter(KPFFunction):
     - `kpf_expmeter.USETHRESHOLD`
     - `kpfconfig.EXPMETER_ENABLED`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.expmeter.SetExpMeterTerminationParameters`
     '''

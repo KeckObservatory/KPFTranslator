@@ -10,7 +10,7 @@ from kpf.ao.SetAFStoNGS import SetAFStoNGS
 class SetupAOforACAM(KPFFunction):
     '''Set up AO in the safe mode for ACAM operation to assist KPF acquisition
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.ao.SetAFMtoMirror`
     - `kpf.ao.SetAFStoNGS`

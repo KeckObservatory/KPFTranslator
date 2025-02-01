@@ -17,7 +17,7 @@ class SetLFCtoAstroComb(KPFFunction):
     - `kpfcal.OPERATIONMODE`
     - `kpfmon.HB_MENLOSTA`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.calbench.WaitForLFCReady`
     '''

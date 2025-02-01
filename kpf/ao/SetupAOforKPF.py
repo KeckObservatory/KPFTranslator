@@ -27,7 +27,7 @@ class SetupAOforKPF(KPFFunction):
 
     - `ao.PCSFNAME`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.ao.SetAORotatorManual`
     - `kpf.ao.SetAORotator`

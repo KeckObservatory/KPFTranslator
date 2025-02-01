@@ -15,7 +15,7 @@ class WaitForFlatFieldFiberPos(KPFFunction):
             "13.2 mm f/2.3", "Open".
         wait (bool): Wait for move to complete before returning? default: True
 
-    ## KTL Keywords Used
+    KTL Keywords Used
 
     - `kpfcal.FF_FIBERPOS`
     '''

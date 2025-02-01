@@ -52,7 +52,7 @@ class TakeExpMeterBiases(KPFFunction):
     - `kpf_expmeter.FITSFILE`
     - `kpfexpose.TRIG_TARG`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.calbench.SetCalSource`
     - `kpf.calbench.WaitForCalSource`

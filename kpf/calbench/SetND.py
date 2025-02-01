@@ -23,7 +23,7 @@ class SetND(KPFFunction):
             `OD 0.8`, `OD 1.0`, `OD 4.0`
         wait (bool): Wait for move to complete before returning? default: True
 
-    Scripts Called:
+    Functions Called:
 
      - `kpf.calbench.SetND1`
      - `kpf.calbench.SetND2`

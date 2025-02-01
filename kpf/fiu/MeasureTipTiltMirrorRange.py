@@ -78,7 +78,7 @@ class MeasureTipTiltMirrorRange(KPFFunction):
     - `kpffiu.TTYMED`
     - `kpfguide.TIPTILT_HOME`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.fiu.InitializeTipTilt`
     - `kpf.fiu.ShutdownTipTilt`

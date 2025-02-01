@@ -20,7 +20,7 @@ class TakeGuiderExposure(KPFFunction):
     - `kpfguide.EXPTIME`
     - `kpfguide.LASTFILE`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.guider.TriggerSingleGuiderExposure`
     - `kpf.guider.GrabGuiderExposure`

@@ -20,7 +20,7 @@ class TakeIntensityReading(KPFFunction):
     - `kpfcal.AVG`
     - `kpfcal.MEASURING`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.utils.SendEmail`
     '''

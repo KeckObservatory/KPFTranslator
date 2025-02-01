@@ -21,7 +21,7 @@ class WaitForND(KPFFunction):
             calibration fiber. Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`,
             `OD 0.8`, `OD 1.0`, `OD 4.0`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.calbench.WaitForND1`
     - `kpf.calbench.WaitForND2`

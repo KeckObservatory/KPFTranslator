@@ -24,7 +24,7 @@ class ConfigureFIU(KPFFunction):
 
     - `kpffiu.MODE`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.calbench.ConfigureFIUOnce`
     - `kpf.calbench.WaitForConfigureFIU`

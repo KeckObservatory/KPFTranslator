@@ -16,10 +16,13 @@ class WaitForConfigureFIUOnce(KPFFunction):
 
     This is intended to be wrapped by :py:func:`ConfigureFIU` to handle retries.
 
-    ARGS:
-    =====
-    :mode: The desired FIU mode.  One of:
-           Stowed, Alignment, Acquisition, Observing, Calibration
+    Args:
+        mode (str): The desired FIU mode. Allowed values: Stowed, Alignment,
+            Acquisition, Observing, Calibration
+
+    KTL Keywords Used:
+
+    - `kpffiu.MODE`
     '''
     @classmethod
     def pre_condition(cls, args):

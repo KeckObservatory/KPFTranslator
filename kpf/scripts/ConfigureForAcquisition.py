@@ -11,9 +11,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import register_script, check_scriptstop, add_script_log
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-# from kpf.scripts.ExecuteSlewCal import ExecuteSlewCal
 from kpf.calbench.SetCalSource import SetCalSource
-from kpf.fiu.InitializeTipTilt import InitializeTipTilt
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.scripts.SetTargetInfo import SetTargetInfo
 
@@ -25,18 +23,20 @@ class ConfigureForAcquisition(KPFScript):
     - Sets FIU mode
     - Executes Slew Cal
 
-    ARGS:
-    =====
-    :OB: `dict` A fully specified science observing block (OB).
+    Args:
+        OB (ObservingBlock): A valid observing block (OB).
+
+    KTL Keywords Used:
+    - `kpfconfig.SIMULCALSOURCE`
+
+    Functions Called:
+    - `kpf.calbench.SetCalSource`
+    - `kpf.fiu.ConfigureFIU`
+    - `kpf.scripts.SetTargetInfo`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):
-        # Check Slewcals
-        kpfconfig = ktl.cache('kpfconfig')
-        if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
-            slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
-            if slewcal_argsfile.exists() is False:
-                raise FailedPreCondition(f"Slew cal file {slewcal_argsfile} does not exist")
+        pass
 
     @classmethod
     def perform(cls, args, OB=None):
@@ -46,11 +46,8 @@ class ConfigureForAcquisition(KPFScript):
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
 
-        kpfconfig = ktl.cache('kpfconfig')
-        kpf_expmeter = ktl.cache('kpf_expmeter')
-
         # Set Octagon
-        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        calsource = ktl.cache('kpfconfig', 'SIMULCALSOURCE').read()
         octagon = ktl.cache('kpfcal', 'OCTAGON').read()
         log.debug(f"Current OCTAGON = {octagon}, desired = {calsource}")
         if octagon != calsource:

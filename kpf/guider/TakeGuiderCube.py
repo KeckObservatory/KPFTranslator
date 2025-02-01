@@ -25,7 +25,7 @@ class TakeGuiderCube(KPFFunction):
     - `kpfguide.LASTTRIGFILE`
     - `kpfguide.ALL_LOOPS`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.guider.StartTriggerFile`
     - `kpf.guider.StopTriggerFile`

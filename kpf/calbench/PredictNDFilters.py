@@ -218,9 +218,12 @@ class PredictNDFilters(KPFFunction):
     '''Predict which ND filters should be used for simultaneous calibrations.
 
     Args:
-        ? (float): 
+        Gmag (float): The Gaia G magnitude of the target.
+        Teff (float): The effective temperature of the target.
+        ExpTime (float): The exposure time.
+        set (bool): Set these values or just calculate?
 
-    Scripts Called:
+    Functions Called:
 
      - `kpf.calbench.SetND`
     '''
