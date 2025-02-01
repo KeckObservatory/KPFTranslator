@@ -111,9 +111,9 @@ class RunOB(KPFScript):
     @classmethod
     def add_cmdline_args(cls, parser):
         parser.add_argument('--leave_lamps_on', dest="leave_lamps_on",
-                            default=False, action="store_true",
-                            help='Leave the calibration lamps on after cleanup phase?')
+            default=False, action="store_true",
+            help='Leave the calibration lamps on after cleanup phase?')
         parser.add_argument('--waitforscript', dest="waitforscript",
-                            default=False, action="store_true",
-                            help='Wait for running script to end before starting?')
+            default=False, action="store_true",
+            help='Wait for running script to end before starting?')
         return super().add_cmdline_args(parser)
