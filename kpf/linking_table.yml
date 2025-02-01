@@ -152,8 +152,6 @@ links:
         cmd: fiu.VerifyCurrentBase.VerifyCurrentBase
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
-    WaitForTipTilt:
-        cmd: fiu.WaitForTipTilt.WaitForTipTilt
     # FVCs
     FVCPower:
         cmd: fvc.FVCPower.FVCPower
@@ -174,8 +172,6 @@ links:
         cmd: guider.GuiderLastfile.GuiderLastfile
     GuiderOutdir:
         cmd: guider.GuiderOutdir.GuiderOutdir
-    OptimizeGuiderExposure:
-        cmd: guider.OptimizeGuiderExposure.OptimizeGuiderExposure
     PredictGuiderParameters:
         cmd: guider.PredictGuiderParameters.PredictGuiderParameters
     SetGuiderExpTime:
