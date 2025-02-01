@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class StartTriggerFile(KPFTranslatorFunction):
+class StartTriggerFile(KPFFunction):
     '''Start a "trigger file" from the guide camera.
 
     KTL Keywords Used:
@@ -14,16 +14,16 @@ class StartTriggerFile(KPFTranslatorFunction):
     - `kpfguide.TRIGGER`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         cube = kpfguide['TRIGCUBE'].read()
         log.info(f"Start guider trigger file data collection: TRIGCUBE={cube}")
         kpfguide['TRIGGER'].write('Active')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

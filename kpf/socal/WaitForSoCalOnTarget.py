@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class WaitForSoCalOnTarget(KPFTranslatorFunction):
+class WaitForSoCalOnTarget(KPFFunction):
     '''Returns True if, within a set timeout, a set of conditions which suggest
     that SoCal is on the Sun accurately evaluate to True.
 
@@ -14,11 +14,11 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         timeout = cfg.getfloat('SoCal', 'enclosure_status_time', fallback=10)
         pyrirrad_threshold = cfg.getfloat('SoCal', 'pyrirrad_threshold', fallback=1000)
         expr = '($kpfsocal.ENCSTA == 0) '
@@ -57,5 +57,5 @@ class WaitForSoCalOnTarget(KPFTranslatorFunction):
         return on_target
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

@@ -1,10 +1,10 @@
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.fvc.SetFVCExpTime import SetFVCExpTime
 
 
-class PredictFVCParameters(KPFTranslatorFunction):
+class PredictFVCParameters(KPFFunction):
     '''Estimate the exposure time given the stellar Jmag and which camera.
 
     Based on scaling from a single, poorly measured data point:
@@ -14,11 +14,11 @@ class PredictFVCParameters(KPFTranslatorFunction):
         Gmag (float): The G magnitude of the target.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'Gmag', allowed_types=[int, float])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         Gmag = args.get('Gmag')
         delta_mag = 4 - Gmag
         flux_ratio = 10**(delta_mag/2.5)
@@ -49,7 +49,7 @@ class PredictFVCParameters(KPFTranslatorFunction):
         return result
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod

@@ -4,9 +4,9 @@ import ktl
 
 import numpy as np
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.fiu.InitializeTipTilt import InitializeTipTilt
 from kpf.fiu.ShutdownTipTilt import ShutdownTipTilt
 
@@ -64,7 +64,7 @@ def find_new_limit(ax, commanded_position, n=5,
         return new_limit
 
 
-class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
+class MeasureTipTiltMirrorRange(KPFFunction):
     '''Measure the range of the tip tilt mirror.  Prints to screen the keyword
     modify commands to update the range parameters.
 
@@ -84,11 +84,11 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
     - `kpf.fiu.ShutdownTipTilt`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         # Measure tip tilt ranges
         log.info('Beginning MeasureTipTiltMirrorRange')
         InitializeTipTilt.execute({})
@@ -153,11 +153,11 @@ class MeasureTipTiltMirrorRange(KPFTranslatorFunction):
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('--repeats', type=int, default=1,
                             help="The number of iterations to use in the calculation")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

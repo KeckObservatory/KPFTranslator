@@ -6,16 +6,16 @@ import numpy as np
 import ktl
 import keygrabber
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.utils.SendEmail import SendEmail
 
 
 ##-------------------------------------------------------------------------
 ## CheckDewarWeights
 ##-------------------------------------------------------------------------
-class CheckDewarWeights(KPFTranslatorFunction):
+class CheckDewarWeights(KPFFunction):
     '''Check the weight of the red and green dewars and send email if they are
     lower than expected.
 
@@ -25,11 +25,11 @@ class CheckDewarWeights(KPFTranslatorFunction):
     :email: `bool` If True, send email if dewar weight is low
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         dewar = args.get('dewar', 'green')
 
         fill_time = cfg.getint('LN2', 'fill_time', fallback=21)
@@ -66,12 +66,12 @@ class CheckDewarWeights(KPFTranslatorFunction):
                     log.error(email_err)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('dewar', type=str,
                             choices=['green', 'red'],
                             default='green',
@@ -81,4 +81,4 @@ class CheckDewarWeights(KPFTranslatorFunction):
                             default=False, action="store_true",
                             help='Send email if dewar weight is low')
 
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

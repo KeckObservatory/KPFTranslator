@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class ShutdownTipTilt(KPFTranslatorFunction):
+class ShutdownTipTilt(KPFFunction):
     '''Shutdown the tip tilt system by setting the control mode to open loop
     and setting the target values in X and Y to 0.
 
@@ -20,11 +20,11 @@ class ShutdownTipTilt(KPFTranslatorFunction):
     - `kpfguide.TIPTILT_HOME`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         kpffiu = ktl.cache('kpffiu')
         xopen = kpffiu['TTXSRV'].read() == 'Open'
@@ -52,7 +52,7 @@ class ShutdownTipTilt(KPFTranslatorFunction):
             kpffiu['TTYSRV'].write('open')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         success1 = ktl.waitFor('($kpffiu.TTXSRV == open)', timeout=timeout)
         success2 = ktl.waitFor('($kpffiu.TTYSRV == open)', timeout=timeout)

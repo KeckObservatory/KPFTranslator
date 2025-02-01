@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.utils.telsched import get_schedule
 from kpf.spectrograph.SetObserver import SetObserver
 from kpf.spectrograph.SetProgram import SetProgram
@@ -14,7 +14,7 @@ from kpf.spectrograph.SetProgram import SetProgram
 ##-----------------------------------------------------------------------------
 ## SetObserverFromSchedule
 ##-----------------------------------------------------------------------------
-class SetObserverFromSchedule(KPFTranslatorFunction):
+class SetObserverFromSchedule(KPFFunction):
     '''Look up the telescope schedule and try to determine the observer names
     based on the current date and the scheduled programs.
 
@@ -27,11 +27,11 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
     :progname: `str` The program name to set if a choice is needed.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         utnow = datetime.utcnow()
         date = utnow-timedelta(days=1)
         date_str = date.strftime('%Y-%m-%d')
@@ -87,5 +87,5 @@ class SetObserverFromSchedule(KPFTranslatorFunction):
         SetObserver.execute({'observer': observers})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

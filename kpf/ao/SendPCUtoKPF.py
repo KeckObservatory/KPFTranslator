@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SendPCUtoKPF(KPFTranslatorFunction):
+class SendPCUtoKPF(KPFFunction):
     '''Send the PCU stage to the "kpf" named position.
 
     KTL Keywords Used:
@@ -15,7 +15,7 @@ class SendPCUtoKPF(KPFTranslatorFunction):
     - `ao.PCSFSTST`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         ao = ktl.cache('ao')
         success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=120)
         if success is False:
@@ -25,7 +25,7 @@ class SendPCUtoKPF(KPFTranslatorFunction):
             raise FailedPreCondition('PCU must be at home before moving to KPF')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         PCSstagekw = ktl.cache('ao', 'PCSFNAME')
         log.info(f"Sending PCU to KPF")
         PCSstagekw.write('kpf')
@@ -33,7 +33,7 @@ class SendPCUtoKPF(KPFTranslatorFunction):
         time.sleep(shim_time)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         PCSstagekw = ktl.cache('ao', 'PCSFSTST')
         timeout = cfg.getfloat('times', 'ao_pcu_move_time', fallback=150)
         success = PCSstagekw.waitfor("== INPOS", timeout=timeout)

@@ -4,9 +4,9 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.expmeter.BuildMasterBias import BuildMasterBias
@@ -17,7 +17,7 @@ from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.spectrograph.WaitForReady import WaitForReady
 
 
-class TakeExpMeterBiases(KPFTranslatorFunction):
+class TakeExpMeterBiases(KPFFunction):
     '''Take a set of bias frames for the exposure meter.
 
     Obeys kpfconfig.ALLOWSCHEDULEDCALS (will not run if that is set to No)
@@ -63,7 +63,7 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
     '''
     @classmethod
     @obey_scriptrun
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'nExp', allowed_types=[int])
         kpf_expmeter = ktl.cache('kpf_expmeter')
         # Check exposure meter enabled
@@ -86,7 +86,7 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
     @classmethod
     @register_script(Path(__file__).name, os.getpid())
     @add_script_log(Path(__file__).name.replace(".py", ""))
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         # Check if we're ok to take data
         allowscheduledcals = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
         if allowscheduledcals.read(binary=True) == False:
@@ -168,7 +168,7 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         return biases
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         expstate = ktl.cache('kpf_expmeter', 'EXPSTATE')
         expstate.monitor()
         timeout = 60
@@ -179,7 +179,7 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
             ResetExpMeterDetector.execute({})
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('nExp', type=int,
                             help="The number of frames to take")
         parser.add_argument("-c", "--combine", dest="combine",
@@ -191,4 +191,4 @@ class TakeExpMeterBiases(KPFTranslatorFunction):
         parser.add_argument("--output", dest="output", type=str,
                             default='',
                             help="The output combined bias file.")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

@@ -5,12 +5,12 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetOutdirs(KPFTranslatorFunction):
+class SetOutdirs(KPFFunction):
     '''Set output directories for all detectors based on the current date.
     
     ARGS:
@@ -18,11 +18,11 @@ class SetOutdirs(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         log.info(f"SetOutdirs invoked")
         utnow = datetime.utcnow()
         date = utnow-timedelta(days=1)
@@ -133,7 +133,7 @@ class SetOutdirs(KPFTranslatorFunction):
                 log.error(e)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         utnow = datetime.utcnow()
         date = utnow-timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
@@ -187,7 +187,7 @@ class SetOutdirs(KPFTranslatorFunction):
         return np.all(np.array(tests))
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser = cls._add_bool_arg(parser, 'CRED2',
             'Set CRED2 OUTDIR (kpfguide.OUTDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'FVC1',
@@ -209,4 +209,4 @@ class SetOutdirs(KPFTranslatorFunction):
         parser = cls._add_bool_arg(parser, 'L0',
             'Set Red OUTDIR (kpfassemble.OUTDIR)?', default=True)
 
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

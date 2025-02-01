@@ -4,14 +4,14 @@ import ktl
 
 import numpy as np
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.fiu.InitializeTipTilt import InitializeTipTilt
 from kpf.fiu.ShutdownTipTilt import ShutdownTipTilt
 
 
-class TestTipTiltMirrorRange(KPFTranslatorFunction):
+class TestTipTiltMirrorRange(KPFFunction):
     '''Verify if the tip tilt system is reaching the nominal range. Output is
     only via log messages.
 
@@ -29,11 +29,11 @@ class TestTipTiltMirrorRange(KPFTranslatorFunction):
     - `kpf.fiu.ShutdownTipTilt`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         # Measure tip tilt ranges
         log.info('Beginning TestTipTiltMirrorRange')
         InitializeTipTilt.execute({})
@@ -77,5 +77,5 @@ class TestTipTiltMirrorRange(KPFTranslatorFunction):
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

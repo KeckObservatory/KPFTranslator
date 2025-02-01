@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class ControlAOHatch(KPFTranslatorFunction):
+class ControlAOHatch(KPFFunction):
     '''Command the AO Hatch to open or close.
 
     Args:
@@ -18,11 +18,11 @@ class ControlAOHatch(KPFTranslatorFunction):
     - `ao.AOHATCHSTS`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'destination', allowed_values=['close', 'closed', 'open'])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         destination = args.get('destination', '').strip()
         ao = ktl.cache('ao')
         log.debug(f"Setting AO Hatch to {destination}")
@@ -30,7 +30,7 @@ class ControlAOHatch(KPFTranslatorFunction):
         ao['aohatchcmd'].write(cmd)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         destination = args.get('destination', '').strip()
         final_dest = {'close': 'closed', 'closed': 'closed', 'open': 'open'}[destination]
         aohatchsts = ktl.cache('ao', 'AOHATCHSTS')
@@ -39,9 +39,9 @@ class ControlAOHatch(KPFTranslatorFunction):
             raise FailedToReachDestination(aohatchsts.read(), final_dest)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('destination', type=str,
                             choices=['open', 'close'],
                             help='Desired hatch position')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
 

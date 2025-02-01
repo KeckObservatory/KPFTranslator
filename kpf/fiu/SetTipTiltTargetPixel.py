@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetTipTiltTargetPixel(KPFTranslatorFunction):
+class SetTipTiltTargetPixel(KPFFunction):
     '''Set the target pixel of the tip tilt mirror.  This sets the CURRENT_BASE
     keyword.
 
@@ -19,7 +19,7 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
     - `kpfguide.CURRENT_BASE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         min_x_pixel = cfg.getint('guider', 'min_x_pixel', fallback=0)
         max_x_pixel = cfg.getint('guider', 'max_x_pixel', fallback=640)
         min_y_pixel = cfg.getint('guider', 'min_y_pixel', fallback=0)
@@ -28,7 +28,7 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
         check_input(args, 'y', value_min=min_y_pixel, value_max=max_y_pixel)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         x = args.get('x')
         y = args.get('y')
         pixtarget = ktl.cache('kpfguide', 'CURRENT_BASE')
@@ -37,7 +37,7 @@ class SetTipTiltTargetPixel(KPFTranslatorFunction):
         time.sleep(time_shim)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod

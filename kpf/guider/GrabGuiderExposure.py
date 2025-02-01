@@ -2,13 +2,13 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.guider import guider_is_saving, guider_is_active
 
 
-class GrabGuiderExposure(KPFTranslatorFunction):
+class GrabGuiderExposure(KPFFunction):
     '''If the guider is active and saving images, return the filename of the
     next image to be written.
 
@@ -19,14 +19,14 @@ class GrabGuiderExposure(KPFTranslatorFunction):
     - `kpfexpose.OBJECT`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         if guider_is_active() == False:
             raise FailedPreCondition('Guider is not active')
         if guider_is_saving() == False:
             raise FailedPreCondition('Guider is not saving')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfguide['EXPTIME'].read(binary=True)
@@ -40,7 +40,7 @@ class GrabGuiderExposure(KPFTranslatorFunction):
             log.error(f'Failed to get new lastfile from guider')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         kpfguide = ktl.cache('kpfguide')
         lastfile = kpfguide['LASTFILE']
         new_file = Path(f"{lastfile.read()}")

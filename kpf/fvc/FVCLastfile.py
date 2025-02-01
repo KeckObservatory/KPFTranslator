@@ -2,12 +2,12 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class FVCLastfile(KPFTranslatorFunction):
+class FVCLastfile(KPFFunction):
     '''Print the value of the kpffvc.[camera]LASTFILE keyword to STDOUT
 
     Args:
@@ -24,11 +24,11 @@ class FVCLastfile(KPFTranslatorFunction):
     - `kpffvc.CAHKLASTFILE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         camera = args.get('camera')
         kpffvc = ktl.cache('kpffvc')
         lastfile = kpffvc[f'{camera}LASTFILE'].read()
@@ -36,7 +36,7 @@ class FVCLastfile(KPFTranslatorFunction):
         return lastfile
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod

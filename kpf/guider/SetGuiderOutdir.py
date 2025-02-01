@@ -2,12 +2,12 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetGuiderOutdir(KPFTranslatorFunction):
+class SetGuiderOutdir(KPFFunction):
     '''Set the value of the kpfguide.OUTDIR keyword
 
     Args:
@@ -18,21 +18,21 @@ class SetGuiderOutdir(KPFTranslatorFunction):
     - `kpfguide.OUTDIR`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'outdir')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         newoutdir = Path(args.get('outdir')).expanduser().absolute()
         kpfguide = ktl.cache('kpfguide')
         kpfguide['OUTDIR'].write(f"{newoutdir}")
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('outdir', type=str,
                             help='The desired output path')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

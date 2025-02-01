@@ -6,9 +6,9 @@ import socket
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.utils.StartGUIs import GUI_list
 
 
@@ -46,18 +46,18 @@ def kill_process(process, server='kpf'):
             log.warning(f'{" ".join(kill_cmd)} failed')
 
 
-class StopGUIs(KPFTranslatorFunction):
+class StopGUIs(KPFFunction):
     '''Stop KPF GUIs
 
     ### ARGS
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
 
         for GUI in GUI_list:
             GUIname = GUI['name']
@@ -96,5 +96,5 @@ class StopGUIs(KPFTranslatorFunction):
                 kill_process(GUI['cmd'], server='kpf')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

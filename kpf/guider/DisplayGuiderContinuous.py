@@ -4,13 +4,13 @@ import subprocess
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.guider.GuiderLastfile import GuiderLastfile
 
 
-class DisplayGuiderContinuous(KPFTranslatorFunction):
+class DisplayGuiderContinuous(KPFFunction):
     '''Continuously display latest guider images to ds9 using `xpaset`.
 
     KTL Keywords Used:
@@ -18,11 +18,11 @@ class DisplayGuiderContinuous(KPFTranslatorFunction):
     - `kpfguide.LASTFILE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         display_name = cfg.get('display', 'guider_xpa_target', fallback='CRED2')
         lastfile = ktl.cache('kpfguide', 'LASTFILE')
         initial_lastfile = lastfile.read()
@@ -45,5 +45,5 @@ class DisplayGuiderContinuous(KPFTranslatorFunction):
         time.sleep(0.5)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

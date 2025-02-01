@@ -2,12 +2,12 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class GuiderLastfile(KPFTranslatorFunction):
+class GuiderLastfile(KPFFunction):
     '''Print the value of the kpfguide.LASTFILE keyword to STDOUT
 
     Args:
@@ -18,11 +18,11 @@ class GuiderLastfile(KPFTranslatorFunction):
     - `kpfguide.LASTFILE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         if args.get('wait', True) is True:
             exptime = kpfguide['EXPTIME'].read(binary=True)
@@ -35,12 +35,12 @@ class GuiderLastfile(KPFTranslatorFunction):
         return lastfile
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",
                             help="Send exposure command and return immediately?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

@@ -1,8 +1,8 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ao.SetAORotatorManual import SetAORotatorManual
 from kpf.ao.SetAORotator import SetAORotator
 from kpf.ao.TurnHepaOff import TurnHepaOff
@@ -12,7 +12,7 @@ from kpf.ao.SendPCUtoKPF import SendPCUtoKPF
 from kpf.ao.TurnLightSourceOff import TurnLightSourceOff
 
 
-class SetupAOforKPF(KPFTranslatorFunction):
+class SetupAOforKPF(KPFFunction):
     '''Set up AO in the safe mode for KPF operation
 
     - Set AO roator in Manual mode
@@ -38,11 +38,11 @@ class SetupAOforKPF(KPFTranslatorFunction):
     - `kpf.ao.SendPCUtoKPF`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         log.info('Set AO rotator to Manual')
         SetAORotatorManual.execute({})
 
@@ -66,5 +66,5 @@ class SetupAOforKPF(KPFTranslatorFunction):
             SendPCUtoKPF.execute({})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

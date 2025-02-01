@@ -2,15 +2,15 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg, check_input
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.guider import guider_is_saving, guider_is_active
 from kpf.guider.TriggerSingleGuiderExposure import TriggerSingleGuiderExposure
 from kpf.guider.GrabGuiderExposure import GrabGuiderExposure
 
 
-class TakeGuiderExposure(KPFTranslatorFunction):
+class TakeGuiderExposure(KPFFunction):
     '''Depending on whether the guide camera is running in continuous mode or
     not, this will either grab the next exposure (if in continuous mode) or
     trigger a new exposure.
@@ -26,11 +26,11 @@ class TakeGuiderExposure(KPFTranslatorFunction):
     - `kpf.guider.GrabGuiderExposure`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         exptime = kpfguide['EXPTIME'].read(binary=True)
         lastfile = kpfguide['LASTFILE']
@@ -48,5 +48,5 @@ class TakeGuiderExposure(KPFTranslatorFunction):
         lastfile.wait(timeout=exptime*2+1) # Wait for update which signals a new file
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
