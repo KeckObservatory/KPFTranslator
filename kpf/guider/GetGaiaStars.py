@@ -17,7 +17,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class GetGaiaStars(KPFTranslatorFunction):
+class GetGaiaStars(KPFFunction):
     '''Build a ds9 region file of Gaia catalog stars which ought to be present
     in the specified guider image.
 

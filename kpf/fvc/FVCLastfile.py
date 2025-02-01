@@ -40,8 +40,8 @@ class FVCLastfile(KPFFunction):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('camera', type=str,
                             choices=['SCI', 'CAHK', 'CAL', 'EXT'],
                             help='The FVC camera')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

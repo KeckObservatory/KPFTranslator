@@ -41,9 +41,9 @@ class SetTipTiltTargetPixel(KPFFunction):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('x', type=float,
                             help="X pixel target (CURRENT_BASE)")
         parser.add_argument('y', type=float,
                             help="Y pixel target (CURRENT_BASE)")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

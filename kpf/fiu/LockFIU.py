@@ -43,7 +43,7 @@ class LockFIU(KPFFunction):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('comment', type=str,
                             help='Comment for lock keywords')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

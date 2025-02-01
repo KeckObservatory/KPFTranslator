@@ -205,4 +205,4 @@ class StartOfNight(KPFFunction):
         parser.add_argument("--noAO", dest="AO",
                             default=True, action="store_false",
                             help="Skip configuring AO?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

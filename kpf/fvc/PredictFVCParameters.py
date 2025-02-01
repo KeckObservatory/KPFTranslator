@@ -53,10 +53,10 @@ class PredictFVCParameters(KPFFunction):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('Gmag', type=float,
                             help="The G magnitude of the target")
         parser.add_argument("--set", dest="set",
             default=False, action="store_true",
             help="Set these values after calculating?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
