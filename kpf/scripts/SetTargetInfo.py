@@ -22,7 +22,7 @@ class SetTargetInfo(KPFScript):
     @classmethod
     def perform(cls, args, OB=None):
         if OB is None:
-            targ = {}
+            targ = args
         else:
             targ = OB.Target.to_dict()
 

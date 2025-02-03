@@ -59,7 +59,7 @@ class ConfigureForAcquisition(KPFScript):
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
         # Set Target Parameters from OB
-        SetTargetInfo.execute(OB)
+        SetTargetInfo.execute({}, OB=OB)
 
     @classmethod
     def post_condition(cls, args, OB=None):
