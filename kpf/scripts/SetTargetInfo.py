@@ -29,7 +29,6 @@ class SetTargetInfo(KPFScript):
         log.info(f"Setting target parameters")
         kpfconfig = ktl.cache('kpfconfig')
         kpf_expmeter = ktl.cache('kpf_expmeter')
-        dcs = ktl.cache('dcs1')
         kpfconfig['TARGET_NAME'].write(targ.get('TargetName', ''))
         kpfconfig['TARGET_GAIA'].write(targ.get('GaiaID', ''))
         kpfconfig['TARGET_2MASS'].write(targ.get('2MASSID', ''))
@@ -41,6 +40,12 @@ class SetTargetInfo(KPFScript):
             kpf_expmeter['TARGET_TEFF'].write(float(TARGET_TEFF))
         except:
             log.warning(f"Unable to set kpf_expmeter.TARGET_TEFF to {TARGET_TEFF} ({type(TARGET_TEFF)})")
+
+        # Handle DCS target values
+        dcs = ktl.cache('dcs1')
+        if dcs['INSTRUME'].read() != 'KPF':
+            log.warning('Instrument is not KPF. Not setting DCS values.')
+            return
 
         TARGPLAX = targ.get('Parallax', 0)
         try:
