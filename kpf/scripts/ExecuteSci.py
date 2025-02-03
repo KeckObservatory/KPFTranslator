@@ -132,6 +132,9 @@ class ExecuteSci(KPFFunction):
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
                 check_scriptstop() # Stop here if requested
+            # Set triggered detectors. This is here to force a check of the
+            # ENABLED status for each detector.
+            SetTriggeredDetectors.execute(calibration)
             # Start next exposure
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})

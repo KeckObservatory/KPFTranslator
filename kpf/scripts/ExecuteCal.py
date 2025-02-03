@@ -282,6 +282,9 @@ class ExecuteCal(KPFFunction):
             # Start agitator for each exposure if we are in normal read mode
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
+            # Set triggered detectors. This is here to force a check of the
+            # ENABLED status for each detector.
+            SetTriggeredDetectors.execute(calibration)
             # Start next exposure
             log.info(f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})")
             StartExposure.execute({})
