@@ -29,9 +29,9 @@ class PowerCycleCaHK(KPFTranslatorFunction):
     @classmethod
     def pre_condition(cls, args, logger, cfg):
         kpfpower = ktl.cache('kpfpower')
-        outlets = [('J1', 'kpfexpose2 Galil RIO controller'),
-                   ('J2', 'kpfexpose2 Galil output bank'),
-                   ('J5', 'Andor Newton PS'),
+        outlets = [('J1', 'Galil RIO (expose2)'),
+                   ('J2', 'Galil Output Bank (expose2)'),
+                   ('J5', 'Andor Newton (kpf_hk)'),
                    ]
         for outlet_id, outlet_name in outlets:
             name = kpfpower[f'OUTLET_{outlet_id}_NAME'].read()
