@@ -38,8 +38,11 @@ class SetExpMeterTerminationParameters(KPFFunction):
         band = args.get('ExpMeterBin')
         tbin = ktl.cache('kpf_expmeter', 'THRESHOLDBIN')
         allowed_values = list(tbin._getEnumerators())
-        if isinstance(band, float):
-            band = str(band)
+        if band in ['1', '2', '3', '4', 1, 2, 3, 4]:
+            intband = int(band)
+            band = allowed_values[intband]
+        elif isinstance(band, float):
+            band = f"{band:7.3f}"
         if isinstance(band, str):
             if band not in allowed_values:
                 raise FailedPreCondition(f"ExpMeterBin '{band}' not in {allowed_values}")
