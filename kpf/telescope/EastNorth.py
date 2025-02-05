@@ -37,9 +37,7 @@ class EastNorth(KPFFunction):
     def post_condition(cls, args):
         AXESTAT = ktl.cache('dcs1', 'AXESTAT')
         tracking = AXESTAT.waitfor('=="tracking"')
-        if tracking:
-            return
-        else:
+        if tracking == False:
             raise FailedPostCondition('dcs.AXESTAT did not return to "tracking"', timeout=10)
 
     @classmethod
