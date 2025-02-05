@@ -281,6 +281,9 @@ links:
         cmd: spectrograph.WaitForReadout.WaitForReadout
     WaitForReady:
         cmd: spectrograph.WaitForReady.WaitForReady
+    # Telescope
+    EastNorth:
+        cmd: telescope.EastNorth.EastNorth
     # Utils
     BuildOBfromQuery:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
