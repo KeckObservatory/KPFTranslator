@@ -21,8 +21,8 @@ class EastNorth(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        check_input(args, 'East', allowed_types=[int, float])
-        check_input(args, 'North', allowed_types=[int, float])
+        check_input(args, 'East', allowed_types=[int, float], value_min=-600, value_max=600)
+        check_input(args, 'North', allowed_types=[int, float], value_min=-600, value_max=600)
 
     @classmethod
     def perform(cls, args):
