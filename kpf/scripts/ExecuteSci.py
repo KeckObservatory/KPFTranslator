@@ -147,6 +147,7 @@ class ExecuteSci(KPFFunction):
         # If we are in fast read mode, turn off agitator at end
         if runagitator and fast_read_mode:
             StopAgitator.execute({})
+        SetObject.execute({'Object': ''})
 
     @classmethod
     def post_condition(cls, observation):

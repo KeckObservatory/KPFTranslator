@@ -306,6 +306,7 @@ class ExecuteCal(KPFFunction):
         ## If we're using the LFC, set it back to StandbyHigh
         if calsource == 'LFCFiber' and calibration.get('leave_lamps_on', False) is False:
             SetLFCtoStandbyHigh.execute({})
+        SetObject.execute({'Object': ''})
 
     @classmethod
     def post_condition(cls, calibration):
