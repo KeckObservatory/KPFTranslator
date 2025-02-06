@@ -66,21 +66,21 @@ class SetOutdirs(KPFTranslatorFunction):
                 log.error(f"ERROR setting CAHK FVC outdir")
                 log.error(e)
 
-        if args.get('FVC3', True) is True:
-            log.info(f"Setting FVC3 OUTDIR to {outdir / 'FVC3'}")
-            try:
-                kpffvc['CALOUTDIR'].write(f"{outdir / 'FVC3'}")
-            except Exception as e:
-                log.error(f"ERROR setting CAL FVC outdir")
-                log.error(e)
+#         if args.get('FVC3', True) is True:
+#             log.info(f"Setting FVC3 OUTDIR to {outdir / 'FVC3'}")
+#             try:
+#                 kpffvc['CALOUTDIR'].write(f"{outdir / 'FVC3'}")
+#             except Exception as e:
+#                 log.error(f"ERROR setting CAL FVC outdir")
+#                 log.error(e)
 
-        if args.get('FVC4', True) is True:
-            log.info(f"Setting FVC4 OUTDIR to {outdir / 'FVC4'}")
-            try:
-                kpffvc['EXTOUTDIR'].write(f"{outdir / 'FVC4'}")
-            except Exception as e:
-                log.error(f"ERROR setting EXT FVC outdir")
-                log.error(e)
+#         if args.get('FVC4', True) is True:
+#             log.info(f"Setting FVC4 OUTDIR to {outdir / 'FVC4'}")
+#             try:
+#                 kpffvc['EXTOUTDIR'].write(f"{outdir / 'FVC4'}")
+#             except Exception as e:
+#                 log.error(f"ERROR setting EXT FVC outdir")
+#                 log.error(e)
 
         if args.get('ExpMeter', True) is True:
             expmeter_outdir = outdir / 'ExpMeter'
@@ -155,14 +155,14 @@ class SetOutdirs(KPFTranslatorFunction):
             expr = f"$kpffvc.CAHKOUTDIR == '{outdir}/FVC2'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-        if args.get('FVC3', True) is True:
-            expr = f"$kpffvc.CALOUTDIR == '{outdir}/FVC3'"
-            success = ktl.waitFor(expr, timeout=5)
-            tests.append(success)
-        if args.get('FVC4', False) is True:
-            expr = f"$kpffvc.EXTOUTDIR == '{outdir}/FVC4'"
-            success = ktl.waitFor(expr, timeout=5)
-            tests.append(success)
+#         if args.get('FVC3', True) is True:
+#             expr = f"$kpffvc.CALOUTDIR == '{outdir}/FVC3'"
+#             success = ktl.waitFor(expr, timeout=5)
+#             tests.append(success)
+#         if args.get('FVC4', False) is True:
+#             expr = f"$kpffvc.EXTOUTDIR == '{outdir}/FVC4'"
+#             success = ktl.waitFor(expr, timeout=5)
+#             tests.append(success)
         if args.get('ExpMeter', True) is True:
             expr = f"$kpf_expmeter.DATADIR == '{outdir}/ExpMeter'"
             success = ktl.waitFor(expr, timeout=5)
@@ -194,10 +194,10 @@ class SetOutdirs(KPFTranslatorFunction):
             'Set FVC1 OUTDIR (kpffvc.SCIOUTDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'FVC2',
             'Set FVC2 OUTDIR (kpffvc.CAHKOUTDIR)?', default=True)
-        parser = cls._add_bool_arg(parser, 'FVC3',
-            'Set FVC3 OUTDIR (kpffvc.CALOUTDIR)?', default=True)
-        parser = cls._add_bool_arg(parser, 'FVC4',
-            'Set FVC4 OUTDIR (kpffvc.EXTOUTDIR)?', default=True)
+#         parser = cls._add_bool_arg(parser, 'FVC3',
+#             'Set FVC3 OUTDIR (kpffvc.CALOUTDIR)?', default=True)
+#         parser = cls._add_bool_arg(parser, 'FVC4',
+#             'Set FVC4 OUTDIR (kpffvc.EXTOUTDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'ExpMeter',
             'Set ExpMeter OUTDIR (kpf_expmeter.DATADIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'CaHK',

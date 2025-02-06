@@ -28,6 +28,7 @@ class EndOfNight(KPFTranslatorFunction):
     '''Send KPF in to an end of night configuration.
 
     - kpffiu.MODE = Stowed
+    - reset guider bias/sky subtraction file to default
     - Power off FVCs
     - Power off LED back illuminators
     - close AO hatch
@@ -52,6 +53,10 @@ class EndOfNight(KPFTranslatorFunction):
         # Start FIU stow
         log.info('Setting FIU mode to Stowed')
         ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
+
+        # Reset CRED2 subtraction file to default
+        kpfguide = ktl.cache('kpfguide')
+        kpfguide[f'SUB_HIGH'].write(f'/kroot/rel/default/data/kpfguide/kpfguide_gain_high.fits')
 
         # ---------------------------------
         # User Verification for AO Shutdown

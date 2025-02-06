@@ -25,6 +25,7 @@ class StartOfNight(KPFTranslatorFunction):
     '''Send KPF in to a reasonable starting configuration
     
     - set FIU mode to observing
+    - reset guider bias/sky subtraction file to default
     - Setup AO for KPF
     - Configure DCS (ROTDEST and ROTMODE)
     
@@ -90,9 +91,18 @@ class StartOfNight(KPFTranslatorFunction):
         kpfconfig = ktl.cache('kpfconfig')
         kpfconfig['ALLOWSCHEDULEDCALS'].write('No')
 
+        HKCOOLING = ktl.cache('kpf_hk', 'COOLING')
+        if HKCOOLING.read() != 'On':
+            log.warning('HK Detector Cooling is not On')
+
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
+
+        # Reset CRED2 subtraction file to default
+        kpfguide = ktl.cache('kpfguide')
+        kpfguide[f'SUB_HIGH'].write(f'/kroot/rel/default/data/kpfguide/kpfguide_gain_high.fits')
+
         # Set DCS rotator parameters
         dcs = ktl.cache('dcs1')
         inst = dcs['INSTRUME'].read()

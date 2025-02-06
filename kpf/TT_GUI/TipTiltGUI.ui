@@ -41,7 +41,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>Enable/disable all componets of the tip tilt loop</string>
+      <string/>
      </property>
      <property name="text">
       <string>Tip Tilt On/Off</string>

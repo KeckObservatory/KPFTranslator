@@ -9,7 +9,6 @@ import re
 import subprocess
 import yaml
 import datetime
-from copy import deepcopy
 from astropy.coordinates import SkyCoord
 
 import ktl                      # provided by kroot/ktl/keyword/python
@@ -966,6 +965,7 @@ class MainWindow(QMainWindow):
         self.TakeSimulCal.setText(f"{self.OB.SEQ_Observations1.get('TakeSimulCal')}")
         take_simulcal = self.OB.SEQ_Observations1.get('TakeSimulCal')
         auto_nd = self.OB.SEQ_Observations1.get('AutoNDFilters')
+        self.AutoNDFilters.setChecked(take_simulcal and auto_nd)
         self.CalND1Label.setEnabled(take_simulcal and not auto_nd)
         self.CalND2Label.setEnabled(take_simulcal and not auto_nd)
         self.CalND1.setEnabled(take_simulcal and not auto_nd)
@@ -1651,21 +1651,23 @@ class MainWindow(QMainWindow):
                 self.calOB = CalibrationOB({})
                 self.log.debug(f"  Opening: {fname}")
                 with open(fname, 'r') as f:
-                    contents = yaml.safe_load(f)
+                    OB = yaml.safe_load(f)
                 self.log.debug('  Read in YAML')
+                contents = OB.get('SEQ_Calibrations', [{}])[0]
                 self.log.debug(contents)
                 self.enable_dark_seq1_state_change(0)
                 self.enable_dark_seq2_state_change(0)
                 self.enable_cal_seq1_state_change(2)
-                self.update_calOB('cal1_CalSource', self.kpfconfig['SIMULCALSOURCE'].read())
+                self.update_calOB('cal1_CalSource', contents.get('CalSource', ''))
                 self.update_calOB('cal1_Object', contents.get('Object', 'slewcal'))
                 self.update_calOB('cal1_CalND1', contents.get('CalND1', 'OD 0.1'))
-                self.update_calOB('cal1_CalND2', contents.get('CalND1', 'OD 0.1'))
+                self.update_calOB('cal1_CalND2', contents.get('CalND2', 'OD 0.1'))
                 self.update_calOB('cal1_nExp', contents.get('nExp', 1))
                 self.update_calOB('cal1_ExpTime', contents.get('ExpTime', 0))
                 self.update_calOB('cal1_SSS_Science', contents.get('SSS_Science', True))
                 self.update_calOB('cal1_SSS_Sky', contents.get('SSS_Sky', True))
-                self.update_calOB('cal1_TakeSimulCal', contents.get('TimedShutter_SimulCal', True))
+                self.update_calOB('cal1_TakeSimulCal', contents.get('TakeSimulCal', True))
+                self.update_calOB('cal1_ExpMeterMode', 'off')
             except Exception as e:
                 self.log.warning('Unable to load slew cal data')
                 self.log.debug(e)

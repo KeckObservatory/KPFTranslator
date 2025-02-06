@@ -39,3 +39,22 @@ def when_is_KPF_scheduled(date=None):
             end_time = datetime.strptime(f"{ut_date_str} {s['EndTime']}", '%Y-%m-%d %H:%M')
             print(start_time, end_time)
             print(end_time-start_time)
+
+def get_ToO_programs(semester=None):
+    if semester is None:
+        now = datetime.utcnow()
+        if now.month == 1:
+            semester = f"{now.year-1}B"
+        elif now.month > 1 and now.month <= 7:
+            semester = f"{now.year}A"
+        else:
+            semester = f"{now.year}B"
+    req = f"cmd=getToO&semester={semester}"
+    result = querydb(req)
+    project_codes = []
+    PIs = []
+    for r in result:
+        if 'KPF' in r['InstrumentList'].split():
+            project_codes.append(r['ProjCode'])
+            PIs.append(r['LastName'])
+    return project_codes, PIs
