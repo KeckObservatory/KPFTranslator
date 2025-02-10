@@ -63,13 +63,13 @@
   valuetype: float
   defaultvalue: 2000
   precision: 2
-- name: 'RAOffset'
-  comment: '[arcsec] RA telescope offset from target RA (positive implies moving east)'
+- name: 'DRA'
+  comment: '[arcsec/hr divided by 15] Non sidereal tracking rate in RA'
   valuetype: float
   defaultvalue: 0
   precision: 3
-- name: 'DecOffset'
-  comment: '[arcsec] Dec telescope offset from target Dec (positive implies moving north)'
+- name: 'DDEC'
+  comment: '[arcsec/hr] Non sidereal tracking rate in Dec'
   valuetype: float
   defaultvalue: 0
   precision: 3
