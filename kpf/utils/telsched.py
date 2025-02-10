@@ -34,7 +34,7 @@ def when_is_KPF_scheduled(date=None):
     schedule = get_schedule(date, 1)
     instruments = [s['Instrument'] for s in schedule]
     for s in schedule:
-        if s['Instrument'] == 'KPF':
+        if s['Instrument'] in ['KPF', 'KPF-CC']:
             start_time = datetime.strptime(f"{ut_date_str} {s['StartTime']}", '%Y-%m-%d %H:%M')
             end_time = datetime.strptime(f"{ut_date_str} {s['EndTime']}", '%Y-%m-%d %H:%M')
             print(start_time, end_time)
