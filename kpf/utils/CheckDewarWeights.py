@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import numpy as np
 
 import ktl
-import keygrabber
 
 from kpf import log, cfg, check_input
 from kpf.exceptions import *
