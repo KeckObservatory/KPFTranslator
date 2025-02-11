@@ -26,9 +26,6 @@ class CollectExecutionHistory(KPFFunction):
     def perform(cls, args):
         OBid = args.get('OBid', None)
         params = {}
-        params["id"] = f"{OBid}"
-#         if OBid is None:
-#             return
         log.info(f"Running {cls.__name__}")
         SCRIPTPID_hist = keygrabber.retrieve({'kpfconfig': ['SCRIPTPID']},
             begin=time.mktime(datetime.datetime.now().timetuple()))
@@ -90,9 +87,13 @@ class CollectExecutionHistory(KPFFunction):
 #         params["comment"] = '\n'.join(comments)
 
         # Upload via API
+        params["id"] = f"{OBid}"
         print(params)
-#         url = "https://vm-appserver.keck.hawaii.edu/api/proposalsTest/addObservingBlockHistory"
-#         data = requests.post(url, params=params, verify=False)
+        if OBid is None:
+            return
+        else:
+            url = "https://vm-appserver.keck.hawaii.edu/api/proposalsTest/addObservingBlockHistory"
+            data = requests.post(url, params=params, verify=False)
 
 
     @classmethod
