@@ -22,7 +22,7 @@ def round_microseconds(ut, ndecimals=2):
 
 
 ##-------------------------------------------------------------------------
-## CheckDewarWeights
+## CollectExecutionHistory
 ##-------------------------------------------------------------------------
 class CollectExecutionHistory(KPFFunction):
     '''
