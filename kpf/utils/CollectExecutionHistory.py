@@ -3,6 +3,7 @@ import time
 import datetime
 import json
 import requests
+import numpy as np
 
 import ktl
 import keygrabber
@@ -10,6 +11,14 @@ import keygrabber
 from kpf import log, cfg, check_input
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+
+
+def round_microseconds(ut, ndecimals=2):
+    '''Round the given date time object to 2 microseconds.
+    '''
+    factor = 10**(6-ndecimals)
+    rounded = ut.replace(microsecond=int(np.round(ut.microsecond/factor)*factor))
+    return rounded
 
 
 ##-------------------------------------------------------------------------
@@ -44,7 +53,8 @@ class CollectExecutionHistory(KPFFunction):
         for s in start_hist:
             d = datetime.datetime.fromtimestamp(s['time'])
             ut = d + tzconversion
-            start_times.append(ut.isoformat()[:-4])
+            rounded_ut = round_microseconds(ut)
+            start_times.append(rounded_ut.isoformat()[:-4])
         params["exposure_start_times"] = start_times
 
         log.debug('Getting ELAPSED history')
