@@ -292,7 +292,9 @@ links:
     CollectExecutionHistory:
         cmd: utils.CollectExecutionHistory.CollectExecutionHistory
     EndOfNight:
-        cmd: scripts.EndOfNight.EndOfNight
+        cmd: utils.EndOfNight.EndOfNight
+    RetrieveOB:
+        cmd: utils.RetrieveOB.RetrieveOB
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
