@@ -16,7 +16,7 @@ class RetrieveOB(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        url = config.get('Database', 'url', fallback=None)
+        url = cfg.get('Database', 'url', fallback=None)
         if url is None:
             raise FailedPreCondition('Database URL is not defined in configuration')
         OBid = args.get('OBid', None)
@@ -25,10 +25,12 @@ class RetrieveOB(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        url = config.get('Database', 'url')
+        url = cfg.get('Database', 'url')
         OBid = args.get('OBid', None)
         query = f'getKPFObservingBlock?id={OBid}'
-        r = requests.get(f"{url}{query}")
+        full_address = f"{url}{query}"
+        print(full_address)
+        r = requests.get(full_address)
         OBdict = json.loads(r.text)
         print(OBdict.keys())
 
