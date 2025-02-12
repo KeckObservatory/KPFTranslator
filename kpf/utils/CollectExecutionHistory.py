@@ -44,7 +44,7 @@ class CollectExecutionHistory(KPFFunction):
         for s in start_hist:
             d = datetime.datetime.fromtimestamp(s['time'])
             ut = d + tzconversion
-            start_times.append(ut.isoformat())
+            start_times.append(ut.isoformat()[:-4])
         params["exposure_start_times"] = start_times
 
         log.debug('Getting ELAPSED history')
@@ -70,25 +70,27 @@ class CollectExecutionHistory(KPFFunction):
         params["exposure_times"] = exp_times
 
         if len(params["exposure_times"]) != len(params["exposure_start_times"]):
-            print(len(params["exposure_start_times"]), params["exposure_start_times"])
-            print(len(params["exposure_times"]), params["exposure_times"])
-            print()
             print(f'Mismatch in start times and exposure times')
+            print(f'{len(params["exposure_start_times"])} Exposure Start Times')
+            print(f'{len(params["exposure_times"])} Exposure Times')
+            print(f'Readout: {readout}')
             sys.exit(0)
             raise KPFException(f'Mismatch in start times and exposure times')
 
 #         log.debug('Getting OBSERVERCOMMENT history')
 #         comment_hist = keygrabber.retrieve({'kpfconfig': ['OBSERVERCOMMENT']}, begin=begin)
-#         comments = []
-#         for s in start_hist:
-#             d = datetime.datetime.fromtimestamp(s['time'])
-#             ut = d + tzconversion
-#             start_times.append(ut.isoformat())
-#         params["comment"] = '\n'.join(comments)
+        comments = []
+#         for s in comment_hist:
+#             comments.append(s['ascvalue'])
+        params["comment"] = '\n'.join(comments)
 
         # Upload via API
         params["id"] = f"{OBid}"
-        print(params)
+        print(f'OBid:            {params["id"]}')
+        print(f'Observer:        {params["observer"]}')
+        print(f'ObserverComment: {params["comment"]}')
+        print(f'Start Times:     {params["exposure_start_times"]}')
+        print(f'Exposure Times:  {params["exposure_times"]}')
         if OBid is None:
             return
         else:
