@@ -6,6 +6,7 @@ import ktl
 from kpf import log, cfg, check_input
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+from kpf.ObservingBlocks.Target import Target
 
 
 ##-------------------------------------------------------------------------
@@ -29,10 +30,18 @@ class RetrieveOB(KPFFunction):
         OBid = args.get('OBid', None)
         query = f'getKPFObservingBlock?id={OBid}'
         full_address = f"{url}{query}"
-        print(full_address)
         r = requests.get(full_address)
         OBdict = json.loads(r.text)
-        print(OBdict.keys())
+
+        # Form Target
+        if OBdict.get('target', None) is not None:
+            target = Target(OBdict.get('target'))
+            print(f"Target: {str(target)}")
+        # Form Observations
+        for obs in OBdict.get('Observations', []):
+            print(obs)
+
+
 
     @classmethod
     def post_condition(cls, args):

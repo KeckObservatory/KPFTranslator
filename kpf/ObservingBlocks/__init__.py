@@ -61,8 +61,12 @@ class BaseOBComponent(object):
         for key in input_dict.keys():
             input_value = input_dict[key]
             key = self.name_overrides.get(key, key)
-            this_property = getattr(self, key)
-            this_property.set(input_value)
+            try:
+                this_property = getattr(self, key)
+                this_property.set(input_value)
+            except AttributeError as e:
+                print(f"No property named {key}")
+
         self.prune()
         return self
 
