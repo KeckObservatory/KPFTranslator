@@ -3,7 +3,7 @@ import yaml
 import numpy as np
 from astropy import units as u
 from astropy.time import Time
-from astropy.coordinates import SkyCoord, Angle
+from astropy.coordinates import SkyCoord, Angle, ICRS, FK5
 from astroquery.vizier import Vizier
 from astroquery.simbad import Simbad
 
@@ -24,7 +24,7 @@ class Target(BaseOBComponent):
             ra = Angle(self.RA.value, unit=u.hourangle)
             dec = Angle(self.Dec.value, unit=u.degree)
             pm_ra_cosdec = (self.PMRA.value*15*np.cos(dec.to(u.radian).value))*u.arcsec/u.yr
-            self.coord = SkyCoord(ra, dec,
+            self.coord = SkyCoord(ra, dec, frame=FK5(equinox=self.Equinox.value),
                                   pm_ra_cosdec=pm_ra_cosdec,
                                   pm_dec=self.PMDEC.value*u.arcsec/u.yr,
                                   obstime=Time(self.Epoch.value, format='decimalyear'),
@@ -109,7 +109,7 @@ class Target(BaseOBComponent):
             ra_dec_string = target_coord.to_string('hmsdms', sep=':', precision=2)
             target_dict['RA'] = ra_dec_string.split()[0]
             target_dict['Dec'] = ra_dec_string.split()[1]
-            target_dict['Equinox'] = 2000
+            target_dict['Equinox'] = 'J2000'
             target_dict['PMRA'] = target_coord.pm_ra_cosdec.to(u.arcsec/u.year).value*15
             target_dict['PMDEC'] = target_coord.pm_dec.to(u.arcsec/u.year).value
             target_dict['Epoch'] = target_coord.obstime.decimalyear

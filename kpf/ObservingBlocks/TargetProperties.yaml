@@ -44,10 +44,9 @@
   valuetype: str
   defaultvalue: ''
 - name: 'Equinox'
-  comment: '[decimal year] Equinox of the coordinate system (typically 2000)'
-  valuetype: float
-  defaultvalue: 2000
-  precision: 1
+  comment: '[str] Equinox of the coordinate system (in Jyear format, e.g. J2000)'
+  valuetype: str
+  defaultvalue: 'J2000'
 - name: 'PMRA'
   comment: '[seconds-of-time/year] Proper motion in RA'
   valuetype: float
