@@ -28,6 +28,20 @@ def round_microseconds(ut, ndecimals=2):
     return rounded
 
 
+def truncate_isoformat(ut, ndecimals=2):
+    '''Truncate the string carefully since a simple [-4] assumes the all
+    microseconds have been printed, which is not the case always.
+    '''
+    if ut.microsecond == 0:
+        output = f"{ut.isoformat()}."
+        for i in range(ndecimals):
+            output += '0'
+    else:
+        output = ut.isoformat()[:-4]
+    assert len(output) == 22
+    return output
+
+
 ##-------------------------------------------------------------------------
 ## SubmitExecutionHistory
 ##-------------------------------------------------------------------------
@@ -69,7 +83,7 @@ class SubmitExecutionHistory(KPFFunction):
             d = datetime.datetime.fromtimestamp(s['time'])
             ut = d + tzconversion
             rounded_ut = round_microseconds(ut)
-            start_times.append(rounded_ut.isoformat()[:-4])
+            start_times.append(truncate_isoformat(rounded_ut))
         params["exposure_start_times"] = start_times
 
         log.debug('Getting ELAPSED history')
@@ -124,9 +138,10 @@ class SubmitExecutionHistory(KPFFunction):
         if OBid in [None, '', ' ', '0', 0]:
             return
         else:
+            print('Submitting data to DB:')
             data = requests.post(f"{url}addObservingBlockHistory",
                                  params=params, verify=False)
-            print(data)
+            print(f"Response: {data}")
 
 
     @classmethod
