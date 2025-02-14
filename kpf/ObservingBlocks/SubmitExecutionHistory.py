@@ -41,7 +41,7 @@ class SubmitExecutionHistory(KPFFunction):
     def perform(cls, args):
         log.info(f"Running {cls.__name__}")
         url = cfg.get('Database', 'url')
-        OBid = args.get('OBid', None)
+        OBid = args.get('OBid', '')
         apihash = os.getenv('APIHASH', default='')
 
         params = {}
@@ -98,9 +98,14 @@ class SubmitExecutionHistory(KPFFunction):
 
 #         log.debug('Getting OBSERVERCOMMENT history')
 #         comment_hist = keygrabber.retrieve({'kpfconfig': ['OBSERVERCOMMENT']}, begin=begin)
-        comments = []
+#         comments = []
 #         for s in comment_hist:
 #             comments.append(s['ascvalue'])
+
+        # For testing
+        comments = ['an observer comment', 'another comment', 'this is a lot of comments for a single OB!',
+                    'This is a long soliloquy on the observing conditions during this observation which is here to make sure we do not have overly restrictive string length limits somewhere in the system.',
+                    "For completeness, a check on various inconvienient characters:\nJohn O'Meara, Cecilia Payne-Gaposchkin, are question marks ok? (should I even ask?) [perhaps not] {right?}"]
         params["comment"] = '\n'.join(comments)
 
         # Upload via API
@@ -110,7 +115,7 @@ class SubmitExecutionHistory(KPFFunction):
         print(f'ObserverComment: {params["comment"]}')
         print(f'Start Times:     {params["exposure_start_times"]}')
         print(f'Exposure Times:  {params["exposure_times"]}')
-        if OBid is None:
+        if OBid in [None, '']:
             return
         else:
             data = requests.post(f"{url}addObservingBlockHistory",
@@ -121,3 +126,9 @@ class SubmitExecutionHistory(KPFFunction):
     @classmethod
     def post_condition(cls, args):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser):
+        parser.add_argument('OBid', type=str,
+                            help='The unique identifier for the OB to retrieve.')
+        return super().add_cmdline_args(parser)
