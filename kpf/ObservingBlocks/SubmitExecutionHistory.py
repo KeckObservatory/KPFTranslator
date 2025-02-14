@@ -18,7 +18,15 @@ def round_microseconds(ut, ndecimals=2):
     '''Round the given date time object to 2 microseconds.
     '''
     factor = 10**(6-ndecimals)
-    rounded = ut.replace(microsecond=int(np.round(ut.microsecond/factor)*factor))
+    new_ms = int(np.round(ut.microsecond/factor)*factor)
+    if new_ms == 1000000:
+        add_this = 5*10**(-1-ndecimals)
+        dt = datetime.timedelta(seconds=add_this)
+        rounded = round_microseconds(ut+dt, ndecimals=ndecimals)
+        print(new_ms, ut, rounded)
+    else:
+        rounded = ut.replace(microsecond=new_ms)
+        print(ut, rounded)
     return rounded
 
 
@@ -115,7 +123,7 @@ class SubmitExecutionHistory(KPFFunction):
         print(f'ObserverComment: {params["comment"]}')
         print(f'Start Times:     {params["exposure_start_times"]}')
         print(f'Exposure Times:  {params["exposure_times"]}')
-        if OBid in [None, '']:
+        if OBid in [None, '', ' ', 0]:
             return
         else:
             data = requests.post(f"{url}addObservingBlockHistory",
