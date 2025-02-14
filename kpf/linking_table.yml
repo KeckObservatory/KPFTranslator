@@ -205,6 +205,8 @@ links:
         cmd: ObservingBlocks.GetObservingBlock.GetObservingBlock
     GetObservingBlocksByProgram:
         cmd: ObservingBlocks.GetObservingBlocksByProgram.GetObservingBlocksByProgram
+    SubmitExecutionHistory:
+        cmd: ObservingBlocks.SubmitExecutionHistory.SubmitExecutionHistory
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations
@@ -294,8 +296,6 @@ links:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
     CheckDewarWeights:
         cmd: utils.CheckDewarWeights.CheckDewarWeights
-    CollectExecutionHistory:
-        cmd: utils.CollectExecutionHistory.CollectExecutionHistory
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
     SetObserverFromSchedule:

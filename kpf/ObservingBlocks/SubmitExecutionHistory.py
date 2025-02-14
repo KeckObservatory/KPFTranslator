@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import datetime
@@ -22,20 +23,28 @@ def round_microseconds(ut, ndecimals=2):
 
 
 ##-------------------------------------------------------------------------
-## CollectExecutionHistory
+## SubmitExecutionHistory
 ##-------------------------------------------------------------------------
-class CollectExecutionHistory(KPFFunction):
+class SubmitExecutionHistory(KPFFunction):
     '''
     '''
     @classmethod
     def pre_condition(cls, args):
-        pass
+        url = cfg.get('Database', 'url', fallback=None)
+        if url is None:
+            raise FailedPreCondition('Database URL is not defined in configuration')
+        OBid = args.get('OBid', None)
+        if OBid is None:
+            raise FailedPreCondition('OBid must be provided')
 
     @classmethod
     def perform(cls, args):
-        OBid = args.get('OBid', None)
-        params = {}
         log.info(f"Running {cls.__name__}")
+        url = cfg.get('Database', 'url')
+        OBid = args.get('OBid', None)
+        apihash = os.getenv('APIHASH', default='')
+
+        params = {}
         SCRIPTPID_hist = keygrabber.retrieve({'kpfconfig': ['SCRIPTPID']},
             begin=time.mktime(datetime.datetime.now().timetuple()))
         log.debug('Getting start time of script')
@@ -104,8 +113,9 @@ class CollectExecutionHistory(KPFFunction):
         if OBid is None:
             return
         else:
-            url = "https://vm-appserver.keck.hawaii.edu/api/proposalsTest/addObservingBlockHistory"
-            data = requests.post(url, params=params, verify=False)
+            data = requests.post(f"{url}addObservingBlockHistory",
+                                 params=params, verify=False)
+            print(data)
 
 
     @classmethod
