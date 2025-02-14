@@ -10,9 +10,9 @@ from kpf.ObservingBlocks.Target import Target
 
 
 ##-------------------------------------------------------------------------
-## RetrieveOB
+## GetObservingBlock
 ##-------------------------------------------------------------------------
-class RetrieveOB(KPFFunction):
+class GetObservingBlock(KPFFunction):
     '''
     '''
     @classmethod

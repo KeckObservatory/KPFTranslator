@@ -200,6 +200,9 @@ links:
         cmd: guider.TakeGuiderExposure.TakeGuiderExposure
     WaitForTriggerFile:
         cmd: guider.WaitForTriggerFile.WaitForTriggerFile
+    # Observing Blocks
+    GetObservingBlock:
+        cmd: ObservingBlocks.GetObservingBlock.GetObservingBlock
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations
@@ -293,8 +296,6 @@ links:
         cmd: utils.CollectExecutionHistory.CollectExecutionHistory
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
-    RetrieveOB:
-        cmd: utils.RetrieveOB.RetrieveOB
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
