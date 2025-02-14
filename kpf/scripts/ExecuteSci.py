@@ -151,6 +151,9 @@ class ExecuteSci(KPFTranslatorFunction):
         # If we are in fast read mode, turn off agitator at end
         if runagitator and fast_read_mode:
             StopAgitator.execute({})
+        # Clear Object
+        SetObject.execute({})
+
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
