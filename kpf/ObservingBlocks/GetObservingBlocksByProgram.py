@@ -11,9 +11,9 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 
 ##-------------------------------------------------------------------------
-## GetObservingBlock
+## GetObservingBlocksByProgram
 ##-------------------------------------------------------------------------
-class GetObservingBlock(KPFFunction):
+class GetObservingBlocksByProgram(KPFFunction):
     '''
     '''
     @classmethod
@@ -21,23 +21,27 @@ class GetObservingBlock(KPFFunction):
         url = cfg.get('Database', 'url', fallback=None)
         if url is None:
             raise FailedPreCondition('Database URL is not defined in configuration')
-        OBid = args.get('OBid', None)
-        if OBid is None:
-            raise FailedPreCondition('OBid must be provided')
+        program = args.get('program', None)
+        if program is None:
+            raise FailedPreCondition('Program must be provided')
 
     @classmethod
     def perform(cls, args):
         url = cfg.get('Database', 'url')
-        OBid = args.get('OBid', None)
+        program = args.get('program', '')
         apihash = os.getenv('APIHASH', default='')
-        query = f'getKPFObservingBlock'
-        params = {'id': OBid,
+        query = f'getAllObservingBlocks'
+        params = {'semid': program,
                   'hash': apihash}
         r = requests.get(f"{url}{query}", params=params)
-        OBdict = json.loads(r.text)
-        print(OBdict.keys())
-        OB = ObservingBlock(OBdict)
-        print(OB)
+        result = json.loads(r.text)
+        OBs = result.get('observing_blocks', [])
+        print(f"Retrieved {len(OBs)} OBs")
+        for OBdict in OBs:
+            print(OBdict.keys())
+            print(OBdict.get('target', ''))
+            print(OBdict.get('Observations', []))
+            print()
 
 
     @classmethod
@@ -46,6 +50,6 @@ class GetObservingBlock(KPFFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser):
-        parser.add_argument('OBid', type=str,
-                            help='The unique identifier for the OB to retrieve.')
+        parser.add_argument('program', type=str,
+                            help='The program ID to retrieve OBs for.')
         return super().add_cmdline_args(parser)

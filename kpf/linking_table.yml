@@ -203,6 +203,8 @@ links:
     # Observing Blocks
     GetObservingBlock:
         cmd: ObservingBlocks.GetObservingBlock.GetObservingBlock
+    GetObservingBlocksByProgram:
+        cmd: ObservingBlocks.GetObservingBlocksByProgram.GetObservingBlocksByProgram
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations
