@@ -1,4 +1,5 @@
 import os
+import stat
 import sys
 import importlib
 import traceback
@@ -155,22 +156,26 @@ def create_logger():
     utnow = datetime.utcnow()
     date = utnow-timedelta(days=1)
     date_str = date.strftime('%Y%b%d').lower()
-
     logdir = Path(f"/s/sdata1701/KPFTranslator_logs/{date_str}/cli_logs")
     if logdir.exists() is False:
         logdir.mkdir(mode=0o777, parents=True)
+    if not os.stat(logdir.parent).st_mode & stat.S_IWOTH:
+#         print(f"Fixing permissions on {logdir.parent}")
         # Try to set permissions on the date directory
         # necessary because the mode input to mkdir is modified by umask
         try:
             os.chmod(logdir.parent, 0o777)
         except OSError as e:
             pass
+    if not os.stat(logdir).st_mode & stat.S_IWOTH:
+#         print(f"Fixing permissions on {logdir}")
         # Try to set permissions on the cli_logs directory
         # necessary because the mode input to mkdir is modified by umask
         try:
             os.chmod(logdir, 0o777)
         except OSError as e:
             pass
+    
     LogFileName = logdir / 'cli_interface.log'
     LogFileHandler = logging.FileHandler(LogFileName)
     LogFileHandler.setLevel(logging.DEBUG)
