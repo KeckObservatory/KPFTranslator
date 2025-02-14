@@ -73,7 +73,6 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
         ## Execute Slew Cal if Requested
         if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
             slewcal_argsfile = Path(kpfconfig['SLEWCALFILE'].read())
-            kpfconfig['SCRIPTMSG'].write("Executing Slew Cal")
             log.info(f"Beginning Slew Cal")
             log.debug(f"Using: {slewcal_argsfile}")
             with open(slewcal_argsfile, 'r') as file:
@@ -87,11 +86,9 @@ class ConfigureForAcquisition(KPFTranslatorFunction):
             ExecuteSlewCal.execute(slewcal_args)
             log.info('Slew cal complete. Resetting SLEWCALREQ')
             kpfconfig['SLEWCALREQ'].write('No')
-            kpfconfig['SCRIPTMSG'].write("Slew Cal complete. Setting FIU to observing mode.")
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
-        kpfconfig['SCRIPTMSG'].write("") # Clear SCRIPTMSG, useful if slew cal was executed
 
         # Set Target Parameters from OB
         SetTargetInfo.execute(OB)

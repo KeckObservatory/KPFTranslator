@@ -64,6 +64,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
         log.info('-------------------------')
 
         kpfconfig = ktl.cache('kpfconfig')
+        kpfconfig['SCRIPTMSG'].write("Executing Slew Cal")
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         fast_read_mode = QueryFastReadMode.execute({})
@@ -181,6 +182,7 @@ class ExecuteSlewCal(KPFTranslatorFunction):
 
         # Set FIU Mode
         log.info('Setting FIU mode to Observing')
+        kpfconfig['SCRIPTMSG'].write("Slew Cal complete. Setting FIU to observing mode.")
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
         # Set PROGNAME
         log.info(f'Setting PROGNAME back to {original_progname}')
