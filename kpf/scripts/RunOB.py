@@ -68,7 +68,7 @@ class RunOB(KPFScript):
 
         # Add slew cal to OB if keywords indicate one is requested
         kpfconfig = ktl.cache('kpfconfig')
-        if kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+        if if len(OB.Observations) > 0 and kpfconfig['SLEWCALREQ'].read(binary=True) is True:
             slewcal_OBfile = Path(kpfconfig['SLEWCALFILE'].read())
             log.info('Slewcal has been requested')
             log.debug(f"Reading: {slewcal_OBfile}")
@@ -80,12 +80,16 @@ class RunOB(KPFScript):
         # Execute calibrations
         if len(OB.Calibrations) > 0:
             log.info(f'Executing Calibrations')
+            if len(OB.Observations) > 0:
+                kpfconfig['SCRIPTMSG'].write('Executing Slew Cal')
             ConfigureForCalibrations.execute(args, OB=OB)
             for i,calibration in enumerate(OB.Calibrations):
                 log.info(f'Executing Calibration {i+1}/{len(OB.Calibrations)}')
                 ExecuteCal.execute(calibration.to_dict())
             log.info(f'Cleaning up after Calibrations')
             CleanupAfterCalibrations.execute(args, OB=OB)
+            if len(OB.Observations) > 0:
+                kpfconfig['SCRIPTMSG'].write('Slew Cal complete. Setting FIU to observing mode')
 
         # Configure for Acquisition
         if OB.Target is not None:
