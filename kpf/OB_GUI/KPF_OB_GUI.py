@@ -482,8 +482,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.clear_OB_selection()
             self.OBListHeader.setText('StartTime '+self.hdr)
             self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
-                              ['new', ObservingBlock('~/joshw/OBs_v2/156279.yaml')],
-                              ['new', ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml')],
+                              ['new', ObservingBlock('~/joshw/OBs_v2/157279.yaml')],
                               ]
             self.model.start_times = [8.1, 5.2, 6.3]
             self.model.sort('time')
@@ -496,8 +495,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.clear_OB_selection()
             self.OBListHeader.setText(self.hdr)
             self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
-                              ['new', ObservingBlock('~/joshw/OBs_v2/156279.yaml')],
-                              ['new', ObservingBlock('~/joshw/OBs_v2/Bernard2.yaml')],
+                              ['new', ObservingBlock('~/joshw/OBs_v2/157279.yaml')],
                               ]
             self.model.start_times = None
             self.model.layoutChanged.emit()
