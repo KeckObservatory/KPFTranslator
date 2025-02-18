@@ -44,22 +44,29 @@ class ObservingBlock(object):
         # Handle if this is a v1 Science Observing Block
         if OBdict.get('Template_Name', None) == 'kpf_sci':
             # Target
-            self.Target = Target.resolve_name(f"Gaia {OBdict['GaiaID']}")
+            GaiaID = OBdict.get('GaiaID', None)
+            if GaiaID is None:
+                self.Target = Target.resolve_name(OBdict.get('TargetName'))
+            elif str(GaiaID)[:2] == 'DR':
+                self.Target = Target.resolve_name(f"Gaia {GaiaID}")
+            else:
+                self.Target = Target.resolve_name(f"Gaia DR3 {GaiaID}")
             self.Target.TargetName.set(OBdict.get('TargetName'))
             # Observations
             self.Observations = []
             self.Calibrations = []
             for obs_v1 in OBdict.get('SEQ_Observations', []):
-                original_ExpMeterBin = obs_v1.get('ExpMeterBin')
-                print(f"Original ExpMeterBin: {original_ExpMeterBin}")
-                if int(original_ExpMeterBin) > 4:
-                    try:
-                        wav = float(original_ExpMeterBin)
-                        idx = (np.abs(np.array([498, 604, 711, 817])-wav)).argmin()
-                        obs_v1['ExpMeterBin'] = idx+1
-                        print(f"Converting '{original_ExpMeterBin}' to {idx+1}")
-                    except:
-                        pass
+                original_ExpMeterBin = obs_v1.get('ExpMeterBin', None)
+                if original_ExpMeterBin is not None:
+                    print(f"Original ExpMeterBin: {original_ExpMeterBin}")
+                    if int(original_ExpMeterBin) > 4:
+                        try:
+                            wav = float(original_ExpMeterBin)
+                            idx = (np.abs(np.array([498, 604, 711, 817])-wav)).argmin()
+                            obs_v1['ExpMeterBin'] = idx+1
+                            print(f"Converting '{original_ExpMeterBin}' to {idx+1}")
+                        except:
+                            pass
                 obs = Observation(obs_v1)
                 self.Observations.append(obs)
         # Handle if this is a v1 Calibration Observing Block
@@ -174,4 +181,5 @@ if __name__ == '__main__':
     args = p.parse_args()
     print(f"Reading: {args.file}")
     ob = ObservingBlock(args.file)
+    print(ob.Target.coord)
     print(ob.__repr__())
