@@ -123,6 +123,56 @@ class ScrollMessageBox(QtWidgets.QMessageBox):
 
 
 ##-------------------------------------------------------------------------
+## Observer Comment Dialog Box
+##-------------------------------------------------------------------------
+class ObserverCommentBox(QtWidgets.QDialog):
+    def __init__(self, SOB, observer):
+        super().__init__()
+        self.SOB = SOB
+        self.comment = ''
+        self.observer = observer
+        self.setWindowTitle("Observer Comment Form")
+        layout = QtWidgets.QVBoxLayout()
+
+        # Set up buttons
+        QBtn = QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
+        self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        # Initial message lines
+        lines = [f"Submit an observer comment for OB:",
+                 f"{str(self.SOB)}",
+                 ""]
+        message = QtWidgets.QLabel("\n".join(lines))
+        layout.addWidget(message)
+
+        # Add observer field
+        observer_label = QtWidgets.QLabel('Observer/Commenter:')
+        layout.addWidget(observer_label)
+        self.observer_field = QtWidgets.QLineEdit()
+        self.observer_field.setText(self.observer)
+        self.observer_field.textChanged.connect(self.edit_observer)
+        layout.addWidget(self.observer_field)
+
+        # Add comment field
+        comment_label = QtWidgets.QLabel('Comment:')
+        layout.addWidget(comment_label)
+        self.comment_field = QtWidgets.QLineEdit()
+        self.comment_field.textChanged.connect(self.edit_comment)
+        layout.addWidget(self.comment_field)
+
+        layout.addWidget(self.buttonBox)
+        self.setLayout(layout)
+
+    def edit_comment(self, value):
+        self.comment = value
+
+    def edit_observer(self, value):
+        self.observer = value
+
+
+##-------------------------------------------------------------------------
 ## Keck Horizon
 ##-------------------------------------------------------------------------
 def above_horizon(az, el):
@@ -279,6 +329,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # SOB Execution
         self.SOB_ShowButton = self.findChild(QtWidgets.QPushButton, 'SOB_ShowButton')
         self.SOB_ShowButton.clicked.connect(self.show_SOB)
+        self.SOB_AddComment = self.findChild(QtWidgets.QPushButton, 'SOB_AddComment')
+        self.SOB_AddComment.clicked.connect(self.add_comment)
         self.SOB_ExecuteButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteButton')
         self.SOB_ExecuteButton.clicked.connect(self.execute_SOB)
         self.SOB_ExecuteWithSlewCalButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteWithSlewCalButton')
@@ -562,6 +614,18 @@ class MainWindow(QtWidgets.QMainWindow):
             popup = ScrollMessageBox(self.SOB.__repr__())
             popup.setWindowTitle(f"Full OB Contents: {str(self.SOB)}")
             popup.exec_()
+
+    def add_comment(self):
+        if self.SOB is None:
+            print('add_comment: No OB selected')
+            return
+        comment_box = ObserverCommentBox(self.SOB, self.Observer.text())
+        if comment_box.exec():
+            print(f"Submitting comment: {comment_box.comment}")
+            print(f"From commentor: {comment_box.observer}")
+        else:
+            print("Cancel! Not submitting comment.")
+
 
 
     def execute_SOB(self, slewcal=False):
