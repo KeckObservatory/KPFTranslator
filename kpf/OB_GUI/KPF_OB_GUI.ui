@@ -492,13 +492,65 @@
        </rect>
       </property>
       <property name="title">
-       <string>Selected Observing Block Summary</string>
+       <string>Selected Observing Block</string>
       </property>
-      <widget class="QWidget" name="gridLayoutWidget_14">
+      <widget class="QPushButton" name="SOB_ExecuteButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>151</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Execute Selected OB</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_ExecuteWithSlewCalButton">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>90</y>
+         <width>151</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Execute with Slew Cal</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_ShowButton">
        <property name="geometry">
         <rect>
          <x>10</x>
          <y>30</y>
+         <width>311</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Show Full OB Details</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_AddComment">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>311</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Add Observer Comment to Selected OB</string>
+       </property>
+      </widget>
+      <widget class="QWidget" name="gridLayoutWidget_14">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>140</y>
          <width>311</width>
          <height>441</height>
         </rect>
@@ -716,43 +768,17 @@
         </item>
        </layout>
       </widget>
-      <widget class="QPushButton" name="SOB_ExecuteButton">
+      <widget class="Line" name="line_4">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>570</y>
-         <width>181</width>
-         <height>23</height>
+         <y>120</y>
+         <width>311</width>
+         <height>16</height>
         </rect>
        </property>
-       <property name="text">
-        <string>Execute Selected OB</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="SOB_ExecuteWithSlewCalButton">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>600</y>
-         <width>181</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Execute OB with Slew Cal</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="SOB_ShowButton">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>540</y>
-         <width>181</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Show Full OB Details</string>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </widget>
