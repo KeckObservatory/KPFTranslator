@@ -87,6 +87,17 @@ class ObservingBlock(object):
         if len(self.Calibrations) > 0:
             OB['Calibrations'] = [c.to_dict() for c in self.Calibrations]
 
+    def write_to(self, file, overwrite=False):
+        file = Path(file)
+        if file.exists == True:
+            if overwrite == False:
+                print(f'File {file} exists and overwrite is False')
+                return
+            else:
+                fie.unlink()
+        with open(file, 'w')as f:
+            f.write(self.__repr__())
+
     def __str__(self):
         if self.Target is not None:
             out = f"{self.Target}"
