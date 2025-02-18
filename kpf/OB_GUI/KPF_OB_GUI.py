@@ -141,15 +141,9 @@ class ObserverCommentBox(QtWidgets.QDialog):
         self.setWindowTitle("Observer Comment Form")
         layout = QtWidgets.QVBoxLayout()
 
-        # Set up buttons
-        QBtn = QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
-        self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-
         # Initial message lines
         lines = [f"Submit an observer comment for OB:",
-                 f"{str(self.SOB)}",
+                 f"{self.SOB.name()}",
                  ""]
         message = QtWidgets.QLabel("\n".join(lines))
         layout.addWidget(message)
@@ -169,8 +163,16 @@ class ObserverCommentBox(QtWidgets.QDialog):
         self.comment_field.textChanged.connect(self.edit_comment)
         layout.addWidget(self.comment_field)
 
+        # Set up buttons
+        QBtn = QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
+        self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
         layout.addWidget(self.buttonBox)
+
+        # Wrap up definition of the ObserverCommentBox
         self.setLayout(layout)
+        self.setStyleSheet("min-width:300 px;")
 
     def edit_comment(self, value):
         self.comment = value
@@ -661,7 +663,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def show_SOB(self):
         if self.SOB is not None:
             popup = ScrollMessageBox(self.SOB.__repr__())
-            popup.setWindowTitle(f"Full OB Contents: {str(self.SOB)}")
+            popup.setWindowTitle(f"Full OB Contents: {self.SOB.name()}")
             popup.exec_()
 
     def add_comment(self):
