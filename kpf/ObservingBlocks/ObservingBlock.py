@@ -1,6 +1,8 @@
 from pathlib import Path
 import yaml
 
+import numpy as np
+
 from kpf import log, cfg, check_input
 from kpf.exceptions import *
 from kpf.ObservingBlocks.Calibration import Calibration
@@ -48,6 +50,16 @@ class ObservingBlock(object):
             self.Observations = []
             self.Calibrations = []
             for obs_v1 in OBdict.get('SEQ_Observations', []):
+                original_ExpMeterBin = obs_v1.get('ExpMeterBin')
+                print(f"Original ExpMeterBin: {original_ExpMeterBin}")
+                if int(original_ExpMeterBin) > 4:
+                    try:
+                        wav = float(original_ExpMeterBin)
+                        idx = (np.abs(np.array([498, 604, 711, 817])-wav)).argmin()
+                        obs_v1['ExpMeterBin'] = idx+1
+                        print(f"Converting '{original_ExpMeterBin}' to {idx+1}")
+                    except:
+                        pass
                 obs = Observation(obs_v1)
                 self.Observations.append(obs)
         # Handle if this is a v1 Calibration Observing Block
