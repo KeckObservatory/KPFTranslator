@@ -160,7 +160,6 @@ if __name__ == '__main__':
     p.add_argument('file', type=str,
                     help="The file to read in.")
     args = p.parse_args()
-    print(args.file)
+    print(f"Reading: {args.file}")
     ob = ObservingBlock(args.file)
-    print(type(ob), ob)
     print(ob.__repr__())
