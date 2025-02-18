@@ -474,8 +474,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_ProgID(self, value):
         self.log.info(f"set_ProgID: '{value}'")
+        self.clear_OB_selection()
         if value == '':
-            self.clear_OB_selection()
             self.OBListHeader.setText(hdr)
             self.model.OBs = []
             self.model.start_times = None
@@ -501,7 +501,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBand.setEnabled(False)
             self.WeatherBandLabel.setEnabled(False)
         elif value == 'KPF-CC':
-            self.clear_OB_selection()
             self.OBListHeader.setText('StartTime '+self.hdr)
             self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
                               ['new', ObservingBlock('~/joshw/OBs_v2/157279.yaml')],
@@ -514,7 +513,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBand.setEnabled(True)
             self.WeatherBandLabel.setEnabled(True)
         else:
-            self.clear_OB_selection()
             self.OBListHeader.setText(self.hdr)
             self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
                               ['new', ObservingBlock('~/joshw/OBs_v2/157279.yaml')],
