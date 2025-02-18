@@ -11,7 +11,7 @@ import yaml
 import datetime
 import numpy as np
 from astropy import units as u
-from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy.coordinates import SkyCoord, EarthLocation, AltAz, Angle
 from astropy.time import Time
 
 import ktl                      # provided by kroot/ktl/keyword/python
@@ -208,6 +208,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # Keywords
         self.dcs = 'dcs1'
         self.log.debug('Cacheing keyword services')
+        self.DCS_AZ = ktl.cache(self.dcs, 'AZ')
+        self.DCS_AZ.monitor()
+        self.DCS_EL = ktl.cache(self.dcs, 'EL')
+        self.DCS_EL.monitor()
         self.kpfconfig = ktl.cache('kpfconfig')
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
@@ -599,7 +603,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.log.debug('done')
                 self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
                 self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
-                if above_horizon(target_altz.az.deg, target_altz.alt.deg):
+                is_up = above_horizon(target_altz.az.deg, target_altz.alt.deg)
+                if is_up:
                     self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
                     if target_altz.alt.deg > self.ADC_horizon:
                         self.SOB_EL.setStyleSheet("color:black")
@@ -611,6 +616,29 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.SOB_Airmass.setText("--")
                     self.SOB_EL.setStyleSheet("color:red")
                     self.SOB_EL.setToolTip("Below Keck horizon")
+                # Calculate AZ Slew Distance
+                #  Azimuth range for telescope is -125 to 0 to 325
+                #  North wrap is -125 to -35
+                #  South wrap is 235 to 325
+                nwrap = self.DCS_AZ.binary <= -35
+                swrap = self.DCS_AZ.binary >= 235
+                tel_az = Angle(self.DCS_AZ.binary*u.radian).to(u.deg)
+                dest_az = Angle(target_altz.az.deg*u.deg)
+                dest_az.wrap_at(325*u.deg, inplace=True)
+                slew = abs(tel_az - dest_az)
+                slewmsg = f"{tel_az.value:.1f} to {dest_az.value:.1f} = {slew:.1f}"
+                self.SOB_AzSlew.setText(slewmsg)
+
+                if is_up:
+                    # Calculate EL Slew Distance
+                    tel_el = Angle(self.DCS_EL.binary*u.radian).to(u.deg)
+                    dest_el = Angle(target_altz.alt.deg*u.deg)
+                    slew = abs(tel_el - dest_el)
+                    slewmsg = f"{tel_el.value:.1f} to {dest_el.value:.1f} = {slew:.1f}"
+                    self.SOB_ELSlew.setText(slewmsg)
+                else:
+                    self.SOB_ELSlew.setText("--")
+
             # Calculate OB Duration
             duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.SOB)
             self.SOB_ExecutionTime.setText(f"{duration/60:.0f} min")
