@@ -35,21 +35,44 @@ class ObservingBlock(object):
             OBdict = {}
 
         # OB Metadata
-        self.ProgramID = OBdict.get('ProgramID', '')
-        self.AssociatedPrograms = OBdict.get('AssociatedPrograms', '')
+        self.ProgramID = OBdict.get('semid', '')
+        self.OBID = OBdict.get('_id', '')
         self.CommentToObserver = OBdict.get('CommentToObserver', '')
-        # Target
-        target = OBdict.get('Target', None)
-        if target is None:
+
+        # Handle if this is a v1 Science Observing Block
+        if OBdict.get('Template_Name', None) == 'kpf_sci':
+            # Target
+            self.Target = Target.resolve_name(f"Gaia {OBdict['GaiaID']}")
+            self.Target.TargetName.set(OBdict.get('TargetName'))
+            # Observations
+            self.Observations = []
+            self.Calibrations = []
+            for obs_v1 in OBdict.get('SEQ_Observations', []):
+                obs = Observation(obs_v1)
+                self.Observations.append(obs)
+        # Handle if this is a v1 Calibration Observing Block
+        elif OBdict.get('Template_Name', None) == 'kpf_cal':
+            # Calibrations
             self.Target = None
+            self.Observations = []
+            self.Calibrations = []
+            for cal_v1 in OBdict.get('SEQ_Calibrations', []):
+                cal = Calibration(cal_v1)
+                self.Calibrations.append(cal)
+        # Assume this is a v2 Observing Block
         else:
-            self.Target = Target(target)
-        # Observations
-        observations = OBdict.get('Observations', [])
-        self.Observations = [Observation(obs) for obs in observations]
-        # Calibrations
-        calibrations = OBdict.get('Calibrations', [])
-        self.Calibrations = [Calibration(cal) for cal in calibrations]
+            # Target
+            target = OBdict.get('Target', None)
+            if target is None:
+                self.Target = None
+            else:
+                self.Target = Target(target)
+            # Observations
+            observations = OBdict.get('Observations', [])
+            self.Observations = [Observation(obs) for obs in observations]
+            # Calibrations
+            calibrations = OBdict.get('Calibrations', [])
+            self.Calibrations = [Calibration(cal) for cal in calibrations]
 
     def validate(self):
         # Check that components are the correct types and are individually valid
@@ -123,21 +146,21 @@ class ObservingBlock(object):
         if len(self.Calibrations) > 0:
             lines += ['Calibrations:']
             for j,cal in enumerate(self.Calibrations):
-                lines.append(f'# Calibration {i+1}')
+                lines.append(f'# Calibration {j+1}')
                 lines += cal.to_lines()
         return '\n'.join(lines)
 
 
-def convert_v1_to_v2(OBinput):
-    if type(OBinput) in [str, Path]:
-        with open(OBinput, 'r') as f:
-            OBv1 = yaml.safe_load(f.read())
-    t = Target.resolve_target_name(f"Gaia {OB['GaiaID']}")
-    t['TargetName'] = OBv1['TargetName']
-    OB = ObservingBlock()
-    OB.Target = t
-    for obs_v1 in OBv1['SEQ_Observations']:
-        obs = Observation(obs_v1)
-        OB.Observations.append(obs)
-
-    return OB
+##--------------------------------------------------------------------------
+## For Testing
+##--------------------------------------------------------------------------
+if __name__ == '__main__':
+    import argparse
+    p = argparse.ArgumentParser(description='')
+    p.add_argument('file', type=str,
+                    help="The file to read in.")
+    args = p.parse_args()
+    print(args.file)
+    ob = ObservingBlock(args.file)
+    print(type(ob), ob)
+    print(ob.__repr__())
