@@ -464,7 +464,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def get_progIDs(self):
         progIDs = ['', 'KPF-CC']
         # Go get list of available program IDs for Instrument=KPF
-        return progIDs + ['E123', 'E456']
+        return progIDs + ['E123', 'E456', 'CPS 2024B']
 
     def set_ProgID(self, value):
         self.log.info(f"set_ProgID: '{value}'")
@@ -476,6 +476,22 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.layoutChanged.emit()
             self.SortOBs.setEnabled(False)
             self.SortOBsLabel.setEnabled(False)
+            self.WeatherBand.setEnabled(False)
+            self.WeatherBandLabel.setEnabled(False)
+        elif value == 'CPS 2024B':
+            files = [f for f in Path('/s/sdata1701/OBs/howard/2024B').glob('*.yaml')]
+            self.model.OBs = []
+            for i,file in enumerate(files[:30]):
+                print(f"Reading file {i+1}")
+                try:
+                    self.model.OBs.append(['new', ObservingBlock(str(file))])
+                except:
+                    print(f"Failed file {i+1}: {file}")
+            print(f"Read in {len(self.model.OBs)} files")
+            self.model.start_times = None
+            self.model.layoutChanged.emit()
+            self.SortOBs.setEnabled(True)
+            self.SortOBsLabel.setEnabled(True)
             self.WeatherBand.setEnabled(False)
             self.WeatherBandLabel.setEnabled(False)
         elif value == 'KPF-CC':
