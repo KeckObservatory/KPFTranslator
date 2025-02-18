@@ -140,6 +140,18 @@ class ObservingBlock(object):
         with open(file, 'w')as f:
             f.write(self.__repr__())
 
+    def name(self):
+        if self.Target is not None:
+            out = f"{self.Target.get('TargetName')}"
+        else:
+            out = 'unknown '
+        for i,obs in enumerate(self.Observations):
+            if i == 0:
+                out += f" {obs}"
+            else:
+                out += f",{obs}"
+        return out
+
     def __str__(self):
         if self.Target is not None:
             out = f"{self.Target}"
