@@ -93,7 +93,7 @@ class Target(BaseOBComponent):
         for objid in names['ID']:
             if objid.find('Gaia DR3') >= 0:
                 GaiaDR3 = objid[9:]
-        target_dict['GaiaID'] = GaiaDR3
+        target_dict['GaiaID'] = f"DR3 {GaiaDR3}"
         target_coord, gaia_params = self.get_gaia_parameters(GaiaDR3) if GaiaDR3 is not None else None
 
         twoMASSID = None
