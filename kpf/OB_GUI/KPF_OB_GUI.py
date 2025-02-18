@@ -55,6 +55,8 @@ def create_GUI_log():
 ## Define Model for MVC
 ##-------------------------------------------------------------------------
 class OBListModel(QtCore.QAbstractListModel):
+    '''Model to hold the list of OBs that the observer will select from.
+    '''
     def __init__(self, *args, OBs=[], **kwargs):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = OBs
@@ -108,6 +110,9 @@ class OBListModel(QtCore.QAbstractListModel):
 ## Scrollable QMessageBox
 ##-------------------------------------------------------------------------
 class ScrollMessageBox(QtWidgets.QMessageBox):
+    '''Custom message box to show the contents of an OB (as it would appear in
+    a .yaml file on disk) in a scrollable window.
+    '''
     def __init__(self, contents, *args, **kwargs):
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
         scroll = QtWidgets.QScrollArea(self)
@@ -126,6 +131,8 @@ class ScrollMessageBox(QtWidgets.QMessageBox):
 ## Observer Comment Dialog Box
 ##-------------------------------------------------------------------------
 class ObserverCommentBox(QtWidgets.QDialog):
+    '''Custom dialog box for observers to submit observer comments on an OB.
+    '''
     def __init__(self, SOB, observer):
         super().__init__()
         self.SOB = SOB
@@ -372,7 +379,6 @@ class MainWindow(QtWidgets.QMainWindow):
         elif value > self.bad_slew_cal_time:
             self.slewcaltime_value.setStyleSheet("color:red")
 
-
     def update_acffile(self, value):
         self.fast = QueryFastReadMode.execute({})
         if self.fast is True:
@@ -381,7 +387,6 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.read_mode.setText('Normal')
             self.read_mode.setStyleSheet("color:green")
-
 
     def update_ca_hk_enabled(self, value):
         self.log.debug(f"update_ca_hk_enabled: {value}")
@@ -446,10 +451,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.disabled_detectors_value.setText('')
             self.disabled_detectors_value.setStyleSheet("color:red")
 
-
     def update_UT(self, value):
         self.UTValue.setText(value[:-3])
-
 
     def update_LST(self, value):
         self.SiderealTimeValue.setText(value[:-3])
@@ -609,6 +612,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB = None
         self.update_SOB_display(self.SOB)
 
+
+    ##-------------------------------------------
+    ## Methods operating on a single OB
+    ##-------------------------------------------
     def show_SOB(self):
         if self.SOB is not None:
             popup = ScrollMessageBox(self.SOB.__repr__())
@@ -625,8 +632,6 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"From commentor: {comment_box.observer}")
         else:
             print("Cancel! Not submitting comment.")
-
-
 
     def execute_SOB(self, slewcal=False):
         if self.SOB is not None:
