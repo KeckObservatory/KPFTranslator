@@ -85,7 +85,7 @@ class Target(BaseOBComponent):
         return float(result[0]['Jmag'])
 
     @classmethod
-    def resolve_target_name(self, target_name):
+    def resolve_name(self, target_name):
         target_dict = {'TargetName': target_name}
 
         names = Simbad.query_objectids(target_name)
