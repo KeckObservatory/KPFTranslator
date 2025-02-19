@@ -124,6 +124,7 @@ class ObservingBlock(object):
         # We should have at least one observation or calibration
         if len(self.Observations) == 0 and len(self.Calibrations) == 0:
             raise InvalidObservingBlock(f"contains no observations and no calibrations")
+        return True
 
     def to_dict(self):
         OB = {}
