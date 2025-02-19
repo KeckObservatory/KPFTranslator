@@ -141,7 +141,6 @@ class EditableMessageBox(QtWidgets.QMessageBox):
         self.OB = OB
         self.OBlines_original = self.OB.__repr__()
         self.OBlines = self.OB.__repr__()
-        self.changed = False
         self.newOB = None
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
         self.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
@@ -159,7 +158,6 @@ class EditableMessageBox(QtWidgets.QMessageBox):
 
     def edit_OB(self):
         self.OBlines = self.contents.document().toPlainText()
-        self.changed = (self.OBlines != self.OBlines_original)
         try:
             self.newOB = ObservingBlock(yaml.safe_load(self.OBlines))
         except:
