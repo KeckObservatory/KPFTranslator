@@ -300,8 +300,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # List of Observing Blocks
         self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
-        self.hdr = 'TargetName        RA          Dec        Gmag  Jmag  Observations'
-        self.OBListHeader.setText(self.hdr)
+        self.hdr = 'TargetName       RA          Dec         Gmag  Jmag  Observations'
+        self.OBListHeader.setText(f"    {self.hdr}")
 
         self.ListOfOBs = self.findChild(QtWidgets.QListView, 'ListOfOBs')
         self.model = OBListModel(OBs=[])
@@ -501,7 +501,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBand.setEnabled(False)
             self.WeatherBandLabel.setEnabled(False)
         elif value == 'KPF-CC':
-            self.OBListHeader.setText('StartTime '+self.hdr)
+            self.OBListHeader.setText('    StartTime '+self.hdr)
             self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
                               ['new', ObservingBlock('~/joshw/OBs_v2/157279.yaml')],
                               ]
@@ -513,7 +513,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBand.setEnabled(True)
             self.WeatherBandLabel.setEnabled(True)
         else:
-            self.OBListHeader.setText(self.hdr)
+            self.OBListHeader.setText(f"    {self.hdr}")
             self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
                               ['new', ObservingBlock('~/joshw/OBs_v2/157279.yaml')],
                               ]
