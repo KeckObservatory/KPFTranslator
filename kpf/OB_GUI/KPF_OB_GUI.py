@@ -503,10 +503,19 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBandLabel.setEnabled(False)
         elif value == 'KPF-CC':
             self.OBListHeader.setText('    StartTime '+self.hdr)
-            self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
-                              ['new', ObservingBlock('~/joshw/OBs_v2/157279.yaml')],
-                              ]
-            self.model.start_times = [8.1, 5.2, 6.3]
+            files = [f for f in Path('/home/kpfeng/joshw/OBs_v2/howard/2024B').glob('*.yaml')]
+            self.model.OBs = []
+            self.model.start_times = []
+            for i,file in enumerate(files[:30]):
+                print(f"Reading file {i+1}")
+                try:
+                    self.model.OBs.append(['new', ObservingBlock(str(file))])
+                    import random
+                    obstime = random.randrange(5, 17, step=1) + random.random()
+                    self.model.start_times.append(obstime)
+                except:
+                    print(f"Failed file {i+1}: {file}")
+            print(f"Read in {len(self.model.OBs)} files")
             self.model.sort('time')
             self.model.layoutChanged.emit()
             self.SortOBs.setEnabled(False)
