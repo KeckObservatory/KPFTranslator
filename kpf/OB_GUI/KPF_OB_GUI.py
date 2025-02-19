@@ -485,6 +485,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBand.setEnabled(False)
             self.WeatherBandLabel.setEnabled(False)
         elif value == 'CPS 2024B':
+            self.OBListHeader.setText(f"    {self.hdr}")
             files = [f for f in Path('/s/sdata1701/OBs/howard/2024B').glob('*.yaml')]
             self.model.OBs = []
             for i,file in enumerate(files[:30]):
