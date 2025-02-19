@@ -38,7 +38,10 @@ class Target(BaseOBComponent):
             pname = ptuple['name']
             if self.get(pname) is not None:
                 p = getattr(self, pname)
-                lines.append(f"  {pname}: {str(p)}")
+                if pname in ['RA', 'Dec']:
+                    lines.append(f"  {pname}: '{str(p)}'")
+                else:
+                    lines.append(f"  {pname}: {str(p)}")
         return lines
 
     def __str__(self):
