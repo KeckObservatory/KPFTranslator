@@ -113,8 +113,11 @@ class ScrollMessageBox(QtWidgets.QMessageBox):
     '''Custom message box to show the contents of an OB (as it would appear in
     a .yaml file on disk) in a scrollable window.
     '''
-    def __init__(self, contents, *args, **kwargs):
+    def __init__(self, OB, *args, **kwargs):
+        contents = OB.__repr__()
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
+        self.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+        self.button(QtWidgets.QMessageBox.Cancel).setText("Edit OB")
         scroll = QtWidgets.QScrollArea(self)
         scroll.setWidgetResizable(True)
         self.content = QtWidgets.QWidget()
@@ -125,6 +128,42 @@ class ScrollMessageBox(QtWidgets.QMessageBox):
         lay.addWidget(contents_label)
         self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
         self.setStyleSheet("QScrollArea{min-width:350 px; min-height: 600px;}")
+
+
+##-------------------------------------------------------------------------
+## Editable QMessageBox
+##-------------------------------------------------------------------------
+class EditableMessageBox(QtWidgets.QMessageBox):
+    '''Custom message box to edit the contents of an OB (as it would appear in
+    a .yaml file on disk) in a scrollable window.
+    '''
+    def __init__(self, OB, *args, **kwargs):
+        self.OB = OB
+        self.OBlines_original = self.OB.__repr__()
+        self.OBlines = self.OB.__repr__()
+        self.changed = False
+        self.newOB = None
+        QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
+        self.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+        scroll = QtWidgets.QScrollArea(self)
+        scroll.setWidgetResizable(True)
+        wdgt = QtWidgets.QWidget()
+        scroll.setWidget(wdgt)
+        lay = QtWidgets.QVBoxLayout(wdgt)
+        self.contents = QtWidgets.QPlainTextEdit(self.OBlines, self)
+        self.contents.setFont(QtGui.QFont('Courier New', 11))
+        self.contents.textChanged.connect(self.edit_OB)
+        lay.addWidget(self.contents)
+        self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
+        self.setStyleSheet("QScrollArea{min-width:350 px; min-height: 600px;}")
+
+    def edit_OB(self):
+        self.OBlines = self.contents.document().toPlainText()
+        self.changed = (self.OBlines != self.OBlines_original)
+        try:
+            self.newOB = ObservingBlock(yaml.safe_load(self.OBlines))
+        except:
+            self.newOB = None
 
 
 ##-------------------------------------------------------------------------
@@ -670,9 +709,25 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     def show_SOB(self):
         if self.SOB is not None:
-            popup = ScrollMessageBox(self.SOB.__repr__())
-            popup.setWindowTitle(f"Full OB Contents: {self.SOB.name()}")
-            popup.exec_()
+            OBcontents_popup = ScrollMessageBox(self.SOB)
+            OBcontents_popup.setWindowTitle(f"Full OB Contents: {self.SOB.name()}")
+            result = OBcontents_popup.exec_()
+            if result == QtWidgets.QMessageBox.Ok:
+                print('Ok')
+            elif result == QtWidgets.QMessageBox.Cancel:
+                print('Edit')
+                OBedit_popup = EditableMessageBox(self.SOB)
+                OBedit_popup.setWindowTitle(f"Editing OB: {self.SOB.name()}")
+                edit_result = OBedit_popup.exec_()
+                if edit_result == QtWidgets.QMessageBox.Ok:
+                    print('Ok')
+                    newOB = OBedit_popup.newOB
+                    if newOB.validate():
+                        print(newOB.name())
+                        print(newOB.__repr__())
+                elif edit_result == QtWidgets.QMessageBox.Cancel:
+                    print('Cancel')
+
 
     def add_comment(self):
         if self.SOB is None:
