@@ -195,8 +195,22 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description='')
     p.add_argument('file', type=str,
                     help="The file to read in.")
+    ## add options
+    p.add_argument("-o", "--output", dest="output", type=str,
+        help="Directory for output as a v2 OB.")
     args = p.parse_args()
-    print(f"Reading: {args.file}")
-    ob = ObservingBlock(args.file)
-    print(ob.Target.coord)
-    print(ob.__repr__())
+    
+    input_file = Path(args.file).expanduser()
+    print(f"Reading: {input_file}")
+    ob = ObservingBlock(str(input_file))
+    if args.output is not None:
+        outpath = Path(args.output).expanduser()
+        outfile = outpath / input_file.name
+        if outpath.exists() == False:
+            print(f'Output directory {args.output} does not exist')
+        else:
+            print(f"Writing to: {outfile}")
+            if outfile.exists(): outfile.unlink()
+            ob.write_to(outfile)
+    else:
+        print(ob.__repr__())
