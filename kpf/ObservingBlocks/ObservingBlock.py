@@ -41,7 +41,10 @@ class ObservingBlock(object):
         self.OBID = OBdict.get('_id', '')
         self.CommentToObserver = OBdict.get('CommentToObserver', '')
 
-        # Handle if this is a v1 Science Observing Block
+        ## ----------------------------------------------------------------
+        ## Handle old v1 Observing Block format
+        ## ----------------------------------------------------------------
+        # v1 Science Observing Block
         if OBdict.get('Template_Name', None) == 'kpf_sci':
             # Target
             GaiaID = OBdict.get('GaiaID', None)
@@ -69,7 +72,7 @@ class ObservingBlock(object):
                             pass
                 obs = Observation(obs_v1)
                 self.Observations.append(obs)
-        # Handle if this is a v1 Calibration Observing Block
+        # v1 Calibration Observing Block
         elif OBdict.get('Template_Name', None) == 'kpf_cal':
             # Calibrations
             self.Target = None
@@ -78,7 +81,9 @@ class ObservingBlock(object):
             for cal_v1 in OBdict.get('SEQ_Calibrations', []):
                 cal = Calibration(cal_v1)
                 self.Calibrations.append(cal)
-        # Assume this is a v2 Observing Block
+        ## ----------------------------------------------------------------
+        ## Handle v2 Observing Blocks
+        ## ----------------------------------------------------------------
         else:
             # Target
             target = OBdict.get('Target', None)
