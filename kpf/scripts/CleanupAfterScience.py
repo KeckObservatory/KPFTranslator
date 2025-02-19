@@ -34,6 +34,7 @@ class CleanupAfterScience(KPFTranslatorFunction):
         StopTipTilt.execute({})
 
         kpfconfig = ktl.cache('kpfconfig')
+        kpfconfig['SCRIPTMSG'].write('')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         if runagitator is True:
             StopAgitator.execute({})

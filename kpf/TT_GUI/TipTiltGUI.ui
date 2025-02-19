@@ -1404,7 +1404,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>111</width>
+       <width>91</width>
        <height>16</height>
       </rect>
      </property>
@@ -1414,14 +1414,14 @@
       </font>
      </property>
      <property name="text">
-      <string>Script:</string>
+      <string>Script Name:</string>
      </property>
     </widget>
     <widget class="QLabel" name="ExposureStatusLabel">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>40</y>
+       <x>290</x>
+       <y>20</y>
        <width>111</width>
        <height>16</height>
       </rect>
@@ -1435,48 +1435,12 @@
       <string>Exposure Status:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="FIUModeLabel">
-     <property name="geometry">
-      <rect>
-       <x>310</x>
-       <y>20</y>
-       <width>71</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>FIU Mode:</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="ScriptValue">
      <property name="geometry">
       <rect>
-       <x>60</x>
+       <x>100</x>
        <y>20</y>
-       <width>241</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>--</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="FIUModeValue">
-     <property name="geometry">
-      <rect>
-       <x>380</x>
-       <y>20</y>
-       <width>201</width>
+       <width>171</width>
        <height>16</height>
       </rect>
      </property>
@@ -1492,8 +1456,8 @@
     <widget class="QLabel" name="ExposureStatusValue">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>40</y>
+       <x>410</x>
+       <y>20</y>
        <width>171</width>
        <height>16</height>
       </rect>
@@ -1507,12 +1471,12 @@
       <string>--</string>
      </property>
     </widget>
-    <widget class="QLabel" name="ObjectLabel">
+    <widget class="QLabel" name="ScriptStatusLabel">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>10</x>
        <y>40</y>
-       <width>71</width>
+       <width>91</width>
        <height>16</height>
       </rect>
      </property>
@@ -1522,15 +1486,15 @@
       </font>
      </property>
      <property name="text">
-      <string>Object:</string>
+      <string>Script Status:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="ObjectValue">
+    <widget class="QLabel" name="ScriptStatusValue">
      <property name="geometry">
       <rect>
-       <x>380</x>
+       <x>100</x>
        <y>40</y>
-       <width>201</width>
+       <width>481</width>
        <height>16</height>
       </rect>
      </property>

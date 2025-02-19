@@ -28,6 +28,8 @@ class WaitForConfigureAcquisition(KPFTranslatorFunction):
     @classmethod
     def perform(cls, OB, logger, cfg):
         WaitForConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+        SCRIPTMSG = ktl.cache('kpfconfig', 'SCRIPTMSG')
+        SCRIPTMSG.write("") # Clear SCRIPTMSG, useful if slew cal was executed
 
     @classmethod
     def post_condition(cls, OB, logger, cfg):

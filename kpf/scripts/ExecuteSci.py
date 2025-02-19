@@ -138,15 +138,22 @@ class ExecuteSci(KPFTranslatorFunction):
             # Start next exposure
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
-            log.info(f"Starting {args.get('ExpTime')} s expoure {j+1}/{nexp} ({args.get('Object')})")
+            msg = f"Starting {args.get('ExpTime')} s exposure {j+1}/{nexp} ({args.get('Object')})"
+            log.info(msg)
+            kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})
             WaitForReadout.execute({})
-            log.info(f"Readout has begun")
+            msg = f"Readout has begun for exposure {j+1}/{nexp}"
+            log.info(msg)
+            kpfconfig['SCRIPTMSG'].write(msg)
             if runagitator and not fast_read_mode:
                 StopAgitator.execute({})
         # If we are in fast read mode, turn off agitator at end
         if runagitator and fast_read_mode:
             StopAgitator.execute({})
+        # Clear Object
+        SetObject.execute({})
+
 
     @classmethod
     def post_condition(cls, args, logger, cfg):
