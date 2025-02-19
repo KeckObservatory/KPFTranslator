@@ -176,7 +176,7 @@ def create_logger():
         except OSError as e:
             pass
     
-    LogFileName = logdir / 'cli_interface.log'
+    LogFileName = logdir / 'cli_interface_v2.log'
     LogFileHandler = logging.FileHandler(LogFileName)
     LogFileHandler.setLevel(logging.DEBUG)
     LogFileHandler.setFormatter(LogFormat)
