@@ -36,3 +36,15 @@ class Calibration(BaseOBComponent):
                 else:
                     lines.append(f"  {p['name']}: {self.get(p['name'])}")
         return lines
+
+    def __str__(self):
+        if self.CalSource.value == 'EtalonFiber':
+            calsource = 'Etalon'
+        elif self.CalSource.value.lower() in ['dark', 'home']:
+            calsource = 'Dark'
+        else:
+            calsource = self.CalSource.value
+        return f"{calsource}:{self.nExp.value:d}x{self.ExpTime.value:.0f}s"
+
+    def summary(self):
+        return self.__str__()

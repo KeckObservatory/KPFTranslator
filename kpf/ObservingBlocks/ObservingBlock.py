@@ -151,11 +151,12 @@ class ObservingBlock(object):
             out = f"{self.Target.get('TargetName')}"
         else:
             out = 'unknown '
-        for i,obs in enumerate(self.Observations):
-            if i == 0:
-                out += f" {obs}"
-            else:
-                out += f",{obs}"
+        cal_strings = [str(cal) for cal in self.Calibrations]
+        if len(cal_strings) > 0:
+            out += f" {','.join(cal_strings)}"
+        obs_strings = [str(obs) for obs in self.Observations]
+        if len(obs_strings) > 0:
+            out += f" {','.join(obs_strings)}"
         return out
 
     def __str__(self):
@@ -163,11 +164,12 @@ class ObservingBlock(object):
             out = f"{self.Target}"
         else:
             out = 'unknown        unknown       unknown '
-        for i,obs in enumerate(self.Observations):
-            if i == 0:
-                out += f" {obs}"
-            else:
-                out += f",{obs}"
+        cal_strings = [str(cal) for cal in self.Calibrations]
+        if len(cal_strings) > 0:
+            out += f" {','.join(cal_strings)}"
+        obs_strings = [str(obs) for obs in self.Observations]
+        if len(obs_strings) > 0:
+            out += f" {','.join(obs_strings)}"
         return out
 
     def __repr__(self, comments=True):
@@ -175,16 +177,16 @@ class ObservingBlock(object):
         if self.Target is not None:
             lines += ['Target:']
             lines += self.Target.to_lines()
-        if len(self.Observations) > 0:
-            lines += ['Observations:']
-            for i,obs in enumerate(self.Observations):
-                lines.append(f'# Observation {i+1}')
-                lines += obs.to_lines()
         if len(self.Calibrations) > 0:
             lines += ['Calibrations:']
             for j,cal in enumerate(self.Calibrations):
                 lines.append(f'# Calibration {j+1}')
                 lines += cal.to_lines()
+        if len(self.Observations) > 0:
+            lines += ['Observations:']
+            for i,obs in enumerate(self.Observations):
+                lines.append(f'# Observation {i+1}')
+                lines += obs.to_lines()
         return '\n'.join(lines)
 
 

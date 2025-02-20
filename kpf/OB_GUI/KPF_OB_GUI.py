@@ -116,7 +116,7 @@ class ScrollMessageBox(QtWidgets.QMessageBox):
     def __init__(self, OB, *args, **kwargs):
         contents = OB.__repr__()
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
-        self.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+        self.setStandardButtons(QtWidgets.QMessageBox.Close | QtWidgets.QMessageBox.Cancel)
         self.button(QtWidgets.QMessageBox.Cancel).setText("Edit OB")
         scroll = QtWidgets.QScrollArea(self)
         scroll.setWidgetResizable(True)
@@ -635,26 +635,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
             self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
             self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
-            if len(self.SOB.Observations) >= 1:
-                obs_txt = f"{self.SOB.Observations[0].summary()}"
-                self.SOB_Observation1.setText(obs_txt)
-            else:
-                self.SOB_Observation1.setText('--')
 
-            if len(self.SOB.Observations) >= 2:
-                obs_txt = f"{self.SOB.Observations[1].summary()}"
-                self.SOB_Observation2.setText(obs_txt)
-            else:
-                self.SOB_Observation2.setText('--')
-
-            if len(self.SOB.Observations) >= 3:
-                remaining_obs_txt = []
-                for obs in self.SOB.Observations[2:]:
-                    obs_txt = obs.summary()
-                    remaining_obs_txt.append(obs_txt)
-                self.SOB_Observation3.setText(', '.join(remaining_obs_txt))
-            else:
-                self.SOB_Observation3.setText('--')
+            obs_and_cals = self.SOB.Calibrations + self.SOB.Observations
+            n_per_line = int(np.ceil(len(obs_and_cals)/3))
+            for i in [1,2,3]:
+                field = getattr(self, f'SOB_Observation{i}')
+                strings = [obs_and_cals.pop(0).summary() for j in range(n_per_line) if len(obs_and_cals) > 0]
+                field.setText(', '.join(strings))
             # Calculate AltAz Position
             if self.SOB.Target.coord is not None:
                 AltAzSystem = AltAz(obstime=Time.now(), location=self.keck,
