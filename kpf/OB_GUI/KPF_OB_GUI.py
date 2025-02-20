@@ -377,6 +377,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ELSlew = self.findChild(QtWidgets.QLabel, 'SOB_ELSlew')
 
         # SOB Execution
+        self.SOB_CommentToObserver = self.findChild(QtWidgets.QLabel, 'CommentToObserver')
+        self.SOB_CommentToObserverLabel = self.findChild(QtWidgets.QLabel, 'CommentToObserverLabel')
         self.SOB_ShowButton = self.findChild(QtWidgets.QPushButton, 'SOB_ShowButton')
         self.SOB_ShowButton.clicked.connect(self.show_SOB)
         self.SOB_AddComment = self.findChild(QtWidgets.QPushButton, 'SOB_AddComment')
@@ -586,8 +588,19 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB = self.model.OBs[self.SOBindex][1]
             self.update_SOB_display(self.SOB)
 
+    def set_SOB_enabled(self, enabled):
+        if enabled == False:
+            self.SOB_CommentToObserver.setText('')
+        self.SOB_CommentToObserverLabel.setEnabled(enabled)
+        self.SOB_ShowButton.setEnabled(enabled)
+        self.SOB_AddComment.setEnabled(enabled)
+        self.SOB_ExecuteButton.setEnabled(enabled)
+        self.SOB_ExecuteWithSlewCalButton.setEnabled(enabled)
+
+
     def update_SOB_display(self, SOB):
         if self.SOB is None:
+            self.set_SOB_enabled(False)
             self.SOB_TargetName.setText('--')
             self.SOB_GaiaID.setText('--')
             self.SOB_TargetRA.setText('--')
@@ -604,6 +617,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_Az.setText('--')
             self.SOB_Airmass.setText('--')
         else:
+            self.set_SOB_enabled(True)
             self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
             self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
             if abs(SOB.Target.PMRA.value) > 0.0001 or abs(SOB.Target.PMDEC.value) > 0.0001:
