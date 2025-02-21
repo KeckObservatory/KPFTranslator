@@ -35,8 +35,7 @@ class SetObserverFromSchedule(KPFFunction):
         utnow = datetime.utcnow()
         date = utnow-timedelta(days=1)
         date_str = date.strftime('%Y-%m-%d')
-        KPF_programs = [s for s in get_schedule(date_str, 1)
-                        if s['Instrument'] in ['KPF', 'KPF-CC']]
+        KPF_programs = get_schedule(date_str)
         nKPFprograms = len(KPF_programs)
         log.debug(f"Found {nKPFprograms} KPF programs in schedule for tonight")
         project_codes = [p['ProjCode'] for p in KPF_programs]
