@@ -294,6 +294,8 @@ links:
     # Utils
     BuildOBfromQuery:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
+    CheckAllowScheduledCals:
+        cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     CheckDewarWeights:
         cmd: utils.CheckDewarWeights.CheckDewarWeights
     EndOfNight:
