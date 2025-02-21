@@ -304,6 +304,8 @@ links:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
     CalculateDAR:
         cmd: utils.CalculateDAR.CalculateDAR
+    CheckAllowScheduledCals:
+        cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     CheckDewarWeights:
         cmd: utils.CheckDewarWeights.CheckDewarWeights
     CorrectDAR:
