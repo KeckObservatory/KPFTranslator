@@ -56,28 +56,34 @@ def create_GUI_log():
 ##-------------------------------------------------------------------------
 class OBListModel(QtCore.QAbstractListModel):
     '''Model to hold the list of OBs that the observer will select from.
+    
+    Each entry is a list with contents:
+        OB(ObservingBlock object), status(string), edited(bool)
     '''
     def __init__(self, *args, OBs=[], **kwargs):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = OBs
         self.start_times = None
-        now = datetime.datetime.utcnow()
-        self.now = now.hour + now.minute/60 + now.second/3600
 
     def data(self, index, role):
         if role == Qt.DisplayRole:
             if self.start_times is None:
-                status, text = self.OBs[index.row()]
-                return str(text)
+                OB, status, edited = self.OBs[index.row()]
+#                 print(f"{OB} [{status}, {edited}]")
+                output_line = f"{str(OB):s}"
             else:
-                status, text = self.OBs[index.row()]
+                OB, status, edited = self.OBs[index.row()]
+#                 print(f"{OB} [{status}, {edited}]")
                 start_time_decimal = self.start_times[index.row()]
                 sthr = int(np.floor(start_time_decimal))
                 stmin = (start_time_decimal-sthr)*60
                 start_time_str = f"{sthr:02d}:{stmin:02.0f} UT"
-                return f"{start_time_str}  {str(text):s}"
+                output_line = f"{start_time_str}  {str(OB):s}"
+            if edited == True:
+                output_line += ' [edited]'
+            return output_line
         if role == Qt.DecorationRole:
-            status, text = self.OBs[index.row()]
+            OB, status, edited = self.OBs[index.row()]
             if status == 'new':
                 return QtGui.QColor('green')
             elif status == 'started':
@@ -530,7 +536,7 @@ class MainWindow(QtWidgets.QMainWindow):
             for i,file in enumerate(files[:30]):
                 print(f"Reading file {i+1}")
                 try:
-                    self.model.OBs.append(['new', ObservingBlock(str(file))])
+                    self.model.OBs.append([ObservingBlock(str(file)), 'new', False])
                 except:
                     print(f"Failed file {i+1}: {file}")
             print(f"Read in {len(self.model.OBs)} files")
@@ -548,7 +554,7 @@ class MainWindow(QtWidgets.QMainWindow):
             for i,file in enumerate(files[:30]):
                 print(f"Reading file {i+1}")
                 try:
-                    self.model.OBs.append(['new', ObservingBlock(str(file))])
+                    self.model.OBs.append([ObservingBlock(str(file)), 'new', False])
                     import random
                     obstime = random.randrange(5, 17, step=1) + random.random()
                     self.model.start_times.append(obstime)
@@ -563,8 +569,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBandLabel.setEnabled(True)
         else:
             self.OBListHeader.setText(f"    {self.hdr}")
-            self.model.OBs = [['new', ObservingBlock('~/joshw/OBs_v2/219134.yaml')],
-                              ['new', ObservingBlock('~/joshw/OBs_v2/157279.yaml')],
+            self.model.OBs = [[ObservingBlock('~/joshw/OBs_v2/219134.yaml'), 'new', False],
+                              [ObservingBlock('~/joshw/OBs_v2/157279.yaml'), 'new', False],
                               ]
             self.model.start_times = None
             self.model.layoutChanged.emit()
@@ -585,7 +591,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if len(selected.indexes()) > 0:
             self.SOBindex = selected.indexes()[0].row()
             self.log.debug(f"Selection changed to {self.SOBindex}")
-            self.SOB = self.model.OBs[self.SOBindex][1]
+            self.SOB = self.model.OBs[self.SOBindex][0]
             self.update_SOB_display(self.SOB)
 
     def set_SOB_enabled(self, enabled):
@@ -712,20 +718,26 @@ class MainWindow(QtWidgets.QMainWindow):
             OBcontents_popup.setWindowTitle(f"Full OB Contents: {self.SOB.name()}")
             result = OBcontents_popup.exec_()
             if result == QtWidgets.QMessageBox.Ok:
-                print('Ok')
+                log.debug('Show popup: Ok')
             elif result == QtWidgets.QMessageBox.Cancel:
-                print('Edit')
+                log.info('Show popup: Edit')
                 OBedit_popup = EditableMessageBox(self.SOB)
                 OBedit_popup.setWindowTitle(f"Editing OB: {self.SOB.name()}")
                 edit_result = OBedit_popup.exec_()
                 if edit_result == QtWidgets.QMessageBox.Ok:
-                    print('Ok')
+                    log.info('Edit popup: Ok')
                     newOB = OBedit_popup.newOB
                     if newOB.validate():
-                        print(newOB.name())
-                        print(newOB.__repr__())
+                        log.info('The edited OB has been validated')
+                        self.SOB = newOB
+                        self.model.OBs[self.SOBindex][0] = newOB
+                        self.model.OBs[self.SOBindex][2] = True
+                        self.model.layoutChanged.emit()
+                        self.update_SOB_display(newOB)
+                    else:
+                        log.warning('Edits did not validate. Not changing OB.')
                 elif edit_result == QtWidgets.QMessageBox.Cancel:
-                    print('Cancel')
+                    log.debug('Edit popup: Cancel')
 
 
     def add_comment(self):
@@ -743,7 +755,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.SOB is not None:
             print('Executing OB:')
             print(str(self.SOB))
-            self.model.OBs[self.SOBindex][0] = 'started'
+            self.model.OBs[self.SOBindex][1] = 'started'
             self.model.layoutChanged.emit()
 
     def execute_with_slew_cal_SOB(self):
