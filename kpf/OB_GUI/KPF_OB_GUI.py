@@ -148,12 +148,20 @@ class EditableMessageBox(QtWidgets.QMessageBox):
         wdgt = QtWidgets.QWidget()
         scroll.setWidget(wdgt)
         lay = QtWidgets.QVBoxLayout(wdgt)
+        # Add explanatory text
+        msg = ['The text area below is an editable version of the OB.',
+               'Note that the edited OB will be executable, but will not be',
+               'uploaded to the database. To make changes permanent, edit',
+               'the OB via the web form.']
+        helptext = QtWidgets.QLabel('\n'.join(msg))
+        lay.addWidget(helptext)
+        # Add Editable YAML text
         self.contents = QtWidgets.QPlainTextEdit(self.OBlines, self)
         self.contents.setFont(QtGui.QFont('Courier New', 11))
         self.contents.textChanged.connect(self.edit_OB)
         lay.addWidget(self.contents)
         self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
-        self.setStyleSheet("QScrollArea{min-width:350 px; min-height: 600px;}")
+        self.setStyleSheet("QScrollArea{min-width:450 px; min-height: 650px;}")
 
     def edit_OB(self):
         self.OBlines = self.contents.document().toPlainText()
