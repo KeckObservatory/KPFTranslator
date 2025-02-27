@@ -257,7 +257,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Selected OB
         self.SOBindex = 0
-        self.SOB = None
         # Coordinate Systems
         self.keck = EarthLocation.of_site('Keck Observatory')
         # Settings
@@ -584,8 +583,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if len(selected.indexes()) > 0:
             self.SOBindex = selected.indexes()[0].row()
             self.log.debug(f"Selection changed to {self.SOBindex}")
-            self.SOB = self.model.OBs[self.SOBindex]
-            self.update_SOB_display(self.SOB)
+            self.update_SOB_display()
+        else:
+            print(selected, deselected)
+            self.SOBindex = None
+            self.update_SOB_display()
 
     def set_SOB_enabled(self, enabled):
         if enabled == False:
@@ -597,8 +599,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ExecuteWithSlewCalButton.setEnabled(enabled)
 
 
-    def update_SOB_display(self, SOB):
-        if self.SOB is None:
+    def update_SOB_display(self):
+        if self.SOBindex is None:
             self.set_SOB_enabled(False)
             self.SOB_TargetName.setText('--')
             self.SOB_GaiaID.setText('--')
@@ -616,6 +618,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_Az.setText('--')
             self.SOB_Airmass.setText('--')
         else:
+            SOB = self.model.OBs[self.SOBindex]
             self.set_SOB_enabled(True)
             self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
             self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
@@ -635,18 +638,18 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
             self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
 
-            obs_and_cals = self.SOB.Calibrations + self.SOB.Observations
+            obs_and_cals = SOB.Calibrations + SOB.Observations
             n_per_line = int(np.ceil(len(obs_and_cals)/3))
             for i in [1,2,3]:
                 field = getattr(self, f'SOB_Observation{i}')
                 strings = [obs_and_cals.pop(0).summary() for j in range(n_per_line) if len(obs_and_cals) > 0]
                 field.setText(', '.join(strings))
             # Calculate AltAz Position
-            if self.SOB.Target.coord is not None:
+            if SOB.Target.coord is not None:
                 AltAzSystem = AltAz(obstime=Time.now(), location=self.keck,
                                     pressure=620*u.mbar, temperature=0*u.Celsius)
                 self.log.debug('Calculating target AltAz coordinates')
-                target_altz = self.SOB.Target.coord.transform_to(AltAzSystem)
+                target_altz = SOB.Target.coord.transform_to(AltAzSystem)
                 self.log.debug('done')
                 self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
                 self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
@@ -687,7 +690,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.SOB_ELSlew.setText("--")
 
             # Calculate OB Duration
-            duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.SOB)
+            duration = EstimateOBDuration.execute({'fast': self.fast}, OB=SOB)
             self.SOB_ExecutionTime.setText(f"{duration/60:.0f} min")
 
     def sort_OB_list(self, value):
@@ -697,35 +700,36 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def clear_OB_selection(self):
         self.ListOfOBs.selectionModel().clearSelection()
-        self.SOBindex = 0
-        self.SOB = None
-        self.update_SOB_display(self.SOB)
+        self.SOBindex = None
+        self.update_SOB_display()
 
 
     ##-------------------------------------------
     ## Methods operating on a single OB
     ##-------------------------------------------
     def show_SOB(self):
-        if self.SOB is not None:
-            OBcontents_popup = ScrollMessageBox(self.SOB)
-            OBcontents_popup.setWindowTitle(f"Full OB Contents: {self.SOB.name()}")
+        if self.SOBindex is None:
+            return
+        SOB = self.model.OBs[self.SOBindex]
+        if SOB is not None:
+            OBcontents_popup = ScrollMessageBox(SOB)
+            OBcontents_popup.setWindowTitle(f"Full OB Contents: {SOB.name()}")
             result = OBcontents_popup.exec_()
             if result == QtWidgets.QMessageBox.Ok:
                 log.debug('Show popup: Ok')
             elif result == QtWidgets.QMessageBox.Cancel:
                 log.info('Show popup: Edit')
-                OBedit_popup = EditableMessageBox(self.SOB)
-                OBedit_popup.setWindowTitle(f"Editing OB: {self.SOB.name()}")
+                OBedit_popup = EditableMessageBox(SOB)
+                OBedit_popup.setWindowTitle(f"Editing OB: {SOB.name()}")
                 edit_result = OBedit_popup.exec_()
                 if edit_result == QtWidgets.QMessageBox.Ok:
                     log.info('Edit popup: Ok')
                     newOB = OBedit_popup.newOB
                     if newOB.validate():
                         log.info('The edited OB has been validated')
-                        self.SOB = newOB
                         self.model.OBs[self.SOBindex] = newOB
                         self.model.layoutChanged.emit()
-                        self.update_SOB_display(newOB)
+                        self.update_SOB_display()
                     else:
                         log.warning('Edits did not validate. Not changing OB.')
                 elif edit_result == QtWidgets.QMessageBox.Cancel:
@@ -733,10 +737,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def add_comment(self):
-        if self.SOB is None:
+        if self.SOBindex is None:
             print('add_comment: No OB selected')
             return
-        comment_box = ObserverCommentBox(self.SOB, self.Observer.text())
+        SOB = self.model.OBs[self.SOBindex]
+        comment_box = ObserverCommentBox(SOB, self.Observer.text())
         if comment_box.exec():
             print(f"Submitting comment: {comment_box.comment}")
             print(f"From commentor: {comment_box.observer}")
@@ -744,9 +749,10 @@ class MainWindow(QtWidgets.QMainWindow):
             print("Cancel! Not submitting comment.")
 
     def execute_SOB(self, slewcal=False):
-        if self.SOB is not None:
+        SOB = self.model.OBs[self.SOBindex]
+        if SOB is not None:
             print('Executing OB:')
-            print(str(self.SOB))
+            print(str(SOB))
             self.model.OBs[self.SOBindex].executed = True
             self.model.layoutChanged.emit()
 
