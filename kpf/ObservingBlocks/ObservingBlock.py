@@ -40,6 +40,9 @@ class ObservingBlock(object):
         self.ProgramID = OBdict.get('semid', '')
         self.OBID = OBdict.get('_id', '')
         self.CommentToObserver = OBdict.get('CommentToObserver', '')
+        # Metadata for OB GUI
+        self.executed = False
+        self.edited = False
 
         ## ----------------------------------------------------------------
         ## Handle old v1 Observing Block format
