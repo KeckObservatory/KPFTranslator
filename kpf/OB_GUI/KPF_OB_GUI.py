@@ -160,8 +160,33 @@ class EditableMessageBox(QtWidgets.QMessageBox):
         self.contents.setFont(QtGui.QFont('Courier New', 11))
         self.contents.textChanged.connect(self.edit_OB)
         lay.addWidget(self.contents)
+        # Add validate button
+        validate_button = QtWidgets.QPushButton('Validate')
+        validate_button.clicked.connect(self.validate_OB)
+        lay.addWidget(validate_button)
+
         self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
         self.setStyleSheet("QScrollArea{min-width:450 px; min-height: 650px;}")
+
+    def validate_OB(self):
+        self.OBlines = self.contents.document().toPlainText()
+        valid = False
+        try:
+            newOB = ObservingBlock(yaml.safe_load(self.OBlines))
+            valid = newOB.validate()
+            if valid == False:
+                print('OB is invalid)')
+        except Exception as e:
+            print('Failed to read in OB')
+            print(e)
+        validationpopup = QtWidgets.QMessageBox()
+        valid_str = {True: 'valid', False: 'invalid'}[valid]
+        valid_icon = {True: QtWidgets.QMessageBox.Information,
+                      False: QtWidgets.QMessageBox.Critical}[valid]
+        validationpopup.setText(f"OB is {valid_str}")
+        validationpopup.setIcon(valid_icon)
+        validationpopup.setStandardButtons(QtWidgets.QMessageBox.Ok) 
+        validationpopup.exec_()
 
     def edit_OB(self):
         self.OBlines = self.contents.document().toPlainText()
@@ -719,29 +744,30 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.SOBindex is None:
             return
         SOB = self.model.OBs[self.SOBindex]
-        if SOB is not None:
-            OBcontents_popup = ScrollMessageBox(SOB)
-            OBcontents_popup.setWindowTitle(f"Full OB Contents: {SOB.name()}")
-            result = OBcontents_popup.exec_()
-            if result == QtWidgets.QMessageBox.Ok:
-                log.debug('Show popup: Ok')
-            elif result == QtWidgets.QMessageBox.Cancel:
-                log.info('Show popup: Edit')
-                OBedit_popup = EditableMessageBox(SOB)
-                OBedit_popup.setWindowTitle(f"Editing OB: {SOB.name()}")
-                edit_result = OBedit_popup.exec_()
-                if edit_result == QtWidgets.QMessageBox.Ok:
-                    log.info('Edit popup: Ok')
-                    newOB = OBedit_popup.newOB
-                    if newOB.validate():
-                        log.info('The edited OB has been validated')
-                        self.model.OBs[self.SOBindex] = newOB
-                        self.model.layoutChanged.emit()
-                        self.update_SOB_display()
-                    else:
-                        log.warning('Edits did not validate. Not changing OB.')
-                elif edit_result == QtWidgets.QMessageBox.Cancel:
-                    log.debug('Edit popup: Cancel')
+        if SOB is None:
+            return
+        OBcontents_popup = ScrollMessageBox(SOB)
+        OBcontents_popup.setWindowTitle(f"Full OB Contents: {SOB.name()}")
+        result = OBcontents_popup.exec_()
+        if result == QtWidgets.QMessageBox.Ok:
+            log.debug('Show popup: Ok')
+        elif result == QtWidgets.QMessageBox.Cancel:
+            log.info('Show popup: Edit')
+            OBedit_popup = EditableMessageBox(SOB)
+            OBedit_popup.setWindowTitle(f"Editing OB: {SOB.name()}")
+            edit_result = OBedit_popup.exec_()
+            if edit_result == QtWidgets.QMessageBox.Ok:
+                log.info('Edit popup: Ok')
+                newOB = OBedit_popup.newOB
+                if newOB.validate():
+                    log.info('The edited OB has been validated')
+                    self.model.OBs[self.SOBindex] = newOB
+                    self.model.layoutChanged.emit()
+                    self.update_SOB_display()
+                else:
+                    log.warning('Edits did not validate. Not changing OB.')
+            elif edit_result == QtWidgets.QMessageBox.Cancel:
+                log.debug('Edit popup: Cancel')
 
 
     def add_comment(self):
