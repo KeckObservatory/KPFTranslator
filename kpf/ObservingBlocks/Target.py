@@ -73,7 +73,7 @@ class Target(BaseOBComponent):
         # Handle Warnings
         if self.GaiaID.value == '':
             print(f'WARNING: GaiaID is empty. This will impact PRV calculations.')
-        if self.Teff.value >= 2700 and self.Teff.value < 6600:
+        if self.Teff.value <= 2700 or self.Teff.value >= 6600:
             print(f'WARNING: Teff is out of range. This will impact simulcal estimates.')
         return valid
 
