@@ -101,6 +101,7 @@ class ObservingBlock(object):
             calibrations = OBdict.get('Calibrations', [])
             self.Calibrations = [Calibration(cal) for cal in calibrations]
 
+
     def validate(self):
         # Check that components are the correct types and are individually valid
         if self.Target is not None:
@@ -129,6 +130,7 @@ class ObservingBlock(object):
             raise InvalidObservingBlock(f"contains no observations and no calibrations")
         return True
 
+
     def to_dict(self):
         OB = {}
         if self.Target is not None:
@@ -137,6 +139,7 @@ class ObservingBlock(object):
             OB['Observations'] = [o.to_dict() for o in self.Observations]
         if len(self.Calibrations) > 0:
             OB['Calibrations'] = [c.to_dict() for c in self.Calibrations]
+
 
     def write_to(self, file, overwrite=False):
         file = Path(file)
@@ -148,6 +151,7 @@ class ObservingBlock(object):
                 fie.unlink()
         with open(file, 'w')as f:
             f.write(self.__repr__())
+
 
     def name(self):
         if self.Target is not None:
@@ -162,6 +166,7 @@ class ObservingBlock(object):
             out += f" {','.join(obs_strings)}"
         return out
 
+
     def __str__(self):
         if self.Target is not None:
             out = f"{self.Target}"
@@ -174,6 +179,7 @@ class ObservingBlock(object):
         if len(obs_strings) > 0:
             out += f" {','.join(obs_strings)}"
         return out
+
 
     def __repr__(self, comments=True):
         lines = []

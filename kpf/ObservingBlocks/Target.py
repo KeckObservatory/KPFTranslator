@@ -19,6 +19,11 @@ class Target(BaseOBComponent):
         super().__init__('Target', '2.0', properties=properties)
         self.from_dict(input_dict)
         self.name_overrides={'2MASSID': 'twoMASSID'}
+        self.coord = None
+        self.build_SkyCoord()
+
+
+    def build_SkyCoord(self):
         # Build astropy.coordinates.SkyCoord
         try:
             ra = Angle(self.RA.value, unit=u.hourangle)
@@ -32,6 +37,7 @@ class Target(BaseOBComponent):
         except:
             self.coord = None
 
+
     def to_lines(self, comments=False):
         lines = []
         for ptuple in self.properties:
@@ -44,6 +50,33 @@ class Target(BaseOBComponent):
                     lines.append(f"  {pname}: {str(p)}")
         return lines
 
+
+    def validate(self):
+        '''Validation checks:
+        
+        - TargetName is not empty
+        - RA, Dec, and equinox can form an astropy `SkyCoord`
+        
+        Warnings (intended for RV targets):
+        - GaiaID is empty
+        - Teff: 2700 - 6600 Kelvin
+        '''
+        self.prune()
+        self.build_SkyCoord()
+        valid = True
+        if self.coord is None:
+            print(f'ERROR: Could not form a SkyCoord from target coordinates')
+            valid = False
+        if self.TargetName.value == '':
+            print(f'ERROR: TargetName is empty')
+            valid = False
+        # Handle Warnings
+        if self.GaiaID.value == '':
+            print(f'WARNING: GaiaID is empty. This will impact PRV calculations.')
+        if self.Teff.value >= 2700 and self.Teff.value < 6600:
+            print(f'WARNING: Teff is out of range. This will impact simulcal estimates.')
+        return valid
+
     def __str__(self):
         try:
             radec_str = self.coord.to_string('hmsdms', sep=':', precision=1)
@@ -52,6 +85,7 @@ class Target(BaseOBComponent):
         out = (f"{self.TargetName.value:16s} {radec_str} "
                f"{str(self.Gmag):>5s} {str(self.Jmag):>5s}")
         return out
+
 
     @classmethod
     def get_gaia_parameters(self, gaiaid):
@@ -78,6 +112,7 @@ class Target(BaseOBComponent):
             target_coord = None
         return target_coord, gaia_params
 
+
     @classmethod
     def get_Jmag(self, twomassid):
         result = Vizier(catalog='II/246/out').query_object(twomassid, radius=1*u.arcsec)
@@ -86,6 +121,7 @@ class Target(BaseOBComponent):
         if result[0]['Jmag'].mask[0] == True:
             return None
         return float(result[0]['Jmag'])
+
 
     @classmethod
     def resolve_name(self, target_name):

@@ -24,6 +24,7 @@ class Calibration(BaseOBComponent):
                           'ExpMeterThreshold']:
                 self.set(pname, None)
 
+
     def to_lines(self, comments=False):
         self.prune()
         lines = []
@@ -37,6 +38,15 @@ class Calibration(BaseOBComponent):
                     lines.append(f"  {p['name']}: {self.get(p['name'])}")
         return lines
 
+
+    def validate(self):
+        '''
+        '''
+        self.prune()
+        valid = True
+        return valid
+
+
     def __str__(self):
         if self.CalSource.value == 'EtalonFiber':
             calsource = 'Etalon'
@@ -45,6 +55,7 @@ class Calibration(BaseOBComponent):
         else:
             calsource = self.CalSource.value
         return f"{calsource}:{self.nExp.value:d}x{self.ExpTime.value:.0f}s"
+
 
     def summary(self):
         return self.__str__()

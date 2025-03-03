@@ -58,6 +58,14 @@ class Observation(BaseOBComponent):
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
 
+    def validate(self):
+        '''
+        '''
+        self.prune()
+        valid = True
+        return valid
+
+
     def __str__(self):
         details = []
         if self.get('ExpMeterMode') == 'control':
