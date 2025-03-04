@@ -11,26 +11,33 @@ class Calibration(BaseOBComponent):
             properties = yaml.safe_load(f.read())
         super().__init__('Calibration', '2.0', properties=properties)
         self.from_dict(input_dict)
-        # Remove Unused Parameters if Dark is True
-        self.prune()
-
-
-    def prune(self):
-        if self.get('CalSource').lower() in ['dark', 'home']:
-            for pname in ['IntensityMonitor', 'CalND1', 'CalND2',
-                          'OpenScienceShutter', 'OpenSkyShutter',
-                          'TakeSimulCal', 'WideFlatPos', 'ExpMeterMode',
-                          'ExpMeterExpTime', 'ExpMeterBin',
-                          'ExpMeterThreshold']:
-                self.set(pname, None)
 
 
     def to_lines(self, comments=False):
-        self.prune()
+        skip_if_dark = ['IntensityMonitor', 'CalND1', 'CalND2',
+                        'OpenScienceShutter', 'OpenSkyShutter',
+                        'TakeSimulCal', 'WideFlatPos', 'ExpMeterMode',
+                        'ExpMeterExpTime', 'ExpMeterBin',
+                        'ExpMeterThreshold']
+        pruning = [(self.get('CalSource').lower() in ['dark', 'home'], skip_if_dark),
+                   (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterExpTime']),
+                   (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
+                   (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
+                   (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
+                   ]
+        prune_list = []
+        for prune in pruning:
+            if prune[0] == True:
+                prune_list.extend(prune[1])
+
+        print(self.get('ExpMeterMode'), type(self.get('ExpMeterMode')))
+        print(pruning)
+        print(prune_list)
+
         lines = []
         i = 0
         for p in self.properties:
-            if self.get(p['name']) is not None:
+            if self.get(p['name']) is not None and p['name'] not in prune_list:
                 i += 1
                 if i == 1:
                     lines.append(f"- {p['name']}: {self.get(p['name'])}")
@@ -42,7 +49,6 @@ class Calibration(BaseOBComponent):
     def validate(self):
         '''
         '''
-        self.prune()
         valid = True
         return valid
 

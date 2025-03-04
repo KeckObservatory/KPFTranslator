@@ -39,10 +39,17 @@ class Target(BaseOBComponent):
 
 
     def to_lines(self, comments=False):
+        pruning = [(abs(self.get('DRA')) < 0.001 and abs(self.get('DDEC')) < 0.001, ['DRA', 'DDEC']),
+                   ]
+        prune_list = []
+        for prune in pruning:
+            if prune[0] == True:
+                prune_list.extend(prune[1])
+
         lines = []
         for ptuple in self.properties:
             pname = ptuple['name']
-            if self.get(pname) is not None:
+            if self.get(pname) is not None and pname not in prune_list:
                 p = getattr(self, pname)
                 if pname in ['RA', 'Dec']:
                     lines.append(f"  {pname}: '{str(p)}'")
@@ -61,7 +68,6 @@ class Target(BaseOBComponent):
         - GaiaID is empty
         - Teff: 2700 - 6600 Kelvin
         '''
-        self.prune()
         self.build_SkyCoord()
         valid = True
         if self.coord is None:

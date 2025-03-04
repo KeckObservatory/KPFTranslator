@@ -6,6 +6,7 @@ class OBProperty(object):
         self._value = None if defaultvalue is None else self.valuetype(defaultvalue)
         self.comment = comment
         self.precision = precision
+        self.defaultvalue = defaultvalue
 
     def get(self):
         if self._value is not None:
@@ -15,7 +16,7 @@ class OBProperty(object):
 
     def set(self, value):
         if value is None:
-            self._value = None
+            self._value = self.defaultvalue
         else:
             try:
                 self._value = self.valuetype(value)
@@ -42,9 +43,6 @@ class BaseOBComponent(object):
         self.properties = properties
         for p in properties:
             setattr(self, p['name'], OBProperty(**p))
-
-    def prune(self):
-        pass
 
     def get(self, name):
         name = self.name_overrides.get(name, name)

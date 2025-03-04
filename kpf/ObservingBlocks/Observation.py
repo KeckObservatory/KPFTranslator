@@ -22,27 +22,10 @@ class Observation(BaseOBComponent):
         except:
             self.expmeter_bands = [f"{float(b):.0f}nm" for b in [498.12, 604.38, 710.62, 816.88]]
 
-
-    def prune(self):
-        if self.get('ExpMeterMode') in ['monitor', 'off']:
-            for pname in ['ExpMeterBin', 'ExpMeterThreshold']:
-                self.set(pname, None)
-        if self.get('AutoExpMeter') is True:
-            for pname in ['ExpMeterExpTime']:
-                self.set(pname, None)
-        if self.get('ExpMeterMode') in ['off']:
-            for pname in ['AutoExpMeter', 'ExpMeterExpTime']:
-                self.set(pname, None)
-        if self.get('AutoNDFilters') is True:
-            for pname in ['CalND1', 'CalND2']:
-                self.set(pname, None)
-        if self.get('TakeSimulCal') is False:
-            for pname in ['AutoNDFilters']:
-                self.set(pname, None)
-        if self.get('NodE') is None and self.get('NodN') is None:
-            for pname in ['NodE', 'NodN']:
-                self.set(pname, None)
-
+#     def prune(self):
+#         if self.get('NodE') is None and self.get('NodN') is None:
+#             for pname in ['NodE', 'NodN']:
+#                 self.set(pname, None)
 
     def summary(self):
         details = []
@@ -61,7 +44,6 @@ class Observation(BaseOBComponent):
     def validate(self):
         '''
         '''
-        self.prune()
         valid = True
         return valid
 
@@ -77,11 +59,22 @@ class Observation(BaseOBComponent):
 
 
     def to_lines(self):
-        self.prune()
+        pruning = [(self.get('ExpMeterMode') in ['off', False], ['AutoExpMeter', 'ExpMeterExpTime']),
+                   (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
+                   (self.get('AutoExpMeter') == True, ['ExpMeterExpTime']),
+                   (self.get('AutoNDFilters') == True, ['CalND1', 'CalND2']),
+                   (self.get('TakeSimulCal') == False, ['AutoNDFilters', 'CalND1', 'CalND2']),
+                   (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
+                   ]
+        prune_list = []
+        for prune in pruning:
+            if prune[0] == True:
+                prune_list.extend(prune[1])
+
         lines = []
         i = 0
         for pdict in self.properties:
-            if self.get(pdict['name']) is not None:
+            if self.get(pdict['name']) is not None and pdict['name'] not in prune_list:
                 p = getattr(self, pdict['name'])
                 i += 1
                 if i == 1:
