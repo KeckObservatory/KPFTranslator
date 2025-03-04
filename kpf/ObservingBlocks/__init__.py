@@ -64,12 +64,9 @@ class BaseOBComponent(object):
                 this_property.set(input_value)
             except AttributeError as e:
                 print(f"No property named {key}")
-
-        self.prune()
         return self
 
     def to_dict(self):
-        self.prune()
         output = {}
         for p in self.properties:
             if self.get(p['name']) is not None:
@@ -77,7 +74,6 @@ class BaseOBComponent(object):
         return output
 
     def to_lines(self, comments=False):
-        self.prune()
         lines = []
         for p in self.properties:
             if self.get(p['name']) is not None:
@@ -85,7 +81,6 @@ class BaseOBComponent(object):
         return lines
 
     def validate(self):
-        self.prune()
         return True
 
     def __str__(self):
