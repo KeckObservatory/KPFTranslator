@@ -3,7 +3,7 @@ import yaml
 
 import numpy as np
 
-from kpf import log, cfg, check_input
+from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
