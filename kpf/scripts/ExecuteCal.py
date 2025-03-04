@@ -224,7 +224,7 @@ class ExecuteCal(KPFFunction):
             log.info(f"Readout complete")
             check_scriptstop() # Stop here if requested
         # Triggered Detectors
-        calibration['TriggerExpMeter'] = calibration.get('ExpMeterMode', 'off') != 'off'
+        calibration['TriggerExpMeter'] = calibration.get('ExpMeterMode', 'off') in ['monitor', 'control']
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(calibration)
         # Source Select Shutters
