@@ -62,8 +62,6 @@ class ConfigureForCalibrations(KPFScript):
 
         check_scriptstop()
 
-        # Configure FIU
-        log.info(f"Configuring FIU")
         ConfigureFIU.execute({'mode': 'Calibration'})
 
         check_scriptstop()
