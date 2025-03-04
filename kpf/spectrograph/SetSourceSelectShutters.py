@@ -14,11 +14,11 @@ class SetSourceSelectShutters(KPFFunction):
     
     ARGS:
     =====
-    :SSS_Science: `bool` Open the SciSelect shutter? (default=False)
-    :SSS_Sky: `bool` Open the SkySelect shutter? (default=False)
-    :SSS_CalSciSky: `bool` Open the Cal_SciSky shutter? (default=False)
-    :SSS_SoCalSci: `bool` Open the SoCalSci shutter? (default=False)
-    :SSS_SoCalCal: `bool` Open the SoCalCal shutter? (default=False)
+    :OpenScienceShutter: `bool` Open the SciSelect shutter? (default=False)
+    :OpenSkyShutter: `bool` Open the SkySelect shutter? (default=False)
+    :OpenCalSciSkyShutter: `bool` Open the Cal_SciSky shutter? (default=False)
+    :OpenSoCalSciShutter: `bool` Open the SoCalSci shutter? (default=False)
+    :OpenSoCalCalShutter: `bool` Open the SoCalCal shutter? (default=False)
     '''
     @classmethod
     def pre_condition(cls, args):
@@ -27,15 +27,15 @@ class SetSourceSelectShutters(KPFFunction):
     @classmethod
     def perform(cls, args):
         shutter_list = []
-        if args.get('SSS_Science', False) is True:
+        if args.get('OpenScienceShutter', False) is True:
             shutter_list.append('SciSelect')
-        if args.get('SSS_Sky', False) is True:
+        if args.get('OpenSkyShutter', False) is True:
             shutter_list.append('SkySelect')
-        if args.get('SSS_SoCalSci', False) is True:
+        if args.get('OpenSoCalSciShutter', False) is True:
             shutter_list.append('SoCalSci')
-        if args.get('SSS_SoCalCal', False) is True:
+        if args.get('OpenSoCalCalShutter', False) is True:
             shutter_list.append('SoCalCal')
-        if args.get('SSS_CalSciSky', False) is True:
+        if args.get('OpenCalSciSkyShutter', False) is True:
             shutter_list.append('Cal_SciSky')
         shutters_string = ','.join(shutter_list)
         log.debug(f"Setting source select shutters to '{shutters_string}'")
@@ -51,11 +51,11 @@ class SetSourceSelectShutters(KPFFunction):
         sleep(timeshim)
         shutters = kpfexpose['SRC_SHUTTERS'].read()
         shutter_list = shutters.split(',')
-        shutter_names = [('SciSelect', 'SSS_Science'),
-                         ('SkySelect', 'SSS_Sky'),
-                         ('SoCalSci', 'SSS_SoCalSci'),
-                         ('SoCalCal', 'SSS_SoCalCal'),
-                         ('Cal_SciSky', 'SSS_CalSciSky')]
+        shutter_names = [('SciSelect', 'OpenScienceShutter'),
+                         ('SkySelect', 'OpenSkyShutter'),
+                         ('SoCalSci', 'OpenSoCalSciShutter'),
+                         ('SoCalCal', 'OpenSoCalCalShutter'),
+                         ('Cal_SciSky', 'OpenCalSciSkyShutter')]
         for shutter in shutter_names:
             shutter_status = shutter[0] in shutter_list
             shutter_target = args.get(shutter[1], False)
@@ -65,19 +65,19 @@ class SetSourceSelectShutters(KPFFunction):
     @classmethod
     def add_cmdline_args(cls, parser):
         parser.add_argument("--Science", "--Sci", "--science", "--sci",
-                            dest="SSS_Science",
+                            dest="OpenScienceShutter",
                             default=False, action="store_true",
                             help="Open the SciSelect shutter?")
-        parser.add_argument("--Sky", "--sky", dest="SSS_Sky",
+        parser.add_argument("--Sky", "--sky", dest="OpenSkyShutter",
                             default=False, action="store_true",
                             help="Open the SkySelect shutter?")
-        parser.add_argument("--CalSciSky", dest="SSS_CalSciSky",
+        parser.add_argument("--CalSciSky", dest="OpenCalSciSkyShutter",
                             default=False, action="store_true",
                             help="Open the Cal_SciSky shutter?")
-        parser.add_argument("--SoCalSci", dest="SSS_SoCalSci",
+        parser.add_argument("--SoCalSci", dest="OpenSoCalSciShutter",
                             default=False, action="store_true",
                             help="Open the SoCalSci shutter?")
-        parser.add_argument("--SoCalCal", dest="SSS_SoCalCal",
+        parser.add_argument("--SoCalCal", dest="OpenSoCalCalShutter",
                             default=False, action="store_true",
                             help="Open the SoCalCal shutter?")
         return super().add_cmdline_args(parser)

@@ -154,7 +154,7 @@ class ExecuteCal(KPFFunction):
         elif calsource in ['SoCal-CalFib']:
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
             # Open SoCalCal Shutter
-            calibration['SSS_SoCalCal'] = True
+            calibration['OpenSoCalCalShutter'] = True
             nd1 = calibration.get('CalND1')
             nd2 = calibration.get('CalND2')
             log.info(f"Set ND1, ND2 Filter Wheels: {nd1}, {nd2}")
@@ -187,7 +187,7 @@ class ExecuteCal(KPFFunction):
             WaitForND2.execute(calibration)
             WaitForCalSource.execute({'CalSource': simulcalsource})
             # Open SoCalSci Shutter
-            calibration['SSS_SoCalSci'] = True
+            calibration['OpenSoCalSciShutter'] = True
             # Set target info
             SetTargetInfo.execute({'TargetName': 'Sun',
                                    'GaiaID': '',
@@ -228,13 +228,16 @@ class ExecuteCal(KPFFunction):
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(calibration)
         # Source Select Shutters
-        if calsource in ['SoCal-SciSky']:
-            calibration['SSS_CalSciSky'] = False
-        elif calsource in ['SoCal-CalFib']:
-            calibration['SSS_CalSciSky'] = True
+        if calsource == 'dark':
+            SetSourceSelectShutters.execute({})
         else:
-            calibration['SSS_CalSciSky'] = calibration['OpenScienceShutter'] or calibration['OpenSkyShutter']
-        SetSourceSelectShutters.execute(calibration)
+            if calsource in ['SoCal-SciSky']:
+                calibration['OpenCalSciSkyShutter'] = False
+            elif calsource in ['SoCal-CalFib']:
+                calibration['OpenCalSciSkyShutter'] = True
+            else:
+                calibration['OpenCalSciSkyShutter'] = calibration['OpenScienceShutter'] or calibration['OpenSkyShutter']
+            SetSourceSelectShutters.execute(calibration)
         # Timed Shutters
         calibration['TimedShutter_CaHK'] = calibration.get('TriggerCaHK', False)
         calibration['TimedShutter_Scrambler'] = calibration.get('TriggerGreen', False) or calibration.get('TriggerRed', False)

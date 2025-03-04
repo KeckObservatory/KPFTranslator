@@ -75,11 +75,11 @@ class ConfigureForScience(KPFFunction):
             log.debug(f"kpfexpose is Ready")
         # Set source select shutters
         log.info(f"Set Source Select Shutters")
-        SetSourceSelectShutters.execute({'SSS_Science': True,
-                                         'SSS_Sky': not observation.get('BlockSky', False),
-                                         'SSS_SoCalSci': False,
-                                         'SSS_SoCalCal': False,
-                                         'SSS_CalSciSky': False})
+        SetSourceSelectShutters.execute({'OpenScienceShutter': True,
+                                         'OpenSkyShutter': not observation.get('BlockSky', False),
+                                         'OpenSoCalSciShutter': False,
+                                         'OpenSoCalCalShutter': False,
+                                         'OpenCalSciSkyShutter': False})
 
         # Set Triggered Detectors
         observation['TriggerGuide'] = True
