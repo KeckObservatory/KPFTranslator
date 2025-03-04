@@ -44,7 +44,7 @@ class SetTargetInfo(KPFScript):
         # Handle DCS target values
         dcs = ktl.cache('dcs1')
         if dcs['INSTRUME'].read() != 'KPF':
-            log.warning('Instrument is not KPF. Not setting DCS values.')
+            log.debug('Instrument is not KPF. Not setting DCS values.')
             return
 
         TARGPLAX = targ.get('Parallax', 0)
