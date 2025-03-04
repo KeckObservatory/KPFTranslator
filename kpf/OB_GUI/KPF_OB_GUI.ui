@@ -498,26 +498,13 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>180</y>
-         <width>151</width>
+         <y>150</y>
+         <width>191</width>
          <height>23</height>
         </rect>
        </property>
        <property name="text">
         <string>Execute Selected OB</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="SOB_ExecuteWithSlewCalButton">
-       <property name="geometry">
-        <rect>
-         <x>170</x>
-         <y>180</y>
-         <width>151</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Execute with Slew Cal</string>
        </property>
       </widget>
       <widget class="QPushButton" name="SOB_ShowButton">
@@ -531,19 +518,6 @@
        </property>
        <property name="text">
         <string>Show Full OB Details</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="SOB_AddComment">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>150</y>
-         <width>311</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Add Observer Comment to Selected OB</string>
        </property>
       </widget>
       <widget class="QWidget" name="gridLayoutWidget_14">
@@ -808,6 +782,32 @@
        </property>
        <property name="text">
         <string>Notes for the Observer:</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="SlewCal">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>150</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>with SlewCal?</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_AddComment">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>180</y>
+         <width>311</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Add Observer Comment to Selected OB</string>
        </property>
       </widget>
      </widget>
