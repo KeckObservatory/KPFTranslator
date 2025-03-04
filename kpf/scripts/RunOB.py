@@ -76,6 +76,8 @@ class RunOB(KPFScript):
                 slewcal_OBdict = yaml.safe_load(file)
                 slewcal_OB = ObservingBlock(slewcal_OBdict)
             OB.Calibrations.extend(slewcal_OB.Calibrations)
+            # Now that slewcal has been added, reset the SLEWCALREQ value
+            kpfconfig['SLEWCALREQ'].write(False)
 
         # Execute calibrations
         if len(OB.Calibrations) > 0:
