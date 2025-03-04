@@ -41,17 +41,10 @@ ScriptStopTriggered = KPFException
 ## Utility functions for pre- or post- conditions
 ##-------------------------------------------------------------------------
 def check_input(args, input_name, allowed_types=None, allowed_values=None,
-                value_min=None, value_max=None, version_check=False):
+                value_min=None, value_max=None):
         target = args.get(input_name, None)
         if target is None:
             raise FailedPreCondition(f"Input {input_name} is None")
-
-        if version_check is True:
-            target = version.parse(f"{target}")
-            if value_min is not None:
-                value_min = version.parse(f"{value_min}")
-            if value_max is not None:
-                value_max = version.parse(f"{value_max}")
 
         # Check against allowed types
         if allowed_types is not None:
