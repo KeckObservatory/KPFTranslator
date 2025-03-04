@@ -33,25 +33,27 @@ class SetExpMeterTerminationParameters(KPFFunction):
     def pre_condition(cls, args):
         check_input(args, 'ExpMeterThreshold', allowed_types=[int, float],
                     value_min=0)
-        check_input(args, 'ExpMeterBin')
-        # Manually check ExpMeterBin inputs
-        band = args.get('ExpMeterBin')
+        check_input(args, 'ExpMeterBin', allowed_types=[int, float, str])
+        band = float(args.get('ExpMeterBin'))
         tbin = ktl.cache('kpf_expmeter', 'THRESHOLDBIN')
         allowed_values = list(tbin._getEnumerators())
-        if band in ['1', '2', '3', '4', 1, 2, 3, 4]:
-            intband = int(band)
-            band = allowed_values[intband]
-        elif isinstance(band, float):
-            band = f"{band:7.3f}"
-        if isinstance(band, str):
-            if band not in allowed_values:
-                raise FailedPreCondition(f"ExpMeterBin '{band}' not in {allowed_values}")
-        else:
-            raise FailedPreCondition(f"ExpMeterBin '{band}' could not be parsed")
+        allowed_values.pop(allowed_values.index('All'))
+        allowed_floats = np.array([float(x) for x in allowed_values])
+        if int(band) not in [1, 2, 3, 4]:
+            band = (np.abs(allowed_floats-band)).argmin()+1
+        if band not in [1, 2, 3, 4]:
+            raise FailedPreCondition(f'Unable to parse ExpMeterBin: {args.get("ExpMeterBin")}')
 
     @classmethod
     def perform(cls, args):
-        band = str(args.get('ExpMeterBin'))
+        band = float(args.get('ExpMeterBin'))
+        tbin = ktl.cache('kpf_expmeter', 'THRESHOLDBIN')
+        allowed_values = list(tbin._getEnumerators())
+        allowed_values.pop(allowed_values.index('All'))
+        allowed_floats = np.array([float(x) for x in allowed_values])
+        if int(band) not in [1, 2, 3, 4]:
+            band = (np.abs(allowed_floats-band)).argmin()+1
+
         spectrograph_flux = args.get('ExpMeterThreshold')
         expmeter_flux = expeter_flux_target(spectrograph_flux, band)
         kpf_expmeter = ktl.cache('kpf_expmeter')
