@@ -45,6 +45,10 @@ class Observation(BaseOBComponent):
         '''
         '''
         valid = True
+        for p in self.properties:
+            if self.get(p['name']) is None:
+                print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
+                valid = False
         return valid
 
 

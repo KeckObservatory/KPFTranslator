@@ -68,11 +68,17 @@ class Target(BaseOBComponent):
         - GaiaID is empty
         - Teff: 2700 - 6600 Kelvin
         '''
-        self.build_SkyCoord()
         valid = True
+        for p in self.properties:
+            if self.get(p['name']) is None:
+                print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
+                valid = False
+        # Check that we can build a SkyCoord
+        self.build_SkyCoord()
         if self.coord is None:
             print(f'ERROR: Could not form a SkyCoord from target coordinates')
             valid = False
+        # Check if TargetName is empty string
         if self.TargetName.value == '':
             print(f'ERROR: TargetName is empty')
             valid = False

@@ -30,10 +30,6 @@ class Calibration(BaseOBComponent):
             if prune[0] == True:
                 prune_list.extend(prune[1])
 
-        print(self.get('ExpMeterMode'), type(self.get('ExpMeterMode')))
-        print(pruning)
-        print(prune_list)
-
         lines = []
         i = 0
         for p in self.properties:
@@ -50,6 +46,10 @@ class Calibration(BaseOBComponent):
         '''
         '''
         valid = True
+        for p in self.properties:
+            if self.get(p['name']) is None:
+                print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
+                valid = False
         return valid
 
 
