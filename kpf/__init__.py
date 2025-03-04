@@ -7,8 +7,6 @@ import datetime
 from packaging import version
 import yaml
 
-from kpf.exceptions import *
-
 
 ##-------------------------------------------------------------------------
 ## Load configuration values
