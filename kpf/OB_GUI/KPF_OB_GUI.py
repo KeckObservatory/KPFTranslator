@@ -810,7 +810,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def RunOB(self, SOB):
         self.log.debug(f"RunOB")
-        print(SOB.__repr__())
         # Write to temporary file
         utnow = datetime.datetime.utcnow()
         now_str = utnow.strftime('%Y%m%dat%H%M%S')
