@@ -571,7 +571,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBandLabel.setEnabled(False)
         elif value == 'CPS 2024B':
             self.OBListHeader.setText(f"    {self.hdr}")
-            files = [f for f in Path('/home/kpfeng/joshw/OBs_v2/howard/2024B').glob('*.yaml')]
+            files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
             self.model.OBs = []
             for i,file in enumerate(files[:30]):
                 try:
@@ -587,7 +587,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBandLabel.setEnabled(False)
         elif value == 'KPF-CC':
             self.OBListHeader.setText('    StartTime '+self.hdr)
-            files = [f for f in Path('/home/kpfeng/joshw/OBs_v2/howard/2024B').glob('*.yaml')]
+            files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
             self.model.OBs = []
             self.model.start_times = []
             for i,file in enumerate(files[:30]):
@@ -607,8 +607,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBandLabel.setEnabled(True)
         else:
             self.OBListHeader.setText(f"    {self.hdr}")
-            self.model.OBs = [ObservingBlock('~/joshw/OBs_v2/219134.yaml'),
-                              ObservingBlock('~/joshw/OBs_v2/157279.yaml'),
+            self.model.OBs = [ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/219134.yaml'),
+                              ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/157279.yaml'),
                               ]
             self.model.start_times = None
             self.model.layoutChanged.emit()
