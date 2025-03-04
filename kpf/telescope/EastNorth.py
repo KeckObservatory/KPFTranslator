@@ -1,6 +1,6 @@
 import ktl
 
-from kpf import log, cfg, check_input
+from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
@@ -21,6 +21,9 @@ class EastNorth(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
+        INSTRUME = ktl.cache('dcs1', 'INSTRUME').read()
+        if INSTRUME not in ['KPF', 'KPF-CC']:
+            raise FaiedPreCondition(f'Selected instrument is {INSTRUME}, not KPF')
         check_input(args, 'East', allowed_types=[int, float], value_min=-600, value_max=600)
         check_input(args, 'North', allowed_types=[int, float], value_min=-600, value_max=600)
 

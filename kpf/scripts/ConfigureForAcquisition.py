@@ -6,7 +6,7 @@ import yaml
 
 import ktl
 
-from kpf import log, cfg, check_input
+from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import register_script, check_scriptstop, add_script_log

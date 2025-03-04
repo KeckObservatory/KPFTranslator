@@ -1,7 +1,7 @@
 import ktl
 import time
 
-from kpf import log, cfg, check_input
+from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
