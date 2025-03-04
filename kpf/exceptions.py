@@ -54,7 +54,7 @@ def check_input(args, input_name, allowed_types=None, allowed_values=None,
                 raise FailedPreCondition(f"Input {input_name} value {target} ({type(target)}) "
                                          f"is not an allowed type: {allowed_types}")
         # Check against value_min and value_max
-        if type(target) in [float, int, version.Version]:
+        if type(target) in [float, int]:
             if value_min is not None:
                 if target < value_min:
                     raise FailedPreCondition(f"Input {input_name} value {target} "
