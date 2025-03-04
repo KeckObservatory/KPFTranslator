@@ -38,16 +38,16 @@ def create_GUI_log():
     LogConsoleHandler.setFormatter(LogFormat)
     log.addHandler(LogConsoleHandler)
     ## Set up file output
-#     logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
-#     if logdir.exists() is False:
-#         logdir.mkdir(mode=0o777, parents=True)
-#     LogFileName = logdir / 'OB_GUI.log'
-#     LogFileHandler = RotatingFileHandler(LogFileName,
-#                                          maxBytes=100*1024*1024, # 100 MB
-#                                          backupCount=1000) # Keep old files
-#     LogFileHandler.setLevel(logging.DEBUG)
-#     LogFileHandler.setFormatter(LogFormat)
-#     log.addHandler(LogFileHandler)
+    logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
+    if logdir.exists() is False:
+        logdir.mkdir(mode=0o777, parents=True)
+    LogFileName = logdir / 'OB_GUI_v2.log'
+    LogFileHandler = RotatingFileHandler(LogFileName,
+                                         maxBytes=100*1024*1024, # 100 MB
+                                         backupCount=1000) # Keep old files
+    LogFileHandler.setLevel(logging.DEBUG)
+    LogFileHandler.setFormatter(LogFormat)
+    log.addHandler(LogFileHandler)
     return log
 
 
@@ -419,7 +419,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ExecuteButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteButton')
         self.SOB_ExecuteButton.clicked.connect(self.execute_SOB)
         self.SOB_ExecuteWithSlewCalButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteWithSlewCalButton')
-        self.SOB_ExecuteWithSlewCalButton.clicked.connect(self.execute_with_slew_cal_SOB)
+        self.SOB_ExecuteWithSlewCalButton.clicked.connect(self.execute_SOB_with_slew_cal)
 
 
     ##-------------------------------------------
@@ -438,7 +438,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # Expose Status
     def update_expose_status_value(self, value):
         '''Set label text and set color'''
-        self.log.debug(f'update_expose_status_value: {value}')
+#         self.log.debug(f'update_expose_status_value: {value}')
         self.expose_status_value.setText(f"{value}")
         if value == 'Ready':
             self.expose_status_value.setStyleSheet("color:green")
@@ -782,16 +782,53 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             print("Cancel! Not submitting comment.")
 
+
     def execute_SOB(self, slewcal=False):
         SOB = self.model.OBs[self.SOBindex]
         if SOB is not None:
-            print('Executing OB:')
-            print(str(SOB))
-            self.model.OBs[self.SOBindex].executed = True
-            self.model.layoutChanged.emit()
+            self.log.debug(f"execute_SOB")
+            executeOB_popup = QtWidgets.QMessageBox()
+            executeOB_popup.setWindowTitle('Execute Science OB Confirmation')
+            executeOB_popup.setText("Do you really want to execute the current OB?")
+            executeOB_popup.setIcon(QtWidgets.QMessageBox.Critical)
+            executeOB_popup.setStandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes) 
+            result = executeOB_popup.exec_()
+            if result == QtWidgets.QMessageBox.Yes:
+                log.debug(f"Setting kpfconfig.SLEWCALREQ={slewcal}")
+                self.kpfconfig['SLEWCALREQ'].write(slewcal)
+                time.sleep(0.01)
+                self.RunOB(SOB)
+                self.model.OBs[self.SOBindex].executed = True
+                self.model.layoutChanged.emit()
+            else:
+                log.debug('User opted not to execute OB')
 
-    def execute_with_slew_cal_SOB(self):
+
+    def execute_SOB_with_slew_cal(self):
         self.execute_SOB(slewcal=True)
+
+
+    def RunOB(self, SOB):
+        self.log.debug(f"RunOB")
+        print(SOB.__repr__())
+        # Write to temporary file
+        utnow = datetime.datetime.utcnow()
+        now_str = utnow.strftime('%Y%m%dat%H%M%S')
+        date = utnow-datetime.timedelta(days=1)
+        date_str = date.strftime('%Y%b%d').lower()
+        for handler in self.log.handlers:
+            if isinstance(handler, logging.FileHandler):
+                log_file_path = Path(handler.baseFilename).parent
+        tmp_file = log_file_path / date_str / f'test_executedOB_{now_str}.yaml'
+        SOB.write_to(tmp_file)
+        RunOB_cmd = f'kpfdo RunOB -f {tmp_file} ; echo "Done!" ; sleep 30'
+        # Pop up an xterm with the script running
+        cmd = ['xterm', '-title', 'RunOB', '-name', 'RunOB',
+               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+               '-e', f'{RunOB_cmd}']
+        print(RunOB_cmd)
+        print(' '.join(cmd))
+#         proc = subprocess.Popen(cmd)
 
 
 ##-------------------------------------------------------------------------
