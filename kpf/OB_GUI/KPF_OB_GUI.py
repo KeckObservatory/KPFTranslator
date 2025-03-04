@@ -291,6 +291,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Selected OB
         self.SOBindex = None
+        self.update_counter = 0
         # Coordinate Systems
         self.keck = EarthLocation.of_site('Keck Observatory')
         # Settings
@@ -537,6 +538,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_LST(self, value):
         self.SiderealTimeValue.setText(value[:-3])
+        self.update_counter += 1
+        if self.update_counter > 60:
+            self.update_SOB_display()
 
     def update_SlewCalReq(self, value):
         self.log.debug(f"update_SlewCalReq: {value} {(value == 'Yes')}")
@@ -658,6 +662,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def update_SOB_display(self):
+        self.update_counter = 0
         if self.SOBindex is None:
             self.set_SOB_enabled(False)
             self.SOB_TargetName.setText('--')
