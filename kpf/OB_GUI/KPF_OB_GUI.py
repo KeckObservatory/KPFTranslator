@@ -377,7 +377,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ListOfOBs = self.findChild(QtWidgets.QListView, 'ListOfOBs')
         self.model = OBListModel(OBs=[])
         self.ListOfOBs.setModel(self.model)
-        self.ListOfOBs.selectionModel().selectionChanged.connect(self.select_OB)
+        self.ListOfOBs.selectionModel().selectionChanged.connect(self.select_OB_from_GUI)
 
         # Sorting
         self.SortOBs = self.findChild(QtWidgets.QComboBox, 'SortOBs')
@@ -617,6 +617,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WeatherBand.setEnabled(False)
             self.WeatherBandLabel.setEnabled(False)
         self.ProgID.setCurrentText(value)
+        # This select/deselect operation caches something in the AltAz 
+        # calculation which happens the first time an OB is selected. This
+        # just makes the GUI more "responsive" as the loading of the OBs when
+        # program ID is chosen contains all of the slow caching of values
+        # instead of having it happen on the first click.
+        if len(self.model.OBs) > 0:
+            self.select_OB(0)
+            self.select_OB(None)
 
     def set_weather_band(self, value):
         self.WeatherBand.setCurrentText(value)
@@ -625,15 +633,19 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     ## Methods for OB List
     ##-------------------------------------------
-    def select_OB(self, selected, deselected):
+    def select_OB_from_GUI(self, selected, deselected):
         if len(selected.indexes()) > 0:
-            self.SOBindex = selected.indexes()[0].row()
-            self.log.debug(f"Selection changed to {self.SOBindex}")
-            self.update_SOB_display()
+            ind = selected.indexes()[0].row()
+            self.select_OB(ind)
         else:
             print(selected, deselected)
             self.SOBindex = None
             self.update_SOB_display()
+
+    def select_OB(self, ind):
+        self.SOBindex = ind
+        self.log.debug(f"Selection changed to {self.SOBindex}")
+        self.update_SOB_display()
 
     def set_SOB_enabled(self, enabled):
         if enabled == False:
