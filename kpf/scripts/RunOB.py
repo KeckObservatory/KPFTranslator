@@ -68,7 +68,7 @@ class RunOB(KPFScript):
 
         # Add slew cal to OB if keywords indicate one is requested
         kpfconfig = ktl.cache('kpfconfig')
-        if if len(OB.Observations) > 0 and kpfconfig['SLEWCALREQ'].read(binary=True) is True:
+        if len(OB.Observations) > 0 and kpfconfig['SLEWCALREQ'].read(binary=True) is True:
             slewcal_OBfile = Path(kpfconfig['SLEWCALFILE'].read())
             log.info('Slewcal has been requested')
             log.debug(f"Reading: {slewcal_OBfile}")
