@@ -286,10 +286,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DCS_EL = ktl.cache(self.dcs, 'EL')
         self.DCS_EL.monitor()
         self.kpfconfig = ktl.cache('kpfconfig')
+        self.SLEWCALREQ = kPyQt.kFactory(ktl.cache('kpfconfig', 'SLEWCALREQ'))
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Selected OB
-        self.SOBindex = 0
+        self.SOBindex = None
         # Coordinate Systems
         self.keck = EarthLocation.of_site('Keck Observatory')
         # Settings
@@ -418,9 +419,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_AddComment.clicked.connect(self.add_comment)
         self.SOB_ExecuteButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteButton')
         self.SOB_ExecuteButton.clicked.connect(self.execute_SOB)
-        self.SOB_ExecuteWithSlewCalButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteWithSlewCalButton')
-        self.SOB_ExecuteWithSlewCalButton.clicked.connect(self.execute_SOB_with_slew_cal)
+        self.SlewCal = self.findChild(QtWidgets.QCheckBox, 'SlewCal')
+        self.SlewCal.stateChanged.connect(self.SlewCal_state_change)
+        self.SLEWCALREQ.stringCallback.connect(self.update_SlewCalReq)
 
+        self.update_SOB_display()
 
     ##-------------------------------------------
     ## Methods to display updates from keywords
@@ -535,6 +538,16 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_LST(self, value):
         self.SiderealTimeValue.setText(value[:-3])
 
+    def update_SlewCalReq(self, value):
+        self.log.debug(f"update_SlewCalReq: {value} {(value == 'Yes')}")
+        if self.SlewCal.isChecked() != (value == 'Yes'):
+            self.SlewCal.setChecked((value == 'Yes'))
+
+    def SlewCal_state_change(self, value):
+        self.log.debug(f"SlewCal_state_change: {value} {(value == 2)}")
+        if (self.SLEWCALREQ.read() == 'Yes') != (value == 2):
+            log.info(f'Modifying kpfconfig.SLEWCALREQ = {(value == 2)}')
+            self.kpfconfig['SLEWCALREQ'].write((value == 2))
 
     ##-------------------------------------------
     ## Methods to get data from DB or Schedule
@@ -629,7 +642,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ShowButton.setEnabled(enabled)
         self.SOB_AddComment.setEnabled(enabled)
         self.SOB_ExecuteButton.setEnabled(enabled)
-        self.SOB_ExecuteWithSlewCalButton.setEnabled(enabled)
+#         self.SOB_ExecuteWithSlewCalButton.setEnabled(enabled)
 
 
     def update_SOB_display(self):
@@ -783,7 +796,7 @@ class MainWindow(QtWidgets.QMainWindow):
             print("Cancel! Not submitting comment.")
 
 
-    def execute_SOB(self, slewcal=False):
+    def execute_SOB(self):
         SOB = self.model.OBs[self.SOBindex]
         if SOB is not None:
             self.log.debug(f"execute_SOB")
@@ -794,18 +807,11 @@ class MainWindow(QtWidgets.QMainWindow):
             executeOB_popup.setStandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes) 
             result = executeOB_popup.exec_()
             if result == QtWidgets.QMessageBox.Yes:
-                log.debug(f"Setting kpfconfig.SLEWCALREQ={slewcal}")
-                self.kpfconfig['SLEWCALREQ'].write(slewcal)
-                time.sleep(0.01)
                 self.RunOB(SOB)
                 self.model.OBs[self.SOBindex].executed = True
                 self.model.layoutChanged.emit()
             else:
                 log.debug('User opted not to execute OB')
-
-
-    def execute_SOB_with_slew_cal(self):
-        self.execute_SOB(slewcal=True)
 
 
     def RunOB(self, SOB):
