@@ -711,11 +711,13 @@ class MainWindow(QtWidgets.QMainWindow):
             if SOB.Target.coord is not None:
                 AltAzSystem = AltAz(obstime=Time.now(), location=self.keck,
                                     pressure=620*u.mbar, temperature=0*u.Celsius)
-                self.log.debug('Calculating target AltAz coordinates')
+                tick = datetime.datetime.now()
                 target_altz = SOB.Target.coord.transform_to(AltAzSystem)
-                self.log.debug('done')
+                elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
+                self.log.debug(f'Calculated target AltAz coordinates in {elapsed:.0f}ms')
                 self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
                 self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
+                tick = datetime.datetime.now()
                 is_up = above_horizon(target_altz.az.deg, target_altz.alt.deg)
                 if is_up:
                     self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
@@ -741,6 +743,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 slew = abs(tel_az - dest_az)
                 slewmsg = f"{tel_az.value:.1f} to {dest_az.value:.1f} = {slew:.1f}"
                 self.SOB_AzSlew.setText(slewmsg)
+                elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
+                self.log.debug(f'Calculated airmass and slew in {elapsed:.0f}ms')
 
                 if is_up:
                     # Calculate EL Slew Distance
