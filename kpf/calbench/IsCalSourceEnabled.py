@@ -40,6 +40,7 @@ class IsCalSourceEnabled(KPFFunction):
             allowed_values.pop(allowed_values.index('Unknown'))
         allowed_values.append('SoCal-SciSky')
         allowed_values.append('WideFlat')
+        allowed_values.append('dark')
         check_input(args, 'CalSource', allowed_values=allowed_values)
 
     @classmethod
@@ -51,6 +52,8 @@ class IsCalSourceEnabled(KPFFunction):
             lamp_name = calsource.upper()
         elif calsource in ['SoCal-CalFib', 'SoCal-SciSky']:
             lamp_name = calsource.replace('-', '_').replace('Sky', 'FIB')
+        elif calsource == 'dark':
+            return True
         else:
             log.warning(f"IsCalSourceEnabled does not recognize '{calsource}'")
             return True
