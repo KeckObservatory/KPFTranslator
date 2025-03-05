@@ -3,6 +3,7 @@ import time
 import os
 import traceback
 from pathlib import Path
+import yaml
 
 import ktl
 
@@ -102,10 +103,12 @@ class RunOB(KPFScript):
         if len(OB.Observations) > 0:
             log.info(f'Configuring for Observations')
             for i,observation in enumerate(OB.Observations):
-                ConfigureForScience.execute(observation)
-                WaitForConfigureScience.execute(observation)
+                observation_dict = observation.to_dict()
+                observation_dict['Gmag'] = OB.Target.get('Gmag')
+                ConfigureForScience.execute(observation_dict)
+                WaitForConfigureScience.execute(observation_dict)
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
-                ExecuteSci.execute(observation)
+                ExecuteSci.execute(observation_dict)
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
 
