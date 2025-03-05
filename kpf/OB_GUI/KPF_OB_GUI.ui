@@ -380,7 +380,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>691</width>
+        <width>731</width>
         <height>661</height>
        </rect>
       </property>
@@ -402,7 +402,7 @@
         <rect>
          <x>10</x>
          <y>80</y>
-         <width>671</width>
+         <width>711</width>
          <height>571</height>
         </rect>
        </property>
@@ -460,9 +460,9 @@
      <widget class="QGroupBox" name="groupBox_2">
       <property name="geometry">
        <rect>
-        <x>720</x>
+        <x>750</x>
         <y>10</y>
-        <width>331</width>
+        <width>301</width>
         <height>661</height>
        </rect>
       </property>
@@ -474,7 +474,7 @@
         <rect>
          <x>10</x>
          <y>150</y>
-         <width>191</width>
+         <width>161</width>
          <height>23</height>
         </rect>
        </property>
@@ -487,7 +487,7 @@
         <rect>
          <x>10</x>
          <y>120</y>
-         <width>311</width>
+         <width>281</width>
          <height>23</height>
         </rect>
        </property>
@@ -500,11 +500,11 @@
         <rect>
          <x>10</x>
          <y>210</y>
-         <width>311</width>
+         <width>281</width>
          <height>441</height>
         </rect>
        </property>
-       <layout class="QGridLayout" name="gridLayout_3">
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="45,55">
         <item row="6" column="0">
          <widget class="QLabel" name="label_47">
           <property name="text">
@@ -722,7 +722,7 @@
         <rect>
          <x>10</x>
          <y>40</y>
-         <width>311</width>
+         <width>281</width>
          <height>71</height>
         </rect>
        </property>
@@ -746,7 +746,7 @@
         <rect>
          <x>10</x>
          <y>20</y>
-         <width>311</width>
+         <width>281</width>
          <height>21</height>
         </rect>
        </property>
@@ -762,7 +762,7 @@
       <widget class="QCheckBox" name="SlewCal">
        <property name="geometry">
         <rect>
-         <x>210</x>
+         <x>180</x>
          <y>150</y>
          <width>111</width>
          <height>21</height>
@@ -777,7 +777,7 @@
         <rect>
          <x>10</x>
          <y>180</y>
-         <width>311</width>
+         <width>281</width>
          <height>23</height>
         </rect>
        </property>
