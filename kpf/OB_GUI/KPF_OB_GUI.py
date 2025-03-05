@@ -266,6 +266,16 @@ def above_horizon(az, el):
         horizon = 18
     return el > horizon
 
+def near_horizon(az, el, margin=5):
+    '''From https://www2.keck.hawaii.edu/inst/common/TelLimits.html
+    Az 5.3 to 146.2, 33.3
+    Az Elsewhere, 18
+    '''
+    if az >= 5.3 and az <= 146.2:
+        horizon = 33.3 - margin
+    else:
+        horizon = 18 - margin
+    return el > horizon
 
 ##-------------------------------------------------------------------------
 ## Define Application MainWindow
@@ -765,7 +775,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_Airmass.setText("--")
                 self.SOB_EL.setStyleSheet("color:red")
                 self.SOB_EL.setToolTip("Below Keck horizon")
-            if self.SOBobservable:
+            if near_horizon(target_altz.az.deg, target_altz.alt.deg):
                 # Calculate AZ Slew Distance
                 #  Azimuth range for telescope is -125 to 0 to 325
                 #  North wrap is -125 to -35
