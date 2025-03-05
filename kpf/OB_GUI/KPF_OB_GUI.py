@@ -714,6 +714,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_EL.setToolTip("")
         self.SOB_Az.setText('--')
         self.SOB_Airmass.setText('--')
+        self.SOB_AzSlew.setText('--')
+        self.SOB_ELSlew.setText('--')
         self.SOBobservable = False
         self.SOB_ExecuteButton.setEnabled(self.SOBobservable)
 
