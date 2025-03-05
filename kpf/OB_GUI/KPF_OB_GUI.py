@@ -751,7 +751,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug(f'Calculated target AltAz coordinates in {elapsed:.0f}ms')
             self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
             self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
-            tick = datetime.datetime.now()
             self.SOBobservable = above_horizon(target_altz.az.deg, target_altz.alt.deg)
             self.SOB_ExecuteButton.setEnabled(self.SOBobservable)
             if self.SOBobservable:
@@ -766,21 +765,19 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_Airmass.setText("--")
                 self.SOB_EL.setStyleSheet("color:red")
                 self.SOB_EL.setToolTip("Below Keck horizon")
-            # Calculate AZ Slew Distance
-            #  Azimuth range for telescope is -125 to 0 to 325
-            #  North wrap is -125 to -35
-            #  South wrap is 235 to 325
-            nwrap = self.DCS_AZ.binary <= -35
-            swrap = self.DCS_AZ.binary >= 235
-            tel_az = Angle(self.DCS_AZ.binary*u.radian).to(u.deg)
-            dest_az = Angle(target_altz.az.deg*u.deg)
-            dest_az.wrap_at(325*u.deg, inplace=True)
-            slew = abs(tel_az - dest_az)
-            slewmsg = f"{tel_az.value:.1f} to {dest_az.value:.1f} = {slew:.1f}"
-            self.SOB_AzSlew.setText(slewmsg)
-            elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
-            self.log.debug(f'Calculated airmass and slew in {elapsed:.0f}ms')
             if self.SOBobservable:
+                # Calculate AZ Slew Distance
+                #  Azimuth range for telescope is -125 to 0 to 325
+                #  North wrap is -125 to -35
+                #  South wrap is 235 to 325
+                nwrap = self.DCS_AZ.binary <= -35
+                swrap = self.DCS_AZ.binary >= 235
+                tel_az = Angle(self.DCS_AZ.binary*u.radian).to(u.deg)
+                dest_az = Angle(target_altz.az.deg*u.deg)
+                dest_az.wrap_at(325*u.deg, inplace=True)
+                slew = abs(tel_az - dest_az)
+                slewmsg = f"{tel_az.value:.1f} to {dest_az.value:.1f} = {slew:.1f}"
+                self.SOB_AzSlew.setText(slewmsg)
                 # Calculate EL Slew Distance
                 tel_el = Angle(self.DCS_EL.binary*u.radian).to(u.deg)
                 dest_el = Angle(target_altz.alt.deg*u.deg)
@@ -788,6 +785,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 slewmsg = f"{tel_el.value:.1f} to {dest_el.value:.1f} = {slew:.1f}"
                 self.SOB_ELSlew.setText(slewmsg)
             else:
+                self.SOB_AzSlew.setText("--")
                 self.SOB_ELSlew.setText("--")
 
     def update_SOB_display(self):
