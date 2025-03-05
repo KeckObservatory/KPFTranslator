@@ -292,6 +292,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         # Selected OB
         self.SOBindex = None
+        self.SOBobservable = False
         self.update_counter = 0
         # Coordinate Systems
         self.keck = EarthLocation.of_site('Keck Observatory')
@@ -656,6 +657,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.OBListHeader.setText(f"    {self.hdr}")
             self.model.OBs = [ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/219134.yaml'),
                               ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/157279.yaml'),
+                              ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/Calibrations/EtalonTest.yaml'),
                               ]
             self.model.start_times = None
             self.model.layoutChanged.emit()
@@ -712,6 +714,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_EL.setToolTip("")
         self.SOB_Az.setText('--')
         self.SOB_Airmass.setText('--')
+        self.SOBobservable = False
+        self.SOB_ExecuteButton.setEnabled(self.SOBobservable)
 
     def set_SOB_Target(self, SOB):
         self.clear_SOB_Target()
@@ -746,8 +750,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
             self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
             tick = datetime.datetime.now()
-            is_up = above_horizon(target_altz.az.deg, target_altz.alt.deg)
-            if is_up:
+            self.SOBobservable = above_horizon(target_altz.az.deg, target_altz.alt.deg)
+            self.SOB_ExecuteButton.setEnabled(self.SOBobservable)
+            if self.SOBobservable:
                 self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
                 if target_altz.alt.deg > self.ADC_horizon:
                     self.SOB_EL.setStyleSheet("color:black")
@@ -773,7 +778,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_AzSlew.setText(slewmsg)
             elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
             self.log.debug(f'Calculated airmass and slew in {elapsed:.0f}ms')
-            if is_up:
+            if self.SOBobservable:
                 # Calculate EL Slew Distance
                 tel_el = Angle(self.DCS_EL.binary*u.radian).to(u.deg)
                 dest_el = Angle(target_altz.alt.deg*u.deg)
@@ -782,8 +787,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_ELSlew.setText(slewmsg)
             else:
                 self.SOB_ELSlew.setText("--")
-
-
 
     def update_SOB_display(self):
         self.update_counter = 0
@@ -800,6 +803,8 @@ class MainWindow(QtWidgets.QMainWindow):
             # Handle Target component
             if SOB.Target is None:
                 self.clear_SOB_Target()
+                self.SOBobservable = True
+                self.SOB_ExecuteButton.setEnabled(self.SOBobservable)
             else:
                 self.set_SOB_Target(SOB)
             # Handle Calibrations and Observations components
