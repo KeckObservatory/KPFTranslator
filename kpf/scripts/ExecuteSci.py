@@ -133,11 +133,11 @@ class ExecuteSci(KPFFunction):
                 check_scriptstop() # Stop here if requested
             # Set triggered detectors. This is here to force a check of the
             # ENABLED status for each detector.
-            SetTriggeredDetectors.execute(calibration)
+            SetTriggeredDetectors.execute(observation)
             # Start next exposure
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
-            msg = f"Starting {args.get('ExpTime')} s exposure {j+1}/{nexp}"
+            msg = f"Starting {observation.get('ExpTime')} s exposure {j+1}/{nexp}"
             log.info(msg)
             kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})
