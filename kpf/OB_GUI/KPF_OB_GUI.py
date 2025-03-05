@@ -586,7 +586,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SortOrWeather.currentTextChanged.connect(self.set_weather_band)
             self.SortOrWeather.setEnabled(True)
         else:
-            self.SortOrWeatherLabel.setText('Sort By:')
+            self.SortOrWeatherLabel.setText('Sort List By:')
             self.SortOrWeatherLabel.setEnabled(True)
             self.SortOrWeather.clear()
             self.SortOrWeather.addItems(['', 'Name', 'RA', 'Dec', 'Gmag', 'Jmag'])
