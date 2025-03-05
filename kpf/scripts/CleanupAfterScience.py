@@ -5,8 +5,6 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
-                         add_script_log, clear_script_keywords)
 from kpf.fiu.StopTipTilt import StopTipTilt
 from kpf.spectrograph.StopAgitator import StopAgitator
 from kpf.scripts.SetTargetInfo import SetTargetInfo
@@ -62,8 +60,6 @@ class CleanupAfterScience(KPFScript):
         log.debug('Clearing kpfguide.SKY_OFFSET')
         sky_offset = ktl.cache('kpfguide', 'SKY_OFFSET')
         sky_offset.write('0 0')
-
-        clear_script_keywords()
 
     @classmethod
     def post_condition(cls, args, OB=None):

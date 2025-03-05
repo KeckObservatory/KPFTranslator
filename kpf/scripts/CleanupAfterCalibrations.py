@@ -9,7 +9,6 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.scripts import clear_script_keywords
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
@@ -94,9 +93,6 @@ class CleanupAfterCalibrations(KPFScript):
 
         # Clear target info
         SetTargetInfo.execute({})
-
-        # Clear script keywords
-        clear_script_keywords()
 
         # Write L0 file name to log if can
         WaitForL0File.execute({})

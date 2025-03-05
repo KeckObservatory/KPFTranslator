@@ -10,7 +10,8 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.scripts import check_script_running, set_script_keywords, add_script_log, wait_for_script
+from kpf.scripts import (check_script_running, set_script_keywords,
+                         add_script_log, wait_for_script, clear_script_keywords)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.scripts.SendTargetToMagiq import SendTargetToMagiq
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
@@ -111,6 +112,8 @@ class RunOB(KPFScript):
                 ExecuteSci.execute(observation_dict)
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
+
+        clear_script_keywords()
 
     @classmethod
     def post_condition(cls, args, OB=None):
