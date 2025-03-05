@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>160</y>
-      <width>1001</width>
+      <width>1061</width>
       <height>16</height>
      </rect>
     </property>
@@ -32,7 +32,7 @@
      <rect>
       <x>10</x>
       <y>80</y>
-      <width>301</width>
+      <width>331</width>
       <height>81</height>
      </rect>
     </property>
@@ -141,7 +141,7 @@
    <widget class="QWidget" name="gridLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>360</x>
       <y>80</y>
       <width>341</width>
       <height>81</height>
@@ -240,9 +240,9 @@
    <widget class="QWidget" name="gridLayoutWidget_8">
     <property name="geometry">
      <rect>
-      <x>690</x>
+      <x>720</x>
       <y>80</y>
-      <width>321</width>
+      <width>341</width>
       <height>81</height>
      </rect>
     </property>
@@ -336,7 +336,7 @@
    <widget class="Line" name="line_5">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>340</x>
       <y>80</y>
       <width>20</width>
       <height>81</height>
@@ -349,7 +349,7 @@
    <widget class="Line" name="line_6">
     <property name="geometry">
      <rect>
-      <x>670</x>
+      <x>700</x>
       <y>80</y>
       <width>20</width>
       <height>81</height>
@@ -390,7 +390,7 @@
       <widget class="QComboBox" name="SortOrWeather">
        <property name="geometry">
         <rect>
-         <x>140</x>
+         <x>160</x>
          <y>30</y>
          <width>121</width>
          <height>21</height>
@@ -419,7 +419,7 @@
       <widget class="QLabel" name="SortOrWeatherLabel">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>30</x>
          <y>30</y>
          <width>121</width>
          <height>21</height>
@@ -431,7 +431,7 @@
         </font>
        </property>
        <property name="text">
-        <string> </string>
+        <string/>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -454,84 +454,6 @@
        </property>
        <property name="text">
         <string>TargetName       RA          Dec          Gmag</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_8">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>30</y>
-         <width>41</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>UT:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="UTValue">
-       <property name="geometry">
-        <rect>
-         <x>420</x>
-         <y>30</y>
-         <width>81</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>HH:MM:SS</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_9">
-       <property name="geometry">
-        <rect>
-         <x>510</x>
-         <y>30</y>
-         <width>81</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Sidereal:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="SiderealTimeValue">
-       <property name="geometry">
-        <rect>
-         <x>600</x>
-         <y>30</y>
-         <width>81</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>HH:MM:SS</string>
        </property>
       </widget>
      </widget>
@@ -882,7 +804,7 @@
    <widget class="QLabel" name="label_89">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>250</x>
       <y>40</y>
       <width>131</width>
       <height>21</height>
@@ -918,9 +840,9 @@
    <widget class="QLabel" name="Observer">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>390</x>
       <y>40</y>
-      <width>601</width>
+      <width>431</width>
       <height>21</height>
      </rect>
     </property>
@@ -938,7 +860,7 @@
      <rect>
       <x>10</x>
       <y>60</y>
-      <width>1001</width>
+      <width>1061</width>
       <height>16</height>
      </rect>
     </property>
@@ -956,6 +878,72 @@
      </rect>
     </property>
    </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>10</y>
+      <width>240</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Universal Time (UT):</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Sidereal Time (LST):</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="UTValue">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>HH:MM:SS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="SiderealTimeValue">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>HH:MM:SS</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -970,8 +958,8 @@
     <property name="title">
      <string>Load OBs</string>
     </property>
-    <addaction name="actionLoad_OBs_from_file"/>
-    <addaction name="actionRefresh_OBs_from_Database"/>
+    <addaction name="action_LoadOBsFromFile"/>
+    <addaction name="action_RefreshOBsFromDatabase"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -990,12 +978,12 @@
     <string>Load Observing Blocks</string>
    </property>
   </action>
-  <action name="actionLoad_OBs_from_file">
+  <action name="action_LoadOBsFromFile">
    <property name="text">
     <string>Load OBs from file</string>
    </property>
   </action>
-  <action name="actionRefresh_OBs_from_Database">
+  <action name="action_RefreshOBsFromDatabase">
    <property name="text">
     <string>Refresh OBs from Database</string>
    </property>
