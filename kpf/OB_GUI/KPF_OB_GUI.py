@@ -277,6 +277,7 @@ class MainWindow(QtWidgets.QMainWindow):
         ui_file = Path(__file__).parent / 'KPF_OB_GUI.ui'
         uic.loadUi(f"{ui_file}", self)
         self.log = log
+        self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
         # Keywords
         self.dcs = 'dcs1'
@@ -306,6 +307,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def setupUi(self):
         self.log.debug('setupUi')
         self.setWindowTitle("KPF OB GUI")
+
+        # Menu Bar
+        LoadOBsFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromFile')
+        LoadOBsFromFile.triggered.connect(self.load_OBs_from_file)
 
         # Program ID
         self.ProgID = self.findChild(QtWidgets.QComboBox, 'ProgID')
@@ -572,6 +577,21 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     ## Methods to get data from DB or Schedule
     ##-------------------------------------------
+    def load_OBs_from_file(self):
+        self.log.debug(f"load_OBs_from_file")
+        result = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File',
+                                       f"{self.file_path}",
+                                       "OB Files (*yaml);;All Files (*)")
+        if result:
+            chosen_file = result[0]
+            if chosen_file != '':
+                self.file_path = Path(chosen_file).parent
+                print(f"Opening: {chosen_file}")
+                newOB = ObservingBlock(chosen_file)
+                if newOB.validate() == True:
+                    self.model.OBs.append(newOB)
+                    self.model.layoutChanged.emit()
+
     def get_progIDs(self):
         progIDs = ['', 'KPF-CC']
         # Go get list of available program IDs for Instrument=KPF
@@ -608,7 +628,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.OBs = []
             for i,file in enumerate(files[:30]):
                 try:
-                    self.model.OBs.append(ObservingBlock(str(file)))
+                    self.model.OBs.append(ObservingBlock(file))
                 except:
                     print(f"Failed file {i+1}: {file}")
             print(f"Read in {len(self.model.OBs)} files")
@@ -622,7 +642,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.start_times = []
             for i,file in enumerate(files[:30]):
                 try:
-                    self.model.OBs.append(ObservingBlock(str(file)))
+                    self.model.OBs.append(ObservingBlock(file))
                     import random
                     obstime = random.randrange(5, 17, step=1) + random.random()
                     self.model.start_times.append(obstime)
@@ -680,102 +700,115 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ExecuteButton.setEnabled(enabled)
 #         self.SOB_ExecuteWithSlewCalButton.setEnabled(enabled)
 
+    def clear_SOB_Target(self):
+        self.SOB_TargetName.setText('--')
+        self.SOB_GaiaID.setText('--')
+        self.SOB_TargetRA.setText('--')
+        self.SOB_TargetDec.setText('--')
+        self.SOB_Jmag.setText('--')
+        self.SOB_Gmag.setText('--')
+        self.SOB_EL.setText('--')
+        self.SOB_EL.setStyleSheet("color:black")
+        self.SOB_EL.setToolTip("")
+        self.SOB_Az.setText('--')
+        self.SOB_Airmass.setText('--')
+
+    def set_SOB_Target(self, SOB):
+        self.clear_SOB_Target()
+        self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
+        self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
+        if abs(SOB.Target.PMRA.value) > 0.0001 or abs(SOB.Target.PMDEC.value) > 0.0001:
+            try:
+                now = Time(datetime.datetime.utcnow())
+                coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
+                coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
+                self.SOB_TargetRA.setText(coord_now_string.split()[0])
+                self.SOB_TargetDec.setText(coord_now_string.split()[1])
+            except:
+                self.SOB_TargetRA.setText(SOB.Target.get('RA'))
+                self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
+        else:
+            self.SOB_TargetRA.setText(SOB.Target.get('RA'))
+            self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
+        self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
+        self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
+
+        # Calculate AltAz Position
+        if SOB.Target.coord is None:
+            log.warning(f'SOB Target is not convertable to SkyCoord')
+        else:
+            AltAzSystem = AltAz(obstime=Time.now(), location=self.keck,
+                                pressure=620*u.mbar, temperature=0*u.Celsius)
+            tick = datetime.datetime.now()
+            target_altz = SOB.Target.coord.transform_to(AltAzSystem)
+            elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
+            self.log.debug(f'Calculated target AltAz coordinates in {elapsed:.0f}ms')
+            self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
+            self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
+            tick = datetime.datetime.now()
+            is_up = above_horizon(target_altz.az.deg, target_altz.alt.deg)
+            if is_up:
+                self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
+                if target_altz.alt.deg > self.ADC_horizon:
+                    self.SOB_EL.setStyleSheet("color:black")
+                    self.SOB_EL.setToolTip("")
+                else:
+                    self.SOB_EL.setStyleSheet("color:orange")
+                    self.SOB_EL.setToolTip(f"ADC correction is poor below EL~{self.ADC_horizon:.0f}")
+            else:
+                self.SOB_Airmass.setText("--")
+                self.SOB_EL.setStyleSheet("color:red")
+                self.SOB_EL.setToolTip("Below Keck horizon")
+            # Calculate AZ Slew Distance
+            #  Azimuth range for telescope is -125 to 0 to 325
+            #  North wrap is -125 to -35
+            #  South wrap is 235 to 325
+            nwrap = self.DCS_AZ.binary <= -35
+            swrap = self.DCS_AZ.binary >= 235
+            tel_az = Angle(self.DCS_AZ.binary*u.radian).to(u.deg)
+            dest_az = Angle(target_altz.az.deg*u.deg)
+            dest_az.wrap_at(325*u.deg, inplace=True)
+            slew = abs(tel_az - dest_az)
+            slewmsg = f"{tel_az.value:.1f} to {dest_az.value:.1f} = {slew:.1f}"
+            self.SOB_AzSlew.setText(slewmsg)
+            elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
+            self.log.debug(f'Calculated airmass and slew in {elapsed:.0f}ms')
+            if is_up:
+                # Calculate EL Slew Distance
+                tel_el = Angle(self.DCS_EL.binary*u.radian).to(u.deg)
+                dest_el = Angle(target_altz.alt.deg*u.deg)
+                slew = abs(tel_el - dest_el)
+                slewmsg = f"{tel_el.value:.1f} to {dest_el.value:.1f} = {slew:.1f}"
+                self.SOB_ELSlew.setText(slewmsg)
+            else:
+                self.SOB_ELSlew.setText("--")
+
+
 
     def update_SOB_display(self):
         self.update_counter = 0
         if self.SOBindex is None:
             self.set_SOB_enabled(False)
-            self.SOB_TargetName.setText('--')
-            self.SOB_GaiaID.setText('--')
-            self.SOB_TargetRA.setText('--')
-            self.SOB_TargetDec.setText('--')
-            self.SOB_Jmag.setText('--')
-            self.SOB_Gmag.setText('--')
+            self.clear_SOB_Target()
             self.SOB_Observation1.setText('--')
             self.SOB_Observation2.setText('--')
             self.SOB_Observation3.setText('--')
             self.SOB_ExecutionTime.setText('--')
-            self.SOB_EL.setText('--')
-            self.SOB_EL.setStyleSheet("color:black")
-            self.SOB_EL.setToolTip("")
-            self.SOB_Az.setText('--')
-            self.SOB_Airmass.setText('--')
         else:
             SOB = self.model.OBs[self.SOBindex]
             self.set_SOB_enabled(True)
-            self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
-            self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
-            if abs(SOB.Target.PMRA.value) > 0.0001 or abs(SOB.Target.PMDEC.value) > 0.0001:
-                try:
-                    now = Time(datetime.datetime.utcnow())
-                    coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
-                    coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
-                    self.SOB_TargetRA.setText(coord_now_string.split()[0])
-                    self.SOB_TargetDec.setText(coord_now_string.split()[1])
-                except:
-                    self.SOB_TargetRA.setText(SOB.Target.get('RA'))
-                    self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
+            # Handle Target component
+            if SOB.Target is None:
+                self.clear_SOB_Target()
             else:
-                self.SOB_TargetRA.setText(SOB.Target.get('RA'))
-                self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
-            self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
-            self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
-
+                self.set_SOB_Target(SOB)
+            # Handle Calibrations and Observations components
             obs_and_cals = SOB.Calibrations + SOB.Observations
             n_per_line = int(np.ceil(len(obs_and_cals)/3))
             for i in [1,2,3]:
                 field = getattr(self, f'SOB_Observation{i}')
                 strings = [obs_and_cals.pop(0).summary() for j in range(n_per_line) if len(obs_and_cals) > 0]
                 field.setText(', '.join(strings))
-            # Calculate AltAz Position
-            if SOB.Target.coord is not None:
-                AltAzSystem = AltAz(obstime=Time.now(), location=self.keck,
-                                    pressure=620*u.mbar, temperature=0*u.Celsius)
-                tick = datetime.datetime.now()
-                target_altz = SOB.Target.coord.transform_to(AltAzSystem)
-                elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
-                self.log.debug(f'Calculated target AltAz coordinates in {elapsed:.0f}ms')
-                self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
-                self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
-                tick = datetime.datetime.now()
-                is_up = above_horizon(target_altz.az.deg, target_altz.alt.deg)
-                if is_up:
-                    self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
-                    if target_altz.alt.deg > self.ADC_horizon:
-                        self.SOB_EL.setStyleSheet("color:black")
-                        self.SOB_EL.setToolTip("")
-                    else:
-                        self.SOB_EL.setStyleSheet("color:orange")
-                        self.SOB_EL.setToolTip(f"ADC correction is poor below EL~{self.ADC_horizon:.0f}")
-                else:
-                    self.SOB_Airmass.setText("--")
-                    self.SOB_EL.setStyleSheet("color:red")
-                    self.SOB_EL.setToolTip("Below Keck horizon")
-                # Calculate AZ Slew Distance
-                #  Azimuth range for telescope is -125 to 0 to 325
-                #  North wrap is -125 to -35
-                #  South wrap is 235 to 325
-                nwrap = self.DCS_AZ.binary <= -35
-                swrap = self.DCS_AZ.binary >= 235
-                tel_az = Angle(self.DCS_AZ.binary*u.radian).to(u.deg)
-                dest_az = Angle(target_altz.az.deg*u.deg)
-                dest_az.wrap_at(325*u.deg, inplace=True)
-                slew = abs(tel_az - dest_az)
-                slewmsg = f"{tel_az.value:.1f} to {dest_az.value:.1f} = {slew:.1f}"
-                self.SOB_AzSlew.setText(slewmsg)
-                elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
-                self.log.debug(f'Calculated airmass and slew in {elapsed:.0f}ms')
-
-                if is_up:
-                    # Calculate EL Slew Distance
-                    tel_el = Angle(self.DCS_EL.binary*u.radian).to(u.deg)
-                    dest_el = Angle(target_altz.alt.deg*u.deg)
-                    slew = abs(tel_el - dest_el)
-                    slewmsg = f"{tel_el.value:.1f} to {dest_el.value:.1f} = {slew:.1f}"
-                    self.SOB_ELSlew.setText(slewmsg)
-                else:
-                    self.SOB_ELSlew.setText("--")
-
             # Calculate OB Duration
             duration = EstimateOBDuration.execute({'fast': self.fast}, OB=SOB)
             self.SOB_ExecutionTime.setText(f"{duration/60:.0f} min")
