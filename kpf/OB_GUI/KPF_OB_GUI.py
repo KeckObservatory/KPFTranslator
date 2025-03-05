@@ -338,15 +338,15 @@ class MainWindow(QtWidgets.QMainWindow):
         expose_kw = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSE'))
         expose_kw.stringCallback.connect(self.update_expose_status_value)
 
-        # Universal Time
-        self.UTValue = self.findChild(QtWidgets.QLabel, 'UTValue')
-        UT_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'UT'))
-        UT_kw.stringCallback.connect(self.update_UT)
+        # object
+        self.ObjectValue = self.findChild(QtWidgets.QLabel, 'ObjectValue')
+        object_kw = kPyQt.kFactory(ktl.cache('kpfexpose', 'OBJECT'))
+        object_kw.stringCallback.connect(self.ObjectValue.setText)
 
-        # Sidereal Time
-        self.SiderealTimeValue = self.findChild(QtWidgets.QLabel, 'SiderealTimeValue')
-        LST_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'LST'))
-        LST_kw.stringCallback.connect(self.update_LST)
+        # lamps
+        self.LampsValue = self.findChild(QtWidgets.QLabel, 'LampsValue')
+        lamps_kw = kPyQt.kFactory(ktl.cache('kpflamps', 'LAMPS'))
+        lamps_kw.stringCallback.connect(self.LampsValue.setText)
 
         # time since last cal
         self.slewcaltime_value = self.findChild(QtWidgets.QLabel, 'slewcaltime_value')
@@ -370,6 +370,16 @@ class MainWindow(QtWidgets.QMainWindow):
         expmeter_enabled_kw = kPyQt.kFactory(self.kpfconfig['EXPMETER_ENABLED'])
         expmeter_enabled_kw.stringCallback.connect(self.update_expmeter_enabled)
 
+        # Universal Time
+        self.UTValue = self.findChild(QtWidgets.QLabel, 'UTValue')
+        UT_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'UT'))
+        UT_kw.stringCallback.connect(self.update_UT)
+
+        # Sidereal Time
+        self.SiderealTimeValue = self.findChild(QtWidgets.QLabel, 'SiderealTimeValue')
+        LST_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'LST'))
+        LST_kw.stringCallback.connect(self.update_LST)
+
         # List of Observing Blocks
         self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
         self.hdr = 'TargetName       RA          Dec         Gmag  Jmag  Observations'
@@ -381,17 +391,23 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ListOfOBs.selectionModel().selectionChanged.connect(self.select_OB_from_GUI)
 
         # Sorting
-        self.SortOBs = self.findChild(QtWidgets.QComboBox, 'SortOBs')
-        self.SortOBs.addItems(['', 'Name', 'RA', 'Dec', 'Gmag', 'Jmag'])
-        self.SortOBs.currentTextChanged.connect(self.sort_OB_list)
+#         self.SortOBs = self.findChild(QtWidgets.QComboBox, 'SortOBs')
+#         self.SortOBs.addItems(['', 'Name', 'RA', 'Dec', 'Gmag', 'Jmag'])
+#         self.SortOBs.currentTextChanged.connect(self.sort_OB_list)
 
         # Weather Band
-        self.WeatherBandLabel = self.findChild(QtWidgets.QLabel, 'WeatherBandLabel')
-        self.WeatherBand = self.findChild(QtWidgets.QComboBox, 'WeatherBand')
-        self.WeatherBand.addItems(['1', '2', '3'])
-        self.WeatherBand.currentTextChanged.connect(self.set_weather_band)
-        self.WeatherBand.setEnabled(False)
-        self.WeatherBandLabel.setEnabled(False)
+#         self.WeatherBandLabel = self.findChild(QtWidgets.QLabel, 'WeatherBandLabel')
+#         self.WeatherBand = self.findChild(QtWidgets.QComboBox, 'WeatherBand')
+#         self.WeatherBand.addItems(['1', '2', '3'])
+#         self.WeatherBand.currentTextChanged.connect(self.set_weather_band)
+#         self.WeatherBand.setEnabled(False)
+#         self.WeatherBandLabel.setEnabled(False)
+
+        # Sorting or Weather Band Selector
+        self.SortOrWeatherLabel = self.findChild(QtWidgets.QLabel, 'SortOrWeatherLabel')
+        self.SortOrWeather = self.findChild(QtWidgets.QComboBox, 'SortOrWeather')
+        self.SortOrWeatherLabel.setEnabled(False)
+        self.SortOrWeather.setEnabled(False)
 
         # Selected Observing Block Details
         self.SOB_TargetName = self.findChild(QtWidgets.QLabel, 'SOB_TargetName')
@@ -561,6 +577,22 @@ class MainWindow(QtWidgets.QMainWindow):
         # Go get list of available program IDs for Instrument=KPF
         return progIDs + ['E123', 'E456', 'CPS 2024B']
 
+    def set_SortOrWeather(self, KPFCC=False):
+        if KPFCC == True:
+            self.SortOrWeatherLabel.setText('Weather Band:')
+            self.SortOrWeatherLabel.setEnabled(True)
+            self.SortOrWeather.clear()
+            self.SortOrWeather.addItems(['1', '2', '3'])
+            self.SortOrWeather.currentTextChanged.connect(self.set_weather_band)
+            self.SortOrWeather.setEnabled(True)
+        else:
+            self.SortOrWeatherLabel.setText('Sort By:')
+            self.SortOrWeatherLabel.setEnabled(True)
+            self.SortOrWeather.clear()
+            self.SortOrWeather.addItems(['', 'Name', 'RA', 'Dec', 'Gmag', 'Jmag'])
+            self.SortOrWeather.currentTextChanged.connect(self.sort_OB_list)
+            self.SortOrWeather.setEnabled(True)
+
     def set_ProgID(self, value):
         self.log.info(f"set_ProgID: '{value}'")
         self.clear_OB_selection()
@@ -569,10 +601,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.OBs = []
             self.model.start_times = None
             self.model.layoutChanged.emit()
-            self.SortOBs.setEnabled(False)
-            self.SortOBsLabel.setEnabled(False)
-            self.WeatherBand.setEnabled(False)
-            self.WeatherBandLabel.setEnabled(False)
+            self.set_SortOrWeather()
         elif value == 'CPS 2024B':
             self.OBListHeader.setText(f"    {self.hdr}")
             files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
@@ -585,10 +614,7 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Read in {len(self.model.OBs)} files")
             self.model.start_times = None
             self.model.layoutChanged.emit()
-            self.SortOBs.setEnabled(True)
-            self.SortOBsLabel.setEnabled(True)
-            self.WeatherBand.setEnabled(False)
-            self.WeatherBandLabel.setEnabled(False)
+            self.set_SortOrWeather()
         elif value == 'KPF-CC':
             self.OBListHeader.setText('    StartTime '+self.hdr)
             files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
@@ -605,10 +631,7 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Read in {len(self.model.OBs)} files")
             self.model.sort('time')
             self.model.layoutChanged.emit()
-            self.SortOBs.setEnabled(False)
-            self.SortOBsLabel.setEnabled(False)
-            self.WeatherBand.setEnabled(True)
-            self.WeatherBandLabel.setEnabled(True)
+            self.set_SortOrWeather(KPFCC=True)
         else:
             self.OBListHeader.setText(f"    {self.hdr}")
             self.model.OBs = [ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/219134.yaml'),
@@ -616,10 +639,7 @@ class MainWindow(QtWidgets.QMainWindow):
                               ]
             self.model.start_times = None
             self.model.layoutChanged.emit()
-            self.SortOBs.setEnabled(True)
-            self.SortOBsLabel.setEnabled(True)
-            self.WeatherBand.setEnabled(False)
-            self.WeatherBandLabel.setEnabled(False)
+            self.set_SortOrWeather()
         self.ProgID.setCurrentText(value)
         # This select/deselect operation caches something in the AltAz 
         # calculation which happens the first time an OB is selected. This
@@ -631,7 +651,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.select_OB(None)
 
     def set_weather_band(self, value):
-        self.WeatherBand.setCurrentText(value)
+        self.SortOrWeather.setCurrentText(value)
 
 
     ##-------------------------------------------
