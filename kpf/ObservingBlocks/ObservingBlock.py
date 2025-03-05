@@ -171,7 +171,10 @@ class ObservingBlock(object):
         if self.Target is not None:
             out = f"{self.Target}"
         else:
-            out = 'unknown        unknown       unknown '
+            if len(self.Observations) == 0:
+                out = 'Calibration'+' '*40
+            else:
+                out = ' '*51
         cal_strings = [str(cal) for cal in self.Calibrations]
         if len(cal_strings) > 0:
             out += f" {','.join(cal_strings)}"
