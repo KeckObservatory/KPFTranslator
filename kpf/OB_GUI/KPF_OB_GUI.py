@@ -94,15 +94,15 @@ class OBListModel(QtCore.QAbstractListModel):
             self.OBs = [z[1] for z in zipped]
             self.start_times = [z[0] for z in zipped]
         elif sortkey == 'Name':
-            self.OBs.sort(key=lambda o: o[1].Target.TargetName.value, reverse=False)
+            self.OBs.sort(key=lambda o: o.Target.TargetName.value, reverse=False)
         elif sortkey == 'RA':
-            self.OBs.sort(key=lambda o: o[1].Target.coord.ra.deg, reverse=False)
+            self.OBs.sort(key=lambda o: o.Target.coord.ra.deg, reverse=False)
         elif sortkey == 'Dec':
-            self.OBs.sort(key=lambda o: o[1].Target.coord.dec.deg, reverse=False)
+            self.OBs.sort(key=lambda o: o.Target.coord.dec.deg, reverse=False)
         elif sortkey == 'Gmag':
-            self.OBs.sort(key=lambda o: o[1].Target.Gmag.value, reverse=False)
+            self.OBs.sort(key=lambda o: o.Target.Gmag.value, reverse=False)
         elif sortkey == 'Jmag':
-            self.OBs.sort(key=lambda o: o[1].Target.Jmag.value, reverse=False)
+            self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
 
 
 ##-------------------------------------------------------------------------
