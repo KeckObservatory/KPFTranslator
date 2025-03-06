@@ -260,25 +260,22 @@ class SelectProgramPopup(QtWidgets.QDialog):
         self.setWindowTitle("Select Program")
         layout = QtWidgets.QVBoxLayout()
         self.ProgID = ''
-
         # Add ProgramID selection
-        programID_label = QtWidgets.QLabel('Program ID:')
+        programID_label = QtWidgets.QLabel('Select Program ID:')
         layout.addWidget(programID_label)
         programID_selector = QtWidgets.QComboBox()
         programID_selector.addItems(programIDs)
         programID_selector.currentTextChanged.connect(self.choose_progID)
         layout.addWidget(programID_selector)
-
         # Set up buttons
         QBtn = QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
         self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
         layout.addWidget(self.buttonBox)
-
         # Wrap up definition
         self.setLayout(layout)
-        self.setStyleSheet("min-width:250 px;")
+        self.setStyleSheet("min-width:150 px;")
 
     def choose_progID(self, value):
         self.ProgID = value
@@ -668,7 +665,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 confirmation_popup = QtWidgets.QMessageBox()
                 confirmation_popup.setIcon(QtWidgets.QMessageBox.Question)
                 confirmation_popup.setWindowTitle("Overwrite OB List?")
-                msg = 'Loading OBs from a new program will clear the current list of OBs.  Continue?'
+                msg = 'Loading OBs from a new program will clear the current list of OBs. Continue?'
                 confirmation_popup.setText(msg)
                 confirmation_popup.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
                 if confirmation_popup.exec():
