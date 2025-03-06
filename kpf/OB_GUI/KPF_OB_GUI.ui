@@ -75,7 +75,7 @@
         <number>1</number>
        </property>
        <property name="text">
-        <string>--</string>
+        <string> </string>
        </property>
       </widget>
      </item>
@@ -143,11 +143,11 @@
      <rect>
       <x>360</x>
       <y>80</y>
-      <width>341</width>
+      <width>361</width>
       <height>81</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="status_layout" rowstretch="100,100,100" columnstretch="60,100">
+    <layout class="QGridLayout" name="status_layout" rowstretch="100,100,100" columnstretch="35,65">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
@@ -162,7 +162,7 @@
         </font>
        </property>
        <property name="text">
-        <string>_</string>
+        <string> </string>
        </property>
       </widget>
      </item>
@@ -204,19 +204,19 @@
         </font>
        </property>
        <property name="text">
-        <string>_</string>
+        <string> </string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_11">
+      <widget class="QLabel" name="label_13">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
-        <string>Lamps:</string>
+        <string>Readout Mode:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -224,14 +224,14 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLabel" name="LampsValue">
+      <widget class="QLabel" name="readout_mode_value">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
-        <string>_</string>
+        <string> </string>
        </property>
       </widget>
      </item>
@@ -240,9 +240,9 @@
    <widget class="QWidget" name="gridLayoutWidget_8">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>740</x>
       <y>80</y>
-      <width>341</width>
+      <width>331</width>
       <height>81</height>
      </rect>
     </property>
@@ -280,21 +280,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_13">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Readout Mode:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QLabel" name="slewcaltime_value">
        <property name="font">
@@ -303,19 +288,7 @@
         </font>
        </property>
        <property name="text">
-        <string>_</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="readout_mode_value">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>_</string>
+        <string> </string>
        </property>
       </widget>
      </item>
@@ -327,7 +300,34 @@
         </font>
        </property>
        <property name="text">
-        <string>_</string>
+        <string> </string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Lamps:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="LampsValue">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string> </string>
        </property>
       </widget>
      </item>
@@ -349,7 +349,7 @@
    <widget class="Line" name="line_6">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>720</x>
       <y>80</y>
       <width>20</width>
       <height>81</height>
@@ -804,7 +804,7 @@
    <widget class="QLabel" name="label_89">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>200</x>
       <y>40</y>
       <width>131</width>
       <height>21</height>
@@ -819,30 +819,12 @@
      <string>Observer Names:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_87">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>101</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Program ID:</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="Observer">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>340</x>
       <y>40</y>
-      <width>431</width>
+      <width>461</width>
       <height>21</height>
      </rect>
     </property>
@@ -868,22 +850,12 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QComboBox" name="ProgID">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>40</y>
-      <width>111</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>830</x>
+      <x>820</x>
       <y>10</y>
-      <width>240</width>
+      <width>251</width>
       <height>51</height>
      </rect>
     </property>
@@ -944,6 +916,42 @@
      </item>
     </layout>
    </widget>
+   <widget class="QLabel" name="ProgIDLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Program ID:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="ProgID">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>40</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string> </string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -958,8 +966,8 @@
     <property name="title">
      <string>Load OBs</string>
     </property>
-    <addaction name="action_LoadOBsFromFile"/>
-    <addaction name="action_RefreshOBsFromDatabase"/>
+    <addaction name="action_LoadOBFromFile"/>
+    <addaction name="action_LoadOBsFromProgram"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -978,14 +986,14 @@
     <string>Load Observing Blocks</string>
    </property>
   </action>
-  <action name="action_LoadOBsFromFile">
+  <action name="action_LoadOBFromFile">
    <property name="text">
-    <string>Load OBs from file</string>
+    <string>Load OB from file</string>
    </property>
   </action>
-  <action name="action_RefreshOBsFromDatabase">
+  <action name="action_LoadOBsFromProgram">
    <property name="text">
-    <string>Refresh OBs from Database</string>
+    <string>Load OBs by Program </string>
    </property>
   </action>
  </widget>

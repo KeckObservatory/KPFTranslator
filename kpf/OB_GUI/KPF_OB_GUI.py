@@ -252,6 +252,38 @@ class ObserverCommentBox(QtWidgets.QDialog):
         self.observer = value
 
 
+class SelectProgramPopup(QtWidgets.QDialog):
+    '''Custom dialog box for observers to select program to load OBs from.
+    '''
+    def __init__(self, programIDs):
+        super().__init__()
+        self.setWindowTitle("Select Program")
+        layout = QtWidgets.QVBoxLayout()
+        self.ProgID = ''
+
+        # Add ProgramID selection
+        programID_label = QtWidgets.QLabel('Program ID:')
+        layout.addWidget(programID_label)
+        programID_selector = QtWidgets.QComboBox()
+        programID_selector.addItems(programIDs)
+        programID_selector.currentTextChanged.connect(self.choose_progID)
+        layout.addWidget(programID_selector)
+
+        # Set up buttons
+        QBtn = QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
+        self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        layout.addWidget(self.buttonBox)
+
+        # Wrap up definition
+        self.setLayout(layout)
+        self.setStyleSheet("min-width:250 px;")
+
+    def choose_progID(self, value):
+        self.ProgID = value
+
+
 ##-------------------------------------------------------------------------
 ## Keck Horizon
 ##-------------------------------------------------------------------------
@@ -300,6 +332,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SLEWCALREQ = kPyQt.kFactory(ktl.cache('kpfconfig', 'SLEWCALREQ'))
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
+        self.PROGNAME = kPyQt.kFactory(ktl.cache('kpfexpose', 'PROGNAME'))
         # Selected OB
         self.SOBindex = None
         self.SOBobservable = False
@@ -320,13 +353,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("KPF OB GUI")
 
         # Menu Bar
-        LoadOBsFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromFile')
-        LoadOBsFromFile.triggered.connect(self.load_OBs_from_file)
+        LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
+        LoadOBFromFile.triggered.connect(self.load_OB_from_file)
+        LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
+        LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
 
         # Program ID
-        self.ProgID = self.findChild(QtWidgets.QComboBox, 'ProgID')
-        self.ProgID.addItems(self.get_progIDs())
-        self.ProgID.currentTextChanged.connect(self.set_ProgID)
+        self.ProgID = self.findChild(QtWidgets.QLabel, 'ProgID')
+        self.PROGNAME.stringCallback.connect(self.ProgID.setText)
 
         # Observer
         self.Observer = self.findChild(QtWidgets.QLabel, 'Observer')
@@ -464,8 +498,9 @@ class MainWindow(QtWidgets.QMainWindow):
     # Script Name
     def update_scriptname_value(self, value):
         '''Set label text and set color'''
-        self.log.debug(f'update_scriptname_value: {value}')
-        self.scriptname_value.setText(f"{value.strip('.py')}")
+        scriptname_string = value.replace('.py', '')
+        self.log.debug(f"update_scriptname_value: {scriptname_string}")
+        self.scriptname_value.setText(f"{scriptname_string}")
         if value in ['None', '']:
             self.scriptname_value.setStyleSheet("color:green")
         else:
@@ -588,7 +623,7 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     ## Methods to get data from DB or Schedule
     ##-------------------------------------------
-    def load_OBs_from_file(self):
+    def load_OB_from_file(self):
         self.log.debug(f"load_OBs_from_file")
         result = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File',
                                        f"{self.file_path}",
@@ -623,6 +658,26 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SortOrWeather.addItems(['', 'Name', 'RA', 'Dec', 'Gmag', 'Jmag'])
             self.SortOrWeather.currentTextChanged.connect(self.sort_OB_list)
             self.SortOrWeather.setEnabled(True)
+
+    def load_OBs_from_program(self):
+        select_program_popup = SelectProgramPopup(self.get_progIDs())
+        if select_program_popup.exec():
+            if len(self.model.OBs) == 0:
+                self.set_ProgID(select_program_popup.ProgID)
+            else:
+                confirmation_popup = QtWidgets.QMessageBox()
+                confirmation_popup.setIcon(QtWidgets.QMessageBox.Question)
+                confirmation_popup.setWindowTitle("Overwrite OB List?")
+                msg = 'Loading OBs from a new program will clear the current list of OBs.  Continue?'
+                confirmation_popup.setText(msg)
+                confirmation_popup.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+                if confirmation_popup.exec():
+                    self.set_ProgID(select_program_popup.ProgID)
+                else:
+                    print("Cancel! Not overwriting OB list.")
+        else:
+            print("Cancel! Not pulling OBs from database.")
+
 
     def set_ProgID(self, value):
         self.log.info(f"set_ProgID: '{value}'")
@@ -672,7 +727,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-        self.ProgID.setCurrentText(value)
+        self.ProgID.setText(value)
         # This select/deselect operation caches something in the AltAz 
         # calculation which happens the first time an OB is selected. This
         # just makes the GUI more "responsive" as the loading of the OBs when
