@@ -93,6 +93,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log = log
         self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
+        self.BS_Target = Target({})
+        self.BS_Observations = [Observation({})]
         # Keywords
         self.dcs = 'dcs1'
         self.log.debug('Cacheing keyword services')
@@ -124,15 +126,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug('setupUi')
         self.setWindowTitle("KPF OB GUI")
 
+        #-------------------------------------------------------------------
         # Menu Bar
         LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
         LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
         LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
         LoadOBFromFile.triggered.connect(self.load_OB_from_file)
-        BuildScienceOB = self.findChild(QtWidgets.QAction, 'action_BuildScienceOB')
-        BuildScienceOB.triggered.connect(self.build_science_OB)
-        BuildCalibrationOB = self.findChild(QtWidgets.QAction, 'action_BuildCalibrationOB')
-        BuildCalibrationOB.triggered.connect(self.build_calibration_OB)
+
+        #-------------------------------------------------------------------
+        # Main Window
 
         # Program ID
         self.ProgID = self.findChild(QtWidgets.QLabel, 'ProgID')
@@ -206,6 +208,15 @@ class MainWindow(QtWidgets.QMainWindow):
         LST_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'LST'))
         LST_kw.stringCallback.connect(self.update_LST)
 
+        #-------------------------------------------------------------------
+        # Tab: Observing Blocks
+
+        # Sorting or Weather Band Selector
+        self.SortOrWeatherLabel = self.findChild(QtWidgets.QLabel, 'SortOrWeatherLabel')
+        self.SortOrWeather = self.findChild(QtWidgets.QComboBox, 'SortOrWeather')
+        self.SortOrWeatherLabel.setEnabled(False)
+        self.SortOrWeather.setEnabled(False)
+
         # List of Observing Blocks
         self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
         self.hdr = 'TargetName       RA          Dec         Gmag  Jmag  Observations'
@@ -215,25 +226,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.model = OBListModel(OBs=[])
         self.ListOfOBs.setModel(self.model)
         self.ListOfOBs.selectionModel().selectionChanged.connect(self.select_OB_from_GUI)
-
-        # Sorting
-#         self.SortOBs = self.findChild(QtWidgets.QComboBox, 'SortOBs')
-#         self.SortOBs.addItems(['', 'Name', 'RA', 'Dec', 'Gmag', 'Jmag'])
-#         self.SortOBs.currentTextChanged.connect(self.sort_OB_list)
-
-        # Weather Band
-#         self.WeatherBandLabel = self.findChild(QtWidgets.QLabel, 'WeatherBandLabel')
-#         self.WeatherBand = self.findChild(QtWidgets.QComboBox, 'WeatherBand')
-#         self.WeatherBand.addItems(['1', '2', '3'])
-#         self.WeatherBand.currentTextChanged.connect(self.set_weather_band)
-#         self.WeatherBand.setEnabled(False)
-#         self.WeatherBandLabel.setEnabled(False)
-
-        # Sorting or Weather Band Selector
-        self.SortOrWeatherLabel = self.findChild(QtWidgets.QLabel, 'SortOrWeatherLabel')
-        self.SortOrWeather = self.findChild(QtWidgets.QComboBox, 'SortOrWeather')
-        self.SortOrWeatherLabel.setEnabled(False)
-        self.SortOrWeather.setEnabled(False)
 
         # Selected Observing Block Details
         self.SOB_TargetName = self.findChild(QtWidgets.QLabel, 'SOB_TargetName')
@@ -245,6 +237,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_Observation1 = self.findChild(QtWidgets.QLabel, 'SOB_Observation1')
         self.SOB_Observation2 = self.findChild(QtWidgets.QLabel, 'SOB_Observation2')
         self.SOB_Observation3 = self.findChild(QtWidgets.QLabel, 'SOB_Observation3')
+
         # Calculated Values
         self.SOB_ExecutionTime = self.findChild(QtWidgets.QLabel, 'SOB_ExecutionTime')
         self.SOB_EL = self.findChild(QtWidgets.QLabel, 'SOB_EL')
@@ -265,8 +258,39 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SlewCal = self.findChild(QtWidgets.QCheckBox, 'SlewCal')
         self.SlewCal.stateChanged.connect(self.SlewCal_state_change)
         self.SLEWCALREQ.stringCallback.connect(self.update_SlewCalReq)
-
         self.update_SOB_display()
+
+        #-------------------------------------------------------------------
+        # Tab: Build Science OB
+        # Observing Block
+        self.BS_OBString = self.findChild(QtWidgets.QLabel, 'BS_OBString')
+        self.BS_OBString.setStyleSheet("background:white")
+        self.BS_OBValid = self.findChild(QtWidgets.QLabel, 'BS_OBValid')
+        self.BS_EstimatedDuration = self.findChild(QtWidgets.QLabel, 'BS_EstimatedDuration')
+        self.BS_SendToOBList = self.findChild(QtWidgets.QPushButton, 'BS_SendToOBList')
+        self.BS_SendToOBList.clicked.connect(self.BS_send_to_list)
+        # Target
+        self.BS_QuerySimbadLineEdit = self.findChild(QtWidgets.QLineEdit, 'BS_QuerySimbadLineEdit')
+        self.BS_QuerySimbadButton = self.findChild(QtWidgets.QPushButton, 'BS_QuerySimbadButton')
+        self.BS_QuerySimbadButton.clicked.connect(self.BS_query_simbad)
+        self.BS_TargetValid = self.findChild(QtWidgets.QLabel, 'BS_TargetValid')
+        self.BS_ClearTargetButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearTargetButton')
+        self.BS_ClearTargetButton.clicked.connect(self.BS_clear_target)
+        self.BS_TargetView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_TargetView')
+        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False))
+        self.BS_TargetView.setFont(QtGui.QFont('Courier New', 11))
+        self.BS_edit_target()
+        self.BS_TargetView.textChanged.connect(self.BS_edit_target)
+        # Observations
+        self.BS_ObservationsValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
+        self.BS_ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
+        self.BS_ClearObservationsButton.clicked.connect(self.BS_clear_observations)
+        self.BS_ObservationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
+        self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False))
+        self.BS_ObservationsView.setFont(QtGui.QFont('Courier New', 11))
+        self.BS_edit_observations()
+        self.BS_ObservationsView.textChanged.connect(self.BS_edit_observations)
+
 
     ##-------------------------------------------
     ## Methods to display updates from keywords
@@ -516,42 +540,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def set_weather_band(self, value):
         self.SortOrWeather.setCurrentText(value)
 
-    def build_science_OB(self):
-        log.info('build_science_OB')
-        # Target
-        log.info('Build Target')
-        newtarget = Target({})
-        target_popup = EditableMessageBox(newtarget)
-        target_popup.setWindowTitle(f"Editing Target")
-        edit_result = target_popup.exec_()
-        if edit_result == QtWidgets.QMessageBox.Ok:
-            log.info('Target popup: Ok')
-            if target_popup.result.validate():
-                log.info('The Target has been validated')
-            else:
-                log.warning('Edits did not validate.')
-        elif edit_result == QtWidgets.QMessageBox.Cancel:
-            log.debug('Target popup: Cancel')
-        # Observations
-        log.info('Build Observations')
-        newobs = Observation({})
-        obs_popup = EditableMessageBox(newobs)
-        obs_popup.setWindowTitle(f"Editing Observation")
-        edit_result = obs_popup.exec_()
-        if edit_result == QtWidgets.QMessageBox.Ok:
-            log.info('Observation popup: Ok')
-        elif edit_result == QtWidgets.QMessageBox.Cancel:
-            log.debug('Observation popup: Cancel')
-        # Assemble OB
-        newOB = ObservingBlock({})
-        newOB.Target = target_popup.result
-        newOB.Observations = obs_popup.result
-        if newOB.validate() == True:
-            self.model.OBs.append(newOB)
-            self.model.layoutChanged.emit()
-
-    def build_calibration_OB(self):
-        pass
 
     ##-------------------------------------------
     ## Methods for OB List
@@ -790,6 +778,81 @@ class MainWindow(QtWidgets.QMainWindow):
         print(' '.join(cmd))
 #         proc = subprocess.Popen(cmd)
 
+
+    ##-------------------------------------------
+    ## Methods for the Build a Science OB Tab
+    ##-------------------------------------------
+    def BS_edit_target(self):
+        BST_edited_lines = self.BS_TargetView.document().toPlainText()
+        try:
+            new_dict = yaml.safe_load(BST_edited_lines)
+            self.BS_Target = Target(new_dict)
+        except Exception as e:
+            print(e)
+            self.BS_Target = None
+        TargetValid = False if self.BS_Target is None else self.BS_Target.validate()
+        color = {True: 'green', False: 'orange'}[TargetValid]
+        self.BS_TargetValid.setText(str(TargetValid))
+        self.BS_TargetValid.setStyleSheet(f"color:{color}")
+        self.BS_form_OB()
+
+    def BS_query_simbad(self):
+        target_name = self.BS_QuerySimbadLineEdit.text().strip()
+        print(f"Querying: {target_name}")
+        self.BS_Target = self.BS_Target.resolve_name(target_name)
+        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False))
+        TargetValid = False if self.BS_Target is None else self.BS_Target.validate()
+        color = {True: 'green', False: 'orange'}[TargetValid]
+        self.BS_TargetValid.setText(str(TargetValid))
+        self.BS_TargetValid.setStyleSheet(f"color:{color}")
+
+    def BS_clear_target(self):
+        self.BS_Target = Target({})
+        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False))
+        self.BS_form_OB()
+
+    def BS_edit_observations(self):
+        BSO_edited_lines = self.BS_ObservationsView.document().toPlainText()
+        try:
+            new_dict = yaml.safe_load(BSO_edited_lines)
+            self.BS_Observations = [Observation(entry) for entry in new_dict]
+            ObservationsValid = np.all([entry.validate() for entry in self.BS_Observations])
+        except Exception as e:
+            print(e)
+            self.BS_Observations = [Observation({})]
+            ObservationsValid = False
+        color = {True: 'green', False: 'orange'}[ObservationsValid]
+        self.BS_ObservationsValid.setText(str(ObservationsValid))
+        self.BS_ObservationsValid.setStyleSheet(f"color:{color}")
+        self.BS_form_OB()
+
+    def BS_clear_observations(self):
+        self.BS_Observations = [Observation({})]
+        self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False))
+        self.BS_form_OB()
+
+    def BS_form_OB(self):
+        self.BS_ObservingBlock = ObservingBlock({})
+        self.BS_ObservingBlock.Target = self.BS_Target
+        self.BS_ObservingBlock.Observations = self.BS_Observations
+        OBValid = self.BS_ObservingBlock.validate()
+        color = {True: 'green', False: 'orange'}[OBValid]
+        self.BS_OBValid.setText(str(OBValid))
+        self.BS_OBValid.setStyleSheet(f"color:{color}")
+        if OBValid:
+            self.BS_OBString.setText(self.BS_ObservingBlock.name())
+            duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.BS_ObservingBlock)
+            self.BS_EstimatedDuration.setText(f"{duration/60:.0f} min")
+        else:
+            self.BS_OBString.setText('')
+            self.BS_EstimatedDuration.setText('')
+
+    def BS_send_to_list(self):
+        if self.BS_ObservingBlock.validate() != True:
+            print('OB is invalid, not sending to OB list')
+        else:
+            self.model.OBs.append(self.BS_ObservingBlock)
+            self.model.layoutChanged.emit()
 
 ##-------------------------------------------------------------------------
 ## Define main()

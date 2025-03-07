@@ -795,34 +795,15 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>140</y>
+        <y>150</y>
         <width>511</width>
-        <height>531</height>
+        <height>521</height>
        </rect>
       </property>
       <property name="title">
        <string>Target</string>
       </property>
-      <widget class="QListView" name="TargetView">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>70</y>
-         <width>491</width>
-         <height>421</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Monospace</family>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="alternatingRowColors">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="QuerySimbadNameLineEdit">
+      <widget class="QLineEdit" name="BS_QuerySimbadLineEdit">
        <property name="geometry">
         <rect>
          <x>190</x>
@@ -832,7 +813,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLabel" name="QuerySimbadNameLebal">
+      <widget class="QLabel" name="BS_QuerySimbadLabel">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -850,12 +831,12 @@
         <string>Object Name to Query:</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="QuerySimbadButton">
+      <widget class="QPushButton" name="BS_QuerySimbadButton">
        <property name="geometry">
         <rect>
          <x>380</x>
          <y>30</y>
-         <width>111</width>
+         <width>121</width>
          <height>23</height>
         </rect>
        </property>
@@ -866,12 +847,58 @@
         <string>Query Simbad</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="ValidateTargetButton">
+      <widget class="QLabel" name="BS_TargetValidLabel">
        <property name="geometry">
         <rect>
-         <x>310</x>
-         <y>500</y>
-         <width>191</width>
+         <x>10</x>
+         <y>60</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Target is Valid?</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="BS_TargetValid">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>60</y>
+         <width>61</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+      <widget class="QPlainTextEdit" name="BS_TargetView">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>491</width>
+         <height>421</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BS_ClearTargetButton">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>60</y>
+         <width>121</width>
          <height>23</height>
         </rect>
        </property>
@@ -879,7 +906,7 @@
         <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
        </property>
        <property name="text">
-        <string>Validate Target</string>
+        <string>Clear Target Info</string>
        </property>
       </widget>
      </widget>
@@ -887,39 +914,56 @@
       <property name="geometry">
        <rect>
         <x>540</x>
-        <y>50</y>
+        <y>10</y>
         <width>511</width>
-        <height>621</height>
+        <height>661</height>
        </rect>
       </property>
       <property name="title">
        <string>Observations</string>
       </property>
-      <widget class="QListView" name="ObservationsView">
+      <widget class="QLabel" name="BS_ObservationsValidLabel">
        <property name="geometry">
         <rect>
          <x>10</x>
          <y>30</y>
-         <width>491</width>
-         <height>551</height>
+         <width>181</width>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Monospace</family>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
-       <property name="alternatingRowColors">
-        <bool>true</bool>
+       <property name="text">
+        <string>Observations are Valid?</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="ValidateObjectsButton">
+      <widget class="QLabel" name="BS_ObservationsValid">
        <property name="geometry">
         <rect>
-         <x>310</x>
-         <y>590</y>
-         <width>191</width>
+         <x>200</x>
+         <y>30</y>
+         <width>61</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BS_ClearObservationsButton">
+       <property name="geometry">
+        <rect>
+         <x>340</x>
+         <y>30</y>
+         <width>161</width>
          <height>23</height>
         </rect>
        </property>
@@ -927,7 +971,17 @@
         <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
        </property>
        <property name="text">
-        <string>Validate Observations</string>
+        <string>Clear Observation Info</string>
+       </property>
+      </widget>
+      <widget class="QPlainTextEdit" name="BS_ObservationsView">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>491</width>
+         <height>591</height>
+        </rect>
        </property>
       </widget>
      </widget>
@@ -943,13 +997,13 @@
       <property name="title">
        <string>Observing Block</string>
       </property>
-      <widget class="QPushButton" name="SendToOBListButton">
+      <widget class="QPushButton" name="BS_SendToOBList">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>90</y>
-         <width>231</width>
-         <height>23</height>
+         <x>290</x>
+         <y>60</y>
+         <width>211</width>
+         <height>51</height>
         </rect>
        </property>
        <property name="toolTip">
@@ -959,11 +1013,11 @@
         <string>Send to OB List</string>
        </property>
       </widget>
-      <widget class="QLabel" name="BuildSOBEstimatedDurationLabel">
+      <widget class="QLabel" name="BS_EstimatedDurationLabel">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>60</y>
+         <y>90</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -977,11 +1031,11 @@
         <string>Estimated Duration:</string>
        </property>
       </widget>
-      <widget class="QLabel" name="BuildSOBEstimatedDurationValue">
+      <widget class="QLabel" name="BS_EstimatedDuration">
        <property name="geometry">
         <rect>
          <x>170</x>
-         <y>60</y>
+         <y>90</y>
          <width>101</width>
          <height>21</height>
         </rect>
@@ -993,6 +1047,61 @@
        </property>
        <property name="text">
         <string>-</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="BS_OBValidLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>191</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Observing Block is Valid?</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="BS_OBValid">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>60</y>
+         <width>61</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="BS_OBString">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>491</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string> </string>
        </property>
       </widget>
      </widget>
@@ -1173,8 +1282,6 @@
     </property>
     <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="action_LoadOBFromFile"/>
-    <addaction name="action_BuildScienceOB"/>
-    <addaction name="action_BuildCalibrationOB"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
