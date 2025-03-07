@@ -17,12 +17,16 @@ from astropy.time import Time
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
-from PyQt5.QtCore import Qt
 
+from kpf.OB_GUI.GUIcomponents import (OBListModel, ScrollMessageBox,
+                                      EditableMessageBox, ObserverCommentBox,
+                                      SelectProgramPopup)
+from kpf.ObservingBlocks.Target import Target
+from kpf.ObservingBlocks.Calibration import Calibration
+from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
-
 
 
 ##-------------------------------------------------------------------------
@@ -52,236 +56,6 @@ def create_GUI_log():
 
 
 ##-------------------------------------------------------------------------
-## Define Model for MVC
-##-------------------------------------------------------------------------
-class OBListModel(QtCore.QAbstractListModel):
-    '''Model to hold the list of OBs that the observer will select from.
-    '''
-    def __init__(self, *args, OBs=[], **kwargs):
-        super(OBListModel, self).__init__(*args, **kwargs)
-        self.OBs = OBs
-        self.start_times = None
-
-    def data(self, index, role):
-        if role == Qt.DisplayRole:
-            if self.start_times is None:
-                OB = self.OBs[index.row()]
-                output_line = f"{str(OB):s}"
-            else:
-                OB = self.OBs[index.row()]
-                start_time_decimal = self.start_times[index.row()]
-                sthr = int(np.floor(start_time_decimal))
-                stmin = (start_time_decimal-sthr)*60
-                start_time_str = f"{sthr:02d}:{stmin:02.0f} UT"
-                output_line = f"{start_time_str}  {str(OB):s}"
-            if OB.edited == True:
-                output_line += ' [edited]'
-            return output_line
-        if role == Qt.DecorationRole:
-            OB  = self.OBs[index.row()]
-            if OB.executed == True:
-                return QtGui.QColor('black')
-            else:
-                return QtGui.QColor('green')
-
-    def rowCount(self, index):
-        return len(self.OBs)
-
-    def sort(self, sortkey):
-        if self.start_times is not None:
-            zipped = [z for z in zip(self.start_times, self.OBs)]
-            zipped.sort(key=lambda z: z[0])
-            self.OBs = [z[1] for z in zipped]
-            self.start_times = [z[0] for z in zipped]
-        elif sortkey == 'Name':
-            self.OBs.sort(key=lambda o: o.Target.TargetName.value, reverse=False)
-        elif sortkey == 'RA':
-            self.OBs.sort(key=lambda o: o.Target.coord.ra.deg, reverse=False)
-        elif sortkey == 'Dec':
-            self.OBs.sort(key=lambda o: o.Target.coord.dec.deg, reverse=False)
-        elif sortkey == 'Gmag':
-            self.OBs.sort(key=lambda o: o.Target.Gmag.value, reverse=False)
-        elif sortkey == 'Jmag':
-            self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
-
-
-##-------------------------------------------------------------------------
-## Scrollable QMessageBox
-##-------------------------------------------------------------------------
-class ScrollMessageBox(QtWidgets.QMessageBox):
-    '''Custom message box to show the contents of an OB (as it would appear in
-    a .yaml file on disk) in a scrollable window.
-    '''
-    def __init__(self, OB, *args, **kwargs):
-        contents = OB.__repr__()
-        QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
-        self.setStandardButtons(QtWidgets.QMessageBox.Close | QtWidgets.QMessageBox.Cancel)
-        self.button(QtWidgets.QMessageBox.Cancel).setText("Edit OB")
-        scroll = QtWidgets.QScrollArea(self)
-        scroll.setWidgetResizable(True)
-        self.content = QtWidgets.QWidget()
-        scroll.setWidget(self.content)
-        lay = QtWidgets.QVBoxLayout(self.content)
-        contents_label = QtWidgets.QLabel(contents, self)
-        contents_label.setFont(QtGui.QFont('Courier New', 11))
-        lay.addWidget(contents_label)
-        self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
-        self.setStyleSheet("QScrollArea{min-width:350 px; min-height: 600px;}")
-
-
-##-------------------------------------------------------------------------
-## Editable QMessageBox
-##-------------------------------------------------------------------------
-class EditableMessageBox(QtWidgets.QMessageBox):
-    '''Custom message box to edit the contents of an OB (as it would appear in
-    a .yaml file on disk) in a scrollable window.
-    '''
-    def __init__(self, OB, *args, **kwargs):
-        self.OB = OB
-        self.OBlines_original = self.OB.__repr__()
-        self.OBlines = self.OB.__repr__()
-        self.newOB = None
-        QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
-        self.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-        scroll = QtWidgets.QScrollArea(self)
-        scroll.setWidgetResizable(True)
-        wdgt = QtWidgets.QWidget()
-        scroll.setWidget(wdgt)
-        lay = QtWidgets.QVBoxLayout(wdgt)
-        # Add explanatory text
-        msg = ['The text area below is an editable version of the OB.',
-               'Note that the edited OB will be executable, but will not be',
-               'uploaded to the database. To make changes permanent, edit',
-               'the OB via the web form.']
-        helptext = QtWidgets.QLabel('\n'.join(msg))
-        lay.addWidget(helptext)
-        # Add Editable YAML text
-        self.contents = QtWidgets.QPlainTextEdit(self.OBlines, self)
-        self.contents.setFont(QtGui.QFont('Courier New', 11))
-        self.contents.textChanged.connect(self.edit_OB)
-        lay.addWidget(self.contents)
-        # Add validate button
-        validate_button = QtWidgets.QPushButton('Validate')
-        validate_button.clicked.connect(self.validate_OB)
-        lay.addWidget(validate_button)
-
-        self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
-        self.setStyleSheet("QScrollArea{min-width:450 px; min-height: 650px;}")
-
-    def validate_OB(self):
-        self.OBlines = self.contents.document().toPlainText()
-        valid = False
-        try:
-            newOB = ObservingBlock(yaml.safe_load(self.OBlines))
-            valid = newOB.validate()
-            if valid == False:
-                print('OB is invalid)')
-        except Exception as e:
-            print('Failed to read in OB')
-            print(e)
-        validationpopup = QtWidgets.QMessageBox()
-        valid_str = {True: 'valid', False: 'invalid'}[valid]
-        valid_icon = {True: QtWidgets.QMessageBox.Information,
-                      False: QtWidgets.QMessageBox.Critical}[valid]
-        validationpopup.setText(f"OB is {valid_str}")
-        validationpopup.setIcon(valid_icon)
-        validationpopup.setStandardButtons(QtWidgets.QMessageBox.Ok) 
-        validationpopup.exec_()
-
-    def edit_OB(self):
-        self.OBlines = self.contents.document().toPlainText()
-        try:
-            self.newOB = ObservingBlock(yaml.safe_load(self.OBlines))
-            self.newOB.edited = True
-            self.newOB.executed = self.OB.executed
-        except:
-            self.newOB = None
-
-
-##-------------------------------------------------------------------------
-## Observer Comment Dialog Box
-##-------------------------------------------------------------------------
-class ObserverCommentBox(QtWidgets.QDialog):
-    '''Custom dialog box for observers to submit observer comments on an OB.
-    '''
-    def __init__(self, SOB, observer):
-        super().__init__()
-        self.SOB = SOB
-        self.comment = ''
-        self.observer = observer
-        self.setWindowTitle("Observer Comment Form")
-        layout = QtWidgets.QVBoxLayout()
-
-        # Initial message lines
-        lines = [f"Submit an observer comment for OB:",
-                 f"{self.SOB.name()}",
-                 ""]
-        message = QtWidgets.QLabel("\n".join(lines))
-        layout.addWidget(message)
-
-        # Add observer field
-        observer_label = QtWidgets.QLabel('Observer/Commenter:')
-        layout.addWidget(observer_label)
-        self.observer_field = QtWidgets.QLineEdit()
-        self.observer_field.setText(self.observer)
-        self.observer_field.textChanged.connect(self.edit_observer)
-        layout.addWidget(self.observer_field)
-
-        # Add comment field
-        comment_label = QtWidgets.QLabel('Comment:')
-        layout.addWidget(comment_label)
-        self.comment_field = QtWidgets.QLineEdit()
-        self.comment_field.textChanged.connect(self.edit_comment)
-        layout.addWidget(self.comment_field)
-
-        # Set up buttons
-        QBtn = QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
-        self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-        layout.addWidget(self.buttonBox)
-
-        # Wrap up definition of the ObserverCommentBox
-        self.setLayout(layout)
-        self.setStyleSheet("min-width:300 px;")
-
-    def edit_comment(self, value):
-        self.comment = value
-
-    def edit_observer(self, value):
-        self.observer = value
-
-
-class SelectProgramPopup(QtWidgets.QDialog):
-    '''Custom dialog box for observers to select program to load OBs from.
-    '''
-    def __init__(self, programIDs):
-        super().__init__()
-        self.setWindowTitle("Select Program")
-        layout = QtWidgets.QVBoxLayout()
-        self.ProgID = ''
-        # Add ProgramID selection
-        programID_label = QtWidgets.QLabel('Select Program ID:')
-        layout.addWidget(programID_label)
-        programID_selector = QtWidgets.QComboBox()
-        programID_selector.addItems(programIDs)
-        programID_selector.currentTextChanged.connect(self.choose_progID)
-        layout.addWidget(programID_selector)
-        # Set up buttons
-        QBtn = QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
-        self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-        layout.addWidget(self.buttonBox)
-        # Wrap up definition
-        self.setLayout(layout)
-        self.setStyleSheet("min-width:150 px;")
-
-    def choose_progID(self, value):
-        self.ProgID = value
-
-
-##-------------------------------------------------------------------------
 ## Keck Horizon
 ##-------------------------------------------------------------------------
 def above_horizon(az, el):
@@ -305,6 +79,7 @@ def near_horizon(az, el, margin=5):
     else:
         horizon = 18 - margin
     return el > horizon
+
 
 ##-------------------------------------------------------------------------
 ## Define Application MainWindow
@@ -350,10 +125,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("KPF OB GUI")
 
         # Menu Bar
-        LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
-        LoadOBFromFile.triggered.connect(self.load_OB_from_file)
         LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
         LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
+        LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
+        LoadOBFromFile.triggered.connect(self.load_OB_from_file)
+        BuildScienceOB = self.findChild(QtWidgets.QAction, 'action_BuildScienceOB')
+        BuildScienceOB.triggered.connect(self.build_science_OB)
+        BuildCalibrationOB = self.findChild(QtWidgets.QAction, 'action_BuildCalibrationOB')
+        BuildCalibrationOB.triggered.connect(self.build_calibration_OB)
 
         # Program ID
         self.ProgID = self.findChild(QtWidgets.QLabel, 'ProgID')
@@ -737,6 +516,42 @@ class MainWindow(QtWidgets.QMainWindow):
     def set_weather_band(self, value):
         self.SortOrWeather.setCurrentText(value)
 
+    def build_science_OB(self):
+        log.info('build_science_OB')
+        # Target
+        log.info('Build Target')
+        newtarget = Target({})
+        target_popup = EditableMessageBox(newtarget)
+        target_popup.setWindowTitle(f"Editing Target")
+        edit_result = target_popup.exec_()
+        if edit_result == QtWidgets.QMessageBox.Ok:
+            log.info('Target popup: Ok')
+            if target_popup.result.validate():
+                log.info('The Target has been validated')
+            else:
+                log.warning('Edits did not validate.')
+        elif edit_result == QtWidgets.QMessageBox.Cancel:
+            log.debug('Target popup: Cancel')
+        # Observations
+        log.info('Build Observations')
+        newobs = Observation({})
+        obs_popup = EditableMessageBox(newobs)
+        obs_popup.setWindowTitle(f"Editing Observation")
+        edit_result = obs_popup.exec_()
+        if edit_result == QtWidgets.QMessageBox.Ok:
+            log.info('Observation popup: Ok')
+        elif edit_result == QtWidgets.QMessageBox.Cancel:
+            log.debug('Observation popup: Cancel')
+        # Assemble OB
+        newOB = ObservingBlock({})
+        newOB.Target = target_popup.result
+        newOB.Observations = obs_popup.result
+        if newOB.validate() == True:
+            self.model.OBs.append(newOB)
+            self.model.layoutChanged.emit()
+
+    def build_calibration_OB(self):
+        pass
 
     ##-------------------------------------------
     ## Methods for OB List
@@ -912,10 +727,9 @@ class MainWindow(QtWidgets.QMainWindow):
             edit_result = OBedit_popup.exec_()
             if edit_result == QtWidgets.QMessageBox.Ok:
                 log.info('Edit popup: Ok')
-                newOB = OBedit_popup.newOB
-                if newOB.validate():
+                if OBedit_popup.result.validate():
                     log.info('The edited OB has been validated')
-                    self.model.OBs[self.SOBindex] = newOB
+                    self.model.OBs[self.SOBindex] = OBedit_popup.result
                     self.model.layoutChanged.emit()
                     self.update_SOB_display()
                 else:
