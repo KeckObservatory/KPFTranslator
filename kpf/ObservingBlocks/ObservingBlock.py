@@ -103,32 +103,40 @@ class ObservingBlock(object):
 
 
     def validate(self):
+        print('Validating OB')
+        valid = True
         # Check that components are the correct types and are individually valid
         if self.Target is not None:
             if not isinstance(self.Target, Target):
-                raise InvalidObservingBlock('Target component is not a Target object')
+                print('Target component is not a Target object')
+                valid = False
             if not self.Target.validate():
-                raise InvalidObservingBlock('Target component is not a valid Target object')
+                print('Target component is not a valid Target object')
+                valid = False
         for i,observation in enumerate(self.Observations):
             if not isinstance(observation, Observation):
-                raise InvalidObservingBlock(f'Observation component {i+1} is not a Observation object')
+                print(f'Observation component {i+1} is not a Observation object')
+                valid = False
             if not observation.validate():
-                raise InvalidObservingBlock('Observation component {i+1} is not a valid Observation object')
+                print('Observation component {i+1} is not a valid Observation object')
+                valid = False
         for i,calibration in enumerate(self.Calibrations):
             if not isinstance(calibration, Calibration):
-                raise InvalidObservingBlock(f'Calibration component {i+1} is not a Calibration object')
+                print(f'Calibration component {i+1} is not a Calibration object')
+                valid = False
             if not calibration.validate():
-                raise InvalidObservingBlock('Calibration component {i+1} is not a valid Calibration object')
-
+                print('Calibration component {i+1} is not a valid Calibration object')
+                valid = False
         # If we have science observations, we must have a target
         if len(self.Observations) > 0:
             if self.Target is None:
-                raise InvalidObservingBlock(f"contains observations without a target")
-
+                print(f"contains observations without a target")
+                valid = False
         # We should have at least one observation or calibration
         if len(self.Observations) == 0 and len(self.Calibrations) == 0:
-            raise InvalidObservingBlock(f"contains no observations and no calibrations")
-        return True
+            print(f"contains no observations and no calibrations")
+            valid = False
+        return valid
 
 
     def to_dict(self):
@@ -188,21 +196,21 @@ class ObservingBlock(object):
         return out
 
 
-    def __repr__(self, comments=True):
+    def __repr__(self, prune=True):
         lines = []
         if self.Target is not None:
             lines += ['Target:']
-            lines += self.Target.to_lines()
+            lines += self.Target.__repr__(prune=prune).strip('\n').split('\n')
         if len(self.Calibrations) > 0:
             lines += ['Calibrations:']
             for j,cal in enumerate(self.Calibrations):
                 lines.append(f'# Calibration {j+1}')
-                lines += cal.to_lines()
+                lines += cal.__repr__(prune=prune).strip('\n').split('\n')
         if len(self.Observations) > 0:
             lines += ['Observations:']
             for i,obs in enumerate(self.Observations):
                 lines.append(f'# Observation {i+1}')
-                lines += obs.to_lines()
+                lines += obs.__repr__(prune=prune).strip('\n').split('\n')
         return '\n'.join(lines)
 
 

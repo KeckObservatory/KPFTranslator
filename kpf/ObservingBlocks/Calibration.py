@@ -13,23 +13,23 @@ class Calibration(BaseOBComponent):
         self.from_dict(input_dict)
 
 
-    def to_lines(self, comments=False):
-        skip_if_dark = ['IntensityMonitor', 'CalND1', 'CalND2',
-                        'OpenScienceShutter', 'OpenSkyShutter',
-                        'TakeSimulCal', 'WideFlatPos', 'ExpMeterMode',
-                        'ExpMeterExpTime', 'ExpMeterBin',
-                        'ExpMeterThreshold']
-        pruning = [(self.get('CalSource').lower() in ['dark', 'home'], skip_if_dark),
-                   (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterExpTime']),
-                   (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
-                   (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
-                   (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
-                   ]
+    def to_lines(self,  prune=True):
         prune_list = []
-        for prune in pruning:
-            if prune[0] == True:
-                prune_list.extend(prune[1])
-
+        if prune == True:
+            skip_if_dark = ['IntensityMonitor', 'CalND1', 'CalND2',
+                            'OpenScienceShutter', 'OpenSkyShutter',
+                            'TakeSimulCal', 'WideFlatPos', 'ExpMeterMode',
+                            'ExpMeterExpTime', 'ExpMeterBin',
+                            'ExpMeterThreshold']
+            pruning = [(self.get('CalSource').lower() in ['dark', 'home'], skip_if_dark),
+                       (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterExpTime']),
+                       (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
+                       (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
+                       (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
+                       ]
+            for prune in pruning:
+                if prune[0] == True:
+                    prune_list.extend(prune[1])
         lines = []
         i = 0
         for p in self.properties:

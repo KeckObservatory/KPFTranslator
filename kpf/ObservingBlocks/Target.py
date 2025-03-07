@@ -38,14 +38,14 @@ class Target(BaseOBComponent):
             self.coord = None
 
 
-    def to_lines(self, comments=False):
-        pruning = [(abs(self.get('DRA')) < 0.001 and abs(self.get('DDEC')) < 0.001, ['DRA', 'DDEC']),
-                   ]
+    def to_lines(self, prune=True):
         prune_list = []
-        for prune in pruning:
-            if prune[0] == True:
-                prune_list.extend(prune[1])
-
+        if prune == True:
+            pruning = [(abs(self.get('DRA')) < 0.001 and abs(self.get('DDEC')) < 0.001, ['DRA', 'DDEC']),
+                       ]
+            for prune in pruning:
+                if prune[0] == True:
+                    prune_list.extend(prune[1])
         lines = []
         for ptuple in self.properties:
             pname = ptuple['name']

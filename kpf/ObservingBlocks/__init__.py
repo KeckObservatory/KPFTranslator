@@ -89,8 +89,8 @@ class BaseOBComponent(object):
             output += line+'\n'
         return output
 
-    def __repr__(self):
+    def __repr__(self, prune=True):
         output = ''
-        for line in self.to_lines():
+        for line in self.to_lines(prune=prune):
             output += line+'\n'
         return output

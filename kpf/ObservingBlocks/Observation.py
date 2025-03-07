@@ -22,11 +22,6 @@ class Observation(BaseOBComponent):
         except:
             self.expmeter_bands = [f"{float(b):.0f}nm" for b in [498.12, 604.38, 710.62, 816.88]]
 
-#     def prune(self):
-#         if self.get('NodE') is None and self.get('NodN') is None:
-#             for pname in ['NodE', 'NodN']:
-#                 self.set(pname, None)
-
     def summary(self):
         details = []
         if self.get('TakeSimulCal') == True:
@@ -62,19 +57,19 @@ class Observation(BaseOBComponent):
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
 
-    def to_lines(self):
-        pruning = [(self.get('ExpMeterMode') in ['off', False], ['AutoExpMeter', 'ExpMeterExpTime']),
-                   (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
-                   (self.get('AutoExpMeter') == True, ['ExpMeterExpTime']),
-                   (self.get('AutoNDFilters') == True, ['CalND1', 'CalND2']),
-                   (self.get('TakeSimulCal') == False, ['AutoNDFilters', 'CalND1', 'CalND2']),
-                   (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
-                   ]
+    def to_lines(self, prune=True):
         prune_list = []
-        for prune in pruning:
-            if prune[0] == True:
-                prune_list.extend(prune[1])
-
+        if prune == True:
+            pruning = [(self.get('ExpMeterMode') in ['off', False], ['AutoExpMeter', 'ExpMeterExpTime']),
+                       (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
+                       (self.get('AutoExpMeter') == True, ['ExpMeterExpTime']),
+                       (self.get('AutoNDFilters') == True, ['CalND1', 'CalND2']),
+                       (self.get('TakeSimulCal') == False, ['AutoNDFilters', 'CalND1', 'CalND2']),
+                       (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
+                       ]
+            for prune in pruning:
+                if prune[0] == True:
+                    prune_list.extend(prune[1])
         lines = []
         i = 0
         for pdict in self.properties:
