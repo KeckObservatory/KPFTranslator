@@ -791,6 +791,211 @@
      <attribute name="title">
       <string>Build a Science OB</string>
      </attribute>
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>511</width>
+        <height>531</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Target</string>
+      </property>
+      <widget class="QListView" name="TargetView">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>70</y>
+         <width>491</width>
+         <height>421</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="QuerySimbadNameLineEdit">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>30</y>
+         <width>181</width>
+         <height>23</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="QuerySimbadNameLebal">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>181</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Object Name to Query:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="QuerySimbadButton">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>30</y>
+         <width>111</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Query Simbad</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="ValidateTargetButton">
+       <property name="geometry">
+        <rect>
+         <x>310</x>
+         <y>500</y>
+         <width>191</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Validate Target</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>50</y>
+        <width>511</width>
+        <height>621</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Observations</string>
+      </property>
+      <widget class="QListView" name="ObservationsView">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>491</width>
+         <height>551</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="ValidateObjectsButton">
+       <property name="geometry">
+        <rect>
+         <x>310</x>
+         <y>590</y>
+         <width>191</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Validate Observations</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>511</width>
+        <height>121</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Observing Block</string>
+      </property>
+      <widget class="QPushButton" name="SendToOBListButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>231</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Send to OB List</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="BuildSOBEstimatedDurationLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Estimated Duration:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="BuildSOBEstimatedDurationValue">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>60</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+     </widget>
     </widget>
     <widget class="QWidget" name="CalibrationOB">
      <property name="enabled">
