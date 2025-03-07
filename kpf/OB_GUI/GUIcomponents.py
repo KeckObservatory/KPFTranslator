@@ -233,7 +233,10 @@ class EditableMessageBox(QtWidgets.QMessageBox):
                 self.result.executed = self.input_object.executed
         except Exception as e:
             print(e)
-            self.result = None
+            if self.input_type == Observation:
+                self.result = []
+            else:
+                self.result = None
 
     def validate_object(self):
         validationpopup = QtWidgets.QMessageBox()
