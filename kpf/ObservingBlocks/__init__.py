@@ -89,11 +89,11 @@ class BaseOBComponent(object):
             output += line+'\n'
         return output
 
-    def __repr__(self, prune=True):
+    def __repr__(self, prune=True, comment=False):
         '''Show the full text representation of the object as it would appear
         in a YAML input file.
         '''
         output = ''
-        for line in self.to_lines(prune=prune):
+        for line in self.to_lines(prune=prune, comment=comment):
             output += line+'\n'
         return output
