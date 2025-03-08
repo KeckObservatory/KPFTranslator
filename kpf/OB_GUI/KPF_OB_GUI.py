@@ -775,7 +775,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for handler in self.log.handlers:
             if isinstance(handler, logging.FileHandler):
                 log_file_path = Path(handler.baseFilename).parent
-        tmp_file = log_file_path / date_str / f'test_executedOB_{now_str}.yaml'
+        tmp_file_path = log_file_path / date_str
+        if tmp_file_path.exists() is False:
+            tmp_file_path.mkdir(mode=0o777, parents=False)
+        tmp_file = tmp_file_path / f'test_executedOB_{now_str}.yaml'
         SOB.write_to(tmp_file)
         RunOB_cmd = f'kpfdo RunOB -f {tmp_file} ; echo "Done!" ; sleep 30'
         # Pop up an xterm with the script running
