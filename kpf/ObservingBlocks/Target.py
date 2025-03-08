@@ -90,6 +90,8 @@ class Target(BaseOBComponent):
         return valid
 
     def __str__(self):
+        '''Show a one line representation similar to a Keck star list line.
+        '''
         try:
             radec_str = self.coord.to_string('hmsdms', sep=':', precision=1)
         except:

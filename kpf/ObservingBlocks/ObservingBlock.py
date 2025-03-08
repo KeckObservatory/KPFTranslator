@@ -161,7 +161,9 @@ class ObservingBlock(object):
             f.write(self.__repr__())
 
 
-    def name(self):
+    def summary(self):
+        '''Provide a short text description of the ObservingBlock
+        '''
         if self.Target is not None:
             out = f"{self.Target.get('TargetName')}"
         else:
@@ -169,13 +171,16 @@ class ObservingBlock(object):
         cal_strings = [str(cal) for cal in self.Calibrations]
         if len(cal_strings) > 0:
             out += f" {','.join(cal_strings)}"
-        obs_strings = [str(obs) for obs in self.Observations]
+        obs_strings = [obs.summary() for obs in self.Observations]
         if len(obs_strings) > 0:
             out += f" {','.join(obs_strings)}"
         return out
 
 
     def __str__(self):
+        '''Provide a short text description of the ObservingBlock formatted
+        like a Keck star list line.
+        '''
         if self.Target is not None:
             out = f"{self.Target}"
         else:

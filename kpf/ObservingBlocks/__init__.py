@@ -73,7 +73,7 @@ class BaseOBComponent(object):
                 output[p['name']] = self.get(p['name'])
         return output
 
-    def to_lines(self, comments=False):
+    def to_lines(self, prune=True):
         lines = []
         for p in self.properties:
             if self.get(p['name']) is not None:
@@ -90,6 +90,9 @@ class BaseOBComponent(object):
         return output
 
     def __repr__(self, prune=True):
+        '''Show the full text representation of the object as it would appear
+        in a YAML input file.
+        '''
         output = ''
         for line in self.to_lines(prune=prune):
             output += line+'\n'

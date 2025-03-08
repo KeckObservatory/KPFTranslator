@@ -22,7 +22,21 @@ class Observation(BaseOBComponent):
         except:
             self.expmeter_bands = [f"{float(b):.0f}nm" for b in [498.12, 604.38, 710.62, 816.88]]
 
+
+    def validate(self):
+        '''
+        '''
+        valid = True
+        for p in self.properties:
+            if self.get(p['name']) is None:
+                print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
+                valid = False
+        return valid
+
+
     def summary(self):
+        '''Provide a short text summary of the Observation.
+        '''
         details = []
         if self.get('TakeSimulCal') == True:
             details.append(f'simulcal')
@@ -36,18 +50,9 @@ class Observation(BaseOBComponent):
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
 
-    def validate(self):
-        '''
-        '''
-        valid = True
-        for p in self.properties:
-            if self.get(p['name']) is None:
-                print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
-                valid = False
-        return valid
-
-
     def __str__(self):
+        '''Provide a very short text summary of the Observation.
+        '''
         details = []
         if self.get('ExpMeterMode') == 'control':
             details.append('max')
