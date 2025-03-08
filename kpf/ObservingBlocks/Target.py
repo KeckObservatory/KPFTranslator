@@ -38,7 +38,7 @@ class Target(BaseOBComponent):
             self.coord = None
 
 
-    def to_lines(self, prune=True):
+    def to_lines(self, prune=True, comment=False):
         prune_list = []
         if prune == True:
             pruning = [(abs(self.get('DRA')) < 0.001 and abs(self.get('DDEC')) < 0.001, ['DRA', 'DDEC']),
@@ -52,10 +52,25 @@ class Target(BaseOBComponent):
             if self.get(pname) is not None and pname not in prune_list:
                 p = getattr(self, pname)
                 if pname in ['RA', 'Dec']:
-                    lines.append(f"  {pname}: '{str(p)}'")
+                    line = f"  {pname}: '{str(p)}'"
                 else:
-                    lines.append(f"  {pname}: {str(p)}")
+                    line = f"  {pname}: {str(p)}"
+                if comment == True:
+                    line += self.add_comment(pname)
+                lines.append(line)
         return lines
+
+
+    def add_comment(self, pname):
+        # Teff out of range
+        if self.get('Teff') < 2600 or self.get('Teff') > 45000:
+            if pname == 'Teff':
+                return ' # Teff range 2600-45000'
+        # Teff out of range for Simulcal prediction 2700 - 6600
+        elif self.get('Teff') < 2700 or self.get('Teff') > 6600:
+            if pname == 'Teff':
+                return ' # AutoNDFilters needs 2700-6600'
+        return ''
 
 
     def validate(self):
@@ -88,6 +103,7 @@ class Target(BaseOBComponent):
         if self.Teff.value <= 2700 or self.Teff.value >= 6600:
             print(f'WARNING: Teff is out of range. This will impact simulcal estimates.')
         return valid
+
 
     def __str__(self):
         '''Show a one line representation similar to a Keck star list line.
