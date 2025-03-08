@@ -279,8 +279,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_TargetValid = self.findChild(QtWidgets.QLabel, 'BS_TargetValid')
         self.BS_ClearTargetButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearTargetButton')
         self.BS_ClearTargetButton.clicked.connect(self.BS_clear_target)
+        self.BS_RefreshTargetComments = self.findChild(QtWidgets.QPushButton, 'BS_RefreshTargetComments')
+        self.BS_RefreshTargetComments.clicked.connect(self.BS_refresh_target_comments)
         self.BS_TargetView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_TargetView')
-        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False))
+        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
         self.BS_TargetView.setFont(QtGui.QFont('Courier New', 11))
         self.BS_edit_target()
         self.BS_TargetView.textChanged.connect(self.BS_edit_target)
@@ -288,8 +290,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_ObservationsValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
         self.BS_ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
         self.BS_ClearObservationsButton.clicked.connect(self.BS_clear_observations)
+        self.BS_RefreshObservationsComments = self.findChild(QtWidgets.QPushButton, 'BS_RefreshObservationsComments')
+        self.BS_RefreshObservationsComments.clicked.connect(self.BS_refresh_observation_comments)
         self.BS_ObservationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
-        self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False))
+        self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False, comment=True))
         self.BS_ObservationsView.setFont(QtGui.QFont('Courier New', 11))
         self.BS_edit_observations()
         self.BS_ObservationsView.textChanged.connect(self.BS_edit_observations)
@@ -554,7 +558,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ind = selected.indexes()[0].row()
             self.select_OB(ind)
         else:
-            print(selected, deselected)
             self.SOBindex = None
             self.update_SOB_display()
 
@@ -570,7 +573,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ShowButton.setEnabled(enabled)
         self.SOB_AddComment.setEnabled(enabled)
         self.SOB_ExecuteButton.setEnabled(enabled)
-#         self.SOB_ExecuteWithSlewCalButton.setEnabled(enabled)
+        self.SOB_RemoveFromList.setEnabled(enabled)
 
     def clear_SOB_Target(self):
         self.SOB_TargetName.setText('--')
@@ -785,8 +788,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def remove_SOB(self):
         self.model.OBs.pop(self.SOBindex)
-        self.model.layoutChanged.emit()
         self.clear_OB_selection()
+        self.model.layoutChanged.emit()
 
     ##-------------------------------------------
     ## Methods for the Build a Science OB Tab
@@ -809,15 +812,20 @@ class MainWindow(QtWidgets.QMainWindow):
         target_name = self.BS_QuerySimbadLineEdit.text().strip()
         print(f"Querying: {target_name}")
         self.BS_Target = self.BS_Target.resolve_name(target_name)
-        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False))
+        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
         TargetValid = False if self.BS_Target is None else self.BS_Target.validate()
         color = {True: 'green', False: 'orange'}[TargetValid]
         self.BS_TargetValid.setText(str(TargetValid))
         self.BS_TargetValid.setStyleSheet(f"color:{color}")
 
+    def BS_refresh_target_comments(self):
+        out = self.BS_Target.__repr__(prune=False, comment=True)
+        self.BS_TargetView.setPlainText(out)
+        self.BS_form_OB()
+
     def BS_clear_target(self):
         self.BS_Target = Target({})
-        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False))
+        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
         self.BS_form_OB()
 
     def BS_edit_observations(self):
@@ -835,9 +843,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_ObservationsValid.setStyleSheet(f"color:{color}")
         self.BS_form_OB()
 
+    def BS_refresh_observation_comments(self):
+        out = [obs.__repr__(prune=False, comment=True) for obs in self.BS_Observations]
+        print(''.join(out))
+        self.BS_ObservationsView.setPlainText(''.join(out))
+        self.BS_form_OB()
+
     def BS_clear_observations(self):
         self.BS_Observations = [Observation({})]
-        self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False))
+        self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False, comment=True))
         self.BS_form_OB()
 
     def BS_form_OB(self):
