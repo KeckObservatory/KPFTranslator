@@ -809,7 +809,7 @@
        <rect>
         <x>10</x>
         <y>150</y>
-        <width>461</width>
+        <width>441</width>
         <height>521</height>
        </rect>
       </property>
@@ -821,7 +821,7 @@
         <rect>
          <x>190</x>
          <y>30</y>
-         <width>121</width>
+         <width>111</width>
          <height>23</height>
         </rect>
        </property>
@@ -847,9 +847,9 @@
       <widget class="QPushButton" name="BS_QuerySimbadButton">
        <property name="geometry">
         <rect>
-         <x>320</x>
+         <x>310</x>
          <y>30</y>
-         <width>131</width>
+         <width>121</width>
          <height>23</height>
         </rect>
        </property>
@@ -883,7 +883,7 @@
         <rect>
          <x>140</x>
          <y>60</y>
-         <width>61</width>
+         <width>41</width>
          <height>21</height>
         </rect>
        </property>
@@ -901,7 +901,7 @@
         <rect>
          <x>10</x>
          <y>90</y>
-         <width>441</width>
+         <width>421</width>
          <height>421</height>
         </rect>
        </property>
@@ -909,7 +909,7 @@
       <widget class="QPushButton" name="BS_RefreshTargetComments">
        <property name="geometry">
         <rect>
-         <x>320</x>
+         <x>300</x>
          <y>60</y>
          <width>131</width>
          <height>23</height>
@@ -925,7 +925,7 @@
       <widget class="QPushButton" name="BS_ClearTargetButton">
        <property name="geometry">
         <rect>
-         <x>210</x>
+         <x>190</x>
          <y>60</y>
          <width>101</width>
          <height>23</height>
@@ -942,9 +942,9 @@
      <widget class="QGroupBox" name="groupBox_4">
       <property name="geometry">
        <rect>
-        <x>480</x>
+        <x>460</x>
         <y>10</y>
-        <width>571</width>
+        <width>591</width>
         <height>661</height>
        </rect>
       </property>
@@ -992,7 +992,7 @@
         <rect>
          <x>270</x>
          <y>30</y>
-         <width>141</width>
+         <width>151</width>
          <height>23</height>
         </rect>
        </property>
@@ -1008,7 +1008,7 @@
         <rect>
          <x>10</x>
          <y>60</y>
-         <width>551</width>
+         <width>571</width>
          <height>591</height>
         </rect>
        </property>
@@ -1016,9 +1016,9 @@
       <widget class="QPushButton" name="BS_RefreshObservationsComments">
        <property name="geometry">
         <rect>
-         <x>420</x>
+         <x>430</x>
          <y>30</y>
-         <width>141</width>
+         <width>151</width>
          <height>23</height>
         </rect>
        </property>
@@ -1035,7 +1035,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>461</width>
+        <width>441</width>
         <height>121</height>
        </rect>
       </property>
@@ -1045,9 +1045,9 @@
       <widget class="QPushButton" name="BS_SendToOBList">
        <property name="geometry">
         <rect>
-         <x>280</x>
+         <x>270</x>
          <y>60</y>
-         <width>171</width>
+         <width>161</width>
          <height>51</height>
         </rect>
        </property>
@@ -1081,7 +1081,7 @@
         <rect>
          <x>170</x>
          <y>90</y>
-         <width>101</width>
+         <width>91</width>
          <height>21</height>
         </rect>
        </property>
@@ -1117,7 +1117,7 @@
         <rect>
          <x>210</x>
          <y>60</y>
-         <width>61</width>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -1135,7 +1135,7 @@
         <rect>
          <x>10</x>
          <y>30</y>
-         <width>441</width>
+         <width>421</width>
          <height>21</height>
         </rect>
        </property>
@@ -1146,7 +1146,7 @@
         </font>
        </property>
        <property name="text">
-        <string> </string>
+        <string/>
        </property>
       </widget>
      </widget>
