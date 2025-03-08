@@ -39,7 +39,6 @@ class Observation(BaseOBComponent):
                        False, 'false', 'off', 'Off', 0, '0']
         for p in self.properties:
             if p['valuetype'] in [bool, 'bool']:
-                print(p['name'], p['valuetype'], self.get(p['name']))
                 if self.get(p['name']) not in ok_booleans:
                     print(f"ERROR: {p['name']} is a boolean with value {self.get(p['name'])}")
                     valid = False
