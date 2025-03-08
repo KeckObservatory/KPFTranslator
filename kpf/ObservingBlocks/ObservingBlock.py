@@ -114,18 +114,19 @@ class ObservingBlock(object):
                 print('Target component is not a valid Target object')
                 valid = False
         for i,observation in enumerate(self.Observations):
+            print(f'Validating Observation {i+1}')
             if not isinstance(observation, Observation):
                 print(f'Observation component {i+1} is not a Observation object')
                 valid = False
-            if not observation.validate():
-                print('Observation component {i+1} is not a valid Observation object')
+            if observation.validate() != True:
+                print(f'Observation component {i+1} is not a valid Observation object')
                 valid = False
         for i,calibration in enumerate(self.Calibrations):
             if not isinstance(calibration, Calibration):
                 print(f'Calibration component {i+1} is not a Calibration object')
                 valid = False
             if not calibration.validate():
-                print('Calibration component {i+1} is not a valid Calibration object')
+                print(f'Calibration component {i+1} is not a valid Calibration object')
                 valid = False
         # If we have science observations, we must have a target
         if len(self.Observations) > 0:

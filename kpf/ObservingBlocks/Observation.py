@@ -31,6 +31,18 @@ class Observation(BaseOBComponent):
             if self.get(p['name']) is None:
                 print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
                 valid = False
+        # Check that ExpMeterBin is in [1,2,3,4]
+        if self.get('ExpMeterBin') not in [1, 2, 3, 4]:
+            valid = False
+        # Check that boolean value properties are reasonable 
+        ok_booleans = [True, 'true', 'on', 'On', 1, '1',
+                       False, 'false', 'off', 'Off', 0, '0']
+        for p in self.properties:
+            if p['valuetype'] in [bool, 'bool']:
+                print(p['name'], p['valuetype'], self.get(p['name']))
+                if self.get(p['name']) not in ok_booleans:
+                    print(f"ERROR: {p['name']} is a boolean with value {self.get(p['name'])}")
+                    valid = False
         return valid
 
 
@@ -42,7 +54,7 @@ class Observation(BaseOBComponent):
             details.append(f'simulcal')
         if self.get('ExpMeterMode') == 'control':
             thresh_str = f'{self.get("ExpMeterThreshold")/1e3:,.0f}k'
-            bin_str = self.expmeter_bands[self.get("ExpMeterBin")]
+            bin_str = self.expmeter_bands[self.get("ExpMeterBin")-1]
             details.append(f'{thresh_str}@{bin_str}')
         if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
             details.append('offset')
@@ -62,7 +74,7 @@ class Observation(BaseOBComponent):
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
 
-    def to_lines(self, prune=True):
+    def to_lines(self, prune=True, comment=False):
         prune_list = []
         if prune == True:
             pruning = [(self.get('ExpMeterMode') in ['off', False], ['AutoExpMeter', 'ExpMeterExpTime']),
@@ -81,8 +93,33 @@ class Observation(BaseOBComponent):
             if self.get(pdict['name']) is not None and pdict['name'] not in prune_list:
                 p = getattr(self, pdict['name'])
                 i += 1
-                if i == 1:
-                    lines.append(f"- {pdict['name']}: {str(p)}")
-                else:
-                    lines.append(f"  {pdict['name']}: {str(p)}")
+                output = '- ' if i == 1 else '  '
+                output += f"{pdict['name']}: {str(p)}"
+                if comment == True:
+                    output += self.add_comment(pdict['name'])
+                lines.append(output)
         return lines
+
+
+    def add_comment(self, pname):
+        # Exposure Meter is off
+        if self.get('ExpMeterMode') in ['off', False]:
+            if pname in ['AutoExpMeter', 'ExpMeterExpTime', 'ExpMeterThreshold', 'ExpMeterBin']:
+                return ' # Unused: ExpMeterMode = off'
+        # AutoExpMeter is True
+        if self.get('AutoExpMeter') == True:
+            if pname == 'ExpMeterExpTime':
+                return ' # Unused: AutoExpMeter = True'
+        # ExpMeterMode is not Control
+        if self.get('ExpMeterMode') != 'control':
+            if pname in ['ExpMeterBin', 'ExpMeterThreshold']:
+                return ' # Unused: ExpMeterMode != control'
+        # AutoNDFilters is True
+        if self.get('AutoNDFilters') == True:
+            if pname in ['CalND1', 'CalND2']:
+                return ' # Unused: AutoNDFilters = True'
+        # TakeSimulCal is False
+        if self.get('TakeSimulCal') == False:
+            if pname in ['AutoNDFilters', 'CalND1', 'CalND2']:
+                return ' # Unused: TakeSimulCal = False'
+        return ''
