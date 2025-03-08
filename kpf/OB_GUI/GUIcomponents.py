@@ -102,7 +102,7 @@ class ObserverCommentBox(QtWidgets.QDialog):
 
         # Initial message lines
         lines = [f"Submit an observer comment for OB:",
-                 f"{self.SOB.name()}",
+                 f"{self.SOB.summary()}",
                  ""]
         message = QtWidgets.QLabel("\n".join(lines))
         layout.addWidget(message)

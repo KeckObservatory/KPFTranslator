@@ -474,7 +474,7 @@
         <rect>
          <x>10</x>
          <y>150</y>
-         <width>161</width>
+         <width>181</width>
          <height>23</height>
         </rect>
        </property>
@@ -487,7 +487,7 @@
         <rect>
          <x>10</x>
          <y>120</y>
-         <width>281</width>
+         <width>301</width>
          <height>23</height>
         </rect>
        </property>
@@ -501,7 +501,7 @@
          <x>10</x>
          <y>210</y>
          <width>301</width>
-         <height>441</height>
+         <height>411</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_3" columnstretch="35,75">
@@ -722,7 +722,7 @@
         <rect>
          <x>10</x>
          <y>40</y>
-         <width>281</width>
+         <width>301</width>
          <height>71</height>
         </rect>
        </property>
@@ -762,7 +762,7 @@
       <widget class="QCheckBox" name="SlewCal">
        <property name="geometry">
         <rect>
-         <x>180</x>
+         <x>200</x>
          <y>150</y>
          <width>111</width>
          <height>21</height>
@@ -777,12 +777,25 @@
         <rect>
          <x>10</x>
          <y>180</y>
-         <width>281</width>
+         <width>301</width>
          <height>23</height>
         </rect>
        </property>
        <property name="text">
         <string>Add Observer Comment to Selected OB</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_RemoveFromList">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>630</y>
+         <width>301</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Remove Selected OB from List</string>
        </property>
       </widget>
      </widget>

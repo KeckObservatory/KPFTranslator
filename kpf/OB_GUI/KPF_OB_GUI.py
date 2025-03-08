@@ -93,6 +93,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log = log
         self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
+        self.KPFCC = False
         self.BS_Target = Target({})
         self.BS_Observations = [Observation({})]
         # Keywords
@@ -255,6 +256,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_AddComment.clicked.connect(self.add_comment)
         self.SOB_ExecuteButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteButton')
         self.SOB_ExecuteButton.clicked.connect(self.execute_SOB)
+        self.SOB_RemoveFromList = self.findChild(QtWidgets.QPushButton, 'SOB_RemoveFromList')
+        self.SOB_RemoveFromList.clicked.connect(self.remove_SOB)
         self.SlewCal = self.findChild(QtWidgets.QCheckBox, 'SlewCal')
         self.SlewCal.stateChanged.connect(self.SlewCal_state_change)
         self.SLEWCALREQ.stringCallback.connect(self.update_SlewCalReq)
@@ -443,8 +446,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Go get list of available program IDs for Instrument=KPF
         return progIDs + ['E123', 'E456', 'CPS 2024B']
 
-    def set_SortOrWeather(self, KPFCC=False):
-        if KPFCC == True:
+    def set_SortOrWeather(self):
+        if self.KPFCC == True:
             self.SortOrWeatherLabel.setText('Weather Band:')
             self.SortOrWeatherLabel.setEnabled(True)
             self.SortOrWeather.clear()
@@ -482,6 +485,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def set_ProgID(self, value):
         self.log.info(f"set_ProgID: '{value}'")
         self.clear_OB_selection()
+        self.KPCC = False
         if value == '':
             self.OBListHeader.setText(hdr)
             self.model.OBs = []
@@ -502,6 +506,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
         elif value == 'KPF-CC':
+            self.KPFCC = True
             self.OBListHeader.setText('    StartTime '+self.hdr)
             files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
             self.model.OBs = []
@@ -517,7 +522,7 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Read in {len(self.model.OBs)} files")
             self.model.sort('time')
             self.model.layoutChanged.emit()
-            self.set_SortOrWeather(KPFCC=True)
+            self.set_SortOrWeather()
         else:
             self.OBListHeader.setText(f"    {self.hdr}")
             self.model.OBs = [ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/219134.yaml'),
@@ -704,14 +709,14 @@ class MainWindow(QtWidgets.QMainWindow):
         if SOB is None:
             return
         OBcontents_popup = ScrollMessageBox(SOB)
-        OBcontents_popup.setWindowTitle(f"Full OB Contents: {SOB.name()}")
+        OBcontents_popup.setWindowTitle(f"Full OB Contents: {SOB.summary()}")
         result = OBcontents_popup.exec_()
         if result == QtWidgets.QMessageBox.Ok:
             log.debug('Show popup: Ok')
         elif result == QtWidgets.QMessageBox.Cancel:
             log.info('Show popup: Edit')
             OBedit_popup = EditableMessageBox(SOB)
-            OBedit_popup.setWindowTitle(f"Editing OB: {SOB.name()}")
+            OBedit_popup.setWindowTitle(f"Editing OB: {SOB.summary()}")
             edit_result = OBedit_popup.exec_()
             if edit_result == QtWidgets.QMessageBox.Ok:
                 log.info('Edit popup: Ok')
@@ -778,6 +783,10 @@ class MainWindow(QtWidgets.QMainWindow):
         print(' '.join(cmd))
 #         proc = subprocess.Popen(cmd)
 
+    def remove_SOB(self):
+        self.model.OBs.pop(self.SOBindex)
+        self.model.layoutChanged.emit()
+        self.clear_OB_selection()
 
     ##-------------------------------------------
     ## Methods for the Build a Science OB Tab
@@ -840,7 +849,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_OBValid.setText(str(OBValid))
         self.BS_OBValid.setStyleSheet(f"color:{color}")
         if OBValid:
-            self.BS_OBString.setText(self.BS_ObservingBlock.name())
+            self.BS_OBString.setText(self.BS_ObservingBlock.summary())
             duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.BS_ObservingBlock)
             self.BS_EstimatedDuration.setText(f"{duration/60:.0f} min")
         else:
@@ -848,11 +857,19 @@ class MainWindow(QtWidgets.QMainWindow):
             self.BS_EstimatedDuration.setText('')
 
     def BS_send_to_list(self):
+        print(f"self.KPFCC: {self.KPFCC}")
         if self.BS_ObservingBlock.validate() != True:
             print('OB is invalid, not sending to OB list')
-        else:
+        elif self.KPFCC == False:
             self.model.OBs.append(self.BS_ObservingBlock)
             self.model.layoutChanged.emit()
+        elif self.KPFCC == True:
+            print(len(self.model.OBs), len(self.model.start_times))
+            self.model.OBs.append(self.BS_ObservingBlock)
+            self.model.start_times.append(24)
+            self.model.sort('time')
+            self.model.layoutChanged.emit()
+            self.set_SortOrWeather()
 
 ##-------------------------------------------------------------------------
 ## Define main()
