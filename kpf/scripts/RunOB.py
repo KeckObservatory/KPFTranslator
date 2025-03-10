@@ -13,6 +13,7 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (check_script_running, set_script_keywords,
                          add_script_log, wait_for_script, clear_script_keywords)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
+from kpf.fiu.VerifyCurrentBase import VerifyCurrentBase
 from kpf.scripts.SendTargetToMagiq import SendTargetToMagiq
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
 from kpf.scripts.ExecuteCal import ExecuteCal
@@ -103,6 +104,7 @@ class RunOB(KPFScript):
         # Execute science observations
         if len(OB.Observations) > 0:
             log.info(f'Configuring for Observations')
+            matched_PO = VerifyCurrentBase.execute({'query_user': True})
             for i,observation in enumerate(OB.Observations):
                 observation_dict = observation.to_dict()
                 observation_dict['Gmag'] = OB.Target.get('Gmag')

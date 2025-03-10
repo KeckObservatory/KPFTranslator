@@ -55,6 +55,24 @@ class VerifyCurrentBase(KPFFunction):
             log.error(msg)
         print(msg)
 
+        if args.get('query_user', False) == True and poname_match == False:
+            # Check with user
+            log.debug('Asking for user input')
+            print()
+            print("#####################################################")
+            print("The dcs.PONAME value is incosistent with CURRENT_BASE")
+            print("Please double check that the target object is where you")
+            print("want it to be before proceeding.")
+            print()
+            print("Do you wish to continue executing this OB?")
+            print("(y/n) [y]:")
+            print("#####################################################")
+            print()
+            user_input = input()
+            log.debug(f'response: "{user_input}"')
+            if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
+                raise KPFException("User chose to halt execution")
+
         return poname_match
 
     @classmethod
