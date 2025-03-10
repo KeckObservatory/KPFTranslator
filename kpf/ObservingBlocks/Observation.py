@@ -110,4 +110,8 @@ class Observation(BaseOBComponent):
         if self.get('TakeSimulCal') == False:
             if pname in ['AutoNDFilters', 'CalND1', 'CalND2']:
                 return ' # Unused: TakeSimulCal = False'
+        # GuideHere is False
+        if self.get('GuideHere') == False:
+            if pname == 'GuideHere':
+                return ' # Tip tilt disabled!'
         return ''
