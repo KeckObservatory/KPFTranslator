@@ -10,6 +10,7 @@
   comment: '2MASS ID of the target (e.g. J12345678-1234567)'
   valuetype: str
   defaultvalue: ''
+  altname: '2MASSID'
 - name: 'Parallax'
   comment: '[arcsec] Parallax of the target'
   valuetype: float
@@ -24,12 +25,12 @@
   comment: '[magnitude] Gaia G magnitude of the target'
   valuetype: float
   defaultvalue: 0
-  precision: 2
+  precision: 1
 - name: 'Jmag'
   comment: '[magnitude] J magnitude of the target'
   valuetype: float
   defaultvalue: 0
-  precision: 2
+  precision: 1
 - name: 'Teff'
   comment: '[K] Effective temperature of the target'
   valuetype: float

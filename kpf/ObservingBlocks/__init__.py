@@ -1,16 +1,18 @@
 class OBProperty(object):
     def __init__(self, name='', defaultvalue=None, valuetype=None,
-                 comment='', precision=None):
-        self.name = name
+                 comment='', precision=None, altname=None):
+        self.name = name if altname is None else altname
         self.valuetype = eval(valuetype)
         self._value = None if defaultvalue is None else self.valuetype(defaultvalue)
         self.comment = comment
         self.precision = precision
         self.defaultvalue = defaultvalue
 
-    def get(self):
-        if self._value is not None:
+    def get(self, string=False):
+        if self._value is not None and string == False:
             return self.valuetype(self._value)
+        elif self._value is not None and string == True:
+            return self.__str__()
         else:
             return self._value
 
@@ -39,18 +41,39 @@ class BaseOBComponent(object):
     def __init__(self, component_type, version, properties=[]):
         self.type = component_type
         self.version = version
-        self.name_overrides={'2MASSID': 'twoMASSID'}
         self.properties = properties
         for p in properties:
+            all_properties = ['name', 'defaultvalue', 'valuetype',
+                              'comment', 'precision', 'altname']
+            for pname in all_properties:
+                if pname not in p.keys():
+                    p[pname] = None
             setattr(self, p['name'], OBProperty(**p))
+        self.pruning_guide = []
+        self.list_element = False
 
-    def get(self, name):
-        name = self.name_overrides.get(name, name)
+    def get_property_name(self, name):
+        for p in self.properties:
+            if name in [p['name'], p['altname']]:
+                return p['name']
+
+    def get_text_name(self, name):
+        for p in self.properties:
+            if name in [p['name'], p['altname']]:
+                return p['altname'] if p['altname'] is not None else p['name']
+
+    def get(self, name, string=False):
+        name = self.get_property_name(name)
         this_property = getattr(self, name)
-        return this_property.value
+        if string == True and this_property.valuetype != str:
+            return this_property.__str__()
+        elif string == True and this_property.valuetype == str:
+            return f"'{this_property.__str__()}'"
+        else:
+            return this_property.value
 
     def set(self, name, value):
-        name = self.name_overrides.get(name, name)
+        name = self.get_property_name(name)
         if name in [p['name'] for p in self.properties]:
             this_property = getattr(self, name)
             this_property.set(value)
@@ -58,7 +81,7 @@ class BaseOBComponent(object):
     def from_dict(self, input_dict):
         for key in input_dict.keys():
             input_value = input_dict[key]
-            key = self.name_overrides.get(key, key)
+            key = self.get_property_name(key)
             try:
                 this_property = getattr(self, key)
                 this_property.set(input_value)
@@ -69,16 +92,30 @@ class BaseOBComponent(object):
     def to_dict(self):
         output = {}
         for p in self.properties:
+            name = self.get_text_name(name)
             if self.get(p['name']) is not None:
-                output[p['name']] = self.get(p['name'])
+                outname = p['name'] if p['altname'] is None else p['altname']
+                output[outname] = self.get(p['name'])
         return output
 
-    def to_lines(self, prune=True):
+    def to_lines(self, prune=True, comment=False):
+        prune_list = []
+        if prune == True:
+            for prune in self.pruning_guide:
+                if prune[0] == True:
+                    prune_list.extend(prune[1])
         lines = []
-        for p in self.properties:
-            if self.get(p['name']) is not None:
-                lines.append(f"{p['name']}: {self.get(p['name'])}")
+        for i,p in enumerate(self.properties):
+            if self.get(p['name']) is not None and p['name'] not in prune_list:
+                outname = p['name'] if p['altname'] is None else p['altname']
+                outtext = f"{self.get(p['name'], string=True)}"
+                prepend = '- ' if self.list_element == True and i == 0 else '  '
+                comment_text = self.add_comment(p['name']) if comment == True else ''
+                lines.append(f"{prepend}{outname}: {outtext}{comment_text}")
         return lines
+
+    def add_comment(self, pname):
+        return ''
 
     def validate(self):
         return True

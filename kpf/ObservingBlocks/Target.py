@@ -18,8 +18,9 @@ class Target(BaseOBComponent):
             properties = yaml.safe_load(f.read())
         super().__init__('Target', '2.0', properties=properties)
         self.from_dict(input_dict)
-        self.name_overrides={'2MASSID': 'twoMASSID'}
         self.coord = None
+        self.pruning_guide = [(abs(self.get('DRA')) < 0.001 and abs(self.get('DDEC')) < 0.001, ['DRA', 'DDEC']),
+                             ]
         self.build_SkyCoord()
 
 
@@ -38,30 +39,19 @@ class Target(BaseOBComponent):
             self.coord = None
 
 
-    def to_lines(self, prune=True, comment=False):
-        prune_list = []
-        if prune == True:
-            pruning = [(abs(self.get('DRA')) < 0.001 and abs(self.get('DDEC')) < 0.001, ['DRA', 'DDEC']),
-                       ]
-            for prune in pruning:
-                if prune[0] == True:
-                    prune_list.extend(prune[1])
-        lines = []
-        for ptuple in self.properties:
-            pname = ptuple['name']
-            if self.get(pname) is not None and pname not in prune_list:
-                p = getattr(self, pname)
-                if pname in ['RA', 'Dec']:
-                    line = f"  {pname}: '{str(p)}'"
-                else:
-                    line = f"  {pname}: {str(p)}"
-                if comment == True:
-                    line += self.add_comment(pname)
-                lines.append(line)
-        return lines
-
-
     def add_comment(self, pname):
+        # TargetName is empty
+        if self.get('TargetName') in [None, '']:
+            if pname == 'TargetName':
+                return ' # TargetName is empty'
+        # GaiaID is empty
+        if self.get('GaiaID') in [None, '']:
+            if pname == 'GaiaID':
+                return ' # GaiaID is empty'
+        # twoMASSID is empty
+        if self.get('twoMASSID') in [None, '']:
+            if pname == 'twoMASSID':
+                return ' # twoMASSID is empty'
         # Teff out of range
         if self.get('Teff') < 2600 or self.get('Teff') > 45000:
             if pname == 'Teff':
@@ -105,15 +95,18 @@ class Target(BaseOBComponent):
         return valid
 
 
-    def __str__(self):
+    def __str__(self, raprecision=1, decprecision=0, magprecision=1):
         '''Show a one line representation similar to a Keck star list line.
         '''
         try:
-            radec_str = self.coord.to_string('hmsdms', sep=':', precision=1)
+            rastr = self.coord.ra.to_string(unit=u.hourangle, sep=':', precision=raprecision)
+            decstr = self.coord.dec.to_string(unit=u.deg, sep=':', precision=decprecision, alwayssign=True)
+#             radec_str = self.coord.to_string('hmsdms', sep=':', precision=1)
         except:
-            radec_str = f"{str(self.RA)} {str(self.Dec)}"
-        out = (f"{self.TargetName.value:16s} {radec_str} "
-               f"{str(self.Gmag):>5s} {str(self.Jmag):>5s}")
+            rastr = str(self.RA)
+            decstr = str(self.Dec)
+        out = (f"{self.TargetName.value:16s} {rastr:>10s} {decstr:>9s} "
+               f"{str(self.Gmag):>4s} {str(self.Jmag):>4s}")
         return out
 
 

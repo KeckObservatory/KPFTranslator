@@ -14,8 +14,15 @@ class Observation(BaseOBComponent):
         with open(properties_file, 'r') as f:
             properties = yaml.safe_load(f.read())
         super().__init__('Observation', '2.0', properties=properties)
+        self.list_element = True
+        self.pruning_guide = [(self.get('ExpMeterMode') in ['off', False], ['AutoExpMeter', 'ExpMeterExpTime']),
+                              (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
+                              (self.get('AutoExpMeter') == True, ['ExpMeterExpTime']),
+                              (self.get('AutoNDFilters') == True, ['CalND1', 'CalND2']),
+                              (self.get('TakeSimulCal') == False, ['AutoNDFilters', 'CalND1', 'CalND2']),
+                              (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
+                              ]
         self.from_dict(input_dict)
-        
         try:
             WAVEBINS = ktl.cache('kpf_expmeter', 'WAVEBINS')
             self.expmeter_bands = [f"{float(b):.0f}nm" for b in WAVEBINS.read().split()]
@@ -71,33 +78,6 @@ class Observation(BaseOBComponent):
             details.append('offset')
         details = f"({';'.join(details)})" if len(details) > 0 else ''
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
-
-
-    def to_lines(self, prune=True, comment=False):
-        prune_list = []
-        if prune == True:
-            pruning = [(self.get('ExpMeterMode') in ['off', False], ['AutoExpMeter', 'ExpMeterExpTime']),
-                       (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
-                       (self.get('AutoExpMeter') == True, ['ExpMeterExpTime']),
-                       (self.get('AutoNDFilters') == True, ['CalND1', 'CalND2']),
-                       (self.get('TakeSimulCal') == False, ['AutoNDFilters', 'CalND1', 'CalND2']),
-                       (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
-                       ]
-            for prune in pruning:
-                if prune[0] == True:
-                    prune_list.extend(prune[1])
-        lines = []
-        i = 0
-        for pdict in self.properties:
-            if self.get(pdict['name']) is not None and pdict['name'] not in prune_list:
-                p = getattr(self, pdict['name'])
-                i += 1
-                output = '- ' if i == 1 else '  '
-                output += f"{pdict['name']}: {str(p)}"
-                if comment == True:
-                    output += self.add_comment(pdict['name'])
-                lines.append(output)
-        return lines
 
 
     def add_comment(self, pname):

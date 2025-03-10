@@ -10,36 +10,19 @@ class Calibration(BaseOBComponent):
         with open(properties_file, 'r') as f:
             properties = yaml.safe_load(f.read())
         super().__init__('Calibration', '2.0', properties=properties)
+        self.list_element = True
+        skip_if_dark = ['IntensityMonitor', 'CalND1', 'CalND2',
+                        'OpenScienceShutter', 'OpenSkyShutter',
+                        'TakeSimulCal', 'WideFlatPos', 'ExpMeterMode',
+                        'ExpMeterExpTime', 'ExpMeterBin',
+                        'ExpMeterThreshold']
+        self.pruning_guide = [(self.get('CalSource').lower() in ['dark', 'home'], skip_if_dark),
+                              (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterExpTime']),
+                              (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
+                              (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
+                              (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
+                              ]
         self.from_dict(input_dict)
-
-
-    def to_lines(self,  prune=True):
-        prune_list = []
-        if prune == True:
-            skip_if_dark = ['IntensityMonitor', 'CalND1', 'CalND2',
-                            'OpenScienceShutter', 'OpenSkyShutter',
-                            'TakeSimulCal', 'WideFlatPos', 'ExpMeterMode',
-                            'ExpMeterExpTime', 'ExpMeterBin',
-                            'ExpMeterThreshold']
-            pruning = [(self.get('CalSource').lower() in ['dark', 'home'], skip_if_dark),
-                       (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterExpTime']),
-                       (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
-                       (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
-                       (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
-                       ]
-            for prune in pruning:
-                if prune[0] == True:
-                    prune_list.extend(prune[1])
-        lines = []
-        i = 0
-        for p in self.properties:
-            if self.get(p['name']) is not None and p['name'] not in prune_list:
-                i += 1
-                if i == 1:
-                    lines.append(f"- {p['name']}: {self.get(p['name'])}")
-                else:
-                    lines.append(f"  {p['name']}: {self.get(p['name'])}")
-        return lines
 
 
     def validate(self):

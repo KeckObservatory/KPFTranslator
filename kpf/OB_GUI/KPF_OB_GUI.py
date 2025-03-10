@@ -220,7 +220,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # List of Observing Blocks
         self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
-        self.hdr = 'TargetName       RA          Dec         Gmag  Jmag  Observations'
+        self.hdr = 'TargetName       RA          Dec      Gmag Jmag Observations'
         self.OBListHeader.setText(f"    {self.hdr}")
 
         self.ListOfOBs = self.findChild(QtWidgets.QListView, 'ListOfOBs')
