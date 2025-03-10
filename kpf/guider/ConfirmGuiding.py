@@ -1,0 +1,45 @@
+import ktl
+
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+
+
+class ConfirmGuiding(KPFFunction):
+    '''
+    '''
+    @classmethod
+    def pre_condition(cls, args):
+        pass
+
+    @classmethod
+    def perform(cls, args):
+        ALL_LOOPS = ktl.cache('kpfguide', 'ALL_LOOPS')
+        guide_here = args.get('GuideHere', True)
+        guide_here_txt = {True: 'Active', False: 'Inactive'}[guide_here]
+        timeout = args.get('guide_wait_timeout', 30)
+        success = ALL_LOOPS.waitfor(f"=='{guide_here_txt}'", timeout=timeout)
+
+        if success == False:
+            # Check with user
+            log.debug('Asking for user input')
+            print()
+            print("#####################################################")
+            print(f"Timed out waiting for ALL_LOOPS == {guide_here_txt}")
+            print("Double check that the OA is configuring the tip tilt system")
+            print()
+            print("Do you wish to continue executing this OB and wait for the")
+            print("loops to be the the expected state?")
+            print("(y/n) [y]:")
+            print("#####################################################")
+            print()
+            user_input = input()
+            log.debug(f'response: "{user_input}"')
+            if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
+                raise KPFException("User chose to halt execution")
+            else:
+                ConfirmGuiding.execute(args)
+
+    @classmethod
+    def post_condition(cls, args):
+        pass

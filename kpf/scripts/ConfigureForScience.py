@@ -15,9 +15,11 @@ from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.SetSimulCalSource import SetSimulCalSource
 from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.guider.ConfirmGuiding import ConfirmGuiding
 from kpf.spectrograph.SetSourceSelectShutters import SetSourceSelectShutters
 from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
 from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.telescope.EastNorth import EastNorth
 
 
 class ConfigureForScience(KPFFunction):
@@ -40,6 +42,15 @@ class ConfigureForScience(KPFFunction):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
+
+        # Offset if requested
+        NodN = observation.get('NodN', 0)
+        NodE = observation.get('NodE', 0)
+        if abs(NodN) > 0.01 or abs(NodE) > 0.01:
+            # Offset Telescope
+            EastNorth.execute(observation)
+        # Confirm guiding
+        ConfirmGuiding.execute({})
 
         check_scriptstop()
 
