@@ -3,6 +3,7 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+from kpf.telescope import KPF_is_selected_instrument
 
 
 class EastNorth(KPFFunction):
@@ -21,32 +22,40 @@ class EastNorth(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        INSTRUME = ktl.cache('dcs1', 'INSTRUME').read()
-        if INSTRUME not in ['KPF', 'KPF-CC']:
-            raise FaiedPreCondition(f'Selected instrument is {INSTRUME}, not KPF')
-        check_input(args, 'East', allowed_types=[int, float], value_min=-600, value_max=600)
-        check_input(args, 'North', allowed_types=[int, float], value_min=-600, value_max=600)
+        max_offset = cfg.getfloat('telescope', 'max_offset', fallback=900)
+        check_input(args, 'East', allowed_types=[int, float],
+                    value_min=-max_offset, value_max=max_offset)
+        check_input(args, 'North', allowed_types=[int, float],
+                    value_min=-max_offset, value_max=max_offset)
 
     @classmethod
     def perform(cls, args):
-        dcs = ktl.cache('dcs1')
-        east = args.get('East', 0)
-        north = args.get('North', 0)
-        dcs['RAOFF'].write(east)
-        dcs['DECOFF'].write(north)
-        dcs['REL2CURR'].write(True)
+        dcsint = cfg.getfloat('telescope', 'telnr', fallback=1)
+        dcs = ktl.cache(f'dcs{dcsint}')
+        if KPF_is_selected_instrument():
+            east = args.get('NodE', 0)
+            north = args.get('NodN', 0)
+            log.info(f'Ofsetting telescope: {east:.2f} {north:.2f}')
+            dcs['RAOFF'].write(east)
+            dcs['DECOFF'].write(north)
+            dcs['REL2CURR'].write(True)
+        else:
+            INSTRUME = dcs['INSTRUME'].read()
+            log.error(f'Selected instrument is {INSTRUME}, not KPF. No telescope moves allowed.')
 
     @classmethod
     def post_condition(cls, args):
-        AXESTAT = ktl.cache('dcs1', 'AXESTAT')
-        tracking = AXESTAT.waitfor('=="tracking"')
-        if tracking == False:
-            raise FailedPostCondition('dcs.AXESTAT did not return to "tracking"', timeout=10)
+        if KPF_is_selected_instrument():
+            dcsint = cfg.getfloat('telescope', 'telnr', fallback=1)
+            AXESTAT = ktl.cache(f'dcs{dcsint}', 'AXESTAT')
+            tracking = AXESTAT.waitfor('=="tracking"')
+            if tracking == False:
+                raise FailedPostCondition('dcs.AXESTAT did not return to "tracking"', timeout=20)
 
     @classmethod
     def add_cmdline_args(cls, parser):
-        parser.add_argument('East', type=float,
+        parser.add_argument('NodE', type=float,
             help="Distance to move the telescope East in arcseconds")
-        parser.add_argument('North', type=float,
+        parser.add_argument('NodN', type=float,
             help="Distance to move the telescope North in arcseconds")
         return super().add_cmdline_args(parser)
