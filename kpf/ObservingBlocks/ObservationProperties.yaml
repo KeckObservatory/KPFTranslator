@@ -9,7 +9,7 @@
 - name: 'ExpTime'
   comment: '[seconds] Exposure Time'
   valuetype: float
-  defaultvalue: 1
+  defaultvalue: 60
   precision: 0
 - name: 'TriggerCaHK'
   comment: 'Trigger the Ca H & K detector for this observation?'
