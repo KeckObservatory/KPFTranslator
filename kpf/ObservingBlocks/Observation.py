@@ -38,8 +38,13 @@ class Observation(BaseOBComponent):
             if self.get(p['name']) is None:
                 print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
                 valid = False
+        # Check if Object is empty
+        if self.get('Object') in ['', None]:
+            print(f"ERROR: Object field is empty")
+            valid = False
         # Check that ExpMeterBin is in [1,2,3,4]
         if self.get('ExpMeterBin') not in [1, 2, 3, 4]:
+            print(f"ERROR: ExpMeterBin must be 1, 2, 3, or 4")
             valid = False
         # Check that boolean value properties are reasonable 
         ok_booleans = [True, 'true', 'on', 'On', 1, '1',
@@ -81,6 +86,10 @@ class Observation(BaseOBComponent):
 
 
     def add_comment(self, pname):
+        # Object is empty
+        if self.get('Object') in ['', None]:
+            if pname in ['Object']:
+                return ' # Object field is empty'
         # Exposure Meter is off
         if self.get('ExpMeterMode') in ['off', False]:
             if pname in ['AutoExpMeter', 'ExpMeterExpTime', 'ExpMeterThreshold', 'ExpMeterBin']:
