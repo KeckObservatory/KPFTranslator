@@ -1297,9 +1297,9 @@
       <widget class="QPushButton" name="BC_ClearCalibrationsButton">
        <property name="geometry">
         <rect>
-         <x>430</x>
+         <x>270</x>
          <y>30</y>
-         <width>151</width>
+         <width>141</width>
          <height>23</height>
         </rect>
        </property>
@@ -1307,17 +1307,45 @@
         <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
        </property>
        <property name="text">
-        <string>Clear Observations</string>
+        <string>Clear All Calibrations</string>
        </property>
       </widget>
       <widget class="QPlainTextEdit" name="BC_CalibrationsView">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>60</y>
+         <y>90</y>
          <width>571</width>
-         <height>591</height>
+         <height>561</height>
         </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="BC_ExampleCalibrations">
+       <property name="geometry">
+        <rect>
+         <x>240</x>
+         <y>60</y>
+         <width>171</width>
+         <height>23</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="BC_CalibrationsValidLabel_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>221</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Append Example Calibration:</string>
        </property>
       </widget>
      </widget>

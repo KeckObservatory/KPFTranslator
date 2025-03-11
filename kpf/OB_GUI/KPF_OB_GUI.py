@@ -99,6 +99,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_Observations = [Observation({})]
         self.BC_ObservingBlock = None
         self.BC_Calibrations = [Calibration({})]
+        # Example Calibrations
+        self.example_cal_file = Path(__file__).parent.parent / 'ObservingBlocks' / 'exampleOBs' / 'Calibrations.yaml'
+        if self.example_cal_file.exists():
+            self.example_calOB = ObservingBlock(self.example_cal_file)
+        else:
+            self.example_calOB = ObservingBlock({})
         # Keywords
         self.dcs = 'dcs1'
         self.log.debug('Cacheing keyword services')
@@ -312,8 +318,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BC_CalibrationsValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
         self.BC_ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
         self.BC_ClearCalibrationsButton.clicked.connect(self.BC_clear_calibrations)
+        self.BC_ExampleCalibrations = self.findChild(QtWidgets.QComboBox, 'BC_ExampleCalibrations')
+        self.BC_ExampleCalibrations.addItems([''])
+        self.BC_ExampleCalibrations.addItems([cal.get('Object') for cal in self.example_calOB.Calibrations])
+        self.BC_ExampleCalibrations.currentTextChanged.connect(self.BC_add_example_calibration)
         self.BC_CalibrationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BC_CalibrationsView')
-        self.BC_CalibrationsView.setPlainText(Calibration({}).__repr__(prune=False, comment=True))
+        self.BC_CalibrationsView.setPlainText(self.example_calOB.Calibrations[2].__repr__(prune=False, comment=True))
         self.BC_CalibrationsView.setFont(QtGui.QFont('Courier New', 11))
         self.BC_edit_calibrations()
         self.BC_CalibrationsView.textChanged.connect(self.BC_edit_calibrations)
@@ -965,7 +975,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BC_CalibrationsView.setPlainText(Calibration({}).__repr__(prune=False, comment=True))
         self.BC_form_OB()
 
+    def BC_add_example_calibration(self, value):
+        log.debug(f'BC_add_example_calibration: {value}')
+        for cal in self.example_calOB.Calibrations:
+            if value == cal.get('Object'):
+                log.debug('Adding {value} from example Cal OB')
+                print(len(self.BC_ObservingBlock.Calibrations))
+                self.BC_Calibrations.append(cal)
+                print(len(self.BC_ObservingBlock.Calibrations))
+                self.BC_form_OB()
+
     def BC_form_OB(self):
+        print(len(self.BC_ObservingBlock.Calibrations))
         newOB = ObservingBlock({})
         newOB.Calibrations = self.BC_Calibrations
         if newOB.__repr__() == self.BC_ObservingBlock.__repr__():
