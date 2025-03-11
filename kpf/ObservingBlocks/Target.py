@@ -40,10 +40,14 @@ class Target(BaseOBComponent):
 
 
     def add_comment(self, pname):
+        # Unable to form SkyCoord
+        if self.coord is None:
+            if pname in ['RA', 'Dec']:
+                return ' # ERROR: Invalid SkyCoord'
         # TargetName is empty
         if self.get('TargetName') in [None, '']:
             if pname == 'TargetName':
-                return ' # TargetName is empty'
+                return ' # ERROR: TargetName is empty'
         # GaiaID is empty
         if self.get('GaiaID') in [None, '']:
             if pname == 'GaiaID':

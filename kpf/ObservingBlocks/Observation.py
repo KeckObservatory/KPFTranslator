@@ -89,7 +89,7 @@ class Observation(BaseOBComponent):
         # Object is empty
         if self.get('Object') in ['', None]:
             if pname in ['Object']:
-                return ' # Object field is empty'
+                return ' # ERROR: Object field is empty'
         # Exposure Meter is off
         if self.get('ExpMeterMode') in ['off', False]:
             if pname in ['AutoExpMeter', 'ExpMeterExpTime', 'ExpMeterThreshold', 'ExpMeterBin']:
