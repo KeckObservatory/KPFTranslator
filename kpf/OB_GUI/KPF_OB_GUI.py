@@ -94,6 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
         self.KPFCC = False
+        self.BS_ObservingBlock = None
         self.BS_Target = Target({})
         self.BS_Observations = [Observation({})]
         # Keywords
@@ -279,8 +280,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_TargetValid = self.findChild(QtWidgets.QLabel, 'BS_TargetValid')
         self.BS_ClearTargetButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearTargetButton')
         self.BS_ClearTargetButton.clicked.connect(self.BS_clear_target)
-        self.BS_RefreshTargetComments = self.findChild(QtWidgets.QPushButton, 'BS_RefreshTargetComments')
-        self.BS_RefreshTargetComments.clicked.connect(self.BS_refresh_target_comments)
+#         self.BS_RefreshTargetComments = self.findChild(QtWidgets.QPushButton, 'BS_RefreshTargetComments')
+#         self.BS_RefreshTargetComments.clicked.connect(self.BS_refresh_target_comments)
         self.BS_TargetView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_TargetView')
         self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
         self.BS_TargetView.setFont(QtGui.QFont('Courier New', 11))
@@ -290,8 +291,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_ObservationsValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
         self.BS_ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
         self.BS_ClearObservationsButton.clicked.connect(self.BS_clear_observations)
-        self.BS_RefreshObservationsComments = self.findChild(QtWidgets.QPushButton, 'BS_RefreshObservationsComments')
-        self.BS_RefreshObservationsComments.clicked.connect(self.BS_refresh_observation_comments)
+#         self.BS_RefreshObservationsComments = self.findChild(QtWidgets.QPushButton, 'BS_RefreshObservationsComments')
+#         self.BS_RefreshObservationsComments.clicked.connect(self.BS_refresh_observation_comments)
         self.BS_ObservationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
         self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False, comment=True))
         self.BS_ObservationsView.setFont(QtGui.QFont('Courier New', 11))
@@ -823,7 +824,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def BS_refresh_target_comments(self):
         out = self.BS_Target.__repr__(prune=False, comment=True)
+        cursor = self.BS_TargetView.textCursor()
+        cursor_position = cursor.position()
         self.BS_TargetView.setPlainText(out)
+        try:
+            # Restore cursor position
+            cursor.setPosition(cursor_position)
+            self.BS_TargetView.setTextCursor(cursor)
+        except:
+            pass
         self.BS_form_OB()
 
     def BS_clear_target(self):
@@ -848,8 +857,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def BS_refresh_observation_comments(self):
         out = [obs.__repr__(prune=False, comment=True) for obs in self.BS_Observations]
-        print(''.join(out))
+        cursor = self.BS_ObservationsView.textCursor()
+        cursor_position = cursor.position()
         self.BS_ObservationsView.setPlainText(''.join(out))
+        try:
+            # Restore cursor position
+            cursor.setPosition(cursor_position)
+            self.BS_ObservationsView.setTextCursor(cursor)
+        except:
+            pass
         self.BS_form_OB()
 
     def BS_clear_observations(self):
@@ -858,9 +874,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_form_OB()
 
     def BS_form_OB(self):
+        newOB = ObservingBlock({})
+        newOB.Target = self.BS_Target
+        newOB.Observations = self.BS_Observations
+        if newOB.__repr__() == self.BS_ObservingBlock.__repr__():
+            return
         self.BS_ObservingBlock = ObservingBlock({})
         self.BS_ObservingBlock.Target = self.BS_Target
         self.BS_ObservingBlock.Observations = self.BS_Observations
+        self.BS_refresh_observation_comments()
+        self.BS_refresh_target_comments()
         OBValid = self.BS_ObservingBlock.validate()
         color = {True: 'green', False: 'orange'}[OBValid]
         self.BS_OBValid.setText(str(OBValid))

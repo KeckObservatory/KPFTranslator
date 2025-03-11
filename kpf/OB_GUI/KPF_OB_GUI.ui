@@ -906,26 +906,10 @@
         </rect>
        </property>
       </widget>
-      <widget class="QPushButton" name="BS_RefreshTargetComments">
-       <property name="geometry">
-        <rect>
-         <x>300</x>
-         <y>60</y>
-         <width>131</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
-       </property>
-       <property name="text">
-        <string>Refresh Comments</string>
-       </property>
-      </widget>
       <widget class="QPushButton" name="BS_ClearTargetButton">
        <property name="geometry">
         <rect>
-         <x>190</x>
+         <x>330</x>
          <y>60</y>
          <width>101</width>
          <height>23</height>
@@ -990,7 +974,7 @@
       <widget class="QPushButton" name="BS_ClearObservationsButton">
        <property name="geometry">
         <rect>
-         <x>270</x>
+         <x>430</x>
          <y>30</y>
          <width>151</width>
          <height>23</height>
@@ -1011,22 +995,6 @@
          <width>571</width>
          <height>591</height>
         </rect>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="BS_RefreshObservationsComments">
-       <property name="geometry">
-        <rect>
-         <x>430</x>
-         <y>30</y>
-         <width>151</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
-       </property>
-       <property name="text">
-        <string>Refresh Comments</string>
        </property>
       </widget>
      </widget>
