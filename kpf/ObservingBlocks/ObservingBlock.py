@@ -37,8 +37,9 @@ class ObservingBlock(object):
             OBdict = {}
 
         # OB Metadata
-        self.ProgramID = OBdict.get('semid', '')
-        self.OBID = OBdict.get('_id', '')
+        self.ProgramID = OBdict.get('progid', '')
+        self.semester = OBdict.get('semester', '')
+        self.OBID = OBdict.get('id', '')
         self.CommentToObserver = OBdict.get('CommentToObserver', '')
         # Metadata for OB GUI
         self.executed = False

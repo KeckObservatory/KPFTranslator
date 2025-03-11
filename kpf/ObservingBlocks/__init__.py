@@ -1,3 +1,12 @@
+import os
+import json
+import requests
+import urllib3
+urllib3.disable_warnings() # We're going to do verify=False, so ignore warnings
+
+from kpf import log, cfg
+
+
 class OBProperty(object):
     def __init__(self, name='', defaultvalue=None, valuetype=None,
                  comment='', precision=None, altname=None):
@@ -134,3 +143,32 @@ class BaseOBComponent(object):
         for line in self.to_lines(prune=prune, comment=comment):
             output += line+'\n'
         return output
+
+
+def query_database(query='getKPFObservingBlock', params={}):
+    if 'hash' not in params.keys():
+        params['hash'] = os.getenv('APIHASH', default='')
+    url = cfg.get('Database', 'url')
+    log.debug(f"Running database query: {query}")
+    log.debug(params)
+    r = requests.post(f"{url}{query}", json=params, verify=False)
+    try:
+        result = json.loads(r.text)
+    except Exception as e:
+        log.error(f'Failed to parse result:')
+        log.error(r.text)
+        log.error(e)
+        return None
+
+    OBs = []
+    log.debug(f'{query} retrieved {len(result)} results')
+    for entry in result:
+        try:
+            OB = ObservingBlock(entry)
+            OBs.append(OB)
+        except Exception as e:
+            log.error('Unable to parse result in to an ObservingBlock')
+            log.debug(entry)
+            log.error(e)
+    log.debug(f'{query} parsed {len(OBs)} ObservingBlocks')
+    return OBs

@@ -201,8 +201,8 @@ links:
     WaitForTriggerFile:
         cmd: guider.WaitForTriggerFile.WaitForTriggerFile
     # Observing Blocks
-    GetObservingBlock:
-        cmd: ObservingBlocks.GetObservingBlock.GetObservingBlock
+    GetObservingBlocks:
+        cmd: ObservingBlocks.GetObservingBlocks.GetObservingBlocks
     GetObservingBlocksByProgram:
         cmd: ObservingBlocks.GetObservingBlocksByProgram.GetObservingBlocksByProgram
     SubmitExecutionHistory:
