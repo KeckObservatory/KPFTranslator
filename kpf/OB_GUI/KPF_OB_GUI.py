@@ -2,6 +2,7 @@
 import sys
 import traceback
 import time
+import copy
 from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
@@ -98,7 +99,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_Target = Target({})
         self.BS_Observations = [Observation({})]
         self.BC_ObservingBlock = None
-        self.BC_Calibrations = [Calibration({})]
         # Example Calibrations
         self.example_cal_file = Path(__file__).parent.parent / 'ObservingBlocks' / 'exampleOBs' / 'Calibrations.yaml'
         if self.example_cal_file.exists():
@@ -885,7 +885,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_form_OB()
 
     def BS_refresh_observation_comments(self):
-        out = [obs.__repr__(prune=False, comment=True) for obs in self.BS_Observations]
+        out = []
+        for i,obs in enumerate(self.BS_Observations):
+            out.append(f'# Observation {i+1}\n')
+            out.append(obs.__repr__(prune=False, comment=True))
         cursor = self.BS_ObservationsView.textCursor()
         cursor_position = cursor.position()
         self.BS_ObservationsView.setPlainText(''.join(out))
@@ -946,19 +949,23 @@ class MainWindow(QtWidgets.QMainWindow):
         BCC_edited_lines = self.BC_CalibrationsView.document().toPlainText()
         try:
             new_dict = yaml.safe_load(BCC_edited_lines)
-            self.BC_Calibrations = [Calibration(entry) for entry in new_dict]
-            CalibrationsValid = np.all([entry.validate() for entry in self.BC_Calibrations])
+            calibrations = [Calibration(entry) for entry in new_dict]
+            CalibrationsValid = np.all([entry.validate() for entry in calibrations])
         except Exception as e:
             print(e)
-            self.BC_Calibrations = [Calibration({})]
             CalibrationsValid = False
         color = {True: 'green', False: 'orange'}[CalibrationsValid]
         self.BC_CalibrationsValid.setText(str(CalibrationsValid))
         self.BC_CalibrationsValid.setStyleSheet(f"color:{color}")
-        self.BC_form_OB()
+        if CalibrationsValid:
+            self.BC_form_OB(calibrations)
 
-    def BC_refresh_calibration_comments(self):
-        out = [cal.__repr__(prune=False, comment=True) for cal in self.BC_Calibrations]
+
+    def BC_refresh_calibration_text(self):
+        out = []
+        for i,cal in enumerate(self.BC_ObservingBlock.Calibrations):
+            out.append(f'# Calibration {i+1}\n')
+            out.append(cal.__repr__(prune=False, comment=True))
         cursor = self.BC_CalibrationsView.textCursor()
         cursor_position = cursor.position()
         self.BC_CalibrationsView.setPlainText(''.join(out))
@@ -968,32 +975,27 @@ class MainWindow(QtWidgets.QMainWindow):
             self.BC_CalibrationsView.setTextCursor(cursor)
         except:
             pass
-        self.BC_form_OB()
 
     def BC_clear_calibrations(self):
-        self.BC_Calibrations = [Calibration({})]
-        self.BC_CalibrationsView.setPlainText(Calibration({}).__repr__(prune=False, comment=True))
-        self.BC_form_OB()
+        calibrations = []
+        self.BC_CalibrationsView.setPlainText('')
+        self.BC_form_OB(calibrations)
 
     def BC_add_example_calibration(self, value):
         log.debug(f'BC_add_example_calibration: {value}')
         for cal in self.example_calOB.Calibrations:
             if value == cal.get('Object'):
-                log.debug('Adding {value} from example Cal OB')
-                print(len(self.BC_ObservingBlock.Calibrations))
-                self.BC_Calibrations.append(cal)
-                print(len(self.BC_ObservingBlock.Calibrations))
-                self.BC_form_OB()
+                log.debug(f'Adding {value} from example Cal OB')
+                calibrations = copy.deepcopy(self.BC_ObservingBlock.Calibrations)
+                calibrations.append(cal)
+                self.BC_form_OB(calibrations)
 
-    def BC_form_OB(self):
-        print(len(self.BC_ObservingBlock.Calibrations))
+    def BC_form_OB(self, calibrations):
         newOB = ObservingBlock({})
-        newOB.Calibrations = self.BC_Calibrations
+        newOB.Calibrations = calibrations
         if newOB.__repr__() == self.BC_ObservingBlock.__repr__():
             return
-        self.BC_ObservingBlock = ObservingBlock({})
-        self.BC_ObservingBlock.Calibrations = self.BC_Calibrations
-        self.BC_refresh_calibration_comments()
+        self.BC_ObservingBlock = copy.deepcopy(newOB)
         OBValid = self.BC_ObservingBlock.validate()
         color = {True: 'green', False: 'orange'}[OBValid]
         self.BC_OBValid.setText(str(OBValid))
@@ -1005,8 +1007,10 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.BC_OBString.setText('')
             self.BC_EstimatedDuration.setText('')
+        self.BC_refresh_calibration_text()
 
     def BC_send_to_list(self):
+
         if self.BC_ObservingBlock.validate() != True:
             print('OB is invalid, not sending to OB list')
         elif self.KPFCC == False:
