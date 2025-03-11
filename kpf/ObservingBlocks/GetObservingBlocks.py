@@ -39,7 +39,6 @@ def get_OBs_from_database(params):
         try:
             OB = ObservingBlock(entry)
             OBs.append(OB)
-            print(entry['History'])
         except Exception as e:
             log.error('Unable to parse result in to an ObservingBlock')
             log.debug(entry)

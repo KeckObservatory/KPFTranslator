@@ -37,10 +37,13 @@ class ObservingBlock(object):
             OBdict = {}
 
         # OB Metadata
-        self.ProgramID = OBdict.get('progid', '')
-        self.semester = OBdict.get('semester', '')
-        self.OBID = OBdict.get('id', '')
-        self.CommentToObserver = OBdict.get('CommentToObserver', '')
+        self.ProgramID = OBdict.pop('progid', '')
+        self.semester = OBdict.pop('semester', '')
+        self.semid = OBdict.pop('semid', '')
+        self.OBID = OBdict.pop('id', '')
+        self.CommentToObserver = OBdict.pop('CommentToObserver', '')
+        self.History = OBdict.pop('History', [])
+        self.query_status = OBdict.pop('status', [])
         # Metadata for OB GUI
         self.executed = False
         self.edited = False
@@ -90,18 +93,22 @@ class ObservingBlock(object):
         ## ----------------------------------------------------------------
         else:
             # Target
-            target = OBdict.get('Target', None)
+            target = OBdict.pop('Target', None)
             if target is None:
                 self.Target = None
             else:
                 self.Target = Target(target)
             # Observations
-            observations = OBdict.get('Observations', [])
+            observations = OBdict.pop('Observations', [])
             self.Observations = [Observation(obs) for obs in observations]
             # Calibrations
-            calibrations = OBdict.get('Calibrations', [])
+            calibrations = OBdict.pop('Calibrations', [])
             self.Calibrations = [Calibration(cal) for cal in calibrations]
 
+        if len(list(OBdict.keys())) > 0:
+            log.warning('Keys remain after parsing ObservingBlock')
+            log.warning(OBdict.keys())
+            log.warning(OBdict)
 
     def validate(self):
         print('Validating OB')
