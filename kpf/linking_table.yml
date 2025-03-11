@@ -204,9 +204,11 @@ links:
     GetObservingBlocks:
         cmd: ObservingBlocks.GetObservingBlocks.GetObservingBlocks
     GetObservingBlocksByProgram:
-        cmd: ObservingBlocks.GetObservingBlocksByProgram.GetObservingBlocksByProgram
+        cmd: ObservingBlocks.GetObservingBlocks.GetObservingBlocksByProgram
     SubmitExecutionHistory:
         cmd: ObservingBlocks.SubmitExecutionHistory.SubmitExecutionHistory
+    SubmitObserverComment:
+        cmd: ObservingBlocks.SubmitObserverComment.SubmitObserverComment
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations

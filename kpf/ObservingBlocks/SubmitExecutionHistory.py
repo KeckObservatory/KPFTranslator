@@ -12,6 +12,7 @@ import keygrabber
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+from kpf.ObservingBlocks.GetObservingBlocks import query_database
 
 
 def round_microseconds(ut, ndecimals=2):
@@ -50,9 +51,6 @@ class SubmitExecutionHistory(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        url = cfg.get('Database', 'url', fallback=None)
-        if url is None:
-            raise FailedPreCondition('Database URL is not defined in configuration')
         OBid = args.get('OBid', None)
         if OBid is None:
             raise FailedPreCondition('OBid must be provided')
@@ -60,11 +58,10 @@ class SubmitExecutionHistory(KPFFunction):
     @classmethod
     def perform(cls, args):
         log.info(f"Running {cls.__name__}")
-        url = cfg.get('Database', 'url')
         OBid = args.get('OBid', '')
-        apihash = os.getenv('APIHASH', default='')
 
-        params = {}
+        params = {'id': args.get('OBid', '')}
+
         SCRIPTPID_hist = keygrabber.retrieve({'kpfconfig': ['SCRIPTPID']},
             begin=time.mktime(datetime.datetime.now().timetuple()))
         log.debug('Getting start time of script')
@@ -109,40 +106,17 @@ class SubmitExecutionHistory(KPFFunction):
         params["exposure_times"] = exp_times
 
         if len(params["exposure_times"]) != len(params["exposure_start_times"]):
-            print(f'Mismatch in start times and exposure times')
-            print(f'{len(params["exposure_start_times"])} Exposure Start Times')
-            print(f'{len(params["exposure_times"])} Exposure Times')
-            print(f'Readout: {readout}')
+            log.error(f'SubmitExecutionHistory: Mismatch in start times and exposure times')
+            log.error(f'SubmitExecutionHistory: {len(params["exposure_start_times"])} Exposure Start Times')
+            log.error(f'SubmitExecutionHistory: {len(params["exposure_times"])} Exposure Times')
+            log.error(f'SubmitExecutionHistory: Readout: {readout}')
             sys.exit(0)
             raise KPFException(f'Mismatch in start times and exposure times')
 
-#         log.debug('Getting OBSERVERCOMMENT history')
-#         comment_hist = keygrabber.retrieve({'kpfconfig': ['OBSERVERCOMMENT']}, begin=begin)
-#         comments = []
-#         for s in comment_hist:
-#             comments.append(s['ascvalue'])
-
-        # For testing
-        comments = ['an observer comment', 'another comment', 'this is a lot of comments for a single OB!',
-                    'This is a long soliloquy on the observing conditions during this observation which is here to make sure we do not have overly restrictive string length limits somewhere in the system.',
-                    "For completeness, a check on various inconvienient characters:\nJohn O'Meara, Cecilia Payne-Gaposchkin, are question marks ok? (should I even ask?) [perhaps not] {right?}"]
-        params["comment"] = '\n'.join(comments)
-
-        # Upload via API
-        params["id"] = f"{OBid}"
-        print(f'OBid:            {params["id"]}')
-        print(f'Observer:        {params["observer"]}')
-        print(f'ObserverComment: {params["comment"]}')
-        print(f'Start Times:     {params["exposure_start_times"]}')
-        print(f'Exposure Times:  {params["exposure_times"]}')
-        if OBid in [None, '', ' ', '0', 0]:
-            return
-        else:
-            print('Submitting data to DB:')
-            data = requests.post(f"{url}addObservingBlockHistory",
-                                 params=params, verify=False)
-            print(f"Response: {data}")
-
+        log.info('Submitting data to DB:')
+        log.info(params)
+        result = query_database('addObservingBlockHistory', params=params)
+        log.info(f"Response: {result}")
 
     @classmethod
     def post_condition(cls, args):
