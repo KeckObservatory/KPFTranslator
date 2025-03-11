@@ -39,7 +39,7 @@
   comment: '[seconds] Exposure Time for the exposure meter'
   valuetype: float
   defaultvalue: 1
-  precision: 1
+  precision: 2
 - name: 'ExpMeterBin'
   comment: 'Which wavelength bin to use for exposure meter termination? (1=498nm, 2=604nm, 3=711nm, 4=817nm)'
   valuetype: int
