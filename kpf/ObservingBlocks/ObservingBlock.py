@@ -111,7 +111,6 @@ class ObservingBlock(object):
             log.warning(OBdict)
 
     def validate(self):
-        print('Validating OB')
         valid = True
         # Check that components are the correct types and are individually valid
         if self.Target is not None:
