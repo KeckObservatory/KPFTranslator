@@ -167,6 +167,8 @@ class ObservingBlock(object):
         '''
         if self.Target is not None:
             out = f"{self.Target.get('TargetName')}"
+        elif len(self.Observations) == 0:
+            out = 'Calibration '
         else:
             out = 'unknown '
         cal_strings = [str(cal) for cal in self.Calibrations]
