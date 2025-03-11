@@ -97,6 +97,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_ObservingBlock = None
         self.BS_Target = Target({})
         self.BS_Observations = [Observation({})]
+        self.BC_ObservingBlock = None
+        self.BC_Calibrations = [Calibration({})]
         # Keywords
         self.dcs = 'dcs1'
         self.log.debug('Cacheing keyword services')
@@ -130,6 +132,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #-------------------------------------------------------------------
         # Menu Bar
+        ActionExit = self.findChild(QtWidgets.QAction, 'actionExit')
+        ActionExit.triggered.connect(self.exit)
         LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
         LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
         LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
@@ -280,8 +284,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_TargetValid = self.findChild(QtWidgets.QLabel, 'BS_TargetValid')
         self.BS_ClearTargetButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearTargetButton')
         self.BS_ClearTargetButton.clicked.connect(self.BS_clear_target)
-#         self.BS_RefreshTargetComments = self.findChild(QtWidgets.QPushButton, 'BS_RefreshTargetComments')
-#         self.BS_RefreshTargetComments.clicked.connect(self.BS_refresh_target_comments)
         self.BS_TargetView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_TargetView')
         self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
         self.BS_TargetView.setFont(QtGui.QFont('Courier New', 11))
@@ -291,13 +293,30 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_ObservationsValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
         self.BS_ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
         self.BS_ClearObservationsButton.clicked.connect(self.BS_clear_observations)
-#         self.BS_RefreshObservationsComments = self.findChild(QtWidgets.QPushButton, 'BS_RefreshObservationsComments')
-#         self.BS_RefreshObservationsComments.clicked.connect(self.BS_refresh_observation_comments)
         self.BS_ObservationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
         self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False, comment=True))
         self.BS_ObservationsView.setFont(QtGui.QFont('Courier New', 11))
         self.BS_edit_observations()
         self.BS_ObservationsView.textChanged.connect(self.BS_edit_observations)
+
+        #-------------------------------------------------------------------
+        # Tab: Build Calibration OB
+        # Observing Block
+        self.BC_OBString = self.findChild(QtWidgets.QLabel, 'BC_OBString')
+        self.BC_OBString.setStyleSheet("background:white")
+        self.BC_OBValid = self.findChild(QtWidgets.QLabel, 'BC_OBValid')
+        self.BC_EstimatedDuration = self.findChild(QtWidgets.QLabel, 'BC_EstimatedDuration')
+        self.BC_SendToOBList = self.findChild(QtWidgets.QPushButton, 'BC_SendToOBList')
+        self.BC_SendToOBList.clicked.connect(self.BC_send_to_list)
+        # Calibrations
+        self.BC_CalibrationsValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
+        self.BC_ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
+        self.BC_ClearCalibrationsButton.clicked.connect(self.BC_clear_calibrations)
+        self.BC_CalibrationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BC_CalibrationsView')
+        self.BC_CalibrationsView.setPlainText(Calibration({}).__repr__(prune=False, comment=True))
+        self.BC_CalibrationsView.setFont(QtGui.QFont('Courier New', 11))
+        self.BC_edit_calibrations()
+        self.BC_CalibrationsView.textChanged.connect(self.BC_edit_calibrations)
 
 
     ##-------------------------------------------
@@ -897,19 +916,93 @@ class MainWindow(QtWidgets.QMainWindow):
             self.BS_EstimatedDuration.setText('')
 
     def BS_send_to_list(self):
-        print(f"self.KPFCC: {self.KPFCC}")
         if self.BS_ObservingBlock.validate() != True:
             print('OB is invalid, not sending to OB list')
         elif self.KPFCC == False:
             self.model.OBs.append(self.BS_ObservingBlock)
             self.model.layoutChanged.emit()
         elif self.KPFCC == True:
-            print(len(self.model.OBs), len(self.model.start_times))
             self.model.OBs.append(self.BS_ObservingBlock)
             self.model.start_times.append(24)
             self.model.sort('time')
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
+
+
+    ##-------------------------------------------
+    ## Methods for the Build a Calibration OB Tab
+    ##-------------------------------------------
+    def BC_edit_calibrations(self):
+        BCC_edited_lines = self.BC_CalibrationsView.document().toPlainText()
+        try:
+            new_dict = yaml.safe_load(BCC_edited_lines)
+            self.BC_Calibrations = [Calibration(entry) for entry in new_dict]
+            CalibrationsValid = np.all([entry.validate() for entry in self.BC_Calibrations])
+        except Exception as e:
+            print(e)
+            self.BC_Calibrations = [Calibration({})]
+            CalibrationsValid = False
+        color = {True: 'green', False: 'orange'}[CalibrationsValid]
+        self.BC_CalibrationsValid.setText(str(CalibrationsValid))
+        self.BC_CalibrationsValid.setStyleSheet(f"color:{color}")
+        self.BC_form_OB()
+
+    def BC_refresh_calibration_comments(self):
+        out = [cal.__repr__(prune=False, comment=True) for cal in self.BC_Calibrations]
+        cursor = self.BC_CalibrationsView.textCursor()
+        cursor_position = cursor.position()
+        self.BC_CalibrationsView.setPlainText(''.join(out))
+        try:
+            # Restore cursor position
+            cursor.setPosition(cursor_position)
+            self.BC_CalibrationsView.setTextCursor(cursor)
+        except:
+            pass
+        self.BC_form_OB()
+
+    def BC_clear_calibrations(self):
+        self.BC_Calibrations = [Calibration({})]
+        self.BC_CalibrationsView.setPlainText(Calibration({}).__repr__(prune=False, comment=True))
+        self.BC_form_OB()
+
+    def BC_form_OB(self):
+        newOB = ObservingBlock({})
+        newOB.Calibrations = self.BC_Calibrations
+        if newOB.__repr__() == self.BC_ObservingBlock.__repr__():
+            return
+        self.BC_ObservingBlock = ObservingBlock({})
+        self.BC_ObservingBlock.Calibrations = self.BC_Calibrations
+        self.BC_refresh_calibration_comments()
+        OBValid = self.BC_ObservingBlock.validate()
+        color = {True: 'green', False: 'orange'}[OBValid]
+        self.BC_OBValid.setText(str(OBValid))
+        self.BC_OBValid.setStyleSheet(f"color:{color}")
+        if OBValid:
+            self.BC_OBString.setText(self.BC_ObservingBlock.summary())
+            duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.BC_ObservingBlock)
+            self.BC_EstimatedDuration.setText(f"{duration/60:.0f} min")
+        else:
+            self.BC_OBString.setText('')
+            self.BC_EstimatedDuration.setText('')
+
+    def BC_send_to_list(self):
+        if self.BC_ObservingBlock.validate() != True:
+            print('OB is invalid, not sending to OB list')
+        elif self.KPFCC == False:
+            self.model.OBs.append(self.BC_ObservingBlock)
+            self.model.layoutChanged.emit()
+        elif self.KPFCC == True:
+            self.model.OBs.append(self.BC_ObservingBlock)
+            self.model.start_times.append(24)
+            self.model.sort('time')
+            self.model.layoutChanged.emit()
+            self.set_SortOrWeather()
+
+
+    def exit(self):
+        self.log.info("Exiting ...")
+        sys.exit(0)
+
 
 ##-------------------------------------------------------------------------
 ## Define main()
