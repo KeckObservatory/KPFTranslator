@@ -298,8 +298,6 @@ links:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
     CheckAllowScheduledCals:
         cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
-    CheckDewarWeights:
-        cmd: utils.CheckDewarWeights.CheckDewarWeights
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
     SetObserverFromSchedule:
