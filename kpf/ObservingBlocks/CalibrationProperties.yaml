@@ -1,7 +1,7 @@
 - name: 'CalSource'
   comment: 'Name of the calibration source'
   valuetype: str
-  defaultvalue: 'EtalonFiber'
+  defaultvalue: ''
 - name: 'Object'
   comment: 'Object name for the FITS header'
   valuetype: str
