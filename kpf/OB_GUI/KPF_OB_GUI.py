@@ -1010,7 +1010,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BC_refresh_calibration_text()
 
     def BC_send_to_list(self):
-
         if self.BC_ObservingBlock.validate() != True:
             print('OB is invalid, not sending to OB list')
         elif self.KPFCC == False:
