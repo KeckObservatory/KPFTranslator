@@ -121,7 +121,6 @@ class ObservingBlock(object):
                 print('Target component is not a valid Target object')
                 valid = False
         for i,observation in enumerate(self.Observations):
-            print(f'Validating Observation {i+1}')
             if not isinstance(observation, Observation):
                 print(f'Observation component {i+1} is not a Observation object')
                 valid = False
