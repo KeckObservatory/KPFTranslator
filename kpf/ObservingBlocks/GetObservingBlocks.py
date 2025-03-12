@@ -29,20 +29,38 @@ def query_database(query, params):
         log.error(r.text)
         log.error(e)
         result = None
+    if type(result) == dict:
+        success = result.get('success', None)
+        if success == 'ERROR':
+            log.error('success: {success}')
+            msg = result.get('message', None)
+            if msg: log.error('Message: {msg}')
+            details = result.get('details', None)
+            if details: log.error('Details: {details}')
+            result = None
     return result
 
 
 def get_OBs_from_database(params):
     result = query_database('getKPFObservingBlock', params)
+    if result is None:
+        return []
     OBs = []
-    for entry in result:
+    for i,entry in enumerate(result):
         try:
             OB = ObservingBlock(entry)
-            OBs.append(OB)
         except Exception as e:
+            print('Unable to parse result in to an ObservingBlock')
             log.error('Unable to parse result in to an ObservingBlock')
             log.debug(entry)
             log.error(e)
+        else:
+            if OB.validate():
+                print('OB is valid')
+                OBs.append(OB)
+            else:
+                print('OB is invalid')
+
     log.debug(f'get_OBs_from_database parsed {len(OBs)} ObservingBlocks')
     return OBs
 
