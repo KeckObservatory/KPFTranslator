@@ -26,6 +26,7 @@ from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
+from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocksByProgram
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 
@@ -478,7 +479,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def get_progIDs(self):
         progIDs = ['', 'KPF-CC']
         # Go get list of available program IDs for Instrument=KPF
-        return progIDs + ['E123', 'E456', 'CPS 2024B']
+        return progIDs + ['U027', 'E123', 'E456', 'CPS 2024B']
 
     def set_SortOrWeather(self):
         if self.KPFCC == True:
@@ -523,6 +524,14 @@ class MainWindow(QtWidgets.QMainWindow):
         if value == '':
             self.OBListHeader.setText(hdr)
             self.model.OBs = []
+            self.model.start_times = None
+            self.model.layoutChanged.emit()
+            self.set_SortOrWeather()
+        elif value == 'U027':
+            OBs = GetObservingBlocksByProgram.execute({'program': value})
+            print(OBs)
+            self.OBListHeader.setText(f"    {self.hdr}")
+            self.model.OBs = OBs
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
