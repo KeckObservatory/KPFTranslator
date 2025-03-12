@@ -29,43 +29,36 @@ class Calibration(BaseOBComponent):
         self.from_dict(input_dict)
 
 
+    def check_property(self, pname):
+        if pname == 'CalSource':
+            if self.get(pname) not in self.calsources:
+                return True, ' # ERROR: CalSource invalid'
+        elif pname == 'Object':
+            if self.get(pname) in ['', None]:
+                return True, ' # ERROR: Object is empty'
+        elif pname in self.skip_if_dark:
+            if self.get('CalSource').lower() in ['dark', 'home']:
+                return False, ' # Unused: CalSource = Dark'
+        if pname == 'CalND2':
+            if self.get('TakeSimulCal') == False:
+                return False, ' # Unused: TakeSimulCal == False'
+        return False, ''
+
+
+    def add_comment(self, pname):
+        error, comment = self.check_property(pname)
+        return comment
+
+
     def validate(self):
         '''
         '''
         valid = True
         for p in self.properties:
-            if self.get(p['name']) is None:
-                print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
+            error, comment = self.check_property(p['name'])
+            if error == True:
                 valid = False
-        # CalSource is not allowed value
-        if self.get('CalSource') not in self.calsources:
-            print(f"ERROR: CalSource invalid")
-            valid = False
-        # Check if Object is empty
-        if self.get('Object') in ['', None]:
-            print(f"ERROR: Object field is empty")
-            valid = False
         return valid
-
-
-    def add_comment(self, pname):
-        # CalSource is not allowed value
-        if self.get('CalSource') not in self.calsources:
-            if pname in ['CalSource']:
-                return ' # ERROR: CalSource invalid'
-        # Object is empty
-        if self.get('Object') in ['', None]:
-            if pname in ['Object']:
-                return ' # ERROR: Object field is empty'
-        # CalSource is dark
-        if self.get('CalSource').lower() in ['dark', 'home']:
-            if pname in self.skip_if_dark:
-                return ' # Unused: CalSource == Dark'
-        # TakeSimulcal is false
-        if self.get('TakeSimulCal') == False:
-            if pname in ['CalND2']:
-                return ' # Unused: TakeSimulCal == False'
-        return ''
 
 
     def __str__(self):

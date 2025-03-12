@@ -26,8 +26,64 @@ class Observation(BaseOBComponent):
         try:
             WAVEBINS = ktl.cache('kpf_expmeter', 'WAVEBINS')
             self.expmeter_bands = [f"{float(b):.0f}nm" for b in WAVEBINS.read().split()]
+            ND1POS = ktl.cache('kpfcal', 'ND1POS')
+            ND2POS = ktl.cache('kpfcal', 'ND2POS')
+            self.ND_values = {'CalND1': list(ND1POS._getEnumerators()),
+                              'CalND2': list(ND2POS._getEnumerators())}
+            for nd in ['CalND1', 'CalND2']:
+                if 'Unknown' in self.ND_values[nd]:
+                    self.ND_values[nd].pop(self.ND_values[nd].index('Unknown'))
         except:
             self.expmeter_bands = [f"{float(b):.0f}nm" for b in [498.12, 604.38, 710.62, 816.88]]
+            self.ND_values = {'CalND1': ['OD 0.1', 'OD 1.0', 'OD 1.3', 'OD 2.0', 'OD 3.0', 'OD 4.0'],
+                              'CalND2': ['OD 0.1', 'OD 0.3', 'OD 0.5', 'OD 0.8', 'OD 1.0', 'OD 4.0']}
+
+
+    def check_property(self, pname):
+        if pname == 'Object':
+            if self.get(pname) in ['', None]:
+                return True, ' # ERROR: Object field is empty'
+        elif pname == 'nExp':
+            if self.get(pname) < 1:
+                return True, ' # ERROR: nExp < 1'
+        elif pname == 'ExpTime':
+            if self.get(pname) < 0:
+                return True, ' # ERROR: ExpTime < 0'
+        elif pname == 'ExpMeterMode':
+            if self.get(pname) not in ['off', False, 'control', 'monitor']:
+                return True, ' # ERROR: ExpMeterMode invalid'
+        elif pname == 'AutoExpMeter':
+            if self.get('ExpMeterMode') in ['off', False]:
+                return False, ' # Unused: ExpMeterMode = off'
+        elif pname == 'ExpMeterExpTime':
+            if self.get(pname) < 0:
+                return True, ' # ERROR: ExpMeterExpTime < 0'
+            elif self.get('ExpMeterMode') in ['off', False]:
+                return False, ' # Unused: ExpMeterMode = off'
+            elif self.get('AutoExpMeter') == True:
+                return False, ' # Unused: AutoExpMeter = True'
+        elif pname == 'ExpMeterBin':
+            if self.get(pname) not in [1, 2, 3, 4]:
+                return True, ' # ERROR: ExpMeterBin must be 1, 2, 3, or 4'
+            elif self.get('ExpMeterMode') != 'control':
+                return False, ' # Unused: ExpMeterMode != control'
+        elif pname == 'ExpMeterThreshold':
+            if self.get(pname) < 0:
+                return True, ' # ERROR: ExpMeterThreshold < 0'
+            elif self.get('ExpMeterMode') != 'control':
+                return False, ' # Unused: ExpMeterMode != control'
+        elif pname in ['CalND1', 'CalND2']:
+            if self.get(pname) not in self.ND_values[pname]:
+                return True, f' # ERROR: {pname} invalid'
+            elif self.get('TakeSimulCal') == False:
+                return False, ' # Unused: TakeSimulCal = False'
+        elif pname == 'AutoNDFilters':
+            if self.get('TakeSimulCal') == False:
+                return False, ' # Unused: TakeSimulCal = False'
+        elif pname == 'GuideHere':
+            if self.get(pname) == False:
+                return False, ' # Tip tilt disabled!'
+        return False, ''
 
 
     def validate(self):
@@ -35,26 +91,15 @@ class Observation(BaseOBComponent):
         '''
         valid = True
         for p in self.properties:
-            if self.get(p['name']) is None:
-                print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
+            error, comment = self.check_property(p['name'])
+            if error == True:
                 valid = False
-        # Check if Object is empty
-        if self.get('Object') in ['', None]:
-            print(f"ERROR: Object field is empty")
-            valid = False
-        # Check that ExpMeterBin is in [1,2,3,4]
-        if self.get('ExpMeterBin') not in [1, 2, 3, 4]:
-            print(f"ERROR: ExpMeterBin must be 1, 2, 3, or 4")
-            valid = False
-        # Check that boolean value properties are reasonable 
-        ok_booleans = [True, 'true', 'on', 'On', 1, '1',
-                       False, 'false', 'off', 'Off', 0, '0']
-        for p in self.properties:
-            if p['valuetype'] in [bool, 'bool']:
-                if self.get(p['name']) not in ok_booleans:
-                    print(f"ERROR: {p['name']} is a boolean with value {self.get(p['name'])}")
-                    valid = False
         return valid
+
+
+    def add_comment(self, pname):
+        error, comment = self.check_property(pname)
+        return comment
 
 
     def summary(self):
@@ -83,35 +128,3 @@ class Observation(BaseOBComponent):
             details.append('offset')
         details = f"({';'.join(details)})" if len(details) > 0 else ''
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
-
-
-    def add_comment(self, pname):
-        # Object is empty
-        if self.get('Object') in ['', None]:
-            if pname in ['Object']:
-                return ' # ERROR: Object field is empty'
-        # Exposure Meter is off
-        if self.get('ExpMeterMode') in ['off', False]:
-            if pname in ['AutoExpMeter', 'ExpMeterExpTime', 'ExpMeterThreshold', 'ExpMeterBin']:
-                return ' # Unused: ExpMeterMode = off'
-        # AutoExpMeter is True
-        if self.get('AutoExpMeter') == True:
-            if pname == 'ExpMeterExpTime':
-                return ' # Unused: AutoExpMeter = True'
-        # ExpMeterMode is not Control
-        if self.get('ExpMeterMode') != 'control':
-            if pname in ['ExpMeterBin', 'ExpMeterThreshold']:
-                return ' # Unused: ExpMeterMode != control'
-        # AutoNDFilters is True
-        if self.get('AutoNDFilters') == True:
-            if pname in ['CalND1', 'CalND2']:
-                return ' # Unused: AutoNDFilters = True'
-        # TakeSimulCal is False
-        if self.get('TakeSimulCal') == False:
-            if pname in ['AutoNDFilters', 'CalND1', 'CalND2']:
-                return ' # Unused: TakeSimulCal = False'
-        # GuideHere is False
-        if self.get('GuideHere') == False:
-            if pname == 'GuideHere':
-                return ' # Tip tilt disabled!'
-        return ''

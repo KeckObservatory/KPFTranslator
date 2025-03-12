@@ -39,63 +39,40 @@ class Target(BaseOBComponent):
             self.coord = None
 
 
+    def check_property(self, pname):
+        if pname in ['RA', 'Dec']:
+            if self.coord is None:
+                return True, ' # ERROR: Invalid SkyCoord'
+        elif pname == 'TargetName':
+            if self.get(pname) in ['', None]:
+                return True, ' # ERROR: TargetName is empty'
+        elif pname == 'GaiaID':
+            if self.get(pname) in ['', None]:
+                return False, ' # GaiaID is empty'
+        elif pname == 'twoMASSID':
+            if self.get(pname) in ['', None]:
+                return False, ' # 2MASSID is empty'
+        elif pname == 'Teff':
+            if self.get('Teff') < 2600 or self.get('Teff') > 45000:
+                return True, ' # ERROR: Teff invalid'
+            elif self.get('Teff') < 2700 or self.get('Teff') > 6600:
+                return False, ' # AutoNDFilters needs 2700-6600'
+        return False, ''
+
+
     def add_comment(self, pname):
-        # Unable to form SkyCoord
-        if self.coord is None:
-            if pname in ['RA', 'Dec']:
-                return ' # ERROR: Invalid SkyCoord'
-        # TargetName is empty
-        if self.get('TargetName') in [None, '']:
-            if pname == 'TargetName':
-                return ' # ERROR: TargetName is empty'
-        # GaiaID is empty
-        if self.get('GaiaID') in [None, '']:
-            if pname == 'GaiaID':
-                return ' # GaiaID is empty'
-        # twoMASSID is empty
-        if self.get('twoMASSID') in [None, '']:
-            if pname == 'twoMASSID':
-                return ' # twoMASSID is empty'
-        # Teff out of range
-        if self.get('Teff') < 2600 or self.get('Teff') > 45000:
-            if pname == 'Teff':
-                return ' # Teff range 2600-45000'
-        # Teff out of range for Simulcal prediction 2700 - 6600
-        elif self.get('Teff') < 2700 or self.get('Teff') > 6600:
-            if pname == 'Teff':
-                return ' # AutoNDFilters needs 2700-6600'
-        return ''
+        error, comment = self.check_property(pname)
+        return comment
 
 
     def validate(self):
-        '''Validation checks:
-        
-        - TargetName is not empty
-        - RA, Dec, and equinox can form an astropy `SkyCoord`
-        
-        Warnings (intended for RV targets):
-        - GaiaID is empty
-        - Teff: 2700 - 6600 Kelvin
+        '''
         '''
         valid = True
         for p in self.properties:
-            if self.get(p['name']) is None:
-                print(f"ERROR: {p['name']} is undefined, default is {p['defaultvalue']}")
+            error, comment = self.check_property(p['name'])
+            if error == True:
                 valid = False
-        # Check that we can build a SkyCoord
-        self.build_SkyCoord()
-        if self.coord is None:
-            print(f'ERROR: Could not form a SkyCoord from target coordinates')
-            valid = False
-        # Check if TargetName is empty string
-        if self.TargetName.value == '':
-            print(f'ERROR: TargetName is empty')
-            valid = False
-        # Handle Warnings
-        if self.GaiaID.value == '':
-            print(f'WARNING: GaiaID is empty. This will impact PRV calculations.')
-        if self.Teff.value <= 2700 or self.Teff.value >= 6600:
-            print(f'WARNING: Teff is out of range. This will impact simulcal estimates.')
         return valid
 
 
