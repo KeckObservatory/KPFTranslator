@@ -700,8 +700,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_Observation2.setText('--')
             self.SOB_Observation3.setText('--')
             self.SOB_ExecutionTime.setText('--')
+            self.SOB_CommentToObserver.setText('')
+            self.SOB_CommentToObserver.setToolTip('')
         else:
             SOB = self.model.OBs[self.SOBindex]
+            self.SOB_CommentToObserver.setText(SOB.CommentToObserver)
+            self.SOB_CommentToObserver.setToolTip(SOB.CommentToObserver)
             self.set_SOB_enabled(True)
             # Handle Target component
             if SOB.Target is None:
