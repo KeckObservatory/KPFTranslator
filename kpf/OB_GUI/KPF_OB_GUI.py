@@ -303,7 +303,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_ObservationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
         self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False, comment=True))
         self.BS_ObservationsView.setFont(QtGui.QFont('Courier New', 11))
-        self.BS_edit_observations()
+        self.BS_refresh_observation_comments()
         self.BS_ObservationsView.textChanged.connect(self.BS_edit_observations)
 
         #-------------------------------------------------------------------
@@ -478,8 +478,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def get_progIDs(self):
         progIDs = ['', 'KPF-CC']
+        # Add test program ID for database query testing
+        progIDs += ['U027']
+        # Add some programs for testing which load OBs from disk
+        progIDs += ['CPS 2024B', 'E123', 'E456']
         # Go get list of available program IDs for Instrument=KPF
-        return progIDs + ['U027', 'E123', 'E456', 'CPS 2024B']
+        return progIDs
 
     def set_SortOrWeather(self):
         if self.KPFCC == True:
@@ -527,15 +531,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-        elif value == 'U027':
+        elif value == 'U027': # Test of database query
             OBs = GetObservingBlocksByProgram.execute({'program': value})
-            print(OBs)
             self.OBListHeader.setText(f"    {self.hdr}")
             self.model.OBs = OBs
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-        elif value == 'CPS 2024B':
+        elif value == 'CPS 2024B': # Tests pulling in a lot of OBs
             self.OBListHeader.setText(f"    {self.hdr}")
             files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
             self.model.OBs = []
@@ -544,11 +547,10 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.model.OBs.append(ObservingBlock(file))
                 except:
                     print(f"Failed file {i+1}: {file}")
-            print(f"Read in {len(self.model.OBs)} files")
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-        elif value == 'KPF-CC':
+        elif value == 'KPF-CC': # Will need to be replaced by query to DB
             self.KPFCC = True
             self.OBListHeader.setText('    StartTime '+self.hdr)
             files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
