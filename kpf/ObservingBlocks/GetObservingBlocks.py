@@ -50,16 +50,16 @@ def get_OBs_from_database(params):
         try:
             OB = ObservingBlock(entry)
         except Exception as e:
-            print('Unable to parse result in to an ObservingBlock')
-            log.error('Unable to parse result in to an ObservingBlock')
+            print(f'Unable to parse entry {i+1} in to an ObservingBlock')
+            log.error(f'Unable to parse entry {i+1} in to an ObservingBlock')
             log.debug(entry)
             log.error(e)
         else:
             if OB.validate():
-                print('OB is valid')
+                log.debug(f'OB {i+1} is valid')
                 OBs.append(OB)
             else:
-                print('OB is invalid')
+                log.warning(f'OB {i+1} is invalid')
 
     log.debug(f'get_OBs_from_database parsed {len(OBs)} ObservingBlocks')
     return OBs
