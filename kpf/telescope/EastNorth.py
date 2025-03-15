@@ -30,8 +30,8 @@ class EastNorth(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        dcsint = cfg.getfloat('telescope', 'telnr', fallback=1)
-        dcs = ktl.cache(f'dcs{dcsint}')
+        dcsint = cfg.getint('telescope', 'telnr', fallback=1)
+        dcs = ktl.cache(f'dcs{dcsint:1d}')
         if KPF_is_selected_instrument():
             east = args.get('NodE', 0)
             north = args.get('NodN', 0)

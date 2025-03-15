@@ -291,8 +291,18 @@ links:
     WaitForReady:
         cmd: spectrograph.WaitForReady.WaitForReady
     # Telescope
+    AddTarget:
+        cmd: telescope.AddTarget.AddTarget
     EastNorth:
         cmd: telescope.EastNorth.EastNorth
+    GetTargetList:
+        cmd: telescope.GetTargetList.GetTargetList
+    RemoveTarget:
+        cmd: telescope.RemoveTarget.RemoveTarget
+    SelectTarget:
+        cmd: telescope.SelectTarget.SelectTarget
+    SetTargetList:
+        cmd: telescope.SetTargetList.SetTargetList
     # Utils
     BuildOBfromQuery:
         cmd: utils.BuildOBfromQuery.BuildOBfromQuery
