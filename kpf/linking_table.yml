@@ -310,6 +310,8 @@ links:
         cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
+    RecoverThermalControl:
+        cmd: utils.RecoverThermalControl.RecoverThermalControl
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
