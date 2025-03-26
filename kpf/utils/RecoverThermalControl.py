@@ -30,6 +30,7 @@ class RecoverThermalControl(KPFFunction):
             return
         VAL = ktl.cache(service, f'{location}VAL')
         VAL.monitor()
+        MOD = ktl.cache(service, f'{location}MOD')
         RMP = ktl.cache(service, f'{location}RMP')
         RMO = ktl.cache(service, f'{location}RMO')
         RMP = ktl.cache(service, f'{location}RMP')
@@ -41,6 +42,9 @@ class RecoverThermalControl(KPFFunction):
 
         if RNG.read() != 'Off':
             log.warning('Thermal control is active, no recovery process to run')
+            return
+        if MOD.read() != 'Closed loop PID':
+            log.warning('Thermal control is not in "Closed loop PID" mode')
             return
 
         # First change the setpoint to match the current temperature value.
