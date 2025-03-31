@@ -92,7 +92,7 @@ class BaseOBComponent(object):
     def to_dict(self):
         output = {}
         for p in self.properties:
-            name = self.get_text_name(name)
+            name = self.get_text_name(p['name'])
             if self.get(p['name']) is not None:
                 outname = p['name'] if p['altname'] is None else p['altname']
                 output[outname] = self.get(p['name'])
