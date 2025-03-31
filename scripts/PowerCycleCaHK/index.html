@@ -394,9 +394,9 @@ software have already failed.</p>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="n">kpfpower</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfpower&#39;</span><span class="p">)</span>
-        <span class="n">outlets</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;J1&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose2 Galil RIO controller&#39;</span><span class="p">),</span>
-                   <span class="p">(</span><span class="s1">&#39;J2&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose2 Galil output bank&#39;</span><span class="p">),</span>
-                   <span class="p">(</span><span class="s1">&#39;J5&#39;</span><span class="p">,</span> <span class="s1">&#39;Andor Newton PS&#39;</span><span class="p">),</span>
+        <span class="n">outlets</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;J1&#39;</span><span class="p">,</span> <span class="s1">&#39;Galil RIO (expose2)&#39;</span><span class="p">),</span>
+                   <span class="p">(</span><span class="s1">&#39;J2&#39;</span><span class="p">,</span> <span class="s1">&#39;Galil Output Bank (expose2)&#39;</span><span class="p">),</span>
+                   <span class="p">(</span><span class="s1">&#39;J5&#39;</span><span class="p">,</span> <span class="s1">&#39;Andor Newton (kpf_hk)&#39;</span><span class="p">),</span>
                    <span class="p">]</span>
         <span class="k">for</span> <span class="n">outlet_id</span><span class="p">,</span> <span class="n">outlet_name</span> <span class="ow">in</span> <span class="n">outlets</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">kpfpower</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;OUTLET_</span><span class="si">{</span><span class="n">outlet_id</span><span class="si">}</span><span class="s1">_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>

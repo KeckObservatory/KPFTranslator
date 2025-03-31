@@ -395,7 +395,9 @@ line tool, or passed in from the execution engine.</p>
 <span class="normal">189</span>
 <span class="normal">190</span>
 <span class="normal">191</span>
-<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ExecuteSlewCal</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ExecuteSlewCal</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which executes the observations of a Slew Cal</span>
 
 <span class="sd">    This must have arguments as input, either from a file using the `-f` command</span>
@@ -422,6 +424,7 @@ line tool, or passed in from the execution engine.</p>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
 
         <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
+        <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SCRIPTMSG&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Executing Slew Cal&quot;</span><span class="p">)</span>
         <span class="n">calsource</span> <span class="o">=</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SIMULCALSOURCE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">runagitator</span> <span class="o">=</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;USEAGITATOR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">fast_read_mode</span> <span class="o">=</span> <span class="n">QueryFastReadMode</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
@@ -539,6 +542,7 @@ line tool, or passed in from the execution engine.</p>
 
         <span class="c1"># Set FIU Mode</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting FIU mode to Observing&#39;</span><span class="p">)</span>
+        <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SCRIPTMSG&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Slew Cal complete. Setting FIU to observing mode.&quot;</span><span class="p">)</span>
         <span class="n">ConfigureFIU</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Observing&#39;</span><span class="p">,</span> <span class="s1">&#39;wait&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
         <span class="c1"># Set PROGNAME</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Setting PROGNAME back to </span><span class="si">{</span><span class="n">original_progname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
