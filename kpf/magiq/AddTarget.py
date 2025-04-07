@@ -1,14 +1,10 @@
-import requests
-
-import ktl
-
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.telescope import KPF_is_selected_instrument, magiq_server_command
+from kpf.telescope import KPF_is_selected_instrument
 
 
-class GetTargetList(KPFFunction):
+class AddTarget(KPFFunction):
     '''
 
     MAGIQ API documentation:
@@ -16,12 +12,12 @@ class GetTargetList(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        pass
+        if not KPF_is_selected_instrument():
+            raise KPFException('KPF is not selected instrument')
 
     @classmethod
     def perform(cls, args):
-        result = magiq_server_command('getTargetlist')
-        print(result)
+        
 
     @classmethod
     def post_condition(cls, args):

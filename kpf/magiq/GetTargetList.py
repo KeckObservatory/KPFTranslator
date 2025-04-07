@@ -1,12 +1,12 @@
-import ktl
+import requests
 
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.telescope import KPF_is_selected_instrument
+from kpf.telescope import KPF_is_selected_instrument, magiq_server_command
 
 
-class RemoveTarget(KPFFunction):
+class GetTargetList(KPFFunction):
     '''
 
     MAGIQ API documentation:
@@ -18,7 +18,8 @@ class RemoveTarget(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-
+        result = magiq_server_command('getTargetlist')
+        print(result)
 
     @classmethod
     def post_condition(cls, args):
