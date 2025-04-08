@@ -207,6 +207,8 @@ links:
         cmd: magiq.GetTargetList.GetTargetList
     RemoveTarget:
         cmd: magiq.RemoveTarget.RemoveTarget
+    RemoveAllTargets:
+        cmd: magiq.RemoveTarget.RemoveAllTargets
     SelectTarget:
         cmd: magiq.SelectTarget.SelectTarget
     SetTargetList:

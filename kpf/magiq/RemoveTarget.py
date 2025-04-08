@@ -18,8 +18,43 @@ class RemoveTarget(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        params = {'Target': args.get('TargetName', None)}
-        result = magiq_server_command('selectTarget', params=params)
+        target_name = args.get('TargetName', None)
+        target_names, lines = GetTargetList.execute({})
+        if target_name in target_names:
+            params = {'target': target_name}
+            result = magiq_server_command('removeTarget', params=params)
+        else:
+            log.error(f'Target name "{target_name}" not in current Magiq list')
+            log.debug(target_names)
+
+    @classmethod
+    def post_condition(cls, args):
+        pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser):
+        parser.add_argument('TargetName', type=str,
+            help="Name of target to select")
+        return super().add_cmdline_args(parser)
+
+
+class RemoveAllTargets(KPFFunction):
+    '''
+
+    MAGIQ API documentation:
+    http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php
+    '''
+    @classmethod
+    def pre_condition(cls, args):
+        if not KPF_is_selected_instrument():
+            raise KPFException('KPF is not selected instrument')
+
+    @classmethod
+    def perform(cls, args):
+        target_names, lines = GetTargetList.execute({})
+        for target_name in target_names:
+            params = {'target': target_name}
+            result = magiq_server_command('removeTarget', params=params)
 
     @classmethod
     def post_condition(cls, args):
