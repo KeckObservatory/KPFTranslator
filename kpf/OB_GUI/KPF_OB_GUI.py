@@ -29,6 +29,10 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocksByProgram
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
+from kpf.magiq.RemoveTarget import RemoveTarget, RemoveAllTargets
+from kpf.magiq.AddTarget import AddTarget
+from kpf.magiq.SelectTarget import SelectTarget
+from kpf.magiq.SetTargetList import SetTargetList
 
 
 ##-------------------------------------------------------------------------
@@ -601,6 +605,15 @@ class MainWindow(QtWidgets.QMainWindow):
         if len(self.model.OBs) > 0:
             self.select_OB(0)
             self.select_OB(None)
+        self.update_star_list()
+
+    def update_star_list(self):
+        star_list = [OB.Target.to_star_list() for OB in self.model.OBs
+                     if OB.target is not None]
+        print('\n'.join(star_list))
+        if self.enable_telescope == True:
+            RemoveAllTargets.execute({})
+            SetTargetList.execute({})
 
     def set_weather_band(self, value):
         self.SortOrWeather.setCurrentText(value)
