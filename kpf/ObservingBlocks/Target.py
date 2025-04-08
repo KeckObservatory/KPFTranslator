@@ -104,7 +104,7 @@ class Target(BaseOBComponent):
         out = f"{self.TargetName:15s} {rastr} {decstr} {self.Equinox}"
         if abs(self.DRA.value) > 0 or abs(self.DDEC.value) > 0:
                out += f" dra={self.DRA:.3f} ddec={self.DDEC:.3f}"
-        out =+ f" Gmag={self.Gmag:.2f} Jmag={self.Jmag:.2f}")
+        out =+ f" Gmag={self.Gmag:.2f} Jmag={self.Jmag:.2f}"
         return out
 
     @classmethod
