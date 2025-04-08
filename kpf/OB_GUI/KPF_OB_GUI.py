@@ -131,6 +131,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.fast = False
         # Tracked values
         self.disabled_detectors = []
+        self.enable_telescope = False
 
 
     def setupUi(self):
@@ -157,6 +158,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.Observer = self.findChild(QtWidgets.QLabel, 'Observer')
         observer_kw = kPyQt.kFactory(ktl.cache('kpfexpose', 'OBSERVER'))
         observer_kw.stringCallback.connect(self.Observer.setText)
+
+        # Selected Instrument
+        self.SelectedInstrument = self.findChild(QtWidgets.QLabel, 'SelectedInstrument')
+        INSTRUME = kPyQt.kFactory(ktl.cache(self.dcs, 'INSTRUME'))
+        INSTRUME.stringCallback.connect(self.update_selected_instrument)
 
         # script name
         self.scriptname_value = self.findChild(QtWidgets.QLabel, 'scriptname_value')
@@ -347,13 +353,22 @@ class MainWindow(QtWidgets.QMainWindow):
     # Expose Status
     def update_expose_status_value(self, value):
         '''Set label text and set color'''
-#         self.log.debug(f'update_expose_status_value: {value}')
         self.expose_status_value.setText(f"{value}")
         if value == 'Ready':
             self.expose_status_value.setStyleSheet("color:green")
         elif value in ['Start', 'InProgress', 'Readout']:
             self.expose_status_value.setStyleSheet("color:orange")
 
+    def update_selected_instrument(self, value):
+        self.SelectedInstrument.setText(value)
+        if value in ['KPF', 'KPF-CC']:
+            self.SelectedInstrument.setStyleSheet("color:green")
+            self.SelectedInstrument.setToolTip('')
+            self.enable_telescope = True
+        else:
+            self.SelectedInstrument.setStyleSheet("color:red")
+            self.SelectedInstrument.setToolTip('Telescope moves and Magiq integration disabled')
+            self.enable_telescope = False
 
     def update_slewcaltime_value(self, value):
         '''Updates value in QLabel and sets color'''
