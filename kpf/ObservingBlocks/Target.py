@@ -91,6 +91,22 @@ class Target(BaseOBComponent):
         return out
 
 
+    def to_star_list(self):
+        '''Return a string which is a Keck formatted star list line
+        '''
+        try:
+            pmcoord = self.coord.apply_space_motion(new_obstime=Time.now())
+            rastr = pmcoord.ra.to_string(unit=u.hourangle, sep=' ', precision=raprecision)
+            decstr = pmcoord.dec.to_string(unit=u.deg, sep=' ', precision=decprecision, alwayssign=True)
+        except:
+            rastr = str(self.RA)
+            decstr = str(self.Dec)
+        out = f"{self.TargetName:15s} {rastr} {decstr} {self.Equinox}"
+        if abs(self.DRA.value) > 0 or abs(self.DDEC.value) > 0:
+               out += f" dra={self.DRA:.3f} ddec={self.DDEC:.3f}"
+        out =+ f" Gmag={self.Gmag:.2f} Jmag={self.Jmag:.2f}")
+        return out
+
     @classmethod
     def get_gaia_parameters(self, gaiaid):
         r = Vizier(catalog='I/350/gaiaedr3').query_constraints(Source=gaiaid)[0]
