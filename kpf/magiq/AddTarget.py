@@ -17,7 +17,7 @@ class AddTarget(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        
+        pass
 
     @classmethod
     def post_condition(cls, args):

@@ -609,7 +609,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_star_list(self):
         star_list = [OB.Target.to_star_list() for OB in self.model.OBs
-                     if OB.target is not None]
+                     if OB.Target is not None]
         print('\n'.join(star_list))
         if self.enable_telescope == True:
             RemoveAllTargets.execute({})

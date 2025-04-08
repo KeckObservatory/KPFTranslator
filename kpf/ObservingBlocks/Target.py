@@ -101,10 +101,10 @@ class Target(BaseOBComponent):
         except:
             rastr = str(self.RA)
             decstr = str(self.Dec)
-        out = f"{self.TargetName:15s} {rastr} {decstr} {self.Equinox}"
+        out = f"{self.TargetName.value:15s} {rastr} {decstr} {self.Equinox}"
         if abs(self.DRA.value) > 0 or abs(self.DDEC.value) > 0:
                out += f" dra={self.DRA:.3f} ddec={self.DDEC:.3f}"
-        out =+ f" Gmag={self.Gmag:.2f} Jmag={self.Jmag:.2f}"
+        out += f" Gmag={str(self.Gmag)} Jmag={str(self.Jmag)}"
         return out
 
     @classmethod
