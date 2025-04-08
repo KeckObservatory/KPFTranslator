@@ -18,7 +18,7 @@ class SetTargetList(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-
+        params = {'targetlist': }
 
     @classmethod
     def post_condition(cls, args):
