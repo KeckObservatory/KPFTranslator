@@ -1,6 +1,9 @@
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+from kpf.magiq.GetTargetList import GetTargetList
+from kpf.magiq.SelectTarget import SelectTarget
+from kpf.scripts.SetTargetInfo import SetTargetInfo
 
 
 ##-------------------------------------------------------------------------
@@ -16,7 +19,8 @@ class SendTargetToMagiq(KPFScript):
     @classmethod
     def perform(cls, args, OB=None):
         log.info(f'Sending target info to Magiq')
-        pass
+        target_names, lines = GetTargetList.execute({})
+        print(target_names)
 
     @classmethod
     def post_condition(cls, args, OB=None):

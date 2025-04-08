@@ -66,7 +66,7 @@ class RunOB(KPFScript):
 
         # Send Target info to Magiq for OA
         if OB.Target is not None:
-            SendTargetToMagiq.execute(args, OB=OB)
+            SendTargetToMagiq.execute({})
 
         # Add slew cal to OB if keywords indicate one is requested
         kpfconfig = ktl.cache('kpfconfig')

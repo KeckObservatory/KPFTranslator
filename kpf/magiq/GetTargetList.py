@@ -19,7 +19,9 @@ class GetTargetList(KPFFunction):
     @classmethod
     def perform(cls, args):
         result = magiq_server_command('getTargetlist')
-        print(result)
+        lines = result.split('\n')
+        target_names = [line[:16].strip() for line in lines]
+        return target_names, lines
 
     @classmethod
     def post_condition(cls, args):
