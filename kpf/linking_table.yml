@@ -237,6 +237,8 @@ links:
         cmd: scripts.RunOB.RunOB
     RunSoCalObservingLoop:
         cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
+    SendTargetToMagiq:
+        cmd: scripts.SendTargetToMagiq.SendTargetToMagiq
     # SoCal
     DisableSoCal:
         cmd: socal.DisableSoCal.DisableSoCal
