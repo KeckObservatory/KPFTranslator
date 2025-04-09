@@ -26,8 +26,21 @@ class Calibration(BaseOBComponent):
                               (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
                               (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
                               ]
+        # Handle different defaults for dark frame
+        if input_dict.get('CalSource') in ['Dark', 'dark', 'Home', 'home']:
+            if 'IntensityMonitor' not in input_dict.keys():
+                input_dict['IntensityMonitor'] = False
+            if 'OpenScienceShutter' not in input_dict.keys():
+                input_dict['OpenScienceShutter'] = False
+            if 'OpenSkyShutter' not in input_dict.keys():
+                input_dict['OpenSkyShutter'] = False
+            if 'TakeSimulCal' not in input_dict.keys():
+                input_dict['TakeSimulCal'] = False
+            if 'WideFlatPos' not in input_dict.keys():
+                input_dict['WideFlatPos'] = 'Blank'
+            if 'ExpMeterMode' not in input_dict.keys():
+                input_dict['ExpMeterMode'] = 'off'
         self.from_dict(input_dict)
-
 
     def check_property(self, pname):
         if pname == 'CalSource':
