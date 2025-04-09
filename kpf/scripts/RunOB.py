@@ -104,7 +104,7 @@ class RunOB(KPFScript):
         # Execute science observations
         if len(OB.Observations) > 0:
             log.info(f'Configuring for Observations')
-            matched_PO = VerifyCurrentBase.execute({'query_user': True})
+            VerifyCurrentBase.execute({'query_user': True})
             for i,observation in enumerate(OB.Observations):
                 observation_dict = observation.to_dict()
                 observation_dict['Gmag'] = OB.Target.get('Gmag')
