@@ -19,7 +19,7 @@ class SetTargetList(KPFFunction):
     @classmethod
     def perform(cls, args):
         params = {'targetlist': args.get('StarList')}
-        result = magiq_server_command('setTargetList', params=params)
+        result = magiq_server_command('setTargetList', params=params, post=True)
 
     @classmethod
     def post_condition(cls, args):
