@@ -17,7 +17,19 @@ class AddTarget(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        pass
+#         target=Target&ra=12:34:56&dec=11:22:33&frame=2000&options=a=1 b=2 c=3
+        params = {'target': args.get('TargetName'),
+                  'ra': args.get('RA'),
+                  'dec': args.get('Dec'),
+                  'frame': '2000' if args.get('Equinox') == 'J2000' else args.get('Equinox'),
+                  'options': '',
+                  }
+        if abs(args.get('DRA')) > 0.001:
+            params['options'] += f"DRA={args.get('DRA')}"
+        if abs(args.get('DDEC')) > 0.001:
+            params['options'] += f"DRA={args.get('DDEC')}"
+        result = magiq_server_command('addTarget', params=params)
+
 
     @classmethod
     def post_condition(cls, args):
