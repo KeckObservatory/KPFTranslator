@@ -640,7 +640,18 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_CommentToObserver.setText('')
         self.SOB_CommentToObserverLabel.setEnabled(enabled)
         self.SOB_ShowButton.setEnabled(enabled)
-        self.SOB_AddComment.setEnabled(enabled)
+        # Only enable observer comment if we have a database ID
+        no_comment_msg = 'Can not submit comment without database ID'
+        if self.SOBindex is None or self.SOBindex < 0:
+            OBID_exists = False
+        else:
+            SOB = self.model.OBs[self.SOBindex]
+            OBID_exists = SOB.OBID not in ['', None]
+        if OBID_exists:
+            self.SOB_AddComment.setToolTip('')
+        else:
+            self.SOB_AddComment.setToolTip(no_comment_msg)
+        self.SOB_AddComment.setEnabled(enabled and OBID_exists)
         self.SOB_ExecuteButton.setEnabled(enabled)
         self.SOB_RemoveFromList.setEnabled(enabled)
 
