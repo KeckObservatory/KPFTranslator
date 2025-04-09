@@ -97,15 +97,21 @@ class ObserverCommentBox(QtWidgets.QDialog):
         self.SOB = SOB
         self.comment = ''
         self.observer = observer
-        self.setWindowTitle("Observer Comment Form")
+        self.setWindowTitle(f"Observer Comment Form: {self.SOB.summary()}")
         layout = QtWidgets.QVBoxLayout()
 
         # Initial message lines
-        lines = [f"Submit an observer comment for OB:",
-                 f"{self.SOB.summary()}",
-                 ""]
-        message = QtWidgets.QLabel("\n".join(lines))
-        layout.addWidget(message)
+        line1 = QtWidgets.QLabel("Submit an observer comment for:")
+        layout.addWidget(line1)
+        line2 = QtWidgets.QLabel(f"{self.SOB.summary()}")
+        myFont=QtGui.QFont()
+        myFont.setBold(True)
+        line2.setFont(myFont)
+        layout.addWidget(line2)
+        line3 = QtWidgets.QLabel(f"ProgramID: {self.SOB.ProgramID}")
+        layout.addWidget(line3)
+        line4 = QtWidgets.QLabel(f"OB ID: {self.SOB.OBID}\n")
+        layout.addWidget(line4)
 
         # Add observer field
         observer_label = QtWidgets.QLabel('Observer/Commenter:')
@@ -128,6 +134,12 @@ class ObserverCommentBox(QtWidgets.QDialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
         layout.addWidget(self.buttonBox)
+
+        if self.SOB.OBID in ['', None]:
+            self.observer_field.setEnabled(False)
+            self.comment_field.setEnabled(False)
+            self.buttonBox.setEnabled(False)
+            line4.setText(f"OB ID is unknown, can not submit comment\n")
 
         # Wrap up definition of the ObserverCommentBox
         self.setLayout(layout)
