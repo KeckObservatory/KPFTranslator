@@ -863,9 +863,14 @@ class MainWindow(QtWidgets.QMainWindow):
 #         proc = subprocess.Popen(cmd)
 
     def remove_SOB(self):
-        self.model.OBs.pop(self.SOBindex)
+        removed = self.model.OBs.pop(self.SOBindex)
         self.clear_OB_selection()
         self.model.layoutChanged.emit()
+        if removed.Target is not None:
+            targetname = removed.Target.TargetName
+            log.info(f"Removing {targetname} from star list and OB list")
+            if self.enable_telescope == True:
+                RemoveTarget.execute({'target': targetname})
 
     ##-------------------------------------------
     ## Methods for the Build a Science OB Tab
@@ -983,6 +988,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.sort('time')
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
+        targetname = self.BS_ObservingBlock.Target.TargetName
+        log.info(f"Adding {targetname} to star list and OB list")
+        if self.enable_telescope == True:
+            AddTarget.execute(self.BS_ObservingBlock.Target.to_dict())
 
 
     ##-------------------------------------------
