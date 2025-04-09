@@ -294,6 +294,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_EstimatedDuration = self.findChild(QtWidgets.QLabel, 'BS_EstimatedDuration')
         self.BS_SendToOBList = self.findChild(QtWidgets.QPushButton, 'BS_SendToOBList')
         self.BS_SendToOBList.clicked.connect(self.BS_send_to_list)
+        self.BS_SaveToFile = self.findChild(QtWidgets.QPushButton, 'BS_SaveToFile')
+        self.BS_SaveToFile.clicked.connect(self.BS_save_to_file)
         # Target
         self.BS_QuerySimbadLineEdit = self.findChild(QtWidgets.QLineEdit, 'BS_QuerySimbadLineEdit')
         self.BS_QuerySimbadButton = self.findChild(QtWidgets.QPushButton, 'BS_QuerySimbadButton')
@@ -498,7 +500,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def get_progIDs(self):
         progIDs = ['', 'KPF-CC']
         # Add test program ID for database query testing
-        progIDs += ['U027']
+        progIDs += ['U027', 'E498']
         # Add some programs for testing which load OBs from disk
         progIDs += ['CPS 2024B', 'E123', 'E456']
         # Go get list of available program IDs for Instrument=KPF
@@ -551,6 +553,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
         elif value == 'U027': # Test of database query
+            OBs = GetObservingBlocksByProgram.execute({'program': value})
+            self.OBListHeader.setText(f"    {self.hdr}")
+            self.model.OBs = OBs
+            self.model.start_times = None
+            self.model.layoutChanged.emit()
+            self.set_SortOrWeather()
+        elif value == 'E498': # Test of database query
             OBs = GetObservingBlocksByProgram.execute({'program': value})
             self.OBListHeader.setText(f"    {self.hdr}")
             self.model.OBs = OBs
@@ -1003,6 +1012,11 @@ class MainWindow(QtWidgets.QMainWindow):
         log.info(f"Adding {targetname} to star list and OB list")
         if self.enable_telescope == True:
             AddTarget.execute(self.BS_ObservingBlock.Target.to_dict())
+
+    def BS_save_to_file(self):
+        file = ''
+        log.info(f'Saving science OB to file: {file}')
+#         self.BS_ObservingBlock.write_to(file)
 
 
     ##-------------------------------------------

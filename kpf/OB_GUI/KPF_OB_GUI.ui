@@ -808,9 +808,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>150</y>
+        <y>160</y>
         <width>441</width>
-        <height>521</height>
+        <height>511</height>
        </rect>
       </property>
       <property name="title">
@@ -902,7 +902,7 @@
          <x>10</x>
          <y>90</y>
          <width>421</width>
-         <height>421</height>
+         <height>411</height>
         </rect>
        </property>
       </widget>
@@ -1004,7 +1004,7 @@
         <x>10</x>
         <y>10</y>
         <width>441</width>
-        <height>121</height>
+        <height>131</height>
        </rect>
       </property>
       <property name="title">
@@ -1016,7 +1016,7 @@
          <x>270</x>
          <y>60</y>
          <width>161</width>
-         <height>51</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="toolTip">
@@ -1115,6 +1115,22 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BS_SaveToFile">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>100</y>
+         <width>161</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Save OB to File</string>
        </property>
       </widget>
      </widget>
