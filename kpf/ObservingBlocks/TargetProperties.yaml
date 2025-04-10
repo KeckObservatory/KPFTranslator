@@ -45,7 +45,7 @@
   valuetype: str
   defaultvalue: ''
 - name: 'Equinox'
-  comment: '[str] Equinox of the coordinate system (in Jyear format, e.g. J2000)'
+  comment: '[str] Equinox of the coordinate system (in Jyear format, e.g. J2000 or decimal year, e.g. 2000.0)'
   valuetype: str
   defaultvalue: 'J2000'
 - name: 'PMRA'

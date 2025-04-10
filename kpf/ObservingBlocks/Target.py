@@ -30,12 +30,20 @@ class Target(BaseOBComponent):
             ra = Angle(self.RA.value, unit=u.hourangle)
             dec = Angle(self.Dec.value, unit=u.degree)
             pm_ra_cosdec = (self.PMRA.value*15*np.cos(dec.to(u.radian).value))*u.arcsec/u.yr
-            self.coord = SkyCoord(ra, dec, frame=FK5(equinox=self.Equinox.value),
+            if self.Equinox.value[0] == 'J':
+                eqformat = 'jyear_str'
+            elif self.Equinox.value[0] == 'B':
+                eqformat = 'byear_str'
+            else:
+                eqformat = 'decimalyear'
+            equinox = Time(self.Equinox.value, format=eqformat)
+            self.coord = SkyCoord(ra, dec, frame=FK5(equinox=equinox),
                                   pm_ra_cosdec=pm_ra_cosdec,
                                   pm_dec=self.PMDEC.value*u.arcsec/u.yr,
                                   obstime=Time(self.Epoch.value, format='decimalyear'),
                                   )
-        except:
+        except Exception as e:
+            print(e)
             self.coord = None
 
 
