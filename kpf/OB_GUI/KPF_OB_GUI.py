@@ -1014,9 +1014,18 @@ class MainWindow(QtWidgets.QMainWindow):
             AddTarget.execute(self.BS_ObservingBlock.Target.to_dict())
 
     def BS_save_to_file(self):
-        file = ''
-        log.info(f'Saving science OB to file: {file}')
-#         self.BS_ObservingBlock.write_to(file)
+        result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
+                                             f"{self.file_path}",
+                                             "OB Files (*yaml);;All Files (*)")
+        if result:
+            save_file = result[0]
+            if save_file != '':
+                # save fname as path to use in future
+                self.file_path = Path(save_file).parent
+                log.info(f'Saving science OB to file: {save_file}')
+                self.BS_ObservingBlock.write_to(save_file)
+        else:
+            log.info('No output file chosen')
 
 
     ##-------------------------------------------
