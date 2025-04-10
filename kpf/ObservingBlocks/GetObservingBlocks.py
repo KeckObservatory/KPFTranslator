@@ -60,6 +60,7 @@ def get_OBs_from_database(params):
                 OBs.append(OB)
             else:
                 log.warning(f'OB {i+1} is invalid')
+                print(entry)
 
     log.debug(f'get_OBs_from_database parsed {len(OBs)} ObservingBlocks')
     return OBs
@@ -80,10 +81,6 @@ class GetObservingBlocks(KPFFunction):
     @classmethod
     def perform(cls, args):
         params = {'id': args.get('OBid', '')}
-#         params = {'id': ['67acdce3eac565e90ea5249b',
-#                          '67bce24b163351af181eb2d0',
-#                          '67c0c7e86d1b806b332847ef',
-#                          ]}
         OBs = get_OBs_from_database(params)
         return OBs
 

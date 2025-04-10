@@ -72,6 +72,7 @@ class Target(BaseOBComponent):
         for p in self.properties:
             error, comment = self.check_property(p['name'])
             if error == True:
+                print(f"{p['name']} is INVALID: {comment}")
                 valid = False
         return valid
 
