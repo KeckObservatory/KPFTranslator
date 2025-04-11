@@ -49,8 +49,10 @@ class BaseOBComponent(object):
                 if pname not in p.keys():
                     p[pname] = None
             setattr(self, p['name'], OBProperty(**p))
-        self.pruning_guide = []
         self.list_element = False
+
+    def get_pruning_guide(self):
+        return []
 
     def get_property_name(self, name):
         for p in self.properties:
@@ -101,9 +103,11 @@ class BaseOBComponent(object):
     def to_lines(self, prune=True, comment=False):
         prune_list = []
         if prune == True:
-            for prune in self.pruning_guide:
+            for prune in self.get_pruning_guide():
+                print(prune)
                 if prune[0] == True:
                     prune_list.extend(prune[1])
+                print(prune_list)
         lines = []
         for i,p in enumerate(self.properties):
             if self.get(p['name']) is not None and p['name'] not in prune_list:

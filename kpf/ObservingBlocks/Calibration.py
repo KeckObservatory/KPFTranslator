@@ -20,12 +20,6 @@ class Calibration(BaseOBComponent):
                              'TakeSimulCal', 'WideFlatPos', 'ExpMeterMode',
                              'ExpMeterExpTime', 'ExpMeterBin',
                              'ExpMeterThreshold']
-        self.pruning_guide = [(self.get('CalSource').lower() in ['dark', 'home'], self.skip_if_dark),
-                              (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterExpTime']),
-                              (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
-                              (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
-                              (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
-                              ]
         # Handle different defaults for dark frame
         if input_dict.get('CalSource') in ['Dark', 'dark', 'Home', 'home']:
             if 'IntensityMonitor' not in input_dict.keys():
@@ -41,6 +35,16 @@ class Calibration(BaseOBComponent):
             if 'ExpMeterMode' not in input_dict.keys():
                 input_dict['ExpMeterMode'] = 'off'
         self.from_dict(input_dict)
+
+
+    def get_pruning_guide(self):
+        return [(self.get('CalSource').lower() in ['dark', 'home'], self.skip_if_dark),
+                (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterExpTime']),
+                (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
+                (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
+                (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
+                ]
+
 
     def check_property(self, pname):
         if pname == 'CalSource':

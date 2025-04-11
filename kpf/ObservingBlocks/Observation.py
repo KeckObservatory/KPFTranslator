@@ -15,13 +15,6 @@ class Observation(BaseOBComponent):
             properties = yaml.safe_load(f.read())
         super().__init__('Observation', '2.0', properties=properties)
         self.list_element = True
-        self.pruning_guide = [(self.get('ExpMeterMode') in ['off', False], ['AutoExpMeter', 'ExpMeterExpTime']),
-                              (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
-                              (self.get('AutoExpMeter') == True, ['ExpMeterExpTime']),
-                              (self.get('AutoNDFilters') == True, ['CalND1', 'CalND2']),
-                              (self.get('TakeSimulCal') == False, ['AutoNDFilters', 'CalND1', 'CalND2']),
-                              (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
-                              ]
         self.from_dict(input_dict)
         try:
             WAVEBINS = ktl.cache('kpf_expmeter', 'WAVEBINS')
@@ -38,6 +31,14 @@ class Observation(BaseOBComponent):
             self.ND_values = {'CalND1': ['OD 0.1', 'OD 1.0', 'OD 1.3', 'OD 2.0', 'OD 3.0', 'OD 4.0'],
                               'CalND2': ['OD 0.1', 'OD 0.3', 'OD 0.5', 'OD 0.8', 'OD 1.0', 'OD 4.0']}
 
+    def get_pruning_guide(self):
+        return [(self.get('ExpMeterMode') in ['off', False], ['AutoExpMeter', 'ExpMeterExpTime']),
+                (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
+                (self.get('AutoExpMeter') == True, ['ExpMeterExpTime']),
+                (self.get('AutoNDFilters') == True, ['CalND1', 'CalND2']),
+                (self.get('TakeSimulCal') == False, ['AutoNDFilters', 'CalND1', 'CalND2']),
+                (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
+                ]
 
     def check_property(self, pname):
         if pname == 'Object':

@@ -19,9 +19,12 @@ class Target(BaseOBComponent):
         super().__init__('Target', '2.0', properties=properties)
         self.from_dict(input_dict)
         self.coord = None
-        self.pruning_guide = [(abs(self.get('DRA')) < 0.001 and abs(self.get('DDEC')) < 0.001, ['DRA', 'DDEC']),
-                             ]
         self.build_SkyCoord()
+
+
+    def get_pruning_guide(self):
+        return [(abs(self.get('DRA')) < 0.001 and abs(self.get('DDEC')) < 0.001, ['DRA', 'DDEC']),
+                ]
 
 
     def build_SkyCoord(self):
@@ -162,9 +165,13 @@ class Target(BaseOBComponent):
 
         names = Simbad.query_objectids(target_name)
         GaiaDR3 = None
-        for objid in names['ID']:
-            if objid.find('Gaia DR3') >= 0:
-                GaiaDR3 = objid[9:]
+        if names is None:
+            print(f'Simbad query retrined no objects for "{target_name}"')
+            return None
+        else:
+            for objid in names['ID']:
+                if objid.find('Gaia DR3') >= 0:
+                    GaiaDR3 = objid[9:]
         target_dict['GaiaID'] = f"DR3 {GaiaDR3}"
         target_coord, gaia_params = self.get_gaia_parameters(GaiaDR3) if GaiaDR3 is not None else None
 
