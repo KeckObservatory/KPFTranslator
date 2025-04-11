@@ -912,12 +912,17 @@ class MainWindow(QtWidgets.QMainWindow):
     def BS_query_simbad(self):
         target_name = self.BS_QuerySimbadLineEdit.text().strip()
         print(f"Querying: {target_name}")
-        self.BS_Target = self.BS_Target.resolve_name(target_name)
-        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
-        TargetValid = False if self.BS_Target is None else self.BS_Target.validate()
-        color = {True: 'green', False: 'orange'}[TargetValid]
-        self.BS_TargetValid.setText(str(TargetValid))
-        self.BS_TargetValid.setStyleSheet(f"color:{color}")
+        newtarg = self.BS_Target.resolve_name(target_name)
+        if newtarg is None:
+            print(f"Query failed for {target_name}")
+            self.BS_Target = Target({})
+        else:
+            self.BS_Target = newtarg
+            self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
+            TargetValid = False if self.BS_Target is None else self.BS_Target.validate()
+            color = {True: 'green', False: 'orange'}[TargetValid]
+            self.BS_TargetValid.setText(str(TargetValid))
+            self.BS_TargetValid.setStyleSheet(f"color:{color}")
 
     def BS_refresh_target_comments(self):
         out = self.BS_Target.__repr__(prune=False, comment=True)
