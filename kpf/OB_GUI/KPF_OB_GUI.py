@@ -923,6 +923,7 @@ class MainWindow(QtWidgets.QMainWindow):
             color = {True: 'green', False: 'orange'}[TargetValid]
             self.BS_TargetValid.setText(str(TargetValid))
             self.BS_TargetValid.setStyleSheet(f"color:{color}")
+        self.BS_QuerySimbadLineEdit.setText('')
 
     def BS_refresh_target_comments(self):
         out = self.BS_Target.__repr__(prune=False, comment=True)
