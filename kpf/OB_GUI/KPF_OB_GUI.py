@@ -1019,8 +1019,10 @@ class MainWindow(QtWidgets.QMainWindow):
             AddTarget.execute(self.BS_ObservingBlock.Target.to_dict())
 
     def BS_save_to_file(self):
+        targname = self.BS_ObservingBlock.Target.get('TargetName')
+        default_path_and_name = f"{self.file_path}/{targname}.yaml"
         result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
-                                             f"{self.file_path}",
+                                             f"{default_path_and_name}",
                                              "OB Files (*yaml);;All Files (*)")
         if result:
             save_file = result[0]
