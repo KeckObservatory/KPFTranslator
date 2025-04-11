@@ -165,7 +165,7 @@ class ObservingBlock(object):
             else:
                 fie.unlink()
         with open(file, 'w')as f:
-            f.write(self.__repr__())
+            f.write(self.__repr__()+'\n')
 
 
     def summary(self):
