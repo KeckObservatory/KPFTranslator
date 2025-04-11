@@ -104,10 +104,8 @@ class BaseOBComponent(object):
         prune_list = []
         if prune == True:
             for prune in self.get_pruning_guide():
-                print(prune)
                 if prune[0] == True:
                     prune_list.extend(prune[1])
-                print(prune_list)
         lines = []
         for i,p in enumerate(self.properties):
             if self.get(p['name']) is not None and p['name'] not in prune_list:
