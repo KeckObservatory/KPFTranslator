@@ -483,26 +483,27 @@ class MainWindow(QtWidgets.QMainWindow):
     ## Methods to get data from DB or Schedule
     ##-------------------------------------------
     def load_OB_from_file(self):
-        self.log.debug(f"load_OBs_from_file")
-        result = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File',
-                                       f"{self.file_path}",
+        self.log.debug(f"load_OBs_from_files")
+        files, filefilter = QtWidgets.QFileDialog.getOpenFileNames(self, 
+                                       'Open Files', f"{self.file_path}",
                                        "OB Files (*yaml);;All Files (*)")
-        if result:
-            chosen_file = result[0]
-            if chosen_file != '':
-                self.file_path = Path(chosen_file).parent
-                print(f"Opening: {chosen_file}")
-                newOB = ObservingBlock(chosen_file)
-                if newOB.validate() == True:
-                    self.model.OBs.append(newOB)
-                    self.model.layoutChanged.emit()
+        if files:
+            for file in files:
+                file = Path(file)
+                if file.exists():
+                    print(f"Opening: {str(file)}")
+                    newOB = ObservingBlock(file)
+                    if newOB.validate() == True:
+                        self.model.OBs.append(newOB)
+            self.model.layoutChanged.emit()
+            self.set_SortOrWeather()
 
     def get_progIDs(self):
         progIDs = ['', 'KPF-CC']
         # Add test program ID for database query testing
         progIDs += ['U027', 'E498']
         # Add some programs for testing which load OBs from disk
-        progIDs += ['CPS 2024B', 'E123', 'E456']
+#         progIDs += ['CPS 2024B', 'E123', 'E456']
         # Go get list of available program IDs for Instrument=KPF
         return progIDs
 

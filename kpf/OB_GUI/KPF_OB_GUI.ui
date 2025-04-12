@@ -1603,7 +1603,7 @@
   </action>
   <action name="action_LoadOBFromFile">
    <property name="text">
-    <string>Load OB from file</string>
+    <string>Load OBs from files</string>
    </property>
   </action>
   <action name="action_LoadOBsFromProgram">
@@ -1624,6 +1624,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="action_LoadOBFilesFromDirectory">
+   <property name="text">
+    <string>Load OB files from directory</string>
    </property>
   </action>
  </widget>
