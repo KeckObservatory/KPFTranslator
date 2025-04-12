@@ -1,4 +1,5 @@
 import yaml
+from datetime import datetime, timedelta
 import numpy as np
 from PyQt5 import QtWidgets, QtCore, QtGui
 
@@ -6,6 +7,7 @@ from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
+from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
 
 
 ##-------------------------------------------------------------------------
@@ -158,16 +160,18 @@ class ObserverCommentBox(QtWidgets.QDialog):
 class SelectProgramPopup(QtWidgets.QDialog):
     '''Custom dialog box for observers to select program to load OBs from.
     '''
-    def __init__(self, programIDs):
+    def __init__(self):
         super().__init__()
         self.setWindowTitle("Select Program")
         layout = QtWidgets.QVBoxLayout()
         self.ProgID = ''
         # Add ProgramID selection
+        date_str = (datetime.utcnow()-timedelta(days=1)).strftime('%Y-%m-%d')
+        scheduled_programs = GetScheduledPrograms.execute({'date': date_str})
         programID_label = QtWidgets.QLabel('Select Program ID:')
         layout.addWidget(programID_label)
         programID_selector = QtWidgets.QComboBox()
-        programID_selector.addItems(programIDs)
+        programID_selector.addItems([''] + scheduled_programs)
         programID_selector.currentTextChanged.connect(self.choose_progID)
         layout.addWidget(programID_selector)
         # Set up buttons

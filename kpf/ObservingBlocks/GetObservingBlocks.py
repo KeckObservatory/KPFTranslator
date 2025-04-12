@@ -46,20 +46,20 @@ def get_OBs_from_database(params):
     if result is None:
         return []
     OBs = []
+    n = len(result)
     for i,entry in enumerate(result):
         try:
+            log.debug(f'Parsing entry {i+1} of {n}')
             OB = ObservingBlock(entry)
         except Exception as e:
-            print(f'Unable to parse entry {i+1} in to an ObservingBlock')
-            log.error(f'Unable to parse entry {i+1} in to an ObservingBlock')
-            log.debug(entry)
-            log.error(e)
+            log.error(f'  Unable to parse entry {i+1} in to an ObservingBlock')
+            log.error(f'  {e}')
         else:
             if OB.validate():
-                log.debug(f'OB {i+1} is valid')
+                log.debug(f'  OB {i+1} is valid')
                 OBs.append(OB)
             else:
-                log.warning(f'OB {i+1} is invalid')
+                log.warning(f'  OB {i+1} is invalid')
                 print(entry)
 
     log.debug(f'get_OBs_from_database parsed {len(OBs)} ObservingBlocks')

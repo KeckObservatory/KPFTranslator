@@ -222,6 +222,9 @@ links:
         cmd: ObservingBlocks.SubmitExecutionHistory.SubmitExecutionHistory
     SubmitObserverComment:
         cmd: ObservingBlocks.SubmitObserverComment.SubmitObserverComment
+    # Schedule
+    GetScheduledPrograms:
+        cmd: schedule.GetScheduledPrograms.GetScheduledPrograms
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations

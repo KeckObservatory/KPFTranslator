@@ -39,14 +39,14 @@ from kpf.magiq.SetTargetList import SetTargetList
 ## Create logger object
 ##-------------------------------------------------------------------------
 def create_GUI_log():
-    log = logging.getLogger('KPF_OB_GUI')
-    log.setLevel(logging.DEBUG)
+    guilog = logging.getLogger('KPF_OB_GUI')
+    guilog.setLevel(logging.DEBUG)
     ## Set up console output
     LogConsoleHandler = logging.StreamHandler()
     LogConsoleHandler.setLevel(logging.DEBUG)
     LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
     LogConsoleHandler.setFormatter(LogFormat)
-    log.addHandler(LogConsoleHandler)
+    guilog.addHandler(LogConsoleHandler)
     ## Set up file output
     logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
     if logdir.exists() is False:
@@ -57,8 +57,8 @@ def create_GUI_log():
                                          backupCount=1000) # Keep old files
     LogFileHandler.setLevel(logging.DEBUG)
     LogFileHandler.setFormatter(LogFormat)
-    log.addHandler(LogFileHandler)
-    return log
+    guilog.addHandler(LogFileHandler)
+    return guilog
 
 
 ##-------------------------------------------------------------------------
@@ -96,7 +96,7 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         ui_file = Path(__file__).parent / 'KPF_OB_GUI.ui'
         uic.loadUi(f"{ui_file}", self)
-        self.log = log
+        self.log = guilog
         self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
         self.KPFCC = False
@@ -146,6 +146,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Menu Bar
         ActionExit = self.findChild(QtWidgets.QAction, 'actionExit')
         ActionExit.triggered.connect(self.exit)
+        LoadOBsFromKPFCC = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_OBs')
+        LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
         LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
         LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
         LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
@@ -498,15 +500,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
 
-    def get_progIDs(self):
-        progIDs = ['', 'KPF-CC']
-        # Add test program ID for database query testing
-        progIDs += ['U027', 'E498']
-        # Add some programs for testing which load OBs from disk
-#         progIDs += ['CPS 2024B', 'E123', 'E456']
-        # Go get list of available program IDs for Instrument=KPF
-        return progIDs
-
     def set_SortOrWeather(self):
         if self.KPFCC == True:
             self.SortOrWeatherLabel.setText('Weather Band:')
@@ -523,24 +516,30 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SortOrWeather.currentTextChanged.connect(self.sort_OB_list)
             self.SortOrWeather.setEnabled(True)
 
+    def load_OBs_from_KPFCC(self):
+        self.load_OBs_from_database('KPF-CC')
+
     def load_OBs_from_program(self):
-        select_program_popup = SelectProgramPopup(self.get_progIDs())
+        select_program_popup = SelectProgramPopup()
         if select_program_popup.exec():
-            if len(self.model.OBs) == 0:
-                self.set_ProgID(select_program_popup.ProgID)
-            else:
-                confirmation_popup = QtWidgets.QMessageBox()
-                confirmation_popup.setIcon(QtWidgets.QMessageBox.Question)
-                confirmation_popup.setWindowTitle("Overwrite OB List?")
-                msg = 'Loading OBs from a new program will clear the current list of OBs. Continue?'
-                confirmation_popup.setText(msg)
-                confirmation_popup.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-                if confirmation_popup.exec():
-                    self.set_ProgID(select_program_popup.ProgID)
-                else:
-                    print("Cancel! Not overwriting OB list.")
+            self.load_OBs_from_database(select_program_popup.ProgID)
         else:
             print("Cancel! Not pulling OBs from database.")
+
+    def load_OBs_from_database(self, program):
+        if len(self.model.OBs) == 0:
+            self.set_ProgID(program)
+        else:
+            confirmation_popup = QtWidgets.QMessageBox()
+            confirmation_popup.setIcon(QtWidgets.QMessageBox.Question)
+            confirmation_popup.setWindowTitle("Overwrite OB List?")
+            msg = 'Loading OBs from a new program will clear the current list of OBs. Continue?'
+            confirmation_popup.setText(msg)
+            confirmation_popup.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+            if confirmation_popup.exec():
+                self.set_ProgID(program)
+            else:
+                print("Cancel! Not overwriting OB list.")
 
 
     def set_ProgID(self, value):
@@ -548,34 +547,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clear_OB_selection()
         self.KPCC = False
         if value == '':
-            self.OBListHeader.setText(hdr)
+            self.OBListHeader.setText(self.hdr)
             self.model.OBs = []
-            self.model.start_times = None
-            self.model.layoutChanged.emit()
-            self.set_SortOrWeather()
-        elif value == 'U027': # Test of database query
-            OBs = GetObservingBlocksByProgram.execute({'program': value})
-            self.OBListHeader.setText(f"    {self.hdr}")
-            self.model.OBs = OBs
-            self.model.start_times = None
-            self.model.layoutChanged.emit()
-            self.set_SortOrWeather()
-        elif value == 'E498': # Test of database query
-            OBs = GetObservingBlocksByProgram.execute({'program': value})
-            self.OBListHeader.setText(f"    {self.hdr}")
-            self.model.OBs = OBs
-            self.model.start_times = None
-            self.model.layoutChanged.emit()
-            self.set_SortOrWeather()
-        elif value == 'CPS 2024B': # Tests pulling in a lot of OBs
-            self.OBListHeader.setText(f"    {self.hdr}")
-            files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
-            self.model.OBs = []
-            for i,file in enumerate(files[:30]):
-                try:
-                    self.model.OBs.append(ObservingBlock(file))
-                except:
-                    print(f"Failed file {i+1}: {file}")
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
@@ -598,11 +571,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
         else:
+            OBs = GetObservingBlocksByProgram.execute({'program': value})
             self.OBListHeader.setText(f"    {self.hdr}")
-            self.model.OBs = [ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/219134.yaml'),
-                              ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/157279.yaml'),
-                              ObservingBlock('/s/sdata1701/OBs/jwalawender/OBs_v2/Calibrations/EtalonTest.yaml'),
-                              ]
+            self.model.OBs = OBs
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
@@ -1137,12 +1108,12 @@ def main():
 ## if __name__ == '__main__':
 ##-------------------------------------------------------------------------
 if __name__ == '__main__':
-    log = create_GUI_log()
-    log.info(f"Starting KPF OB GUI")
+    guilog = create_GUI_log()
+    guilog.info(f"Starting KPF OB GUI")
     try:
         main()
     except Exception as e:
-        log.error(e)
-        log.error(traceback.format_exc())
-    log.info(f"Exiting KPF OB GUI")
+        guilog.error(e)
+        guilog.error(traceback.format_exc())
+    guilog.info(f"Exiting KPF OB GUI")
 
