@@ -118,6 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DCS_EL = ktl.cache(self.dcs, 'EL')
         self.DCS_EL.monitor()
         self.kpfconfig = ktl.cache('kpfconfig')
+        self.EXPOSE = ktl.cache('kpfexpose', 'EXPOSE')
         self.SLEWCALREQ = kPyQt.kFactory(ktl.cache('kpfconfig', 'SLEWCALREQ'))
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
@@ -176,19 +177,19 @@ class MainWindow(QtWidgets.QMainWindow):
         scriptname_kw.stringCallback.connect(self.update_scriptname_value)
 
         # script stop
-#         self.scriptstop_value = self.findChild(QtWidgets.QLabel, 'scriptstop_value')
-#         scriptstop_kw = kPyQt.kFactory(self.kpfconfig['SCRIPTSTOP'])
-#         scriptstop_kw.stringCallback.connect(self.update_scriptstop_value)
-#         self.scriptstop_btn = self.findChild(QtWidgets.QPushButton, 'scriptstop_btn')
-#         self.scriptstop_btn.clicked.connect(self.set_scriptstop)
+        self.scriptstop_value = self.findChild(QtWidgets.QLabel, 'scriptstop_value')
+        self.SCRIPTSTOP = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTSTOP'))
+        self.SCRIPTSTOP.stringCallback.connect(self.update_scriptstop_value)
+        self.scriptstop_btn = self.findChild(QtWidgets.QPushButton, 'scriptstop_btn')
+        self.scriptstop_btn.clicked.connect(self.set_scriptstop)
 
         # full stop
-#         self.fullstop_btn = self.findChild(QtWidgets.QPushButton, 'fullstop_btn')
-#         self.fullstop_btn.clicked.connect(self.do_fullstop)
+        self.fullstop_btn = self.findChild(QtWidgets.QPushButton, 'fullstop_btn')
+        self.fullstop_btn.clicked.connect(self.do_fullstop)
 
         # expose status
         self.expose_status_value = self.findChild(QtWidgets.QLabel, 'expose_status_value')
-        expose_kw = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSE'))
+        expose_kw = kPyQt.kFactory(self.EXPOSE)
         expose_kw.stringCallback.connect(self.update_expose_status_value)
 
         # object
@@ -347,6 +348,58 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     ## Methods to display updates from keywords
     ##-------------------------------------------
+    # SCRIPTSTOP
+    def update_scriptstop_value(self, value):
+        '''Set label text and set color'''
+        self.log.debug(f'update_scriptstop_value: {value}')
+        self.scriptstop_value.setText(f"{value}")
+        if value == 'Yes':
+            self.scriptstop_value.setStyleSheet("color:red")
+            self.scriptstop_btn.setText('CLEAR STOP')
+            msg = 'Disabled because STOP has been requested.'
+            self.SOB_ExecuteButton.setEnabled(False)
+            self.SOB_ExecuteButton.setToolTip(msg)
+        elif value == 'No':
+            self.scriptstop_value.setStyleSheet("color:green")
+            self.scriptstop_btn.setText('Request Script STOP')
+            self.SOB_ExecuteButton.setEnabled(self.SOBindex is not None)
+            self.SOB_ExecuteButton.setToolTip('')
+
+    def set_scriptstop(self, value):
+        self.log.debug(f'button clicked set_scriptstop: {value}')
+        current_kw_value = self.scriptstop_value.text()
+        if current_kw_value == 'Yes':
+            self.kpfconfig['SCRIPTSTOP'].write('No')
+            self.scriptstop_btn.setText('CLEAR STOP')
+        elif current_kw_value == 'No':
+            self.kpfconfig['SCRIPTSTOP'].write('Yes')
+            self.scriptstop_btn.setText('Request Script STOP')
+
+    def do_fullstop(self, value):
+        self.log.warning(f"button clicked do_fullstop: {value}")
+        fullstop_popup = QtWidgets.QMessageBox()
+        fullstop_popup.setWindowTitle('Full Stop Confirmation')
+        msg = ["Do you wish to stop the current exposure and script?",
+               "",
+               "The current exposure will read out then script cleanup will take place."]
+        fullstop_popup.setText("\n".join(msg))
+        fullstop_popup.setIcon(QtWidgets.QMessageBox.Critical)
+        fullstop_popup.setStandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes) 
+        if fullstop_popup.exec_():
+            # Set SCRIPTSTOP
+            self.kpfconfig['SCRIPTSTOP'].write('Yes')
+            self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
+            # Stop current exposure
+            if self.EXPOSE.read() == 'InProgress':
+                self.EXPOSE.write('End')
+                self.log.warning(f"Sent kpfexpose.EXPOSE=End")
+                self.log.debug('Waiting for kpfexpose.EXPOSE to be Readout')
+                readout = self.EXPOSE.waitFor("=='Readout'", timeout=10)
+                self.log.debug(f"Reached readout? {readout}")
+        else:
+            self.log.debug('Confirmation is no, not stopping script')
+
+
     # Script Name
     def update_scriptname_value(self, value):
         '''Set label text and set color'''
@@ -630,7 +683,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_CommentToObserverLabel.setEnabled(enabled)
         self.SOB_ShowButton.setEnabled(enabled)
         # Only enable observer comment if we have a database ID
-        no_comment_msg = 'Can not submit comment without database ID'
         if self.SOBindex is None or self.SOBindex < 0:
             OBID_exists = False
         else:
@@ -639,6 +691,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if OBID_exists:
             self.SOB_AddComment.setToolTip('')
         else:
+            no_comment_msg = 'Can not submit comment without database ID'
             self.SOB_AddComment.setToolTip(no_comment_msg)
         self.SOB_AddComment.setEnabled(enabled and OBID_exists)
         self.SOB_ExecuteButton.setEnabled(enabled)
