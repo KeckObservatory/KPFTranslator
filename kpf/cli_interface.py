@@ -314,6 +314,8 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
     else:
         logger.debug(f"Executing {mod_str} {' '.join(final_args)}")
         if script is True:
-            function.execute(parsed_func_args, OB=OB)
+            result = function.execute(parsed_func_args, OB=OB)
         else:
-            function.execute(parsed_func_args)
+            result = function.execute(parsed_func_args)
+        if result is not None:
+            print(result)
