@@ -546,8 +546,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.info(f"set_ProgID: '{value}'")
         self.clear_OB_selection()
         self.KPCC = False
+        self.OBListHeader.setText(f"    {self.hdr}")
         if value == '':
-            self.OBListHeader.setText(self.hdr)
             self.model.OBs = []
             self.model.start_times = None
             self.model.layoutChanged.emit()
@@ -572,7 +572,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.set_SortOrWeather()
         else:
             OBs = GetObservingBlocksByProgram.execute({'program': value})
-            self.OBListHeader.setText(f"    {self.hdr}")
             self.model.OBs = OBs
             self.model.start_times = None
             self.model.layoutChanged.emit()
