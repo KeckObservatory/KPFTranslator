@@ -817,7 +817,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug(f"execute_SOB")
             executeOB_popup = QtWidgets.QMessageBox()
             executeOB_popup.setWindowTitle('Execute Science OB Confirmation')
-            executeOB_popup.setText("Do you really want to execute the current OB?")
+            msg = ["Do you really want to execute the current OB?", '',
+                   f"{SOB.summary()}"]
+            executeOB_popup.setText('\n'.join(msg))
             executeOB_popup.setIcon(QtWidgets.QMessageBox.Critical)
             executeOB_popup.setStandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes) 
             result = executeOB_popup.exec_()
@@ -844,14 +846,15 @@ class MainWindow(QtWidgets.QMainWindow):
             tmp_file_path.mkdir(mode=0o777, parents=False)
         tmp_file = tmp_file_path / f'test_executedOB_{now_str}.yaml'
         SOB.write_to(tmp_file)
-        RunOB_cmd = f'kpfdo RunOB -f {tmp_file} ; echo "Done!" ; sleep 30'
         # Pop up an xterm with the script running
+        kpfdo = Path(__file__).parent.parent / 'kpfdo'
+        RunOB_cmd = f'{kpfdo} RunOB -f {tmp_file} ; echo "Done!" ; sleep 30'
         cmd = ['xterm', '-title', 'RunOB', '-name', 'RunOB',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
                '-e', f'{RunOB_cmd}']
         print(RunOB_cmd)
         print(' '.join(cmd))
-#         proc = subprocess.Popen(cmd)
+        proc = subprocess.Popen(cmd)
 
     def remove_SOB(self):
         removed = self.model.OBs.pop(self.SOBindex)
