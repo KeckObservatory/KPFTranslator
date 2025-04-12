@@ -516,19 +516,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SortOrWeather.currentTextChanged.connect(self.sort_OB_list)
             self.SortOrWeather.setEnabled(True)
 
-    def load_OBs_from_KPFCC(self):
-        self.load_OBs_from_database('KPF-CC')
-
-    def load_OBs_from_program(self):
-        select_program_popup = SelectProgramPopup()
-        if select_program_popup.exec():
-            self.load_OBs_from_database(select_program_popup.ProgID)
-        else:
-            print("Cancel! Not pulling OBs from database.")
-
-    def load_OBs_from_database(self, program):
+    def verify_overwrite_of_OB_list(self):
         if len(self.model.OBs) == 0:
-            self.set_ProgID(program)
+            return True
         else:
             confirmation_popup = QtWidgets.QMessageBox()
             confirmation_popup.setIcon(QtWidgets.QMessageBox.Question)
@@ -537,10 +527,23 @@ class MainWindow(QtWidgets.QMainWindow):
             confirmation_popup.setText(msg)
             confirmation_popup.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
             if confirmation_popup.exec():
-                self.set_ProgID(program)
+                self.log.debug('Confirmed overwrite')
+                return True
             else:
-                print("Cancel! Not overwriting OB list.")
+                self.log.debug("Cancel! Not overwriting OB list.")
+                return False
 
+    def load_OBs_from_KPFCC(self):
+        if self.verify_overwrite_of_OB_list():
+            self.set_ProgID('KPF-CC')
+
+    def load_OBs_from_program(self):
+        if self.verify_overwrite_of_OB_list():
+            select_program_popup = SelectProgramPopup()
+            if select_program_popup.exec():
+                self.set_ProgID(select_program_popup.ProgID)
+            else:
+                self.log.debug("Cancel! Not pulling OBs from database.")
 
     def set_ProgID(self, value):
         self.log.info(f"set_ProgID: '{value}'")
@@ -576,6 +579,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
+            retrievedOBs_popup = QtWidgets.QMessageBox()
+            retrievedOBs_popup.setWindowTitle('Retrieved OBs from Database')
+            retrievedOBs_popup.setText(f"Retrieved {len(OBs)} OBs for program {value}")
+            retrievedOBs_popup.setIcon(QtWidgets.QMessageBox.Critical)
+            retrievedOBs_popup.setStandardButtons(QtWidgets.QMessageBox.Ok) 
+            retrievedOBs_popup.exec_()
         self.ProgID.setText(value)
         # This select/deselect operation caches something in the AltAz 
         # calculation which happens the first time an OB is selected. This
