@@ -5,7 +5,8 @@ from kpf import log, cfg
 
 
 def getSchedule(date='2025-02-01', numdays=1, telnr=1, instrument='KPF', **kwargs):
-    # https://vm-appserver.keck.hawaii.edu/api/schedule/getSchedule?date=2025-04-11&numdays=30&instrument=KPF-CC
+    '''See https://vm-appserver.keck.hawaii.edu/api/schedule/swagger/#/
+    '''
     url = 'https://vm-appserver.keck.hawaii.edu/api/schedule/'
     query = 'getSchedule'
     params = {'date': date,
