@@ -478,7 +478,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def SlewCal_state_change(self, value):
         self.log.debug(f"SlewCal_state_change: {value} {(value == 2)}")
         if (self.SLEWCALREQ.read() == 'Yes') != (value == 2):
-            log.info(f'Modifying kpfconfig.SLEWCALREQ = {(value == 2)}')
+            self.log.info(f'Modifying kpfconfig.SLEWCALREQ = {(value == 2)}')
             self.kpfconfig['SLEWCALREQ'].write((value == 2))
 
     ##-------------------------------------------
@@ -675,7 +675,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Calculate AltAz Position
         if SOB.Target.coord is None:
-            log.warning(f'SOB Target is not convertable to SkyCoord')
+            self.log.warning(f'SOB Target is not convertable to SkyCoord')
         else:
             AltAzSystem = AltAz(obstime=Time.now(), location=self.keck,
                                 pressure=620*u.mbar, temperature=0*u.Celsius)
@@ -780,23 +780,23 @@ class MainWindow(QtWidgets.QMainWindow):
         OBcontents_popup.setWindowTitle(f"Full OB Contents: {SOB.summary()}")
         result = OBcontents_popup.exec_()
         if result == QtWidgets.QMessageBox.Ok:
-            log.debug('Show popup: Ok')
+            self.log.debug('Show popup: Ok')
         elif result == QtWidgets.QMessageBox.Cancel:
-            log.info('Show popup: Edit')
+            self.log.info('Show popup: Edit')
             OBedit_popup = EditableMessageBox(SOB)
             OBedit_popup.setWindowTitle(f"Editing OB: {SOB.summary()}")
             edit_result = OBedit_popup.exec_()
             if edit_result == QtWidgets.QMessageBox.Ok:
-                log.info('Edit popup: Ok')
+                self.log.info('Edit popup: Ok')
                 if OBedit_popup.result.validate():
-                    log.info('The edited OB has been validated')
+                    self.log.info('The edited OB has been validated')
                     self.model.OBs[self.SOBindex] = OBedit_popup.result
                     self.model.layoutChanged.emit()
                     self.update_SOB_display()
                 else:
-                    log.warning('Edits did not validate. Not changing OB.')
+                    self.log.warning('Edits did not validate. Not changing OB.')
             elif edit_result == QtWidgets.QMessageBox.Cancel:
-                log.debug('Edit popup: Cancel')
+                self.log.debug('Edit popup: Cancel')
 
 
     def add_comment(self):
@@ -827,7 +827,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.model.OBs[self.SOBindex].executed = True
                 self.model.layoutChanged.emit()
             else:
-                log.debug('User opted not to execute OB')
+                self.log.debug('User opted not to execute OB')
 
 
     def RunOB(self, SOB):
@@ -860,7 +860,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.model.layoutChanged.emit()
         if removed.Target is not None:
             targetname = removed.Target.TargetName
-            log.info(f"Removing {targetname} from star list and OB list")
+            self.log.info(f"Removing {targetname} from star list and OB list")
             if self.enable_telescope == True:
                 RemoveTarget.execute({'target': targetname})
 
@@ -987,7 +987,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
         targetname = self.BS_ObservingBlock.Target.TargetName
-        log.info(f"Adding {targetname} to star list and OB list")
+        self.log.info(f"Adding {targetname} to star list and OB list")
         if self.enable_telescope == True:
             AddTarget.execute(self.BS_ObservingBlock.Target.to_dict())
 
@@ -1002,10 +1002,10 @@ class MainWindow(QtWidgets.QMainWindow):
             if save_file != '':
                 # save fname as path to use in future
                 self.file_path = Path(save_file).parent
-                log.info(f'Saving science OB to file: {save_file}')
+                self.log.info(f'Saving science OB to file: {save_file}')
                 self.BS_ObservingBlock.write_to(save_file)
         else:
-            log.info('No output file chosen')
+            self.log.info('No output file chosen')
 
 
     ##-------------------------------------------
@@ -1048,10 +1048,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BC_form_OB(calibrations)
 
     def BC_add_example_calibration(self, value):
-        log.debug(f'BC_add_example_calibration: {value}')
+        self.log.debug(f'BC_add_example_calibration: {value}')
         for cal in self.example_calOB.Calibrations:
             if value == cal.get('Object'):
-                log.debug(f'Adding {value} from example Cal OB')
+                self.log.debug(f'Adding {value} from example Cal OB')
                 calibrations = copy.deepcopy(self.BC_ObservingBlock.Calibrations)
                 calibrations.append(cal)
                 self.BC_form_OB(calibrations)
