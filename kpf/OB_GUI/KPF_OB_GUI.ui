@@ -1574,6 +1574,7 @@
     <property name="title">
      <string>Load OBs</string>
     </property>
+    <addaction name="actionLoad_KPF_CC_OBs"/>
     <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="action_LoadOBFromFile"/>
    </widget>
@@ -1629,6 +1630,11 @@
   <action name="action_LoadOBFilesFromDirectory">
    <property name="text">
     <string>Load OB files from directory</string>
+   </property>
+  </action>
+  <action name="actionLoad_KPF_CC_OBs">
+   <property name="text">
+    <string>Load KPF-CC OBs</string>
    </property>
   </action>
  </widget>
