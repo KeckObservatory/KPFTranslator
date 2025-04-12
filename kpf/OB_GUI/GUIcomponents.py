@@ -7,7 +7,7 @@ from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
+from kpf.schedule import getSchedule
 
 
 ##-------------------------------------------------------------------------
@@ -166,12 +166,14 @@ class SelectProgramPopup(QtWidgets.QDialog):
         layout = QtWidgets.QVBoxLayout()
         self.ProgID = ''
         # Add ProgramID selection
-        date_str = (datetime.utcnow()-timedelta(days=1)).strftime('%Y-%m-%d')
-        scheduled_programs = GetScheduledPrograms.execute({'date': date_str})
         programID_label = QtWidgets.QLabel('Select Program ID:')
         layout.addWidget(programID_label)
+        date_str = (datetime.utcnow()-timedelta(days=1)).strftime('%Y-%m-%d')
+        scheduled_programs = getSchedule(date=date_str, numdays=30)
+        program_strings = [f"{entry['ProjCode']} on {entry['Date']}" for entry in scheduled_programs]
         programID_selector = QtWidgets.QComboBox()
-        programID_selector.addItems([''] + scheduled_programs)
+        programID_selector.addItems([''])
+        programID_selector.addItems(program_strings)
         programID_selector.currentTextChanged.connect(self.choose_progID)
         layout.addWidget(programID_selector)
         # Set up buttons
@@ -182,10 +184,10 @@ class SelectProgramPopup(QtWidgets.QDialog):
         layout.addWidget(self.buttonBox)
         # Wrap up definition
         self.setLayout(layout)
-        self.setStyleSheet("min-width:150 px;")
+        self.setStyleSheet("min-width:100 px;")
 
-    def choose_progID(self, value):
-        self.ProgID = value
+    def choose_progID(self, program_string):
+        self.ProgID = program_string.split()[0]
 
 
 ##-------------------------------------------------------------------------
