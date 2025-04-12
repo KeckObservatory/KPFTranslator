@@ -118,7 +118,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DCS_EL = ktl.cache(self.dcs, 'EL')
         self.DCS_EL.monitor()
         self.kpfconfig = ktl.cache('kpfconfig')
-        self.EXPOSE = ktl.cache('kpfexpose', 'EXPOSE')
+        self.EXPOSE = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSE'))
+        self.ELAPSED = kPyQt.kFactory(ktl.cache('kpfexpose', 'ELAPSED'))
+        self.EXPOSURE = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSURE'))
+        self.READOUTPCT_G = kPyQt.kFactory(ktl.cache('kpfgreen', 'READOUTPCT'))
+        self.READOUTPCT_R = kPyQt.kFactory(ktl.cache('kpfred', 'READOUTPCT'))
         self.SLEWCALREQ = kPyQt.kFactory(ktl.cache('kpfconfig', 'SLEWCALREQ'))
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
@@ -189,8 +193,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # expose status
         self.expose_status_value = self.findChild(QtWidgets.QLabel, 'expose_status_value')
-        expose_kw = kPyQt.kFactory(self.EXPOSE)
-        expose_kw.stringCallback.connect(self.update_expose_status_value)
+        self.EXPOSE.stringCallback.connect(self.update_expose_status_value)
+        self.EXPOSE.primeCallback()
+        self.ELAPSED.stringCallback.connect(self.update_expose_status_value)
+        self.ELAPSED.primeCallback()
+        self.READOUTPCT_G.stringCallback.connect(self.update_expose_status_value)
+        self.READOUTPCT_G.primeCallback()
+        self.READOUTPCT_R.stringCallback.connect(self.update_expose_status_value)
+        self.READOUTPCT_R.primeCallback()
 
         # object
         self.ObjectValue = self.findChild(QtWidgets.QLabel, 'ObjectValue')
@@ -390,11 +400,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.kpfconfig['SCRIPTSTOP'].write('Yes')
             self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
             # Stop current exposure
-            if self.EXPOSE.read() == 'InProgress':
-                self.EXPOSE.write('End')
+            if self.EXPOSE.ktl_keyword.ascii == 'InProgress':
+                self.EXPOSE.ktl_keyword.write('End')
                 self.log.warning(f"Sent kpfexpose.EXPOSE=End")
                 self.log.debug('Waiting for kpfexpose.EXPOSE to be Readout')
-                readout = self.EXPOSE.waitFor("=='Readout'", timeout=10)
+                readout = self.EXPOSE.ktl_keyword.waitFor("=='Readout'", timeout=10)
                 self.log.debug(f"Reached readout? {readout}")
         else:
             self.log.debug('Confirmation is no, not stopping script')
@@ -413,11 +423,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Expose Status
     def update_expose_status_value(self, value):
-        '''Set label text and set color'''
-        self.expose_status_value.setText(f"{value}")
-        if value == 'Ready':
+        status = self.EXPOSE.ktl_keyword.ascii
+        exposure_status_string = f"{status}"
+        if status == 'InProgress':
+            elapsed = self.ELAPSED.ktl_keyword.binary
+            exptime = self.EXPOSURE.ktl_keyword.binary
+            exposure_status_string += f" ({elapsed:.0f}/{exptime:.0f} s)"
+        if status == 'Readout':
+            RDPCT_green = self.READOUTPCT_G.ktl_keyword.binary
+            RDPCT_red = self.READOUTPCT_R.ktl_keyword.binary
+            exposure_status_string += f" ({RDPCT_green:.0f}%,{RDPCT_red:.0f}%)"
+        self.expose_status_value.setText(exposure_status_string)
+        if status == 'Ready':
             self.expose_status_value.setStyleSheet("color:green")
-        elif value in ['Start', 'InProgress', 'Readout']:
+        elif status in ['Start', 'InProgress', 'Readout']:
             self.expose_status_value.setStyleSheet("color:orange")
 
     def update_selected_instrument(self, value):
