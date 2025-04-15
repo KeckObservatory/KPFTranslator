@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 import ktl
 
@@ -48,7 +49,11 @@ class StartOfNight(KPFFunction):
         expose = ktl.cache('kpfexpose', 'EXPOSE')
         scriptname = kpfconfig['SCRIPTNAME'].read()
         pid = kpfconfig['SCRIPTPID'].read(binary=True)
-        if scriptname not in ['', 'None', None] or pid >= 0:
+        script_running = scriptname not in ['', 'None', None] or pid >= 0
+        if script_running and args.get('confirm', False) is True:
+            log.error('Non-interactive mode set and script is running')
+            return
+        if script_running:
             # ---------------------------------
             # User Verification
             # ---------------------------------
@@ -163,7 +168,7 @@ class StartOfNight(KPFFunction):
             log.warning(f"The ExpMeter detector is disabled tonight")
 
         # Setup AO
-        if args.get('AO', True) is True:
+        if args.get('AO', True) is True and args.get('confirm', False) is False:
             # ---------------------------------
             # User Verification
             # ---------------------------------
@@ -205,4 +210,7 @@ class StartOfNight(KPFFunction):
         parser.add_argument("--noAO", dest="AO",
                             default=True, action="store_false",
                             help="Skip configuring AO?")
+        parser.add_argument("--confirm", dest="confirm",
+                            default=False, action="store_true",
+                            help="Skip confirmation questions (script will be non interactive)?")
         return super().add_cmdline_args(parser)

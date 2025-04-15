@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 import ktl
 
@@ -46,6 +47,48 @@ class EndOfNight(KPFFunction):
     @register_script(Path(__file__).name, os.getpid())
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args):
+        # Check Scripts
+        kpfconfig = ktl.cache('kpfconfig')
+        expose = ktl.cache('kpfexpose', 'EXPOSE')
+        scriptname = kpfconfig['SCRIPTNAME'].read()
+        pid = kpfconfig['SCRIPTPID'].read(binary=True)
+        script_running = scriptname not in ['', 'None', None] or pid >= 0
+        if script_running and args.get('confirm', False) is True:
+            log.error('Non-interactive mode set and script is running')
+            return
+        if script_running:
+            # ---------------------------------
+            # User Verification
+            # ---------------------------------
+            msg = ["",
+                   "--------------------------------------------------------------",
+                   f"A script ({scriptname}, {pid}) is currently running. ",
+                   "",
+                   "Do you wish to end the current exposure and request a script",
+                   "stop in order to proceed with running EndOfNight?",
+                   "",
+                   "End Exposure and Request Script Stop?",
+                   "(y/n) [y]:",
+                   "--------------------------------------------------------------",
+                   "",
+                   ]
+            for line in msg:
+                print(line)
+            user_input = input()
+            if user_input.lower() in ['n', 'no', 'q', 'quit', 'abort']:
+                log.warning(f'User aborted End Of Night')
+                return
+            else:
+                log.info('User opted to stop existing script')
+                kpfconfig['SCRIPTSTOP'].write(1)
+                expose.write('End')
+                waittime = 120
+                log.info(f'Waiting up to {waittime:.0f}s for running script to end')
+                kpfconfig['SCRIPTPID'].waitFor("==-1", timeout=waittime)
+                time.sleep(2) # time shim
+                check_script_running()
+
+        # Stop tip tilt and agitator
         StopTipTilt.execute({})
         StopAgitator.execute({})
 
@@ -54,34 +97,35 @@ class EndOfNight(KPFFunction):
         ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
 
         # ---------------------------------
-        # User Verification for AO Shutdown
+        # AO Shutdown
         # ---------------------------------
-        msg = ["",
-               "--------------------------------------------------------------",
-               "Perform shutdown of AO? This will move the AO hatch and PCU.",
-               "The AO area should be clear of personnel before proceeding.",
-               "",
-               "Do you wish to shutdown AO?",
-               "(y/n) [y]:",
-               "--------------------------------------------------------------",
-               "",
-               ]
-        for line in msg:
-            print(line)
-        user_input = input()
-        if user_input.lower() in ['y', 'yes', '']:
-            log.debug('User chose to shut down AO')
-            log.info('Closing AO Hatch')
-            try:
-                ControlAOHatch.execute({'destination': 'closed'})
-            except FailedToReachDestination:
-                log.error(f"AO hatch did not move successfully")
-            log.info('Sending PCU stage to Home position')
-            SendPCUtoHome.execute({})
-#             log.info('Turning on AO HEPA Filter System')
-#             TurnHepaOn.execute({})
-        else:
-            log.warning(f'User chose to skip AO shutdown')
+        if args.get('AO', True) is True and args.get('confirm', False) is False:
+            msg = ["",
+                   "--------------------------------------------------------------",
+                   "Perform shutdown of AO? This will move the AO hatch and PCU.",
+                   "The AO area should be clear of personnel before proceeding.",
+                   "",
+                   "Do you wish to shutdown AO?",
+                   "(y/n) [y]:",
+                   "--------------------------------------------------------------",
+                   "",
+                   ]
+            for line in msg:
+                print(line)
+            user_input = input()
+            if user_input.lower() in ['y', 'yes', '']:
+                log.debug('User chose to shut down AO')
+                log.info('Closing AO Hatch')
+                try:
+                    ControlAOHatch.execute({'destination': 'closed'})
+                except FailedToReachDestination:
+                    log.error(f"AO hatch did not move successfully")
+                log.info('Sending PCU stage to Home position')
+                SendPCUtoHome.execute({})
+    #             log.info('Turning on AO HEPA Filter System')
+    #             TurnHepaOn.execute({})
+            else:
+                log.warning(f'User chose to skip AO shutdown')
 
         # ---------------------------------
         # Remaining non-AO Actions
@@ -113,3 +157,13 @@ class EndOfNight(KPFFunction):
     @classmethod
     def post_condition(cls, args):
         pass
+
+    @classmethod
+    def add_cmdline_args(cls, parser):
+        parser.add_argument("--noAO", dest="AO",
+                            default=True, action="store_false",
+                            help="Skip configuring AO?")
+        parser.add_argument("--confirm", dest="confirm",
+                            default=False, action="store_true",
+                            help="Skip confirmation questions (script will be non interactive)?")
+        return super().add_cmdline_args(parser)
