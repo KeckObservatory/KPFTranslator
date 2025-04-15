@@ -19,9 +19,9 @@ import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 
-from kpf.OB_GUI.GUIcomponents import (OBListModel, ScrollMessageBox,
-                                      EditableMessageBox, ObserverCommentBox,
-                                      SelectProgramPopup)
+from kpf.OB_GUI.GUIcomponents import (OBListModel, ConfirmationPopup, InputPopup,
+                                      ScrollMessageBox, EditableMessageBox,
+                                      ObserverCommentBox, SelectProgramPopup)
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
@@ -29,10 +29,14 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocksByProgram
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
+from kpf.spectrograph.SetObserver import SetObserver
+from kpf.spectrograph.SetProgram import SetProgram
 from kpf.magiq.RemoveTarget import RemoveTarget, RemoveAllTargets
 from kpf.magiq.AddTarget import AddTarget
 from kpf.magiq.SelectTarget import SelectTarget
 from kpf.magiq.SetTargetList import SetTargetList
+from kpf.utils.StartOfNight import StartOfNight
+from kpf.utils.EndOfNight import EndOfNight
 
 
 ##-------------------------------------------------------------------------
@@ -148,15 +152,35 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("KPF OB GUI")
 
         #-------------------------------------------------------------------
-        # Menu Bar
+        # Menu Bar: File
         ActionExit = self.findChild(QtWidgets.QAction, 'actionExit')
         ActionExit.triggered.connect(self.exit)
+
+        #-------------------------------------------------------------------
+        # Menu Bar: Load OBs
         LoadOBsFromKPFCC = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_OBs')
         LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
         LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
         LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
         LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
         LoadOBFromFile.triggered.connect(self.load_OB_from_file)
+
+        #-------------------------------------------------------------------
+        # Menu Bar: Observing
+        RunStartOfNight = self.findChild(QtWidgets.QAction, 'actionRun_Start_of_Night')
+        RunStartOfNight.triggered.connect(self.run_start_of_night)
+        SetObserverNames = self.findChild(QtWidgets.QAction, 'actionSet_Observer_Names')
+        SetObserverNames.triggered.connect(self.set_observer)
+        SetProgramID = self.findChild(QtWidgets.QAction, 'actionSet_Program_ID')
+        SetProgramID.triggered.connect(self.set_programID)
+        RunEndOfNight = self.findChild(QtWidgets.QAction, 'actionRun_End_of_Night')
+        RunEndOfNight.triggered.connect(self.run_end_of_night)
+
+        #-------------------------------------------------------------------
+        # Menu Bar: FIU
+# actionConfigure_FIU_for_Observing
+# actionConfigure_FIU_for_Calibrations
+# actionConfigure_FIU_to_Stow_Position
 
         #-------------------------------------------------------------------
         # Main Window
@@ -389,15 +413,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def do_fullstop(self, value):
         self.log.warning(f"button clicked do_fullstop: {value}")
-        fullstop_popup = QtWidgets.QMessageBox()
-        fullstop_popup.setWindowTitle('Full Stop Confirmation')
         msg = ["Do you wish to stop the current exposure and script?",
                "",
                "The current exposure will read out then script cleanup will take place."]
-        fullstop_popup.setText("\n".join(msg))
-        fullstop_popup.setIcon(QtWidgets.QMessageBox.Critical)
-        fullstop_popup.setStandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes) 
-        if fullstop_popup.exec_():
+        result = ConfirmationPopup('Full Stop Confirmation', msg).exec_()
+        if result == QtWidgets.QMessageBox.Yes:
             # Set SCRIPTSTOP
             self.kpfconfig['SCRIPTSTOP'].write('Yes')
             self.log.warning(f"Sent kpfconfig.SCRIPTSTOP=Yes")
@@ -594,13 +614,9 @@ class MainWindow(QtWidgets.QMainWindow):
         if len(self.model.OBs) == 0:
             return True
         else:
-            confirmation_popup = QtWidgets.QMessageBox()
-            confirmation_popup.setIcon(QtWidgets.QMessageBox.Question)
-            confirmation_popup.setWindowTitle("Overwrite OB List?")
             msg = 'Loading OBs from a new program will clear the current list of OBs. Continue?'
-            confirmation_popup.setText(msg)
-            confirmation_popup.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-            if confirmation_popup.exec():
+            result = ConfirmationPopup('Overwrite OB List?', msg).exec_()
+            if result == QtWidgets.QMessageBox.Yes:
                 self.log.debug('Confirmed overwrite')
                 return True
             else:
@@ -609,18 +625,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def load_OBs_from_KPFCC(self):
         if self.verify_overwrite_of_OB_list():
-            self.set_ProgID('KPF-CC')
+            self.load_OBs('KPF-CC')
 
     def load_OBs_from_program(self):
         if self.verify_overwrite_of_OB_list():
             select_program_popup = SelectProgramPopup()
             if select_program_popup.exec():
-                self.set_ProgID(select_program_popup.ProgID)
+                self.load_OBs(select_program_popup.ProgID)
             else:
                 self.log.debug("Cancel! Not pulling OBs from database.")
 
-    def set_ProgID(self, value):
-        self.log.info(f"set_ProgID: '{value}'")
+    def load_OBs(self, value):
+        self.log.info(f"load_OBs: '{value}'")
         self.clear_OB_selection()
         self.KPCC = False
         self.OBListHeader.setText(f"    {self.hdr}")
@@ -653,12 +669,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-            retrievedOBs_popup = QtWidgets.QMessageBox()
-            retrievedOBs_popup.setWindowTitle('Retrieved OBs from Database')
-            retrievedOBs_popup.setText(f"Retrieved {len(OBs)} OBs for program {value}")
-            retrievedOBs_popup.setIcon(QtWidgets.QMessageBox.Critical)
-            retrievedOBs_popup.setStandardButtons(QtWidgets.QMessageBox.Ok) 
-            retrievedOBs_popup.exec_()
+            msg = f"Retrieved {len(OBs)} OBs for program {value}"
+            ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
         self.ProgID.setText(value)
         # This select/deselect operation caches something in the AltAz 
         # calculation which happens the first time an OB is selected. This
@@ -680,6 +692,76 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_weather_band(self, value):
         self.SortOrWeather.setCurrentText(value)
+
+
+    ##-------------------------------------------
+    ## Methods for Observing Menu
+    ##-------------------------------------------
+    def run_start_of_night(self):
+        self.log.debug(f"action run_start_of_night")
+        # Handle case where script is currently running
+        script_running = self.scriptname_value.text() not in ['', 'None', None]
+        if script_running is True:
+            self.do_fullstop(True)
+        script_running = self.scriptname_value.text() not in ['', 'None', None]
+        if script_running is True:
+            self.log.warning('Script is still running, aborting run_start_of_night')
+            return
+        # Confirm for start of night
+        msg = ["Do you wish to run the Start Of Night script?",
+               "",
+               "This script will configure the FIU and AO bench for observing.",
+               "The AO bench area should be clear of personnel before proceeding.",
+               "Do you wish to to continue?"]
+        result = ConfirmationPopup('Run Start of Night Script?', msg).exec_()
+        if result == QtWidgets.QMessageBox.Yes:
+            self.log.debug('Confirmation is yes, running StartOfNight script')
+            StartOfNight.execute({})
+        else:
+            self.log.debug('Confirmation is no, not running script')
+
+    def set_observer(self):
+        self.log.debug(f"action set_observer")
+        observer_input = InputPopup('Set observer names', 'Observer names:')
+        if observer_input.exec_():
+            if self.EXPOSE.ktl_keyword.ascii == 'Ready':
+                SetObserver.execute({'observer': observer_input.result.strip()})
+            else:
+                msg = 'Unable to set observer while exposure is in progress'
+                ConfirmationPopup('Unable to set observer', msg, info_only=True, warning=True).exec_()
+
+    def set_programID(self):
+        self.log.debug(f"action set_programID")
+        program_input = InputPopup('Set program ID', 'Program ID:')
+        if program_input.exec_():
+            if self.EXPOSE.ktl_keyword.ascii == 'Ready':
+                SetProgram.execute({'progname': program_input.result.strip()})
+            else:
+                msg = 'Unable to set program while exposure is in progress'
+                ConfirmationPopup('Unable to set program', msg, info_only=True, warning=True).exec_()
+
+    def run_end_of_night(self):
+        self.log.debug(f"action run_end_of_night")
+        # Handle case where script is currently running
+        script_running = self.scriptname_value.text() not in ['', 'None', None]
+        if script_running is True:
+            self.do_fullstop(True)
+        script_running = self.scriptname_value.text() not in ['', 'None', None]
+        if script_running is True:
+            self.log.warning('Script is still running, aborting run_end_of_night')
+            return
+        # Confirm for end of night
+        msg = ["Do you wish to run the End Of Night script?",
+               "",
+               "This script will configure the FIU and AO bench.",
+               "The AO bench area should be clear of personnel before proceeding.",
+               "Do you wish to to continue?"]
+        result = ConfirmationPopup('Run End of Night Script?', msg).exec_()
+        if result == QtWidgets.QMessageBox.Yes:
+            self.log.debug('Confirmation is yes, running EndOfNight script')
+            EndOfNight.execute({})
+        else:
+            self.log.debug('Confirmation is no, not running script')
 
 
     ##-------------------------------------------
@@ -898,14 +980,9 @@ class MainWindow(QtWidgets.QMainWindow):
         SOB = self.model.OBs[self.SOBindex]
         if SOB is not None:
             self.log.debug(f"execute_SOB")
-            executeOB_popup = QtWidgets.QMessageBox()
-            executeOB_popup.setWindowTitle('Execute Science OB Confirmation')
             msg = ["Do you really want to execute the current OB?", '',
                    f"{SOB.summary()}"]
-            executeOB_popup.setText('\n'.join(msg))
-            executeOB_popup.setIcon(QtWidgets.QMessageBox.Critical)
-            executeOB_popup.setStandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes) 
-            result = executeOB_popup.exec_()
+            result = ConfirmationPopup('Execute Science OB?', msg).exec_()
             if result == QtWidgets.QMessageBox.Yes:
                 self.RunOB(SOB)
                 self.model.OBs[self.SOBindex].executed = True

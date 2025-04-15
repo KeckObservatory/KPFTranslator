@@ -1600,8 +1600,27 @@
     </property>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuObserving_Metadata">
+    <property name="title">
+     <string>Observing</string>
+    </property>
+    <addaction name="actionRun_Start_of_Night"/>
+    <addaction name="actionSet_Observer_Names"/>
+    <addaction name="actionSet_Program_ID"/>
+    <addaction name="actionRun_End_of_Night"/>
+   </widget>
+   <widget class="QMenu" name="menuFIU">
+    <property name="title">
+     <string>FIU</string>
+    </property>
+    <addaction name="actionConfigure_FIU_for_Observing"/>
+    <addaction name="actionConfigure_FIU_for_Calibrations"/>
+    <addaction name="actionConfigure_FIU_to_Stow_Position"/>
+   </widget>
    <addaction name="menuFile_2"/>
    <addaction name="menuFile"/>
+   <addaction name="menuObserving_Metadata"/>
+   <addaction name="menuFIU"/>
   </widget>
   <action name="actionLoad_Targets">
    <property name="text">
@@ -1651,6 +1670,41 @@
   <action name="actionLoad_KPF_CC_OBs">
    <property name="text">
     <string>Load KPF-CC OBs</string>
+   </property>
+  </action>
+  <action name="actionSet_Observer_Names">
+   <property name="text">
+    <string>Set Observer Names</string>
+   </property>
+  </action>
+  <action name="actionSet_Program_ID">
+   <property name="text">
+    <string>Set Program ID</string>
+   </property>
+  </action>
+  <action name="actionConfigure_FIU_for_Observing">
+   <property name="text">
+    <string>Configure FIU for Observing</string>
+   </property>
+  </action>
+  <action name="actionConfigure_FIU_for_Calibrations">
+   <property name="text">
+    <string>Configure FIU for Calibrations</string>
+   </property>
+  </action>
+  <action name="actionConfigure_FIU_to_Stow_Position">
+   <property name="text">
+    <string>Configure FIU to Stow Position</string>
+   </property>
+  </action>
+  <action name="actionRun_Start_of_Night">
+   <property name="text">
+    <string>Run Start of Night Script</string>
+   </property>
+  </action>
+  <action name="actionRun_End_of_Night">
+   <property name="text">
+    <string>Run End of Night Script</string>
    </property>
   </action>
  </widget>

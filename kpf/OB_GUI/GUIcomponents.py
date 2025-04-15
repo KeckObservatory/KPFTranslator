@@ -65,6 +65,61 @@ class OBListModel(QtCore.QAbstractListModel):
 
 
 ##-------------------------------------------------------------------------
+## Confirmation Popup
+##-------------------------------------------------------------------------
+class ConfirmationPopup(QtWidgets.QMessageBox):
+    '''Wrapper for easy use
+    '''
+    def __init__(self, window_title, msg, info_only=False, warning=False,
+                 *args, **kwargs):
+        QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
+        self.setWindowTitle(window_title)
+        if type(msg) == list:
+            msg = "\n".join(msg)
+        self.setText(msg)
+        if info_only == True:
+            self.setIcon(QtWidgets.QMessageBox.Information)
+            self.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        else:
+            self.setIcon(QtWidgets.QMessageBox.Question)
+            self.setStandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes) 
+        if warning is True:
+            self.setIcon(QtWidgets.QMessageBox.Warning)
+
+##-------------------------------------------------------------------------
+## Input Popup
+##-------------------------------------------------------------------------
+class InputPopup(QtWidgets.QDialog):
+    '''Wrapper for easy use
+    '''
+    def __init__(self, window_title, msg, *args, **kwargs):
+        super().__init__()
+        self.setWindowTitle(window_title)
+        self.result = ''
+        layout = QtWidgets.QVBoxLayout()
+        # Render message
+        if type(msg) == list:
+            msg = "\n".join(msg)
+        layout.addWidget(QtWidgets.QLabel(msg))
+        # Render input box
+        self.input_field = QtWidgets.QLineEdit()
+        self.input_field.textChanged.connect(self.edit_input)
+        layout.addWidget(self.input_field)
+        # Set up buttons
+        QBtn = QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
+        self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        layout.addWidget(self.buttonBox)
+        # Wrap up definition of the InputPopup
+        self.setLayout(layout)
+        self.setStyleSheet("min-width:350 px;")
+
+    def edit_input(self, value):
+        self.result = value
+
+
+##-------------------------------------------------------------------------
 ## Scrollable QMessageBox
 ##-------------------------------------------------------------------------
 class ScrollMessageBox(QtWidgets.QMessageBox):
