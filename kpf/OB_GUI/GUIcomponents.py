@@ -85,7 +85,7 @@ class ScrollMessageBox(QtWidgets.QMessageBox):
         contents_label.setFont(QtGui.QFont('Courier New', 11))
         lay.addWidget(contents_label)
         self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
-        self.setStyleSheet("QScrollArea{min-width:350 px; min-height: 600px;}")
+        self.setStyleSheet("QScrollArea{min-width:450 px; min-height: 600px;}")
 
 
 ##-------------------------------------------------------------------------
