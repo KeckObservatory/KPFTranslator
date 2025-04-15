@@ -340,6 +340,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BC_EstimatedDuration = self.findChild(QtWidgets.QLabel, 'BC_EstimatedDuration')
         self.BC_SendToOBList = self.findChild(QtWidgets.QPushButton, 'BC_SendToOBList')
         self.BC_SendToOBList.clicked.connect(self.BC_send_to_list)
+        self.BC_SaveToFile = self.findChild(QtWidgets.QPushButton, 'BC_SaveToFile')
+        self.BC_SaveToFile.clicked.connect(self.BC_save_to_file)
         # Calibrations
         self.BC_CalibrationsValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
         self.BC_ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
@@ -1170,6 +1172,22 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.sort('time')
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
+
+
+    def BC_save_to_file(self):
+        default_path_and_name = f"{self.file_path}/newcalibration.yaml"
+        result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
+                                             f"{default_path_and_name}",
+                                             "OB Files (*yaml);;All Files (*)")
+        if result:
+            save_file = result[0]
+            if save_file != '':
+                # save fname as path to use in future
+                self.file_path = Path(save_file).parent
+                self.log.info(f'Saving calibration OB to file: {save_file}')
+                self.BC_ObservingBlock.write_to(save_file)
+        else:
+            self.log.info('No output file chosen')
 
 
     def exit(self):
