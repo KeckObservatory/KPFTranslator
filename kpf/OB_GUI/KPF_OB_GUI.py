@@ -688,7 +688,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print('\n'.join(star_list))
         if self.enable_telescope == True:
             RemoveAllTargets.execute({})
-            SetTargetList.execute({})
+            SetTargetList.execute({'StarList': star_list})
 
     def set_weather_band(self, value):
         self.SortOrWeather.setCurrentText(value)
