@@ -24,8 +24,6 @@ class SetObserver(KPFFunction):
         observer = args.get('observer')
         log.info(f"Setting OBSERVER to {observer}")
         kpfexpose['OBSERVER'].write(observer)
-        time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args):
