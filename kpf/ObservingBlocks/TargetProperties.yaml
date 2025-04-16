@@ -59,10 +59,9 @@
   defaultvalue: 0
   precision: 3
 - name: 'Epoch'
-  comment: '[decimal year] Epoch of the coordinate measurement'
-  valuetype: float
-  defaultvalue: 2000
-  precision: 2
+  comment: '[str] Epoch of the coordinate measurement'
+  valuetype: str
+  defaultvalue: 'J2000'
 - name: 'DRA'
   comment: '[arcsec/hr divided by 15] Non sidereal tracking rate in RA'
   valuetype: float
