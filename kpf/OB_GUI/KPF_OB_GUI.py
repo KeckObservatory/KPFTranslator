@@ -37,6 +37,7 @@ from kpf.magiq.SelectTarget import SelectTarget
 from kpf.magiq.SetTargetList import SetTargetList
 from kpf.utils.StartOfNight import StartOfNight
 from kpf.utils.EndOfNight import EndOfNight
+from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
 
 
 ##-------------------------------------------------------------------------
@@ -645,24 +646,34 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.start_times = None
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-        elif value == 'KPF-CC': # Will need to be replaced by query to DB
+        elif value == 'KPF-CC':
             self.KPFCC = True
-            self.OBListHeader.setText('    StartTime '+self.hdr)
-            files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
+            classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
+            progIDs = set([p['ProjCode'] for p in cadence])
             self.model.OBs = []
-            self.model.start_times = []
-            for i,file in enumerate(files[:30]):
-                try:
-                    self.model.OBs.append(ObservingBlock(file))
-                    import random
-                    obstime = random.randrange(5, 17, step=1) + random.random()
-                    self.model.start_times.append(obstime)
-                except:
-                    print(f"Failed file {i+1}: {file}")
-            print(f"Read in {len(self.model.OBs)} files")
-            self.model.sort('time')
+            for progID in progIDs:
+                self.log.debug(f'Retrieving OBs for {progID}')
+                programOBs = GetObservingBlocksByProgram.execute({'program': progID})
+                self.model.OBs.extend(programOBs)
+                self.log.debug(f'  Got {len(programOBs)} for {progID}, total KPF-CC OB count is now {len(self.model.OBs)}')
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
+
+            # Handle KPF-CC OBs with schedule
+#             self.OBListHeader.setText('    StartTime '+self.hdr)
+#             files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
+#             self.model.OBs = []
+#             self.model.start_times = []
+#             for i,file in enumerate(files[:30]):
+#                 try:
+#                     self.model.OBs.append(ObservingBlock(file))
+#                     import random
+#                     obstime = random.randrange(5, 17, step=1) + random.random()
+#                     self.model.start_times.append(obstime)
+#                 except:
+#                     print(f"Failed file {i+1}: {file}")
+#             print(f"Read in {len(self.model.OBs)} files")
+#             self.model.sort('time')
         else:
             OBs = GetObservingBlocksByProgram.execute({'program': value})
             self.model.OBs = OBs

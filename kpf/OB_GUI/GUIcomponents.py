@@ -7,7 +7,7 @@ from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.schedule import getSchedule
+from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
 
 
 ##-------------------------------------------------------------------------
@@ -215,17 +215,16 @@ class ObserverCommentBox(QtWidgets.QDialog):
 class SelectProgramPopup(QtWidgets.QDialog):
     '''Custom dialog box for observers to select program to load OBs from.
     '''
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.setWindowTitle("Select Program")
         layout = QtWidgets.QVBoxLayout()
         self.ProgID = ''
         # Add ProgramID selection
         programID_label = QtWidgets.QLabel('Select Program ID:')
         layout.addWidget(programID_label)
-        date_str = (datetime.utcnow()-timedelta(days=1)).strftime('%Y-%m-%d')
-        scheduled_programs = getSchedule(date=date_str, numdays=30)
-        program_strings = [f"{entry['ProjCode']} on {entry['Date']}" for entry in scheduled_programs]
+        classical, cadence = GetScheduledPrograms.execute({})
+        program_strings = [f"{p['ProjCode']} on {p['Date']}" for p in classical]
         programID_selector = QtWidgets.QComboBox()
         programID_selector.addItems([''])
         programID_selector.addItems(program_strings)
