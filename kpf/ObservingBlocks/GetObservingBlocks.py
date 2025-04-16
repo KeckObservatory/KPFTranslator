@@ -9,6 +9,7 @@ from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
+from kpf.schedule import get_semester_dates
 
 
 ##-------------------------------------------------------------------------
@@ -21,6 +22,7 @@ def query_database(query, params):
     if 'hash' not in params.keys():
         params['hash'] = os.getenv('APIHASH', default='')
     r = requests.post(f"{url}{query}", json=params, verify=False)
+#     log.debug(f"Returned text: {r.text}")
     try:
         result = json.loads(r.text)
         log.debug(f'{query} retrieved {len(result)} results')
@@ -50,17 +52,26 @@ def get_OBs_from_database(params):
     for i,entry in enumerate(result):
         try:
             log.debug(f'Parsing entry {i+1} of {n}')
+#             log.debug(entry)
             OB = ObservingBlock(entry)
         except Exception as e:
             log.error(f'  Unable to parse entry {i+1} in to an ObservingBlock')
             log.error(f'  {e}')
+            log.debug(f'  OB ID = {entry.get("id")}')
         else:
             if OB.validate():
                 log.debug(f'  OB {i+1} is valid')
                 OBs.append(OB)
             else:
                 log.warning(f'  OB {i+1} is invalid')
-                print(entry)
+                if OB.Target is not None:
+                    for line in OB.Target.to_lines(comment=True):
+                        if line.find('ERR') > 0:
+                            log.debug(line)
+                for obs in OB.Observations:
+                    for line in obs.to_lines(comment=True):
+                        if line.find('ERR') > 0:
+                            log.debug(line)
 
     log.debug(f'get_OBs_from_database parsed {len(OBs)} ObservingBlocks')
     return OBs
@@ -115,10 +126,7 @@ class GetObservingBlocksByProgram(KPFFunction):
         semester = args.get('semester', None)
         if semester is None:
             now = datetime.datetime.now()
-            if now.month > 1 and now.month < 8:
-                semester = f"{now.year}A"
-            else:
-                semester = f"{now.year}B"
+            semester, start, end = get_semester_dates(now)
         program = args.get('program', None)
         if program is None:
             return
