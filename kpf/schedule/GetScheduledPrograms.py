@@ -27,7 +27,7 @@ class GetScheduledPrograms(KPFFunction):
         semester, semester_start, semester_end = get_semester_dates(utnow)
         if args.get('semester', None) == 'current':
             start = semester_start
-        elif int(str(args.get('semester', None))[:4]) > 2000:
+        elif str(args.get('semester', None))[0] == '2':
             semester, semester_start, semester_end = get_semester_dates(args.get('semester'))
             start = semester_start
         else:
