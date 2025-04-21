@@ -51,7 +51,7 @@ class RecoverThermalControl(KPFFunction):
         # This ensures that there are no sudden changes to the output.
         # The ramp (RMO) will turn off for this change within the dispatcher.
         log.info(f'{location}TRG = {float(VAL):.3f}')
-        TRG.write(VAL)
+        TRG.write(float(VAL))
 
         # Check that TRG and VAL are similar
         tol = cfg.getfloat('tolerances', 'TRG_VAL_diff_tolerance', fallback=0.01)
