@@ -49,12 +49,9 @@ class RecoverThermalControl(KPFFunction):
 
         # First change the setpoint to match the current temperature value.
         # This ensures that there are no sudden changes to the output.
-        log.info(f'{location}RMO Off')
-        RMO.write('Off')
+        # The ramp (RMO) will turn off for this change within the dispatcher.
         log.info(f'{location}TRG = {float(VAL):.3f}')
         TRG.write(VAL)
-        log.info(f'{location}RMO On')
-        RMO.write('On')
 
         # Check that TRG and VAL are similar
         tol = cfg.getfloat('tolerances', 'TRG_VAL_diff_tolerance', fallback=0.01)
