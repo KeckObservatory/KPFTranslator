@@ -78,6 +78,8 @@ class Observation(BaseOBComponent):
                 return True, f' # ERROR: {pname} invalid'
             elif self.get('TakeSimulCal') == False:
                 return False, ' # Unused: TakeSimulCal = False'
+            elif self.get('TakeSimulCal') == True and self.get('AutoNDFilters') == True:
+                return False, ' # Unused: AutoNDFilters = True'
         elif pname == 'AutoNDFilters':
             if self.get('TakeSimulCal') == False:
                 return False, ' # Unused: TakeSimulCal = False'
