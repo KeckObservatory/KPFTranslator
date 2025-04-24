@@ -690,7 +690,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.set_SortOrWeather()
             msg = f"Retrieved {len(OBs)} OBs for program {value}"
             ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
-        self.ProgID.setText(value)
         # This select/deselect operation caches something in the AltAz 
         # calculation which happens the first time an OB is selected. This
         # just makes the GUI more "responsive" as the loading of the OBs when
