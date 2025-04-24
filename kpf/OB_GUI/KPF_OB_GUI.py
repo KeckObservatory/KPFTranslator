@@ -721,6 +721,7 @@ class MainWindow(QtWidgets.QMainWindow):
         script_running = self.scriptname_value.text() not in ['', 'None', None]
         if script_running is True:
             self.do_fullstop(True)
+        # Repeat check to make sure it stopped (needs proper wait added)
         script_running = self.scriptname_value.text() not in ['', 'None', None]
         if script_running is True:
             self.log.warning('Script is still running, aborting run_start_of_night')
