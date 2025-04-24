@@ -168,14 +168,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #-------------------------------------------------------------------
         # Menu Bar: Observing
-        RunStartOfNight = self.findChild(QtWidgets.QAction, 'actionRun_Start_of_Night')
-        RunStartOfNight.triggered.connect(self.run_start_of_night)
-        SetObserverNames = self.findChild(QtWidgets.QAction, 'actionSet_Observer_Names')
-        SetObserverNames.triggered.connect(self.set_observer)
-        SetProgramID = self.findChild(QtWidgets.QAction, 'actionSet_Program_ID')
-        SetProgramID.triggered.connect(self.set_programID)
-        RunEndOfNight = self.findChild(QtWidgets.QAction, 'actionRun_End_of_Night')
-        RunEndOfNight.triggered.connect(self.run_end_of_night)
+        self.RunStartOfNight = self.findChild(QtWidgets.QAction, 'actionRun_Start_of_Night')
+        self.RunStartOfNight.triggered.connect(self.run_start_of_night)
+        self.SetObserverNames = self.findChild(QtWidgets.QAction, 'actionSet_Observer_Names')
+        self.SetObserverNames.triggered.connect(self.set_observer)
+        self.SetProgramID = self.findChild(QtWidgets.QAction, 'actionSet_Program_ID')
+        self.SetProgramID.triggered.connect(self.set_programID)
+        self.RunEndOfNight = self.findChild(QtWidgets.QAction, 'actionRun_End_of_Night')
+        self.RunEndOfNight.triggered.connect(self.run_end_of_night)
 
         #-------------------------------------------------------------------
         # Menu Bar: FIU
@@ -459,8 +459,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.expose_status_value.setText(exposure_status_string)
         if status == 'Ready':
             self.expose_status_value.setStyleSheet("color:green")
+            self.RunStartOfNight.setEnabled(self.SelectedInstrument.text() != 'OSIRIS')
+            self.SetObserverNames.setEnabled(True)
+            self.SetProgramID.setEnabled(True)
+            self.RunEndOfNight.setEnabled(self.SelectedInstrument.text() != 'OSIRIS')
         elif status in ['Start', 'InProgress', 'Readout']:
             self.expose_status_value.setStyleSheet("color:orange")
+            self.RunStartOfNight.setEnabled(False)
+            self.SetObserverNames.setEnabled(False)
+            self.SetProgramID.setEnabled(False)
+            self.RunEndOfNight.setEnabled(False)
 
     def update_selected_instrument(self, value):
         self.SelectedInstrument.setText(value)
