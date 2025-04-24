@@ -735,7 +735,7 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Run Start of Night Script?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             self.log.debug('Confirmation is yes, running StartOfNight script')
-            StartOfNight.execute({})
+            StartOfNight.execute({'confirm': True})
         else:
             self.log.debug('Confirmation is no, not running script')
 
@@ -778,7 +778,7 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Run End of Night Script?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             self.log.debug('Confirmation is yes, running EndOfNight script')
-            EndOfNight.execute({})
+            EndOfNight.execute({'confirm': True})
         else:
             self.log.debug('Confirmation is no, not running script')
 
