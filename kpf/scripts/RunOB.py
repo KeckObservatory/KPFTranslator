@@ -98,7 +98,12 @@ class RunOB(KPFScript):
         # Configure for Acquisition
         if OB.Target is not None:
             log.info(f'Configuring for Acquisition')
-            ConfigureForAcquisition.execute(args, OB=OB)
+            try:
+                ConfigureForAcquisition.execute(args, OB=OB)
+            except Exception as e:
+                log.error(e)
+                CleanupAfterScience.execute(args, OB=OB)
+                return
             WaitForConfigureAcquisition.execute(args, OB=OB)
 
         # Execute science observations
