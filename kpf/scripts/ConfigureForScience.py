@@ -50,7 +50,7 @@ class ConfigureForScience(KPFFunction):
             # Offset Telescope
             EastNorth.execute(observation)
         # Confirm guiding
-        ConfirmGuiding.execute({})
+        ConfirmGuiding.execute(observation)
 
         check_scriptstop()
 

@@ -3,6 +3,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.telescope import KPF_is_selected_instrument
 from kpf.magiq import magiq_server_command
+from kpf.magiq.GetTargetList import GetTargetList
 
 
 class RemoveTarget(KPFFunction):

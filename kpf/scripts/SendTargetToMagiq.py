@@ -18,7 +18,7 @@ class SendTargetToMagiq(KPFScript):
     @classmethod
     def perform(cls, args, OB=None):
         log.info(f'Sending target info to Magiq')
-        SelectTarget.execute(OB.Target.to_dict())
+#         SelectTarget.execute(OB.Target.to_dict())
         SetTargetInfo.execute({}, OB=OB)
 
     @classmethod

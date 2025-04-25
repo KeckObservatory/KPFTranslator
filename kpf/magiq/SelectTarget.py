@@ -22,6 +22,7 @@ class SelectTarget(KPFFunction):
         target_name = args.get('TargetName', None)
         target_names, lines = GetTargetList.execute({})
         if target_name in target_names:
+            log.info(f'Selecting {target_name} in Magiq')
             params = {'target': target_name}
             result = magiq_server_command('selectTarget', params=params)
         else:
