@@ -146,6 +146,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Tracked values
         self.disabled_detectors = []
         self.enable_telescope = False
+        self.enable_magiq = False
 
 
     def setupUi(self):
@@ -199,6 +200,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SelectedInstrument = self.findChild(QtWidgets.QLabel, 'SelectedInstrument')
         INSTRUME = kPyQt.kFactory(ktl.cache(self.dcs, 'INSTRUME'))
         INSTRUME.stringCallback.connect(self.update_selected_instrument)
+        INSTRUME.primeCallback()
 
         # script name
         self.scriptname_value = self.findChild(QtWidgets.QLabel, 'scriptname_value')
@@ -704,9 +706,9 @@ class MainWindow(QtWidgets.QMainWindow):
         star_list = [OB.Target.to_star_list() for OB in self.model.OBs
                      if OB.Target is not None]
         print('\n'.join(star_list))
-        if self.enable_telescope == True:
+        if self.enable_telescope and self.enable_magiq:
             RemoveAllTargets.execute({})
-            SetTargetList.execute({'StarList': star_list})
+            SetTargetList.execute({'StarList': '\n'.join(star_list)})
 
     def set_weather_band(self, value):
         self.SortOrWeather.setCurrentText(value)
@@ -735,7 +737,15 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Run Start of Night Script?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             self.log.debug('Confirmation is yes, running StartOfNight script')
-            StartOfNight.execute({'confirm': True})
+            # Pop up an xterm with the script running
+            kpfdo = Path(__file__).parent.parent / 'kpfdo'
+            StartOfNight_cmd = f'{kpfdo} StartOfNight ; echo "Done!" ; sleep 30'
+            cmd = ['xterm', '-title', 'StartOfNight', '-name', 'StartOfNight',
+                   '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+                   '-e', f'{StartOfNight_cmd}']
+            print(StartOfNight_cmd)
+            print(' '.join(cmd))
+            proc = subprocess.Popen(cmd)
         else:
             self.log.debug('Confirmation is no, not running script')
 
@@ -1042,7 +1052,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if removed.Target is not None:
             targetname = removed.Target.TargetName
             self.log.info(f"Removing {targetname} from star list and OB list")
-            if self.enable_telescope == True:
+            if self.enable_telescope and self.enable_magiq:
                 RemoveTarget.execute({'target': targetname})
 
     ##-------------------------------------------
@@ -1169,7 +1179,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.set_SortOrWeather()
         targetname = self.BS_ObservingBlock.Target.TargetName
         self.log.info(f"Adding {targetname} to star list and OB list")
-        if self.enable_telescope == True:
+        if self.enable_telescope and self.enable_magiq:
             AddTarget.execute(self.BS_ObservingBlock.Target.to_dict())
 
     def BS_save_to_file(self):
