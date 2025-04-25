@@ -14,7 +14,7 @@ def magiq_server_command(command, params=None, post=False):
             else:
                 command += '&'
             command += f"{key}={params[key]}"
-#     print(f"Running: {url}{command}")
+    print(f"Running: {url}{command}")
     if post:
         r = requests.post(f"{url}{command}")
     else:
