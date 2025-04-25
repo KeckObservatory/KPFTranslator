@@ -18,6 +18,7 @@ class ConfirmGuiding(KPFFunction):
         guide_here = args.get('GuideHere', True)
         guide_here_txt = {True: 'Active', False: 'Inactive'}[guide_here]
         timeout = args.get('guide_wait_timeout', 30)
+        log.info(f"Waiting for kpfguide.ALL_LOOPS = {guide_here_txt}")
         success = ALL_LOOPS.waitfor(f"=='{guide_here_txt}'", timeout=timeout)
 
         if success == False:
@@ -28,15 +29,18 @@ class ConfirmGuiding(KPFFunction):
             print(f"Timed out waiting for ALL_LOOPS == {guide_here_txt}")
             print("Double check that the OA is configuring the tip tilt system")
             print()
-            print("Do you wish to continue executing this OB and wait for the")
-            print("loops to be the the expected state?")
-            print("(y/n) [y]:")
+            print("Do you wish to abort the OB? (type: a or abort)")
+            print("Do you wish to continute to wait? (type: w or wait)")
+            print("or do you wish to proceed to the observation regardless of the tip tilt status? (type: o or observe)")
+            print("(a/w/o) [w]:")
             print("#####################################################")
             print()
             user_input = input()
             log.debug(f'response: "{user_input}"')
             if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
                 raise KPFException("User chose to halt execution")
+            elif user_input.lower().strip() in ['o', 'p', 'observe', 'proceed']:
+                return
             else:
                 ConfirmGuiding.execute(args)
 
