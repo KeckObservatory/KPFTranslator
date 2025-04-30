@@ -1,4 +1,5 @@
 from pathlib import Path
+import copy
 import yaml
 
 import numpy as np
@@ -13,7 +14,7 @@ from kpf.ObservingBlocks.Target import Target
 class ObservingBlock(object):
     def __init__(self, OBinput):
         if isinstance(OBinput, dict):
-            OBdict = OBinput
+            OBdict = copy.deepcopy(OBinput)
         elif isinstance(OBinput, ObservingBlock):
             OBdict = OBinput.to_dict()
         elif OBinput in ['', None]:
