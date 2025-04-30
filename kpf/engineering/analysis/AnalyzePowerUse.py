@@ -1,10 +1,11 @@
 #!python3
 
 ## Import General Tools
+import copy
 from pathlib import Path
 import time
 from datetime import datetime, timedelta
-
+from matplotlib import pyplot as plt
 import numpy as np
 
 import keygrabber
@@ -29,11 +30,56 @@ def get_power_telemetry(date, outlets):
     return power_history
 
 
-def analyze_power_use(power_history):
+def analyze_total_power(date, power_history):
+    total_power = []
+    total_power_times = []
+    total_power_components = []
+    Wh = 0
+
+    dto = datetime.strptime(date, '%Y-%m-%d')
+
+    for i,entry in enumerate(power_history):
+        time = datetime.fromtimestamp(entry['time'])
+        # Build total_power time series of total power use
+        if len(total_power_components) > 0:
+            newtpdict = copy.deepcopy(total_power_components[-1])
+        else:
+            newtpdict = {}
+        newtpdict[entry['keyword']] = float(entry['binvalue'])
+        # Dict of current power values
+        tptotal = 0
+        for key in newtpdict.keys():
+            tptotal += newtpdict[key]
+        total_power.append(tptotal)
+        total_power_times.append(time)
+        total_power_components.append(newtpdict)
+        # Wh
+        if time > dto and i > 0:
+            dt = (time - max([dto, total_power_times[i-1]])).total_seconds()/3600
+            Wh += tptotal*dt
+
+    title_str = f'KPF Total Power Use (no LFC)'
+    title_str += f'\nEnergy Use on {date} = {Wh/1000.:.2f} kWh'
+    title_str += f'\nPeak Power on {date} = {max(total_power)/1000.:.2f} kW'
+    plt.figure(figsize=(12,8))
+    plt.plot(total_power_times, total_power, 'k,')
+    plt.title(title_str)
+    plt.ylabel('Power (Watt)')
+    plt.xlabel('Time')
+    plt.xlim(dto, dto+timedelta(days=1))
+    pngfile = Path(f'~/PowerUse_{date}.png').expanduser()
+    print(f'Writing: ~/PowerUse_{date}.png')
+    if pngfile.exists(): pngfile.unlink()
+    plt.savefig(pngfile, bbox_inches='tight', pad_inches=0.1)
+
+
+def analyze_outlet_use(power_history):
     power_data = {}
     avg_draw = {}
     max_draw = {}
-    for entry in power_history:
+
+    for i,entry in enumerate(power_history):
+        # Build power_data for each outlet
         if entry['keyword'] not in power_data.keys():
             power_data[entry['keyword']] = []
         power_data[entry['keyword']].append(float(entry['binvalue']))
@@ -67,9 +113,10 @@ def main(date):
                 outlets.append(f'OUTLET_{power_strip}{i}_DRAW')
     
     power_history = get_power_telemetry(date, outlets)
-    total_avg, total_max, worst_offenders = analyze_power_use(power_history)
+    total_avg, total_max, worst_offenders = analyze_outlet_use(power_history)
     print(total_avg, total_max)
     print(worst_offenders)
+    analyze_total_power(date, power_history)
 
 
 if __name__ == '__main__':
