@@ -20,14 +20,14 @@ def get_power_telemetry(date, outlets):
     end = time.mktime((dt+oneday).timetuple())
 
     power_history = keygrabber.retrieve({'kpfpower': outlets}, begin=begin, end=end)
+    outlets = [o.replace('_DRAW', '_NAME') for o in outlets]
+    outlet_name_history = keygrabber.retrieve({'kpfpower': outlets}, begin=begin, end=end)
+    outlet_names = {}
+    for i,entry in enumerate(outlet_name_history):
+        key = entry['keyword'].replace('_NAME', '_DRAW')
+        outlet_names[key] = entry['ascvalue']
 
-#     for entry in power_history:
-#         entry_dt = datetime.fromtimestamp(entry['time'])
-#         entry_delta = (entry_dt - dt).total_seconds()
-#         if entry_delta > 60*60*24:
-#             print(entry_dt)
-
-    return power_history
+    return power_history, outlet_names
 
 
 def analyze_total_power(date, power_history):
@@ -60,13 +60,17 @@ def analyze_total_power(date, power_history):
 
     title_str = f'KPF Total Power Use (no LFC)'
     title_str += f'\nEnergy Use on {date} = {Wh/1000.:.2f} kWh'
+    title_str += f'\nAverage Power on {date} = {np.mean(total_power)/1000.:.2f} kW'
     title_str += f'\nPeak Power on {date} = {max(total_power)/1000.:.2f} kW'
+    print(title_str)
     plt.figure(figsize=(12,8))
     plt.plot(total_power_times, total_power, 'k,')
     plt.title(title_str)
     plt.ylabel('Power (Watt)')
     plt.xlabel('Time')
     plt.xlim(dto, dto+timedelta(days=1))
+    plt.ylim(0,1.1*max(total_power))
+    plt.grid()
     pngfile = Path(f'~/PowerUse_{date}.png').expanduser()
     print(f'Writing: ~/PowerUse_{date}.png')
     if pngfile.exists(): pngfile.unlink()
@@ -84,22 +88,11 @@ def analyze_outlet_use(power_history):
             power_data[entry['keyword']] = []
         power_data[entry['keyword']].append(float(entry['binvalue']))
 
-    total_avg = 0
-    total_max = 0
     for outlet in power_data.keys():
         avg_draw[outlet] = np.mean(power_data[outlet])
         max_draw[outlet] = max(power_data[outlet])
-        total_avg += avg_draw[outlet]
-        total_max += max_draw[outlet]
 
-    # Which outlets have the highest avg draw?
-    threshold = 100
-    worst_offenders = {}
-    for outlet in power_data.keys():
-        if avg_draw[outlet] > threshold:
-            worst_offenders[outlet] = avg_draw[outlet]
-
-    return total_avg, total_max, worst_offenders
+    return avg_draw, max_draw
 
 
 def main(date):
@@ -111,11 +104,16 @@ def main(date):
         if power_strip == 'B':
             for i in [9, 10, 11, 12, 13, 14,  15, 16]:
                 outlets.append(f'OUTLET_{power_strip}{i}_DRAW')
-    
-    power_history = get_power_telemetry(date, outlets)
-    total_avg, total_max, worst_offenders = analyze_outlet_use(power_history)
-    print(total_avg, total_max)
-    print(worst_offenders)
+
+    power_history, outlet_names = get_power_telemetry(date, outlets)
+    avg_draw, max_draw = analyze_outlet_use(power_history)
+
+    # Which outlets have the highest avg draw?
+    threshold = 100
+    print(f"Outlets drawing more than {threshold:.0f} W on average:")
+    for outlet in avg_draw.keys():
+        if avg_draw[outlet] > threshold:
+            print(f"  {outlet} ({outlet_names[outlet]}) average draw = {avg_draw[outlet]:.0f} W")
     analyze_total_power(date, power_history)
 
 
