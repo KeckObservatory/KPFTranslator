@@ -20,7 +20,7 @@ import kPyQt                    # provided by kroot/kui/kPyQt
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 
 from kpf.OB_GUI.GUIcomponents import (OBListModel, ConfirmationPopup, InputPopup,
-                                      ScrollMessageBox, EditableMessageBox,
+                                      OBContentsDisplay, EditableMessageBox,
                                       ObserverCommentBox, SelectProgramPopup)
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
@@ -37,6 +37,7 @@ from kpf.magiq.SelectTarget import SelectTarget
 from kpf.magiq.SetTargetList import SetTargetList
 from kpf.utils.StartOfNight import StartOfNight
 from kpf.utils.EndOfNight import EndOfNight
+from kpf.schedule import get_semester_dates
 from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
 
 
@@ -336,8 +337,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_SendToOBList.clicked.connect(self.BS_send_to_list)
         self.BS_SaveToFile = self.findChild(QtWidgets.QPushButton, 'BS_SaveToFile')
         self.BS_SaveToFile.clicked.connect(self.BS_save_to_file)
+        self.BS_LoadFromFile = self.findChild(QtWidgets.QPushButton, 'BS_LoadFromFile')
+        self.BS_LoadFromFile.clicked.connect(self.BS_load_from_file)
+        self.BS_ProgramID = self.findChild(QtWidgets.QLineEdit, 'BS_ProgramID')
+        self.BS_ProgramID.textChanged.connect(self.BS_form_OB)
         # Target
         self.BS_QuerySimbadLineEdit = self.findChild(QtWidgets.QLineEdit, 'BS_QuerySimbadLineEdit')
+        self.BS_QuerySimbadLineEdit.returnPressed.connect(self.BS_query_simbad)
         self.BS_QuerySimbadButton = self.findChild(QtWidgets.QPushButton, 'BS_QuerySimbadButton')
         self.BS_QuerySimbadButton.clicked.connect(self.BS_query_simbad)
         self.BS_TargetValid = self.findChild(QtWidgets.QLabel, 'BS_TargetValid')
@@ -346,16 +352,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BS_TargetView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_TargetView')
         self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
         self.BS_TargetView.setFont(QtGui.QFont('Courier New', 11))
-        self.BS_edit_target()
+        self.BS_set_target(None)
         self.BS_TargetView.textChanged.connect(self.BS_edit_target)
         # Observations
         self.BS_ObservationsValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
         self.BS_ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
         self.BS_ClearObservationsButton.clicked.connect(self.BS_clear_observations)
         self.BS_ObservationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
-        self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False, comment=True))
         self.BS_ObservationsView.setFont(QtGui.QFont('Courier New', 11))
-        self.BS_refresh_observation_comments()
+        self.BS_render_observations_text()
         self.BS_ObservationsView.textChanged.connect(self.BS_edit_observations)
 
         #-------------------------------------------------------------------
@@ -969,27 +974,35 @@ class MainWindow(QtWidgets.QMainWindow):
         SOB = self.model.OBs[self.SOBindex]
         if SOB is None:
             return
-        OBcontents_popup = ScrollMessageBox(SOB)
+        OBcontents_popup = OBContentsDisplay(SOB)
         OBcontents_popup.setWindowTitle(f"Full OB Contents: {SOB.summary()}")
         result = OBcontents_popup.exec_()
         if result == QtWidgets.QMessageBox.Ok:
             self.log.debug('Show popup: Ok')
-        elif result == QtWidgets.QMessageBox.Cancel:
-            self.log.info('Show popup: Edit')
-            OBedit_popup = EditableMessageBox(SOB)
-            OBedit_popup.setWindowTitle(f"Editing OB: {SOB.summary()}")
-            edit_result = OBedit_popup.exec_()
-            if edit_result == QtWidgets.QMessageBox.Ok:
-                self.log.info('Edit popup: Ok')
-                if OBedit_popup.result.validate():
-                    self.log.info('The edited OB has been validated')
-                    self.model.OBs[self.SOBindex] = OBedit_popup.result
-                    self.model.layoutChanged.emit()
-                    self.update_SOB_display()
-                else:
-                    self.log.warning('Edits did not validate. Not changing OB.')
-            elif edit_result == QtWidgets.QMessageBox.Cancel:
-                self.log.debug('Edit popup: Cancel')
+        elif result == QtWidgets.QMessageBox.Open:
+            self.log.info('Show popup: Open/Edit')
+            # If OB is science only, the use the Build a Science OB tab
+            if SOB.Target is not None and len(SOB.Observations) > 0:
+                pass
+            # If OB is calibrations only, the use the Build a Calibration OB tab
+            elif SOB.Target is None and len(SOB.Calibrations) > 0:
+            # If OB is both, the use the generla edit window
+                pass
+            else:
+                OBedit_popup = EditableMessageBox(SOB)
+                OBedit_popup.setWindowTitle(f"Editing OB: {SOB.summary()}")
+                edit_result = OBedit_popup.exec_()
+                if edit_result == QtWidgets.QMessageBox.Ok:
+                    self.log.info('Edit popup: Ok')
+                    if OBedit_popup.result.validate():
+                        self.log.info('The edited OB has been validated')
+                        self.model.OBs[self.SOBindex] = OBedit_popup.result
+                        self.model.layoutChanged.emit()
+                        self.update_SOB_display()
+                    else:
+                        self.log.warning('Edits did not validate. Not changing OB.')
+                elif edit_result == QtWidgets.QMessageBox.Cancel:
+                    self.log.debug('Edit popup: Cancel')
 
 
     def add_comment(self):
@@ -1055,104 +1068,141 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.enable_telescope and self.enable_magiq:
                 RemoveTarget.execute({'target': targetname})
 
-    ##-------------------------------------------
-    ## Methods for the Build a Science OB Tab
-    ##-------------------------------------------
-    def BS_edit_target(self):
-        BST_edited_lines = self.BS_TargetView.document().toPlainText()
-        try:
-            new_dict = yaml.safe_load(BST_edited_lines)
-            self.BS_Target = Target(new_dict)
-        except Exception as e:
-            print(e)
-            self.BS_Target = None
-        TargetValid = False if self.BS_Target is None else self.BS_Target.validate()
-        color = {True: 'green', False: 'orange'}[TargetValid]
-        self.BS_TargetValid.setText(str(TargetValid))
-        self.BS_TargetValid.setStyleSheet(f"color:{color}")
+    ##--------------------------------------------------------------
+    ## Methods for the Build a Science OB Tab Target Section
+    ##--------------------------------------------------------------
+    def BS_set_target(self, target):
+        self.log.debug(f"Running BS_set_target {target}")
+        if isinstance(target, Target):
+            self.BS_Target = target
+        elif target is None:
+            self.BS_Target = Target({})
+        else:
+            self.log.error(f'Input must be Target or None, not {type(target)}')
+            return
+        self.BS_render_target_text()
         self.BS_form_OB()
 
+    def BS_render_target_text(self):
+        self.log.debug(f"Running BS_render_target_text")
+        BST_edited_lines = self.BS_TargetView.document().toPlainText()
+        # Record cursor position
+        cursor = self.BS_TargetView.textCursor()
+        cursor_position = cursor.position()
+        if BST_edited_lines != self.BS_Target.__repr__(prune=False, comment=True):
+            self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
+            # Restore cursor position
+            try:
+                cursor.setPosition(cursor_position)
+                self.BS_TargetView.setTextCursor(cursor)
+            except Exception as e:
+                print('Failed to set cursor position in BS_TargetView')
+                print(e)
+            TargetValid = False if self.BS_Target is None else self.BS_Target.validate()
+            color = {True: 'green', False: 'orange'}[TargetValid]
+            self.BS_TargetValid.setText(str(TargetValid))
+            self.BS_TargetValid.setStyleSheet(f"color:{color}")
+
+    def BS_clear_target(self):
+        self.log.debug(f"Running BS_clear_target")
+        self.BS_set_target(None)
+
+    def BS_edit_target(self):
+        self.log.debug(f"Running BS_edit_target")
+        BST_edited_lines = self.BS_TargetView.document().toPlainText()
+        if BST_edited_lines != self.BS_Target.__repr__(prune=False, comment=True):
+            try:
+                new_dict = yaml.safe_load(BST_edited_lines)
+                self.BS_set_target(Target(new_dict))
+            except Exception as e:
+                print('Failed to parse edited target text')
+                print(e)
+                TargetValid = False
+                color = {True: 'green', False: 'orange'}[TargetValid]
+                self.BS_TargetValid.setText(str(TargetValid))
+                self.BS_TargetValid.setStyleSheet(f"color:{color}")
+
     def BS_query_simbad(self):
+        self.log.debug(f"Running BS_query_simbad")
         target_name = self.BS_QuerySimbadLineEdit.text().strip()
         print(f"Querying: {target_name}")
         newtarg = self.BS_Target.resolve_name(target_name)
         if newtarg is None:
             print(f"Query failed for {target_name}")
-            self.BS_Target = Target({})
-        else:
-            self.BS_Target = newtarg
-            self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
-            TargetValid = False if self.BS_Target is None else self.BS_Target.validate()
-            color = {True: 'green', False: 'orange'}[TargetValid]
-            self.BS_TargetValid.setText(str(TargetValid))
-            self.BS_TargetValid.setStyleSheet(f"color:{color}")
         self.BS_QuerySimbadLineEdit.setText('')
+        print(type(newtarg), newtarg)
+        self.BS_set_target(newtarg)
 
-    def BS_refresh_target_comments(self):
-        out = self.BS_Target.__repr__(prune=False, comment=True)
-        cursor = self.BS_TargetView.textCursor()
-        cursor_position = cursor.position()
-        self.BS_TargetView.setPlainText(out)
-        try:
-            # Restore cursor position
-            cursor.setPosition(cursor_position)
-            self.BS_TargetView.setTextCursor(cursor)
-        except:
-            pass
+    ##--------------------------------------------------------------
+    ## Methods for the Build a Science OB Tab Observations Section
+    ##--------------------------------------------------------------
+    def BS_set_observations(self, observations):
+        self.log.debug(f"Running BS_set_observations {observations}")
+        are_observations = [isinstance(o, Observation) for o in observations]
+        self.BS_Observations = [o for o in observations if isinstance(o, Observation)]
+        self.BS_render_observations_text()
         self.BS_form_OB()
 
-    def BS_clear_target(self):
-        self.BS_Target = Target({})
-        self.BS_TargetView.setPlainText(self.BS_Target.__repr__(prune=False, comment=True))
-        self.BS_form_OB()
-
-    def BS_edit_observations(self):
-        BSO_edited_lines = self.BS_ObservationsView.document().toPlainText()
-        try:
-            new_dict = yaml.safe_load(BSO_edited_lines)
-            self.BS_Observations = [Observation(entry) for entry in new_dict]
-            ObservationsValid = np.all([entry.validate() for entry in self.BS_Observations])
-        except Exception as e:
-            print(e)
-            self.BS_Observations = [Observation({})]
-            ObservationsValid = False
-        color = {True: 'green', False: 'orange'}[ObservationsValid]
-        self.BS_ObservationsValid.setText(str(ObservationsValid))
-        self.BS_ObservationsValid.setStyleSheet(f"color:{color}")
-        self.BS_form_OB()
-
-    def BS_refresh_observation_comments(self):
+    def BS_render_observations_text(self):
+        self.log.debug(f"Running BS_render_observations_text")
         out = []
         for i,obs in enumerate(self.BS_Observations):
             out.append(f'# Observation {i+1}\n')
             out.append(obs.__repr__(prune=False, comment=True))
+        # Record cursor position
         cursor = self.BS_ObservationsView.textCursor()
         cursor_position = cursor.position()
-        self.BS_ObservationsView.setPlainText(''.join(out))
-        try:
-            # Restore cursor position
-            cursor.setPosition(cursor_position)
-            self.BS_ObservationsView.setTextCursor(cursor)
-        except:
-            pass
-        self.BS_form_OB()
+        if ''.join(out) != self.BS_ObservationsView.document().toPlainText():
+            self.BS_ObservationsView.setPlainText(''.join(out))
+            try:
+                # Restore cursor position
+                cursor.setPosition(cursor_position)
+                self.BS_ObservationsView.setTextCursor(cursor)
+            except Exception as e:
+                print('Failed to set cursor position in BS_ObservationsView')
+                print(e)
+            ObservationsValid = np.all([entry.validate() for entry in self.BS_Observations])
+            color = {True: 'green', False: 'orange'}[ObservationsValid]
+            self.BS_ObservationsValid.setText(str(ObservationsValid))
+            self.BS_ObservationsValid.setStyleSheet(f"color:{color}")
 
     def BS_clear_observations(self):
-        self.BS_Observations = [Observation({})]
-        self.BS_ObservationsView.setPlainText(Observation({}).__repr__(prune=False, comment=True))
-        self.BS_form_OB()
+        self.log.debug(f"Running BS_clear_observations")
+        self.BS_set_observations([])
 
+    def BS_edit_observations(self):
+        self.log.debug(f"Running BS_edit_observations")
+        BSO_edited_lines = self.BS_ObservationsView.document().toPlainText()
+        if BSO_edited_lines != self.BS_Target.__repr__(prune=False, comment=True):
+            try:
+                contents = yaml.safe_load(BSO_edited_lines)
+                self.BS_set_observations([Observation(entry) for entry in contents])
+            except Exception as e:
+                print(e)
+                ObservationsValid = False
+                color = {True: 'green', False: 'orange'}[ObservationsValid]
+                self.BS_ObservationsValid.setText(str(ObservationsValid))
+                self.BS_ObservationsValid.setStyleSheet(f"color:{color}")
+
+
+    ##--------------------------------------------------------------
+    ## Methods for the Build a Science OB Tab Observing Block
+    ##--------------------------------------------------------------
     def BS_form_OB(self):
-        newOB = ObservingBlock({})
+        self.log.debug(f"Running BS_form_OB")
+        semester, start, end = get_semester_dates(datetime.datetime.now())
+        OBdict = {'ProgramID': self.BS_ProgramID.text(),
+                  'semester': semester,
+                  'semid': f'{semester}_{self.BS_ProgramID.text()}'}
+        newOB = ObservingBlock(OBdict)
         newOB.Target = self.BS_Target
         newOB.Observations = self.BS_Observations
         if newOB.__repr__() == self.BS_ObservingBlock.__repr__():
             return
-        self.BS_ObservingBlock = ObservingBlock({})
+        self.BS_ObservingBlock = ObservingBlock(OBdict)
         self.BS_ObservingBlock.Target = self.BS_Target
         self.BS_ObservingBlock.Observations = self.BS_Observations
-        self.BS_refresh_observation_comments()
-        self.BS_refresh_target_comments()
+        # Validate
         OBValid = self.BS_ObservingBlock.validate()
         color = {True: 'green', False: 'orange'}[OBValid]
         self.BS_OBValid.setText(str(OBValid))
@@ -1183,6 +1233,7 @@ class MainWindow(QtWidgets.QMainWindow):
             AddTarget.execute(self.BS_ObservingBlock.Target.to_dict())
 
     def BS_save_to_file(self):
+        print(self.BS_ObservingBlock.__repr__())
         targname = self.BS_ObservingBlock.Target.get('TargetName')
         default_path_and_name = f"{self.file_path}/{targname}.yaml"
         result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
@@ -1198,6 +1249,9 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.log.info('No output file chosen')
 
+
+    def BS_load_from_file(self):
+        pass
 
     ##-------------------------------------------
     ## Methods for the Build a Calibration OB Tab

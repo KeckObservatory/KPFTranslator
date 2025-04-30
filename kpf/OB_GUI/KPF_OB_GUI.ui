@@ -811,9 +811,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>160</y>
+        <y>210</y>
         <width>441</width>
-        <height>511</height>
+        <height>461</height>
        </rect>
       </property>
       <property name="title">
@@ -905,7 +905,7 @@
          <x>10</x>
          <y>90</y>
          <width>421</width>
-         <height>411</height>
+         <height>361</height>
         </rect>
        </property>
       </widget>
@@ -1007,7 +1007,7 @@
         <x>10</x>
         <y>10</y>
         <width>441</width>
-        <height>131</height>
+        <height>191</height>
        </rect>
       </property>
       <property name="title">
@@ -1019,7 +1019,7 @@
          <x>270</x>
          <y>60</y>
          <width>161</width>
-         <height>31</height>
+         <height>51</height>
         </rect>
        </property>
        <property name="toolTip">
@@ -1124,7 +1124,7 @@
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>100</y>
+         <y>120</y>
          <width>161</width>
          <height>23</height>
         </rect>
@@ -1134,6 +1134,50 @@
        </property>
        <property name="text">
         <string>Save OB to File</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BS_LoadFromFile">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>150</y>
+         <width>161</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Load OB from File</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="BS_ProgIDLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>120</y>
+         <width>151</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Program ID for OB:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="BS_ProgramID">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>120</y>
+         <width>91</width>
+         <height>23</height>
+        </rect>
        </property>
       </widget>
      </widget>
