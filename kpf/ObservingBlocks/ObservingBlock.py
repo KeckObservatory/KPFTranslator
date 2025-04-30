@@ -163,7 +163,7 @@ class ObservingBlock(object):
                 print(f'File {file} exists and overwrite is False')
                 return
             else:
-                fie.unlink()
+                file.unlink()
         with open(file, 'w')as f:
             f.write(self.__repr__()+'\n')
 
