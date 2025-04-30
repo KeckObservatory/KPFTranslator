@@ -38,7 +38,7 @@ class ObservingBlock(object):
             OBdict = {}
 
         # OB Metadata
-        self.ProgramID = OBdict.pop('progid', '')
+        self.ProgramID = OBdict.pop('ProgramID', '')
         self.semester = OBdict.pop('semester', '')
         self.semid = OBdict.pop('semid', '')
         self.OBID = OBdict.pop('id', '')
