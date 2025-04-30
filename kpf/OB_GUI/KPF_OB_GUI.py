@@ -983,11 +983,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.info('Show popup: Open/Edit')
             # If OB is science only, the use the Build a Science OB tab
             if SOB.Target is not None and len(SOB.Observations) > 0:
-                pass
+                pass # <-- Implement loading to BS tab and fronting that tab
             # If OB is calibrations only, the use the Build a Calibration OB tab
             elif SOB.Target is None and len(SOB.Calibrations) > 0:
-            # If OB is both, the use the generla edit window
-                pass
+                pass # <-- Implement loading to BC tab and fronting that tab
+            # If OB has both, the use the general edit window
             else:
                 OBedit_popup = EditableMessageBox(SOB)
                 OBedit_popup.setWindowTitle(f"Editing OB: {SOB.summary()}")
