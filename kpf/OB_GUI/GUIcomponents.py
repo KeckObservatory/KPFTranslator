@@ -122,15 +122,15 @@ class InputPopup(QtWidgets.QDialog):
 ##-------------------------------------------------------------------------
 ## Scrollable QMessageBox
 ##-------------------------------------------------------------------------
-class ScrollMessageBox(QtWidgets.QMessageBox):
+class OBContentsDisplay(QtWidgets.QMessageBox):
     '''Custom message box to show the contents of an OB (as it would appear in
     a .yaml file on disk) in a scrollable window.
     '''
     def __init__(self, OB, *args, **kwargs):
         contents = OB.__repr__()
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
-        self.setStandardButtons(QtWidgets.QMessageBox.Close | QtWidgets.QMessageBox.Cancel)
-        self.button(QtWidgets.QMessageBox.Cancel).setText("Edit OB")
+        self.setStandardButtons(QtWidgets.QMessageBox.Close | QtWidgets.QMessageBox.Open)
+        self.button(QtWidgets.QMessageBox.Open).setText("Edit OB")
         scroll = QtWidgets.QScrollArea(self)
         scroll.setWidgetResizable(True)
         self.content = QtWidgets.QWidget()
