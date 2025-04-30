@@ -6,13 +6,22 @@ from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
                  FailedToReachDestination, check_input)
 
 
-def expeter_flux_target(spectrograph_flux, band):
-    slope = {'498.125': 7503.438,
-             '604.375': 50044.28,
-             '710.625': 30752.42,
-             '816.875': 42361.16}
-    expmeter_flux = spectrograph_flux*slope[band]
-    return expmeter_flux
+def expeter_flux_target(Mphotons_per_A, band):
+    peak_photon_ratios = {'498.125': 78.04/1e6,
+                          '604.375': 45.44/1e6,
+                          '710.625': 45.73/1e6,
+                          '816.875': 60.02/1e6}
+    expmeter_threshold = Mphotons_per_A/peak_photon_ratios[band]
+    snr_estimate = Mphotons_per_A**0.5*5
+    return expmeter_threshold, snr_estimate
+
+# def expeter_flux_target(spectrograph_flux, band):
+#     slope = {'498.125': 7503.438,
+#              '604.375': 50044.28,
+#              '710.625': 30752.42,
+#              '816.875': 42361.16}
+#     expmeter_flux = spectrograph_flux*slope[band]
+#     return expmeter_flux
 
 
 class SetExpMeterTerminationParameters(KPFTranslatorFunction):
@@ -50,7 +59,7 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
     def perform(cls, args, logger, cfg):
         band = str(args.get('ExpMeterBin'))
         spectrograph_flux = args.get('ExpMeterThreshold')
-        expmeter_flux = expeter_flux_target(spectrograph_flux, band)
+        expmeter_flux, snr_estimate = expeter_flux_target(spectrograph_flux, band)
         kpf_expmeter = ktl.cache('kpf_expmeter')
         kpf_expmeter['THRESHOLDBIN'].write(band)
         kpf_expmeter['THRESHOLD'].write(expmeter_flux)
@@ -66,5 +75,5 @@ class SetExpMeterTerminationParameters(KPFTranslatorFunction):
                             choices=[1,2,3,4],
                             help="Which exposure meter band to use (1, 2, 3, or 4)")
         parser.add_argument('ExpMeterThreshold', type=float,
-                            help="Threshold flux in e-/nm in the main spectrograph")
+                            help="Threshold flux in Mphotons per Angstrom in the main spectrograph")
         return super().add_cmdline_args(parser, cfg)
