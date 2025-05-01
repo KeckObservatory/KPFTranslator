@@ -341,7 +341,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.LoadSciOBFromFile = self.findChild(QtWidgets.QPushButton, 'BS_LoadFromFile')
         self.LoadSciOBFromFile.clicked.connect(self.load_SciOB_from_file)
         self.SciOBProgramID = self.findChild(QtWidgets.QLineEdit, 'BS_ProgramID')
-        self.SciOBProgramID.textChanged.connect(self.formSciObservingBlock)
+        self.SciOBProgramID.textChanged.connect(self.form_SciOB)
         # Target
         self.QuerySimbadLineEdit = self.findChild(QtWidgets.QLineEdit, 'BS_QuerySimbadLineEdit')
         self.QuerySimbadLineEdit.returnPressed.connect(self.query_Simbad)
@@ -357,36 +357,35 @@ class MainWindow(QtWidgets.QMainWindow):
         # Observations
         self.BuildObservationValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
         self.ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
-        self.ClearObservationsButton.clicked.connect(self.ClearObservations)
+        self.ClearObservationsButton.clicked.connect(self.clear_Observations)
         self.BuildObservationView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
         self.BuildObservationView.setFont(QtGui.QFont('Courier New', 11))
-        self.SetObservations([Observation({})])
-        self.BuildObservationView.textChanged.connect(self.EditObservations)
+        self.set_Observations([Observation({})])
+        self.BuildObservationView.textChanged.connect(self.edit_Observations)
 
         #-------------------------------------------------------------------
         # Tab: Build Calibration OB
         # Observing Block
-        self.BC_OBString = self.findChild(QtWidgets.QLabel, 'BC_OBString')
-        self.BC_OBString.setStyleSheet("background:white")
-        self.BC_OBValid = self.findChild(QtWidgets.QLabel, 'BC_OBValid')
-        self.BC_EstimatedDuration = self.findChild(QtWidgets.QLabel, 'BC_EstimatedDuration')
-        self.BC_SendToOBList = self.findChild(QtWidgets.QPushButton, 'BC_SendToOBList')
-        self.BC_SendToOBList.clicked.connect(self.BC_send_to_list)
-        self.BC_SaveToFile = self.findChild(QtWidgets.QPushButton, 'BC_SaveToFile')
-        self.BC_SaveToFile.clicked.connect(self.BC_save_to_file)
+        self.CalOBString = self.findChild(QtWidgets.QLabel, 'BC_OBString')
+        self.CalOBString.setStyleSheet("background:white")
+        self.CalOBValid = self.findChild(QtWidgets.QLabel, 'BC_OBValid')
+        self.CalEstimatedDuration = self.findChild(QtWidgets.QLabel, 'BC_EstimatedDuration')
+        self.SendCalOBToList = self.findChild(QtWidgets.QPushButton, 'BC_SendToOBList')
+        self.SendCalOBToList.clicked.connect(self.send_CalOB_to_list)
+        self.SaveCalOBToFile = self.findChild(QtWidgets.QPushButton, 'BC_SaveToFile')
+        self.SaveCalOBToFile.clicked.connect(self.save_CalOB_to_file)
         # Calibrations
-        self.BC_CalibrationsValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
-        self.BC_ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
-        self.BC_ClearCalibrationsButton.clicked.connect(self.BC_clear_calibrations)
-        self.BC_ExampleCalibrations = self.findChild(QtWidgets.QComboBox, 'BC_ExampleCalibrations')
-        self.BC_ExampleCalibrations.addItems([''])
-        self.BC_ExampleCalibrations.addItems([cal.get('Object') for cal in self.example_calOB.Calibrations])
-        self.BC_ExampleCalibrations.currentTextChanged.connect(self.BC_add_example_calibration)
-        self.BC_CalibrationsView = self.findChild(QtWidgets.QPlainTextEdit, 'BC_CalibrationsView')
-        self.BC_CalibrationsView.setPlainText(self.example_calOB.Calibrations[2].__repr__(prune=False, comment=True))
-        self.BC_CalibrationsView.setFont(QtGui.QFont('Courier New', 11))
-        self.BC_edit_calibrations()
-        self.BC_CalibrationsView.textChanged.connect(self.BC_edit_calibrations)
+        self.BuildCalibrationValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
+        self.ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
+        self.ClearCalibrationsButton.clicked.connect(self.edit_Calibrations)
+        self.ExampleCalibrations = self.findChild(QtWidgets.QComboBox, 'BC_ExampleCalibrations')
+        self.ExampleCalibrations.addItems([''])
+        self.ExampleCalibrations.addItems([cal.get('Object') for cal in self.example_calOB.Calibrations])
+        self.ExampleCalibrations.currentTextChanged.connect(self.add_example_calibration)
+        self.BuildCalibrationView = self.findChild(QtWidgets.QPlainTextEdit, 'BC_CalibrationsView')
+        self.BuildCalibrationView.setPlainText(self.example_calOB.Calibrations[2].__repr__(prune=False, comment=True))
+        self.BuildCalibrationView.setFont(QtGui.QFont('Courier New', 11))
+        self.BuildCalibrationView.textChanged.connect(self.edit_Calibrations)
 
 
     ##-------------------------------------------
@@ -1148,14 +1147,14 @@ class MainWindow(QtWidgets.QMainWindow):
     ##--------------------------------------------------------------
     def set_Target(self, target):
         self.BuildOBC_set(target)
-        self.formSciObservingBlock()
+        self.form_SciOB()
 
     def clear_Target(self):
         self.set_Target(Target({}))
 
     def edit_Target(self):
         self.BuildOBC_edit('Target')
-        self.formSciObservingBlock()
+        self.form_SciOB()
 
     def query_Simbad(self):
         self.log.debug(f"Running query_Simbad")
@@ -1171,23 +1170,23 @@ class MainWindow(QtWidgets.QMainWindow):
     ##--------------------------------------------------------------
     ## Methods for the Build a Science OB Tab Observations Section
     ##--------------------------------------------------------------
-    def SetObservations(self, observations):
+    def set_Observations(self, observations):
         self.BuildOBC_set(observations)
-        self.formSciObservingBlock()
+        self.form_SciOB()
 
-    def ClearObservations(self):
-        self.log.debug(f"Running BS_clear_observations")
-        self.SetObservations([Observation({})])
+    def clear_Observations(self):
+        self.log.debug(f"Running clear_Observations")
+        self.set_Observations([Observation({})])
 
-    def EditObservations(self):
+    def edit_Observations(self):
         self.BuildOBC_edit('Observation')
-        self.formSciObservingBlock()
+        self.form_SciOB()
 
     ##--------------------------------------------------------------
     ## Methods for the Build a Science OB Tab Observing Block
     ##--------------------------------------------------------------
-    def formSciObservingBlock(self):
-        self.log.debug(f"Running formSciObservingBlock")
+    def form_SciOB(self):
+        self.log.debug(f"Running form_SciOB")
         semester, start, end = get_semester_dates(datetime.datetime.now())
         if self.SciOBProgramID.text() != '':
             OBdict = {'ProgramID': self.SciOBProgramID.text(),
@@ -1261,71 +1260,51 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     ## Methods for the Build a Calibration OB Tab
     ##-------------------------------------------
-    def BC_edit_calibrations(self):
-        BCC_edited_lines = self.BC_CalibrationsView.document().toPlainText()
-        try:
-            new_dict = yaml.safe_load(BCC_edited_lines)
-            calibrations = [Calibration(entry) for entry in new_dict]
-            CalibrationsValid = np.all([entry.validate() for entry in calibrations])
-        except Exception as e:
-            print(e)
-            CalibrationsValid = False
-        color = {True: 'green', False: 'orange'}[CalibrationsValid]
-        self.BC_CalibrationsValid.setText(str(CalibrationsValid))
-        self.BC_CalibrationsValid.setStyleSheet(f"color:{color}")
-        if CalibrationsValid:
-            self.BC_form_OB(calibrations)
+    def set_Calibrations(self, calibrations):
+        self.BuildOBC_set(calibrations)
+        self.form_CalOB()
 
+    def clear_Calibrations(self):
+        self.log.debug(f"Running clear_Calibrations")
+        self.set_Calibrations([Calibration({})])
 
-    def BC_refresh_calibration_text(self):
-        out = []
-        for i,cal in enumerate(self.CalObservingBlock.Calibrations):
-            out.append(f'# Calibration {i+1}\n')
-            out.append(cal.__repr__(prune=False, comment=True))
-        cursor = self.BC_CalibrationsView.textCursor()
-        cursor_position = cursor.position()
-        self.BC_CalibrationsView.setPlainText(''.join(out))
-        try:
-            # Restore cursor position
-            cursor.setPosition(cursor_position)
-            self.BC_CalibrationsView.setTextCursor(cursor)
-        except:
-            pass
+    def edit_Calibrations(self):
+        self.BuildOBC_edit('Calibration')
+        self.form_CalOB()
 
-    def BC_clear_calibrations(self):
-        calibrations = []
-        self.BC_CalibrationsView.setPlainText('')
-        self.BC_form_OB(calibrations)
-
-    def BC_add_example_calibration(self, value):
-        self.log.debug(f'BC_add_example_calibration: {value}')
+    def add_example_calibration(self, value):
+        self.log.debug(f'add_example_calibration: {value}')
         for cal in self.example_calOB.Calibrations:
             if value == cal.get('Object'):
                 self.log.debug(f'Adding {value} from example Cal OB')
                 calibrations = copy.deepcopy(self.CalObservingBlock.Calibrations)
                 calibrations.append(cal)
-                self.BC_form_OB(calibrations)
+                self.set_Calibrations(calibrations)
 
-    def BC_form_OB(self, calibrations):
-        newOB = ObservingBlock({})
-        newOB.Calibrations = calibrations
+    def form_CalOB(self):
+        self.log.debug(f"Running form_CalOB")
+        semester, start, end = get_semester_dates(datetime.datetime.now())
+        OBdict = {'ProgramID': 'ENG',
+                  'semester': semester,
+                  'semid': f'{semester}_ENG'}
+        newOB = ObservingBlock(OBdict)
+        newOB.Calibrations = self.BuildCalibration
         if newOB.__repr__() == self.CalObservingBlock.__repr__():
             return
         self.CalObservingBlock = copy.deepcopy(newOB)
         OBValid = self.CalObservingBlock.validate()
         color = {True: 'green', False: 'orange'}[OBValid]
-        self.BC_OBValid.setText(str(OBValid))
-        self.BC_OBValid.setStyleSheet(f"color:{color}")
+        self.CalOBValid.setText(str(OBValid))
+        self.CalOBValid.setStyleSheet(f"color:{color}")
         if OBValid:
-            self.BC_OBString.setText(self.CalObservingBlock.summary())
+            self.CalOBString.setText(self.CalObservingBlock.summary())
             duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.CalObservingBlock)
-            self.BC_EstimatedDuration.setText(f"{duration/60:.0f} min")
+            self.CalEstimatedDuration.setText(f"{duration/60:.0f} min")
         else:
-            self.BC_OBString.setText('')
-            self.BC_EstimatedDuration.setText('')
-        self.BC_refresh_calibration_text()
+            self.CalOBString.setText('')
+            self.CalEstimatedDuration.setText('')
 
-    def BC_send_to_list(self):
+    def send_CalOB_to_list(self):
         if self.CalObservingBlock.validate() != True:
             print('OB is invalid, not sending to OB list')
         elif self.KPFCC == False:
@@ -1339,7 +1318,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.set_SortOrWeather()
 
 
-    def BC_save_to_file(self):
+    def save_CalOB_to_file(self):
         default_path_and_name = f"{self.file_path}/newcalibration.yaml"
         result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
                                              f"{default_path_and_name}",
