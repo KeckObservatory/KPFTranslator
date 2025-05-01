@@ -11,6 +11,15 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SetTargetInfo(KPFScript):
     '''Set the target info keywords based on the target information in the OB.
 
+    Note that there is a unit mismatch problem in this code, but it is accounted
+    for elsewhere. The dcs units for parallax are arcsec, but we are writing a
+    value in milliarcsec to the keyword. We found this in early 2025 and have
+    decided to leave the behavior the same and just make sure that the FITS
+    header comment is updated to reflect the units of milliarcsec for the value.
+    This works because dcs is being used here only as a carrier of this
+    information and both the source (the OB) and the destination (FITS header)
+    are now in agreement on units.
+
     ### ARGS
     **OB**: (`dict`) A fully specified observing block (OB) or at least the
             target components of an OB.
