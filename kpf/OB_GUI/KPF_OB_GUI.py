@@ -374,6 +374,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SendCalOBToList.clicked.connect(self.send_CalOB_to_list)
         self.SaveCalOBToFile = self.findChild(QtWidgets.QPushButton, 'BC_SaveToFile')
         self.SaveCalOBToFile.clicked.connect(self.save_CalOB_to_file)
+        self.LoadCalOBFromFile = self.findChild(QtWidgets.QPushButton, 'BC_LoadFromFile')
+        self.LoadCalOBFromFile.clicked.connect(self.load_CalOB_from_file)
         # Calibrations
         self.BuildCalibrationValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
         self.ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
@@ -1258,9 +1260,20 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.log.info('No output file chosen')
 
-
     def load_SciOB_from_file(self):
-        pass
+        file, filefilter = QtWidgets.QFileDialog.getOpenFileName(self, 
+                                     "Open File", f"{self.file_path}",
+                                     "OB Files (*yaml);;All Files (*)")
+        if file:
+            file = Path(file)
+            if file.exists():
+                print(f"Opening: {str(file)}")
+                newOB = ObservingBlock(file)
+                if newOB.validate() == True:
+                    if newOB.ProgramID is not None:
+                        self.SciOBProgramID.setText(newOB.ProgramID)
+                    self.set_Target(newOB.Target)
+                    self.set_Observations(newOB.Observations)
 
     ##-------------------------------------------
     ## Methods for the Build a Calibration OB Tab
@@ -1322,7 +1335,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
 
-
     def save_CalOB_to_file(self):
         default_path_and_name = f"{self.file_path}/newcalibration.yaml"
         result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
@@ -1337,6 +1349,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.CalObservingBlock.write_to(save_file)
         else:
             self.log.info('No output file chosen')
+
+    def load_CalOB_from_file(self):
+        file, filefilter = QtWidgets.QFileDialog.getOpenFileName(self, 
+                                     "Open File", f"{self.file_path}",
+                                     "OB Files (*yaml);;All Files (*)")
+        if file:
+            file = Path(file)
+            if file.exists():
+                print(f"Opening: {str(file)}")
+                newOB = ObservingBlock(file)
+                if newOB.validate() == True:
+                    self.set_Calibrations(newOB.Calibrations)
 
 
     def exit(self):
