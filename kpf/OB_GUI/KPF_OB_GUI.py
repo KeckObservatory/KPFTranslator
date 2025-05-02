@@ -110,7 +110,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.CalObservingBlock = None
         self.BuildTarget = Target({})
         self.BuildObservation = [Observation({})]
-        self.BuildCalibration = None
+        self.BuildCalibration = [Calibration({})]
         # Example Calibrations
         self.example_cal_file = Path(__file__).parent.parent / 'ObservingBlocks' / 'exampleOBs' / 'Calibrations.yaml'
         if self.example_cal_file.exists():
@@ -377,14 +377,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # Calibrations
         self.BuildCalibrationValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
         self.ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
-        self.ClearCalibrationsButton.clicked.connect(self.edit_Calibrations)
+        self.ClearCalibrationsButton.clicked.connect(self.clear_Calibrations)
         self.ExampleCalibrations = self.findChild(QtWidgets.QComboBox, 'BC_ExampleCalibrations')
         self.ExampleCalibrations.addItems([''])
         self.ExampleCalibrations.addItems([cal.get('Object') for cal in self.example_calOB.Calibrations])
         self.ExampleCalibrations.currentTextChanged.connect(self.add_example_calibration)
         self.BuildCalibrationView = self.findChild(QtWidgets.QPlainTextEdit, 'BC_CalibrationsView')
-        self.BuildCalibrationView.setPlainText(self.example_calOB.Calibrations[2].__repr__(prune=False, comment=True))
         self.BuildCalibrationView.setFont(QtGui.QFont('Courier New', 11))
+        self.set_Calibrations(self.BuildCalibration)
         self.BuildCalibrationView.textChanged.connect(self.edit_Calibrations)
 
 
@@ -1071,14 +1071,14 @@ class MainWindow(QtWidgets.QMainWindow):
     ##--------------------------------------------------------------
     ## Generic Methods to Build an OB Component
     ##--------------------------------------------------------------
-    def BuildOBC_set(self, input_object):
-        if type(input_object) == list:
-            input_class_name = type(input_object[0]).__name__
-        else:
-            input_class_name = type(input_object).__name__
+    def BuildOBC_set(self, input_object, input_class_name=None):
+        if input_class_name is None:
+            if type(input_object) == list:
+                input_class_name = type(input_object[0]).__name__
+            else:
+                input_class_name = type(input_object).__name__
         self.log.debug(f"Running BuildOBC_set on a {input_class_name}")
         setattr(self, f'Build{input_class_name}', input_object)
-        print(getattr(self, f'Build{input_class_name}'))
         self.BuildOBC_render_text(input_class_name)
 
     def BuildOBC_render_text(self, input_class_name):
@@ -1089,13 +1089,15 @@ class MainWindow(QtWidgets.QMainWindow):
         # Record cursor position
         cursor = view.textCursor()
         cursor_position = cursor.position()
-        if type(thing) == list:
+        if thing in [None, []]:
+            lines = ''
+        elif type(thing) == list:
             lines = ''
             for i,item in enumerate(thing):
                 lines += f'# {input_class_name} {i+1}\n'
-                lines += item.__repr__(prune=False, comment=True)
+                lines += item.__repr__(prune=True, comment=True)
         else:
-            lines = thing.__repr__(prune=False, comment=True)
+            lines = thing.__repr__(prune=True, comment=True)
         if edited_lines != lines:
             view.setPlainText(lines)
             # Restore cursor position
@@ -1105,9 +1107,10 @@ class MainWindow(QtWidgets.QMainWindow):
             except Exception as e:
                 print(f'Failed to set cursor position in {view}')
                 print(e)
-
         valid = getattr(self, f'Build{input_class_name}Valid')
-        if type(thing) == list:
+        if thing in [None, []]:
+            isvalid = False
+        elif type(thing) == list:
             isvalid = np.all([item.validate() for item in thing])
         else:
             isvalid = thing.validate()
@@ -1120,6 +1123,8 @@ class MainWindow(QtWidgets.QMainWindow):
         thing = getattr(self, f'Build{input_class_name}')
         view = getattr(self, f'Build{input_class_name}View')
         edited_lines = view.document().toPlainText()
+        if edited_lines == '' and thing is None:
+            return
         if type(thing) == list:
             lines = ''
             for i,item in enumerate(thing):
@@ -1266,7 +1271,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def clear_Calibrations(self):
         self.log.debug(f"Running clear_Calibrations")
-        self.set_Calibrations([Calibration({})])
+        self.BuildOBC_set([], input_class_name='Calibration')
 
     def edit_Calibrations(self):
         self.BuildOBC_edit('Calibration')
@@ -1277,7 +1282,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for cal in self.example_calOB.Calibrations:
             if value == cal.get('Object'):
                 self.log.debug(f'Adding {value} from example Cal OB')
-                calibrations = copy.deepcopy(self.CalObservingBlock.Calibrations)
+                calibrations = copy.deepcopy(self.BuildCalibration)
                 calibrations.append(cal)
                 self.set_Calibrations(calibrations)
 
@@ -1288,7 +1293,7 @@ class MainWindow(QtWidgets.QMainWindow):
                   'semester': semester,
                   'semid': f'{semester}_ENG'}
         newOB = ObservingBlock(OBdict)
-        newOB.Calibrations = self.BuildCalibration
+        newOB.Calibrations = self.BuildCalibration if self.BuildCalibration is not None else []
         if newOB.__repr__() == self.CalObservingBlock.__repr__():
             return
         self.CalObservingBlock = copy.deepcopy(newOB)
