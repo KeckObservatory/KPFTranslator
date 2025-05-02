@@ -1267,6 +1267,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if file:
             file = Path(file)
             if file.exists():
+                self.file_path = file.parent
                 print(f"Opening: {str(file)}")
                 newOB = ObservingBlock(file)
                 if newOB.validate() == True:
@@ -1357,6 +1358,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if file:
             file = Path(file)
             if file.exists():
+                self.file_path = file.parent
                 print(f"Opening: {str(file)}")
                 newOB = ObservingBlock(file)
                 if newOB.validate() == True:
