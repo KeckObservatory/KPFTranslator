@@ -39,6 +39,7 @@ from kpf.utils.StartOfNight import StartOfNight
 from kpf.utils.EndOfNight import EndOfNight
 from kpf.schedule import get_semester_dates
 from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
+from kpf.fiu.ConfigureFIU import ConfigureFIU
 
 
 ##-------------------------------------------------------------------------
@@ -184,9 +185,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #-------------------------------------------------------------------
         # Menu Bar: FIU
-# actionConfigure_FIU_for_Observing
-# actionConfigure_FIU_for_Calibrations
-# actionConfigure_FIU_to_Stow_Position
+        self.ConfigureFIU_Observing = self.findChild(QtWidgets.QAction, 'actionConfigure_FIU_for_Observing')
+        self.ConfigureFIU_Observing.triggered.connect(self.configure_FIU_observing)
+        self.ConfigureFIU_Calibrations = self.findChild(QtWidgets.QAction, 'actionConfigure_FIU_for_Calibrations')
+        self.ConfigureFIU_Calibrations.triggered.connect(self.configure_FIU_calibrations)
+        self.ConfigureFIU_Stow = self.findChild(QtWidgets.QAction, 'actionConfigure_FIU_to_Stow_Position')
+        self.ConfigureFIU_Stow.triggered.connect(self.configure_FIU_stow)
 
         #-------------------------------------------------------------------
         # Main Window
@@ -761,6 +765,15 @@ class MainWindow(QtWidgets.QMainWindow):
             proc = subprocess.Popen(cmd)
         else:
             self.log.debug('Confirmation is no, not running script')
+
+    def configure_FIU_observing(self):
+        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+
+    def configure_FIU_calibrations(self):
+        ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
+
+    def configure_FIU_stow(self):
+        ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
 
     def set_observer(self):
         self.log.debug(f"action set_observer")
