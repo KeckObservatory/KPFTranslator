@@ -886,15 +886,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
         self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
         if abs(SOB.Target.PMRA.value) > 0.0001 or abs(SOB.Target.PMDEC.value) > 0.0001:
-            try:
-                now = Time(datetime.datetime.utcnow())
-                coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
-                coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
-                self.SOB_TargetRA.setText(coord_now_string.split()[0])
-                self.SOB_TargetDec.setText(coord_now_string.split()[1])
-            except:
-                self.SOB_TargetRA.setText(SOB.Target.get('RA'))
-                self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
+            if SOB.Target is not None:
+                try:
+                    now = Time(datetime.datetime.utcnow())
+                    coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
+                    coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
+                    self.SOB_TargetRA.setText(coord_now_string.split()[0])
+                    self.SOB_TargetDec.setText(coord_now_string.split()[1])
+                except Exception as e:
+                    self.log.error('Failed to propagate proper motions for display')
+                    self.log.error(e)
+                    coord_string = SOB.Target.coord.to_string('hmsdms', sep=':', precision=2)
+                    self.SOB_TargetRA.setText(coord_string.split()[0])
+                    self.SOB_TargetDec.setText(coord_string.split()[1])
         else:
             self.SOB_TargetRA.setText(SOB.Target.get('RA'))
             self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
