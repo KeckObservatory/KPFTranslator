@@ -162,12 +162,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #-------------------------------------------------------------------
         # Menu Bar: Load OBs
-        LoadOBsFromKPFCC = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_OBs')
-        LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
         LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
         LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
         LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
         LoadOBFromFile.triggered.connect(self.load_OB_from_file)
+        LoadKPFCCSchedule = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_Schedule')
+        LoadKPFCCSchedule.triggered.connect(self.load_KPFCC_schedule)
+        LoadOBsFromKPFCC = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_OBs')
+        LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
 
         #-------------------------------------------------------------------
         # Menu Bar: Observing
@@ -651,6 +653,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.load_OBs(select_program_popup.ProgID)
             else:
                 self.log.debug("Cancel! Not pulling OBs from database.")
+
+    def load_KPFCC_schedule(self):
+        if self.verify_overwrite_of_OB_list():
+            print('Load schedule here')
+            pass
 
     def load_OBs(self, value):
         self.log.info(f"load_OBs: '{value}'")

@@ -1195,7 +1195,7 @@
         <x>10</x>
         <y>10</y>
         <width>441</width>
-        <height>131</height>
+        <height>191</height>
        </rect>
       </property>
       <property name="title">
@@ -1207,7 +1207,7 @@
          <x>270</x>
          <y>60</y>
          <width>161</width>
-         <height>31</height>
+         <height>51</height>
         </rect>
        </property>
        <property name="toolTip">
@@ -1312,7 +1312,7 @@
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>100</y>
+         <y>120</y>
          <width>161</width>
          <height>23</height>
         </rect>
@@ -1322,6 +1322,22 @@
        </property>
        <property name="text">
         <string>Save OB to File</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BC_LoadFromFile">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>150</y>
+         <width>161</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Load OB from File</string>
        </property>
       </widget>
      </widget>
@@ -1637,9 +1653,10 @@
     <property name="title">
      <string>Load OBs</string>
     </property>
-    <addaction name="actionLoad_KPF_CC_OBs"/>
     <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="action_LoadOBFromFile"/>
+    <addaction name="actionLoad_KPF_CC_Schedule"/>
+    <addaction name="actionLoad_KPF_CC_OBs"/>
    </widget>
    <widget class="QMenu" name="menuFile_2">
     <property name="title">
@@ -1716,7 +1733,7 @@
   </action>
   <action name="actionLoad_KPF_CC_OBs">
    <property name="text">
-    <string>Load KPF-CC OBs</string>
+    <string>Load KPF-CC OBs for Classical Observing</string>
    </property>
   </action>
   <action name="actionSet_Observer_Names">
@@ -1752,6 +1769,11 @@
   <action name="actionRun_End_of_Night">
    <property name="text">
     <string>Run End of Night Script</string>
+   </property>
+  </action>
+  <action name="actionLoad_KPF_CC_Schedule">
+   <property name="text">
+    <string>Load daily KPF-CC Schedule and OBs</string>
    </property>
   </action>
  </widget>
