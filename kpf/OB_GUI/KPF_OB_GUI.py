@@ -455,8 +455,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scriptname_value.setText(f"{scriptname_string}")
         if value in ['None', '']:
             self.scriptname_value.setStyleSheet("color:green")
+            self.ConfigureFIU_Observing.setEnabled(True)
+            self.ConfigureFIU_Calibrations.setEnabled(True)
+            self.ConfigureFIU_Stow.setEnabled(True)
         else:
             self.scriptname_value.setStyleSheet("color:orange")
+            self.ConfigureFIU_Observing.setEnabled(False)
+            self.ConfigureFIU_Calibrations.setEnabled(False)
+            self.ConfigureFIU_Stow.setEnabled(False)
 
     # Expose Status
     def update_expose_status_value(self, value):
