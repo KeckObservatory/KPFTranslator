@@ -1002,28 +1002,20 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug('Show popup: Ok')
         elif result == QtWidgets.QMessageBox.Open:
             self.log.info('Show popup: Open/Edit')
-            # If OB is science only, the use the Build a Science OB tab
-            if SOB.Target is not None and len(SOB.Observations) > 0:
-                pass # <-- Implement loading to BS tab and fronting that tab
-            # If OB is calibrations only, the use the Build a Calibration OB tab
-            elif SOB.Target is None and len(SOB.Calibrations) > 0:
-                pass # <-- Implement loading to BC tab and fronting that tab
-            # If OB has both, the use the general edit window
-            else:
-                OBedit_popup = EditableMessageBox(SOB)
-                OBedit_popup.setWindowTitle(f"Editing OB: {SOB.summary()}")
-                edit_result = OBedit_popup.exec_()
-                if edit_result == QtWidgets.QMessageBox.Ok:
-                    self.log.info('Edit popup: Ok')
-                    if OBedit_popup.result.validate():
-                        self.log.info('The edited OB has been validated')
-                        self.model.OBs[self.SOBindex] = OBedit_popup.result
-                        self.model.layoutChanged.emit()
-                        self.update_SOB_display()
-                    else:
-                        self.log.warning('Edits did not validate. Not changing OB.')
-                elif edit_result == QtWidgets.QMessageBox.Cancel:
-                    self.log.debug('Edit popup: Cancel')
+            OBedit_popup = EditableMessageBox(SOB)
+            OBedit_popup.setWindowTitle(f"Editing OB: {SOB.summary()}")
+            edit_result = OBedit_popup.exec_()
+            if edit_result == QtWidgets.QMessageBox.Ok:
+                self.log.info('Edit popup: Ok')
+                if OBedit_popup.result.validate():
+                    self.log.info('The edited OB has been validated')
+                    self.model.OBs[self.SOBindex] = OBedit_popup.result
+                    self.model.layoutChanged.emit()
+                    self.update_SOB_display()
+                else:
+                    self.log.warning('Edits did not validate. Not changing OB.')
+            elif edit_result == QtWidgets.QMessageBox.Cancel:
+                self.log.debug('Edit popup: Cancel')
 
 
     def add_comment(self):
