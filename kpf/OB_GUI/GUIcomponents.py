@@ -223,8 +223,12 @@ class SelectProgramPopup(QtWidgets.QDialog):
         # Add ProgramID selection
         programID_label = QtWidgets.QLabel('Select Program ID:')
         layout.addWidget(programID_label)
-        classical, cadence = GetScheduledPrograms.execute({})
-        program_strings = [f"{p['ProjCode']} on {p['Date']}" for p in classical]
+        classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
+        program_IDs = list(set([f"{p['ProjCode']}" for p in classical]))
+        program_strings = []
+        for progID in sorted(program_IDs):
+            dates = [e['Date'] for e in classical if e['ProjCode'] == progID]
+            program_strings.append(f"{progID} on {', '.join(dates)}")
         programID_selector = QtWidgets.QComboBox()
         programID_selector.addItems([''])
         programID_selector.addItems(program_strings)
