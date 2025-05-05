@@ -773,12 +773,15 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug('Confirmation is no, not running script')
 
     def configure_FIU_observing(self):
+        self.log.info('running configure_FIU_observing')
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
     def configure_FIU_calibrations(self):
+        self.log.info('running configure_FIU_calibrations')
         ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
 
     def configure_FIU_stow(self):
+        self.log.info('running configure_FIU_stow')
         ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
 
     def set_observer(self):
