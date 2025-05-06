@@ -86,7 +86,7 @@ Calibrations:
 - CalSource: 'BrdbandFiber'
   Object: 'Flat'
   nExp: 1
-  ExpTime: 10
+  ExpTime: 60
   TriggerCaHK: False
   TriggerGreen: True
   TriggerRed: True
