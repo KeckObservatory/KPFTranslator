@@ -38,7 +38,14 @@ class ObservingBlock(object):
             OBdict = {}
 
         # OB Metadata
-        self.ProgramID = OBdict.pop('ProgramID', '')
+        if 'progid' in OBdict.keys() and 'ProgramID' in OBdict.keys():
+            print('WARNING: Two keys for program ID exist')
+            print(f"Ignoring progid = {OBdict.pop('progid')}")
+            self.ProgramID = OBdict.pop('ProgramID', '')
+        elif 'progid' in OBdict.keys() and not 'ProgramID' in OBdict.keys():
+            self.ProgramID = OBdict.pop('progid')
+        else:
+            self.ProgramID = OBdict.pop('ProgramID', '')
         self.semester = OBdict.pop('semester', '')
         self.semid = OBdict.pop('semid', '')
         self.OBID = OBdict.pop('id', '')
