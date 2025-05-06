@@ -302,7 +302,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_TargetName = self.findChild(QtWidgets.QLabel, 'SOB_TargetName')
         self.SOB_GaiaID = self.findChild(QtWidgets.QLabel, 'SOB_GaiaID')
         self.SOB_TargetRA = self.findChild(QtWidgets.QLabel, 'SOB_TargetRA')
+        self.SOB_TargetRALabel = self.findChild(QtWidgets.QLabel, 'TargetRALabel')
         self.SOB_TargetDec = self.findChild(QtWidgets.QLabel, 'SOB_TargetDec')
+        self.SOB_TargetDecLabel = self.findChild(QtWidgets.QLabel, 'TargetDecLabel')
         self.SOB_Jmag = self.findChild(QtWidgets.QLabel, 'SOB_Jmag')
         self.SOB_Gmag = self.findChild(QtWidgets.QLabel, 'SOB_Gmag')
         self.SOB_Observation1 = self.findChild(QtWidgets.QLabel, 'SOB_Observation1')
@@ -885,25 +887,37 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clear_SOB_Target()
         self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
         self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
-        if abs(SOB.Target.PMRA.value) > 0.0001 or abs(SOB.Target.PMDEC.value) > 0.0001:
-            if SOB.Target is not None:
-                try:
-                    now = Time(datetime.datetime.utcnow())
-                    coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
-                    coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
-                    self.SOB_TargetRA.setText(coord_now_string.split()[0])
-                    self.SOB_TargetDec.setText(coord_now_string.split()[1])
-                except Exception as e:
-                    self.log.error('Failed to propagate proper motions for display')
-                    self.log.error(e)
-                    coord_string = SOB.Target.coord.to_string('hmsdms', sep=':', precision=2)
-                    self.SOB_TargetRA.setText(coord_string.split()[0])
-                    self.SOB_TargetDec.setText(coord_string.split()[1])
-        else:
-            self.SOB_TargetRA.setText(SOB.Target.get('RA'))
-            self.SOB_TargetDec.setText(SOB.Target.get('Dec'))
         self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
         self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
+        # Display RA and Dec
+        try:
+            coord_string = SOB.Target.coord.to_string('hmsdms', sep=':', precision=2)
+            RA_str, Dec_str = coord_string.split()
+        except Exception as e:
+            self.log.error('Failed to stringify coordinate')
+            self.log.error(e)
+            RA_str = SOB.Target.get('RA')
+            Dec_str = SOB.Target.get('Dec')
+            self.SOB_TargetRALabel.setText('RA (Epoch=?):')
+            self.SOB_TargetDecLabel.setText('Dec (Epoch=?):')
+        RAlabel = f"RA:"
+        DecLabel = f"Dec:"
+        # If proper motion values are set, try to propagate proper motions
+        if abs(SOB.Target.PMRA.value) > 0.001 or abs(SOB.Target.PMDEC.value) > 0.001:
+            try:
+                now = Time(datetime.datetime.utcnow())
+                coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
+                coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
+                RA_str, Dec_str = coord_now_string.split()
+                RAlabel = f"RA (epoch=now):"
+                DecLabel = f"Dec (epoch=now):"
+            except Exception as e:
+                self.log.error('Failed to propagate proper motions for display')
+                self.log.error(e)
+        self.SOB_TargetRA.setText(RA_str)
+        self.SOB_TargetDec.setText(Dec_str)
+        self.SOB_TargetRALabel.setText(RAlabel)
+        self.SOB_TargetDecLabel.setText(DecLabel)
 
         # Calculate AltAz Position
         if SOB.Target.coord is None:
