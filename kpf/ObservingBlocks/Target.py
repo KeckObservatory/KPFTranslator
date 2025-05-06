@@ -174,7 +174,7 @@ class Target(BaseOBComponent):
         gaia_params = {}
         if names is None:
             print(f'Simbad query returned no objects for "{target_name}"')
-            return None
+            return Target({})
         else:
             for objid in names['ID']:
                 if objid.find('Gaia DR3') >= 0:
@@ -193,7 +193,7 @@ class Target(BaseOBComponent):
             except Exception as e:
                 print('Simbad query failed')
                 print(e)
-                return None
+                return Target({})
 
         twoMASSID = None
         Jmag = None
