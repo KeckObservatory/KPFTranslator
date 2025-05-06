@@ -216,7 +216,7 @@ class ObservingBlock(object):
 
     def __repr__(self, prune=True):
         lines = []
-        if self.OBID is not '':
+        if self.OBID != '':
             lines += [f"# Database ID: '{self.OBID}'"]
         if self.Target is not None:
             lines += ['Target:']
