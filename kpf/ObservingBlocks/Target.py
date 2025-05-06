@@ -171,15 +171,29 @@ class Target(BaseOBComponent):
 
         names = Simbad.query_objectids(target_name)
         GaiaDR3 = None
+        gaia_params = {}
         if names is None:
-            print(f'Simbad query retrined no objects for "{target_name}"')
+            print(f'Simbad query returned no objects for "{target_name}"')
             return None
         else:
             for objid in names['ID']:
                 if objid.find('Gaia DR3') >= 0:
                     GaiaDR3 = objid[9:]
-        target_dict['GaiaID'] = f"DR3 {GaiaDR3}"
-        target_coord, gaia_params = self.get_gaia_parameters(GaiaDR3) if GaiaDR3 is not None else None
+        if GaiaDR3 is not None:
+            print(f'Querying Gaia catalog for DR3 ID {GaiaDR3}')
+            target_dict['GaiaID'] = f"DR3 {GaiaDR3}"
+            target_coord, gaia_params = self.get_gaia_parameters(GaiaDR3)
+        else:
+            try:
+                simbad_results = Simbad.query_object(target_name)
+                target_coord = SkyCoord(f"{simbad_results['RA'][0]} {simbad_results['DEC'][0]}",
+                                        unit=(u.hourangle, u.deg)
+                                        )
+                print(target_coord)
+            except Exception as e:
+                print('Simbad query failed')
+                print(e)
+                return None
 
         twoMASSID = None
         Jmag = None
