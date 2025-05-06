@@ -14,12 +14,12 @@ from kpf.ObservingBlocks import BaseOBComponent
 def parse_time_input(input_value):
     # Handle Epoch formats
     if input_value[0] == 'J':
-        eqformat = 'jyear_str'
+        timeformat = 'jyear_str'
     elif input_value[0] == 'B':
-        eqformat = 'byear_str'
+        timeformat = 'byear_str'
     else:
-        eqformat = 'decimalyear'
-    equinox = Time(input_value, format=eqformat)
+        timeformat = 'decimalyear'
+    return Time(input_value, format=timeformat)
 
 
 class Target(BaseOBComponent):
