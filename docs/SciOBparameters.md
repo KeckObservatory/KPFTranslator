@@ -10,7 +10,7 @@ Template_Version: 1.0
 TargetName: 10700               # Name 
 GaiaID: DR3 2452378776434276992 # Gaia ID 
 2MASSID: 01440402-1556141       # 2MASS ID 
-Parallax: 273.81                # Parallax in arcsec
+Parallax: 273.81                # Parallax in mas
 RadialVelocity: -16.597         # Radial Velocity in km/s
 Gmag: 3.3                       # G band magnitude (eventualy used by exposure meter)
 Jmag: 2.14                      # J band magnitude (eventualy used by guider)
@@ -48,7 +48,7 @@ Each value in the OB is described in more detail below.
 > These values are used by the DRP to identify the star and determine its properties.
 
 **Parallax**: (`float`)
-> Parallax in arcseconds.
+> Parallax in milliarcseconds.
 
 **RadialVelocity**: (`float`)
 > Radial Velocity in km/s.
