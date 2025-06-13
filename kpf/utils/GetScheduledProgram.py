@@ -28,7 +28,7 @@ class GetScheduledProgram(KPFFunction):
         date = utnow-timedelta(days=1)
         date_str = date.strftime('%Y-%m-%d')
         KPF_programs = get_schedule(date_str)
-        for progam in KPF_programs:
+        for program in KPF_programs:
             start_time_h, start_time_m = program['StartTime'].split(':')
             start_time = int(start_time_h) + int(start_time_m)/60
             end_time_h, end_time_m = program['EndTime'].split(':')
