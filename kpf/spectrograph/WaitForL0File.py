@@ -19,6 +19,7 @@ class WaitForL0File(KPFFunction):
 
     @classmethod
     def perform(cls, args):
+        log.debug('Waiting for new L0 file')
         LOUTFILE = ktl.cache('kpfassemble', 'LOUTFILE')
         initial_LOUTFILE = LOUTFILE.read()
         timeout = 10
