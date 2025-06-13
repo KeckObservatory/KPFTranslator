@@ -278,16 +278,7 @@
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetTargetInfo</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetTargetInfo</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the target info keywords based on the target information in the OB.</span>
 
 <span class="sd">    ### ARGS</span>
@@ -303,30 +294,21 @@
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting target parameters&quot;</span><span class="p">)</span>
         <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
         <span class="n">kpf_expmeter</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_expmeter&#39;</span><span class="p">)</span>
-        <span class="n">dcs</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;dcs1&#39;</span><span class="p">)</span>
         <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;TARGET_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TargetName&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
         <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;TARGET_GAIA&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GaiaID&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
         <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;TARGET_2MASS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;2MASSID&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
         <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;TARGET_GMAG&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Gmag&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
         <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;TARGET_JMAG&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Jmag&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="n">TARGPLAX</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Parallax&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;TARGET_PAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TARGPLAX</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">TARGRADV</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RadialVelocity&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;TARGET_RADV&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TARGRADV</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">TARGET_TEFF</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Teff&#39;</span><span class="p">,</span> <span class="mi">45000</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">kpf_expmeter</span><span class="p">[</span><span class="s1">&#39;TARGET_TEFF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">TARGET_TEFF</span><span class="p">))</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to set kpf_expmeter.TARGET_TEFF to </span><span class="si">{</span><span class="n">TARGET_TEFF</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">TARGET_TEFF</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-
-        <span class="n">TARGPLAX</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Parallax&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">dcs</span><span class="p">[</span><span class="s1">&#39;TARGPLAX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">TARGPLAX</span><span class="p">))</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to set dcs.TARGPLAX to </span><span class="si">{</span><span class="n">TARGPLAX</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">TARGPLAX</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-
-        <span class="n">TARGRADV</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RadialVelocity&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">dcs</span><span class="p">[</span><span class="s1">&#39;TARGRADV&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">TARGRADV</span><span class="p">))</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to set dcs.TARGRADV to </span><span class="si">{</span><span class="n">TARGRADV</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">TARGRADV</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
