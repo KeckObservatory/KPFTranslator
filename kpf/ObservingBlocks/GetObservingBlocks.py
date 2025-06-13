@@ -17,7 +17,7 @@ from kpf.schedule import get_semester_dates
 ##-------------------------------------------------------------------------
 def query_database(query, params):
     url = cfg.get('Database', 'url')
-    log.debug(f"Running database query: {query}")
+    log.debug(f"Running database query: {url}{query}")
     log.debug(params)
     if 'hash' not in params.keys():
         params['hash'] = os.getenv('APIHASH', default='')
