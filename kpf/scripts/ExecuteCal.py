@@ -46,6 +46,7 @@ from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 from kpf.expmeter.SetupExpMeter import SetupExpMeter
 from kpf.utils.SendEmail import SendEmail
+from kpf.spectrograph.SetProgram import SetProgram
 
 
 class ExecuteCal(KPFFunction):
@@ -225,6 +226,8 @@ class ExecuteCal(KPFFunction):
             WaitForReady.execute({})
             log.info(f"Readout complete")
             check_scriptstop() # Stop here if requested
+        # Set program ID to ENG
+        SetProgram.execute({'progname': 'ENG'})
         # Triggered Detectors
         calibration['TriggerExpMeter'] = calibration.get('ExpMeterMode', 'off') in ['monitor', 'control']
         log.info(f"Set Detector List")

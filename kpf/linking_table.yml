@@ -316,6 +316,8 @@ links:
         cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
+    GetScheduledProgram:
+        cmd: utils.GetScheduledProgram.GetScheduledProgram
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:

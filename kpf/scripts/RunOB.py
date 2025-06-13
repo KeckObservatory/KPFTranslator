@@ -24,6 +24,8 @@ from kpf.scripts.ConfigureForScience import ConfigureForScience
 from kpf.scripts.WaitForConfigureScience import WaitForConfigureScience
 from kpf.scripts.ExecuteSci import ExecuteSci
 from kpf.scripts.CleanupAfterScience import CleanupAfterScience
+from kpf.spectrograph.SetProgram import SetProgram
+from kpf.utils.GetScheduledProgram import GetScheduledProgram
 
 
 class RunOB(KPFScript):
@@ -114,6 +116,11 @@ class RunOB(KPFScript):
                 observation_dict = observation.to_dict()
                 observation_dict['Gmag'] = OB.Target.get('Gmag')
                 ConfigureForScience.execute(observation_dict)
+                if OB.ProgramID != '':
+                    SetProgram.execute('progname': OB.ProgramID)
+                else:
+                    program = GetScheduledProgram.execute({})
+                    SetProgram.execute('progname': program)
                 WaitForConfigureScience.execute(observation_dict)
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
                 ExecuteSci.execute(observation_dict)
