@@ -38,6 +38,11 @@ class RunOB(KPFScript):
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):
+        # If specified obey the ALLOWSCHEDULEDCALS keyword
+        if args.get('scheduled', False) == True:
+            ALLOWSCHEDULEDCALS = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
+            if ALLOWSCHEDULEDCALS.read(binary=True) == False:
+                raise FailedPreCondition('ALLOWSCHEDULEDCALS is No')
         # Read the OB
         if isinstance(OB, dict):
             OB = ObservingBlock(OB)
@@ -141,4 +146,7 @@ class RunOB(KPFScript):
         parser.add_argument('--waitforscript', dest="waitforscript",
             default=False, action="store_true",
             help='Wait for running script to end before starting?')
+        parser.add_argument('--scheduled', dest="scheduled",
+            default=False, action="store_true",
+            help='Script is scheduled and should obey ALLOWSCHEDULEDCALS keyword')
         return super().add_cmdline_args(parser)
