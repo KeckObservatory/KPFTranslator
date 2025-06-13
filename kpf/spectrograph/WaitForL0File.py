@@ -1,3 +1,5 @@
+from astropy.io import fits
+
 import ktl
 
 from kpf import log, cfg
@@ -26,7 +28,14 @@ class WaitForL0File(KPFFunction):
         found_new_file = LOUTFILE.waitFor(f'!="{initial_LOUTFILE}"',
                                           timeout=timeout)
         if found_new_file is True:
-            log.info(f'kpfassemble wrote {LOUTFILE.read()}')
+            new_file = LOUTFILE.read()
+            try:
+                hdr = fits.getheader(new_file, ext=0)
+                green_file = hdr.get('GRFILENA')
+                red_file = hdr.get('RDFILENA')
+                log.info(f"L0 file {new_file} assembled from {green_file},{red_file}")
+            except:
+                log.info(f'L0 file {new_file} assembled')
         else:
             log.debug('WaitForL0File did not find new file')
 
