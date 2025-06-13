@@ -10,6 +10,19 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
 
 
+def observed_tonight(OB):
+    now = datetime.utcnow()
+    exposures_tonight = []
+    for hist in OB.History:
+        if len(hist.get('exposure_start_times', [])) > 0:
+            for timestring in hist.get('exposure_start_times'):
+                tstamp = datetime.strptime(timestring[:19], '%Y-%m-%dT%H:%M:%S')
+                if (now-tstamp).total_seconds() < 10*60*60:
+                    exposures_tonight.append(timestring)
+    print(f"Found {len(exposures_tonight)} recent exposures for {OB.summary()}")
+    return len(exposures_tonight)
+
+
 ##-------------------------------------------------------------------------
 ## Define Model for MVC
 ##-------------------------------------------------------------------------
@@ -38,10 +51,10 @@ class OBListModel(QtCore.QAbstractListModel):
             return output_line
         if role == QtCore.Qt.DecorationRole:
             OB  = self.OBs[index.row()]
-            if OB.executed == True:
-                return QtGui.QColor('black')
+            if observed_tonight(OB) > 0:
+                return QtGui.QImage('icons/tick.png')
             else:
-                return QtGui.QColor('green')
+                return QtGui.QImage('icons/status-offline.png')
 
     def rowCount(self, index):
         return len(self.OBs)
