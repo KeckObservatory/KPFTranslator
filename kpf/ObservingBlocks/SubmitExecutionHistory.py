@@ -113,7 +113,7 @@ class SubmitExecutionHistory(KPFFunction):
             sys.exit(0)
             raise KPFException(f'Mismatch in start times and exposure times')
 
-        log.info('Submitting data to DB:')
+        log.info('Submitting history to DB:')
         log.info(params)
         result = query_database('addObservingBlockHistory', params=params)
         log.info(f"Response: {result}")

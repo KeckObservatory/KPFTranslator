@@ -13,6 +13,7 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (check_script_running, set_script_keywords,
                          add_script_log, wait_for_script, clear_script_keywords)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
+from kpf.ObservingBlocks.SubmitExecutionHistory import SubmitExecutionHistory
 from kpf.fiu.VerifyCurrentBase import VerifyCurrentBase
 from kpf.scripts.SendTargetToMagiq import SendTargetToMagiq
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
@@ -60,7 +61,7 @@ class RunOB(KPFScript):
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, OB=None):
         # If requested wait for an existing script to complete
-        if args.get('waitforscript', False) is True:
+        if args.get('waitforscript', False) == True:
             newscript = f'{Path(__file__).name.replace(".py", "")}(PID {os.getpid()})'
             wait_for_script(newscript=newscript)
         set_script_keywords(Path(__file__).name, os.getpid())
@@ -131,6 +132,9 @@ class RunOB(KPFScript):
                 ExecuteSci.execute(observation_dict)
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
+
+        if OB.OBID != '':
+            SubmitExecutionHistory.execute({'id': OB.OBID})
 
         clear_script_keywords()
 
