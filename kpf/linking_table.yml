@@ -312,20 +312,14 @@ links:
     EastNorth:
         cmd: telescope.EastNorth.EastNorth
     # Utils
-    BuildOBfromQuery:
-        cmd: utils.BuildOBfromQuery.BuildOBfromQuery
     CheckAllowScheduledCals:
         cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
-    RecoverThermalControl:
-        cmd: utils.RecoverThermalControl.RecoverThermalControl
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
         cmd: utils.SetOutdirs.SetOutdirs
-    SetTargetInfo:
-        cmd: utils.SetTargetInfo.SetTargetInfo
     StartGUIs:
         cmd: utils.StartGUIs.StartGUIs
     StartOfNight:
