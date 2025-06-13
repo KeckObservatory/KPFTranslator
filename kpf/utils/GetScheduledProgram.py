@@ -34,7 +34,7 @@ class GetScheduledProgram(KPFFunction):
             end_time_h, end_time_m = program['EndTime'].split(':')
             end_time = int(end_time_h) + int(end_time_m)/60
             if utnow_decimal >= start_time and utnow_decimal < end_time:
-                return progam['ProjCode']
+                return program['ProjCode']
         log.warning('Unable to determine program ID from schedule, using ENG')
         return 'ENG'
 
