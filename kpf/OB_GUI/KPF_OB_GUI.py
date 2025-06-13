@@ -668,8 +668,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def load_KPFCC_schedule(self):
         if self.verify_overwrite_of_OB_list():
-            print('Load schedule here')
-            pass
+            import random
+            self.KPFCC = True
+            self.model.OBs = GetObservingBlocksByProgram.execute({'program': 'E489'})
+            self.model.start_times = [6 + random.random()*10 for x in self.model.OBs]
+            self.model.layoutChanged.emit()
+            self.set_SortOrWeather()
+            msg = f"Retrieved {len(self.model.OBs)} OBs for mock KPF-CC"
+            ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
 
     def load_OBs(self, value):
         self.log.info(f"load_OBs: '{value}'")
