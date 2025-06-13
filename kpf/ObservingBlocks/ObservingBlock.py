@@ -244,6 +244,16 @@ class ObservingBlock(object):
                   f"semid: '{self.semid}'",
                   f"CommentToObserver: '{self.CommentToObserver}'",
                   ]
+        if len(self.History) > 0:
+            lines += [f"# History"]
+            for hist in self.History:
+                lines += [f"- Timestamp: {hist.get('timestamp')}"]
+                if hist.get('exposure_times', []) != []:
+                    lines += [f"  ExpTimes: {hist.get('exposure_times')}"]
+                if hist.get('observer', '') != '':
+                    lines += [f"  Observer: {hist.get('observer')}"]
+                if hist.get('comment', '') != '':
+                    lines += [f"  Comment: {hist.get('comment')}"]
         return '\n'.join(lines)
 
 
