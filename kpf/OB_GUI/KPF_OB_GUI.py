@@ -27,6 +27,7 @@ from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocksByProgram
+from kpf.ObservingBlocks.SubmitObserverComment import SubmitObserverComment
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObserver import SetObserver
@@ -1060,6 +1061,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if comment_box.exec():
             print(f"Submitting comment: {comment_box.comment}")
             print(f"From commentor: {comment_box.observer}")
+            params = {'id': SOB.OBID,
+                      'observer': comment_box.observer,
+                      'comment': comment_box.comment,
+                      }
+            SubmitObserverComment.execute(params)
         else:
             print("Cancel! Not submitting comment.")
 
