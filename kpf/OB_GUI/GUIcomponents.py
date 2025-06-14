@@ -17,9 +17,9 @@ def observed_tonight(OB):
         if len(hist.get('exposure_start_times', [])) > 0:
             for timestring in hist.get('exposure_start_times'):
                 tstamp = datetime.strptime(timestring[:19], '%Y-%m-%dT%H:%M:%S')
-                if (now-tstamp).total_seconds() < 10*60*60:
+                if (now-tstamp).days <= 1 and (tstamp.day == now.day):
                     exposures_tonight.append(timestring)
-    print(f"Found {len(exposures_tonight)} recent exposures for {OB.summary()}")
+#     print(f"Found {len(exposures_tonight)} recent exposures for {OB.summary()}")
     return len(exposures_tonight)
 
 
@@ -51,10 +51,17 @@ class OBListModel(QtCore.QAbstractListModel):
             return output_line
         if role == QtCore.Qt.DecorationRole:
             OB  = self.OBs[index.row()]
-            if observed_tonight(OB) > 0:
-                return QtGui.QImage('icons/tick.png')
-            else:
+            all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
+            n_visits = len(all_visits)
+            n_observed = observed_tonight(OB)
+            print(f'{datetime.now().strftime("%H:%M:%S")} - Evaluating DecorationRole for {index.row()}')
+            if n_observed == 0:
                 return QtGui.QImage('icons/status-offline.png')
+            else:
+                if all_visits.index(index.row()) < n_observed:
+                    return QtGui.QImage('icons/tick.png')
+                else:
+                    return QtGui.QImage('icons/status-away.png')
 
     def rowCount(self, index):
         return len(self.OBs)

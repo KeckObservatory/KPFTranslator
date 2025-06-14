@@ -671,8 +671,13 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.verify_overwrite_of_OB_list():
             import random
             self.KPFCC = True
-            self.model.OBs = GetObservingBlocksByProgram.execute({'program': 'E489'})
+            OBs = GetObservingBlocksByProgram.execute({'program': 'E489'})
+            OBs.append(OBs[0])
+            OBs.append(OBs[0])
+            OBs.append(OBs[0])
+            self.model.OBs = OBs
             self.model.start_times = [6 + random.random()*10 for x in self.model.OBs]
+            self.model.sort('time')
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
             msg = f"Retrieved {len(self.model.OBs)} OBs for mock KPF-CC"
