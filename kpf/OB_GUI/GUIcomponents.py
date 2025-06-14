@@ -1,8 +1,12 @@
 import yaml
 from datetime import datetime, timedelta
 import numpy as np
+# from astropy.coordinates import EarthLocation, AltAz
+# from astropy.time import Time
+
 from PyQt5 import QtWidgets, QtCore, QtGui
 
+from kpf.OB_GUI import above_horizon, near_horizon
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
@@ -51,6 +55,18 @@ class OBListModel(QtCore.QAbstractListModel):
             return output_line
         if role == QtCore.Qt.DecorationRole:
             OB  = self.OBs[index.row()]
+
+            # Check if down (this slows down GUI)
+#             AltAzSystem = AltAz(obstime=Time.now(),
+#                                 location=EarthLocation.of_site('Keck Observatory'),
+#                                 pressure=620*u.mbar, temperature=0*u.Celsius)
+#             target_altz = OB.Target.coord.transform_to(AltAzSystem)
+#             target_up = above_horizon(target_altz.az.deg, target_altz.alt.deg)
+#             print(target_altz.az.deg, target_altz.alt.deg, target_up)
+#             if target_up == False:
+#                 return QtGui.QImage('icons/cross-script.png')
+
+            # Check observed state
             all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
             n_visits = len(all_visits)
             n_observed = observed_tonight(OB)
