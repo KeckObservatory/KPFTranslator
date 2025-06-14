@@ -267,7 +267,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # List of Observing Blocks
         self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
         self.hdr = 'TargetName       RA          Dec      Gmag Jmag Observations'
-        self.OBListHeader.setText(f"    {self.hdr}")
+        self.OBListHeader.setText(self.hdr)
 
         self.ListOfOBs = self.findChild(QtWidgets.QListView, 'ListOfOBs')
         self.model = OBListModel(OBs=[])
@@ -651,8 +651,9 @@ class MainWindow(QtWidgets.QMainWindow):
             OBs.append(OBs[0])
             OBs.append(OBs[0])
             self.model.OBs = OBs
-            self.model.start_times = [6 + random.random()*10 for x in self.model.OBs]
+            self.model.start_times = [5 + random.random()*5 for x in self.model.OBs]
             self.model.sort('time')
+            self.OBListHeader.setText('    StartTime '+self.hdr)
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
             msg = f"Retrieved {len(self.model.OBs)} OBs for mock KPF-CC"
@@ -662,7 +663,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.info(f"load_OBs: '{value}'")
         self.clear_OB_selection()
         self.KPCC = False
-        self.OBListHeader.setText(f"    {self.hdr}")
+        self.OBListHeader.setText(self.hdr)
         if value == '':
             self.model.OBs = []
             self.model.start_times = None
@@ -678,6 +679,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 programOBs = GetObservingBlocksByProgram.execute({'program': progID})
                 self.model.OBs.extend(programOBs)
                 self.log.debug(f'  Got {len(programOBs)} for {progID}, total KPF-CC OB count is now {len(self.model.OBs)}')
+            self.OBListHeader.setText('    StartTime '+self.hdr)
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
 

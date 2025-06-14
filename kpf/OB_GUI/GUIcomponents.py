@@ -66,18 +66,28 @@ class OBListModel(QtCore.QAbstractListModel):
 #             if target_up == False:
 #                 return QtGui.QImage('icons/cross-script.png')
 
+            # Check if this OB is next
+            if self.start_times is not None:
+                now = datetime.utcnow()
+                decimal_now = now.hour + now.minute/60 + now.second/3600
+                delta_t = np.array(self.start_times) - decimal_now
+                foo = np.array([-1e6*dt if dt<0 else dt for dt in delta_t])
+                if foo.argmin() == index.row():
+                    return QtGui.QImage('icons/arrow.png')
+
             # Check observed state
-            all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
-            n_visits = len(all_visits)
-            n_observed = observed_tonight(OB)
-            print(f'{datetime.now().strftime("%H:%M:%S")} - Evaluating DecorationRole for {index.row()}')
-            if n_observed == 0:
-                return QtGui.QImage('icons/status-offline.png')
-            else:
-                if all_visits.index(index.row()) < n_observed:
-                    return QtGui.QImage('icons/tick.png')
+            if self.start_times is not None:
+                all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
+                n_visits = len(all_visits)
+                n_observed = observed_tonight(OB)
+                print(f'{datetime.now().strftime("%H:%M:%S")} - Evaluating DecorationRole for {index.row()}')
+                if n_observed == 0:
+                    return QtGui.QImage('icons/status-offline.png')
                 else:
-                    return QtGui.QImage('icons/status-away.png')
+                    if all_visits.index(index.row()) < n_observed:
+                        return QtGui.QImage('icons/tick.png')
+                    else:
+                        return QtGui.QImage('icons/status-away.png')
 
     def rowCount(self, index):
         return len(self.OBs)
