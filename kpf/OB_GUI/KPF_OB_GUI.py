@@ -1,5 +1,6 @@
 #!/kroot/rel/default/bin/kpython3
 import sys
+import os
 import traceback
 import time
 import copy
@@ -80,6 +81,8 @@ class MainWindow(QtWidgets.QMainWindow):
         ui_file = Path(__file__).parent / 'KPF_OB_GUI.ui'
         uic.loadUi(f"{ui_file}", self)
         self.log = guilog
+        self.pid = os.getpid()
+        self.log.info(f'Initializing OB GUI. PID={self.pid}')
         self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
         self.KPFCC = False
