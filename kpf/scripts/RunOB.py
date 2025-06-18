@@ -71,6 +71,8 @@ class RunOB(KPFScript):
         log.info('-------------------------')
         if isinstance(OB, dict):
             OB = ObservingBlock(OB)
+        if OB.OBID not in [None, '']:
+            log.info(f"OB ID = {OB.OBID}")
 
         # Send Target info to Magiq for OA
         if OB.Target is not None:
