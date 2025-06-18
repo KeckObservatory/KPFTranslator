@@ -56,16 +56,6 @@ class OBListModel(QtCore.QAbstractListModel):
         if role == QtCore.Qt.DecorationRole:
             OB  = self.OBs[index.row()]
 
-            # Check if down (this slows down GUI)
-#             AltAzSystem = AltAz(obstime=Time.now(),
-#                                 location=EarthLocation.of_site('Keck Observatory'),
-#                                 pressure=620*u.mbar, temperature=0*u.Celsius)
-#             target_altz = OB.Target.coord.transform_to(AltAzSystem)
-#             target_up = above_horizon(target_altz.az.deg, target_altz.alt.deg)
-#             print(target_altz.az.deg, target_altz.alt.deg, target_up)
-#             if target_up == False:
-#                 return QtGui.QImage('icons/cross-script.png')
-
             # Check if this OB is next
             if self.start_times is not None:
                 now = datetime.utcnow()
