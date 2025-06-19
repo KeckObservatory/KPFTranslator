@@ -125,7 +125,7 @@ class RunOB(KPFScript):
                 observation_dict['Gmag'] = OB.Target.get('Gmag')
                 ConfigureForScience.execute(observation_dict)
                 if OB.ProgramID != '':
-                    SetProgram.execute('progname': OB.ProgramID)
+                    SetProgram.execute({'progname': OB.ProgramID})
                 else:
                     program = GetScheduledProgram.execute({})
                     SetProgram.execute('progname': program)
