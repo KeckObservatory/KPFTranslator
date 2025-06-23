@@ -658,6 +658,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.log.error('No schedule for tonight found. Using default.')
             with open(schedule_file, 'r') as f:
                 contents = json.loads(f.read())
+            Nsched = len(contents)
             self.model.OBs = []
             self.model.start_times = []
             for entry in contents:
@@ -673,8 +674,18 @@ class MainWindow(QtWidgets.QMainWindow):
             self.OBListHeader.setText('    StartTime '+self.hdr)
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-            msg = f"Retrieved {len(self.model.OBs)} OBs (out of {len(contents)} in schedule) for KPF-CC"
+            msg = f"Retrieved {len(self.model.OBs)} (out of {Nsched}) KPF-CC OBs"
             ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
+            # This select/deselect operation caches something in the AltAz 
+            # calculation which happens the first time an OB is selected. This
+            # just makes the GUI more "responsive" as the loading of the OBs when
+            # program ID is chosen contains all of the slow caching of values
+            # instead of having it happen on the first click.
+            if len(self.model.OBs) > 0:
+                self.select_OB(0)
+                self.select_OB(None)
+            self.update_star_list()
+
 
     def load_OBs(self, value):
         self.log.info(f"load_OBs: '{value}'")
@@ -699,22 +710,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.OBListHeader.setText('    StartTime '+self.hdr)
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-
-            # Handle KPF-CC OBs with schedule
-#             self.OBListHeader.setText('    StartTime '+self.hdr)
-#             files = [f for f in Path('/s/sdata1701/OBs/jwalawender/OBs_v2/howard/2024B').glob('*.yaml')]
-#             self.model.OBs = []
-#             self.model.start_times = []
-#             for i,file in enumerate(files[:30]):
-#                 try:
-#                     self.model.OBs.append(ObservingBlock(file))
-#                     import random
-#                     obstime = random.randrange(5, 17, step=1) + random.random()
-#                     self.model.start_times.append(obstime)
-#                 except:
-#                     print(f"Failed file {i+1}: {file}")
-#             print(f"Read in {len(self.model.OBs)} files")
-#             self.model.sort('time')
         else:
             OBs = GetObservingBlocksByProgram.execute({'program': value})
             self.model.OBs = OBs
