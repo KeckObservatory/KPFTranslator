@@ -61,9 +61,14 @@ class OBListModel(QtCore.QAbstractListModel):
                 now = datetime.utcnow()
                 decimal_now = now.hour + now.minute/60 + now.second/3600
                 delta_t = np.array(self.start_times) - decimal_now
-                foo = np.array([-1e6*dt if dt<0 else dt for dt in delta_t])
-                if foo.argmin() == index.row():
+
+                iscurr = np.array([-1e6*dt if dt>0 else dt for dt in delta_t])
+                print(iscurr)
+                if iscurr.argmax() == index.row():
                     return QtGui.QImage('icons/arrow.png')
+                isnext = np.array([-1e6*dt if dt<0 else dt for dt in delta_t])
+                if isnext.argmin() == index.row():
+                    return QtGui.QImage('icons/arrow-curve-000-left.png')
 
             # Check observed state
             if self.start_times is not None:
