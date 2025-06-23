@@ -49,6 +49,15 @@ from kpf.fiu.ConfigureFIU import ConfigureFIU
 ##-------------------------------------------------------------------------
 ## Create logger object
 ##-------------------------------------------------------------------------
+logging.addLevelName(25, 'SCHEDULE')
+
+def schedule(self, message, *args, **kwargs):
+    if self.isEnabledFor(25):
+        self._log(25, message, args, **kwargs)
+
+logging.Logger.schedule = schedule
+
+
 def create_GUI_log():
     guilog = logging.getLogger('KPF_OB_GUI')
     guilog.setLevel(logging.DEBUG)
@@ -1080,6 +1089,14 @@ class MainWindow(QtWidgets.QMainWindow):
                    f"{SOB.summary()}"]
             result = ConfirmationPopup('Execute Science OB?', msg).exec_()
             if result == QtWidgets.QMessageBox.Yes:
+                if self.SOBindex not in [self.model.CurrentOB, self.model.NextOB]:
+                    self.log.schedule(f'Running OB {self.SOBindex} off schedule')
+                    start_time = self.model.start_time[self.SOBindex]
+                    self.log.schedule(f'  Start time for this OB is {start_time:.2f} UT')
+                    start_current = self.model.start_time[self.model.CurrentOB]
+                    self.log.schedule(f'  Start time for scheduled OB is {start_current:.2f} UT')
+                    start_next = self.model.start_time[self.model.NextOB]
+                    self.log.schedule(f'  Start time for next OB is {start_next:.2f} UT')
                 self.RunOB(SOB)
                 self.model.OBs[self.SOBindex].executed = True
                 self.model.layoutChanged.emit()

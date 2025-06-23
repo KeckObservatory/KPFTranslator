@@ -37,6 +37,8 @@ class OBListModel(QtCore.QAbstractListModel):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = OBs
         self.start_times = None
+        self.currentOB = -1
+        self.nextOB = -1
 
     def data(self, index, role):
         if role == QtCore.Qt.DisplayRole:
@@ -64,9 +66,11 @@ class OBListModel(QtCore.QAbstractListModel):
 
                 iscurr = np.array([-1e6*dt if dt>0 else dt for dt in delta_t])
                 if iscurr.argmax() == index.row():
+                    self.currentOB = index.row()
                     return QtGui.QImage('icons/arrow.png')
                 isnext = np.array([-1e6*dt if dt<0 else dt for dt in delta_t])
                 if isnext.argmin() == index.row():
+                    self.nextOB = index.row()
                     return QtGui.QImage('icons/arrow-curve-000-left.png')
 
             # Check observed state
