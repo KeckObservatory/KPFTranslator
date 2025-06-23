@@ -7,6 +7,7 @@ import copy
 from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
+import json
 import re
 import subprocess
 import yaml
@@ -28,7 +29,7 @@ from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocksByProgram
+from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocks, GetObservingBlocksByProgram
 from kpf.ObservingBlocks.SubmitObserverComment import SubmitObserverComment
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
@@ -647,19 +648,32 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def load_KPFCC_schedule(self):
         if self.verify_overwrite_of_OB_list():
-            import random
             self.KPFCC = True
-            OBs = GetObservingBlocksByProgram.execute({'program': 'E489'})
-            OBs.append(OBs[0])
-            OBs.append(OBs[0])
-            OBs.append(OBs[0])
-            self.model.OBs = OBs
-            self.model.start_times = [5 + random.random()*5 for x in self.model.OBs]
+            utnow = datetime.datetime.utcnow()
+            date = utnow-datetime.timedelta(days=1)
+            date_str = date.strftime('%Y%b%d').lower()
+            schedule_file = Path(f'/s/sdata1701/Schedules/{date_str}.json')
+            if schedule_file.exists() == False:
+                schedule_file = Path(f'/s/sdata1701/Schedules/default.json')
+                self.log.error('No schedule for tonight found. Using default.')
+            with open(schedule_file, 'r') as f:
+                contents = json.loads(f.read())
+            self.model.OBs = []
+            self.model.start_times = []
+            for entry in contents:
+                try:
+                    thisOB = GetObservingBlocks.execute({'OBid': entry['id']})[0]
+                    self.model.OBs.append(thisOB)
+                    start = entry['start_exp'].split(':')
+                    self.model.start_times.append(int(start[0]) + int(start[1])/60)
+                except Exception as e:
+                    self.log.error(f'Unable to load OB: {entry["id"]}')
+                    self.log.error(e)
             self.model.sort('time')
             self.OBListHeader.setText('    StartTime '+self.hdr)
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
-            msg = f"Retrieved {len(self.model.OBs)} OBs for mock KPF-CC"
+            msg = f"Retrieved {len(self.model.OBs)} OBs (out of {len(contents)} in schedule) for KPF-CC"
             ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
 
     def load_OBs(self, value):
