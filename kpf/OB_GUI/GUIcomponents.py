@@ -63,7 +63,6 @@ class OBListModel(QtCore.QAbstractListModel):
                 delta_t = np.array(self.start_times) - decimal_now
 
                 iscurr = np.array([-1e6*dt if dt>0 else dt for dt in delta_t])
-                print(iscurr)
                 if iscurr.argmax() == index.row():
                     return QtGui.QImage('icons/arrow.png')
                 isnext = np.array([-1e6*dt if dt<0 else dt for dt in delta_t])
