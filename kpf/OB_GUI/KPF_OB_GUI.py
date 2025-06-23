@@ -831,7 +831,15 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Run End of Night Script?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             self.log.debug('Confirmation is yes, running EndOfNight script')
-            EndOfNight.execute({'confirm': True})
+            # Pop up an xterm with the script running
+            kpfdo = Path(__file__).parent.parent / 'kpfdo'
+            EndOfNight_cmd = f'{kpfdo} EndOfNight ; echo "Done!" ; sleep 30'
+            cmd = ['xterm', '-title', 'EndOfNight', '-name', 'EndOfNight',
+                   '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+                   '-e', f'{EndOfNight_cmd}']
+            print(EndOfNight_cmd)
+            print(' '.join(cmd))
+            proc = subprocess.Popen(cmd)
         else:
             self.log.debug('Confirmation is no, not running script')
 
