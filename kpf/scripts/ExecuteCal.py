@@ -247,9 +247,8 @@ class ExecuteCal(KPFFunction):
         calibration['TimedShutter_CaHK'] = calibration.get('TriggerCaHK', False)
         calibration['TimedShutter_Scrambler'] = calibration.get('TriggerGreen', False) or calibration.get('TriggerRed', False)
         calibration['TimedShutter_SimulCal'] = calibration.get('TakeSimulCal', False)
-        calibration['TimedShutter_FlatField'] = calibration.get('WideFlatPos', 'Blank') not in ['Blank', '']
+        calibration['TimedShutter_FlatField'] = calibration.get('WideFlatPos', 'Blank') != 'Blank'
         log.info(f"Setting timed shutters")
-        print(calibration)
         SetTimedShutters.execute(calibration)
 
         log.info(f"Setting OBJECT: {calibration.get('Object')}")
