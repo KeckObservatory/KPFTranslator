@@ -54,7 +54,7 @@
 - name: 'WideFlatPos'
   comment: 'If the WideFlat source is chosen, which wheel position to use?'
   valuetype: str
-  defaultvalue: ''
+  defaultvalue: 'Blank'
 - name: 'ExpMeterMode'
   comment: 'Exposure meter mode? (monitor, control, off)'
   valuetype: str
