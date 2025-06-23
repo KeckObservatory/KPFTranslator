@@ -128,7 +128,7 @@ class RunOB(KPFScript):
                     SetProgram.execute({'progname': OB.ProgramID})
                 else:
                     program = GetScheduledProgram.execute({})
-                    SetProgram.execute('progname': program)
+                    SetProgram.execute({'progname': program})
                 WaitForConfigureScience.execute(observation_dict)
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
                 ExecuteSci.execute(observation_dict)

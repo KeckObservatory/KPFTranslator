@@ -34,9 +34,9 @@ class SetTargetInfo(KPFScript):
         kpfconfig['TARGET_2MASS'].write(targ.get('2MASSID', ''))
         kpfconfig['TARGET_GMAG'].write(targ.get('Gmag', ''))
         kpfconfig['TARGET_JMAG'].write(targ.get('Jmag', ''))
-        TARGPLAX = OB.get('Parallax', 0)
+        TARGPLAX = targ.get('Parallax', 0)
         kpfconfig['TARGET_PAR'].write(f"{TARGPLAX:.3f}")
-        TARGRADV = OB.get('RadialVelocity', 0)
+        TARGRADV = targ.get('RadialVelocity', 0)
         kpfconfig['TARGET_RADV'].write(f"{TARGRADV:.3f}")
 
         TARGET_TEFF = targ.get('Teff', 45000)
