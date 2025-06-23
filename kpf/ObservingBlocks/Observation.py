@@ -41,10 +41,10 @@ class Observation(BaseOBComponent):
                 ]
 
     def check_property(self, pname):
-        if pname == 'Object':
-            if self.get(pname) in ['', None]:
-                return True, ' # ERROR: Object field is empty'
-        elif pname == 'nExp':
+#         if pname == 'Object':
+#             if self.get(pname) in ['', None]:
+#                 return True, ' # ERROR: Object field is empty'
+        if pname == 'nExp':
             if self.get(pname) < 1:
                 return True, ' # ERROR: nExp < 1'
         elif pname == 'ExpTime':
