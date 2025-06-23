@@ -74,6 +74,8 @@ class RunOB(KPFScript):
         if OB.OBID not in [None, '']:
             log.info(f"OB ID = {OB.OBID}")
 
+        initial_program = ktl.cache('kpfexpose', 'PROGNAME').read()
+
         # Send Target info to Magiq for OA
         if OB.Target is not None:
             SendTargetToMagiq.execute({})
@@ -102,6 +104,8 @@ class RunOB(KPFScript):
                 ExecuteCal.execute(calibration.to_dict())
             log.info(f'Cleaning up after Calibrations')
             CleanupAfterCalibrations.execute(args, OB=OB)
+            # Restore initial program name
+            SetProgram.execute({'progname': initial_program})
             if len(OB.Observations) > 0:
                 kpfconfig['SCRIPTMSG'].write('Slew Cal complete. Setting FIU to observing mode')
 
@@ -126,14 +130,13 @@ class RunOB(KPFScript):
                 ConfigureForScience.execute(observation_dict)
                 if OB.ProgramID != '':
                     SetProgram.execute({'progname': OB.ProgramID})
-                else:
-                    program = GetScheduledProgram.execute({})
-                    SetProgram.execute({'progname': program})
                 WaitForConfigureScience.execute(observation_dict)
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
                 ExecuteSci.execute(observation_dict)
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
+            # Restore initial program name
+            SetProgram.execute({'progname': initial_program})
 
         if OB.OBID != '':
             SubmitExecutionHistory.execute({'id': OB.OBID})
