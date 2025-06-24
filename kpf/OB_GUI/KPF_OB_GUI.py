@@ -791,17 +791,31 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.log.debug('Confirmation is no, not running script')
 
+    def configure_FIU(self, mode):
+        if mode not in ['Stowed', 'Alignment', 'Acquisition', 'Observing', 'Calibration']:
+            self.log.error(f"Desired FIU mode {mode} is not allowed")
+            return
+        # Pop up an xterm with the script running
+        kpfdo = Path(__file__).parent.parent / 'kpfdo'
+        configureFIU_cmd = f'{kpfdo} ConfigureFIU {mode} ; echo "Done!" ; sleep 30'
+        cmd = ['xterm', '-title', 'ConfigureFIU', '-name', 'ConfigureFIU',
+               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+               '-e', f'{configureFIU_cmd}']
+        print(configureFIU_cmd)
+        print(' '.join(cmd))
+        proc = subprocess.Popen(cmd)
+
     def configure_FIU_observing(self):
         self.log.info('running configure_FIU_observing')
-        ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
+        self.configure_FIU('Observing')
 
     def configure_FIU_calibrations(self):
         self.log.info('running configure_FIU_calibrations')
-        ConfigureFIU.execute({'mode': 'Calibration', 'wait': False})
+        self.configure_FIU('Calibration')
 
     def configure_FIU_stow(self):
         self.log.info('running configure_FIU_stow')
-        ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
+        self.configure_FIU('Stowed')
 
     def set_observer(self):
         self.log.debug(f"action set_observer")
