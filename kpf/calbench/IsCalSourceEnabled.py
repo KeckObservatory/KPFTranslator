@@ -52,7 +52,7 @@ class IsCalSourceEnabled(KPFFunction):
             lamp_name = calsource.upper()
         elif calsource in ['SoCal-CalFib', 'SoCal-SciSky']:
             lamp_name = calsource.replace('-', '_').replace('Sky', 'FIB')
-        elif calsource == 'dark':
+        elif calsource in ['dark', 'Dark']:
             return True
         else:
             log.warning(f"IsCalSourceEnabled does not recognize '{calsource}'")
