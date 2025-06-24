@@ -191,13 +191,13 @@ class SetOutdirs(KPFFunction):
         parser = cls._add_bool_arg(parser, 'CRED2',
             'Set CRED2 OUTDIR (kpfguide.OUTDIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'FVC1',
-            'Set FVC1 OUTDIR (kpffvc.SCIOUTDIR)?', default=True)
+            'Set FVC1 OUTDIR (kpffvc.SCIOUTDIR)?', default=False)
         parser = cls._add_bool_arg(parser, 'FVC2',
-            'Set FVC2 OUTDIR (kpffvc.CAHKOUTDIR)?', default=True)
+            'Set FVC2 OUTDIR (kpffvc.CAHKOUTDIR)?', default=False)
         parser = cls._add_bool_arg(parser, 'FVC3',
-            'Set FVC3 OUTDIR (kpffvc.CALOUTDIR)?', default=True)
+            'Set FVC3 OUTDIR (kpffvc.CALOUTDIR)?', default=False)
         parser = cls._add_bool_arg(parser, 'FVC4',
-            'Set FVC4 OUTDIR (kpffvc.EXTOUTDIR)?', default=True)
+            'Set FVC4 OUTDIR (kpffvc.EXTOUTDIR)?', default=False)
         parser = cls._add_bool_arg(parser, 'ExpMeter',
             'Set ExpMeter OUTDIR (kpf_expmeter.DATADIR)?', default=True)
         parser = cls._add_bool_arg(parser, 'CaHK',
