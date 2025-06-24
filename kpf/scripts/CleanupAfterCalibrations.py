@@ -78,8 +78,9 @@ class CleanupAfterCalibrations(KPFScript):
         if runagitator is True:
             StopAgitator.execute({})
 
-        log.info(f"Stowing FIU")
-        ConfigureFIU.execute({'mode': 'Stowed'})
+        if args.get('stowFIU', True):
+            log.info(f"Stowing FIU")
+            ConfigureFIU.execute({'mode': 'Stowed'})
 
         # Turn off exposure meter controlled exposure
         log.debug('Clearing kpf_expmeter.USETHRESHOLD')

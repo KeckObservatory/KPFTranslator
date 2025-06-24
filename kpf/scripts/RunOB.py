@@ -105,6 +105,9 @@ class RunOB(KPFScript):
                 log.info(f'Executing Calibration {i+1}/{len(OB.Calibrations)}')
                 ExecuteCal.execute(calibration.to_dict())
             log.info(f'Cleaning up after Calibrations')
+            # Don't stop FIU if we have observations to perform
+            if len(OB.Observations) > 0:
+                args['stowFIU'] = False
             CleanupAfterCalibrations.execute(args, OB=OB)
             # Restore initial program name
             SetProgram.execute({'progname': initial_program})
