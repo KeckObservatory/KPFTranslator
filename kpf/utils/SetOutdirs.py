@@ -50,7 +50,7 @@ class SetOutdirs(KPFFunction):
                 log.error(e)
 
         kpffvc = ktl.cache('kpffvc')
-        if args.get('FVC1', True) is True:
+        if args.get('FVC1', False) is True:
             log.info(f"Setting FVC1 OUTDIR to {outdir / 'FVC1'}")
             try:
                 kpffvc['SCIOUTDIR'].write(f"{outdir / 'FVC1'}")
@@ -58,7 +58,7 @@ class SetOutdirs(KPFFunction):
                 log.error(f"ERROR setting SCI FVC outdir")
                 log.error(e)
 
-        if args.get('FVC2', True) is True:
+        if args.get('FVC2', False) is True:
             log.info(f"Setting FVC2 OUTDIR to {outdir / 'FVC2'}")
             try:
                 kpffvc['CAHKOUTDIR'].write(f"{outdir / 'FVC2'}")
@@ -66,7 +66,7 @@ class SetOutdirs(KPFFunction):
                 log.error(f"ERROR setting CAHK FVC outdir")
                 log.error(e)
 
-        if args.get('FVC3', True) is True:
+        if args.get('FVC3', False) is True:
             log.info(f"Setting FVC3 OUTDIR to {outdir / 'FVC3'}")
             try:
                 kpffvc['CALOUTDIR'].write(f"{outdir / 'FVC3'}")
@@ -74,7 +74,7 @@ class SetOutdirs(KPFFunction):
                 log.error(f"ERROR setting CAL FVC outdir")
                 log.error(e)
 
-        if args.get('FVC4', True) is True:
+        if args.get('FVC4', False) is True:
             log.info(f"Setting FVC4 OUTDIR to {outdir / 'FVC4'}")
             try:
                 kpffvc['EXTOUTDIR'].write(f"{outdir / 'FVC4'}")
