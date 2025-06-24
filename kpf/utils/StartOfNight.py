@@ -150,8 +150,6 @@ class StartOfNight(KPFFunction):
         SetOutdirs.execute({})
         # Set guider gain to high for initial acquisition and focus
         SetGuiderGain.execute({'GuideCamGain': 'high'})
-        # Set progname and observer
-        SetObserverFromSchedule.execute({})
         # Summarize Detector Disabled States
         cahk_enabled = kpfconfig['CA_HK_ENABLED'].read(binary=True)
         if cahk_enabled is False:
