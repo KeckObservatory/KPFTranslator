@@ -139,6 +139,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.disabled_detectors = []
         self.enable_telescope = False
         self.enable_magiq = False
+        # Get KPF Programs on schedule
+        classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
+        program_IDs = list(set([f"{p['ProjCode']}" for p in classical]))
+        self.program_strings = []
+        for progID in sorted(program_IDs):
+            dates = [e['Date'] for e in classical if e['ProjCode'] == progID]
+            self.program_strings.append(f"{progID} on {', '.join(dates)}")
 
 
     def setupUi(self):
@@ -649,7 +656,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def load_OBs_from_program(self):
         if self.verify_overwrite_of_OB_list():
-            select_program_popup = SelectProgramPopup()
+            select_program_popup = SelectProgramPopup(self.program_strings)
             if select_program_popup.exec():
                 self.load_OBs(select_program_popup.ProgID)
             else:
