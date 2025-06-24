@@ -147,15 +147,15 @@ class SetOutdirs(KPFFunction):
             expr = f"$kpfguide.TRIGOUTDIR == '{outdir}/CRED2'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-        if args.get('FVC1', True) is True:
+        if args.get('FVC1', False) is True:
             expr = f"$kpffvc.SCIOUTDIR == '{outdir}/FVC1'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-        if args.get('FVC2', True) is True:
+        if args.get('FVC2', False) is True:
             expr = f"$kpffvc.CAHKOUTDIR == '{outdir}/FVC2'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
-        if args.get('FVC3', True) is True:
+        if args.get('FVC3', False) is True:
             expr = f"$kpffvc.CALOUTDIR == '{outdir}/FVC3'"
             success = ktl.waitFor(expr, timeout=5)
             tests.append(success)
