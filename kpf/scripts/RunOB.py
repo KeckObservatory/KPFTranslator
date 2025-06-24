@@ -15,6 +15,7 @@ from kpf.scripts import (check_script_running, set_script_keywords,
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.ObservingBlocks.SubmitExecutionHistory import SubmitExecutionHistory
 from kpf.fiu.VerifyCurrentBase import VerifyCurrentBase
+from kpf.scripts.SetTargetInfo import SetTargetInfo
 from kpf.scripts.SendTargetToMagiq import SendTargetToMagiq
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
 from kpf.scripts.ExecuteCal import ExecuteCal
@@ -78,6 +79,7 @@ class RunOB(KPFScript):
 
         # Send Target info to Magiq for OA
         if OB.Target is not None:
+            SetTargetInfo.execute({}, OB=OB)
             SendTargetToMagiq.execute({})
 
         # Add slew cal to OB if keywords indicate one is requested
