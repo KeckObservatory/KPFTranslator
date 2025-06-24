@@ -17,7 +17,7 @@ class ConfirmGuiding(KPFFunction):
         ALL_LOOPS = ktl.cache('kpfguide', 'ALL_LOOPS')
         guide_here = args.get('GuideHere', True)
         guide_here_txt = {True: 'Active', False: 'Inactive'}[guide_here]
-        timeout = args.get('guide_wait_timeout', 30)
+        timeout = args.get('guide_wait_timeout', 5)
         log.info(f"Waiting for kpfguide.ALL_LOOPS = {guide_here_txt}")
         success = ALL_LOOPS.waitfor(f"=='{guide_here_txt}'", timeout=timeout)
 
