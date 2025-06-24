@@ -1110,7 +1110,7 @@ class MainWindow(QtWidgets.QMainWindow):
                    f"{SOB.summary()}"]
             result = ConfirmationPopup('Execute Science OB?', msg).exec_()
             if result == QtWidgets.QMessageBox.Yes:
-                if self.SOBindex not in [self.model.CurrentOB, self.model.NextOB]:
+                if self.KPFCC == True and self.SOBindex not in [self.model.CurrentOB, self.model.NextOB]:
                     self.log.schedule(f'Running OB {self.SOBindex} off schedule')
                     start_time = self.model.start_time[self.SOBindex]
                     self.log.schedule(f'  Start time for this OB is {start_time:.2f} UT')
