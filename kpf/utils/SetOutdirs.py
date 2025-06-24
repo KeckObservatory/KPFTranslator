@@ -33,7 +33,7 @@ class SetOutdirs(KPFFunction):
         log.debug(f"magiq outdir: {magiq_outdir}")
 
         if args.get('CRED2', True) is True:
-            log.info(f"Setting guider OUTDIR to {magiq_outdir}")
+            log.info(f"  Guider OUTDIR = {magiq_outdir}")
             guide_outdir = ktl.cache('kpfguide', 'OUTDIR')
             try:
                 guide_outdir.write(f"{magiq_outdir}")
@@ -41,7 +41,7 @@ class SetOutdirs(KPFFunction):
                 log.error(f"ERROR setting guider outdir")
                 log.error(e)
 
-            log.info(f"Setting guider TRIGOUTDIR to {outdir / 'CRED2'}")
+            log.info(f"  Guider TRIGOUTDIR = {outdir / 'CRED2'}")
             trig_outdir = ktl.cache('kpfguide', 'TRIGOUTDIR')
             try:
                 trig_outdir.write(f"{outdir / 'CRED2'}")
@@ -51,7 +51,7 @@ class SetOutdirs(KPFFunction):
 
         kpffvc = ktl.cache('kpffvc')
         if args.get('FVC1', False) is True:
-            log.info(f"Setting FVC1 OUTDIR to {outdir / 'FVC1'}")
+            log.info(f"  FVC1 OUTDIR = {outdir / 'FVC1'}")
             try:
                 kpffvc['SCIOUTDIR'].write(f"{outdir / 'FVC1'}")
             except Exception as e:
@@ -59,7 +59,7 @@ class SetOutdirs(KPFFunction):
                 log.error(e)
 
         if args.get('FVC2', False) is True:
-            log.info(f"Setting FVC2 OUTDIR to {outdir / 'FVC2'}")
+            log.info(f"  FVC2 OUTDIR = {outdir / 'FVC2'}")
             try:
                 kpffvc['CAHKOUTDIR'].write(f"{outdir / 'FVC2'}")
             except Exception as e:
@@ -67,7 +67,7 @@ class SetOutdirs(KPFFunction):
                 log.error(e)
 
         if args.get('FVC3', False) is True:
-            log.info(f"Setting FVC3 OUTDIR to {outdir / 'FVC3'}")
+            log.info(f"  FVC3 OUTDIR = {outdir / 'FVC3'}")
             try:
                 kpffvc['CALOUTDIR'].write(f"{outdir / 'FVC3'}")
             except Exception as e:
@@ -75,7 +75,7 @@ class SetOutdirs(KPFFunction):
                 log.error(e)
 
         if args.get('FVC4', False) is True:
-            log.info(f"Setting FVC4 OUTDIR to {outdir / 'FVC4'}")
+            log.info(f"  FVC4 OUTDIR = {outdir / 'FVC4'}")
             try:
                 kpffvc['EXTOUTDIR'].write(f"{outdir / 'FVC4'}")
             except Exception as e:
@@ -84,7 +84,7 @@ class SetOutdirs(KPFFunction):
 
         if args.get('ExpMeter', True) is True:
             expmeter_outdir = outdir / 'ExpMeter'
-            log.info(f"Setting exposure meter DATADIR to {expmeter_outdir}")
+            log.info(f"  ExpMeter DATADIR = {expmeter_outdir}")
             kpf_expmeter_outdir = ktl.cache('kpf_expmeter', 'DATADIR')
             try:
                 kpf_expmeter_outdir.write(f"{expmeter_outdir}")
@@ -94,7 +94,7 @@ class SetOutdirs(KPFFunction):
 
         if args.get('CaHK', True) is True:
             cahk_outdir = outdir / 'CaHK'
-            log.info(f"Setting CaHK RECORDDIR to {cahk_outdir}")
+            log.info(f"  CaHK RECORDDIR = {cahk_outdir}")
             kpf_hk_outdir = ktl.cache('kpf_hk', 'RECORDDIR')
             try:
                 kpf_hk_outdir.write(f"{cahk_outdir}")
@@ -104,7 +104,7 @@ class SetOutdirs(KPFFunction):
 
         if args.get('Green', True) is True:
             green_outdir = outdir / 'Green'
-            log.info(f"Setting Green FITSDIR to {green_outdir}")
+            log.info(f"  Green FITSDIR = {green_outdir}")
             kpfgreen_outdir = ktl.cache('kpfgreen', 'FITSDIR')
             try:
                 kpfgreen_outdir.write(f"{green_outdir}")
@@ -114,7 +114,7 @@ class SetOutdirs(KPFFunction):
 
         if args.get('Red', True) is True:
             red_outdir = outdir / 'Red'
-            log.info(f"Setting Red FITSDIR to {red_outdir}")
+            log.info(f"  Red FITSDIR = {red_outdir}")
             kpfred_outdir = ktl.cache('kpfred', 'FITSDIR')
             try:
                 kpfred_outdir.write(f"{red_outdir}")
@@ -124,7 +124,7 @@ class SetOutdirs(KPFFunction):
 
         if args.get('L0', True) is True:
             L0_outdir = outdir / 'L0'
-            log.info(f"Setting kpfasemble OUTDIR to {L0_outdir}")
+            log.info(f"  kpfasemble OUTDIR = {L0_outdir}")
             kpfassemble_outdir = ktl.cache('kpfassemble', 'OUTDIR')
             try:
                 kpfassemble_outdir.write(f"{L0_outdir}")
