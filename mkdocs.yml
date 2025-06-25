@@ -44,6 +44,7 @@ nav:
       - "KPF vs. HIRES": KPFvsHIRES.md
     - "Fast Read Mode": fastreadmode.md
   - "Observing with KPF":
+    - "Community Cadence (KPF-CC)": communitycadence.md
     - "Afternoon Setup": afternoonsetup.md
     - "Daytime Calibrations": calibrations.md
     - "Observing Procedures": observingprocedures.md

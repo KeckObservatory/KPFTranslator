@@ -11,5 +11,5 @@ Advanced users who would like to run the DRP locally can find the [KPF DRP on Gi
 | Level | Description |
 | ----- | ----------- |
 | L0 | Raw spectra packaged with other instrument data<br>(see [Data Format](dataflow.md) for details) |
-| L1 | 1-d, wavelength calibrated spectra |
-| L2 | RVs, multiple activity indicators |
+| L1 | 1-d, wavelength calibrated spectra ([KPF DRP page on L1 data format](https://kpf-pipeline.readthedocs.io/en/latest/tutorials/KPF_Data_Tutorial_L1.html)) |
+| L2 | RVs, multiple activity indicators ([KPF DRP page on L2 data format](https://kpf-pipeline.readthedocs.io/en/latest/tutorials/KPF_Data_Tutorial_L2.html)) |

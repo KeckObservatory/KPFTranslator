@@ -173,6 +173,7 @@ class MainWindow(QMainWindow):
 
         self.TARGET_JMAG = kPyQt.kFactory(ktl.cache('kpfconfig', 'TARGET_JMAG'))
         self.SCRIPTNAME = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTNAME'))
+        self.SCRIPTMSG = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTMSG'))
 
         self.EXPOSE = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSE'))
         self.ELAPSED = kPyQt.kFactory(ktl.cache('kpfexpose', 'ELAPSED'))
@@ -607,10 +608,15 @@ class MainWindow(QMainWindow):
         # Instrument Status Section
         # --------------------------------------
 
-        # Script Status
-        self.ScriptStatus = self.findChild(QLabel, 'ScriptValue')
-        self.SCRIPTNAME.stringCallback.connect(self.ScriptStatus.setText)
+        # Script Name
+        self.ScriptName = self.findChild(QLabel, 'ScriptValue')
+        self.SCRIPTNAME.stringCallback.connect(self.ScriptName.setText)
         self.SCRIPTNAME.primeCallback()
+
+        # Script Status
+        self.ScriptStatus = self.findChild(QLabel, 'ScriptStatusValue')
+        self.SCRIPTMSG.stringCallback.connect(self.ScriptStatus.setText)
+        self.SCRIPTMSG.primeCallback()
 
         # Exposure Status
         self.ExposureStatus = self.findChild(QLabel, 'ExposureStatusValue')
@@ -618,16 +624,6 @@ class MainWindow(QMainWindow):
         self.EXPOSE.primeCallback()
         self.ELAPSED.stringCallback.connect(self.update_exposure_status_string)
         self.ELAPSED.primeCallback()
-
-        # FIU Mode
-        self.FIUMode = self.findChild(QLabel, 'FIUModeValue')
-        self.MODE.stringCallback.connect(self.FIUMode.setText)
-        self.MODE.primeCallback()
-
-        # OBJECT
-        self.ObjectValue = self.findChild(QLabel, 'ObjectValue')
-        self.OBJECT.stringCallback.connect(self.ObjectValue.setText)
-        self.OBJECT.primeCallback()
 
         # --------------------------------------
         # Status Bar

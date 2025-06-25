@@ -816,6 +816,7 @@ class MainWindow(QMainWindow):
         self.log.debug(f"set_target_name: {value}")
         self.update_OB('TargetName', value)
         self.TargetName.setText(f"{value}")
+        self.TargetName.setToolTip('')
 
     def set_object(self, value):
         self.log.debug(f"set_object: {value}")
