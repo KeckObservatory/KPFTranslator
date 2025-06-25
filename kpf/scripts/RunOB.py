@@ -98,15 +98,42 @@ class RunOB(KPFScript):
         # Execute calibrations
         if len(OB.Calibrations) > 0:
             log.info(f'Executing Calibrations')
-            if len(OB.Observations) > 0:
-                kpfconfig['SCRIPTMSG'].write('Executing Slew Cal')
-            ConfigureForCalibrations.execute(args, OB=OB)
+            # Configure for Calibrations
+            try:
+                if len(OB.Observations) > 0:
+                    kpfconfig['SCRIPTMSG'].write('Executing Slew Cal')
+                ConfigureForCalibrations.execute(args, OB=OB)
+            except ScriptStopTriggered as scriptstop:
+                log.error('Script Stop Triggered')
+                CleanupAfterCalibrations.execute(args, OB=OB)
+                clear_script_keywords()
+                return
+            except Exception as e:
+                log.error('Exception encountered during ExecuteSci')
+                log.error(e)
+                CleanupAfterCalibrations.execute(args, OB=OB)
+                clear_script_keywords()
+                return
+            # Loop over calibrations and execute
             for i,calibration in enumerate(OB.Calibrations):
                 log.info(f'Executing Calibration {i+1}/{len(OB.Calibrations)}')
-                ExecuteCal.execute(calibration.to_dict())
+                try:
+                    ExecuteCal.execute(calibration.to_dict())
+                except ScriptStopTriggered as scriptstop:
+                    log.error('Script Stop Triggered')
+                    CleanupAfterCalibrations.execute(args, OB=OB)
+                    clear_script_keywords()
+                    return
+                except Exception as e:
+                    log.error('Exception encountered during ExecuteCal')
+                    log.error(e)
+                    CleanupAfterCalibrations.execute(args, OB=OB)
+                    clear_script_keywords()
+                    return
+            # Clean up after calibrations
             log.info(f'Cleaning up after Calibrations')
-            # Don't stop FIU if we have observations to perform
             if len(OB.Observations) > 0:
+                # Don't stop FIU if we have observations to perform
                 args['stowFIU'] = False
             CleanupAfterCalibrations.execute(args, OB=OB)
             # Restore initial program name
@@ -119,25 +146,48 @@ class RunOB(KPFScript):
             log.info(f'Configuring for Acquisition')
             try:
                 ConfigureForAcquisition.execute(args, OB=OB)
+                WaitForConfigureAcquisition.execute(args, OB=OB)
+            except ScriptStopTriggered as scriptstop:
+                log.error('Script Stop Triggered')
+                CleanupAfterScience.execute(args, OB=OB)
+                return
             except Exception as e:
+                log.error('Exception encountered during ConfigureForAcquisition')
                 log.error(e)
                 CleanupAfterScience.execute(args, OB=OB)
                 return
-            WaitForConfigureAcquisition.execute(args, OB=OB)
 
         # Execute science observations
         if len(OB.Observations) > 0:
             log.info(f'Configuring for Observations')
             VerifyCurrentBase.execute({'query_user': True})
             for i,observation in enumerate(OB.Observations):
-                observation_dict = observation.to_dict()
-                observation_dict['Gmag'] = OB.Target.get('Gmag')
-                ConfigureForScience.execute(observation_dict)
-                if OB.ProgramID != '':
-                    SetProgram.execute({'progname': OB.ProgramID})
-                WaitForConfigureScience.execute(observation_dict)
+                # Configure for Science
+                try:
+                    observation_dict = observation.to_dict()
+                    observation_dict['Gmag'] = OB.Target.get('Gmag')
+                    ConfigureForScience.execute(observation_dict)
+                    if OB.ProgramID != '':
+                        SetProgram.execute({'progname': OB.ProgramID})
+                    WaitForConfigureScience.execute(observation_dict)
+                except ScriptStopTriggered as scriptstop:
+                    log.error('Script Stop Triggered')
+                    CleanupAfterScience.execute(args, OB=OB)
+                    return
+                except Exception as e:
+                    log.error('Exception encountered during ConfigureForScience')
+                    log.error(e)
+                    CleanupAfterScience.execute(args, OB=OB)
+                    return
+                # Execute Observation
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
-                ExecuteSci.execute(observation_dict)
+                try:
+                    ExecuteSci.execute(observation_dict)
+                except ScriptStopTriggered as scriptstop:
+                    log.error('Script Stop Triggered')
+                except Exception as e:
+                    log.error('Exception encountered during ExecuteSci')
+                    log.error(e)
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
             # Restore initial program name
