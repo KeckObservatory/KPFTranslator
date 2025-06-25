@@ -2,12 +2,12 @@ import time
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetLFCtoStandbyHigh(KPFTranslatorFunction):
+class SetLFCtoStandbyHigh(KPFFunction):
     '''Set the Laser Frequency Comb (LFC) to "StandbyHigh" mode. This is the
     mode which should be set after operation of the LFC for science is complete.
 
@@ -18,7 +18,7 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
     - `kpfmon.LFCREADYSTA`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         heartbeat = ktl.cache('kpfmon', 'HB_MENLOSTA')
         success = heartbeat.waitFor('== "OK"', timeout=3)
         if success is False:
@@ -28,7 +28,7 @@ class SetLFCtoStandbyHigh(KPFTranslatorFunction):
             raise FailedPreCondition(f"LFC must be in AstroComb: {lfc_mode}")
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         lfc_mode = ktl.cache('kpfcal', 'OPERATIONMODE')
         log.info('Setting LFC to StandbyHigh')
         lfc_mode.write('StandbyHigh')

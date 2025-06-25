@@ -1,14 +1,13 @@
 import os
 import traceback
 from time import sleep
-from packaging import version
 from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
@@ -31,7 +30,7 @@ from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 from kpf.expmeter.SetupExpMeter import SetupExpMeter
 
 
-class ExecuteSci(KPFTranslatorFunction):
+class ExecuteSci(KPFFunction):
     '''Script which executes a single observation from a science sequence
 
     This must have arguments as input, either from a file using the `-f` command
@@ -39,21 +38,18 @@ class ExecuteSci(KPFTranslatorFunction):
 
     ARGS:
     =====
-    :args: `dict` An observation component of a science observing block (OB).
+    :observation: `dict` An observation component of a science observing block (OB).
     '''
     abortable = True
 
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(args, 'Template_Version', version_check=True, value_min='0.5')
+    def pre_condition(cls, observation):
+        pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, observation):
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
-        for key in args:
-            log.debug(f"  {key}: {args[key]}")
         log.info('-------------------------')
 
         kpfconfig = ktl.cache('kpfconfig')
@@ -65,36 +61,36 @@ class ExecuteSci(KPFTranslatorFunction):
         ## ----------------------------------------------------------------
         ## Setup exposure meter
         ## ----------------------------------------------------------------
-        args = SetupExpMeter.execute(args)
-        if args.get('AutoExpMeter', False) in [True, 'True']:
-            em_params = PredictExpMeterParameters.execute(args)
+        observation = SetupExpMeter.execute(observation)
+        if observation.get('AutoExpMeter', False) in [True, 'True']:
+            em_params = PredictExpMeterParameters.execute(observation)
             EM_ExpTime = em_params.get('ExpMeterExpTime', None)
             log.debug(f'Automatically setting EM ExpTime')
-            args['ExpMeterExpTime'] = EM_ExpTime
+            observation['ExpMeterExpTime'] = EM_ExpTime
         else:
-            EM_ExpTime = args.get('ExpMeterExpTime', None)
+            EM_ExpTime = observation.get('ExpMeterExpTime', None)
 
         if EM_ExpTime is not None:
-            log.debug(f"Setting ExpMeterExpTime = {args['ExpMeterExpTime']:.1f}")
-            SetExpMeterExpTime.execute(args)
+            log.debug(f"Setting ExpMeterExpTime = {observation['ExpMeterExpTime']:.1f}")
+            SetExpMeterExpTime.execute(observation)
 
         ## ----------------------------------------------------------------
         ## Setup simulcal
         ## ----------------------------------------------------------------
         # Set octagon and ND filters
-        if args.get('TakeSimulCal') == True:
-            if args.get('AutoNDFilters') == True:
+        if observation.get('TakeSimulCal') == True:
+            if observation.get('AutoNDFilters') == True:
                 TARGET_TEFF = ktl.cache('kpf_expmeter', 'TARGET_TEFF').read(binary=True)
                 TARGET_GMAG = float(kpfconfig['TARGET_GMAG'].read())
                 result = PredictNDFilters.execute({'Gmag': TARGET_GMAG,
                                                    'Teff': TARGET_TEFF,
-                                                   'ExpTime': args.get('ExpTime')})
-                args['CalND1'] = result['CalND1']
-                args['CalND2'] = result['CalND2']
-            SetND1.execute({'CalND1': args['CalND1'], 'wait': False})
-            SetND2.execute({'CalND2': args['CalND2'], 'wait': False})
-            WaitForND1.execute(args)
-            WaitForND2.execute(args)
+                                                   'ExpTime': observation.get('ExpTime')})
+                observation['CalND1'] = result['CalND1']
+                observation['CalND2'] = result['CalND2']
+            SetND1.execute({'CalND1': observation['CalND1'], 'wait': False})
+            SetND2.execute({'CalND2': observation['CalND2'], 'wait': False})
+            WaitForND1.execute(observation)
+            WaitForND2.execute(observation)
 
         check_scriptstop() # Stop here if requested
 
@@ -102,28 +98,28 @@ class ExecuteSci(KPFTranslatorFunction):
         ## Setup kpfexpose
         ## ----------------------------------------------------------------
         WaitForReady.execute({})
-        SetObject.execute(args)
-        SetExpTime.execute(args)
+        SetObject.execute(observation)
+        SetExpTime.execute(observation)
 
         # Turn off writing of guider FITS cube if exposure time is long
-        exptime = args.get('ExpTime')
+        exptime = observation.get('ExpTime')
         max_for_cube = cfg.getfloat('times', 'max_exptime_for_guide_cube', fallback=60)
         if float(exptime) > max_for_cube:
             kpfguide = ktl.cache('kpfguide')
             kpfguide['TRIGCUBE'].write('Inactive')
 
-        args['TimedShutter_Scrambler'] = True
-        args['TimedShutter_FlatField'] = False
-        args['TimedShutter_SimulCal'] = args['TakeSimulCal']
-        SetTimedShutters.execute(args)
-        SetTriggeredDetectors.execute(args)
+        observation['TimedShutter_Scrambler'] = True
+        observation['TimedShutter_FlatField'] = False
+        observation['TimedShutter_SimulCal'] = observation['TakeSimulCal']
+        SetTimedShutters.execute(observation)
+        SetTriggeredDetectors.execute(observation)
 
         check_scriptstop() # Stop here if requested
 
         ## ----------------------------------------------------------------
         ## Take actual exposures
         ## ----------------------------------------------------------------
-        nexp = int(args.get('nExp', 1))
+        nexp = int(observation.get('nExp', 1))
         # If we are in fast read mode, turn on agitator once
         if runagitator and fast_read_mode:
             StartAgitator.execute({})
@@ -135,10 +131,13 @@ class ExecuteSci(KPFTranslatorFunction):
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
                 check_scriptstop() # Stop here if requested
+            # Set triggered detectors. This is here to force a check of the
+            # ENABLED status for each detector.
+            SetTriggeredDetectors.execute(observation)
             # Start next exposure
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
-            msg = f"Starting {args.get('ExpTime')} s exposure {j+1}/{nexp} ({args.get('Object')})"
+            msg = f"Starting {observation.get('ExpTime')} s exposure {j+1}/{nexp}"
             log.info(msg)
             kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})
@@ -151,10 +150,8 @@ class ExecuteSci(KPFTranslatorFunction):
         # If we are in fast read mode, turn off agitator at end
         if runagitator and fast_read_mode:
             StopAgitator.execute({})
-        # Clear Object
-        SetObject.execute({})
-
+        SetObject.execute({'Object': ''})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, observation):
         pass

@@ -1,15 +1,15 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 ##-----------------------------------------------------------------------------
 ## Configure FIU Once
 ##-----------------------------------------------------------------------------
-class ConfigureFIUOnce(KPFTranslatorFunction):
+class ConfigureFIUOnce(KPFFunction):
     '''Set the FIU mode (kpffiu.MODE) with a single attempt. This is intended
     to be wrapped by `ConfigureFIU` to handle retries.
 
@@ -23,7 +23,7 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
     - `kpffiu.MODE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpffiu', 'MODE')
         allowed_values = list(keyword._getEnumerators())
         if 'None' in allowed_values:
@@ -31,7 +31,7 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
         check_input(args, 'mode', allowed_values=allowed_values)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         dest = args.get('mode')
         fiumode = ktl.cache('kpffiu', 'MODE')
         log.debug(f"Setting FIU mode to {dest}")
@@ -40,5 +40,5 @@ class ConfigureFIUOnce(KPFTranslatorFunction):
         time.sleep(shim_time)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

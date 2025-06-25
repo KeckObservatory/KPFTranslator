@@ -11,10 +11,11 @@ import ktl
 
 from kpf_etc.etc import kpf_photon_noise_estimate, _findel
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.calbench.SetND import SetND
+
 
 ## ------------------------------
 ## Function from Sam Halversion
@@ -213,24 +214,27 @@ def get_GminusV(Teff):
     return GminusV
 
 
-class PredictNDFilters(KPFTranslatorFunction):
+class PredictNDFilters(KPFFunction):
     '''Predict which ND filters should be used for simultaneous calibrations.
 
     Args:
-        ? (float): 
+        Gmag (float): The Gaia G magnitude of the target.
+        Teff (float): The effective temperature of the target.
+        ExpTime (float): The exposure time.
+        set (bool): Set these values or just calculate?
 
-    Scripts Called:
+    Functions Called:
 
      - `kpf.calbench.SetND`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'Gmag', allowed_types=[int, float])
         check_input(args, 'Teff', allowed_types=[int, float])
         check_input(args, 'ExpTime', allowed_types=[int, float])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         tick = datetime.datetime.now()
         gmag = args.get('Gmag')
         teff = args.get('Teff')
@@ -300,11 +304,11 @@ class PredictNDFilters(KPFTranslatorFunction):
         return result
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('Gmag', type=float,
                             help="The gaia G magnitude of the target")
         parser.add_argument('Teff', type=float,
@@ -314,4 +318,4 @@ class PredictNDFilters(KPFTranslatorFunction):
         parser.add_argument("--set", dest="set",
             default=False, action="store_true",
             help="Set these values after calculating?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

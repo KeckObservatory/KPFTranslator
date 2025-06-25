@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class WaitForTriggerFile(KPFTranslatorFunction):
+class WaitForTriggerFile(KPFFunction):
     '''Wait for a trigger file in progress to finish being collected.
 
     KTL Keywords Used:
@@ -13,11 +13,11 @@ class WaitForTriggerFile(KPFTranslatorFunction):
     - `kpfguide.LASTTRIGFILE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'initial_lastfile')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         initial_lastfile = args.get('initial_lastfile', False)
         kpfguide = ktl.cache('kpfguide')
         log.debug(f"Waiting for guider trigger file to be written out")
@@ -29,5 +29,5 @@ class WaitForTriggerFile(KPFTranslatorFunction):
         return cube_file
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

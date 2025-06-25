@@ -1,4 +1,5 @@
 import sys
+import time
 import os
 import socket
 import functools
@@ -10,10 +11,8 @@ import re
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input, ScriptStopTriggered,
-                 ExistingScriptRunning)
+from kpf import log, cfg
+from kpf.exceptions import *
 
 
 ##-----------------------------------------------------------------------------
@@ -81,7 +80,6 @@ def clear_script_keywords():
     kpfconfig['SCRIPTPID'].write(-1)
     kpfconfig['SCRIPTHOST'].write('')
     kpfconfig['SCRIPTSTOP'].write('No')
-    kpfconfig['SCRIPTPAUSE'].write('No')
 
 
 def check_script_running():
@@ -96,30 +94,35 @@ def check_script_running():
                f"then the script keywords can be cleared by running:\n"
                f"  reset_script_keywords\n"
                f"or invoking it from the FVWM background menu:\n"
-               f"  KPF Trouble Recovery --> Reset script keywords\n")
-        raise ExistingScriptRunning(msg)
+               f"  KPF Trouble Recovery --> Reset script keywords")
+        raise FailedPreCondition(msg)
 
 
 def check_scriptstop():
     '''Function to check if a stop has been requested via kpfconfig.SCRIPTSTOP
     '''
     scriptstop = ktl.cache('kpfconfig', 'SCRIPTSTOP')
-    scriptpause = ktl.cache('kpfconfig', 'SCRIPTPAUSE')
     if scriptstop.read() == 'Yes':
         log.warning("SCRIPTSTOP requested. Resetting SCRIPTSTOP and exiting")
         scriptstop.write('No')
         clear_script_keywords()
         raise ScriptStopTriggered("SCRIPTSTOP triggered")
-    if scriptpause.read() == 'Yes':
-        log.warning("SCRIPTPAUSE requested. Waiting for SCRIPTPAUSE=No.")
-        expr = f"($kpfconfig.SCRIPTPAUSE == 'No')"
-        timeout = 600
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success == False:
-            log.error(f"Timed out waiting {timeout:.0f} s for SCRIPTPAUSE to resume")
-            raise KPFException("SCRIPTPAUSE Timeout")
+
+
+def wait_for_script(newscript='queued script', timeout=1200):
+    SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
+    pid = SCRIPTPID.read(binary=True)
+    if pid >= 0:
+        SCRIPTNAME = ktl.cache('kpfconfig', 'SCRIPTNAME').read()
+        log.info(f'{newscript}: Another script is running: {SCRIPTNAME}(PID {pid})')
+        log.info(f'{newscript}: Waiting up to {timeout:.0f}s for it to end')
+        success = SCRIPTPID.waitFor("==-1", timeout=timeout)
+        time.sleep(10) # time shim
+        if success is False:
+            msg = f'{newscript}: Timeout waiting for {SCRIPTNAME} finish.'
+            raise KPFException(msg)
         else:
-            log.info(f"Resuming script")
+            log.info(f'{newscript}: Script {SCRIPTNAME} no longer running')
 
 
 ##-----------------------------------------------------------------------------

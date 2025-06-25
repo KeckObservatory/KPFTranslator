@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetAODCStoSIM(KPFTranslatorFunction):
+class SetAODCStoSIM(KPFFunction):
     '''Set AO in AO DCS sim mode, so AO doesn't communicate with telescope
 
     KTL Keywords Used:
@@ -15,11 +15,11 @@ class SetAODCStoSIM(KPFTranslatorFunction):
     - `ao.AODCSSFP`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         ao = ktl.cache('ao')
         log.debug("Setting AO DCS to Sim")
         ao['AODCSSIM'].write('1')
@@ -27,7 +27,7 @@ class SetAODCStoSIM(KPFTranslatorFunction):
         ao['AODCSSFP'].write('0')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         ao = ktl.cache('ao')
         aodcssim_success = ktl.waitfor('($ao.AODCSSIM == enabled)', timeout=3)
         if not aodcssim_success:

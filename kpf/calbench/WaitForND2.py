@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class WaitForND2(KPFTranslatorFunction):
+class WaitForND2(KPFFunction):
     '''# Description
     Set the filter in the ND2 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND2POS` keyword.
@@ -21,7 +21,7 @@ class WaitForND2(KPFTranslatorFunction):
     - `kpfcal.ND2POS`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpfcal', 'ND2POS')
         allowed_values = list(keyword._getEnumerators())
         if 'Unknown' in allowed_values:
@@ -30,7 +30,7 @@ class WaitForND2(KPFTranslatorFunction):
         return True
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         target = args.get('CalND2')
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.ND2POS == '{target}')"
@@ -39,7 +39,7 @@ class WaitForND2(KPFTranslatorFunction):
             log.error(f"Timed out waiting for ND2 filter wheel")
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         ND2target = args.get('CalND2')
         ND2POS = ktl.cache('kpfcal', 'ND2POS')
@@ -47,9 +47,9 @@ class WaitForND2(KPFTranslatorFunction):
             raise FailedToReachDestination(ND2POS.read(), ND2target)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('CalND2', type=str,
                             choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
                                      "OD 1.0", "OD 4.0"],
                             help='ND2 Filter to use.')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

@@ -2,12 +2,12 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class GuiderOutdir(KPFTranslatorFunction):
+class GuiderOutdir(KPFFunction):
     '''Print the value of the kpfguide.OUTDIR keyword to STDOUT
 
     KTL Keywords Used:
@@ -15,15 +15,15 @@ class GuiderOutdir(KPFTranslatorFunction):
     - `kpfguide.OUTDIR`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         outdir = kpfguide['OUTDIR'].read()
         print(outdir)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

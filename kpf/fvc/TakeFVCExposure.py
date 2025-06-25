@@ -3,12 +3,12 @@ import subprocess
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class TakeFVCExposure(KPFTranslatorFunction):
+class TakeFVCExposure(KPFFunction):
     '''Take an exposure with the specified fiber viewing camera
 
     Args:
@@ -36,7 +36,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
     - `kpfpower.KPFFVC3`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
         # Check if power is on
         camera = args.get('camera')
@@ -47,7 +47,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
                 raise FailedPreCondition(f"{camera}FVC power is not On")
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         camera = args.get('camera')
         kpffvc = ktl.cache('kpffvc')
         exptime = kpffvc[f'{camera}EXPTIME'].read(binary=True)
@@ -74,7 +74,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
         return kpffvc[f"{camera}LASTFILE"].read()
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         camera = args.get('camera', 'SCI')
         kpffvc = ktl.cache('kpffvc')
         lastfile = kpffvc[f'{camera}LASTFILE']
@@ -85,7 +85,7 @@ class TakeFVCExposure(KPFTranslatorFunction):
             raise FailedPostCondition(f'Output file not found: {new_file}')
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('camera', type=str,
                             choices=['SCI', 'CAHK', 'CAL', 'EXT'],
                             help='The FVC camera')
@@ -95,4 +95,4 @@ class TakeFVCExposure(KPFTranslatorFunction):
         parser.add_argument("--display", dest="display",
                             default=False, action="store_true",
                             help="Display image via engineering ds9?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

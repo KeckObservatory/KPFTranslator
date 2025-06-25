@@ -1,12 +1,12 @@
 from time import sleep
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetGuiderExpTime(KPFTranslatorFunction):
+class SetGuiderExpTime(KPFFunction):
     '''Set the guider exposure time (in seconds) via the kpfguide.EXPTIME
     keyword.
     
@@ -61,17 +61,17 @@ class SetGuiderExpTime(KPFTranslatorFunction):
     - `kpfguide.EXPTIME`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'exptime', value_min=0)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
         exptime = args.get('exptime')
         exptimekw.write(exptime)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         exptol = cfg.getfloat('tolerances', 'guider_exptime_tolerance', fallback=0.01)
 
         exptimekw = ktl.cache('kpfguide', 'EXPTIME')
@@ -85,7 +85,7 @@ class SetGuiderExpTime(KPFTranslatorFunction):
             raise FailedToReachDestination(exptimekw.read(), exptime)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('exptime', type=float,
                             help='The exposure time in seconds')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

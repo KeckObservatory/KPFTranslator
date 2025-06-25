@@ -1,12 +1,12 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.socal.SoCalStopAutonomous import SoCalStopAutonomous
 
 
-class ParkSoCal(KPFTranslatorFunction):
+class ParkSoCal(KPFFunction):
     '''Parks SoCal. This includes setting AUTONOMOUS to "Manual", closing the
     enclosure, and parking the solar tracker.
 
@@ -15,11 +15,11 @@ class ParkSoCal(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         SoCalStopAutonomous.execute({})
         log.info('Parking SoCal')
         kpfsocal = ktl.cache('kpfsocal')
@@ -32,7 +32,7 @@ class ParkSoCal(KPFTranslatorFunction):
         kpfsocal['EKOSLEW'].write(0)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         kpfsocal = ktl.cache('kpfsocal')
         timeout = cfg.getfloat('SoCal', 'park_time', fallback=300)
         expr = '($kpfsocal.ENCSTA == 1) '

@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class WaitForND1(KPFTranslatorFunction):
+class WaitForND1(KPFFunction):
     '''Wait for the ND1 filter wheel (the one at the output of the 
     octagon) via the `kpfcal.ND1POS` keyword.
 
@@ -21,7 +21,7 @@ class WaitForND1(KPFTranslatorFunction):
     - `kpfcal.ND1POS`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpfcal', 'ND1POS')
         allowed_values = list(keyword._getEnumerators())
         if 'Unknown' in allowed_values:
@@ -29,7 +29,7 @@ class WaitForND1(KPFTranslatorFunction):
         check_input(args, 'CalND1', allowed_values=allowed_values)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         target = args.get('CalND1')
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         expr = f"($kpfcal.ND1POS == '{target}')"
@@ -38,7 +38,7 @@ class WaitForND1(KPFTranslatorFunction):
             log.error(f"Timed out waiting for ND1 filter wheel")
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
         ND1target = args.get('CalND1')
         ND1POS = ktl.cache('kpfcal', 'ND1POS')
@@ -46,10 +46,10 @@ class WaitForND1(KPFTranslatorFunction):
             raise FailedToReachDestination(ND1POS.read(), ND1target)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('CalND1', type=str,
                             choices=["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0",
                                      "OD 3.0", "OD 4.0"],
                             help='ND1 Filter to use.')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
 

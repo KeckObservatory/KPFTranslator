@@ -1,6 +1,6 @@
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.guider.SetGuiderGain import SetGuiderGain
 from kpf.guider.SetGuiderFPS import SetGuiderFPS
 
@@ -23,23 +23,23 @@ from kpf.guider.SetGuiderFPS import SetGuiderFPS
 # 2.4, low
 # 8.4, high
 
-class PredictGuiderParameters(KPFTranslatorFunction):
+class PredictGuiderParameters(KPFFunction):
     '''Estimate the proper gain and FPS given the stellar Jmag.
 
     Args:
         Jmag (float): The J magnitude of the target.
 
-    Scripts Called:
+    Functions Called:
 
      - `kpf.guider.SetGuiderGain`
      - `kpf.guider.SetGuiderFPS`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'Jmag', allowed_types=[int, float])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         Jmag = args.get('Jmag')
         if Jmag < 5.5:
             gain = 'Low'
@@ -74,14 +74,14 @@ class PredictGuiderParameters(KPFTranslatorFunction):
         return result
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('Jmag', type=float,
                             help="The J magnitude of the target")
         parser.add_argument("--set", dest="set",
             default=False, action="store_true",
             help="Set these values after calculating?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

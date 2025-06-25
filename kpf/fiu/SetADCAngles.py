@@ -2,9 +2,9 @@ import ktl
 import numpy as np
 from astropy.modeling import models, fitting
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 def calculate_ADC_delta(za):
@@ -26,7 +26,7 @@ def calculate_ADC_delta(za):
         return poly(65)
 
 
-class SetADCAngles(KPFTranslatorFunction):
+class SetADCAngles(KPFFunction):
     '''Quick and dirty code to manually set ADC angles for a notional NULL
     position.
 
@@ -36,11 +36,11 @@ class SetADCAngles(KPFTranslatorFunction):
     - `kpffiu.ADC2VAL`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpffiu = ktl.cache('kpffiu')
         el = args.get('EL')
         za = 90 - el
@@ -64,11 +64,11 @@ class SetADCAngles(KPFTranslatorFunction):
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('EL', type=float,
                             help="The telescope elevation to use in the calculation")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

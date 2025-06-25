@@ -2,12 +2,12 @@ from time import sleep
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetTriggeredDetectors(KPFTranslatorFunction):
+class SetTriggeredDetectors(KPFFunction):
     '''Selects which cameras will be triggered by setting the
     `kpfexpose.TRIG_TARG` keyword value.
     
@@ -19,11 +19,11 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     :TriggerExpMeter: `bool` Trigger the ExpMeter detector? (default=False)
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         detector_list = []
         if args.get('TriggerRed', False) is True:
@@ -57,7 +57,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
         sleep(shim_time)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         kpfexpose = ktl.cache('kpfexpose')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
@@ -79,7 +79,7 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
                 raise FailedToReachDestination(detector_status, detector_target)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--Red", "--red", "-r",
                             dest="TriggerRed",
                             default=False, action="store_true",
@@ -100,4 +100,4 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
                             dest="TriggerGuide",
                             default=False, action="store_true",
                             help="Trigger the Guider detector during exposure?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

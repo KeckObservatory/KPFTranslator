@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetGuiderGain(KPFTranslatorFunction):
+class SetGuiderGain(KPFFunction):
     '''Set the guider gain via the kpfguide.GAIN keyword.
 
     Args:
@@ -17,18 +17,18 @@ class SetGuiderGain(KPFTranslatorFunction):
     - `kpfguide.GAIN`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'GuideCamGain', allowed_values=['high', 'medium', 'low'])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         gainkw = ktl.cache('kpfguide', 'GAIN')
         gain = args.get('GuideCamGain')
         log.debug(f'Setting guider gain to {gain}')
         gainkw.write(gain)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         gainkw = ktl.cache('kpfguide', 'GAIN')
         gain = args.get('GuideCamGain')
         expr = (f"($kpfguide.GAIN == '{gain}')")
@@ -37,8 +37,8 @@ class SetGuiderGain(KPFTranslatorFunction):
             raise FailedToReachDestination(gainkw.read(), gain)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('GuideCamGain', type=str,
                             choices=['high', 'medium', 'low'],
                             help='The gain')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

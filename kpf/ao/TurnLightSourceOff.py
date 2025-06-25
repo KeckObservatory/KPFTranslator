@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class TurnLightSourceOff(KPFTranslatorFunction):
+class TurnLightSourceOff(KPFFunction):
     '''Turn K1 AO light source off
 
     KTL Keywords Used:
@@ -14,18 +14,18 @@ class TurnLightSourceOff(KPFTranslatorFunction):
     - `ao.OBSWSTA`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         ao = ktl.cache('ao')
         log.debug('Turning AO light source off')
         ao['OBSWON'].write(0)
 #         ao['ASCONFIG'].write('OFF')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         success = ktl.waitfor('($ao.OBSWSTA == off)', timeout=3)
         if success is not True:
             ao = ktl.cache('ao')

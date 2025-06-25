@@ -3,13 +3,13 @@ import subprocess
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input, LostTipTiltStar)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.spectrograph.ResetDetectors import ResetCaHKDetector
 
 
-class PowerCycleCaHK(KPFTranslatorFunction):
+class PowerCycleCaHK(KPFFunction):
     '''Script which will power cycle the Ca HK detector control system and
     restart the services. Use as a last resort measure after other
     troubleshooting measures such as resetting the detector and restarting
@@ -27,7 +27,7 @@ class PowerCycleCaHK(KPFTranslatorFunction):
     -`kpf start/stop/status/restart kpf_hk`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         kpfpower = ktl.cache('kpfpower')
         outlets = [('J1', 'Galil RIO (expose2)'),
                    ('J2', 'Galil Output Bank (expose2)'),
@@ -39,7 +39,7 @@ class PowerCycleCaHK(KPFTranslatorFunction):
                 raise FailedPreCondition(f"Outlet name: {outlet_id} != '{outlet_name}'")
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         log.warning('Stopping kpfexpose2 dispatcher')
         cmd = ['kpf', 'stop', 'kpfexpose2']
         result = subprocess.run(cmd, stdout=subprocess.PIPE,
@@ -131,5 +131,5 @@ class PowerCycleCaHK(KPFTranslatorFunction):
         ResetCaHKDetector.execute({})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

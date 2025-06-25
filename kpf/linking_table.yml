@@ -54,6 +54,8 @@ links:
         cmd: calbench.SetND1.SetND1
     SetND2:
         cmd: calbench.SetND2.SetND2
+    SetSimulCalSource:
+        cmd: calbench.SetSimulCalSource.SetSimulCalSource
     TakeIntensityReading:
         cmd: calbench.TakeIntensityReading.TakeIntensityReading
     WaitForCalSource:
@@ -152,8 +154,6 @@ links:
         cmd: fiu.VerifyCurrentBase.VerifyCurrentBase
     WaitForConfigureFIU:
         cmd: fiu.WaitForConfigureFIU.WaitForConfigureFIU
-    WaitForTipTilt:
-        cmd: fiu.WaitForTipTilt.WaitForTipTilt
     # FVCs
     FVCPower:
         cmd: fvc.FVCPower.FVCPower
@@ -166,6 +166,8 @@ links:
     SetFVCExpTime:
         cmd: fvc.SetFVCExpTime.SetFVCExpTime
     # Guider
+    CollectGuiderDarkCubes:
+        cmd: scripts.CollectGuiderDarkCubes.CollectGuiderDarkCubes
     DisplayGuiderContinuous:
         cmd: guider.DisplayGuiderContinuous.DisplayGuiderContinuous
     GetGaiaStars:
@@ -198,41 +200,50 @@ links:
         cmd: guider.TakeGuiderExposure.TakeGuiderExposure
     WaitForTriggerFile:
         cmd: guider.WaitForTriggerFile.WaitForTriggerFile
+    # MAGIQ
+    AddTarget:
+        cmd: magiq.AddTarget.AddTarget
+    GetTargetList:
+        cmd: magiq.GetTargetList.GetTargetList
+    RemoveTarget:
+        cmd: magiq.RemoveTarget.RemoveTarget
+    RemoveAllTargets:
+        cmd: magiq.RemoveTarget.RemoveAllTargets
+    SelectTarget:
+        cmd: magiq.SelectTarget.SelectTarget
+    SetTargetList:
+        cmd: magiq.SetTargetList.SetTargetList
+    # Observing Blocks
+    GetObservingBlocks:
+        cmd: ObservingBlocks.GetObservingBlocks.GetObservingBlocks
+    GetObservingBlocksByProgram:
+        cmd: ObservingBlocks.GetObservingBlocks.GetObservingBlocksByProgram
+    SubmitExecutionHistory:
+        cmd: ObservingBlocks.SubmitExecutionHistory.SubmitExecutionHistory
+    SubmitObserverComment:
+        cmd: ObservingBlocks.SubmitObserverComment.SubmitObserverComment
+    # Schedule
+    GetScheduledPrograms:
+        cmd: schedule.GetScheduledPrograms.GetScheduledPrograms
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations
     CleanupAfterScience:
         cmd: scripts.CleanupAfterScience.CleanupAfterScience
-    CollectGuiderDarkCubes:
-        cmd: scripts.CollectGuiderDarkCubes.CollectGuiderDarkCubes
     ConfigureForAcquisition:
         cmd: scripts.ConfigureForAcquisition.ConfigureForAcquisition
     ConfigureForCalibrations:
         cmd: scripts.ConfigureForCalibrations.ConfigureForCalibrations
     ConfigureForScience:
         cmd: scripts.ConfigureForScience.ConfigureForScience
-    EndOfNight:
-        cmd: scripts.EndOfNight.EndOfNight
-    EnterLowPowerMode:
-        cmd: scripts.EnterLowPowerMode.EnterLowPowerMode
-    ExecuteSlewCal:
-        cmd: scripts.ExecuteSlewCal.ExecuteSlewCal
-    RecoverFromLowPowerMode:
-        cmd: scripts.RecoverFromLowPowerMode.RecoverFromLowPowerMode
-    RunCalOB:
-        cmd: scripts.RunCalOB.RunCalOB
-    RunSciOB:
-        cmd: scripts.RunSciOB.RunSciOB
+    EstimateOBDuration:
+        cmd: scripts.EstimateOBDuration.EstimateOBDuration
+    RunOB:
+        cmd: scripts.RunOB.RunOB
     RunSoCalObservingLoop:
         cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
-    RunTwilightRVStandard:
-        cmd: scripts.RunTwilightRVStandard.RunTwilightRVStandard
-    StartOfNight:
-        cmd: scripts.StartOfNight.StartOfNight
-    StartUp:
-        cmd: scripts.StartUp.StartUp
-    WaitForConfigureCalibrations:
-        cmd: scripts.WaitForConfigureCalibrations.WaitForConfigureCalibrations
+    SendTargetToMagiq:
+        cmd: scripts.SendTargetToMagiq.SendTargetToMagiq
     # SoCal
     DisableSoCal:
         cmd: socal.DisableSoCal.DisableSoCal
@@ -255,8 +266,6 @@ links:
     # Spectrograph
     QueryFastReadMode:
         cmd: spectrograph.QueryFastReadMode.QueryFastReadMode
-    QueryReadMode:
-        cmd: spectrograph.QueryReadMode.QueryReadMode
     RecoverDetectors:
         cmd: spectrograph.ResetDetectors.RecoverDetectors
     ResetCaHKDetector:
@@ -299,29 +308,24 @@ links:
         cmd: spectrograph.WaitForReadout.WaitForReadout
     WaitForReady:
         cmd: spectrograph.WaitForReady.WaitForReady
+    # Telescope
+    EastNorth:
+        cmd: telescope.EastNorth.EastNorth
     # Utils
-    BuildOBfromQuery:
-        cmd: utils.BuildOBfromQuery.BuildOBfromQuery
-    CalculateDAR:
-        cmd: utils.CalculateDAR.CalculateDAR
     CheckAllowScheduledCals:
         cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
-    CheckDewarWeights:
-        cmd: utils.CheckDewarWeights.CheckDewarWeights
-    CorrectDAR:
-        cmd: utils.CorrectDAR.CorrectDAR
-    EstimateOBDuration:
-        cmd: utils.EstimateOBDuration.EstimateOBDuration
+    EndOfNight:
+        cmd: utils.EndOfNight.EndOfNight
+    GetScheduledProgram:
+        cmd: utils.GetScheduledProgram.GetScheduledProgram
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
         cmd: utils.SetOutdirs.SetOutdirs
-    SetSimulCalSource:
-        cmd: utils.SetSimulCalSource.SetSimulCalSource
-    SetTargetInfo:
-        cmd: utils.SetTargetInfo.SetTargetInfo
     StartGUIs:
         cmd: utils.StartGUIs.StartGUIs
+    StartOfNight:
+        cmd: utils.StartOfNight.StartOfNight
     StopGUIs:
         cmd: utils.StopGUIs.StopGUIs
     ZeroOutSlewCalTime:

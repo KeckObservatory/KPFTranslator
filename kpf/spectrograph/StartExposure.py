@@ -2,14 +2,14 @@ import time
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.ResetDetectors import *
 
 
-class StartExposure(KPFTranslatorFunction):
+class StartExposure(KPFFunction):
     '''Begins an triggered exposure by setting the `kpfexpose.EXPOSE` keyword
     to Start.  This will return immediately after.  Use commands like
     WaitForReadout or WaitForReady to determine when an exposure is done.
@@ -19,18 +19,18 @@ class StartExposure(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         expose = ktl.cache('kpfexpose', 'EXPOSE')
         WaitForReady.execute({})
         log.debug(f"Beginning Exposure")
         expose.write('Start')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         expr = f"(kpfexpose.EXPOSE != Start)"
         kpfexpose = ktl.cache('kpfexpose')
         is_GREEN_ENABLED = ktl.cache('kpfconfig', 'GREEN_ENABLED').read() == 'Yes'

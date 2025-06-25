@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class StartAgitator(KPFTranslatorFunction):
+class StartAgitator(KPFFunction):
     '''Start the agitator motion and wait the appropriate startup time before
     returning.
     
@@ -15,11 +15,11 @@ class StartAgitator(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         agitator = ktl.cache('kpfmot', 'AGITATOR')
         if agitator.read() == 'Running':
             log.debug('Agitator is running')
@@ -37,7 +37,7 @@ class StartAgitator(KPFTranslatorFunction):
             time.sleep(startup)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         startup = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
         success = ktl.waitFor('$kpfmot.AGITATOR == Running', timeout=5*startup)
         if success is not True:

@@ -2,13 +2,13 @@ import traceback
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.expmeter.SetExpMeterTerminationParameters import SetExpMeterTerminationParameters
 
 
-class SetupExpMeter(KPFTranslatorFunction):
+class SetupExpMeter(KPFFunction):
     '''Configure the exposure meter using the given OB arguments.
 
     Args:
@@ -20,19 +20,18 @@ class SetupExpMeter(KPFTranslatorFunction):
     - `kpf_expmeter.USETHRESHOLD`
     - `kpfconfig.EXPMETER_ENABLED`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.expmeter.SetExpMeterTerminationParameters`
     '''
     abortable = False
 
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
-        check_input(args, 'Template_Name', allowed_values=['kpf_lamp', 'kpf_sci'])
-        check_input(args, 'Template_Version', version_check=True, value_min='0.5')
+    def pre_condition(cls, args):
+        pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpf_expmeter = ktl.cache('kpf_expmeter')
         kpfconfig = ktl.cache('kpfconfig')
 
@@ -59,6 +58,7 @@ class SetupExpMeter(KPFTranslatorFunction):
             args['TriggerExpMeter'] = False
         elif EM_enabled == False:
             log.warning('ExpMeter is disabled')
+            args['TriggerExpMeter'] = False
         else:
             log.warning(f"ExpMeterMode {EM_mode} is not available")
             kpf_expmeter['USETHRESHOLD'].write('No')
@@ -68,12 +68,12 @@ class SetupExpMeter(KPFTranslatorFunction):
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('--nointensemon', dest="nointensemon",
                             default=False, action="store_true",
                             help='Skip the intensity monitor measurement?')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
