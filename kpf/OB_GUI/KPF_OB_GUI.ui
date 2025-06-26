@@ -728,7 +728,8 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
         </font>
        </property>
        <property name="styleSheet">
@@ -1653,8 +1654,8 @@
     <property name="title">
      <string>Load OBs</string>
     </property>
-    <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="action_LoadOBFromFile"/>
+    <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="actionLoad_KPF_CC_Schedule"/>
     <addaction name="actionLoad_KPF_CC_OBs"/>
    </widget>
@@ -1708,7 +1709,7 @@
   </action>
   <action name="action_LoadOBsFromProgram">
    <property name="text">
-    <string>Load OBs from Program </string>
+    <string>Load OBs from Scheduled Program </string>
    </property>
   </action>
   <action name="action_BuildScienceOB">
@@ -1733,7 +1734,7 @@
   </action>
   <action name="actionLoad_KPF_CC_OBs">
    <property name="text">
-    <string>Load KPF-CC OBs for Classical Observing</string>
+    <string>Load all KPF-CC OBs for Classical Observing</string>
    </property>
   </action>
   <action name="actionSet_Observer_Names">
