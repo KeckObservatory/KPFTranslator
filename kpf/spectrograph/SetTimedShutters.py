@@ -36,17 +36,17 @@ class SetTimedShutters(KPFFunction):
             timed_shutters_list.append('Ca_HK')
         timed_shutters_string = ','.join(timed_shutters_list)
         log.debug(f"Setting timed shutters to '{timed_shutters_string}'")
-        kpfexpose = ktl.cache('kpfexpose')
-        kpfexpose['TIMED_TARG'].write(timed_shutters_string)
+        TIMED_TARG = ktl.cache('kpfexpose', 'TIMED_TARG')
+        TIMED_TARG.write(timed_shutters_string)
         shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args):
-        kpfexpose = ktl.cache('kpfexpose')
+        TIMED_TARG = ktl.cache('kpfexpose', 'TIMED_TARG')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)
-        shutters = kpfexpose['TIMED_TARG'].read()
+        shutters = TIMED_TARG.read()
         log.debug(f"TIMED_TARG: {shutters}")
         shutter_list = shutters.split(',')
         shutter_names = [('Scrambler', 'TimedShutter_Scrambler'),

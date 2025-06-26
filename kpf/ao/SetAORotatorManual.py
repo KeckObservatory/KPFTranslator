@@ -19,14 +19,14 @@ class SetAORotatorManual(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        ao = ktl.cache('ao')
+        OBRTDSRC = ktl.cache('ao', 'OBRTDSRC')
+        OBRTMOVE = ktl.cache('ao', 'OBRTMOVE')
         log.debug("Setting AO rotator to manual mode")
-        ao['OBRTDSRC'].write('0')
-        ao['OBRTMOVE'].write('1')
+        OBRTDSRC.write('0')
+        OBRTMOVE.write('1')
 
     @classmethod
     def post_condition(cls, args):
-        success = ktl.waitfor('($ao.OBRTDSRC == manual)', timeout=3)
-        if success is not True:
-            ao = ktl.cache('ao')
-            raise FailedToReachDestination(ao['OBRTDSRC'].read(), 'manual')
+        OBRTDSRC = ktl.cache('ao', 'OBRTDSRC')
+        if OBRTDSRC.waitfor('== "manual"', timeout=3) is not True:
+            raise FailedToReachDestination(OBRTDSRC.read(), 'manual')

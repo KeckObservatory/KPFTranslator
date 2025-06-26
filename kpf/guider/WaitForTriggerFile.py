@@ -19,13 +19,12 @@ class WaitForTriggerFile(KPFFunction):
     @classmethod
     def perform(cls, args):
         initial_lastfile = args.get('initial_lastfile', False)
-        kpfguide = ktl.cache('kpfguide')
+        LASTTRIGFILE = ktl.cache('kpfguide', 'LASTTRIGFILE')
         log.debug(f"Waiting for guider trigger file to be written out")
         # Wait for cube file to be updated
         expr = f"$kpfguide.LASTTRIGFILE != '{initial_lastfile}'"
         success = ktl.waitFor(expr, timeout=20)
-        cube_file = kpfguide['LASTTRIGFILE'].read()
-        log.info(f"New cube file: {cube_file}")
+        log.info(f"New cube file: {LASTTRIGFILE.read()}")
         return cube_file
 
     @classmethod

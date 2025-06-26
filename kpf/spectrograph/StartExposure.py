@@ -24,10 +24,10 @@ class StartExposure(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        expose = ktl.cache('kpfexpose', 'EXPOSE')
+        EXPOSE = ktl.cache('kpfexpose', 'EXPOSE')
         WaitForReady.execute({})
         log.debug(f"Beginning Exposure")
-        expose.write('Start')
+        EXPOSE.write('Start')
 
     @classmethod
     def post_condition(cls, args):

@@ -20,15 +20,16 @@ class SetAFStoNGS(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        ao = ktl.cache('ao')
+        OBASNAME = ktl.cache('ao', 'OBASNAME')
+        OBASSLEW = ktl.cache('ao', 'OBASSLEW')
         log.debug(f"Setting AFS to NGS")
-        ao['OBASNAME'].write('ngs')
-        ao['OBASSLEW'].write('1')
+        OBASNAME.write('ngs')
+        OBASSLEW.write('1')
 
     @classmethod
     def post_condition(cls, args):
         expr = f'($ao.OBASSTST == INPOS) and ($ao.OBASNAME == ngs)'
         aoamstst_success = ktl.waitfor(expr, timeout=60)
         if not aoamstst_success:
-            ao = ktl.cache('ao')
-            raise FailedToReachDestination(ao['OBASNAME'].read(), 'ngs')
+            OBASNAME = ktl.cache('ao', 'OBASNAME')
+            raise FailedToReachDestination(OBASNAME.read(), 'ngs')

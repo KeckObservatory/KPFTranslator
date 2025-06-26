@@ -21,8 +21,8 @@ class WaitForCalSource(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        keyword = ktl.cache('kpfcal', 'OCTAGON')
-        allowed_values = list(keyword._getEnumerators())
+        OCTAGON = ktl.cache('kpfcal', 'OCTAGON')
+        allowed_values = list(OCTAGON._getEnumerators())
         if 'Unknown' in allowed_values:
             allowed_values.pop(allowed_values.index('Unknown'))
         check_input(args, 'CalSource', allowed_values=allowed_values)
@@ -43,8 +43,8 @@ class WaitForCalSource(KPFFunction):
         expr = f"($kpfcal.OCTAGON == {target})"
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            kpfcal = ktl.cache('kpfcal')
-            raise FailedToReachDestination(kpfcal['OCTAGON'].read(), target)
+            OCTAGON = ktl.cache('kpfcal', 'OCTAGON')
+            raise FailedToReachDestination(OCTAGON.read(), target)
 
     @classmethod
     def add_cmdline_args(cls, parser):

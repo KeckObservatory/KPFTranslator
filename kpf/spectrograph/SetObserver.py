@@ -20,21 +20,17 @@ class SetObserver(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        kpfexpose = ktl.cache('kpfexpose')
-        observer = args.get('observer')
-        log.info(f"Setting OBSERVER to {observer}")
-        kpfexpose['OBSERVER'].write(observer)
+        OBSERVER = ktl.cache('kpfexpose', 'OBSERVER')
+        log.info(f"Setting OBSERVER to {args.get('observer')}")
+        OBSERVER.write(args.get('observer'))
 
     @classmethod
     def post_condition(cls, args):
-        observer = args.get('observer')
+        observerval = args.get('observer')
         timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
-        expr = f'($kpfexpose.OBSERVER == "{observer}")'
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            observerkw = ktl.cache('kpfexpose', 'OBSERVER')
-            raise FailedToReachDestination(observerkw.read().strip(),
-                                           observer.strip())
+        OBSERVER = ktl.cache('kpfexpose', 'OBSERVER')
+        if OBSERVER.waitFor(f'== "{observerval}"', timeout=timeout) is not True:
+            raise FailedToReachDestination(OBSERVER.read(), observerval)
 
     @classmethod
     def add_cmdline_args(cls, parser):

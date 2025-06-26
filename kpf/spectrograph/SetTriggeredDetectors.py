@@ -51,18 +51,18 @@ class SetTriggeredDetectors(KPFFunction):
 
         detectors_string = ','.join(detector_list)
         log.debug(f"Setting triggered detectors to '{detectors_string}'")
-        kpfexpose = ktl.cache('kpfexpose')
-        kpfexpose['TRIG_TARG'].write(detectors_string)
+        TRIG_TARG = ktl.cache('kpfexpose', 'TRIG_TARG')
+        TRIG_TARG.write(detectors_string)
         shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
-        kpfexpose = ktl.cache('kpfexpose')
+        TRIG_TARG = ktl.cache('kpfexpose', 'TRIG_TARG')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
         sleep(timeshim)
-        detectors = kpfexpose['TRIG_TARG'].read()
+        detectors = TRIG_TARG.read()
         detector_list = detectors.split(',')
         detector_names = [('Red', 'TriggerRed'),
                           ('Green', 'TriggerGreen'),

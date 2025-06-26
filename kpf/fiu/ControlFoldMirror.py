@@ -26,17 +26,16 @@ class ControlFoldMirror(KPFFunction):
     @classmethod
     def perform(cls, args):
         destination = args.get('destination', '').strip()
-        kpffiu = ktl.cache('kpffiu')
-        kpffiu['FOLDNAM'].write(destination)
+        FOLDNAM = ktl.cache('kpffiu', 'FOLDNAM')
+        FOLDNAM.write(destination)
 
     @classmethod
     def post_condition(cls, args):
         destination = args.get('destination', '').strip()
         timeout = cfg.getfloat('times', 'fiu_fold_mirror_move_time', fallback=5)
-        success = ktl.waitFor(f'($kpffiu.foldnam == {destination})', timeout=timeout)
-        if success is not True:
-            foldnam = ktl.cache('kpffiu', 'FOLDNAM')
-            raise FailedToReachDestination(foldnam.read(), destination)
+        FOLDNAM = ktl.cache('kpffiu', 'FOLDNAM')
+        if FOLDNAM.waitFor(f'== "{destination}"', timeout=timeout) is not True:
+            raise FailedToReachDestination(FOLDNAM.read(), destination)
 
     @classmethod
     def add_cmdline_args(cls, parser):

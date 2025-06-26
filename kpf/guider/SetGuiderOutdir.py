@@ -24,8 +24,8 @@ class SetGuiderOutdir(KPFFunction):
     @classmethod
     def perform(cls, args):
         newoutdir = Path(args.get('outdir')).expanduser().absolute()
-        kpfguide = ktl.cache('kpfguide')
-        kpfguide['OUTDIR'].write(f"{newoutdir}")
+        OUTDIR = ktl.cache('kpfguide', 'OUTDIR')
+        OUTDIR.write(f"{newoutdir}")
 
     @classmethod
     def post_condition(cls, args):

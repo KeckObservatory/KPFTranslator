@@ -19,14 +19,12 @@ class TurnLightSourceOff(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        ao = ktl.cache('ao')
+        OBSWON = ktl.cache('ao', 'OBSWON')
         log.debug('Turning AO light source off')
-        ao['OBSWON'].write(0)
-#         ao['ASCONFIG'].write('OFF')
+        OBSWON.write(0)
 
     @classmethod
     def post_condition(cls, args):
-        success = ktl.waitfor('($ao.OBSWSTA == off)', timeout=3)
-        if success is not True:
-            ao = ktl.cache('ao')
-            raise FailedToReachDestination(ao['OBSWSTA'].read(), 'off')
+        OBSWSTA = ktl.cache('ao', 'OBSWSTA')
+        if OBSWSTA.waitfor('== "off"', timeout=3) is not True:
+            raise FailedToReachDestination(OBSWSTA.read(), 'off')

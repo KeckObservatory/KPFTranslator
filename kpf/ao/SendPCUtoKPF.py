@@ -16,29 +16,27 @@ class SendPCUtoKPF(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        ao = ktl.cache('ao')
-        success = ao['PCSFSTST'].waitFor('!= "FAULT"')
-        if success is not True:
+        PCSFSTST = ktl.cache('ao', 'PCSFSTST')
+        PCSFNAME = ktl.cache('ao', 'PCSFNAME')
+        if PCSFSTST.waitFor('!= "FAULT"', timeout=1) != True:
             raise FailedPreCondition('PCSFSTST is faulted')
-        success = ktl.waitfor("($ao.PCSFSTST == INPOS)", timeout=120)
-        if success is False:
+        if PCSFSTST.waitfor("== 'INPOS'", timeout=120) == False:
             raise FailedPreCondition('PCU is in motion')
-        success = ktl.waitfor("($ao.PCSFNAME == home)", timeout=120)
-        if success is False:
+        if PCSFNAME.waitfor("== 'home'", timeout=120) == False:
             raise FailedPreCondition('PCU must be at home before moving to KPF')
 
     @classmethod
     def perform(cls, args):
-        PCSstagekw = ktl.cache('ao', 'PCSFNAME')
+        PCSFNAME = ktl.cache('ao', 'PCSFNAME')
         log.info(f"Sending PCU to KPF")
-        PCSstagekw.write('kpf')
+        PCSFNAME.write('kpf')
         shim_time = cfg.getfloat('times', 'ao_pcu_shim_time', fallback=5)
         time.sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args):
-        PCSstagekw = ktl.cache('ao', 'PCSFSTST')
+        PCSFSTST = ktl.cache('ao', 'PCSFSTST')
         timeout = cfg.getfloat('times', 'ao_pcu_move_time', fallback=150)
-        success = PCSstagekw.waitfor("== INPOS", timeout=timeout)
+        success = PCSFSTST.waitfor("== INPOS", timeout=timeout)
         if success is False:
-            raise FailedToReachDestination(PCSstagekw.read(), 'kpf')
+            raise FailedToReachDestination(PCSFSTST.read(), 'kpf')

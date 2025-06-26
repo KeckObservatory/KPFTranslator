@@ -21,9 +21,9 @@ class StopTriggerFile(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        kpfguide = ktl.cache('kpfguide')
+        TRIGGER = ktl.cache('kpfguide', 'TRIGGER')
         log.info(f"Stopping guider trigger file data collection")
-        kpfguide['TRIGGER'].write('Inactive')
+        TRIGGER.write('Inactive')
 
     @classmethod
     def post_condition(cls, args):

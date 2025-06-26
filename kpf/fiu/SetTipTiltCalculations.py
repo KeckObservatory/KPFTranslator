@@ -24,8 +24,8 @@ class SetTipTiltCalculations(KPFFunction):
     @classmethod
     def perform(cls, args):
         calculations = args.get('calculations')
-        tiptiltcalc = ktl.cache('kpfguide', 'TIPTILT_CALC')
-        tiptiltcalc.write(calculations)
+        TIPTILT_CALC = ktl.cache('kpfguide', 'TIPTILT_CALC')
+        TIPTILT_CALC.write(calculations)
 
     @classmethod
     def post_condition(cls, args):
@@ -34,8 +34,8 @@ class SetTipTiltCalculations(KPFFunction):
         expr = f"($kpfguide.TIPTILT_CALC == {calculations}) "
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            tiptilt = ktl.cache('kpfguide', 'TIPTILT_CALC')
-            raise FailedToReachDestination(tiptilt.read(), calculations)
+            TIPTILT_CALC = ktl.cache('kpfguide', 'TIPTILT_CALC')
+            raise FailedToReachDestination(TIPTILT_CALC.read(), calculations)
 
     @classmethod
     def add_cmdline_args(cls, parser):

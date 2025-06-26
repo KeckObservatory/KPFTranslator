@@ -32,8 +32,8 @@ class SetND2(KPFFunction):
     def perform(cls, args):
         target = args.get('CalND2')
         log.debug(f"Setting ND2POS to {target}")
-        kpfcal = ktl.cache('kpfcal')
-        kpfcal['ND2POS'].write(target, wait=args.get('wait', True))
+        ND2POS = ktl.cache('kpfcal', 'ND2POS')
+        ND2POS.write(target, wait=args.get('wait', True))
 
     @classmethod
     def post_condition(cls, args):

@@ -22,8 +22,8 @@ class SetTipTiltGain(KPFFunction):
     @classmethod
     def perform(cls, args):
         gain = float(args.get('GuideLoopGain'))
-        tiptiltgain = ktl.cache('kpfguide', 'TIPTILT_GAIN')
-        tiptiltgain.write(gain)
+        TIPTILT_GAIN = ktl.cache('kpfguide', 'TIPTILT_GAIN')
+        TIPTILT_GAIN.write(gain)
 
     @classmethod
     def post_condition(cls, args):
@@ -34,8 +34,8 @@ class SetTipTiltGain(KPFFunction):
                 f"($kpfguide.TIPTILT_GAIN <= {gain+tol})")
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            tiptiltgain = ktl.cache('kpfguide', 'TIPTILT_GAIN')
-            raise FailedToReachDestination(tiptiltgain.read(), gain)
+            TIPTILT_GAIN = ktl.cache('kpfguide', 'TIPTILT_GAIN')
+            raise FailedToReachDestination(TIPTILT_GAIN.read(), gain)
 
     @classmethod
     def add_cmdline_args(cls, parser):

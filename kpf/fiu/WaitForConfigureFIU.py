@@ -26,8 +26,8 @@ class WaitForConfigureFIUOnce(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        keyword = ktl.cache('kpffiu', 'MODE')
-        allowed_values = list(keyword._getEnumerators())
+        MODE = ktl.cache('kpffiu', 'MODE')
+        allowed_values = list(MODE._getEnumerators())
         if 'None' in allowed_values:
             allowed_values.pop(allowed_values.index('None'))
         check_input(args, 'mode', allowed_values=allowed_values)
@@ -72,8 +72,8 @@ class WaitForConfigureFIU(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        keyword = ktl.cache('kpffiu', 'MODE')
-        allowed_values = list(keyword._getEnumerators())
+        MODE = ktl.cache('kpffiu', 'MODE')
+        allowed_values = list(MODE._getEnumerators())
         if 'None' in allowed_values:
             allowed_values.pop(allowed_values.index('None'))
         check_input(args, 'mode', allowed_values=allowed_values)
@@ -96,8 +96,8 @@ class WaitForConfigureFIU(KPFFunction):
     @classmethod
     def post_condition(cls, args):
         dest = args.get('mode')
-        kpffiu = ktl.cache('kpffiu')
-        modes = kpffiu['MODE'].read()
+        MODE = ktl.cache('kpffiu', 'MODE')
+        modes = MODE.read()
         if dest.lower() not in modes.lower().split(','):
             raise FailedToReachDestination(modes, dest)
         else:

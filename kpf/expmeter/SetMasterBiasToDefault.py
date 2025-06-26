@@ -19,10 +19,10 @@ class SetMasterBiasToDefault(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        kpf_expmeter = ktl.cache('kpf_expmeter')
+        BIAS_FILE = ktl.cache('kpf_expmeter', 'BIAS_FILE')
         default_file = '/kroot/rel/default/data/kpf_expmeter/full_bias.fits'
         log.debug(f"Setting master bias file to {default_file}")
-        kpf_expmeter['BIAS_FILE'].write(default_file)
+        BIAS_FILE.write(default_file)
 
     @classmethod
     def post_condition(cls, args):

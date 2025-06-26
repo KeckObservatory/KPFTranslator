@@ -39,17 +39,17 @@ class SetSourceSelectShutters(KPFFunction):
             shutter_list.append('Cal_SciSky')
         shutters_string = ','.join(shutter_list)
         log.debug(f"Setting source select shutters to '{shutters_string}'")
-        kpfexpose = ktl.cache('kpfexpose')
-        kpfexpose['SRC_SHUTTERS'].write(shutters_string)
-        shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
+        SRC_SHUTTERS = ktl.cache('kpfexpose', 'SRC_SHUTTERS')
+        SRC_SHUTTERS.write(shutters_string)
+        shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args):
-        kpfexpose = ktl.cache('kpfexpose')
+        SRC_SHUTTERS = ktl.cache('kpfexpose', 'SRC_SHUTTERS')
         timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         sleep(timeshim)
-        shutters = kpfexpose['SRC_SHUTTERS'].read()
+        shutters = SRC_SHUTTERS.read()
         shutter_list = shutters.split(',')
         shutter_names = [('SciSelect', 'OpenScienceShutter'),
                          ('SkySelect', 'OpenSkyShutter'),

@@ -16,15 +16,13 @@ def guider_is_ready():
 def guider_is_active():
     '''Checks that the guide camera is taking exposures.
     '''
-    kpfguide = ktl.cache('kpfguide')
-    continuous = kpfguide['CONTINUOUS'].read()
-    return continuous.lower() == 'active'
+    CONTINUOUS = ktl.cache('kpfguide', 'CONTINUOUS').read()
+    return CONTINUOUS.lower() == 'active'
 
 
 def guider_is_saving():
     '''Checks that the guide camera is taking exposures and outputting stacked
     images as fits files.
     '''
-    kpfguide = ktl.cache('kpfguide')
-    save = kpfguide['SAVE'].read()
-    return guider_is_active() and (save.lower() == 'active')
+    SAVE = ktl.cache('kpfguide', 'SAVE').read()
+    return guider_is_active() and (SAVE.lower() == 'active')

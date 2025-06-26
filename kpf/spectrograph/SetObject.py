@@ -20,13 +20,13 @@ class SetObject(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        kpfexpose = ktl.cache('kpfexpose')
+        OBJECT = ktl.cache('kpfexpose', 'OBJECT')
         obj = args.get('Object', '')
         if obj is None:
             obj = ''
         log.debug(f"Setting OBJECT to '{obj}'")
-        kpfexpose['OBJECT'].write(obj)
-        time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
+        OBJECT.write(obj)
+        time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
         time.sleep(time_shim)
 
     @classmethod
@@ -35,11 +35,9 @@ class SetObject(KPFFunction):
         if obj is None:
             obj = ''
         timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
-        expr = f"($kpfexpose.OBJECT == '{obj}')"
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            objectkw = ktl.cache('kpfexpose', 'OBJECT')
-            raise FailedToReachDestination(objectkw.read(), obj)
+        OBJECT = ktl.cache('kpfexpose', 'OBJECT')
+        if OBJECT.waitFor(f"== '{obj}'", timeout=timeout) is not True:
+            raise FailedToReachDestination(OBJECT.read(), obj)
 
     @classmethod
     def add_cmdline_args(cls, parser):

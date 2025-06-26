@@ -31,19 +31,17 @@ class SetCalSource(KPFFunction):
     @classmethod
     def perform(cls, args):
         target = args.get('CalSource')
-        kpfcal = ktl.cache('kpfcal')
+        OCTAGON = ktl.cache('kpfcal', 'OCTAGON')
         log.debug(f"Setting Cal Source (Octagon) to {target}")
-        kpfcal['OCTAGON'].write(target, wait=args.get('wait', True))
+        OCTAGON.write(target, wait=args.get('wait', True))
 
     @classmethod
     def post_condition(cls, args):
         target = args.get('CalSource')
         timeout = cfg.getfloat('times', 'octagon_move_time', fallback=90)
-        expr = f"($kpfcal.OCTAGON == {target})"
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            kpfcal = ktl.cache('kpfcal')
-            raise FailedToReachDestination(kpfcal['OCTAGON'].read(), target)
+        OCTAGON = ktl.cache('kpfcal', 'OCTAGON')
+        if OCTAGON.waitFor(f'== "{target}"', timeout=timeout) is not True:
+            raise FailedToReachDestination(OCTAGON.read(), target)
 
     @classmethod
     def add_cmdline_args(cls, parser):

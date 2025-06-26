@@ -19,24 +19,23 @@ class StopAgitator(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        agitator = ktl.cache('kpfmot', 'AGITATOR')
-        if agitator.read() == 'Stopped':
+        AGITATOR = ktl.cache('kpfmot', 'AGITATOR')
+        if AGITATOR.read() == 'Stopped':
             log.debug('Agitator is stopped')
         else:
             log.debug('Stopping agitator')
             try:
-                agitator.write('Stop')
+                AGITATOR.write('Stop')
             except Exception as e:
                 log.warning('Write to kpfmot.AGITATOR failed')
                 log.debug(e)
                 log.warning('Retrying')
                 time.sleep(1)
-                agitator.write('Stop')
+                AGITATOR.write('Stop')
 
     @classmethod
     def post_condition(cls, args):
-        timeout = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
-        success = ktl.waitFor('$kpfmot.AGITATOR == Stopped', timeout=5*timeout)
-        if success is not True:
-            agitator = ktl.cache('kpfmot', 'AGITATOR')
-            raise FailedToReachDestination(agitator.read(), 'Stopped')
+        startup = cfg.getfloat('times', 'agitator_startup_time', fallback=0.325)
+        AGITATOR = ktl.cache('kpfmot', 'AGITATOR')
+        if AGITATOR.waitFor('== "Stopped"', timeout=5*startup) is not True:
+            raise FailedToReachDestination(AGITATOR.read(), 'Stopped')

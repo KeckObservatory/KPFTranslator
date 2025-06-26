@@ -19,13 +19,12 @@ class TurnHepaOn(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        ao = ktl.cache('ao')
-        log.debug('Setting AO HEPA filter to on')
-        ao['OBHPAON'].write(1)
+        OBHPAON = ktl.cache('ao', 'OBHPAON')
+        log.debug('Setting AO HEPA filter to off')
+        OBHPAON.write(1)
 
     @classmethod
     def post_condition(cls, args):
-        success = ktl.waitfor('($ao.OBHPASTA == on)', timeout=3)
-        if success is not True:
-            ao = ktl.cache('ao')
-            raise FailedToReachDestination(ao['OBHPASTA'].read(), 'on')
+        OBHPASTA = ktl.cache('ao', 'OBHPASTA')
+        if OBHPASTA.waitfor('== "on"', timeout=3) is not True:
+            raise FailedToReachDestination(OBHPASTA.read(), 'on')

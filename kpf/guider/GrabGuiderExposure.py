@@ -28,12 +28,11 @@ class GrabGuiderExposure(KPFFunction):
     @classmethod
     def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
-        kpfexpose = ktl.cache('kpfexpose')
+        OBJECT = ktl.cache('kpfexpose', 'OBJECT')
         exptime = kpfguide['EXPTIME'].read(binary=True)
-        lastfile = kpfguide['LASTFILE']
-        initial_lastfile = lastfile.read()
+        initial_lastfile = kpfguide['LASTFILE'].read()
         log.debug(f"Grabbing next guider exposure.")
-        log.debug(f"kpfexpose.OBJECT = {kpfexpose['OBJECT'].read()}")
+        log.debug(f"kpfexpose.OBJECT = {OBJECT.read()}")
         expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
         success = ktl.waitFor(expr, timeout=exptime*2+1)
         if success is False:
@@ -41,9 +40,8 @@ class GrabGuiderExposure(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        kpfguide = ktl.cache('kpfguide')
-        lastfile = kpfguide['LASTFILE']
-        new_file = Path(f"{lastfile.read()}")
+        LASTFILE = ktl.cache('kpfguide', 'LASTFILE')
+        new_file = Path(f"{LASTFILE.read()}")
         log.debug(f"CRED2 LASTFILE: {new_file}")
         if new_file.exists() == False:
-            raise FailedPostCondition(f"Could not find output file: {file}")
+            raise FailedPostCondition(f"Could not find output file: {new_file}")

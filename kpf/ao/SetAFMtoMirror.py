@@ -20,16 +20,17 @@ class SetAFMtoMirror(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        ao = ktl.cache('ao')
+        OBAMNAME = ktl.cache('ao', 'OBAMNAME')
+        OBAMSLEW = ktl.cache('ao', 'OBAMSLEW')
         log.debug(f"Setting AFM to Mirror")
-        ao['OBAMNAME'].write('Mirror')
-        ao['OBAMSLEW'].write('1')
+        OBAMNAME.write('Mirror')
+        OBAMSLEW.write('1')
 
     @classmethod
     def post_condition(cls, args):
         expr = '($ao.OBAMSTST == INPOS) and ($ao.OBAMNAME == Mirror)'
         aoamstst_success = ktl.waitfor(expr, timeout=60)
         if not aoamstst_success:
-            ao = ktl.cache('ao')
-            FailedToReachDestination(ao['OBAMNAME'].read(), 'Mirror')
+            OBAMNAME = ktl.cache('ao', 'OBAMNAME')
+            FailedToReachDestination(OBAMNAME.read(), 'Mirror')
 

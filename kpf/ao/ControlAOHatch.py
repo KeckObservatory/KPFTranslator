@@ -24,10 +24,10 @@ class ControlAOHatch(KPFFunction):
     @classmethod
     def perform(cls, args):
         destination = args.get('destination', '').strip()
-        ao = ktl.cache('ao')
+        aohatchcmd = ktl.cache('ao', 'aohatchcmd')
         log.debug(f"Setting AO Hatch to {destination}")
         cmd = {'close': 1, 'closed': 1, 'open': 0}[destination]
-        ao['aohatchcmd'].write(cmd)
+        aohatchcmd.write(cmd)
 
     @classmethod
     def post_condition(cls, args):

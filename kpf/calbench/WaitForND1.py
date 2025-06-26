@@ -22,8 +22,8 @@ class WaitForND1(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        keyword = ktl.cache('kpfcal', 'ND1POS')
-        allowed_values = list(keyword._getEnumerators())
+        ND1POS = ktl.cache('kpfcal', 'ND1POS')
+        allowed_values = list(ND1POS._getEnumerators())
         if 'Unknown' in allowed_values:
             allowed_values.pop(allowed_values.index('Unknown'))
         check_input(args, 'CalND1', allowed_values=allowed_values)

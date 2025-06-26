@@ -21,22 +21,20 @@ class SetProgram(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        kpfexpose = ktl.cache('kpfexpose')
-        progname = args.get('progname')
+        PROGNAME = ktl.cache('kpfexpose', 'PROGNAME')
+        prognameval = args.get('progname')
         log.debug('Waiting for kpfexpose to be ready')
         WaitForReady.execute({})
-        log.info(f"Setting PROGNAME to '{progname}'")
-        kpfexpose['PROGNAME'].write(progname)
+        log.info(f"Setting PROGNAME to '{prognameval}'")
+        PROGNAME.write(prognameval)
 
     @classmethod
     def post_condition(cls, args):
-        progname = args.get('progname')
+        PROGNAME = ktl.cache('kpfexpose', 'PROGNAME')
+        prognameval = args.get('progname')
         timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
-        expr = f"($kpfexpose.PROGNAME == '{progname}')"
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            prognamekw = ktl.cache('kpfexpose', 'PROGNAME')
-            raise FailedToReachDestination(prognamekw.read(), progname)
+        if PROGNAME.waitFor(f"== '{prognameval}'", timeout=timeout) != True:
+            raise FailedToReachDestination(PROGNAME.read(), prognameval)
 
     @classmethod
     def add_cmdline_args(cls, parser):

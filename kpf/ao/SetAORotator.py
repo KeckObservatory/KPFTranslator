@@ -26,18 +26,18 @@ class SetAORotator(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        ao = ktl.cache('ao')
+        OBRT = ktl.cache('ao', 'OBRT')
+        OBRTMOVE = ktl.cache('ao', 'OBRTMOVE')
         dest = args.get('dest', 0)
         log.debug(f"Setting AO Rotator to {dest:.1f}")
-        ao['OBRT'].write(dest)
-        ao['OBRTMOVE'].write('1')
+        OBRT.write(dest)
+        OBRTMOVE.write('1')
 
     @classmethod
     def post_condition(cls, args):
-        success = ktl.waitfor('($ao.OBRTSTST == INPOS)', timeout=180)
-        if success is not True:
-            ao = ktl.cache('ao')
-            raise FailedToReachDestination(ao['OBRTSTST'].read(), 'INPOS')
+        OBRTSTST = ktl.cache('ao', 'OBRTSTST')
+        if OBRTSTST.waitfor('== "INPOS"', timeout=180) is not True:
+            raise FailedToReachDestination(OBRTSTST.read(), 'INPOS')
 
     @classmethod
     def add_cmdline_args(cls, parser):

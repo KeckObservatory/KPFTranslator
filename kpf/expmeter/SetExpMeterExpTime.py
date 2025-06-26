@@ -22,10 +22,10 @@ class SetExpMeterExpTime(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        kpf_expmeter = ktl.cache('kpf_expmeter')
+        EXPOSURE = ktl.cache('kpf_expmeter', 'EXPOSURE')
         exptime = args.get('ExpMeterExpTime')
         log.debug(f"Setting exposure time to {exptime:.3f}")
-        kpf_expmeter['EXPOSURE'].write(exptime)
+        EXPOSURE.write(exptime)
 
     @classmethod
     def post_condition(cls, args):
@@ -38,8 +38,8 @@ class SetExpMeterExpTime(KPFFunction):
         log.debug(expr)
         success = ktl.waitFor(expr, timeout=timeout)
         if success is not True:
-            exposure = ktl.cache('kpf_expmeter', 'EXPOSURE')
-            raise FailedToReachDestination(exposure.read(), exptime)
+            EXPOSURE = ktl.cache('kpf_expmeter', 'EXPOSURE')
+            raise FailedToReachDestination(EXPOSURE.read(), exptime)
 
     @classmethod
     def add_cmdline_args(cls, parser):

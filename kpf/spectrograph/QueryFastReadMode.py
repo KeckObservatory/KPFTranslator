@@ -19,10 +19,8 @@ class QueryFastReadMode(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        kpfgreen = ktl.cache('kpfgreen')
-        kpfred = ktl.cache('kpfred')
-        green_ACF = kpfgreen['ACF'].read()
-        red_ACF = kpfred['ACF'].read()
+        green_ACF = ktl.cache('kpfgreen', 'ACF').read()
+        red_ACF = ktl.cache('kpfred', 'ACF').read()
 
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')

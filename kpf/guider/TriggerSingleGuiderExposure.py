@@ -30,12 +30,12 @@ class TriggerSingleGuiderExposure(KPFFunction):
     @classmethod
     def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
-        kpfexpose = ktl.cache('kpfexpose')
+        OBJECT = ktl.cache('kpfexpose', 'OBJECT')
         exptime = kpfguide['EXPTIME'].read(binary=True)
         lastfile = kpfguide['LASTFILE']
         initial_lastfile = lastfile.read()
         log.debug(f"Triggering a new guider exposure.")
-        log.debug(f"kpfexpose.OBJECT = {kpfexpose['OBJECT'].read()}")
+        log.debug(f"kpfexpose.OBJECT = {OBJECT.read()}")
         kpfguide['EXPOSE'].write('yes')
         if args.get('wait', True) is True:
             expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"

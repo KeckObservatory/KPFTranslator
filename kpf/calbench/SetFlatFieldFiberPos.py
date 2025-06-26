@@ -21,8 +21,8 @@ class SetFlatFieldFiberPos(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        keyword = ktl.cache('kpfcal', 'FF_FiberPos')
-        allowed_values = list(keyword._getEnumerators())
+        FF_FIBERPOS = ktl.cache('kpfcal', 'FF_FIBERPOS')
+        allowed_values = list(FF_FIBERPOS._getEnumerators())
         if 'Unknown' in allowed_values:
             allowed_values.pop(allowed_values.index('Unknown'))
         check_input(args, 'FF_FiberPos', allowed_values=allowed_values)
@@ -31,18 +31,16 @@ class SetFlatFieldFiberPos(KPFFunction):
     def perform(cls, args):
         target = args.get('FF_FiberPos')
         log.debug(f"Setting FF_FiberPos to {target}")
-        kpfcal = ktl.cache('kpfcal')
-        kpfcal['FF_FiberPos'].write(target, wait=args.get('wait', True))
+        FF_FIBERPOS = ktl.cache('kpfcal', 'FF_FIBERPOS')
+        FF_FIBERPOS.write(target, wait=args.get('wait', True))
 
     @classmethod
     def post_condition(cls, args):
         target = args.get('FF_FiberPos')
         timeout = cfg.getfloat('times', 'nd_move_time', fallback=20)
-        expr = f"($kpfcal.FF_FiberPos == '{target}')"
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            kpfcal = ktl.cache('kpfcal')
-            raise FailedToReachDestination(kpfcal['FF_FiberPos'].read(), target)
+        FF_FIBERPOS = ktl.cache('kpfcal', 'FF_FIBERPOS')
+        if FF_FIBERPOS.waitFor(f"== '{target}'", timeout=timeout) is not True:
+            raise FailedToReachDestination(FF_FIBERPOS.read(), target)
 
     @classmethod
     def add_cmdline_args(cls, parser):

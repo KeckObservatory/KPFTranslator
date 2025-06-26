@@ -16,7 +16,7 @@ class QueryReadMode(KPFTranslatorFunction):
 
     @classmethod
     def perform(cls, args, logger, cfg):
-        kpfgreen = ktl.cache('kpfgreen')
+        ACFFILE = ktl.cache('kpfgreen', 'ACFFILE')
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')
         green_ACFFILE = Path(kpfgreen['ACFFILE'].read()).stem

@@ -134,7 +134,6 @@ class StartOfNight(KPFFunction):
         if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
             CalLampPower.execute({'lamp': calsource, 'power': 'on'})
         # Set tip tilt loop gain to default value
-        kpfguide = ktl.cache('kpfguide')
         tip_tilt_gain = cfg.getfloat('tiptilt', 'tiptilt_loop_gain', fallback=0.3)
         log.info(f"Setting default tip tilt loop gain of {tip_tilt_gain}")
         SetTipTiltGain.execute({'GuideLoopGain': tip_tilt_gain})
