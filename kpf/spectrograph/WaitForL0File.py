@@ -33,7 +33,8 @@ class WaitForL0File(KPFFunction):
                 hdr = fits.getheader(new_file, ext=0)
                 green_file = hdr.get('GRFILENA')
                 red_file = hdr.get('RDFILENA')
-                log.info(f"L0 file {new_file} assembled from {green_file},{red_file}")
+                new_file_name = Path(new_file).name
+                log.info(f"L0 file {new_file_name} assembled from {green_file},{red_file}")
             except:
                 log.info(f'L0 file {new_file} assembled')
         else:
