@@ -1,3 +1,4 @@
+from pathlib import Path
 import yaml
 from datetime import datetime, timedelta
 import numpy as np
@@ -11,6 +12,7 @@ from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
+from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocks
 from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
 
 
@@ -439,5 +441,4 @@ class OBEditableMessageBox(QtWidgets.QMessageBox):
             self.newOB.executed = self.OB.executed
         except:
             self.newOB = None
-
 

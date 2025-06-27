@@ -24,6 +24,7 @@ from kpf.OB_GUI import above_horizon, near_horizon
 from kpf.OB_GUI.GUIcomponents import (OBListModel, ConfirmationPopup, InputPopup,
                                       OBContentsDisplay, EditableMessageBox,
                                       ObserverCommentBox, SelectProgramPopup,
+                                      RetrieveListOfOBs,
                                       launch_command_in_xterm)
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
@@ -688,9 +689,15 @@ class MainWindow(QtWidgets.QMainWindow):
             with open(schedule_file, 'r') as f:
                 contents = json.loads(f.read())
             Nsched = len(contents)
+            usepbar = Nsched > 15 # Create progress bar if we have a lot of OBs to retrieve
+            if usepbar:
+                progress = QtWidgets.QProgressDialog("Retrieving OBs from Database", "Cancel", 0, Nsched)
+                progress.setWindowModality(QtCore.Qt.WindowModal) # Make it modal (blocks interaction with parent)
+                progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
+                progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
             self.model.OBs = []
             self.model.start_times = []
-            for entry in contents:
+            for i,entry in enumerate(contents):
                 try:
                     thisOB = GetObservingBlocks.execute({'OBid': entry['id']})[0]
                     self.model.OBs.append(thisOB)
@@ -699,6 +706,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 except Exception as e:
                     self.log.error(f'Unable to load OB: {entry["id"]}')
                     self.log.error(e)
+                if usepbar:
+                    if progress.wasCanceled():
+                        self.log.error("Retrieval of OBs canceled by user.")
+                        break
+                    progress.setValue(i+1)
+
             self.model.sort('time')
             self.OBListHeader.setText('    StartTime '+self.hdr)
             self.model.layoutChanged.emit()
@@ -731,11 +744,22 @@ class MainWindow(QtWidgets.QMainWindow):
             classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
             progIDs = set([p['ProjCode'] for p in cadence])
             self.model.OBs = []
-            for progID in progIDs:
+            usepbar = len(progIDs) > 5 # Create progress bar if we have a lot of programs to query
+            if usepbar:
+                progress = QtWidgets.QProgressDialog("Retrieving OBs from Database", "Cancel", 0, len(progIDs))
+                progress.setWindowModality(QtCore.Qt.WindowModal) # Make it modal (blocks interaction with parent)
+                progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
+                progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
+            for i,progID in enumerate(progIDs):
                 self.log.debug(f'Retrieving OBs for {progID}')
                 programOBs = GetObservingBlocksByProgram.execute({'program': progID})
                 self.model.OBs.extend(programOBs)
                 self.log.debug(f'  Got {len(programOBs)} for {progID}, total KPF-CC OB count is now {len(self.model.OBs)}')
+                if usepbar:
+                    if progress.wasCanceled():
+                        self.log.error("Retrieval of OBs canceled by user.")
+                        break
+                    progress.setValue(i+1)
             self.OBListHeader.setText('    StartTime '+self.hdr)
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
