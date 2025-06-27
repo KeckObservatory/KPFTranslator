@@ -36,9 +36,8 @@ def launch_command_in_xterm(script_name, sleep=0.25):
            '-fn', '10x20', '-bg', 'black', '-fg', 'white',
            '-e', f'{script_cmd}']
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(sleep) # Time shim to allow xterm and script to launch
-    stdout_output, stderr_output = proc.communicate()
-    return stdout_output, stderr_output
+#     stdout_output, stderr_output = proc.communicate(timeout=sleep)
+#     return stdout_output, stderr_output
 
 ##-------------------------------------------------------------------------
 ## Define Model for MVC
