@@ -24,7 +24,6 @@ from kpf.OB_GUI import above_horizon, near_horizon
 from kpf.OB_GUI.GUIcomponents import (OBListModel, ConfirmationPopup, InputPopup,
                                       OBContentsDisplay, EditableMessageBox,
                                       ObserverCommentBox, SelectProgramPopup,
-                                      RetrieveListOfOBs,
                                       launch_command_in_xterm)
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
