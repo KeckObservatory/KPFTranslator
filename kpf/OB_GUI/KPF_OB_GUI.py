@@ -63,7 +63,7 @@ def create_GUI_log():
     guilog.setLevel(logging.DEBUG)
     ## Set up console output
     LogConsoleHandler = logging.StreamHandler()
-    LogConsoleHandler.setLevel(logging.DEBUG)
+    LogConsoleHandler.setLevel(logging.INFO)
     LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
     LogConsoleHandler.setFormatter(LogFormat)
     guilog.addHandler(LogConsoleHandler)
@@ -146,6 +146,19 @@ class MainWindow(QtWidgets.QMainWindow):
         for progID in sorted(program_IDs):
             dates = [e['Date'] for e in classical if e['ProjCode'] == progID]
             self.program_strings.append(f"{progID} on {', '.join(dates)}")
+        # Prepare KPFCC schedule execution records
+        semester, start, end = get_semester_dates(datetime.datetime.now())
+        logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
+        execution_history_file = logdir / f'KPFCC_executions_{semester}.csv'
+        if execution_history_file.exists() is False:
+            with open(execution_history_file, 'w') as f:
+                contents = ['# timestamp', 'decimalUT', 'executedID',
+                            'executed_line', 'scheduleUT',
+                            'schedule_current_line', 'scheduleUT_current',
+                            'schedule_next_line', 'scheduleUT_next',
+                            'on_schedule']
+                hdrline = ', '.join(contents)
+                f.write(hdrline)
 
 
     def setupUi(self):
@@ -1098,14 +1111,26 @@ class MainWindow(QtWidgets.QMainWindow):
                    f"{SOB.summary()}"]
             result = ConfirmationPopup('Execute Science OB?', msg).exec_()
             if result == QtWidgets.QMessageBox.Yes:
-                if self.KPFCC == True and self.SOBindex not in [self.model.CurrentOB, self.model.NextOB]:
-                    self.log.schedule(f'Running OB {self.SOBindex} off schedule')
+                if self.KPFCC == True:
+                    # Log execution
+                    now = datetime.datetime.utcnow()
+                    now_str = now.strftime('%Y-%m-%d %H:%M:%S UT')
+                    decimal_now = now.hour + now.minute/60 + now.second/3600
                     start_time = self.model.start_time[self.SOBindex]
-                    self.log.schedule(f'  Start time for this OB is {start_time:.2f} UT')
                     start_current = self.model.start_time[self.model.CurrentOB]
-                    self.log.schedule(f'  Start time for scheduled OB is {start_current:.2f} UT')
                     start_next = self.model.start_time[self.model.NextOB]
-                    self.log.schedule(f'  Start time for next OB is {start_next:.2f} UT')
+                    on_schedule = self.SOBindex in [self.model.CurrentOB, self.model.NextOB]
+                    contents = [now_str, f'{decimal_now:.2f}', f'{SOB.OBID}',
+                                f'{self.SOBindex}', f'{start_time:.2f}',
+                                f'{self.model.CurrentOB}', f'{start_current:.2f}',
+                                f'{self.model.NextOB}', f'{start_next:.2f}',
+                                f'{on_schedule}']
+                    line = ', '.join(contents)
+                    if not on_schedule:
+                        self.log.schedule(f'Running OB {self.SOBindex} off schedule')
+                        self.log.schedule(f'  Start time for this OB is {start_time:.2f} UT')
+                        self.log.schedule(f'  Start time for scheduled OB is {start_current:.2f} UT')
+                        self.log.schedule(f'  Start time for next OB is {start_next:.2f} UT')
                 self.RunOB(SOB)
                 self.model.OBs[self.SOBindex].executed = True
                 self.model.layoutChanged.emit()
