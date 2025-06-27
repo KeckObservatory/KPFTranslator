@@ -36,7 +36,7 @@ class SetLFCtoStandbyHigh(KPFFunction):
         time.sleep(time_shim)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 #         LFCready = ktl.cache('kpfmon', 'LFCREADYSTA')
 #         timeout = cfg.getfloat('times', 'LFC_startup_time', fallback=60)
