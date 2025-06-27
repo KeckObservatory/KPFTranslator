@@ -1,8 +1,8 @@
 import yaml
 from datetime import datetime, timedelta
 import numpy as np
-# from astropy.coordinates import EarthLocation, AltAz
-# from astropy.time import Time
+import subprocess
+import time
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
@@ -26,6 +26,19 @@ def observed_tonight(OB):
 #     print(f"Found {len(exposures_tonight)} recent exposures for {OB.summary()}")
     return len(exposures_tonight)
 
+
+def launch_command_in_xterm(script_name, sleep=0.25):
+    '''Pop up an xterm with the script running.
+    '''
+    kpfdo = Path(__file__).parent.parent / 'kpfdo'
+    script_cmd = f'{kpfdo} {script_name} ; echo "Done!" ; sleep 30'
+    cmd = ['xterm', '-title', f'{script_name}', '-name', f'{script_name}',
+           '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+           '-e', f'{script_cmd}']
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(sleep) # Time shim to allow xterm and script to launch
+    stdout_output, stderr_output = proc.communicate()
+    return stdout_output, stderr_output
 
 ##-------------------------------------------------------------------------
 ## Define Model for MVC

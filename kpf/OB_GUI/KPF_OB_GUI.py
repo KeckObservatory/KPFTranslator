@@ -9,7 +9,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 import json
 import re
-import subprocess
 import yaml
 import datetime
 import numpy as np
@@ -24,7 +23,8 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from kpf.OB_GUI import above_horizon, near_horizon
 from kpf.OB_GUI.GUIcomponents import (OBListModel, ConfirmationPopup, InputPopup,
                                       OBContentsDisplay, EditableMessageBox,
-                                      ObserverCommentBox, SelectProgramPopup)
+                                      ObserverCommentBox, SelectProgramPopup,
+                                      launch_command_in_xterm)
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
@@ -779,15 +779,11 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Run Start of Night Script?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             self.log.debug('Confirmation is yes, running StartOfNight script')
-            # Pop up an xterm with the script running
-            kpfdo = Path(__file__).parent.parent / 'kpfdo'
-            StartOfNight_cmd = f'{kpfdo} StartOfNight ; echo "Done!" ; sleep 30'
-            cmd = ['xterm', '-title', 'StartOfNight', '-name', 'StartOfNight',
-                   '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-                   '-e', f'{StartOfNight_cmd}']
-            print(StartOfNight_cmd)
-            print(' '.join(cmd))
-            proc = subprocess.Popen(cmd)
+            stdout, stderr = launch_command_in_xterm('StartOfNight')
+            for line in stdout.split('\n'):
+                self.log.debug(f'STDOUT: {line}')
+            for line in stderr.split('\n'):
+                self.log.debug(f'STDERR: {line}')
         else:
             self.log.debug('Confirmation is no, not running script')
 
@@ -795,15 +791,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if mode not in ['Stowed', 'Alignment', 'Acquisition', 'Observing', 'Calibration']:
             self.log.error(f"Desired FIU mode {mode} is not allowed")
             return
-        # Pop up an xterm with the script running
-        kpfdo = Path(__file__).parent.parent / 'kpfdo'
-        configureFIU_cmd = f'{kpfdo} ConfigureFIU {mode} ; echo "Done!" ; sleep 30'
-        cmd = ['xterm', '-title', 'ConfigureFIU', '-name', 'ConfigureFIU',
-               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-               '-e', f'{configureFIU_cmd}']
-        print(configureFIU_cmd)
-        print(' '.join(cmd))
-        proc = subprocess.Popen(cmd)
+        stdout, stderr = launch_command_in_xterm(f'ConfigureFIU {mode}')
+        for line in stdout.split('\n'):
+            self.log.debug(f'STDOUT: {line}')
+        for line in stderr.split('\n'):
+            self.log.debug(f'STDERR: {line}')
 
     def configure_FIU_observing(self):
         self.log.info('running configure_FIU_observing')
@@ -856,15 +848,11 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Run End of Night Script?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             self.log.debug('Confirmation is yes, running EndOfNight script')
-            # Pop up an xterm with the script running
-            kpfdo = Path(__file__).parent.parent / 'kpfdo'
-            EndOfNight_cmd = f'{kpfdo} EndOfNight ; echo "Done!" ; sleep 30'
-            cmd = ['xterm', '-title', 'EndOfNight', '-name', 'EndOfNight',
-                   '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-                   '-e', f'{EndOfNight_cmd}']
-            print(EndOfNight_cmd)
-            print(' '.join(cmd))
-            proc = subprocess.Popen(cmd)
+            stdout, stderr = launch_command_in_xterm(f'EndOfNight')
+            for line in stdout.split('\n'):
+                self.log.debug(f'STDOUT: {line}')
+            for line in stderr.split('\n'):
+                self.log.debug(f'STDERR: {line}')
         else:
             self.log.debug('Confirmation is no, not running script')
 
@@ -1140,15 +1128,11 @@ class MainWindow(QtWidgets.QMainWindow):
             tmp_file_path.mkdir(mode=0o777, parents=False)
         tmp_file = tmp_file_path / f'test_executedOB_{now_str}.yaml'
         SOB.write_to(tmp_file)
-        # Pop up an xterm with the script running
-        kpfdo = Path(__file__).parent.parent / 'kpfdo'
-        RunOB_cmd = f'{kpfdo} RunOB -f {tmp_file} ; echo "Done!" ; sleep 30'
-        cmd = ['xterm', '-title', 'RunOB', '-name', 'RunOB',
-               '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-               '-e', f'{RunOB_cmd}']
-        print(RunOB_cmd)
-        print(' '.join(cmd))
-        proc = subprocess.Popen(cmd)
+        stdout, stderr = launch_command_in_xterm(f'RunOB -f {tmp_file}')
+        for line in stdout.split('\n'):
+            self.log.debug(f'STDOUT: {line}')
+        for line in stderr.split('\n'):
+            self.log.debug(f'STDERR: {line}')
 
     def remove_SOB(self):
         removed = self.model.OBs.pop(self.SOBindex)
