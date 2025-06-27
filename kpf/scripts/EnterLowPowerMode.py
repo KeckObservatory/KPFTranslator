@@ -2,12 +2,12 @@ import time
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class EnterLowPowerMode(KPFTranslatorFunction):
+class EnterLowPowerMode(KPFFunction):
     '''Set KPF to a low power mode.
 
     This is intended for use during power outages. This reduces power use in
@@ -24,7 +24,7 @@ class EnterLowPowerMode(KPFTranslatorFunction):
     - Power off CRED2 (K2, K3)
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         log.info('Configuring KPF for Low Power Mode')
         force = args.get('force', False)
         SCRIPTNAME = ktl.cache('kpfconfig', 'SCRIPTNAME')
@@ -42,7 +42,7 @@ class EnterLowPowerMode(KPFTranslatorFunction):
                 raise FailedPreCondition('A script is running, not setting Low Power Mode')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         kpfpower = ktl.cache('kpfpower')
 
@@ -74,11 +74,11 @@ class EnterLowPowerMode(KPFTranslatorFunction):
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--force", dest="force",
                             default=False, action="store_true",
                             help="Force change? This will terminate any running scripts.")
