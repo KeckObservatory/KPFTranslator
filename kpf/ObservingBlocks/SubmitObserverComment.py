@@ -10,6 +10,8 @@ from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.GetObservingBlocks import query_database
+from kpf.schedule import getPI, getUserInfo
+from kpf.utils.SendEmail import SendEmail
 
 
 ##-------------------------------------------------------------------------
@@ -42,6 +44,39 @@ class SubmitObserverComment(KPFFunction):
         log.info(params)
         result = query_database('addObservingBlockHistory', params=params)
         log.info(f"Response: {result}")
+
+        # Email PI
+        if params.get('id') == '':
+            log.warning('No OB ID found, not emailing PI')
+            return
+        OB = GetObservingBlocks.execute({'OBid': args.get('OBid')})[0]
+        PI_ID = getPI(OB.semid)[0]
+        PIinfo = getObserverInfo(PI_ID.get('Principal'))[0]
+        email = {'To': PIinfo.get('Email'),
+                 'From': 'kpf_info@keck.hawaii.edu',
+                 'Subject': f'Observer Comment on {OB.summary()}',
+                 'Message': args.get('comment', ''),
+                 }
+        import json
+        import logging
+        from pathlib import Path
+        # Set up temperary file for test emails to sit
+        for handler in log.handlers:
+            if isinstance(handler, RotatingFileHandler):
+                kpflog_filehandler = handler
+        utnow = datetime.utcnow()
+        date = utnow-timedelta(days=1)
+        date_str = date.strftime('%Y%b%d').lower()
+        date_log_path = Path(kpflog_filehandler.baseFilename).parent / date_str
+        email_buffer_file = date_log_path / 'emails.json'
+        if email_buffer_file.exists():
+            with open(email_buffer_file, 'r') as f:
+                emails = json.loads(f.read())
+        else:
+            emails = []
+        with open(email_buffer_file, 'w') as f:
+            json.dump(emails.append(email), f)
+
 
     @classmethod
     def post_condition(cls, args):
