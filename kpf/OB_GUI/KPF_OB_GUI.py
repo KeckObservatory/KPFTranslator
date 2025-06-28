@@ -1117,7 +1117,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if comment_box.exec():
             print(f"Submitting comment: {comment_box.comment}")
             print(f"From commentor: {comment_box.observer}")
-            params = {'id': SOB.OBID,
+            params = {'OBid': SOB.OBID,
                       'observer': comment_box.observer,
                       'comment': comment_box.comment,
                       }
