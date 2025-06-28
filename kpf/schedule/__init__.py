@@ -33,15 +33,10 @@ def get_semester_dates(date):
     return semester, semester_start, semester_end
 
 
-def getSchedule(date='2025-02-01', numdays=1, telnr=1, instrument='KPF', **kwargs):
+def query_schedule_API(query, params):
     '''See https://vm-appserver.keck.hawaii.edu/api/schedule/swagger/#/
     '''
     url = 'https://vm-appserver.keck.hawaii.edu/api/schedule/'
-    query = 'getSchedule'
-    params = {'date': date,
-              'numdays': numdays,
-              'telnr': telnr,
-              'instrument': instrument}
     log.debug(f"Running schedule query at {url}{query} with params:")
     log.debug(params)
     r = requests.get(f"{url}{query}", params=params)
@@ -53,3 +48,26 @@ def getSchedule(date='2025-02-01', numdays=1, telnr=1, instrument='KPF', **kwarg
         log.error(e)
         result = None
     return result
+
+
+def getSchedule(date='2025-02-01', numdays=1, telnr=1, instrument='KPF'):
+    query = 'getSchedule'
+    params = {'date': date,
+              'numdays': numdays,
+              'telnr': telnr,
+              'instrument': instrument}
+    return query_schedule_API(query, params)
+
+
+def getPI(semid):
+    query = 'getPI'
+    params = {'semid': semid}
+    return query_schedule_API(query, params)
+
+
+def getObserverInfo(observerID):
+    query = 'getObserverInfo'
+    params = {'obsid': observerID}
+    return query_schedule_API(query, params)
+
+
