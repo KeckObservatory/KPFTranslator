@@ -10,7 +10,7 @@ from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.GetObservingBlocks import query_database
-from kpf.schedule import getPI, getUserInfo
+from kpf.schedule import getPI, getObserverInfo
 from kpf.utils.SendEmail import SendEmail
 
 
