@@ -138,7 +138,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Tracked values
         self.disabled_detectors = []
         self.enable_telescope = False
-        self.enable_magiq = False
+        self.enable_magiq = True
         # Get KPF Programs on schedule
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
         program_IDs = list(set([f"{p['ProjCode']}" for p in classical]))
@@ -1176,6 +1176,8 @@ class MainWindow(QtWidgets.QMainWindow):
                    f"{SOB.summary()}"]
             result = ConfirmationPopup('Execute Science OB?', msg).exec_()
             if result == QtWidgets.QMessageBox.Yes:
+                if self.enable_telescope and self.enable_magiq:
+                    SelectTarget.execute({'target': SOB.Target.TargetName})
                 if self.KPFCC == True:
                     # Log execution
                     now = datetime.datetime.utcnow()
