@@ -390,7 +390,7 @@
       <widget class="QComboBox" name="SortOrWeather">
        <property name="geometry">
         <rect>
-         <x>160</x>
+         <x>140</x>
          <y>30</y>
          <width>121</width>
          <height>21</height>
@@ -419,7 +419,7 @@
       <widget class="QLabel" name="SortOrWeatherLabel">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>10</x>
          <y>30</y>
          <width>121</width>
          <height>21</height>
@@ -454,6 +454,19 @@
        </property>
        <property name="text">
         <string>TargetName       RA          Dec          Gmag</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="ExecuteScheduledOB">
+       <property name="geometry">
+        <rect>
+         <x>510</x>
+         <y>30</y>
+         <width>191</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Execute Scheduled OB</string>
        </property>
       </widget>
      </widget>

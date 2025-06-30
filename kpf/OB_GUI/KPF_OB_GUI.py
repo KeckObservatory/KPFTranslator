@@ -304,6 +304,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SortOrWeatherLabel.setEnabled(False)
         self.SortOrWeather.setEnabled(False)
 
+        # Execute Scheduled OB Button
+        self.ExecuteScheduledOB = self.findChild(QtWidgets.QPushButton, 'ExecuteScheduledOB')
+        self.ExecuteScheduledOB.clicked.connect(self.execute_scheduled_OB)
+        self.ExecuteScheduledOB.setText('')
+        self.ExecuteScheduledOB.setEnabled(False)
+
         # List of Observing Blocks
         self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
         self.hdr = 'TargetName       RA          Dec      Gmag Jmag Observations'
@@ -1156,6 +1162,10 @@ class MainWindow(QtWidgets.QMainWindow):
             SubmitObserverComment.execute(params)
         else:
             print("Cancel! Not submitting comment.")
+
+
+    def execute_scheduled_OB(self):
+        self.log.warning('execute_scheduled_OB not implemented')
 
 
     def execute_SOB(self):
