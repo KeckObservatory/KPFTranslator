@@ -159,6 +159,13 @@ class MainWindow(QtWidgets.QMainWindow):
                             'on_schedule']
                 hdrline = ', '.join(contents)
                 f.write(hdrline)
+        # KPF-CC Settings and Values
+        self.schedule_path = Path(f'/s/sdata1701/Schedules/')
+        self.default_schedule = self.schedule_path / 'default.json'
+        self.KPFCC_weather_bands = [1, 2, 3]
+        self.KPFCC_weather_band = 1
+        self.KPFCC_OBs = {}
+        self.KPFCC_start_times = {}
 
 
     def setupUi(self):
@@ -639,7 +646,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SortOrWeatherLabel.setText('Weather Band:')
             self.SortOrWeatherLabel.setEnabled(True)
             self.SortOrWeather.clear()
-            self.SortOrWeather.addItems(['1', '2', '3'])
+            self.SortOrWeather.addItems([str(w) for w in self.KPFCC_weather_bands])
             self.SortOrWeather.currentTextChanged.connect(self.set_weather_band)
             self.SortOrWeather.setEnabled(True)
         else:
@@ -678,60 +685,65 @@ class MainWindow(QtWidgets.QMainWindow):
     def load_KPFCC_schedule(self):
         if self.verify_overwrite_of_OB_list():
             self.KPFCC = True
+            self.set_SortOrWeather()
             utnow = datetime.datetime.utcnow()
             date = utnow-datetime.timedelta(days=1)
             date_str = date.strftime('%Y%b%d').lower()
-            schedule_file = Path(f'/s/sdata1701/Schedules/{date_str}.json')
-            if schedule_file.exists() == False:
-                schedule_file = Path(f'/s/sdata1701/Schedules/default.json')
-                self.log.error('No schedule for tonight found. Using default.')
-            with open(schedule_file, 'r') as f:
-                contents = json.loads(f.read())
+            schedule_files = [self.schedule_path / f'{date_str}_w{w}.json' for w in [1, 2, 3]]
+            # Count what we need to load ahead of time for the progress bar
+            contents = []
+            for i,WB in enumerate([1,2,3]):
+                if schedule_files[i].exists():
+                    with open(schedule_files[i], 'r') as f:
+                        contents += json.loads(f.read())
             Nsched = len(contents)
+            print(f"Pre-counted {Nsched} OBs to get for KPF-CC in all weather bands")
             usepbar = Nsched > 15 # Create progress bar if we have a lot of OBs to retrieve
             if usepbar:
                 progress = QtWidgets.QProgressDialog("Retrieving OBs from Database", "Cancel", 0, Nsched)
                 progress.setWindowModality(QtCore.Qt.WindowModal) # Make it modal (blocks interaction with parent)
                 progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
                 progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
-            self.model.OBs = []
-            self.model.start_times = []
-            for i,entry in enumerate(contents):
-                try:
-                    thisOB = GetObservingBlocks.execute({'OBid': entry['id']})[0]
-                    self.model.OBs.append(thisOB)
-                    start = entry['start_exp'].split(':')
-                    self.model.start_times.append(int(start[0]) + int(start[1])/60)
-                except Exception as e:
-                    self.log.error(f'Unable to load OB: {entry["id"]}')
-                    self.log.error(e)
-                if usepbar:
-                    if progress.wasCanceled():
-                        self.log.error("Retrieval of OBs canceled by user.")
-                        break
-                    progress.setValue(i+1)
 
-            self.model.sort('time')
-            self.OBListHeader.setText('    StartTime '+self.hdr)
-            self.model.layoutChanged.emit()
-            self.set_SortOrWeather()
-            msg = f"Retrieved {len(self.model.OBs)} (out of {Nsched}) KPF-CC OBs"
+            OBcount = 0
+            errmsg = []
+            for i,WB in enumerate([1,2,3]):
+                self.KPFCC_OBs[WB] = []
+                self.KPFCC_start_times[WB] = []
+                if schedule_files[i].exists():
+                    with open(schedule_files[i], 'r') as f:
+                        contents = json.loads(f.read())
+                else:
+                    self.log.error(f'No schedule file found at {schedule_files[i]}')
+                    errmsg.append(f'No schedule file found at {schedule_files[i]}')
+                    contents = []
+                for entry in contents:
+                    OBcount += 1
+                    try:
+                        thisOB = GetObservingBlocks.execute({'OBid': entry['id']})[0]
+                        self.KPFCC_OBs[WB].append(thisOB)
+                        start = entry['start_exp'].split(':')
+                        start_decimal = int(start[0]) + int(start[1])/60
+                        self.KPFCC_start_times[WB].append(start_decimal)
+                    except Exception as e:
+                        self.log.error(f'Unable to load OB: {entry["id"]}')
+                        self.log.error(e)
+                    if usepbar:
+                        if progress.wasCanceled():
+                            self.log.error("Retrieval of OBs canceled by user.")
+                            break
+                        progress.setValue(OBcount+1)
+                self.log.info(f"Retrieved {len(self.KPFCC_OBs[WB])} for weather band {WB}")
+            msg = [f"Retrieved {OBcount} (out of {Nsched}) KPF-CC OBs for all weather bands"]
+            msg.extend(errmsg)
+            msg = '\n'.join(msg)
             ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
-            # This select/deselect operation caches something in the AltAz 
-            # calculation which happens the first time an OB is selected. This
-            # just makes the GUI more "responsive" as the loading of the OBs when
-            # program ID is chosen contains all of the slow caching of values
-            # instead of having it happen on the first click.
-            if len(self.model.OBs) > 0:
-                self.select_OB(0)
-                self.select_OB(None)
-            self.update_star_list()
-
+            self.set_weather_band(self.KPFCC_weather_band)
 
     def load_OBs(self, value):
         self.log.info(f"load_OBs: '{value}'")
         self.clear_OB_selection()
-        self.KPCC = False
+        self.KPFCC = False
         self.OBListHeader.setText(self.hdr)
         if value == '':
             self.model.OBs = []
@@ -789,8 +801,28 @@ class MainWindow(QtWidgets.QMainWindow):
             SetTargetList.execute({'StarList': '\n'.join(star_list)})
 
     def set_weather_band(self, value):
-        self.SortOrWeather.setCurrentText(value)
-
+        self.log.info(f"Setting Weather Band '{value}'")
+        self.SortOrWeather.setCurrentText(str(value))
+        try:
+            WB = int(value)
+            assert WB in [1, 2, 3]
+            self.KPFCC_weather_band = WB
+            self.model.OBs = self.KPFCC_OBs[WB]
+            self.model.start_times = self.KPFCC_start_times[WB]
+            self.model.sort('time')
+            self.OBListHeader.setText('    StartTime '+self.hdr)
+            self.model.layoutChanged.emit()
+            # This select/deselect operation caches something in the AltAz 
+            # calculation which happens the first time an OB is selected. This
+            # just makes the GUI more "responsive" as the loading of the OBs when
+            # program ID is chosen contains all of the slow caching of values
+            # instead of having it happen on the first click.
+            if len(self.model.OBs) > 0:
+                self.select_OB(0)
+                self.select_OB(None)
+            self.update_star_list()
+        except:
+            self.log.warning(f'set_weather_band got "{value}" ({type(value)})')
 
     ##-------------------------------------------
     ## Methods for Observing Menu

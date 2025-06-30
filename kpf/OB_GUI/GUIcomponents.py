@@ -92,7 +92,7 @@ class OBListModel(QtCore.QAbstractListModel):
                 all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
                 n_visits = len(all_visits)
                 n_observed = observed_tonight(OB)
-                print(f'{datetime.now().strftime("%H:%M:%S")} - Evaluating DecorationRole for {index.row()}')
+#                 print(f'{datetime.now().strftime("%H:%M:%S")} - Evaluating DecorationRole for {index.row()}')
                 if n_observed == 0:
                     return QtGui.QImage('icons/status-offline.png')
                 else:
