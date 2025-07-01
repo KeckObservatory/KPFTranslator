@@ -517,16 +517,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_selected_instrument(self, value):
         self.SelectedInstrument.setText(value)
+        release_str = {True: 'Telescope Released.',
+                       False: 'Telescope NOT Released.'}[self.telescope_released]
+        diabled_msg = 'Telescope moves and Magiq integration disabled'
         if value in ['KPF', 'KPF-CC']:
             if self.telescope_released:
                 self.SelectedInstrument.setStyleSheet("color:green")
-                self.SelectedInstrument.setToolTip('')
+                self.SelectedInstrument.setToolTip(f'{release_str}')
             else:
                 self.SelectedInstrument.setStyleSheet("color:orange")
-                self.SelectedInstrument.setToolTip('Telescope not released')
+                self.SelectedInstrument.setToolTip(f'{release_str}. {diabled_msg}')
         else:
             self.SelectedInstrument.setStyleSheet("color:red")
-            self.SelectedInstrument.setToolTip('Telescope moves and Magiq integration disabled')
+            self.SelectedInstrument.setToolTip(f'Instrument is not KPF. {diabled_msg}')
 
     def update_slewcaltime_value(self, value):
         '''Updates value in QLabel and sets color'''
