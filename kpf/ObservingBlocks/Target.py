@@ -117,8 +117,8 @@ class Target(BaseOBComponent):
             rastr = pmcoord.ra.to_string(unit=u.hourangle, sep=' ', precision=raprecision)
             decstr = pmcoord.dec.to_string(unit=u.deg, sep=' ', precision=decprecision, alwayssign=True)
         except:
-            rastr = str(self.RA)
-            decstr = str(self.Dec)
+            rastr = str(self.RA).replace(':', ' ')
+            decstr = str(self.Dec).replace(':', ' ')
         out = f"{self.TargetName.value:15s} {rastr} {decstr}"
         if str(self.Equinox) == 'J2000':
             out += f" 2000"
