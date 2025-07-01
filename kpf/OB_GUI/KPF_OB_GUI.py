@@ -141,7 +141,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Tracked values
         self.disabled_detectors = []
         self.enable_magiq = True
-        self.telescope_released = False
+        self.telescope_released = GetTelescopeRelease.execute({})
         # Get KPF Programs on schedule
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
         program_IDs = list(set([f"{p['ProjCode']}" for p in classical]))
