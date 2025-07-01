@@ -22,6 +22,7 @@ class GetTargetList(KPFFunction):
         result = magiq_server_command('getTargetlist')
         lines = result.split('\n')
         target_names = [line[:16].strip() for line in lines]
+        log.debug(target_names)
         return target_names, lines
 
     @classmethod

@@ -23,14 +23,18 @@ class RemoveTarget(KPFFunction):
     @classmethod
     def perform(cls, args):
         target_name = args.get('TargetName', None)
-        target_names, lines = GetTargetList.execute({})
-        if target_name in target_names:
-            params = {'target': target_name}
-            log.info(f'Running Magiq removeTarget command {target_name}')
-            result = magiq_server_command('removeTarget', params=params)
-        else:
-            log.error(f'Target name "{target_name}" not in current Magiq list')
-            log.debug(target_names)
+        params = {'target': target_name}
+        log.info(f'Running Magiq removeTarget command {target_name}')
+        result = magiq_server_command('removeTarget', params=params)
+
+#         target_names, lines = GetTargetList.execute({})
+#         if target_name in target_names:
+#             params = {'target': target_name}
+#             log.info(f'Running Magiq removeTarget command {target_name}')
+#             result = magiq_server_command('removeTarget', params=params)
+#         else:
+#             log.error(f'Target name "{target_name}" not in current Magiq list')
+#             log.debug(target_names)
 
     @classmethod
     def post_condition(cls, args):
