@@ -20,6 +20,7 @@ import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 
+from kpf import cfg
 from kpf.OB_GUI import above_horizon, near_horizon
 from kpf.OB_GUI.GUIcomponents import (OBListModel, ConfirmationPopup, InputPopup,
                                       OBContentsDisplay, EditableMessageBox,
@@ -109,7 +110,8 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.example_calOB = ObservingBlock({})
         # Keywords
-        self.dcs = 'dcs1'
+        dcsint = cfg.getint('telescope', 'telnr', fallback=1)
+        self.dcs = f'dcs{dcsint}'
         self.log.debug('Cacheing keyword services')
         self.DCS_AZ = ktl.cache(self.dcs, 'AZ')
         self.DCS_AZ.monitor()
