@@ -19,6 +19,7 @@ class GetTelescopeRelease(KPFFunction):
         '''
         '''
         result = getTelescopeReadyState()
+        log.debug(f'getTelescopeReadyState returned {result}')
         return result.get('State', '') == 'Ready'
 
     @classmethod
