@@ -1254,7 +1254,7 @@ class MainWindow(QtWidgets.QMainWindow):
             targetname = removed.Target.TargetName
             self.log.info(f"Removing {targetname} from star list and OB list")
             if self.telescope_interactions_allowed() and self.enable_magiq:
-                RemoveTarget.execute({'target': targetname})
+                RemoveTarget.execute({'TargetName': targetname})
 
 
     ##--------------------------------------------------------------
