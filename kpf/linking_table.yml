@@ -225,6 +225,8 @@ links:
     # Schedule
     GetScheduledPrograms:
         cmd: schedule.GetScheduledPrograms.GetScheduledPrograms
+    GetTelescopeRelease:
+        cmd: schedule.GetTelescopeRelease.GetTelescopeRelease
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations

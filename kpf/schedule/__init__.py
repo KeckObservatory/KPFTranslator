@@ -71,3 +71,7 @@ def getObserverInfo(observerID):
     return query_schedule_API(query, params)
 
 
+def getTelescopeReadyState(telnr=1):
+    query = 'getTelescopeReadyState'
+    params = {'telnr': telnr}
+    return query_schedule_API(query, params)
