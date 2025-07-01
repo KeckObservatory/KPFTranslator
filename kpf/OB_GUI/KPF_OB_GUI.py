@@ -139,6 +139,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Tracked values
         self.disabled_detectors = []
         self.enable_magiq = True
+        self.telescope_released = False
         # Get KPF Programs on schedule
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
         program_IDs = list(set([f"{p['ProjCode']}" for p in classical]))
@@ -517,8 +518,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_selected_instrument(self, value):
         self.SelectedInstrument.setText(value)
         if value in ['KPF', 'KPF-CC']:
-            self.SelectedInstrument.setStyleSheet("color:green")
-            self.SelectedInstrument.setToolTip('')
+            if self.telescope_released:
+                self.SelectedInstrument.setStyleSheet("color:green")
+                self.SelectedInstrument.setToolTip('')
+            else:
+                self.SelectedInstrument.setStyleSheet("color:orange")
+                self.SelectedInstrument.setToolTip('Telescope not released')
         else:
             self.SelectedInstrument.setStyleSheet("color:red")
             self.SelectedInstrument.setToolTip('Telescope moves and Magiq integration disabled')
@@ -612,8 +617,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_LST(self, value):
         self.SiderealTimeValue.setText(value[:-3])
         self.update_counter += 1
-        if self.update_counter > 60:
+        if self.update_counter > 120:
             self.update_SOB_display()
+            self.telescope_released = GetTelescopeRelease.execute({})
 
     def update_SlewCalReq(self, value):
         self.log.debug(f"update_SlewCalReq: {value} {(value == 'Yes')}")
@@ -630,8 +636,8 @@ class MainWindow(QtWidgets.QMainWindow):
     ## Telescope Safety Check
     ##-------------------------------------------
     def telescope_interactions_allowed(self):
-        checks = [self.INSTRUME.ktl_keyword in ['KPF', 'KPF-CC'],
-                  GetTelescopeRelease.execute({}),
+        checks = [self.INSTRUME.ktl_keyword.ascii in ['KPF', 'KPF-CC'],
+                  self.telescope_released,
                   ]
         ok = np.all(checks)
         self.log.debug(f'telescope_interactions_allowed = {ok}')
