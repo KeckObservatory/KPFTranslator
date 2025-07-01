@@ -43,6 +43,7 @@ from kpf.utils.StartOfNight import StartOfNight
 from kpf.utils.EndOfNight import EndOfNight
 from kpf.schedule import get_semester_dates
 from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
+from kpf.schedule.GetTelescopeRelease import GetTelescopeRelease
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 
 
@@ -137,7 +138,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.fast = False
         # Tracked values
         self.disabled_detectors = []
-        self.enable_telescope = False
         self.enable_magiq = True
         # Get KPF Programs on schedule
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
@@ -222,9 +222,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Selected Instrument
         self.SelectedInstrument = self.findChild(QtWidgets.QLabel, 'SelectedInstrument')
-        INSTRUME = kPyQt.kFactory(ktl.cache(self.dcs, 'INSTRUME'))
-        INSTRUME.stringCallback.connect(self.update_selected_instrument)
-        INSTRUME.primeCallback()
+        self.INSTRUME = kPyQt.kFactory(ktl.cache(self.dcs, 'INSTRUME'))
+        self.INSTRUME.stringCallback.connect(self.update_selected_instrument)
+        self.INSTRUME.primeCallback()
 
         # script name
         self.scriptname_value = self.findChild(QtWidgets.QLabel, 'scriptname_value')
@@ -519,11 +519,9 @@ class MainWindow(QtWidgets.QMainWindow):
         if value in ['KPF', 'KPF-CC']:
             self.SelectedInstrument.setStyleSheet("color:green")
             self.SelectedInstrument.setToolTip('')
-            self.enable_telescope = True
         else:
             self.SelectedInstrument.setStyleSheet("color:red")
             self.SelectedInstrument.setToolTip('Telescope moves and Magiq integration disabled')
-            self.enable_telescope = False
 
     def update_slewcaltime_value(self, value):
         '''Updates value in QLabel and sets color'''
@@ -627,6 +625,17 @@ class MainWindow(QtWidgets.QMainWindow):
         if (self.SLEWCALREQ.read() == 'Yes') != (value == 2):
             self.log.info(f'Modifying kpfconfig.SLEWCALREQ = {(value == 2)}')
             self.kpfconfig['SLEWCALREQ'].write((value == 2))
+
+    ##-------------------------------------------
+    ## Telescope Safety Check
+    ##-------------------------------------------
+    def telescope_interactions_allowed(self):
+        checks = [self.INSTRUME.ktl_keyword in ['KPF', 'KPF-CC'],
+                  GetTelescopeRelease.execute({}),
+                  ]
+        ok = np.all(checks)
+        self.log.debug(f'telescope_interactions_allowed = {ok}')
+        return ok
 
     ##-------------------------------------------
     ## Methods to get data from DB or Schedule
@@ -802,7 +811,7 @@ class MainWindow(QtWidgets.QMainWindow):
         star_list = [OB.Target.to_star_list() for OB in self.model.OBs
                      if OB.Target is not None]
         print('\n'.join(star_list))
-        if self.enable_telescope and self.enable_magiq:
+        if self.telescope_interactions_allowed() and self.enable_magiq:
             RemoveAllTargets.execute({})
             SetTargetList.execute({'StarList': '\n'.join(star_list)})
 
@@ -1176,7 +1185,7 @@ class MainWindow(QtWidgets.QMainWindow):
                    f"{SOB.summary()}"]
             result = ConfirmationPopup('Execute Science OB?', msg).exec_()
             if result == QtWidgets.QMessageBox.Yes:
-                if self.enable_telescope and self.enable_magiq:
+                if self.telescope_interactions_allowed() and self.enable_magiq:
                     SelectTarget.execute({'target': SOB.Target.TargetName})
                 if self.KPFCC == True:
                     # Log execution
@@ -1233,7 +1242,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if removed.Target is not None:
             targetname = removed.Target.TargetName
             self.log.info(f"Removing {targetname} from star list and OB list")
-            if self.enable_telescope and self.enable_magiq:
+            if self.telescope_interactions_allowed() and self.enable_magiq:
                 RemoveTarget.execute({'target': targetname})
 
 
@@ -1407,7 +1416,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.set_SortOrWeather()
         targetname = self.SciObservingBlock.Target.TargetName
         self.log.info(f"Adding {targetname} to star list and OB list")
-        if self.enable_telescope and self.enable_magiq:
+        if self.telescope_interactions_allowed() and self.enable_magiq:
             AddTarget.execute(self.SciObservingBlock.Target.to_dict())
 
     def save_SciOB_to_file(self):
