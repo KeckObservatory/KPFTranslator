@@ -4,6 +4,7 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.telescope import KPF_is_selected_instrument
 from kpf.magiq import magiq_server_command
 from kpf.magiq.GetTargetList import GetTargetList
+from kpf.schedule.GetTelescopeRelease import GetTelescopeRelease
 
 
 class RemoveTarget(KPFFunction):
@@ -16,6 +17,8 @@ class RemoveTarget(KPFFunction):
     def pre_condition(cls, args):
         if not KPF_is_selected_instrument():
             raise KPFException('KPF is not selected instrument')
+        if not GetTelescopeRelease.execute({}):
+            raise KPFException('Telescope is not released')
 
     @classmethod
     def perform(cls, args):
