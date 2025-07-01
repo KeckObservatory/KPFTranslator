@@ -29,6 +29,7 @@ class AddTarget(KPFFunction):
             params['options'] += f"DRA={args.get('DRA')}"
         if abs(args.get('DDEC')) > 0.001:
             params['options'] += f"DRA={args.get('DDEC')}"
+        log.info(f'Running Magiq addTarget command {params.get("target")}')
         result = magiq_server_command('addTarget', params=params)
 
 

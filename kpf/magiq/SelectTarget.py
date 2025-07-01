@@ -24,6 +24,7 @@ class SelectTarget(KPFFunction):
         if target_name in target_names:
             log.info(f'Selecting {target_name} in Magiq')
             params = {'target': target_name}
+            log.info(f'Running Magiq selectTarget command {target_name}')
             result = magiq_server_command('selectTarget', params=params)
         else:
             log.error(f'Target name "{target_name}" not in current Magiq list')

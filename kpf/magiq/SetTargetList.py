@@ -19,6 +19,8 @@ class SetTargetList(KPFFunction):
     @classmethod
     def perform(cls, args):
         params = {'targetlist': args.get('StarList')}
+        nlines = len(args.get('StarList').split('\n'))
+        log.info(f'Running Magiq setTargetList command with {nlines} lines')
         result = magiq_server_command('setTargetList', params=params, post=True)
 
     @classmethod
