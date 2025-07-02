@@ -128,7 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
         self.PROGNAME = kPyQt.kFactory(ktl.cache('kpfexpose', 'PROGNAME'))
         # Selected OB
-        self.SOBindex = None
+        self.SOBindex = -1
         self.SOBobservable = False
         self.update_counter = 0
         # Coordinate Systems
@@ -345,8 +345,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ELSlew = self.findChild(QtWidgets.QLabel, 'SOB_ELSlew')
 
         # SOB Execution
-        self.SOB_CommentToObserver = self.findChild(QtWidgets.QLabel, 'CommentToObserver')
-        self.SOB_CommentToObserverLabel = self.findChild(QtWidgets.QLabel, 'CommentToObserverLabel')
+        self.SOB_NotesForObserver = self.findChild(QtWidgets.QLabel, 'CommentToObserver')
         self.SOB_ShowButton = self.findChild(QtWidgets.QPushButton, 'SOB_ShowButton')
         self.SOB_ShowButton.clicked.connect(self.show_SOB)
         self.SOB_AddComment = self.findChild(QtWidgets.QPushButton, 'SOB_AddComment')
@@ -434,14 +433,10 @@ class MainWindow(QtWidgets.QMainWindow):
         if value == 'Yes':
             self.scriptstop_value.setStyleSheet("color:red")
             self.scriptstop_btn.setText('CLEAR STOP')
-            msg = 'Disabled because STOP has been requested.'
-            self.SOB_ExecuteButton.setEnabled(False)
-            self.SOB_ExecuteButton.setToolTip(msg)
         elif value == 'No':
             self.scriptstop_value.setStyleSheet("color:green")
             self.scriptstop_btn.setText('Request Script STOP')
-            self.SOB_ExecuteButton.setEnabled(self.SOBindex is not None)
-            self.SOB_ExecuteButton.setToolTip('')
+        self.set_SOB_enabled()
 
     def set_scriptstop(self, value):
         self.log.debug(f'button clicked set_scriptstop: {value}')
@@ -815,7 +810,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # instead of having it happen on the first click.
         if len(self.model.OBs) > 0:
             self.select_OB(0)
-            self.select_OB(None)
+            self.select_OB(-1)
         self.update_star_list()
 
     def update_star_list(self):
@@ -959,7 +954,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ind = selected.indexes()[0].row()
             self.select_OB(ind)
         else:
-            self.SOBindex = None
+            self.SOBindex = -1
             self.update_SOB_display()
 
     def select_OB(self, ind):
@@ -967,25 +962,30 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug(f"Selection changed to {self.SOBindex}")
         self.update_SOB_display()
 
-    def set_SOB_enabled(self, enabled):
-        if enabled == False:
-            self.SOB_CommentToObserver.setText('')
-        self.SOB_CommentToObserverLabel.setEnabled(enabled)
-        self.SOB_ShowButton.setEnabled(enabled)
-        # Only enable observer comment if we have a database ID
-        if self.SOBindex is None or self.SOBindex < 0:
-            OBID_exists = False
+    def set_SOB_enabled(self):
+        self.log.debug(f"Running set_SOB_enabled")
+        # Is an OB selected?
+        OBselected = self.SOBindex >= 0
+        if not OBselected:
+            enabled = False
+            tool_tip = 'No OB selected.'
+        # Is SCRIPTSTOP requested?
+        elif self.SCRIPTSTOP.ktl_keyword.ascii == 'Yes':
+            enabled = False
+            tool_tip = 'SCRIPTSTOP has been requested.'
+        # Is Target observable
+        elif self.SOBobservable == False:
+            enabled = True
+            tool_tip = 'WARNING: Target is not observable.'
         else:
-            SOB = self.model.OBs[self.SOBindex]
-            OBID_exists = SOB.OBID not in ['', None]
-        if OBID_exists:
-            self.SOB_AddComment.setToolTip('')
-        else:
-            no_comment_msg = 'Can not submit comment without database ID'
-            self.SOB_AddComment.setToolTip(no_comment_msg)
-        self.SOB_AddComment.setEnabled(enabled and OBID_exists)
+            enabled = True
+            tool_tip = ''
+        self.log.debug(f"  {enabled} {tool_tip}")
         self.SOB_ExecuteButton.setEnabled(enabled)
+        self.SOB_ExecuteButton.setToolTip(tool_tip)
         self.SOB_RemoveFromList.setEnabled(enabled)
+        self.SlewCal.setEnabled(enabled)
+        self.SOB_ShowButton.setEnabled(OBselected)
 
     def clear_SOB_Target(self):
         self.SOB_TargetName.setText('--')
@@ -1002,7 +1002,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_AzSlew.setText('--')
         self.SOB_ELSlew.setText('--')
         self.SOBobservable = False
-        self.SOB_ExecuteButton.setEnabled(self.SOBobservable)
+        self.set_SOB_enabled()
 
     def set_SOB_Target(self, SOB):
         self.clear_SOB_Target()
@@ -1053,7 +1053,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
             self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
             self.SOBobservable = above_horizon(target_altz.az.deg, target_altz.alt.deg)
-            self.SOB_ExecuteButton.setEnabled(self.SOBobservable)
             if self.SOBobservable:
                 self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
                 if target_altz.alt.deg > self.ADC_horizon:
@@ -1090,26 +1089,33 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_ELSlew.setText("--")
 
     def update_SOB_display(self):
+        self.log.debug(f"update_SOB_display: self.SOBindex = {self.SOBindex}")
         self.update_counter = 0
-        if self.SOBindex is None:
-            self.set_SOB_enabled(False)
+        if self.SOBindex < 0:
             self.clear_SOB_Target()
             self.SOB_Observation1.setText('--')
             self.SOB_Observation2.setText('--')
             self.SOB_Observation3.setText('--')
             self.SOB_ExecutionTime.setText('--')
-            self.SOB_CommentToObserver.setText('')
-            self.SOB_CommentToObserver.setToolTip('')
+            self.SOB_NotesForObserver.setText('')
+            self.SOB_NotesForObserver.setToolTip('')
+            self.SOB_AddComment.setEnabled(False)
         else:
             SOB = self.model.OBs[self.SOBindex]
-            self.SOB_CommentToObserver.setText(SOB.CommentToObserver)
-            self.SOB_CommentToObserver.setToolTip(SOB.CommentToObserver)
-            self.set_SOB_enabled(True)
+            self.SOB_NotesForObserver.setText(SOB.CommentToObserver)
+            self.SOB_NotesForObserver.setToolTip(SOB.CommentToObserver)
+            # Is OB from DB?
+            if SOB.OBID == '':
+                no_comment_msg = 'Can not submit comment without database ID.'
+                self.SOB_AddComment.setEnabled(False)
+                self.SOB_AddComment.setToolTip(no_comment_msg)
+            else:
+                self.SOB_AddComment.setEnabled(True)
+                self.SOB_AddComment.setToolTip('')
             # Handle Target component
             if SOB.Target is None:
                 self.clear_SOB_Target()
                 self.SOBobservable = True
-                self.SOB_ExecuteButton.setEnabled(self.SOBobservable)
             else:
                 self.set_SOB_Target(SOB)
             # Handle Calibrations and Observations components
@@ -1122,6 +1128,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # Calculate OB Duration
             duration = EstimateOBDuration.execute({'fast': self.fast}, OB=SOB)
             self.SOB_ExecutionTime.setText(f"{duration/60:.0f} min")
+        self.set_SOB_enabled()
 
     def sort_OB_list(self, value):
         self.model.sort(value)
@@ -1130,7 +1137,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def clear_OB_selection(self):
         self.ListOfOBs.selectionModel().clearSelection()
-        self.SOBindex = None
+        self.SOBindex = -1
         self.update_SOB_display()
 
 
@@ -1138,7 +1145,7 @@ class MainWindow(QtWidgets.QMainWindow):
     ## Methods operating on a single OB
     ##-------------------------------------------
     def show_SOB(self):
-        if self.SOBindex is None:
+        if self.SOBindex < 0:
             return
         SOB = self.model.OBs[self.SOBindex]
         if SOB is None:
@@ -1167,7 +1174,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def add_comment(self):
-        if self.SOBindex is None:
+        if self.SOBindex < 0:
             print('add_comment: No OB selected')
             return
         SOB = self.model.OBs[self.SOBindex]
