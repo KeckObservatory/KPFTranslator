@@ -187,7 +187,7 @@ class MainWindow(QtWidgets.QMainWindow):
         LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
         LoadOBFromFile.triggered.connect(self.load_OB_from_file)
         LoadKPFCCSchedule = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_Schedule')
-        LoadKPFCCSchedule.triggered.connect(self.load_KPFCC_schedule)
+        LoadKPFCCSchedule.triggered.connect(self.read_KPFCC_schedule)
         LoadOBsFromKPFCC = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_OBs')
         LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
 
@@ -513,6 +513,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.RunEndOfNight.setEnabled(False)
 
     def update_selected_instrument(self, value):
+        self.log.debug('update_selected_instrument')
         self.SelectedInstrument.setText(value)
         release_str = {True: 'Telescope Released.',
                        False: 'Telescope NOT Released.'}[self.telescope_released]
@@ -540,6 +541,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.slewcaltime_value.setStyleSheet("color:red")
 
     def update_acffile(self, value):
+        self.log.debug(f'update_acffile: {value}')
         self.fast = QueryFastReadMode.execute({})
         if self.fast is True:
             self.read_mode.setText('Fast')
@@ -655,7 +657,7 @@ class MainWindow(QtWidgets.QMainWindow):
             for file in files:
                 file = Path(file)
                 if file.exists():
-                    print(f"Opening: {str(file)}")
+                    self.log.debug(f"Opening: {str(file)}")
                     newOB = ObservingBlock(file)
                     if newOB.validate() == True:
                         self.model.OBs.append(newOB)
@@ -663,6 +665,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.set_SortOrWeather()
 
     def set_SortOrWeather(self):
+        self.log.debug(f"set_SortOrWeather")
         if self.KPFCC == True:
             self.SortOrWeatherLabel.setText('Weather Band:')
             self.SortOrWeatherLabel.setEnabled(True)
@@ -679,6 +682,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SortOrWeather.setEnabled(True)
 
     def verify_overwrite_of_OB_list(self):
+        self.log.debug(f"verify_overwrite_of_OB_list")
         if len(self.model.OBs) == 0:
             return True
         else:
@@ -692,10 +696,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 return False
 
     def load_OBs_from_KPFCC(self):
+        self.log.debug(f"load_OBs_from_KPFCC")
         if self.verify_overwrite_of_OB_list():
             self.load_OBs('KPF-CC')
 
     def load_OBs_from_program(self):
+        self.log.debug(f"load_OBs_from_program")
         if self.verify_overwrite_of_OB_list():
             select_program_popup = SelectProgramPopup(self.program_strings)
             if select_program_popup.exec():
@@ -703,7 +709,8 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 self.log.debug("Cancel! Not pulling OBs from database.")
 
-    def load_KPFCC_schedule(self):
+    def read_KPFCC_schedule(self):
+        self.log.debug(f"read_KPFCC_schedule")
         if self.verify_overwrite_of_OB_list():
             self.KPFCC = True
             self.set_SortOrWeather()
@@ -718,7 +725,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     with open(schedule_files[i], 'r') as f:
                         contents += json.loads(f.read())
             Nsched = len(contents)
-            print(f"Pre-counted {Nsched} OBs to get for KPF-CC in all weather bands")
+            self.log.debug(f"Pre-counted {Nsched} OBs to get for KPF-CC in all weather bands")
             usepbar = Nsched > 15 # Create progress bar if we have a lot of OBs to retrieve
             if usepbar:
                 progress = QtWidgets.QProgressDialog("Retrieving OBs from Database", "Cancel", 0, Nsched)
@@ -814,15 +821,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_star_list()
 
     def update_star_list(self):
+        self.log.debug('update_star_list')
         star_list = [OB.Target.to_star_list() for OB in self.model.OBs
                      if OB.Target is not None]
-        print('\n'.join(star_list))
+        for line in star_list:
+            self.log.debug(line)
         if self.telescope_interactions_allowed() and self.enable_magiq:
             RemoveAllTargets.execute({})
             SetTargetList.execute({'StarList': '\n'.join(star_list)})
 
     def set_weather_band(self, value):
-        self.log.info(f"Setting Weather Band '{value}'")
+        self.log.info(f"set_weather_band: {value}")
         self.SortOrWeather.setCurrentText(str(value))
         try:
             WB = int(value)
@@ -877,6 +886,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug('Confirmation is no, not running script')
 
     def configure_FIU(self, mode):
+        self.log.info(f"configure_FIU: {mode}")
         if mode not in ['Stowed', 'Alignment', 'Acquisition', 'Observing', 'Calibration']:
             self.log.error(f"Desired FIU mode {mode} is not allowed")
             return
@@ -887,19 +897,16 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug(f'STDERR: {line}')
 
     def configure_FIU_observing(self):
-        self.log.info('running configure_FIU_observing')
         self.configure_FIU('Observing')
 
     def configure_FIU_calibrations(self):
-        self.log.info('running configure_FIU_calibrations')
         self.configure_FIU('Calibration')
 
     def configure_FIU_stow(self):
-        self.log.info('running configure_FIU_stow')
         self.configure_FIU('Stowed')
 
     def set_observer(self):
-        self.log.debug(f"action set_observer")
+        self.log.debug(f"set_observer")
         observer_input = InputPopup('Set observer names', 'Observer names:')
         if observer_input.exec_():
             if self.EXPOSE.ktl_keyword.ascii == 'Ready':
@@ -909,7 +916,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 ConfirmationPopup('Unable to set observer', msg, info_only=True, warning=True).exec_()
 
     def set_programID(self):
-        self.log.debug(f"action set_programID")
+        self.log.debug(f"set_programID")
         program_input = InputPopup('Set program ID', 'Program ID:')
         if program_input.exec_():
             if self.EXPOSE.ktl_keyword.ascii == 'Ready':
@@ -919,7 +926,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 ConfirmationPopup('Unable to set program', msg, info_only=True, warning=True).exec_()
 
     def run_end_of_night(self):
-        self.log.debug(f"action run_end_of_night")
+        self.log.info(f"run_end_of_night")
         # Handle case where script is currently running
         script_running = self.scriptname_value.text() not in ['', 'None', None]
         if script_running is True:
@@ -950,6 +957,7 @@ class MainWindow(QtWidgets.QMainWindow):
     ## Methods for OB List
     ##-------------------------------------------
     def select_OB_from_GUI(self, selected, deselected):
+        self.log.debug(f"select_OB_from_GUI {selected} {deselected}")
         if len(selected.indexes()) > 0:
             ind = selected.indexes()[0].row()
             self.select_OB(ind)
@@ -958,12 +966,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.update_SOB_display()
 
     def select_OB(self, ind):
+        self.log.debug(f"select_OB {ind}")
         self.SOBindex = ind
-        self.log.debug(f"Selection changed to {self.SOBindex}")
         self.update_SOB_display()
 
     def set_SOB_enabled(self):
-        self.log.debug(f"Running set_SOB_enabled")
+        self.log.debug(f"set_SOB_enabled")
         # Is an OB selected?
         OBselected = self.SOBindex >= 0
         if not OBselected:
@@ -988,6 +996,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_ShowButton.setEnabled(OBselected)
 
     def clear_SOB_Target(self):
+        self.log.debug(f"clear_SOB_Target")
         self.SOB_TargetName.setText('--')
         self.SOB_GaiaID.setText('--')
         self.SOB_TargetRA.setText('--')
@@ -1005,6 +1014,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_SOB_enabled()
 
     def set_SOB_Target(self, SOB):
+        self.log.debug(f"set_SOB_Target")
         self.clear_SOB_Target()
         self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
         self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
@@ -1131,11 +1141,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_SOB_enabled()
 
     def sort_OB_list(self, value):
+        self.log.debug(f"sort_OB_list")
         self.model.sort(value)
         self.model.layoutChanged.emit()
         self.clear_OB_selection()
 
     def clear_OB_selection(self):
+        self.log.debug(f"clear_OB_selection")
         self.ListOfOBs.selectionModel().clearSelection()
         self.SOBindex = -1
         self.update_SOB_display()
@@ -1175,20 +1187,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_comment(self):
         if self.SOBindex < 0:
-            print('add_comment: No OB selected')
+            self.log.warning('add_comment: No OB selected')
             return
         SOB = self.model.OBs[self.SOBindex]
         comment_box = ObserverCommentBox(SOB, self.Observer.text())
         if comment_box.exec():
-            print(f"Submitting comment: {comment_box.comment}")
-            print(f"From commentor: {comment_box.observer}")
+            self.log.info(f"Submitting comment: {comment_box.comment}")
+            self.log.info(f"From commentor: {comment_box.observer}")
             params = {'OBid': SOB.OBID,
                       'observer': comment_box.observer,
                       'comment': comment_box.comment,
                       }
             SubmitObserverComment.execute(params)
         else:
-            print("Cancel! Not submitting comment.")
+            self.log.debug("Cancel! Not submitting comment.")
 
 
     def execute_scheduled_OB(self):
@@ -1301,8 +1313,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 cursor.setPosition(cursor_position)
                 view.setTextCursor(cursor)
             except Exception as e:
-                print(f'Failed to set cursor position in {view}')
-                print(e)
+                self.log.error(f'Failed to set cursor position in {view}')
+                self.log.error(e)
         valid = getattr(self, f'Build{input_class_name}Valid')
         if thing in [None, []]:
             isvalid = False
@@ -1338,9 +1350,9 @@ class MainWindow(QtWidgets.QMainWindow):
                     new_thing = [class_dict[input_class_name](item) for item in new_data]
                 self.BuildOBC_set(new_thing)
             except Exception as e:
-                print(f'Failed to parse edited {input_class_name} text')
-                print(e)
-                print(f'Not changing contents')
+                self.log.error(f'Failed to parse edited {input_class_name} text')
+                self.log.error(e)
+                self.log.error(f'Not changing contents')
 
 
     ##--------------------------------------------------------------
@@ -1360,12 +1372,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def query_Simbad(self):
         self.log.debug(f"Running query_Simbad")
         target_name = self.QuerySimbadLineEdit.text().strip()
-        print(f"Querying: {target_name}")
+        self.log.debug(f"Querying: {target_name}")
         newtarg = self.BuildTarget.resolve_name(target_name)
         if newtarg is None:
-            print(f"Query failed for {target_name}")
+            self.log.warning(f"Query failed for {target_name}")
         self.QuerySimbadLineEdit.setText('')
-        print(newtarg.__repr__())
         self.set_Target(newtarg)
 
     ##--------------------------------------------------------------
@@ -1399,10 +1410,7 @@ class MainWindow(QtWidgets.QMainWindow):
         newOB.Target = self.BuildTarget
         newOB.Observations = self.BuildObservation
         if newOB.__repr__() == self.SciObservingBlock.__repr__():
-            print('newOB and existing OB match')
-#             print(newOB.__repr__())
-#             print()
-#             print(self.SciObservingBlock.__repr__())
+            self.log.debug('newOB and existing OB match')
             return
         self.SciObservingBlock = ObservingBlock(OBdict)
         self.SciObservingBlock.Target = self.BuildTarget
@@ -1422,7 +1430,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def send_SciOB_to_list(self):
         if self.SciObservingBlock.validate() != True:
-            print('OB is invalid, not sending to OB list')
+            self.log.warning('OB is invalid, not sending to OB list')
         elif self.KPFCC == False:
             self.model.OBs.append(self.SciObservingBlock)
             self.model.layoutChanged.emit()
@@ -1438,7 +1446,7 @@ class MainWindow(QtWidgets.QMainWindow):
             AddTarget.execute(self.SciObservingBlock.Target.to_dict())
 
     def save_SciOB_to_file(self):
-        print(self.SciObservingBlock.__repr__())
+        self.log.debug('save_SciOB_to_file')
         targname = self.SciObservingBlock.Target.get('TargetName')
         default_path_and_name = f"{self.file_path}/{targname}.yaml"
         result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
@@ -1455,6 +1463,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.info('No output file chosen')
 
     def load_SciOB_from_file(self):
+        self.log.debug('load_SciOB_from_file')
         file, filefilter = QtWidgets.QFileDialog.getOpenFileName(self, 
                                      "Open File", f"{self.file_path}",
                                      "OB Files (*yaml);;All Files (*)")
@@ -1462,7 +1471,7 @@ class MainWindow(QtWidgets.QMainWindow):
             file = Path(file)
             if file.exists():
                 self.file_path = file.parent
-                print(f"Opening: {str(file)}")
+                self.log.debug(f"Opening: {str(file)}")
                 newOB = ObservingBlock(file)
                 if newOB.validate() == True:
                     if newOB.ProgramID is not None:
@@ -1519,7 +1528,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def send_CalOB_to_list(self):
         if self.CalObservingBlock.validate() != True:
-            print('OB is invalid, not sending to OB list')
+            self.log.warning('OB is invalid, not sending to OB list')
         elif self.KPFCC == False:
             self.model.OBs.append(self.CalObservingBlock)
             self.model.layoutChanged.emit()
@@ -1553,7 +1562,7 @@ class MainWindow(QtWidgets.QMainWindow):
             file = Path(file)
             if file.exists():
                 self.file_path = file.parent
-                print(f"Opening: {str(file)}")
+                self.log.debug(f"Opening: {str(file)}")
                 newOB = ObservingBlock(file)
                 if newOB.validate() == True:
                     self.set_Calibrations(newOB.Calibrations)
