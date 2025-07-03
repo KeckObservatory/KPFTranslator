@@ -165,10 +165,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # KPF-CC Settings and Values
         self.schedule_path = Path(f'/s/sdata1701/Schedules/')
         self.default_schedule = self.schedule_path / 'default.json'
-        self.KPFCC_weather_bands = [1, 2, 3]
-        self.KPFCC_weather_band = 1
+        self.KPFCC_weather_bands = ['1', '2', '3']
+        self.KPFCC_weather_band = '1'
         self.KPFCC_OBs = {}
         self.KPFCC_start_times = {}
+        for WB in self.KPFCC_weather_bands:
+            self.KPFCC_OBs[WB] = []
+            self.KPFCC_start_times[WB] = None
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -768,7 +771,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SortOrWeatherLabel.setText('Weather Band:')
             self.SortOrWeatherLabel.setEnabled(True)
             self.SortOrWeather.clear()
-            self.SortOrWeather.addItems([str(w) for w in self.KPFCC_weather_bands])
+            self.SortOrWeather.addItems(self.KPFCC_weather_bands)
             self.SortOrWeather.currentTextChanged.connect(self.set_weather_band)
             self.SortOrWeather.setEnabled(True)
         else:
@@ -798,15 +801,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.log.debug("Cancel! Not overwriting OB list.")
                 return False
 
-    def set_weather_band(self, value):
-        self.log.info(f"set_weather_band: {value}")
-        self.SortOrWeather.setCurrentText(str(value))
-        WB = int(value)
+    def set_weather_band(self, WB):
+        self.log.info(f"set_weather_band: {WB}")
+        if WB not in self.KPFCC_weather_bands:
+            self.log.error(f'Band "{WB}" not in allowed weather band values')
+            self.log.debug(self.KPFCC_weather_bands)
+            return
+        self.SortOrWeather.setCurrentText(WB)
         self.KPFCC_weather_band = WB
         self.model.OBs = self.KPFCC_OBs[WB]
         self.model.start_times = self.KPFCC_start_times[WB]
         self.model.sort('time')
-        self.OBListHeader.setText('    StartTime '+self.hdr)
         self.model.layoutChanged.emit()
         self.update_star_list()
 
@@ -947,10 +952,11 @@ class MainWindow(QtWidgets.QMainWindow):
         utnow = datetime.datetime.utcnow()
         date = utnow-datetime.timedelta(days=1)
         date_str = date.strftime('%Y%b%d').lower()
-        schedule_files = [self.schedule_path / f'{date_str}_w{w}.json' for w in [1, 2, 3]]
+        schedule_files = [self.schedule_path / f'{date_str}_w{WB}.json'
+                          for WB in self.KPFCC_weather_bands]
         # Count what we need to load ahead of time for the progress bar
         contents = []
-        for i,WB in enumerate([1,2,3]):
+        for i,WB in enumerate(self.KPFCC_weather_bands):
             if schedule_files[i].exists():
                 with open(schedule_files[i], 'r') as f:
                     contents += json.loads(f.read())
@@ -964,7 +970,7 @@ class MainWindow(QtWidgets.QMainWindow):
             progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
             progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
         errmsg = []
-        for i,WB in enumerate([1,2,3]):
+        for i,WB in enumerate(self.KPFCC_weather_bands):
             self.KPFCC_OBs[WB] = []
             self.KPFCC_start_times[WB] = []
             if schedule_files[i].exists():
@@ -989,7 +995,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.log.error("Retrieval of OBs canceled by user.")
                         break
                     progress.setValue(i+1)
-            nOBs = [len(self.KPFCC_OBs[WB]) for WB in [1,2,3]]
+            nOBs = [len(self.KPFCC_OBs[WB]) for WB in self.KPFCC_weather_bands]
             self.log.info(f"Retrieved {len(self.KPFCC_OBs[WB])} for weather band {WB}")
         msg = [f"Retrieved {nOBs} (out of {Nsched}) KPF-CC OBs for all weather bands"]
         msg.extend(errmsg)
