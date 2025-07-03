@@ -1221,11 +1221,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_SOB_enabled()
 
     def remove_SOB(self):
-        removed = self.OBListModel.removeOB(self.SOBindex)
         self.clear_OB_selection()
+        removed = self.OBListModel.removeOB(self.SOBindex)
+        self.log.info(f"Removing {removed.summary()} from OB List")
         if removed.Target is not None:
             targetname = removed.Target.TargetName
-            self.log.info(f"Removing {targetname} from star list and OB list")
+            self.log.info(f"Removing {targetname} from Magiq star list")
             if self.telescope_interactions_allowed() and self.enable_magiq:
                 RemoveTarget.execute({'TargetName': targetname})
 

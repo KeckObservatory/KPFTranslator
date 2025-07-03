@@ -159,6 +159,7 @@ class OBListModel(QtCore.QAbstractListModel):
         if self.start_times is not None:
             stremoved = self.start_times.pop(ind)
         self.sort()
+        return removed
 
     def updateOB(self, ind, newOB):
         self.log.debug('OBListModel.updateOB')
