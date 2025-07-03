@@ -35,13 +35,14 @@ class OBListModel(QtCore.QAbstractListModel):
     - replace list
     - edit OB
     '''
-    def __init__(self, *args, OBs=[], **kwargs):
+    def __init__(self, *args, OBs=[], log=None, **kwargs):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = OBs
         self.start_times = None
         self.currentOB = -1
         self.nextOB = -1
         self.sort_key = None
+        self.log = log
 
     def data(self, ind, role):
         if role == QtCore.Qt.DisplayRole:
@@ -92,49 +93,54 @@ class OBListModel(QtCore.QAbstractListModel):
         else:
             now = datetime.utcnow()
             decimal_now = now.hour + now.minute/60 + now.second/3600
-            future = np.ma.masked_less_equal(start_times - decimal_now, 0)
-            past = np.ma.masked_greater(start_times - decimal_now, 0)
+            future = np.ma.masked_less_equal(np.array(self.start_times) - decimal_now, 0)
+            past = np.ma.masked_greater(np.array(self.start_times) - decimal_now, 0)
             self.currentOB = past.argmax() # Current is nearest start time in past
             self.nextOB = future.argmin() # Next is nearest start time in future
 
     def rowCount(self, ind):
         return len(self.OBs)
 
-    def sort(self, sortkey):
-        self.sort_key = sortkey
-        if sortkey == 'time' and self.start_times is not None:
+    def sort(self, key=None):
+        self.log.debug(f'OBListModel.sort: {key} {self.sort_key}')
+        if key is not None:
+            self.sort_key = key
+        if self.sort_key == 'time' and self.start_times is not None:
             zipped = [z for z in zip(self.start_times, self.OBs)]
             zipped.sort(key=lambda z: z[0])
             self.OBs = [z[1] for z in zipped]
             self.start_times = [z[0] for z in zipped]
-        elif sortkey == 'Name':
+        elif self.sort_key == 'Name':
             self.OBs.sort(key=lambda o: o.Target.TargetName.value, reverse=False)
-        elif sortkey == 'RA':
+        elif self.sort_key == 'RA':
             self.OBs.sort(key=lambda o: o.Target.coord.ra.deg, reverse=False)
-        elif sortkey == 'Dec':
+        elif self.sort_key == 'Dec':
             self.OBs.sort(key=lambda o: o.Target.coord.dec.deg, reverse=False)
-        elif sortkey == 'Gmag':
+        elif self.sort_key == 'Gmag':
             self.OBs.sort(key=lambda o: o.Target.Gmag.value, reverse=False)
-        elif sortkey == 'Jmag':
+        elif self.sort_key == 'Jmag':
             self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
         self.layoutChanged.emit()
 
     def set_list(self, OBs, start_times=None):
+        self.log.debug('OBListModel.set_list')
         if start_times is not None:
             assert len(OBs) == len(start_times)
         self.OBs = OBs
         self.start_times = start_times
         if start_times is not None: self.sort_key = 'time'
-        if self.sort_key is not None: self.sort(self.sort_key)
+        self.sort()
 
     def append(self, OB, start_time=24):
+        self.log.debug('OBListModel.append')
         self.OBs.append(OB)
         if self.start_times is not None:
             self.start_times.append(start_time)
             self.sort_key = 'time'
-        if self.sort_key is not None: self.sort(self.sort_key)
+        self.sort()
 
     def extend(self, OBs, start_times=None):
+        self.log.debug('OBListModel.extend')
         self.OBs.extend(OBs)
         if self.start_times is not None:
             if start_times is None:
@@ -142,24 +148,21 @@ class OBListModel(QtCore.QAbstractListModel):
             else:
                 self.start_times.extend(start_times)
             self.sort_key = 'time'
-        if self.sort_key is not None: self.sort(self.sort_key)
+        self.sort()
 
-    def remove(self, ind):
+    def removeOB(self, ind):
+        self.log.debug('OBListModel.removeOB')
         removed = self.OBs.pop(ind)
         if self.start_times is not None:
             stremoved = self.start_times.pop(ind)
-        if self.sort_key is not None:
-            self.sort(self.sort_key)
-        else:
-            self.layoutChanged.emit()
+        self.sort()
 
-    def update(self, ind, newOB):
+    def updateOB(self, ind, newOB):
+        self.log.debug('OBListModel.updateOB')
         self.OBs[ind] = newOB
-        if self.sort_key is not None:
-            self.sort(self.sort_key)
-        else:
-            self.layoutChanged.emit()
+        self.sort()
 
     def clear_list(self):
+        self.log.debug('OBListModel.clear_list')
         self.set_list([])
         self.layoutChanged.emit()

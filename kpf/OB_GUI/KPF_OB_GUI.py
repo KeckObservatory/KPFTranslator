@@ -339,7 +339,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.hdr = 'TargetName       RA          Dec      Gmag Jmag Observations'
         self.OBListHeader.setText(self.hdr)
         self.OBListView = self.findChild(QtWidgets.QListView, 'ListOfOBs')
-        self.OBListModel = OBListModel(OBs=[])
+        self.OBListModel = OBListModel(OBs=[], log=self.log)
         self.OBListView.setModel(self.OBListModel)
         self.OBListView.selectionModel().selectionChanged.connect(self.select_OB_from_GUI)
 
@@ -1227,7 +1227,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_SOB_enabled()
 
     def remove_SOB(self):
-        removed = self.OBListModel.remove(self.SOBindex)
+        removed = self.OBListModel.removeOB(self.SOBindex)
         self.clear_OB_selection()
         if removed.Target is not None:
             targetname = removed.Target.TargetName
@@ -1237,7 +1237,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def clear_OB_selection(self):
         self.log.debug(f"clear_OB_selection")
-        self.OBListModel.clearSelection()
+        self.OBListView.selectionModel().clearSelection()
         self.SOBindex = -1
         self.update_SOB_display()
 
@@ -1261,7 +1261,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.log.info('Edit popup: Ok')
                 if OBedit_popup.result.validate():
                     self.log.info('The edited OB has been validated')
-                    self.OBListModel.update(self.SOBindex, OBedit_popup.result)
+                    self.OBListModel.updateOB(self.SOBindex, OBedit_popup.result)
 #                     self.OBListModel.OBs[self.SOBindex] = OBedit_popup.result
 #                     self.OBListModel.layoutChanged.emit()
                     self.update_SOB_display()
