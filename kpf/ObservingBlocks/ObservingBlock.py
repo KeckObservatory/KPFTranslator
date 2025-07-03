@@ -49,7 +49,7 @@ class ObservingBlock(object):
         self.semester = OBdict.pop('semester', '')
         self.semid = OBdict.pop('semid', '')
         self.OBID = OBdict.pop('id', '')
-        self.CommentToObserver = OBdict.pop('CommentToObserver', '')
+        self.CommentToObserver = OBdict.pop('comment', '')
         self.History = OBdict.pop('History', [])
         self.query_status = OBdict.pop('status', [])
         # Metadata for OB GUI
