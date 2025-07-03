@@ -766,7 +766,7 @@ class MainWindow(QtWidgets.QMainWindow):
         '''Set the QComboBox above the OB List to handle either the sort order
         or the weather band depending on whether we are in KPF-CC mode or not.
         '''
-        self.log.debug(f"set_SortOrWeather")
+        self.log.debug(f"set_SortOrWeather (KPFCC={self.KPFCC})")
         if self.KPFCC == True:
             self.SortOrWeatherLabel.setText('Weather Band:')
             self.SortOrWeatherLabel.setEnabled(True)
@@ -802,12 +802,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 return False
 
     def set_weather_band(self, WB):
-        self.log.info(f"set_weather_band: {WB}")
         if WB == "":
-            pass
+            return
         elif WB not in self.KPFCC_weather_bands:
             self.log.error(f'Band "{WB}" not in allowed weather band values')
             return
+        self.log.info(f"set_weather_band: {WB}")
         self.SortOrWeather.setCurrentText(WB)
         self.KPFCC_weather_band = WB
         self.model.OBs = self.KPFCC_OBs[WB]
@@ -895,16 +895,17 @@ class MainWindow(QtWidgets.QMainWindow):
             select_program_popup = SelectProgramPopup(self.program_strings)
             if select_program_popup.exec():
                 progID = select_program_popup.ProgID
-                self.clear_OB_selection()
                 self.KPFCC = False
+                self.clear_OB_selection()
                 self.OBListHeader.setText(self.hdr)
                 OBs = GetObservingBlocksByProgram.execute({'program': progID})
+                msg = f"Retrieved {len(OBs)} OBs for program {progID}"
+                self.log.debug(msg)
                 self.model.OBs = OBs
                 self.model.start_times = None
                 self.model.layoutChanged.emit()
                 self.set_SortOrWeather()
                 self.update_star_list()
-                msg = f"Retrieved {len(OBs)} OBs for program {progID}"
                 ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
             else:
                 self.log.debug("Cancel! Not pulling OBs from database.")
