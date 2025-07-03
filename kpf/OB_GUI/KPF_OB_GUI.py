@@ -11,6 +11,7 @@ import json
 import re
 import yaml
 import datetime
+import subprocess
 import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord, EarthLocation, AltAz, Angle
@@ -22,10 +23,10 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 
 from kpf import cfg
 from kpf.OB_GUI import above_horizon, near_horizon
-from kpf.OB_GUI.GUIcomponents import (OBListModel, ConfirmationPopup, InputPopup,
-                                      OBContentsDisplay, EditableMessageBox,
-                                      ObserverCommentBox, SelectProgramPopup,
-                                      launch_command_in_xterm)
+from kpf.OB_GUI.OBListModel import OBListModel
+from kpf.OB_GUI.Popups import (ConfirmationPopup, InputPopup,
+                               OBContentsDisplay, EditableMessageBox,
+                               ObserverCommentBox, SelectProgramPopup)
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
@@ -81,6 +82,22 @@ def create_GUI_log():
     LogFileHandler.setFormatter(LogFormat)
     guilog.addHandler(LogFileHandler)
     return guilog
+
+
+##-------------------------------------------------------------------------
+## Wrapper to launch script in xterm
+##-------------------------------------------------------------------------
+def launch_command_in_xterm(script_name, sleep=0.25):
+    '''Pop up an xterm with the script running.
+    '''
+    kpfdo = Path(__file__).parent.parent / 'kpfdo'
+    script_cmd = f'{kpfdo} {script_name} ; echo "Done!" ; sleep 30'
+    cmd = ['xterm', '-title', f'{script_name}', '-name', f'{script_name}',
+           '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+           '-e', f'{script_cmd}']
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#     stdout_output, stderr_output = proc.communicate(timeout=sleep)
+#     return stdout_output, stderr_output
 
 
 ##-------------------------------------------------------------------------
@@ -321,11 +338,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.OBListHeader = self.findChild(QtWidgets.QLabel, 'OBListHeader')
         self.hdr = 'TargetName       RA          Dec      Gmag Jmag Observations'
         self.OBListHeader.setText(self.hdr)
-
-        self.ListOfOBs = self.findChild(QtWidgets.QListView, 'ListOfOBs')
-        self.model = OBListModel(OBs=[])
-        self.ListOfOBs.setModel(self.model)
-        self.ListOfOBs.selectionModel().selectionChanged.connect(self.select_OB_from_GUI)
+        self.OBListView = self.findChild(QtWidgets.QListView, 'ListOfOBs')
+        self.OBListModel = OBListModel(OBs=[])
+        self.OBListView.setModel(self.OBListModel)
+        self.OBListView.selectionModel().selectionChanged.connect(self.select_OB_from_GUI)
 
         # Selected Observing Block Details
         self.SOB_TargetName = self.findChild(QtWidgets.QLabel, 'SOB_TargetName')
@@ -784,12 +800,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def sort_OB_list(self, value):
         self.log.debug(f"sort_OB_list")
-        self.model.sort(value)
-        self.model.layoutChanged.emit()
+        self.OBListModel.sort(value)
         self.clear_OB_selection()
 
     def verify_overwrite_of_OB_list(self):
-        if len(self.model.OBs) == 0:
+        if len(self.OBListModel.OBs) == 0:
             return True
         else:
             msg = 'Loading OBs from a new program will clear the current list of OBs. Continue?'
@@ -810,10 +825,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.info(f"set_weather_band: {WB}")
         self.SortOrWeather.setCurrentText(WB)
         self.KPFCC_weather_band = WB
-        self.model.OBs = self.KPFCC_OBs[WB]
-        self.model.start_times = self.KPFCC_start_times[WB]
-        self.model.sort('time')
-        self.model.layoutChanged.emit()
+        self.OBListModel.set_list(self.KPFCC_OBs[WB],
+                                  start_times=self.KPFCC_start_times[WB])
+#         self.OBListModel.OBs = self.KPFCC_OBs[WB]
+#         self.OBListModel.start_times = self.KPFCC_start_times[WB]
+#         self.OBListModel.sort('time')
         self.update_star_list()
 
 
@@ -846,9 +862,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.log.debug(f"Opening: {str(file)}")
                     newOB = ObservingBlock(file)
                     if newOB.validate() == True:
-                        self.model.OBs.append(newOB)
-            self.model.layoutChanged.emit()
-            self.set_SortOrWeather()
+                        self.OBListModel.append(newOB)
 
     def save_OB_to_file(self, OB, default=None):
         self.log.debug('save_OB_to_file')
@@ -874,7 +888,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # just makes the GUI more "responsive" as the loading of the OBs when
         # program ID is chosen contains all of the slow caching of values
         # instead of having it happen on the first click.
-#         if len(self.model.OBs) > 0:
+#         if len(self.OBListModel.OBs) > 0:
 #             self.select_OB(0)
 #             self.select_OB(-1)
 
@@ -883,9 +897,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clear_OB_selection()
         self.KPFCC = False
         self.OBListHeader.setText(self.hdr)
-        self.model.OBs = []
-        self.model.start_times = None
-        self.model.layoutChanged.emit()
+        self.OBListModel.clear_list()
+#         self.OBListModel.OBs = []
+#         self.OBListModel.start_times = None
+#         self.OBListModel.layoutChanged.emit()
         self.set_SortOrWeather()
         self.update_star_list()
 
@@ -901,9 +916,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 OBs = GetObservingBlocksByProgram.execute({'program': progID})
                 msg = f"Retrieved {len(OBs)} OBs for program {progID}"
                 self.log.debug(msg)
-                self.model.OBs = OBs
-                self.model.start_times = None
-                self.model.layoutChanged.emit()
+                self.OBListModel.set_list(OBs)
+#                 self.OBListModel.OBs = OBs
+#                 self.OBListModel.start_times = None
+#                 self.OBListModel.layoutChanged.emit()
                 self.set_SortOrWeather()
                 self.update_star_list()
                 ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
@@ -920,8 +936,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.KPFCC = False
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
         progIDs = set([p['ProjCode'] for p in cadence])
-        self.model.OBs = []
-        self.model.start_times = None
+        self.OBListModel.clear_list()
+#         self.OBListModel.OBs = []
+#         self.OBListModel.start_times = None
         # Create progress bar if we have a lot of programs to query
         usepbar = len(progIDs) > 5 
         if usepbar:
@@ -933,15 +950,14 @@ class MainWindow(QtWidgets.QMainWindow):
         for i,progID in enumerate(progIDs):
             self.log.debug(f'Retrieving OBs for {progID}')
             programOBs = GetObservingBlocksByProgram.execute({'program': progID})
-            self.model.OBs.extend(programOBs)
-            self.log.debug(f'  Got {len(programOBs)} for {progID}, total KPF-CC OB count is now {len(self.model.OBs)}')
+            self.OBListModel.extend(programOBs)
+            self.log.debug(f'  Got {len(programOBs)} for {progID}, total KPF-CC OB count is now {len(self.OBListModel.OBs)}')
             if usepbar:
                 if progress.wasCanceled():
                     self.log.error("Retrieval of OBs canceled by user.")
                     break
                 progress.setValue(i+1)
         self.OBListHeader.setText('    StartTime '+self.hdr)
-        self.model.layoutChanged.emit()
         self.set_SortOrWeather()
         self.update_star_list()
 
@@ -1014,7 +1030,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_star_list(self):
         self.log.debug('update_star_list')
-        star_list = [OB.Target.to_star_list() for OB in self.model.OBs
+        star_list = [OB.Target.to_star_list() for OB in self.OBListModel.OBs
                      if OB.Target is not None]
         for line in star_list:
             self.log.debug(line)
@@ -1181,7 +1197,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SOB_NotesForObserver.setToolTip('')
             self.SOB_AddComment.setEnabled(False)
         else:
-            SOB = self.model.OBs[self.SOBindex]
+            SOB = self.OBListModel.OBs[self.SOBindex]
             self.SOB_NotesForObserver.setText(SOB.CommentToObserver)
             self.SOB_NotesForObserver.setToolTip(SOB.CommentToObserver)
             # Is OB from DB?
@@ -1211,9 +1227,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_SOB_enabled()
 
     def remove_SOB(self):
-        removed = self.model.OBs.pop(self.SOBindex)
+        removed = self.OBListModel.remove(self.SOBindex)
         self.clear_OB_selection()
-        self.model.layoutChanged.emit()
         if removed.Target is not None:
             targetname = removed.Target.TargetName
             self.log.info(f"Removing {targetname} from star list and OB list")
@@ -1222,14 +1237,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def clear_OB_selection(self):
         self.log.debug(f"clear_OB_selection")
-        self.ListOfOBs.selectionModel().clearSelection()
+        self.OBListModel.clearSelection()
         self.SOBindex = -1
         self.update_SOB_display()
 
     def show_SOB(self):
         if self.SOBindex < 0:
             return
-        SOB = self.model.OBs[self.SOBindex]
+        SOB = self.OBListModel.OBs[self.SOBindex]
         if SOB is None:
             return
         OBcontents_popup = OBContentsDisplay(SOB)
@@ -1246,8 +1261,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.log.info('Edit popup: Ok')
                 if OBedit_popup.result.validate():
                     self.log.info('The edited OB has been validated')
-                    self.model.OBs[self.SOBindex] = OBedit_popup.result
-                    self.model.layoutChanged.emit()
+                    self.OBListModel.update(self.SOBindex, OBedit_popup.result)
+#                     self.OBListModel.OBs[self.SOBindex] = OBedit_popup.result
+#                     self.OBListModel.layoutChanged.emit()
                     self.update_SOB_display()
                 else:
                     self.log.warning('Edits did not validate. Not changing OB.')
@@ -1258,7 +1274,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.SOBindex < 0:
             self.log.warning('add_comment: No OB selected')
             return
-        SOB = self.model.OBs[self.SOBindex]
+        SOB = self.OBListModel.OBs[self.SOBindex]
         comment_box = ObserverCommentBox(SOB, self.Observer.text())
         if comment_box.exec():
             self.log.info(f"Submitting comment: {comment_box.comment}")
@@ -1281,7 +1297,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.SOBindex < 0:
             return
         self.log.debug(f"execute_SOB")
-        SOB = self.model.OBs[self.SOBindex]
+        SOB = self.OBListModel.OBs[self.SOBindex]
         msg = ["Do you really want to execute the current OB?", '',
                f"{SOB.summary()}"]
         result = ConfirmationPopup('Execute Science OB?', msg).exec_()
@@ -1293,14 +1309,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 now = datetime.datetime.utcnow()
                 now_str = now.strftime('%Y-%m-%d %H:%M:%S UT')
                 decimal_now = now.hour + now.minute/60 + now.second/3600
-                start_time = self.model.start_time[self.SOBindex]
-                start_current = self.model.start_time[self.model.CurrentOB]
-                start_next = self.model.start_time[self.model.NextOB]
-                on_schedule = self.SOBindex in [self.model.CurrentOB, self.model.NextOB]
+                start_time = self.OBListModel.start_time[self.SOBindex]
+                start_current = self.OBListModel.start_time[self.OBListModel.currentOB]
+                start_next = self.OBListModel.start_time[self.OBListModel.nextOB]
+                on_schedule = self.SOBindex in [self.OBListModel.currentOB, self.OBListModel.nextOB]
                 contents = [now_str, f'{decimal_now:.2f}', f'{SOB.OBID}',
                             f'{self.SOBindex}', f'{start_time:.2f}',
-                            f'{self.model.CurrentOB}', f'{start_current:.2f}',
-                            f'{self.model.NextOB}', f'{start_next:.2f}',
+                            f'{self.OBListModel.currentOB}', f'{start_current:.2f}',
+                            f'{self.OBListModel.nextOB}', f'{start_next:.2f}',
                             f'{on_schedule}']
                 line = ', '.join(contents)
                 if not on_schedule:
@@ -1309,8 +1325,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.log.schedule(f'  Start time for scheduled OB is {start_current:.2f} UT')
                     self.log.schedule(f'  Start time for next OB is {start_next:.2f} UT')
             self.RunOB(SOB)
-            self.model.OBs[self.SOBindex].executed = True
-            self.model.layoutChanged.emit()
         else:
             self.log.debug('User opted not to execute OB')
 
@@ -1493,15 +1507,16 @@ class MainWindow(QtWidgets.QMainWindow):
     def send_SciOB_to_list(self):
         if self.SciObservingBlock.validate() != True:
             self.log.warning('OB is invalid, not sending to OB list')
-        elif self.KPFCC == False:
-            self.model.OBs.append(self.SciObservingBlock)
-            self.model.layoutChanged.emit()
-        elif self.KPFCC == True:
-            self.model.OBs.append(self.SciObservingBlock)
-            self.model.start_times.append(24)
-            self.model.sort('time')
-            self.model.layoutChanged.emit()
-            self.set_SortOrWeather()
+        else:
+            self.OBListModel.append(self.SciObservingBlock)
+#         elif self.KPFCC == False:
+#             self.OBListModel.OBs.append(self.SciObservingBlock)
+#             self.OBListModel.layoutChanged.emit()
+#         elif self.KPFCC == True:
+#             self.OBListModel.OBs.append(self.SciObservingBlock)
+#             self.OBListModel.start_times.append(24)
+#             self.OBListModel.sort('time')
+#             self.set_SortOrWeather()
         targetname = self.SciObservingBlock.Target.TargetName
         self.log.info(f"Adding {targetname} to star list and OB list")
         if self.telescope_interactions_allowed() and self.enable_magiq:
@@ -1573,15 +1588,16 @@ class MainWindow(QtWidgets.QMainWindow):
     def send_CalOB_to_list(self):
         if self.CalObservingBlock.validate() != True:
             self.log.warning('OB is invalid, not sending to OB list')
-        elif self.KPFCC == False:
-            self.model.OBs.append(self.CalObservingBlock)
-            self.model.layoutChanged.emit()
-        elif self.KPFCC == True:
-            self.model.OBs.append(self.CalObservingBlock)
-            self.model.start_times.append(24)
-            self.model.sort('time')
-            self.model.layoutChanged.emit()
-            self.set_SortOrWeather()
+        else:
+            self.OBListModel.append(self.CalObservingBlock)
+#         elif self.KPFCC == False:
+#             self.OBListModel.OBs.append(self.CalObservingBlock)
+#             self.OBListModel.layoutChanged.emit()
+#         elif self.KPFCC == True:
+#             self.OBListModel.OBs.append(self.CalObservingBlock)
+#             self.OBListModel.start_times.append(24)
+#             self.OBListModel.sort('time')
+#             self.set_SortOrWeather()
 
     def save_CalOB_to_file(self):
         self.log.debug('save_CalOB_to_file')

@@ -2,124 +2,14 @@ from pathlib import Path
 import yaml
 from datetime import datetime, timedelta
 import numpy as np
-import subprocess
 import time
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from kpf.OB_GUI import above_horizon, near_horizon
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocks
-from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
-
-
-def observed_tonight(OB):
-    now = datetime.utcnow()
-    exposures_tonight = []
-    for hist in OB.History:
-        if len(hist.get('exposure_start_times', [])) > 0:
-            for timestring in hist.get('exposure_start_times'):
-                tstamp = datetime.strptime(timestring[:19], '%Y-%m-%dT%H:%M:%S')
-                if (now-tstamp).days <= 1 and (tstamp.day == now.day):
-                    exposures_tonight.append(timestring)
-#     print(f"Found {len(exposures_tonight)} recent exposures for {OB.summary()}")
-    return len(exposures_tonight)
-
-
-def launch_command_in_xterm(script_name, sleep=0.25):
-    '''Pop up an xterm with the script running.
-    '''
-    kpfdo = Path(__file__).parent.parent / 'kpfdo'
-    script_cmd = f'{kpfdo} {script_name} ; echo "Done!" ; sleep 30'
-    cmd = ['xterm', '-title', f'{script_name}', '-name', f'{script_name}',
-           '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-           '-e', f'{script_cmd}']
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#     stdout_output, stderr_output = proc.communicate(timeout=sleep)
-#     return stdout_output, stderr_output
-
-##-------------------------------------------------------------------------
-## Define Model for MVC
-##-------------------------------------------------------------------------
-class OBListModel(QtCore.QAbstractListModel):
-    '''Model to hold the list of OBs that the observer will select from.
-    '''
-    def __init__(self, *args, OBs=[], **kwargs):
-        super(OBListModel, self).__init__(*args, **kwargs)
-        self.OBs = OBs
-        self.start_times = None
-        self.currentOB = -1
-        self.nextOB = -1
-
-    def data(self, index, role):
-        if role == QtCore.Qt.DisplayRole:
-            if self.start_times is None:
-                OB = self.OBs[index.row()]
-                output_line = f"{str(OB):s}"
-            else:
-                OB = self.OBs[index.row()]
-                start_time_decimal = self.start_times[index.row()]
-                sthr = int(np.floor(start_time_decimal))
-                stmin = (start_time_decimal-sthr)*60
-                start_time_str = f"{sthr:02d}:{stmin:02.0f} UT"
-                output_line = f"{start_time_str}  {str(OB):s}"
-            if OB.edited == True:
-                output_line += ' [edited]'
-            return output_line
-        if role == QtCore.Qt.DecorationRole:
-            OB  = self.OBs[index.row()]
-
-            # Check if this OB is next
-            if self.start_times is not None:
-                now = datetime.utcnow()
-                decimal_now = now.hour + now.minute/60 + now.second/3600
-                delta_t = np.array(self.start_times) - decimal_now
-
-                iscurr = np.array([-1e6*dt if dt>0 else dt for dt in delta_t])
-                if iscurr.argmax() == index.row():
-                    self.currentOB = index.row()
-                    return QtGui.QImage('icons/arrow.png')
-                isnext = np.array([-1e6*dt if dt<0 else dt for dt in delta_t])
-                if isnext.argmin() == index.row():
-                    self.nextOB = index.row()
-                    return QtGui.QImage('icons/arrow-curve-000-left.png')
-
-            # Check observed state
-            if self.start_times is not None:
-                all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
-                n_visits = len(all_visits)
-                n_observed = observed_tonight(OB)
-#                 print(f'{datetime.now().strftime("%H:%M:%S")} - Evaluating DecorationRole for {index.row()}')
-                if n_observed == 0:
-                    return QtGui.QImage('icons/status-offline.png')
-                else:
-                    if all_visits.index(index.row()) < n_observed:
-                        return QtGui.QImage('icons/tick.png')
-                    else:
-                        return QtGui.QImage('icons/status-away.png')
-
-    def rowCount(self, index):
-        return len(self.OBs)
-
-    def sort(self, sortkey):
-        if self.start_times is not None:
-            zipped = [z for z in zip(self.start_times, self.OBs)]
-            zipped.sort(key=lambda z: z[0])
-            self.OBs = [z[1] for z in zipped]
-            self.start_times = [z[0] for z in zipped]
-        elif sortkey == 'Name':
-            self.OBs.sort(key=lambda o: o.Target.TargetName.value, reverse=False)
-        elif sortkey == 'RA':
-            self.OBs.sort(key=lambda o: o.Target.coord.ra.deg, reverse=False)
-        elif sortkey == 'Dec':
-            self.OBs.sort(key=lambda o: o.Target.coord.dec.deg, reverse=False)
-        elif sortkey == 'Gmag':
-            self.OBs.sort(key=lambda o: o.Target.Gmag.value, reverse=False)
-        elif sortkey == 'Jmag':
-            self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
 
 
 ##-------------------------------------------------------------------------
@@ -358,7 +248,6 @@ class EditableMessageBox(QtWidgets.QMessageBox):
                 self.valid = self.result.validate()
             if self.input_type == ObservingBlock:
                 self.result.edited = (self.edited_lines != self.original_lines)
-                self.result.executed = self.input_object.executed
         except Exception as e:
             print(e)
             if self.input_type == Observation:
@@ -438,7 +327,6 @@ class OBEditableMessageBox(QtWidgets.QMessageBox):
         try:
             self.newOB = ObservingBlock(yaml.safe_load(self.OBlines))
             self.newOB.edited = True
-            self.newOB.executed = self.OB.executed
         except:
             self.newOB = None
 
