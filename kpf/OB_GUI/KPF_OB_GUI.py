@@ -888,6 +888,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_SortOrWeather()
         self.update_star_list()
 
+    def load_OBs_from_program(self):
+        self.log.debug(f"load_OBs_from_program")
+        if self.verify_overwrite_of_OB_list():
+            select_program_popup = SelectProgramPopup(self.program_strings)
+            if select_program_popup.exec():
+                progID = select_program_popup.ProgID
+                self.clear_OB_selection()
+                self.KPFCC = False
+                self.OBListHeader.setText(self.hdr)
+                OBs = GetObservingBlocksByProgram.execute({'program': progID})
+                self.model.OBs = OBs
+                self.model.start_times = None
+                self.model.layoutChanged.emit()
+                self.set_SortOrWeather()
+                self.update_star_list()
+                msg = f"Retrieved {len(OBs)} OBs for program {progID}"
+                ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
+            else:
+                self.log.debug("Cancel! Not pulling OBs from database.")
+
     def load_OBs_from_KPFCC(self):
         '''This loads KPF-CCs in to a classical observing mode.
         '''
@@ -922,26 +942,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.model.layoutChanged.emit()
         self.set_SortOrWeather()
         self.update_star_list()
-
-    def load_OBs_from_program(self):
-        self.log.debug(f"load_OBs_from_program")
-        if self.verify_overwrite_of_OB_list():
-            select_program_popup = SelectProgramPopup(self.program_strings)
-            if select_program_popup.exec():
-                progID = select_program_popup.ProgID
-                self.clear_OB_selection()
-                self.KPFCC = False
-                self.OBListHeader.setText(self.hdr)
-                OBs = GetObservingBlocksByProgram.execute({'program': progID})
-                self.model.OBs = OBs
-                self.model.start_times = None
-                self.model.layoutChanged.emit()
-                self.set_SortOrWeather()
-                self.update_star_list()
-                msg = f"Retrieved {len(OBs)} OBs for program {progID}"
-                ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
-            else:
-                self.log.debug("Cancel! Not pulling OBs from database.")
 
     def load_OBs_from_schedule(self):
         self.log.debug(f"load_OBs_from_schedule")
