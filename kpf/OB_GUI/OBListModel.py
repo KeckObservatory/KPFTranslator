@@ -93,10 +93,13 @@ class OBListModel(QtCore.QAbstractListModel):
         else:
             now = datetime.utcnow()
             decimal_now = now.hour + now.minute/60 + now.second/3600
-            future = np.ma.masked_less_equal(np.array(self.start_times) - decimal_now, 0)
             past = np.ma.masked_greater(np.array(self.start_times) - decimal_now, 0)
             self.currentOB = past.argmax() # Current is nearest start time in past
-            self.nextOB = future.argmin() # Next is nearest start time in future
+            future = np.ma.masked_less_equal(np.array(self.start_times) - decimal_now, 0)
+            if np.all(future.mask):
+                self.nextOB = -1 # If nothing is in the future, there is no next
+            else:
+                self.nextOB = future.argmin() # Next is nearest start time in future
 
     def rowCount(self, ind):
         return len(self.OBs)
