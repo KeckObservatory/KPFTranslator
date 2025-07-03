@@ -957,35 +957,38 @@ class MainWindow(QtWidgets.QMainWindow):
         schedule_files = [self.schedule_path / f'{date_str}_w{WB}.json'
                           for WB in self.KPFCC_weather_bands]
         # Count what we need to load ahead of time for the progress bar
-        contents = []
+        schedule_file_contents = {}
+        Nsched = 0
+        errmsg = []
         for i,WB in enumerate(self.KPFCC_weather_bands):
             if schedule_files[i].exists():
                 with open(schedule_files[i], 'r') as f:
-                    contents += json.loads(f.read())
-        Nsched = len(contents)
+                    schedule_file_contents[WB] = json.loads(f.read())
+                    Nsched += len(schedule_file_contents[WB])
+            else:
+                schedule_file_contents[WB] = []
+                self.log.error(f'No schedule file found at {schedule_files[i]}')
+                errmsg.append(f'No schedule file found at {schedule_files[i]}')
         self.log.debug(f"Pre-counted {Nsched} OBs to get for KPF-CC in all weather bands")
         # Create progress bar if we have a lot of OBs to retrieve
         usepbar = Nsched > 15
         if usepbar:
-            progress = QtWidgets.QProgressDialog("Retrieving OBs from Database", "Cancel", 0, Nsched)
+            pbar_title = f"Retrieving {Nsched} OBs for all weather bands"
+            progress = QtWidgets.QProgressDialog(pbar_title, "Cancel", 0, Nsched)
             progress.setWindowModality(QtCore.Qt.WindowModal) # Make it modal (blocks interaction with parent)
             progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
             progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
-        errmsg = []
+            progress.setValue(0)
+            self.log.debug('Created progress bar')
         scheduledOBcount = 0
         retrievedOBcount = 0
         for i,WB in enumerate(self.KPFCC_weather_bands):
-            scheduledOBcount += 1
+            nOBs_this_WB = len(schedule_file_contents[WB])
+            self.log.debug(f'Getting {nOBs_this_WB} OBs for weather band {WB}')
             self.KPFCC_OBs[WB] = []
             self.KPFCC_start_times[WB] = []
-            if schedule_files[i].exists():
-                with open(schedule_files[i], 'r') as f:
-                    contents = json.loads(f.read())
-            else:
-                self.log.error(f'No schedule file found at {schedule_files[i]}')
-                errmsg.append(f'No schedule file found at {schedule_files[i]}')
-                contents = []
-            for i,entry in enumerate(contents):
+            for entry in schedule_file_contents[WB]:
+                scheduledOBcount += 1
                 try:
                     thisOB = GetObservingBlocks.execute({'OBid': entry['id']})[0]
                     self.KPFCC_OBs[WB].append(thisOB)
@@ -1001,10 +1004,10 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.log.error("Retrieval of OBs canceled by user.")
                         break
                     progress.setValue(scheduledOBcount)
-        msg = [f"Retrieved {retrievedOBcount} (out of {Nsched}) KPF-CC OBs for all weather bands"]
-        msg.extend(errmsg)
-        msg = '\n'.join(msg)
-        ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
+#         msg = [f"Retrieved {retrievedOBcount} (out of {Nsched}) KPF-CC OBs for all weather bands"]
+#         msg.extend(errmsg)
+#         msg = '\n'.join(msg)
+#         ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
         self.set_SortOrWeather()
         self.update_star_list()
         self.set_weather_band(self.KPFCC_weather_band)
@@ -1621,6 +1624,7 @@ def main():
 ##-------------------------------------------------------------------------
 if __name__ == '__main__':
     guilog = create_GUI_log()
+    guilog.info(f"-----------------------------")
     guilog.info(f"Starting KPF OB GUI")
     try:
         main()
