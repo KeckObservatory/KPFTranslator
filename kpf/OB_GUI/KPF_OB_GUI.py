@@ -803,9 +803,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_weather_band(self, WB):
         self.log.info(f"set_weather_band: {WB}")
-        if WB not in self.KPFCC_weather_bands:
+        if WB = "":
+            pass
+        elif WB not in self.KPFCC_weather_bands:
             self.log.error(f'Band "{WB}" not in allowed weather band values')
-            self.log.debug(self.KPFCC_weather_bands)
             return
         self.SortOrWeather.setCurrentText(WB)
         self.KPFCC_weather_band = WB
@@ -970,7 +971,10 @@ class MainWindow(QtWidgets.QMainWindow):
             progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
             progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
         errmsg = []
+        scheduledOBcount = 0
+        retrievedOBcount = 0
         for i,WB in enumerate(self.KPFCC_weather_bands):
+            scheduledOBcount += 1
             self.KPFCC_OBs[WB] = []
             self.KPFCC_start_times[WB] = []
             if schedule_files[i].exists():
@@ -987,6 +991,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     start = entry['start_exp'].split(':')
                     start_decimal = int(start[0]) + int(start[1])/60
                     self.KPFCC_start_times[WB].append(start_decimal)
+                    retrievedOBcount += 1
                 except Exception as e:
                     self.log.error(f'Unable to load OB: {entry["id"]}')
                     self.log.error(e)
@@ -994,10 +999,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     if progress.wasCanceled():
                         self.log.error("Retrieval of OBs canceled by user.")
                         break
-                    progress.setValue(i+1)
-            nOBs = [len(self.KPFCC_OBs[WB]) for WB in self.KPFCC_weather_bands]
-            self.log.info(f"Retrieved {len(self.KPFCC_OBs[WB])} for weather band {WB}")
-        msg = [f"Retrieved {nOBs} (out of {Nsched}) KPF-CC OBs for all weather bands"]
+                    progress.setValue(scheduledOBcount)
+        msg = [f"Retrieved {retrievedOBcount} (out of {Nsched}) KPF-CC OBs for all weather bands"]
         msg.extend(errmsg)
         msg = '\n'.join(msg)
         ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
