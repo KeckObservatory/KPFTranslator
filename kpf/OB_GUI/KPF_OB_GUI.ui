@@ -1668,9 +1668,11 @@
      <string>OB List</string>
     </property>
     <addaction name="action_ClearOBList"/>
+    <addaction name="separator"/>
     <addaction name="action_LoadOBsFromFiles"/>
-    <addaction name="actionLoad_KPF_CC_Schedule"/>
     <addaction name="action_LoadOBsFromProgram"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoad_KPF_CC_Schedule"/>
     <addaction name="actionLoad_KPF_CC_OBs"/>
    </widget>
    <widget class="QMenu" name="menuFile_2">
@@ -1723,7 +1725,7 @@
   </action>
   <action name="action_LoadOBsFromProgram">
    <property name="text">
-    <string>Retrieve OBs for a Scheduled Program </string>
+    <string>Retrieve OBs for a Classical Program </string>
    </property>
   </action>
   <action name="action_BuildScienceOB">
