@@ -7,7 +7,7 @@ import copy
 from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
-import json
+# import json
 import re
 import yaml
 import datetime
@@ -16,6 +16,7 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord, EarthLocation, AltAz, Angle
 from astropy.time import Time
+from astropy.table import Table
 
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
@@ -182,7 +183,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # KPF-CC Settings and Values
         self.schedule_path = Path(f'/s/sdata1701/Schedules/')
         self.default_schedule = self.schedule_path / 'default.json'
-        self.KPFCC_weather_bands = ['1', '2', '3']
+        self.KPFCC_weather_bands = ['1', '2', '3']#, 'backups']
         self.KPFCC_weather_band = '1'
         self.KPFCC_OBs = {}
         self.KPFCC_start_times = {}
@@ -969,8 +970,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Form location to look for KPF-CC schedule files
         utnow = datetime.datetime.utcnow()
         date = utnow-datetime.timedelta(days=1)
-        date_str = date.strftime('%Y%b%d').lower()
-        schedule_files = [self.schedule_path / f'{date_str}_w{WB}.json'
+        date_str = date.strftime('%Y-%m-%d').lower()
+        schedule_files = [self.schedule_path / f'{date_str}_{WB}.csv'
                           for WB in self.KPFCC_weather_bands]
         # Count what we need to load ahead of time for the progress bar
         schedule_file_contents = {}
@@ -978,9 +979,11 @@ class MainWindow(QtWidgets.QMainWindow):
         errmsg = []
         for i,WB in enumerate(self.KPFCC_weather_bands):
             if schedule_files[i].exists():
-                with open(schedule_files[i], 'r') as f:
-                    schedule_file_contents[WB] = json.loads(f.read())
-                    Nsched += len(schedule_file_contents[WB])
+                schedule_file_contents[WB] = Table.read(schedule_files[i], format='ascii.csv')
+                Nsched += len(schedule_file_contents[WB])
+#                 with open(schedule_files[i], 'r') as f:
+#                     schedule_file_contents[WB] = json.loads(f.read())
+#                     Nsched += len(schedule_file_contents[WB])
             else:
                 schedule_file_contents[WB] = []
                 self.log.error(f'No schedule file found at {schedule_files[i]}')
@@ -1006,14 +1009,14 @@ class MainWindow(QtWidgets.QMainWindow):
             for entry in schedule_file_contents[WB]:
                 scheduledOBcount += 1
                 try:
-                    thisOB = GetObservingBlocks.execute({'OBid': entry['id']})[0]
+                    thisOB = GetObservingBlocks.execute({'OBid': entry['unique_id']})[0]
                     self.KPFCC_OBs[WB].append(thisOB)
-                    start = entry['start_exp'].split(':')
+                    start = entry['StartExposure'].split(':')
                     start_decimal = int(start[0]) + int(start[1])/60
                     self.KPFCC_start_times[WB].append(start_decimal)
                     retrievedOBcount += 1
                 except Exception as e:
-                    self.log.error(f'Unable to load OB: {entry["id"]}')
+                    self.log.error(f'Unable to load OB: {entry["unique_id"]}')
                     self.log.error(e)
                 if usepbar:
                     if progress.wasCanceled():
@@ -1179,7 +1182,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SOB_ELSlew.setText("--")
 
     def update_SOB_display(self):
-        self.log.debug(f"update_SOB_display: self.SOBindex = {self.SOBindex}")
+        self.log.debug(f"update_SOB_display: SOBindex = {self.SOBindex}")
+        self.log.debug(f"OBList contains {len(self.OBListModel.OBs)} entries")
         self.update_counter = 0
         if self.SOBindex < 0:
             self.clear_SOB_Target()
