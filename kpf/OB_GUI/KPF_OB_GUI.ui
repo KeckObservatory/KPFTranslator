@@ -1665,11 +1665,12 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Load OBs</string>
+     <string>OB List</string>
     </property>
-    <addaction name="action_LoadOBFromFile"/>
-    <addaction name="action_LoadOBsFromProgram"/>
+    <addaction name="action_ClearOBList"/>
+    <addaction name="action_LoadOBsFromFiles"/>
     <addaction name="actionLoad_KPF_CC_Schedule"/>
+    <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="actionLoad_KPF_CC_OBs"/>
    </widget>
    <widget class="QMenu" name="menuFile_2">
@@ -1715,14 +1716,14 @@
     <string>Load Observing Blocks</string>
    </property>
   </action>
-  <action name="action_LoadOBFromFile">
+  <action name="action_LoadOBsFromFiles">
    <property name="text">
-    <string>Load OBs from files</string>
+    <string>Load OBs from file(s)</string>
    </property>
   </action>
   <action name="action_LoadOBsFromProgram">
    <property name="text">
-    <string>Load OBs from Scheduled Program </string>
+    <string>Retrieve OBs for a Scheduled Program </string>
    </property>
   </action>
   <action name="action_BuildScienceOB">
@@ -1747,7 +1748,7 @@
   </action>
   <action name="actionLoad_KPF_CC_OBs">
    <property name="text">
-    <string>Load all KPF-CC OBs for Classical Observing</string>
+    <string>Retrieve all KPF-CC OBs for Classical Observing</string>
    </property>
   </action>
   <action name="actionSet_Observer_Names">
@@ -1787,7 +1788,12 @@
   </action>
   <action name="actionLoad_KPF_CC_Schedule">
    <property name="text">
-    <string>Load daily KPF-CC Schedule and OBs</string>
+    <string>Load KPF-CC Schedule</string>
+   </property>
+  </action>
+  <action name="action_ClearOBList">
+   <property name="text">
+    <string>Clear OB List</string>
    </property>
   </action>
  </widget>
