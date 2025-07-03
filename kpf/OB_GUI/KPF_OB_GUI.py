@@ -803,7 +803,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_weather_band(self, WB):
         self.log.info(f"set_weather_band: {WB}")
-        if WB = "":
+        if WB == "":
             pass
         elif WB not in self.KPFCC_weather_bands:
             self.log.error(f'Band "{WB}" not in allowed weather band values')
