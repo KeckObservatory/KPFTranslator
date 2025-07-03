@@ -842,6 +842,21 @@ class MainWindow(QtWidgets.QMainWindow):
             self.model.layoutChanged.emit()
             self.set_SortOrWeather()
 
+    def save_OB_to_file(self, OB, default=None):
+        self.log.debug('save_OB_to_file')
+        if default is None: default = self.file_path
+        result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
+                                             f"{default}",
+                                             "OB Files (*yaml);;All Files (*)")
+        if result:
+            save_file = result[0]
+            if save_file != '':
+                # save fname as path to use in future
+                self.file_path = Path(save_file).parent
+                self.log.info(f'Saving OB to file: {save_file}')
+                OB.write_to(save_file)
+        else:
+            self.log.debug('No output file chosen')
 
     ##-------------------------------------------
     ## Methods to Populate OB List (and star list)
@@ -1409,6 +1424,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.QuerySimbadLineEdit.setText('')
         self.set_Target(newtarg)
 
+
     ##--------------------------------------------------------------
     ## Methods for the Build a Science OB Tab Observations Section
     ##--------------------------------------------------------------
@@ -1423,6 +1439,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def edit_Observations(self):
         self.BuildOBC_edit('Observation')
         self.form_SciOB()
+
 
     ##--------------------------------------------------------------
     ## Methods for the Build a Science OB Tab Observing Block
@@ -1478,19 +1495,8 @@ class MainWindow(QtWidgets.QMainWindow):
     def save_SciOB_to_file(self):
         self.log.debug('save_SciOB_to_file')
         targname = self.SciObservingBlock.Target.get('TargetName')
-        default_path_and_name = f"{self.file_path}/{targname}.yaml"
-        result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
-                                             f"{default_path_and_name}",
-                                             "OB Files (*yaml);;All Files (*)")
-        if result:
-            save_file = result[0]
-            if save_file != '':
-                # save fname as path to use in future
-                self.file_path = Path(save_file).parent
-                self.log.info(f'Saving science OB to file: {save_file}')
-                self.SciObservingBlock.write_to(save_file)
-        else:
-            self.log.info('No output file chosen')
+        self.save_OB_to_file(self.SciObservingBlock,
+                             default=f"{self.file_path}/{targname}.yaml")
 
     def load_SciOB_from_file(self):
         self.log.debug('load_SciOB_from_file')
@@ -1500,6 +1506,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.SciOBProgramID.setText(newOB.ProgramID)
             self.set_Target(newOB.Target)
             self.set_Observations(newOB.Observations)
+
 
     ##-------------------------------------------
     ## Methods for the Build a Calibration OB Tab
@@ -1562,34 +1569,26 @@ class MainWindow(QtWidgets.QMainWindow):
             self.set_SortOrWeather()
 
     def save_CalOB_to_file(self):
-        default_path_and_name = f"{self.file_path}/newcalibration.yaml"
-        result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
-                                             f"{default_path_and_name}",
-                                             "OB Files (*yaml);;All Files (*)")
-        if result:
-            save_file = result[0]
-            if save_file != '':
-                # save fname as path to use in future
-                self.file_path = Path(save_file).parent
-                self.log.info(f'Saving calibration OB to file: {save_file}')
-                self.CalObservingBlock.write_to(save_file)
-        else:
-            self.log.info('No output file chosen')
+        self.log.debug('save_CalOB_to_file')
+        self.save_OB_to_file(self.CalObservingBlock,
+                             default=f"{self.file_path}/newcalibration.yaml")
+
+    def save_SciOB_to_file(self):
+        self.log.debug('save_SciOB_to_file')
+        targname = self.SciObservingBlock.Target.get('TargetName')
+        self.save_OB_to_file(self.SciObservingBlock,
+                             default=f"{self.file_path}/{targname}.yaml")
 
     def load_CalOB_from_file(self):
-        file, filefilter = QtWidgets.QFileDialog.getOpenFileName(self, 
-                                     "Open File", f"{self.file_path}",
-                                     "OB Files (*yaml);;All Files (*)")
-        if file:
-            file = Path(file)
-            if file.exists():
-                self.file_path = file.parent
-                self.log.debug(f"Opening: {str(file)}")
-                newOB = ObservingBlock(file)
-                if newOB.validate() == True:
-                    self.set_Calibrations(newOB.Calibrations)
+        self.log.debug('load_CalOB_from_file')
+        newOB = self.load_OB_from_file()
+        if newOB.validate() == True:
+            self.set_Calibrations(newOB.Calibrations)
 
 
+    ##-------------------------------------------
+    ## High Level app methods
+    ##-------------------------------------------
     def exit(self):
         self.log.info("Exiting ...")
         sys.exit(0)
