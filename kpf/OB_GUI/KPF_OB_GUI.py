@@ -180,13 +180,15 @@ class MainWindow(QtWidgets.QMainWindow):
         ActionExit.triggered.connect(self.exit)
 
         #-------------------------------------------------------------------
-        # Menu Bar: Load OBs
-        LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
-        LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
-        LoadOBFromFile = self.findChild(QtWidgets.QAction, 'action_LoadOBFromFile')
-        LoadOBFromFile.triggered.connect(self.load_OBs_from_files)
+        # Menu Bar: OB List
+        ActionClearOBList = self.findChild(QtWidgets.QAction, 'action_ClearOBList')
+        ActionClearOBList.triggered.connect(self.clear_OB_list)
+        ActionLoadOBsFromFiles = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromFiles')
+        ActionLoadOBsFromFiles.triggered.connect(self.load_OBs_from_files)
         LoadKPFCCSchedule = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_Schedule')
         LoadKPFCCSchedule.triggered.connect(self.load_OBs_from_schedule)
+        LoadOBsFromProgram = self.findChild(QtWidgets.QAction, 'action_LoadOBsFromProgram')
+        LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
         LoadOBsFromKPFCC = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_OBs')
         LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
 
