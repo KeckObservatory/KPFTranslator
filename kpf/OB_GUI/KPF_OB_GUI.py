@@ -1029,12 +1029,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_weather_band(self.KPFCC_weather_band)
 
     def update_star_list(self):
-        self.log.debug('update_star_list')
-        star_list = [OB.Target.to_star_list() for OB in self.OBListModel.OBs
-                     if OB.Target is not None]
-        for line in star_list:
-            self.log.debug(line)
         if self.telescope_interactions_allowed() and self.enable_magiq:
+            self.log.debug('update_star_list')
+            star_list = [OB.Target.to_star_list() for OB in self.OBListModel.OBs
+                         if OB.Target is not None]
+            for line in star_list:
+                self.log.debug(line)
             RemoveAllTargets.execute({})
             SetTargetList.execute({'StarList': '\n'.join(star_list)})
 
