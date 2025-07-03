@@ -341,7 +341,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.OBListView = self.findChild(QtWidgets.QListView, 'ListOfOBs')
         self.OBListModel = OBListModel(OBs=[], log=self.log)
         self.OBListView.setModel(self.OBListModel)
-        self.OBListView.selectionModel().selectionChanged.connect(self.select_OB_from_GUI)
+        self.OBListView.selectionModel().selectionChanged.connect(self.select_OB)
 
         # Selected Observing Block Details
         self.SOB_TargetName = self.findChild(QtWidgets.QLabel, 'SOB_TargetName')
@@ -1042,18 +1042,12 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     ## Methods for Selected OB
     ##-------------------------------------------
-    def select_OB_from_GUI(self, selected, deselected):
-        self.log.debug(f"select_OB_from_GUI {selected} {deselected}")
+    def select_OB(self, selected, deselected):
+        self.log.debug(f"select_OB {selected} {deselected}")
         if len(selected.indexes()) > 0:
-            ind = selected.indexes()[0].row()
-            self.select_OB(ind)
+            self.SOBindex = selected.indexes()[0].row()
         else:
             self.SOBindex = -1
-            self.update_SOB_display()
-
-    def select_OB(self, ind):
-        self.log.debug(f"select_OB {ind}")
-        self.SOBindex = ind
         self.update_SOB_display()
 
     def set_SOB_enabled(self):
