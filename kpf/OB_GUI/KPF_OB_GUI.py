@@ -23,11 +23,11 @@ import kPyQt                    # provided by kroot/kui/kPyQt
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 
 from kpf import cfg
-from kpf.OB_GUI import above_horizon, near_horizon
 from kpf.OB_GUI.OBListModel import OBListModel
 from kpf.OB_GUI.Popups import (ConfirmationPopup, InputPopup,
                                OBContentsDisplay, EditableMessageBox,
                                ObserverCommentBox, SelectProgramPopup)
+from kpf.telescope import above_horizon, near_horizon
 from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
