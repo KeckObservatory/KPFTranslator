@@ -85,16 +85,38 @@ def create_GUI_log():
 ##-------------------------------------------------------------------------
 ## Wrapper to launch script in xterm
 ##-------------------------------------------------------------------------
-def launch_command_in_xterm(script_name, sleep=0.25):
+def launch_command_in_xterm(script_name, capture_stdout=False):
     '''Pop up an xterm with the script running.
     '''
     kpfdo = Path(__file__).parent.parent / 'kpfdo'
-    script_cmd = f'{kpfdo} {script_name} ; echo "Done!" ; sleep 30'
+    if capture_stdout:
+        ## Set up script stdout file
+        log = logging.getLogger('KPFTranslator')
+        for handler in log.handlers:
+            if isinstance(handler, RotatingFileHandler):
+                kpflog_filehandler = handler
+        utnow = datetime.datetime.utcnow()
+        now_str = utnow.strftime('%Y%m%dat%H%M%S')
+        date = utnow-datetime.timedelta(days=1)
+        date_str = date.strftime('%Y%b%d').lower()
+        script_log_path = Path(kpflog_filehandler.baseFilename).parent / date_str
+        if script_log_path.exists() is False:
+            script_log_path.mkdir(mode=0o777, parents=True)
+            # Try to set permissions on the date directory
+            # necessary because the mode input to mkdir is modified by umask
+            try:
+                os.chmod(script_log_path, 0o777)
+            except OSError as e:
+                pass
+        stdout_file = script_log_path / f"kpfdo_{script_name}_{now_str}.log"
+        script_cmd = f'{kpfdo} {script_name} > {stdout_file} ; echo "Done!" ; sleep 30'
+    else:
+        script_cmd = f'{kpfdo} {script_name} ; echo "Done!" ; sleep 30'
     cmd = ['xterm', '-title', f'{script_name}', '-name', f'{script_name}',
            '-fn', '10x20', '-bg', 'black', '-fg', 'white',
            '-e', f'{script_cmd}']
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#     stdout_output, stderr_output = proc.communicate(timeout=sleep)
+#     stdout_output, stderr_output = proc.communicate(timeout=)
 #     return stdout_output, stderr_output
 
 
