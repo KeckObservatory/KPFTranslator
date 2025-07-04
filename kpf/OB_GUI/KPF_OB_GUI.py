@@ -684,11 +684,7 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Run Start of Night Script?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             self.log.debug('Confirmation is yes, running StartOfNight script')
-            stdout, stderr = launch_command_in_xterm('StartOfNight')
-            for line in stdout.split('\n'):
-                self.log.debug(f'STDOUT: {line}')
-            for line in stderr.split('\n'):
-                self.log.debug(f'STDERR: {line}')
+            launch_command_in_xterm('StartOfNight')
         else:
             self.log.debug('Confirmation is no, not running script')
 
@@ -697,11 +693,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if mode not in ['Stowed', 'Alignment', 'Acquisition', 'Observing', 'Calibration']:
             self.log.error(f"Desired FIU mode {mode} is not allowed")
             return
-        stdout, stderr = launch_command_in_xterm(f'ConfigureFIU {mode}')
-        for line in stdout.split('\n'):
-            self.log.debug(f'STDOUT: {line}')
-        for line in stderr.split('\n'):
-            self.log.debug(f'STDERR: {line}')
+        launch_command_in_xterm(f'ConfigureFIU {mode}')
 
     def configure_FIU_observing(self):
         self.configure_FIU('Observing')
@@ -751,11 +743,7 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Run End of Night Script?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             self.log.debug('Confirmation is yes, running EndOfNight script')
-            stdout, stderr = launch_command_in_xterm(f'EndOfNight')
-            for line in stdout.split('\n'):
-                self.log.debug(f'STDOUT: {line}')
-            for line in stderr.split('\n'):
-                self.log.debug(f'STDERR: {line}')
+            launch_command_in_xterm(f'EndOfNight')
         else:
             self.log.debug('Confirmation is no, not running script')
 
@@ -1256,11 +1244,7 @@ class MainWindow(QtWidgets.QMainWindow):
             tmp_file_path.mkdir(mode=0o777, parents=False)
         tmp_file = tmp_file_path / f'test_executedOB_{now_str}.yaml'
         SOB.write_to(tmp_file)
-        stdout, stderr = launch_command_in_xterm(f'RunOB -f {tmp_file}')
-        for line in stdout.split('\n'):
-            self.log.debug(f'STDOUT: {line}')
-        for line in stderr.split('\n'):
-            self.log.debug(f'STDERR: {line}')
+        launch_command_in_xterm(f'RunOB -f {tmp_file}')
 
 
     ##-------------------------------------------
