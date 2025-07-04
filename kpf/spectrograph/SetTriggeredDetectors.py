@@ -60,23 +60,28 @@ class SetTriggeredDetectors(KPFFunction):
     def post_condition(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         TRIG_TARG = ktl.cache('kpfexpose', 'TRIG_TARG')
-        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        sleep(timeshim)
-        detectors = TRIG_TARG.read()
-        detector_list = detectors.split(',')
-        detector_names = [('Red', 'TriggerRed'),
-                          ('Green', 'TriggerGreen'),
-                          ('Ca_HK', 'TriggerCaHK'),
-                          ('ExpMeter', 'TriggerExpMeter'),
-#                           ('Guide', 'TriggerGuide'),
+        TRIG_TARG.monitor()
+        detector_names = [('Red', 'TriggerRed',
+                           kpfconfig[f'RED_ENABLED'].read(binary=True)),
+                          ('Green', 'TriggerGreen',
+                           kpfconfig[f'GREEN_ENABLED'].read(binary=True)),
+                          ('Ca_HK', 'TriggerCaHK',
+                           kpfconfig[f'CA_HK_ENABLED'].read(binary=True)),
+                          ('ExpMeter', 'TriggerExpMeter',
+                           kpfconfig[f'EXPMETER_ENABLED'].read(binary=True)),
                           ]
-        # Don't check on guide because there is no enabled keyword for it
-        for detector in detector_names:
-            detector_status = detector[0] in detector_list
-            enabled = kpfconfig[f'{detector[0].upper()}_ENABLED'].read(binary=True)
-            detector_target = args.get(detector[1], False) and enabled
-            if detector_target != detector_status:
-                raise FailedToReachDestination(detector_status, detector_target)
+        detector_tests = [False]
+        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
+        total_time = 0
+        while np.all(detector_tests) != True and total_time < 0.25:
+            detector_tests = []
+            for detector in detector_names:
+                if args.get(detector[1], False) and detector[2]:
+                    detector_tests.append(detector[0] in TRIG_TARG.ascii.split(','))
+            sleep(timeshim)
+            total_time += time_shim
+        if np.all(shutter_tests) != True:
+            raise FailedToReachDestination(TRIG_TARG.ascii, 'TBD')
 
     @classmethod
     def add_cmdline_args(cls, parser):

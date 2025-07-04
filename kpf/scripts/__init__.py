@@ -117,12 +117,12 @@ def wait_for_script(newscript='queued script', timeout=1200):
         log.info(f'{newscript}: Another script is running: {SCRIPTNAME}(PID {pid})')
         log.info(f'{newscript}: Waiting up to {timeout:.0f}s for it to end')
         success = SCRIPTPID.waitFor("==-1", timeout=timeout)
-        time.sleep(10) # time shim
         if success is False:
             msg = f'{newscript}: Timeout waiting for {SCRIPTNAME} finish.'
             raise KPFException(msg)
         else:
             log.info(f'{newscript}: Script {SCRIPTNAME} no longer running')
+            time.sleep(10) # time shim
 
 
 ##-----------------------------------------------------------------------------

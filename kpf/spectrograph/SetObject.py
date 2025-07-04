@@ -26,8 +26,6 @@ class SetObject(KPFFunction):
             obj = ''
         log.debug(f"Setting OBJECT to '{obj}'")
         OBJECT.write(obj)
-        time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
-        time.sleep(time_shim)
 
     @classmethod
     def post_condition(cls, args):

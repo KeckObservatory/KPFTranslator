@@ -38,26 +38,27 @@ class SetTimedShutters(KPFFunction):
         log.debug(f"Setting timed shutters to '{timed_shutters_string}'")
         TIMED_TARG = ktl.cache('kpfexpose', 'TIMED_TARG')
         TIMED_TARG.write(timed_shutters_string)
-        shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args):
         TIMED_TARG = ktl.cache('kpfexpose', 'TIMED_TARG')
-        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
-        sleep(timeshim)
-        shutters = TIMED_TARG.read()
-        log.debug(f"TIMED_TARG: {shutters}")
-        shutter_list = shutters.split(',')
+        TIMED_TARG.monitor()
         shutter_names = [('Scrambler', 'TimedShutter_Scrambler'),
                          ('SimulCal', 'TimedShutter_SimulCal'),
                          ('FF_Fiber', 'TimedShutter_FlatField'),
                          ('Ca_HK', 'TimedShutter_CaHK')]
-        for shutter in shutter_names:
-            shutter_status = shutter[0] in shutter_list
-            shutter_target = args.get(shutter[1], False)
-            if shutter_target != shutter_status:
-                raise FailedToReachDestination(shutter_status, shutter_target)
+        shutter_tests = [False]
+        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
+        total_time = 0
+        while np.all(shutter_tests) != True and total_time < 0.25:
+            shutter_tests = []
+            for shutter in shutter_names:
+                if args.get(shutter[1], False) is True:
+                    shutter_tests.append(shutter[0] in TIMED_TARG.ascii.split(','))
+            sleep(timeshim)
+            total_time += time_shim
+        if np.all(shutter_tests) != True:
+            raise FailedToReachDestination(TIMED_TARG.ascii, 'TBD')
 
     @classmethod
     def add_cmdline_args(cls, parser):

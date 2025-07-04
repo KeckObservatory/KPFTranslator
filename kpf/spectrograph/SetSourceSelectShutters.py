@@ -47,20 +47,24 @@ class SetSourceSelectShutters(KPFFunction):
     @classmethod
     def post_condition(cls, args):
         SRC_SHUTTERS = ktl.cache('kpfexpose', 'SRC_SHUTTERS')
-        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
-        sleep(timeshim)
-        shutters = SRC_SHUTTERS.read()
-        shutter_list = shutters.split(',')
+        SRC_SHUTTERS.monitor()
         shutter_names = [('SciSelect', 'OpenScienceShutter'),
                          ('SkySelect', 'OpenSkyShutter'),
                          ('SoCalSci', 'OpenSoCalSciShutter'),
                          ('SoCalCal', 'OpenSoCalCalShutter'),
                          ('Cal_SciSky', 'OpenCalSciSkyShutter')]
-        for shutter in shutter_names:
-            shutter_status = shutter[0] in shutter_list
-            shutter_target = args.get(shutter[1], False)
-            if shutter_target != shutter_status:
-                raise FailedToReachDestination(shutter_status, shutter_target)
+        shutter_tests = [False]
+        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
+        total_time = 0
+        while np.all(shutter_tests) != True and total_time < 0.25:
+            shutter_tests = []
+            for shutter in shutter_names:
+                if args.get(shutter[1], False) is True:
+                    shutter_tests.append(shutter[0] in SRC_SHUTTERS.ascii.split(','))
+            sleep(timeshim)
+            total_time += time_shim
+        if np.all(shutter_tests) != True:
+            raise FailedToReachDestination(SRC_SHUTTERS.ascii, 'TBD')
 
     @classmethod
     def add_cmdline_args(cls, parser):

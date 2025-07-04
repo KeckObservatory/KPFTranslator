@@ -73,10 +73,6 @@ class ExecuteCal(KPFFunction):
         kpfconfig = ktl.cache('kpfconfig')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         fast_read_mode = QueryFastReadMode.execute({})
-        # This is a time shim to insert a pause between exposures so that the
-        # temperature of the CCDs can be measured by the archons
-        archon_time_shim = cfg.getfloat('times', 'archon_temperature_time_shim',
-                             fallback=2)
 
         calsource = calibration.get('CalSource')
         # Skip this lamp if it is not enabled
@@ -276,9 +272,6 @@ class ExecuteCal(KPFFunction):
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
-                if exptime < 2:
-                    log.debug(f'Sleep {archon_time_shim:.1f}s for temperature reading')
-                    sleep(archon_time_shim)
                 check_scriptstop() # Stop here if requested
             # Check LFC if it is the source
             if calsource == 'LFCFiber':
