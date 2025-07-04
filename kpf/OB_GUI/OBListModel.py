@@ -3,6 +3,11 @@ import numpy as np
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
+from kpf.schedule.GetTelescopeRelease import GetTelescopeRelease
+from kpf.magiq.RemoveTarget import RemoveTarget, RemoveAllTargets
+from kpf.magiq.AddTarget import AddTarget
+from kpf.magiq.SetTargetList import SetTargetList
+
 
 ##-------------------------------------------------------------------------
 ## Define observed_tonight function
@@ -35,7 +40,7 @@ class OBListModel(QtCore.QAbstractListModel):
     - replace list
     - edit OB
     '''
-    def __init__(self, *args, OBs=[], log=None, **kwargs):
+    def __init__(self, *args, OBs=[], log=None, INSTRUME=None, **kwargs):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = OBs
         self.start_times = None
@@ -43,6 +48,7 @@ class OBListModel(QtCore.QAbstractListModel):
         self.nextOB = -1
         self.sort_key = None
         self.log = log
+        self.INSTRUME = INSTRUME
 
     def data(self, ind, role):
         if role == QtCore.Qt.DisplayRole:
@@ -133,14 +139,21 @@ class OBListModel(QtCore.QAbstractListModel):
         self.start_times = start_times
         if start_times is not None: self.sort_key = 'time'
         self.sort()
+        self.update_star_list()
 
-    def append(self, OB, start_time=24):
+    def appendOB(self, OB, start_time=24):
         self.log.debug('OBListModel.append')
         self.OBs.append(OB)
         if self.start_times is not None:
             self.start_times.append(start_time)
             self.sort_key = 'time'
         self.sort()
+        if OB.Target is not None:
+            targetname = OB.Target.TargetName
+            if self.telescope_interactions_allowed():
+                self.log.info(f"Adding {targetname} to Magiq star list")
+                AddTarget.execute({'TargetName': targetname})
+
 
     def extend(self, OBs, start_times=None):
         self.log.debug('OBListModel.extend')
@@ -152,14 +165,20 @@ class OBListModel(QtCore.QAbstractListModel):
                 self.start_times.extend(start_times)
             self.sort_key = 'time'
         self.sort()
+        self.update_star_list()
 
     def removeOB(self, ind):
         self.log.debug('OBListModel.removeOB')
         removed = self.OBs.pop(ind)
+        self.log.info(f"Removing {removed.summary()} from OB List")
         if self.start_times is not None:
             stremoved = self.start_times.pop(ind)
         self.sort()
-        return removed
+        if removed.Target is not None:
+            targetname = removed.Target.TargetName
+            if self.telescope_interactions_allowed():
+                self.log.info(f"Removing {targetname} from Magiq star list")
+                RemoveTarget.execute({'TargetName': targetname})
 
     def updateOB(self, ind, newOB):
         self.log.debug('OBListModel.updateOB')
@@ -170,3 +189,25 @@ class OBListModel(QtCore.QAbstractListModel):
         self.log.debug('OBListModel.clear_list')
         self.set_list([])
         self.layoutChanged.emit()
+        self.update_star_list()
+
+    ##-------------------------------------------
+    ## Telescope Related Functions
+    ##-------------------------------------------
+    def telescope_interactions_allowed(self):
+        checks = [self.INSTRUME.ktl_keyword.ascii in ['KPF', 'KPF-CC'],
+                  GetTelescopeRelease.execute({}),
+                  ]
+        ok = np.all(checks)
+        self.log.debug(f'telescope_interactions_allowed = {ok}')
+        return ok
+
+    def update_star_list(self):
+        if self.telescope_interactions_allowed():
+            self.log.debug('update_star_list')
+            star_list = [OB.Target.to_star_list() for OB in self.OBs
+                         if OB.Target is not None]
+            for line in star_list:
+                self.log.debug(line)
+            RemoveAllTargets.execute({})
+            SetTargetList.execute({'StarList': '\n'.join(star_list)})

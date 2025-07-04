@@ -3,7 +3,6 @@ import sys
 import os
 import traceback
 import time
-import copy
 from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
@@ -24,6 +23,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 
 from kpf import cfg
 from kpf.OB_GUI.OBListModel import OBListModel
+from kpf.OB_GUI.OBBuilder import OBBuilder
 from kpf.OB_GUI.Popups import (ConfirmationPopup, InputPopup,
                                OBContentsDisplay, EditableMessageBox,
                                ObserverCommentBox, SelectProgramPopup)
@@ -38,16 +38,13 @@ from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObserver import SetObserver
 from kpf.spectrograph.SetProgram import SetProgram
-from kpf.magiq.RemoveTarget import RemoveTarget, RemoveAllTargets
-from kpf.magiq.AddTarget import AddTarget
-from kpf.magiq.SelectTarget import SelectTarget
-from kpf.magiq.SetTargetList import SetTargetList
 from kpf.utils.StartOfNight import StartOfNight
 from kpf.utils.EndOfNight import EndOfNight
 from kpf.schedule import get_semester_dates
 from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
 from kpf.schedule.GetTelescopeRelease import GetTelescopeRelease
 from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.magiq.SelectTarget import SelectTarget
 
 
 ##-------------------------------------------------------------------------
@@ -116,18 +113,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
         self.KPFCC = False
-        self.SciObservingBlock = None
-        self.CalObservingBlock = None
-        self.BuildTarget = Target({})
-        self.BuildObservation = [Observation({})]
-        self.BuildCalibration = [Calibration({})]
-        # Example Calibrations
-        self.example_cal_file = Path(__file__).parent.parent / 'ObservingBlocks' / 'exampleOBs' / 'Calibrations.yaml'
-        if self.example_cal_file.exists():
-            self.example_calOB = ObservingBlock(self.example_cal_file)
-        else:
-            self.example_calOB = ObservingBlock({})
         # Keywords
+        # DCS
         dcsint = cfg.getint('telescope', 'telnr', fallback=1)
         self.dcs = f'dcs{dcsint}'
         self.log.debug('Cacheing keyword services')
@@ -135,16 +122,32 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DCS_AZ.monitor()
         self.DCS_EL = ktl.cache(self.dcs, 'EL')
         self.DCS_EL.monitor()
+        self.INSTRUME = kPyQt.kFactory(ktl.cache(self.dcs, 'INSTRUME'))
+        self.DCS_UT = kPyQt.kFactory(ktl.cache(self.dcs, 'UT'))
+        self.DCS_LST = kPyQt.kFactory(ktl.cache(self.dcs, 'LST'))
+        # kpfconfig
         self.kpfconfig = ktl.cache('kpfconfig')
+        self.SCRIPTNAME = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTNAME'))
+        self.SCRIPTSTOP = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTSTOP'))
+        self.SLEWCALREQ = kPyQt.kFactory(ktl.cache('kpfconfig', 'SLEWCALREQ'))
+        self.SLEWCALTIME = kPyQt.kFactory(self.kpfconfig['SLEWCALTIME'])
+        self.CA_HK_ENABLED = kPyQt.kFactory(self.kpfconfig['CA_HK_ENABLED'])
+        self.GREEN_ENABLED = kPyQt.kFactory(self.kpfconfig['GREEN_ENABLED'])
+        self.RED_ENABLED = kPyQt.kFactory(self.kpfconfig['RED_ENABLED'])
+        self.EXPMETER_ENABLED = kPyQt.kFactory(self.kpfconfig['EXPMETER_ENABLED'])
+        # kpfexpose
+        self.OBJECT = kPyQt.kFactory(ktl.cache('kpfexpose', 'OBJECT'))
         self.EXPOSE = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSE'))
         self.ELAPSED = kPyQt.kFactory(ktl.cache('kpfexpose', 'ELAPSED'))
         self.EXPOSURE = kPyQt.kFactory(ktl.cache('kpfexpose', 'EXPOSURE'))
+        self.PROGNAME = kPyQt.kFactory(ktl.cache('kpfexpose', 'PROGNAME'))
+        # kpfgreen and kpfred
         self.READOUTPCT_G = kPyQt.kFactory(ktl.cache('kpfgreen', 'READOUTPCT'))
         self.READOUTPCT_R = kPyQt.kFactory(ktl.cache('kpfred', 'READOUTPCT'))
-        self.SLEWCALREQ = kPyQt.kFactory(ktl.cache('kpfconfig', 'SLEWCALREQ'))
         self.red_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfred', 'ACFFILE'))
         self.green_acf_file_kw = kPyQt.kFactory(ktl.cache('kpfgreen', 'ACFFILE'))
-        self.PROGNAME = kPyQt.kFactory(ktl.cache('kpfexpose', 'PROGNAME'))
+        # kpflamps
+        self.LAMPS = kPyQt.kFactory(ktl.cache('kpflamps', 'LAMPS'))
         # Selected OB
         self.SOBindex = -1
         self.SOBobservable = False
@@ -158,7 +161,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.fast = False
         # Tracked values
         self.disabled_detectors = []
-        self.enable_magiq = True
         self.telescope_released = GetTelescopeRelease.execute({})
         # Get KPF Programs on schedule
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
@@ -190,6 +192,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for WB in self.KPFCC_weather_bands:
             self.KPFCC_OBs[WB] = []
             self.KPFCC_start_times[WB] = None
+        # Add OB List Model Component
+        self.OBListModel = OBListModel(OBs=[], log=self.log, INSTRUME=self.INSTRUME)
+        # Add OB Builder Component
+        self.OBBuilder = OBBuilder(log=self.log, OBListModel=self.OBListModel)
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -247,18 +253,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Selected Instrument
         self.SelectedInstrument = self.findChild(QtWidgets.QLabel, 'SelectedInstrument')
-        self.INSTRUME = kPyQt.kFactory(ktl.cache(self.dcs, 'INSTRUME'))
         self.INSTRUME.stringCallback.connect(self.update_selected_instrument)
         self.INSTRUME.primeCallback()
 
         # script name
         self.scriptname_value = self.findChild(QtWidgets.QLabel, 'scriptname_value')
-        scriptname_kw = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTNAME'))
-        scriptname_kw.stringCallback.connect(self.update_scriptname_value)
+        self.SCRIPTNAME.stringCallback.connect(self.update_scriptname_value)
+        self.SCRIPTNAME.primeCallback()
 
         # script stop
         self.scriptstop_value = self.findChild(QtWidgets.QLabel, 'scriptstop_value')
-        self.SCRIPTSTOP = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTSTOP'))
         self.SCRIPTSTOP.stringCallback.connect(self.update_scriptstop_value)
         self.scriptstop_btn = self.findChild(QtWidgets.QPushButton, 'scriptstop_btn')
         self.scriptstop_btn.clicked.connect(self.set_scriptstop)
@@ -280,18 +284,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # object
         self.ObjectValue = self.findChild(QtWidgets.QLabel, 'ObjectValue')
-        object_kw = kPyQt.kFactory(ktl.cache('kpfexpose', 'OBJECT'))
-        object_kw.stringCallback.connect(self.ObjectValue.setText)
+        self.OBJECT.stringCallback.connect(self.ObjectValue.setText)
+        self.OBJECT.primeCallback()
 
         # lamps
         self.LampsValue = self.findChild(QtWidgets.QLabel, 'LampsValue')
-        lamps_kw = kPyQt.kFactory(ktl.cache('kpflamps', 'LAMPS'))
-        lamps_kw.stringCallback.connect(self.LampsValue.setText)
+        self.LAMPS.stringCallback.connect(self.LampsValue.setText)
+        self.LAMPS.primeCallback()
 
         # time since last cal
         self.slewcaltime_value = self.findChild(QtWidgets.QLabel, 'slewcaltime_value')
-        slewcaltime_kw = kPyQt.kFactory(self.kpfconfig['SLEWCALTIME'])
-        slewcaltime_kw.stringCallback.connect(self.update_slewcaltime_value)
+        self.SLEWCALTIME.stringCallback.connect(self.update_slewcaltime_value)
 
         # readout mode
         self.read_mode = self.findChild(QtWidgets.QLabel, 'readout_mode_value')
@@ -301,24 +304,18 @@ class MainWindow(QtWidgets.QMainWindow):
         # disabled detectors
         self.disabled_detectors_value = self.findChild(QtWidgets.QLabel, 'disabled_detectors_value')
         self.disabled_detectors_value.setText('')
-        cahk_enabled_kw = kPyQt.kFactory(self.kpfconfig['CA_HK_ENABLED'])
-        cahk_enabled_kw.stringCallback.connect(self.update_ca_hk_enabled)
-        green_enabled_kw = kPyQt.kFactory(self.kpfconfig['GREEN_ENABLED'])
-        green_enabled_kw.stringCallback.connect(self.update_green_enabled)
-        red_enabled_kw = kPyQt.kFactory(self.kpfconfig['RED_ENABLED'])
-        red_enabled_kw.stringCallback.connect(self.update_red_enabled)
-        expmeter_enabled_kw = kPyQt.kFactory(self.kpfconfig['EXPMETER_ENABLED'])
-        expmeter_enabled_kw.stringCallback.connect(self.update_expmeter_enabled)
+        self.CA_HK_ENABLED.stringCallback.connect(self.update_ca_hk_enabled)
+        self.GREEN_ENABLED.stringCallback.connect(self.update_green_enabled)
+        self.RED_ENABLED.stringCallback.connect(self.update_red_enabled)
+        self.EXPMETER_ENABLED.stringCallback.connect(self.update_expmeter_enabled)
 
         # Universal Time
         self.UTValue = self.findChild(QtWidgets.QLabel, 'UTValue')
-        UT_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'UT'))
-        UT_kw.stringCallback.connect(self.update_UT)
+        self.DCS_UT.stringCallback.connect(self.update_UT)
 
         # Sidereal Time
         self.SiderealTimeValue = self.findChild(QtWidgets.QLabel, 'SiderealTimeValue')
-        LST_kw = kPyQt.kFactory(ktl.cache(self.dcs, 'LST'))
-        LST_kw.stringCallback.connect(self.update_LST)
+        self.DCS_LST.stringCallback.connect(self.update_LST)
 
         #-------------------------------------------------------------------
         # Tab: Observing Blocks
@@ -340,7 +337,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.hdr = 'TargetName       RA          Dec      Gmag Jmag Observations'
         self.OBListHeader.setText(self.hdr)
         self.OBListView = self.findChild(QtWidgets.QListView, 'ListOfOBs')
-        self.OBListModel = OBListModel(OBs=[], log=self.log)
         self.OBListView.setModel(self.OBListModel)
         self.OBListView.selectionModel().selectionChanged.connect(self.select_OB)
 
@@ -383,64 +379,64 @@ class MainWindow(QtWidgets.QMainWindow):
         #-------------------------------------------------------------------
         # Tab: Build Science OB
         # Observing Block
-        self.SciOBString = self.findChild(QtWidgets.QLabel, 'BS_OBString')
-        self.SciOBString.setStyleSheet("background:white")
-        self.SciOBValid = self.findChild(QtWidgets.QLabel, 'BS_OBValid')
-        self.SciOBEstimatedDuration = self.findChild(QtWidgets.QLabel, 'BS_EstimatedDuration')
-        self.SendSciOBToList = self.findChild(QtWidgets.QPushButton, 'BS_SendToOBList')
-        self.SendSciOBToList.clicked.connect(self.send_SciOB_to_list)
-        self.SaveSciOBToFile = self.findChild(QtWidgets.QPushButton, 'BS_SaveToFile')
-        self.SaveSciOBToFile.clicked.connect(self.save_SciOB_to_file)
-        self.LoadSciOBFromFile = self.findChild(QtWidgets.QPushButton, 'BS_LoadFromFile')
-        self.LoadSciOBFromFile.clicked.connect(self.load_SciOB_from_file)
-        self.SciOBProgramID = self.findChild(QtWidgets.QLineEdit, 'BS_ProgramID')
-        self.SciOBProgramID.textChanged.connect(self.form_SciOB)
+        self.OBBuilder.SciOBString = self.findChild(QtWidgets.QLabel, 'BS_OBString')
+        self.OBBuilder.SciOBString.setStyleSheet("background:white")
+        self.OBBuilder.SciOBValid = self.findChild(QtWidgets.QLabel, 'BS_OBValid')
+        self.OBBuilder.SciOBEstimatedDuration = self.findChild(QtWidgets.QLabel, 'BS_EstimatedDuration')
+        self.OBBuilder.SendSciOBToList = self.findChild(QtWidgets.QPushButton, 'BS_SendToOBList')
+        self.OBBuilder.SendSciOBToList.clicked.connect(self.OBBuilder.send_SciOB_to_list)
+        self.OBBuilder.SaveSciOBToFile = self.findChild(QtWidgets.QPushButton, 'BS_SaveToFile')
+        self.OBBuilder.SaveSciOBToFile.clicked.connect(self.OBBuilder.save_SciOB_to_file)
+        self.OBBuilder.LoadSciOBFromFile = self.findChild(QtWidgets.QPushButton, 'BS_LoadFromFile')
+        self.OBBuilder.LoadSciOBFromFile.clicked.connect(self.OBBuilder.load_SciOB_from_file)
+        self.OBBuilder.SciOBProgramID = self.findChild(QtWidgets.QLineEdit, 'BS_ProgramID')
+        self.OBBuilder.SciOBProgramID.textChanged.connect(self.OBBuilder.form_SciOB)
         # Target
-        self.QuerySimbadLineEdit = self.findChild(QtWidgets.QLineEdit, 'BS_QuerySimbadLineEdit')
-        self.QuerySimbadLineEdit.returnPressed.connect(self.query_Simbad)
-        self.QuerySimbadButton = self.findChild(QtWidgets.QPushButton, 'BS_QuerySimbadButton')
-        self.QuerySimbadButton.clicked.connect(self.query_Simbad)
-        self.BuildTargetValid = self.findChild(QtWidgets.QLabel, 'BS_TargetValid')
-        self.ClearTargetButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearTargetButton')
-        self.ClearTargetButton.clicked.connect(self.clear_Target)
-        self.BuildTargetView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_TargetView')
-        self.BuildTargetView.setFont(QtGui.QFont('Courier New', 11))
-        self.set_Target(Target({}))
-        self.BuildTargetView.textChanged.connect(self.edit_Target)
+        self.OBBuilder.QuerySimbadLineEdit = self.findChild(QtWidgets.QLineEdit, 'BS_QuerySimbadLineEdit')
+        self.OBBuilder.QuerySimbadLineEdit.returnPressed.connect(self.OBBuilder.query_Simbad)
+        self.OBBuilder.QuerySimbadButton = self.findChild(QtWidgets.QPushButton, 'BS_QuerySimbadButton')
+        self.OBBuilder.QuerySimbadButton.clicked.connect(self.OBBuilder.query_Simbad)
+        self.OBBuilder.BuildTargetValid = self.findChild(QtWidgets.QLabel, 'BS_TargetValid')
+        self.OBBuilder.ClearTargetButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearTargetButton')
+        self.OBBuilder.ClearTargetButton.clicked.connect(self.OBBuilder.clear_Target)
+        self.OBBuilder.BuildTargetView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_TargetView')
+        self.OBBuilder.BuildTargetView.setFont(QtGui.QFont('Courier New', 11))
+        self.OBBuilder.set_Target(Target({}))
+        self.OBBuilder.BuildTargetView.textChanged.connect(self.OBBuilder.edit_Target)
         # Observations
-        self.BuildObservationValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
-        self.ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
-        self.ClearObservationsButton.clicked.connect(self.clear_Observations)
-        self.BuildObservationView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
-        self.BuildObservationView.setFont(QtGui.QFont('Courier New', 11))
-        self.set_Observations([Observation({})])
-        self.BuildObservationView.textChanged.connect(self.edit_Observations)
+        self.OBBuilder.BuildObservationValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
+        self.OBBuilder.ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
+        self.OBBuilder.ClearObservationsButton.clicked.connect(self.OBBuilder.clear_Observations)
+        self.OBBuilder.BuildObservationView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
+        self.OBBuilder.BuildObservationView.setFont(QtGui.QFont('Courier New', 11))
+        self.OBBuilder.set_Observations([Observation({})])
+        self.OBBuilder.BuildObservationView.textChanged.connect(self.OBBuilder.edit_Observations)
 
         #-------------------------------------------------------------------
         # Tab: Build Calibration OB
         # Observing Block
-        self.CalOBString = self.findChild(QtWidgets.QLabel, 'BC_OBString')
-        self.CalOBString.setStyleSheet("background:white")
-        self.CalOBValid = self.findChild(QtWidgets.QLabel, 'BC_OBValid')
-        self.CalEstimatedDuration = self.findChild(QtWidgets.QLabel, 'BC_EstimatedDuration')
-        self.SendCalOBToList = self.findChild(QtWidgets.QPushButton, 'BC_SendToOBList')
-        self.SendCalOBToList.clicked.connect(self.send_CalOB_to_list)
-        self.SaveCalOBToFile = self.findChild(QtWidgets.QPushButton, 'BC_SaveToFile')
-        self.SaveCalOBToFile.clicked.connect(self.save_CalOB_to_file)
-        self.LoadCalOBFromFile = self.findChild(QtWidgets.QPushButton, 'BC_LoadFromFile')
-        self.LoadCalOBFromFile.clicked.connect(self.load_CalOB_from_file)
+        self.OBBuilder.CalOBString = self.findChild(QtWidgets.QLabel, 'BC_OBString')
+        self.OBBuilder.CalOBString.setStyleSheet("background:white")
+        self.OBBuilder.CalOBValid = self.findChild(QtWidgets.QLabel, 'BC_OBValid')
+        self.OBBuilder.CalEstimatedDuration = self.findChild(QtWidgets.QLabel, 'BC_EstimatedDuration')
+        self.OBBuilder.SendCalOBToList = self.findChild(QtWidgets.QPushButton, 'BC_SendToOBList')
+        self.OBBuilder.SendCalOBToList.clicked.connect(self.OBBuilder.send_CalOB_to_list)
+        self.OBBuilder.SaveCalOBToFile = self.findChild(QtWidgets.QPushButton, 'BC_SaveToFile')
+        self.OBBuilder.SaveCalOBToFile.clicked.connect(self.OBBuilder.save_CalOB_to_file)
+        self.OBBuilder.LoadCalOBFromFile = self.findChild(QtWidgets.QPushButton, 'BC_LoadFromFile')
+        self.OBBuilder.LoadCalOBFromFile.clicked.connect(self.OBBuilder.load_CalOB_from_file)
         # Calibrations
-        self.BuildCalibrationValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
-        self.ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
-        self.ClearCalibrationsButton.clicked.connect(self.clear_Calibrations)
-        self.ExampleCalibrations = self.findChild(QtWidgets.QComboBox, 'BC_ExampleCalibrations')
-        self.ExampleCalibrations.addItems([''])
-        self.ExampleCalibrations.addItems([cal.get('Object') for cal in self.example_calOB.Calibrations])
-        self.ExampleCalibrations.currentTextChanged.connect(self.add_example_calibration)
-        self.BuildCalibrationView = self.findChild(QtWidgets.QPlainTextEdit, 'BC_CalibrationsView')
-        self.BuildCalibrationView.setFont(QtGui.QFont('Courier New', 11))
-        self.set_Calibrations(self.BuildCalibration)
-        self.BuildCalibrationView.textChanged.connect(self.edit_Calibrations)
+        self.OBBuilder.BuildCalibrationValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
+        self.OBBuilder.ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
+        self.OBBuilder.ClearCalibrationsButton.clicked.connect(self.OBBuilder.clear_Calibrations)
+        self.OBBuilder.ExampleCalibrations = self.findChild(QtWidgets.QComboBox, 'BC_ExampleCalibrations')
+        self.OBBuilder.ExampleCalibrations.addItems([''])
+        self.OBBuilder.ExampleCalibrations.addItems([cal.get('Object') for cal in self.OBBuilder.example_calOB.Calibrations])
+        self.OBBuilder.ExampleCalibrations.currentTextChanged.connect(self.OBBuilder.add_example_calibration)
+        self.OBBuilder.BuildCalibrationView = self.findChild(QtWidgets.QPlainTextEdit, 'BC_CalibrationsView')
+        self.OBBuilder.BuildCalibrationView.setFont(QtGui.QFont('Courier New', 11))
+        self.OBBuilder.set_Calibrations(self.OBBuilder.BuildCalibration)
+        self.OBBuilder.BuildCalibrationView.textChanged.connect(self.OBBuilder.edit_Calibrations)
 
 
     ##-------------------------------------------
@@ -666,18 +662,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     ##-------------------------------------------
-    ## Telescope Related Functions
-    ##-------------------------------------------
-    def telescope_interactions_allowed(self):
-        checks = [self.INSTRUME.ktl_keyword.ascii in ['KPF', 'KPF-CC'],
-                  self.telescope_released,
-                  ]
-        ok = np.all(checks)
-        self.log.debug(f'telescope_interactions_allowed = {ok}')
-        return ok
-
-
-    ##-------------------------------------------
     ## Methods for Observing Menu Actions
     ##-------------------------------------------
     def run_start_of_night(self):
@@ -828,26 +812,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.KPFCC_weather_band = WB
         self.OBListModel.set_list(self.KPFCC_OBs[WB],
                                   start_times=self.KPFCC_start_times[WB])
-        self.update_star_list()
 
 
     ##-------------------------------------------
     ## Methods to interact with OB files on disk
     ##-------------------------------------------
-    def load_OB_from_file(self):
-        self.log.debug('load_SciOB_from_file')
-        newOB = None
-        file, filefilter = QtWidgets.QFileDialog.getOpenFileName(self, 
-                                     "Open File", f"{self.file_path}",
-                                     "OB Files (*yaml);;All Files (*)")
-        if file:
-            file = Path(file)
-            if file.exists():
-                self.file_path = file.parent
-                self.log.debug(f"Opening: {str(file)}")
-                newOB = ObservingBlock(file)
-        return newOB
-
     def load_OBs_from_files(self):
         self.log.debug(f"load_OBs_from_files")
         files, filefilter = QtWidgets.QFileDialog.getOpenFileNames(self, 
@@ -860,23 +829,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.log.debug(f"Opening: {str(file)}")
                     newOB = ObservingBlock(file)
                     if newOB.validate() == True:
-                        self.OBListModel.append(newOB)
+                        self.OBListModel.appendOB(newOB)
 
-    def save_OB_to_file(self, OB, default=None):
-        self.log.debug('save_OB_to_file')
-        if default is None: default = self.file_path
-        result = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',
-                                             f"{default}",
-                                             "OB Files (*yaml);;All Files (*)")
-        if result:
-            save_file = result[0]
-            if save_file != '':
-                # save fname as path to use in future
-                self.file_path = Path(save_file).parent
-                self.log.info(f'Saving OB to file: {save_file}')
-                OB.write_to(save_file)
-        else:
-            self.log.debug('No output file chosen')
 
     ##-------------------------------------------
     ## Methods to Populate OB List (and star list)
@@ -897,7 +851,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.OBListHeader.setText(self.hdr)
         self.OBListModel.clear_list()
         self.set_SortOrWeather()
-        self.update_star_list()
 
     def load_OBs_from_program(self):
         self.log.debug(f"load_OBs_from_program")
@@ -913,7 +866,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.log.debug(msg)
                 self.OBListModel.set_list(OBs)
                 self.set_SortOrWeather()
-                self.update_star_list()
                 ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
             else:
                 self.log.debug("Cancel! Not pulling OBs from database.")
@@ -949,7 +901,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 progress.setValue(i+1)
         self.OBListHeader.setText('    StartTime '+self.hdr)
         self.set_SortOrWeather()
-        self.update_star_list()
 
     def load_OBs_from_schedule(self):
         self.log.debug(f"load_OBs_from_schedule")
@@ -1010,18 +961,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         break
                     progress.setValue(scheduledOBcount)
         self.set_SortOrWeather()
-        self.update_star_list()
         self.set_weather_band(self.KPFCC_weather_band)
-
-    def update_star_list(self):
-        if self.telescope_interactions_allowed() and self.enable_magiq:
-            self.log.debug('update_star_list')
-            star_list = [OB.Target.to_star_list() for OB in self.OBListModel.OBs
-                         if OB.Target is not None]
-            for line in star_list:
-                self.log.debug(line)
-            RemoveAllTargets.execute({})
-            SetTargetList.execute({'StarList': '\n'.join(star_list)})
 
 
     ##-------------------------------------------
@@ -1208,13 +1148,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def remove_SOB(self):
         self.clear_OB_selection()
-        removed = self.OBListModel.removeOB(self.SOBindex)
-        self.log.info(f"Removing {removed.summary()} from OB List")
-        if removed.Target is not None:
-            targetname = removed.Target.TargetName
-            if self.telescope_interactions_allowed() and self.enable_magiq:
-                self.log.info(f"Removing {targetname} from Magiq star list")
-                RemoveTarget.execute({'TargetName': targetname})
+        self.OBListModel.removeOB(self.SOBindex)
 
     def clear_OB_selection(self):
         self.log.debug(f"clear_OB_selection")
@@ -1281,7 +1215,7 @@ class MainWindow(QtWidgets.QMainWindow):
                f"{SOB.summary()}"]
         result = ConfirmationPopup('Execute Science OB?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
-            if self.telescope_interactions_allowed() and self.enable_magiq:
+            if self.OBListModel.telescope_interactions_allowed():
                 SelectTarget.execute({'target': SOB.Target.TargetName})
             if self.KPFCC == True:
                 # Log execution
@@ -1327,257 +1261,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug(f'STDOUT: {line}')
         for line in stderr.split('\n'):
             self.log.debug(f'STDERR: {line}')
-
-
-    ##--------------------------------------------------------------
-    ## Generic Methods to Build an OB Component
-    ##--------------------------------------------------------------
-    def BuildOBC_set(self, input_object, input_class_name=None):
-        if input_class_name is None:
-            if type(input_object) == list:
-                input_class_name = type(input_object[0]).__name__
-            else:
-                input_class_name = type(input_object).__name__
-        self.log.debug(f"Running BuildOBC_set on a {input_class_name}")
-        setattr(self, f'Build{input_class_name}', input_object)
-        self.BuildOBC_render_text(input_class_name)
-
-    def BuildOBC_render_text(self, input_class_name):
-        self.log.debug(f"Running BuildOBC_render_text for {input_class_name}")
-        thing = getattr(self, f'Build{input_class_name}')
-        view = getattr(self, f'Build{input_class_name}View')
-        edited_lines = view.document().toPlainText()
-        # Record cursor position
-        cursor = view.textCursor()
-        cursor_position = cursor.position()
-        if thing in [None, []]:
-            lines = ''
-        elif type(thing) == list:
-            lines = ''
-            for i,item in enumerate(thing):
-                lines += f'# {input_class_name} {i+1}\n'
-                lines += item.__repr__(prune=True, comment=True)
-        else:
-            lines = thing.__repr__(prune=True, comment=True)
-        if edited_lines != lines:
-            view.setPlainText(lines)
-            # Restore cursor position
-            try:
-                cursor.setPosition(cursor_position)
-                view.setTextCursor(cursor)
-            except Exception as e:
-                self.log.error(f'Failed to set cursor position in {view}')
-                self.log.error(e)
-        valid = getattr(self, f'Build{input_class_name}Valid')
-        if thing in [None, []]:
-            isvalid = False
-        elif type(thing) == list:
-            isvalid = np.all([item.validate() for item in thing])
-        else:
-            isvalid = thing.validate()
-        color = {True: 'green', False: 'orange'}[isvalid]
-        valid.setText(str(isvalid))
-        valid.setStyleSheet(f"color:{color}")
-
-    def BuildOBC_edit(self, input_class_name):
-        self.log.debug(f"Running BuildOBC_edit for {input_class_name}")
-        thing = getattr(self, f'Build{input_class_name}')
-        view = getattr(self, f'Build{input_class_name}View')
-        edited_lines = view.document().toPlainText()
-        if edited_lines == '' and thing is None:
-            return
-        if type(thing) == list:
-            lines = ''
-            for i,item in enumerate(thing):
-                lines += f'# {input_class_name} {i+1}\n'
-                lines += item.__repr__(prune=False, comment=True)
-        else:
-            lines = thing.__repr__(prune=False, comment=True)
-        if edited_lines != lines:
-            try:
-                new_data = yaml.safe_load(edited_lines)
-                class_dict = {"Target": Target, "Observation": Observation, "Calibration": Calibration}
-                if input_class_name == 'Target':
-                    new_thing = class_dict[input_class_name](new_data)
-                elif input_class_name in ['Observation', 'Calibration']:
-                    new_thing = [class_dict[input_class_name](item) for item in new_data]
-                self.BuildOBC_set(new_thing)
-            except Exception as e:
-                self.log.error(f'Failed to parse edited {input_class_name} text')
-                self.log.error(e)
-                self.log.error(f'Not changing contents')
-
-
-    ##--------------------------------------------------------------
-    ## Methods for the Build a Science OB Tab Target Section
-    ##--------------------------------------------------------------
-    def set_Target(self, target):
-        self.BuildOBC_set(target)
-        self.form_SciOB()
-
-    def clear_Target(self):
-        self.set_Target(Target({}))
-
-    def edit_Target(self):
-        self.BuildOBC_edit('Target')
-        self.form_SciOB()
-
-    def query_Simbad(self):
-        self.log.debug(f"Running query_Simbad")
-        target_name = self.QuerySimbadLineEdit.text().strip()
-        self.log.debug(f"Querying: {target_name}")
-        newtarg = self.BuildTarget.resolve_name(target_name)
-        if newtarg is None:
-            self.log.warning(f"Query failed for {target_name}")
-        self.QuerySimbadLineEdit.setText('')
-        self.set_Target(newtarg)
-
-
-    ##--------------------------------------------------------------
-    ## Methods for the Build a Science OB Tab Observations Section
-    ##--------------------------------------------------------------
-    def set_Observations(self, observations):
-        self.BuildOBC_set(observations)
-        self.form_SciOB()
-
-    def clear_Observations(self):
-        self.log.debug(f"Running clear_Observations")
-        self.set_Observations([Observation({})])
-
-    def edit_Observations(self):
-        self.BuildOBC_edit('Observation')
-        self.form_SciOB()
-
-
-    ##--------------------------------------------------------------
-    ## Methods for the Build a Science OB Tab Observing Block
-    ##--------------------------------------------------------------
-    def form_SciOB(self):
-        self.log.debug(f"Running form_SciOB")
-        semester, start, end = get_semester_dates(datetime.datetime.now())
-        if self.SciOBProgramID.text() != '':
-            OBdict = {'ProgramID': self.SciOBProgramID.text(),
-                      'semester': semester,
-                      'semid': f'{semester}_{self.SciOBProgramID.text()}'}
-        else:
-            OBdict = {}
-        newOB = ObservingBlock(OBdict)
-        newOB.Target = self.BuildTarget
-        newOB.Observations = self.BuildObservation
-        if newOB.__repr__() == self.SciObservingBlock.__repr__():
-            self.log.debug('newOB and existing OB match')
-            return
-        self.SciObservingBlock = ObservingBlock(OBdict)
-        self.SciObservingBlock.Target = self.BuildTarget
-        self.SciObservingBlock.Observations = self.BuildObservation
-        # Validate
-        OBValid = self.SciObservingBlock.validate()
-        color = {True: 'green', False: 'orange'}[OBValid]
-        self.SciOBValid.setText(str(OBValid))
-        self.SciOBValid.setStyleSheet(f"color:{color}")
-        if OBValid:
-            self.SciOBString.setText(self.SciObservingBlock.summary())
-            duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.SciObservingBlock)
-            self.SciOBEstimatedDuration.setText(f"{duration/60:.0f} min")
-        else:
-            self.SciOBString.setText('')
-            self.SciOBEstimatedDuration.setText('')
-
-    def send_SciOB_to_list(self):
-        if self.SciObservingBlock.validate() != True:
-            self.log.warning('OB is invalid, not sending to OB list')
-        else:
-            self.OBListModel.append(self.SciObservingBlock)
-        targetname = self.SciObservingBlock.Target.TargetName
-        self.log.info(f"Adding {targetname} to star list and OB list")
-        if self.telescope_interactions_allowed() and self.enable_magiq:
-            AddTarget.execute(self.SciObservingBlock.Target.to_dict())
-
-    def save_SciOB_to_file(self):
-        self.log.debug('save_SciOB_to_file')
-        targname = self.SciObservingBlock.Target.get('TargetName')
-        self.save_OB_to_file(self.SciObservingBlock,
-                             default=f"{self.file_path}/{targname}.yaml")
-
-    def load_SciOB_from_file(self):
-        self.log.debug('load_SciOB_from_file')
-        newOB = self.load_OB_from_file()
-        if newOB.validate() == True:
-            if newOB.ProgramID is not None:
-                self.SciOBProgramID.setText(newOB.ProgramID)
-            self.set_Target(newOB.Target)
-            self.set_Observations(newOB.Observations)
-
-
-    ##-------------------------------------------
-    ## Methods for the Build a Calibration OB Tab
-    ##-------------------------------------------
-    def set_Calibrations(self, calibrations):
-        self.BuildOBC_set(calibrations)
-        self.form_CalOB()
-
-    def clear_Calibrations(self):
-        self.log.debug(f"Running clear_Calibrations")
-        self.BuildOBC_set([], input_class_name='Calibration')
-
-    def edit_Calibrations(self):
-        self.BuildOBC_edit('Calibration')
-        self.form_CalOB()
-
-    def add_example_calibration(self, value):
-        self.log.debug(f'add_example_calibration: {value}')
-        for cal in self.example_calOB.Calibrations:
-            if value == cal.get('Object'):
-                self.log.debug(f'Adding {value} from example Cal OB')
-                calibrations = copy.deepcopy(self.BuildCalibration)
-                calibrations.append(cal)
-                self.set_Calibrations(calibrations)
-
-    def form_CalOB(self):
-        self.log.debug(f"Running form_CalOB")
-        semester, start, end = get_semester_dates(datetime.datetime.now())
-        OBdict = {'ProgramID': 'ENG',
-                  'semester': semester,
-                  'semid': f'{semester}_ENG'}
-        newOB = ObservingBlock(OBdict)
-        newOB.Calibrations = self.BuildCalibration if self.BuildCalibration is not None else []
-        if newOB.__repr__() == self.CalObservingBlock.__repr__():
-            return
-        self.CalObservingBlock = copy.deepcopy(newOB)
-        OBValid = self.CalObservingBlock.validate()
-        color = {True: 'green', False: 'orange'}[OBValid]
-        self.CalOBValid.setText(str(OBValid))
-        self.CalOBValid.setStyleSheet(f"color:{color}")
-        if OBValid:
-            self.CalOBString.setText(self.CalObservingBlock.summary())
-            duration = EstimateOBDuration.execute({'fast': self.fast}, OB=self.CalObservingBlock)
-            self.CalEstimatedDuration.setText(f"{duration/60:.0f} min")
-        else:
-            self.CalOBString.setText('')
-            self.CalEstimatedDuration.setText('')
-
-    def send_CalOB_to_list(self):
-        if self.CalObservingBlock.validate() != True:
-            self.log.warning('OB is invalid, not sending to OB list')
-        else:
-            self.OBListModel.append(self.CalObservingBlock)
-
-    def save_CalOB_to_file(self):
-        self.log.debug('save_CalOB_to_file')
-        self.save_OB_to_file(self.CalObservingBlock,
-                             default=f"{self.file_path}/newcalibration.yaml")
-
-    def save_SciOB_to_file(self):
-        self.log.debug('save_SciOB_to_file')
-        targname = self.SciObservingBlock.Target.get('TargetName')
-        self.save_OB_to_file(self.SciObservingBlock,
-                             default=f"{self.file_path}/{targname}.yaml")
-
-    def load_CalOB_from_file(self):
-        self.log.debug('load_CalOB_from_file')
-        newOB = self.load_OB_from_file()
-        if newOB.validate() == True:
-            self.set_Calibrations(newOB.Calibrations)
 
 
     ##-------------------------------------------
