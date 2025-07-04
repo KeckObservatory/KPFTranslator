@@ -828,9 +828,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.KPFCC_weather_band = WB
         self.OBListModel.set_list(self.KPFCC_OBs[WB],
                                   start_times=self.KPFCC_start_times[WB])
-#         self.OBListModel.OBs = self.KPFCC_OBs[WB]
-#         self.OBListModel.start_times = self.KPFCC_start_times[WB]
-#         self.OBListModel.sort('time')
         self.update_star_list()
 
 
@@ -899,9 +896,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.KPFCC = False
         self.OBListHeader.setText(self.hdr)
         self.OBListModel.clear_list()
-#         self.OBListModel.OBs = []
-#         self.OBListModel.start_times = None
-#         self.OBListModel.layoutChanged.emit()
         self.set_SortOrWeather()
         self.update_star_list()
 
@@ -918,9 +912,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 msg = f"Retrieved {len(OBs)} OBs for program {progID}"
                 self.log.debug(msg)
                 self.OBListModel.set_list(OBs)
-#                 self.OBListModel.OBs = OBs
-#                 self.OBListModel.start_times = None
-#                 self.OBListModel.layoutChanged.emit()
                 self.set_SortOrWeather()
                 self.update_star_list()
                 ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
@@ -938,8 +929,6 @@ class MainWindow(QtWidgets.QMainWindow):
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
         progIDs = set([p['ProjCode'] for p in cadence])
         self.OBListModel.clear_list()
-#         self.OBListModel.OBs = []
-#         self.OBListModel.start_times = None
         # Create progress bar if we have a lot of programs to query
         usepbar = len(progIDs) > 5 
         if usepbar:
@@ -981,9 +970,6 @@ class MainWindow(QtWidgets.QMainWindow):
             if schedule_files[i].exists():
                 schedule_file_contents[WB] = Table.read(schedule_files[i], format='ascii.csv')
                 Nsched += len(schedule_file_contents[WB])
-#                 with open(schedule_files[i], 'r') as f:
-#                     schedule_file_contents[WB] = json.loads(f.read())
-#                     Nsched += len(schedule_file_contents[WB])
             else:
                 schedule_file_contents[WB] = []
                 self.log.error(f'No schedule file found at {schedule_files[i]}')
@@ -1023,10 +1009,6 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.log.error("Retrieval of OBs canceled by user.")
                         break
                     progress.setValue(scheduledOBcount)
-#         msg = [f"Retrieved {retrievedOBcount} (out of {Nsched}) KPF-CC OBs for all weather bands"]
-#         msg.extend(errmsg)
-#         msg = '\n'.join(msg)
-#         ConfirmationPopup('Retrieved OBs from Database', msg, info_only=True).exec_()
         self.set_SortOrWeather()
         self.update_star_list()
         self.set_weather_band(self.KPFCC_weather_band)
@@ -1261,8 +1243,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 if OBedit_popup.result.validate():
                     self.log.info('The edited OB has been validated')
                     self.OBListModel.updateOB(self.SOBindex, OBedit_popup.result)
-#                     self.OBListModel.OBs[self.SOBindex] = OBedit_popup.result
-#                     self.OBListModel.layoutChanged.emit()
                     self.update_SOB_display()
                 else:
                     self.log.warning('Edits did not validate. Not changing OB.')
@@ -1508,14 +1488,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.warning('OB is invalid, not sending to OB list')
         else:
             self.OBListModel.append(self.SciObservingBlock)
-#         elif self.KPFCC == False:
-#             self.OBListModel.OBs.append(self.SciObservingBlock)
-#             self.OBListModel.layoutChanged.emit()
-#         elif self.KPFCC == True:
-#             self.OBListModel.OBs.append(self.SciObservingBlock)
-#             self.OBListModel.start_times.append(24)
-#             self.OBListModel.sort('time')
-#             self.set_SortOrWeather()
         targetname = self.SciObservingBlock.Target.TargetName
         self.log.info(f"Adding {targetname} to star list and OB list")
         if self.telescope_interactions_allowed() and self.enable_magiq:
@@ -1589,14 +1561,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.warning('OB is invalid, not sending to OB list')
         else:
             self.OBListModel.append(self.CalObservingBlock)
-#         elif self.KPFCC == False:
-#             self.OBListModel.OBs.append(self.CalObservingBlock)
-#             self.OBListModel.layoutChanged.emit()
-#         elif self.KPFCC == True:
-#             self.OBListModel.OBs.append(self.CalObservingBlock)
-#             self.OBListModel.start_times.append(24)
-#             self.OBListModel.sort('time')
-#             self.set_SortOrWeather()
 
     def save_CalOB_to_file(self):
         self.log.debug('save_CalOB_to_file')
