@@ -77,10 +77,9 @@ class RunOB(KPFScript):
 
         initial_program = ktl.cache('kpfexpose', 'PROGNAME').read()
 
-        # Send Target info to Magiq for OA
+        # Set Target info for OA's Tip Tilt GUI
         if OB.Target is not None:
             SetTargetInfo.execute({}, OB=OB)
-            SendTargetToMagiq.execute({})
 
         # Add slew cal to OB if keywords indicate one is requested
         kpfconfig = ktl.cache('kpfconfig')
