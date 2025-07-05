@@ -184,9 +184,13 @@ class RunOB(KPFScript):
                     ExecuteSci.execute(observation_dict)
                 except ScriptStopTriggered as scriptstop:
                     log.error('Script Stop Triggered')
+                    CleanupAfterScience.execute(args, OB=OB)
+                    return
                 except Exception as e:
                     log.error('Exception encountered during ExecuteSci')
                     log.error(e)
+                    CleanupAfterScience.execute(args, OB=OB)
+                    return
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
             # Restore initial program name
