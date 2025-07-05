@@ -13,7 +13,7 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (check_script_running, set_script_keywords,
                          add_script_log, wait_for_script, clear_script_keywords)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.ObservingBlocks.SubmitExecutionHistory import SubmitExecutionHistory
+from kpf.ObservingBlocks.GetObservingBlocks import query_database
 from kpf.fiu.VerifyCurrentBase import VerifyCurrentBase
 from kpf.scripts.SetTargetInfo import SetTargetInfo
 from kpf.scripts.SendTargetToMagiq import SendTargetToMagiq
@@ -181,7 +181,15 @@ class RunOB(KPFScript):
                 # Execute Observation
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
                 try:
-                    ExecuteSci.execute(observation_dict)
+                    history, scriptstop = ExecuteSci.execute(observation_dict)
+                    if OB.OBID != '':
+                        history['id'] = OB.OBID
+                        log.info('Submitting history to DB:')
+                        log.debug(history)
+                        result = query_database('addObservingBlockHistory', params=history)
+                        log.debug(f"Response: {result}")
+                    if scriptstop:
+                        raise ScriptStopTriggered("SCRIPTSTOP triggered")
                 except ScriptStopTriggered as scriptstop:
                     log.error('Script Stop Triggered')
                     CleanupAfterScience.execute(args, OB=OB)
@@ -196,8 +204,6 @@ class RunOB(KPFScript):
             # Restore initial program name
             SetProgram.execute({'progname': initial_program})
 
-        if OB.OBID != '':
-            SubmitExecutionHistory.execute({'id': OB.OBID})
 
         clear_script_keywords()
 
