@@ -184,8 +184,10 @@ class RunOB(KPFScript):
                     history, scriptstop = ExecuteSci.execute(observation_dict)
                     if OB.OBID != '':
                         history['id'] = OB.OBID
-                        log.info('Submitting history to DB:')
-                        log.debug(history)
+                        log.info('Submitting execution history to DB')
+                        log.debug(f"  {history['id']}")
+                        log.debug(f"  {history['exposure_start_times']}")
+                        log.debug(f"  {history['exposure_times']}")
                         result = query_database('addObservingBlockHistory', params=history)
                         log.debug(f"Response: {result}")
                     if scriptstop:
