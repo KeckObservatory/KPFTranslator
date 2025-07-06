@@ -204,7 +204,6 @@ class RunOB(KPFScript):
             # Restore initial program name
             SetProgram.execute({'progname': initial_program})
 
-
         clear_script_keywords()
 
     @classmethod
