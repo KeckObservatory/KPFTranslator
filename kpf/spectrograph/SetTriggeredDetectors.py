@@ -79,7 +79,7 @@ class SetTriggeredDetectors(KPFFunction):
                     detector_tests.append(detector[0] in TRIG_TARG.ascii.split(','))
             sleep(timeshim)
             total_time += timeshim
-        if np.all(shutter_tests) != True:
+        if np.all(detector_tests) != True:
             raise FailedToReachDestination(TRIG_TARG.ascii, 'TBD')
 
     @classmethod
