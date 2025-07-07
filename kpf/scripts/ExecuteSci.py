@@ -53,10 +53,19 @@ class ExecuteSci(KPFFunction):
         log.info('-------------------------')
 
         kpfconfig = ktl.cache('kpfconfig')
+        SCRIPTSTOP = kpfconfig['SCRIPTSTOP']
+        SCRIPTSTOP.monitor()
         kpfguide = ktl.cache('kpfguide')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
+        STARTTIME = ktl.cache('kpfexpose', 'STARTTIME')
+        ELAPSED = ktl.cache('kpfexpose', 'ELAPSED')
+        OBSERVER = ktl.cache('kpfexpose', 'OBSERVER')
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)
         fast_read_mode = QueryFastReadMode.execute({})
+        history = {'exposure_start_times': [],
+                   'exposure_times': [],
+                   'observer': OBSERVER.read()}
+        scriptstop_triggered = False # Special handling for history return value
 
         ## ----------------------------------------------------------------
         ## Setup exposure meter
@@ -124,13 +133,19 @@ class ExecuteSci(KPFFunction):
         if runagitator and fast_read_mode:
             StartAgitator.execute({})
         for j in range(nexp):
-            check_scriptstop() # Stop here if requested
+#             check_scriptstop() # Stop here if requested
+            if SCRIPTSTOP.ascii == 'Yes':
+                scriptstop_triggered = True
+                break
             # Wait for current exposure to readout
             if exposestatus.read() != 'Ready':
                 log.info(f"Waiting for kpfexpose to be Ready")
                 WaitForReady.execute({})
                 log.info(f"Readout complete")
-                check_scriptstop() # Stop here if requested
+#                 check_scriptstop() # Stop here if requested
+                if SCRIPTSTOP.ascii == 'Yes':
+                    scriptstop_triggered = True
+                    break
             # Set triggered detectors. This is here to force a check of the
             # ENABLED status for each detector.
             SetTriggeredDetectors.execute(observation)
@@ -142,6 +157,8 @@ class ExecuteSci(KPFFunction):
             kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})
             WaitForReadout.execute({})
+            history['exposure_start_times'].append(STARTTIME.read())
+            history['exposure_times'].append(ELAPSED.read(binary=True))
             msg = f"Readout has begun for exposure {j+1}/{nexp}"
             log.info(msg)
             kpfconfig['SCRIPTMSG'].write(msg)
@@ -151,6 +168,7 @@ class ExecuteSci(KPFFunction):
         if runagitator and fast_read_mode:
             StopAgitator.execute({})
         SetObject.execute({'Object': ''})
+        return history, scriptstop_triggered
 
     @classmethod
     def post_condition(cls, observation):

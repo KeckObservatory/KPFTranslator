@@ -103,12 +103,6 @@ class KPFScript(KPFFunction):
     addition to a dict of arguments.
     '''
     @classmethod
-    def _check_OB(cls, OB):
-        if type(OB) not in [dict, ObservingBlock]:
-            msg = "OB argument type must be dict or ObservingBlock"
-            raise KPFException(msg)
-
-    @classmethod
     def execute(cls, args, OB=None):
         """Carries out this function in its entirety (pre and post conditions
            included)
@@ -118,9 +112,13 @@ class KPFScript(KPFFunction):
         args : dict
             The arguments in dictionary form
         """
-        cls._check_args(args)
-        if OB is not None:
-            cls._check_OB(OB)
+        # Read the OB
+        if isinstance(OB, dict):
+            OB = ObservingBlock(OB)
+        elif isinstance(OB, ObservingBlock):
+            pass
+        else:
+            raise FailedPreCondition('Input must be dict or ObservingBlock')
 
         # PRE CONDITION #
         try:
