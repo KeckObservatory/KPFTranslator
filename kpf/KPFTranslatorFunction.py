@@ -117,6 +117,8 @@ class KPFScript(KPFFunction):
             OB = ObservingBlock(OB)
         elif isinstance(OB, ObservingBlock):
             pass
+        elif OB is None:
+            pass
         else:
             raise FailedPreCondition('Input must be dict or ObservingBlock')
 
