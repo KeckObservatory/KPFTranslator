@@ -62,7 +62,7 @@ class SetSourceSelectShutters(KPFFunction):
                 if args.get(shutter[1], False) is True:
                     shutter_tests.append(shutter[0] in SRC_SHUTTERS.ascii.split(','))
             sleep(timeshim)
-            total_time += time_shim
+            total_time += timeshim
         if np.all(shutter_tests) != True:
             raise FailedToReachDestination(SRC_SHUTTERS.ascii, 'TBD')
 

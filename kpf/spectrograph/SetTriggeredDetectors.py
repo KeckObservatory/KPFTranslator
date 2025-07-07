@@ -54,8 +54,6 @@ class SetTriggeredDetectors(KPFFunction):
         log.debug(f"Setting triggered detectors to '{detectors_string}'")
         TRIG_TARG = ktl.cache('kpfexpose', 'TRIG_TARG')
         TRIG_TARG.write(detectors_string)
-        shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        sleep(shim_time)
 
     @classmethod
     def post_condition(cls, args):
@@ -80,7 +78,7 @@ class SetTriggeredDetectors(KPFFunction):
                 if args.get(detector[1], False) and detector[2]:
                     detector_tests.append(detector[0] in TRIG_TARG.ascii.split(','))
             sleep(timeshim)
-            total_time += time_shim
+            total_time += timeshim
         if np.all(shutter_tests) != True:
             raise FailedToReachDestination(TRIG_TARG.ascii, 'TBD')
 
