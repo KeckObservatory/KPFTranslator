@@ -16,7 +16,6 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.ObservingBlocks.GetObservingBlocks import query_database
 from kpf.fiu.VerifyCurrentBase import VerifyCurrentBase
 from kpf.scripts.SetTargetInfo import SetTargetInfo
-from kpf.scripts.SendTargetToMagiq import SendTargetToMagiq
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
