@@ -16,7 +16,7 @@ class ObservingBlock(object):
         if isinstance(OBinput, dict):
             OBdict = copy.deepcopy(OBinput)
         elif isinstance(OBinput, ObservingBlock):
-            OBdict = OBinput.to_dict()
+            self = OBinput
         elif OBinput in ['', None]:
             OBdict = {}
         elif isinstance(OBinput, str) or isinstance(OBinput, Path):
@@ -37,7 +37,9 @@ class ObservingBlock(object):
             log.error(f'{OBinput}')
             OBdict = {}
 
-        # OB Metadata
+        ## ----------------------------------------------------------------
+        ## Handle Observing Block metadata
+        ## ----------------------------------------------------------------
         if 'progid' in OBdict.keys() and 'ProgramID' in OBdict.keys():
             print('WARNING: Two keys for program ID exist')
             print(f"Ignoring progid = {OBdict.pop('progid')}")
@@ -55,7 +57,6 @@ class ObservingBlock(object):
         # Metadata for OB GUI
         self.executed = False
         self.edited = False
-
         ## ----------------------------------------------------------------
         ## Handle old v1 Observing Block format
         ## ----------------------------------------------------------------

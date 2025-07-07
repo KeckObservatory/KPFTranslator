@@ -45,13 +45,6 @@ class RunOB(KPFScript):
             ALLOWSCHEDULEDCALS = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
             if ALLOWSCHEDULEDCALS.read(binary=True) == False:
                 raise FailedPreCondition('ALLOWSCHEDULEDCALS is No')
-        # Read the OB
-        if isinstance(OB, dict):
-            OB = ObservingBlock(OB)
-        elif isinstance(OB, ObservingBlock):
-            pass
-        else:
-            raise FailedPreCondition('Input must be dict or ObservingBlock')
         # Validate the OB
         OB.validate()
         # Check for script running unless waitforscript is set
