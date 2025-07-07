@@ -243,7 +243,7 @@ class ObservingBlock(object):
                   f"ProgramID: '{self.ProgramID}'",
                   f"semester: '{self.semester}'",
                   f"semid: '{self.semid}'",
-                  f"CommentToObserver: '{self.CommentToObserver}'",
+                  f"comment: '{self.CommentToObserver}'",
                   ]
 #         if len(self.History) > 0:
 #             lines += [f"# History"]
