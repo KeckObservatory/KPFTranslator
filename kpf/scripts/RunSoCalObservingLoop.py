@@ -3,6 +3,7 @@ import time
 from pathlib import Path
 import datetime
 import traceback
+import yaml
 
 import ktl
 
@@ -13,6 +14,7 @@ from kpf.scripts import (set_script_keywords, clear_script_keywords,
                          add_script_log, check_script_running)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
+from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.scripts.ExecuteCal import ExecuteCal
 from kpf.scripts.CleanupAfterCalibrations import CleanupAfterCalibrations
@@ -72,7 +74,9 @@ class RunSoCalObservingLoop(KPFScript):
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):
-        pass
+        SoCalOBfile = Path(cfg.get('SoCal', 'SoCalOB', fallback='/tmp/SoCalOB.yaml'))
+        if SoCalOBfile.exists() == False:
+            raise PreConfitionFailed(f'SoCal OB File does not exist: {SoCalOBfile}')
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
@@ -81,6 +85,7 @@ class RunSoCalObservingLoop(KPFScript):
         if args.get('scheduled', True) is True:
             ALLOWSCHEDULED = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
             if ALLOWSCHEDULED.read() == 'No':
+                log.warning(f'Not running {cls.__name__} because ALLOWSCHEDULEDCALS is No')
                 return
 
         # Start SoCal in autonomous mode
@@ -90,20 +95,22 @@ class RunSoCalObservingLoop(KPFScript):
         if args.get('waitforscript', False) is True:
             newscript = f'{Path(__file__).name.replace(".py", "")}(PID {os.getpid()})'
             wait_for_script(newscript=newscript)
+        check_script_running()
         set_script_keywords(Path(__file__).name, os.getpid())
 
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
-        if isinstance(OB, dict):
-            SoCal_OB = ObservingBlock(OB)
+        SoCalOBfile = Path(cfg.get('SoCal', 'SoCalOB', fallback='/tmp/SoCalOB.yaml'))
+        log.info(f"Loading SoCal OB from {SoCalOBfile}")
+        SoCal_OB = ObservingBlock(SoCalOBfile)
 
         # Estimate time to Run SoCal OB
         SoCal_duration = EstimateOBDuration.execute({}, OB=SoCal_OB)
 
         # Estimate time to run Etalon OB
-        slewcal_OBfile = Path(kpfconfig['SLEWCALFILE'].read())
-        log.info('Slewcal has been requested')
+        SLEWCALFILE = ktl.cache('kpfconfig', 'SLEWCALFILE')
+        slewcal_OBfile = Path(SLEWCALFILE.read())
         log.debug(f"Reading: {slewcal_OBfile}")
         with open(slewcal_OBfile, 'r') as file:
             slewcal_OBdict = yaml.safe_load(file)
@@ -126,8 +133,6 @@ class RunSoCalObservingLoop(KPFScript):
             log.info("End time for today's SoCal window has passed")
             return
 
-        check_script_running()
-        set_script_keywords(Path(__file__).name, os.getpid())
         ConfigureFIU.execute({'mode': 'Calibration'})
         log.info(f'Starting SoCal observation loop')
         log.info(f'Start time: {start_time:.2f} HST')
@@ -143,7 +148,7 @@ class RunSoCalObservingLoop(KPFScript):
         while now_decimal >= start_time and now_decimal < end_time:
             log.debug('Checking if SoCal is on the Sun')
             on_target = WaitForSoCalOnTarget.execute({'timeout': 30})
-            OB = {True: SoCal_OB, Flase: SlewCal_OB}[on_target]
+            OB = {True: SoCal_OB, False: SlewCal_OB}[on_target]
             log.info(f'SoCal on target: {on_target}')
             try:
                 check_scriptstop()
