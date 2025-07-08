@@ -39,10 +39,11 @@ def query_schedule_API(query, params):
     '''
     url = 'https://vm-appserver.keck.hawaii.edu/api/schedule/'
     log.debug(f"Running schedule query at {url}{query} with params:")
-    log.debug(params)
+    log.debug(f"  Query params: {params}")
     r = requests.get(f"{url}{query}", params=params)
     try:
         result = json.loads(r.text)
+        log.debug(f"  Query result: {result}")
     except Exception as e:
         log.error(f'Failed to parse result:')
         log.error(r.text)
