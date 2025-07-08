@@ -6,14 +6,33 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-def expeter_flux_target(Mphotons_per_A, band):
-    peak_photon_ratios = {'498.125': 78.04/1e6,
-                          '604.375': 45.44/1e6,
-                          '710.625': 45.73/1e6,
-                          '816.875': 60.02/1e6}
-    expmeter_threshold = Mphotons_per_A/peak_photon_ratios[band]
-    snr_estimate = Mphotons_per_A**0.5*5
+def expeter_flux_target(photons_per_A, band):
+    # photons/A near bin center divided by TOTCORR
+    # bin1 / 498.125nm = 0.105 (1.8%)
+    # bin2 / 604.375nm = 0.115 (1.6%)
+    # bin3 / 710.625nm = 0.087 (2.0%)
+    # bin4 / 816.875nm = 0.117 (0.6%)
+    peak_photon_ratios = {'498.125': 0.105,
+                          '604.375': 0.115,
+                          '710.625': 0.087,
+                          '816.875': 0.117}
+    expmeter_threshold = photons_per_A/peak_photon_ratios[band]
+    # SNR Estimate
+    # bin1: mean_rootpeakN_over_SNR452 = 14.92
+    # bin1: mean_rootpeakN_over_SNR548 = 6.32
+    # bin2: mean_rootpeakN_over_SNR548 = 8.58
+    # bin2: mean_rootpeakN_over_SNR652 = 9.59
+    # bin3: mean_rootpeakN_over_SNR652 = 8.34
+    # bin3: mean_rootpeakN_over_SNR747 = 6.62
+    # bin4: mean_rootpeakN_over_SNR747 = 6.58
+    # bin4: mean_rootpeakN_over_SNR852 = 6.73
+    snr_ratios = {'498.125': (14.92+6.32)/2,
+                  '604.375': (8.58+9.59)/2,
+                  '710.625': (8.34+6.62)/2,
+                  '816.875': (6.58+6.73)/2}
+    snr_estimate = photons_per_A**0.5/snr_ratios[band]
     return expmeter_threshold, snr_estimate
+
 
 # def expeter_flux_target(spectrograph_flux, band):
 #     slope = {'498.125': 7503.438,
