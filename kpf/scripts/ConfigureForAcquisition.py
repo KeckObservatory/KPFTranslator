@@ -55,7 +55,6 @@ class ConfigureForAcquisition(KPFScript):
             SetCalSource.execute({'CalSource': calsource, 'wait': False})
 
         # Set FIU Mode
-        log.info('Setting FIU mode to Observing')
         ConfigureFIU.execute({'mode': 'Observing', 'wait': False})
 
         # Set Target Parameters from OB
