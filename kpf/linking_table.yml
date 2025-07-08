@@ -311,8 +311,6 @@ links:
     EastNorth:
         cmd: telescope.EastNorth.EastNorth
     # Utils
-    CheckAllowScheduledCals:
-        cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
     GetScheduledProgram:
