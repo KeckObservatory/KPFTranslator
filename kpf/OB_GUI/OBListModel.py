@@ -152,8 +152,7 @@ class OBListModel(QtCore.QAbstractListModel):
             targetname = OB.Target.TargetName
             if self.telescope_interactions_allowed():
                 self.log.info(f"Adding {targetname} to Magiq star list")
-                AddTarget.execute({'TargetName': targetname})
-
+                AddTarget.execute(OB.Target.to_dict())
 
     def extend(self, OBs, start_times=None):
         self.log.debug('OBListModel.extend')

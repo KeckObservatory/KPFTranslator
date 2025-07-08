@@ -28,9 +28,9 @@ class AddTarget(KPFFunction):
                   'frame': '2000' if args.get('Equinox') == 'J2000' else args.get('Equinox'),
                   'options': '',
                   }
-        if abs(args.get('DRA')) > 0.001:
+        if abs(args.get('DRA', 0)) > 0.001:
             params['options'] += f"DRA={args.get('DRA')}"
-        if abs(args.get('DDEC')) > 0.001:
+        if abs(args.get('DDEC', 0)) > 0.001:
             params['options'] += f"DRA={args.get('DDEC')}"
         log.info(f'Running Magiq addTarget command {params.get("target")}')
         result = magiq_server_command('addTarget', params=params)
