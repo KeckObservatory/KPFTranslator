@@ -100,11 +100,11 @@ def get_OBs_from_KPFCC_API(params):
                 if OB.Target is not None:
                     for line in OB.Target.to_lines(comment=True):
                         if line.find('ERR') > 0:
-                            log.debug(line)
+                            log.warning(line)
                 for obs in OB.Observations:
                     for line in obs.to_lines(comment=True):
                         if line.find('ERR') > 0:
-                            log.debug(line)
+                            log.warning(line)
 
     log.debug(f'get_OBs_from_database parsed {len(OBs)} ObservingBlocks')
     return OBs
