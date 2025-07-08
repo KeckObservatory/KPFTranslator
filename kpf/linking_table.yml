@@ -239,6 +239,8 @@ links:
         cmd: scripts.EstimateOBDuration.EstimateOBDuration
     RunOB:
         cmd: scripts.RunOB.RunOB
+    RunOBs:
+        cmd: scripts.RunOBs.RunOBs
     RunSoCalObservingLoop:
         cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
     SendTargetToMagiq:
