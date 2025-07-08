@@ -28,7 +28,7 @@ class GetScheduledPrograms(KPFFunction):
         if args.get('semester', None) == 'current':
             start = semester_start
             numdays = (semester_end-start).days + 2
-        elif str(args.get('semester', None)) == 'today':
+        elif str(args.get('semester', None)) in ['today', 'tonight']:
             start = datetime.datetime.utcnow() - datetime.timedelta(days=1)
             numdays = 1
         elif str(args.get('semester', None))[0] == '2':
@@ -38,6 +38,7 @@ class GetScheduledPrograms(KPFFunction):
         else:
             # Pull programs from the rest of the semester
             start = utnow
+            numdays = (semester_end-start).days + 2
         date_str = (start-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         query = 'getSchedule'
         params = {'date': date_str,

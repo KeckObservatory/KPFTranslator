@@ -5,8 +5,9 @@ import requests
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.ObservingBlocks.GetObservingBlocks import query_database, GetObservingBlocks
-from kpf.schedule import getPI, getObserverInfo
+from kpf.observatoryAPIs.KPFCC import query_KPFCC_API
+from kpf.observatoryAPIs.schedule import getPI, getObserverInfo
+from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
 from kpf.utils.SendEmail import SendEmail
 
 
@@ -38,7 +39,7 @@ class SubmitObserverComment(KPFFunction):
 
         log.info('Submitting data to DB:')
         log.info(params)
-        result = query_database('addObservingBlockHistory', params=params)
+        result = query_KPFCC_API('addObservingBlockHistory', params=params)
         log.info(f"Response: {result}")
 
         # Email PI
@@ -47,11 +48,8 @@ class SubmitObserverComment(KPFFunction):
             log.warning('No OB ID found, not emailing PI')
             return
         OB = GetObservingBlocks.execute({'OBid': args.get('OBid')})[0]
-        print(OB.semid)
         PI_ID = getPI(OB.semid)[0]
-        print(PI_ID)
         PIinfo = getObserverInfo(PI_ID.get('Principal'))[0]
-        print(PIinfo)
         email = {'To': PIinfo.get('Email'),
                  'From': 'kpf_info@keck.hawaii.edu',
                  'Subject': f'Observer Comment on {OB.summary()}',

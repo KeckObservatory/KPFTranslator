@@ -31,7 +31,7 @@ class SetObserverFromSchedule(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
+        classical, cadence = GetScheduledPrograms.execute({'semester': 'tonight'})
         KPF_programs = classical + cadence
         nKPFprograms = len(KPF_programs)
         project_codes = [p['ProjCode'] for p in KPF_programs]

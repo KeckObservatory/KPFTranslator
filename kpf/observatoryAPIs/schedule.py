@@ -3,6 +3,8 @@ import json
 
 import datetime
 
+from kpf import log, cfg
+
 
 def get_semester_dates(date):
     if isinstance(date, datetime.datetime):
@@ -27,8 +29,8 @@ def get_semester_dates(date):
         elif semester[-1] == 'B':
             semester_start_str = f'{year}-08-01 00:00:00'
             semester_end_str = f'{year+1}-01-31 23:59:59'
-    semester_start = datetime.strptime(semester_start_str, '%Y-%m-%d %H:%M:%S')
-    semester_end = datetime.strptime(semester_end_str, '%Y-%m-%d %H:%M:%S')
+    semester_start = datetime.datetime.strptime(semester_start_str, '%Y-%m-%d %H:%M:%S')
+    semester_end = datetime.datetime.strptime(semester_end_str, '%Y-%m-%d %H:%M:%S')
     return semester, semester_start, semester_end
 
 
