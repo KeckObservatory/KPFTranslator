@@ -213,20 +213,17 @@ links:
         cmd: magiq.SelectTarget.SelectTarget
     SetTargetList:
         cmd: magiq.SetTargetList.SetTargetList
-    # Observing Blocks
+    # Observatory APIs
     GetObservingBlocks:
-        cmd: ObservingBlocks.GetObservingBlocks.GetObservingBlocks
+        cmd: observatoryAPIs.GetObservingBlocks.GetObservingBlocks
     GetObservingBlocksByProgram:
-        cmd: ObservingBlocks.GetObservingBlocks.GetObservingBlocksByProgram
-    SubmitExecutionHistory:
-        cmd: ObservingBlocks.SubmitExecutionHistory.SubmitExecutionHistory
-    SubmitObserverComment:
-        cmd: ObservingBlocks.SubmitObserverComment.SubmitObserverComment
-    # Schedule
+        cmd: observatoryAPIs.GetObservingBlocks.GetObservingBlocksByProgram
     GetScheduledPrograms:
-        cmd: schedule.GetScheduledPrograms.GetScheduledPrograms
+        cmd: observatoryAPIs.GetScheduledPrograms.GetScheduledPrograms
     GetTelescopeRelease:
-        cmd: schedule.GetTelescopeRelease.GetTelescopeRelease
+        cmd: observatoryAPIs.GetTelescopeRelease.GetTelescopeRelease
+    SubmitObserverComment:
+        cmd: observatoryAPIs.SubmitObserverComment.SubmitObserverComment
     # Scripts
     CleanupAfterCalibrations:
         cmd: scripts.CleanupAfterCalibrations.CleanupAfterCalibrations

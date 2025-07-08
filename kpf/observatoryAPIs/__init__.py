@@ -1,0 +1,29 @@
+import datetime
+
+
+def get_semester_dates(date):
+    if isinstance(date, datetime):
+        if date.month == 1:
+            semester = f'{date.year-1}B'
+            semester_start_str = f'{date.year-1}-08-01 00:00:00'
+            semester_end_str = f'{date.year}-01-31 23:59:59'
+        elif date.month > 1 and date.month < 8:
+            semester = f'{date.year}A'
+            semester_start_str = f'{date.year}-02-01 00:00:00'
+            semester_end_str = f'{date.year}-07-31 23:59:59'
+        else:
+            semester = f'{date.year}B'
+            semester_start_str = f'{date.year}-08-01 00:00:00'
+            semester_end_str = f'{date.year+1}-01-31 23:59:59'
+    elif isinstance(date, str):
+        year = int(date[:4])
+        semester = date
+        if semester[-1] == 'A':
+            semester_start_str = f'{year}-02-01 00:00:00'
+            semester_end_str = f'{year}-07-31 23:59:59'
+        elif semester[-1] == 'B':
+            semester_start_str = f'{year}-08-01 00:00:00'
+            semester_end_str = f'{year+1}-01-31 23:59:59'
+    semester_start = datetime.datetime.strptime(semester_start_str, '%Y-%m-%d %H:%M:%S')
+    semester_end = datetime.datetime.strptime(semester_end_str, '%Y-%m-%d %H:%M:%S')
+    return semester, semester_start, semester_end

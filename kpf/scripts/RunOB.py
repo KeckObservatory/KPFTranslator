@@ -13,7 +13,6 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (check_script_running, set_script_keywords,
                          add_script_log, wait_for_script, clear_script_keywords)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.ObservingBlocks.GetObservingBlocks import query_database
 from kpf.fiu.VerifyCurrentBase import VerifyCurrentBase
 from kpf.scripts.SetTargetInfo import SetTargetInfo
 from kpf.scripts.ConfigureForCalibrations import ConfigureForCalibrations
@@ -26,7 +25,7 @@ from kpf.scripts.WaitForConfigureScience import WaitForConfigureScience
 from kpf.scripts.ExecuteSci import ExecuteSci
 from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.spectrograph.SetProgram import SetProgram
-from kpf.utils.GetScheduledProgram import GetScheduledProgram
+from kpf.observatoryAPIs.KPFCC import query_KPFCC_API
 
 
 class RunOB(KPFScript):
@@ -176,12 +175,12 @@ class RunOB(KPFScript):
                     history, scriptstop = ExecuteSci.execute(observation_dict)
                     if OB.OBID != '':
                         history['id'] = OB.OBID
-                        log.info('Submitting execution history to DB')
+                        log.info('Submitting execution history to KPFCC API')
                         log.debug(f"  {history['id']}")
                         log.debug(f"  {history['exposure_start_times']}")
                         log.debug(f"  {history['exposure_times']}")
-                        result = query_database('addObservingBlockHistory', params=history)
-                        log.debug(f"Response: {result}")
+                        result = query_KPFCC_API('addObservingBlockHistory', params=history)
+                        log.debug(f"KPFCC API Response: {result}")
                     if scriptstop:
                         raise ScriptStopTriggered("SCRIPTSTOP triggered")
                 except ScriptStopTriggered as scriptstop:

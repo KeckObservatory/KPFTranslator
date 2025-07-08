@@ -1,8 +1,7 @@
 import requests
 import json
-from datetime import datetime, timedelta
 
-from kpf import log, cfg
+import datetime
 
 
 def get_semester_dates(date):
@@ -50,15 +49,6 @@ def query_schedule_API(query, params):
     return result
 
 
-def getSchedule(date='2025-02-01', numdays=1, telnr=1, instrument='KPF'):
-    query = 'getSchedule'
-    params = {'date': date,
-              'numdays': numdays,
-              'telnr': telnr,
-              'instrument': instrument}
-    return query_schedule_API(query, params)
-
-
 def getPI(semid):
     query = 'getPI'
     params = {'semid': semid}
@@ -68,10 +58,4 @@ def getPI(semid):
 def getObserverInfo(observerID):
     query = 'getObserverInfo'
     params = {'obsid': observerID}
-    return query_schedule_API(query, params)
-
-
-def getTelescopeReadyState(telnr=1):
-    query = 'getTelescopeReadyState'
-    params = {'telnr': telnr}
     return query_schedule_API(query, params)

@@ -12,41 +12,13 @@ import keygrabber
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.ObservingBlocks.GetObservingBlocks import query_database
-
-
-def round_microseconds(ut, ndecimals=2):
-    '''Round the given date time object to the given decimal seconds.
-    '''
-    factor = 10**(6-ndecimals)
-    new_ms = int(np.round(ut.microsecond/factor)*factor)
-    if new_ms == 1000000:
-        add_this = 5*10**(-1-ndecimals)
-        dt = datetime.timedelta(seconds=add_this)
-        rounded = round_microseconds(ut+dt, ndecimals=ndecimals)
-    else:
-        rounded = ut.replace(microsecond=new_ms)
-    return rounded
-
-
-def truncate_isoformat(ut, ndecimals=2):
-    '''Truncate the string carefully since a simple [-4] assumes the all
-    microseconds have been printed, which is not the case always.
-    '''
-    if ut.microsecond == 0:
-        output = f"{ut.isoformat()}."
-        for i in range(ndecimals):
-            output += '0'
-    else:
-        output = ut.isoformat()[:-4]
-    assert len(output) == 22
-    return output
+from kpf.observatoryAPIs.KPFCC import query_KPFCC_API
 
 
 ##-------------------------------------------------------------------------
-## SubmitExecutionHistory
+## SubmitExecutionHistoryUsingKeywordHistory
 ##-------------------------------------------------------------------------
-class SubmitExecutionHistory(KPFFunction):
+class SubmitExecutionHistoryUsingKeywordHistory(KPFFunction):
     '''
     '''
     @classmethod
@@ -115,7 +87,7 @@ class SubmitExecutionHistory(KPFFunction):
 
         log.info('Submitting history to DB:')
         log.info(params)
-        result = query_database('addObservingBlockHistory', params=params)
+        result = query_KPFCC_API('addObservingBlockHistory', params=params)
         log.info(f"Response: {result}")
 
     @classmethod

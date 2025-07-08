@@ -1,9 +1,7 @@
-from datetime import datetime, timedelta
-
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.schedule import getTelescopeReadyState
+from kpf.observatoryAPIs.schedule import query_schedule_API
 
 
 class GetTelescopeRelease(KPFFunction):
@@ -18,7 +16,9 @@ class GetTelescopeRelease(KPFFunction):
     def perform(cls, args):
         '''
         '''
-        result = getTelescopeReadyState()
+        query = 'getTelescopeReadyState'
+        params = {'telnr': arge.get('telnr', 1)}
+        result = query_schedule_API(query, params)
         log.debug(f'getTelescopeReadyState returned {result}')
         return result.get('State', '') == 'Ready'
 

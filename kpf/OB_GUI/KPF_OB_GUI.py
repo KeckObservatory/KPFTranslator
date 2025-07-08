@@ -32,17 +32,18 @@ from kpf.ObservingBlocks.Target import Target
 from kpf.ObservingBlocks.Calibration import Calibration
 from kpf.ObservingBlocks.Observation import Observation
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.ObservingBlocks.GetObservingBlocks import GetObservingBlocks, GetObservingBlocksByProgram
-from kpf.ObservingBlocks.SubmitObserverComment import SubmitObserverComment
+from kpf.observatoryAPIs.SubmitObserverComment import SubmitObserverComment
+from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
+from kpf.observatoryAPIs.GetObservingBlocksByProgram import GetObservingBlocksByProgram
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObserver import SetObserver
 from kpf.spectrograph.SetProgram import SetProgram
 from kpf.utils.StartOfNight import StartOfNight
 from kpf.utils.EndOfNight import EndOfNight
-from kpf.schedule import get_semester_dates
-from kpf.schedule.GetScheduledPrograms import GetScheduledPrograms
-from kpf.schedule.GetTelescopeRelease import GetTelescopeRelease
+from kpf.observatoryAPIs.schedule import get_semester_dates
+from kpf.observatoryAPIs.GetScheduledPrograms import GetScheduledPrograms
+from kpf.observatoryAPIs.GetTelescopeRelease import GetTelescopeRelease
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.magiq.SelectTarget import SelectTarget
 

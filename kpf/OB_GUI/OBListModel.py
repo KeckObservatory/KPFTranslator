@@ -3,7 +3,7 @@ import numpy as np
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from kpf.schedule.GetTelescopeRelease import GetTelescopeRelease
+from kpf.observatoryAPIs.GetTelescopeRelease import GetTelescopeRelease
 from kpf.magiq.RemoveTarget import RemoveTarget, RemoveAllTargets
 from kpf.magiq.AddTarget import AddTarget
 from kpf.magiq.SetTargetList import SetTargetList

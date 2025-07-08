@@ -1,6 +1,7 @@
 import os
 import traceback
 from time import sleep
+import datetime
 from pathlib import Path
 
 import ktl
@@ -157,7 +158,10 @@ class ExecuteSci(KPFFunction):
             kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})
             WaitForReadout.execute({})
-            history['exposure_start_times'].append(STARTTIME.read())
+            # Collect start time for history
+            d = datetime.datetime.fromtimestamp(STARTTIME.read(binary=True))
+            rounded_ut = round_microseconds(d + datetime.timedelta(hours=10))
+            history['exposure_start_times'].append(truncate_isoformat(rounded_ut))
             history['exposure_times'].append(ELAPSED.read(binary=True))
             msg = f"Readout has begun for exposure {j+1}/{nexp}"
             log.info(msg)
