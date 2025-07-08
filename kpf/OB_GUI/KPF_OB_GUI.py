@@ -975,7 +975,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Count what we need to load ahead of time for the progress bar
         schedule_file_contents = {}
         Nsched = 0
-        errmsg = []
         for i,WB in enumerate(self.KPFCC_weather_bands):
             if schedule_files[i].exists():
                 schedule_file_contents[WB] = Table.read(schedule_files[i], format='ascii.csv')
@@ -983,7 +982,6 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 schedule_file_contents[WB] = []
                 self.log.error(f'No schedule file found at {schedule_files[i]}')
-                errmsg.append(f'No schedule file found at {schedule_files[i]}')
         self.log.debug(f"Pre-counted {Nsched} OBs to get for KPF-CC in all weather bands")
         # Create progress bar if we have a lot of OBs to retrieve
         usepbar = Nsched > 15
@@ -997,6 +995,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug('Created progress bar')
         scheduledOBcount = 0
         retrievedOBcount = 0
+        errs = []
         for i,WB in enumerate(self.KPFCC_weather_bands):
             nOBs_this_WB = len(schedule_file_contents[WB])
             self.log.debug(f'Getting {nOBs_this_WB} OBs for weather band {WB}')
@@ -1004,21 +1003,26 @@ class MainWindow(QtWidgets.QMainWindow):
             self.KPFCC_start_times[WB] = []
             for entry in schedule_file_contents[WB]:
                 scheduledOBcount += 1
-                try:
-                    thisOB = GetObservingBlocks.execute({'OBid': entry['unique_id']})[0]
-                    self.KPFCC_OBs[WB].append(thisOB)
+                result = GetObservingBlocks.execute({'OBid': entry['unique_id']})[0]
+                if isinstance(result, ObservingBlock):
+                    self.KPFCC_OBs[WB].append(result)
                     start = entry['StartExposure'].split(':')
                     start_decimal = int(start[0]) + int(start[1])/60
                     self.KPFCC_start_times[WB].append(start_decimal)
                     retrievedOBcount += 1
-                except Exception as e:
-                    self.log.error(f'Unable to load OB: {entry["unique_id"]}')
-                    self.log.error(e)
+                else:
+                    
+                    errmsg = f"{entry['Target']} Failed: {result[1]} ({result[0]})"
+                    self.log.error(errmsg)
+                    errs.append(errmsg)
                 if usepbar:
                     if progress.wasCanceled():
                         self.log.error("Retrieval of OBs canceled by user.")
                         break
                     progress.setValue(scheduledOBcount)
+        msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) KPF-CC OBs for all weather bands"]
+        msg.extend(errs)
+        ConfirmationPopup('Retrieved OBs from Database', '\n'.join(msg), info_only=True).exec_()
         self.set_SortOrWeather()
         self.set_weather_band(self.KPFCC_weather_band)
 

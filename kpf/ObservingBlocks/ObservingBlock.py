@@ -124,33 +124,33 @@ class ObservingBlock(object):
         # Check that components are the correct types and are individually valid
         if self.Target is not None:
             if not isinstance(self.Target, Target):
-#                 print('Target component is not a Target object')
+                log.debug('Target component is not a Target object')
                 valid = False
             if not self.Target.validate():
-#                 print('Target component is not a valid Target object')
+                log.debug('Target component is not a valid Target object')
                 valid = False
         for i,observation in enumerate(self.Observations):
             if not isinstance(observation, Observation):
-#                 print(f'Observation component {i+1} is not a Observation object')
+                log.debug(f'Observation component {i+1} is not a Observation object')
                 valid = False
             if observation.validate() != True:
-#                 print(f'Observation component {i+1} is not a valid Observation object')
+                log.debug(f'Observation component {i+1} is not a valid Observation object')
                 valid = False
         for i,calibration in enumerate(self.Calibrations):
             if not isinstance(calibration, Calibration):
-#                 print(f'Calibration component {i+1} is not a Calibration object')
+                log.debug(f'Calibration component {i+1} is not a Calibration object')
                 valid = False
             if not calibration.validate():
-#                 print(f'Calibration component {i+1} is not a valid Calibration object')
+                log.debug(f'Calibration component {i+1} is not a valid Calibration object')
                 valid = False
         # If we have science observations, we must have a target
         if len(self.Observations) > 0:
             if self.Target is None:
-#                 print(f"contains observations without a target")
+                log.debug(f"contains observations without a target")
                 valid = False
         # We should have at least one observation or calibration
         if len(self.Observations) == 0 and len(self.Calibrations) == 0:
-#             print(f"contains no observations and no calibrations")
+            log.debug(f"contains no observations and no calibrations")
             valid = False
         return valid
 
