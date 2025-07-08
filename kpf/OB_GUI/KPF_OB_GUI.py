@@ -194,19 +194,6 @@ class MainWindow(QtWidgets.QMainWindow):
         for progID in sorted(program_IDs):
             dates = [e['Date'] for e in classical if e['ProjCode'] == progID]
             self.program_strings.append(f"{progID} on {', '.join(dates)}")
-        # Prepare KPFCC schedule execution records
-        semester, start, end = get_semester_dates(datetime.datetime.now())
-        logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
-        execution_history_file = logdir / f'KPFCC_executions_{semester}.csv'
-        if execution_history_file.exists() is False:
-            with open(execution_history_file, 'w') as f:
-                contents = ['# timestamp', 'decimalUT', 'executedID',
-                            'executed_line', 'scheduleUT',
-                            'schedule_current_line', 'scheduleUT_current',
-                            'schedule_next_line', 'scheduleUT_next',
-                            'on_schedule']
-                hdrline = ', '.join(contents)
-                f.write(hdrline)
         # KPF-CC Settings and Values
         self.schedule_path = Path(f'/s/sdata1701/Schedules/')
         self.default_schedule = self.schedule_path / 'default.json'
@@ -217,6 +204,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for WB in self.KPFCC_weather_bands:
             self.KPFCC_OBs[WB] = []
             self.KPFCC_start_times[WB] = None
+        self.prepare_execution_history_file()
         # Add OB List Model Component
         self.OBListModel = OBListModel(OBs=[], log=self.log, INSTRUME=self.INSTRUME)
         # Add OB Builder Component
@@ -1266,6 +1254,21 @@ class MainWindow(QtWidgets.QMainWindow):
     ##-------------------------------------------
     ## Methods to Execute an OB
     ##-------------------------------------------
+    def prepare_execution_history_file(self):
+        # Prepare KPFCC schedule execution records
+        semester, start, end = get_semester_dates(datetime.datetime.now())
+        logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
+        self.execution_history_file = logdir / f'KPFCC_executions_{semester}.csv'
+        if self.execution_history_file.exists() is False:
+            with open(self.execution_history_file, 'w') as f:
+                contents = ['# timestamp', 'decimalUT', 'executedID',
+                            'executed_line', 'scheduleUT',
+                            'schedule_current_line', 'scheduleUT_current',
+                            'schedule_next_line', 'scheduleUT_next',
+                            'on_schedule']
+                hdrline = ', '.join(contents)
+                f.write(hdrline+'\n')
+
     def execute_scheduled_OB(self):
         self.log.error('execute_scheduled_OB not implemented')
 
@@ -1285,9 +1288,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 now = datetime.datetime.utcnow()
                 now_str = now.strftime('%Y-%m-%d %H:%M:%S UT')
                 decimal_now = now.hour + now.minute/60 + now.second/3600
-                start_time = self.OBListModel.start_time[self.SOBindex]
-                start_current = self.OBListModel.start_time[self.OBListModel.currentOB]
-                start_next = self.OBListModel.start_time[self.OBListModel.nextOB]
+                start_time = self.OBListModel.start_times[self.SOBindex]
+                start_current = self.OBListModel.start_times[self.OBListModel.currentOB]
+                start_next = self.OBListModel.start_times[self.OBListModel.nextOB]
                 on_schedule = self.SOBindex in [self.OBListModel.currentOB, self.OBListModel.nextOB]
                 contents = [now_str, f'{decimal_now:.2f}', f'{SOB.OBID}',
                             f'{self.SOBindex}', f'{start_time:.2f}',
@@ -1295,6 +1298,10 @@ class MainWindow(QtWidgets.QMainWindow):
                             f'{self.OBListModel.nextOB}', f'{start_next:.2f}',
                             f'{on_schedule}']
                 line = ', '.join(contents)
+                if not self.execution_history_file.exists():
+                    self.prepare_execution_history_file()
+                with open(self.execution_history_file, 'a') as f:
+                    f.write(line+'\n')
                 if not on_schedule:
                     self.log.schedule(f'Running OB {self.SOBindex} off schedule')
                     self.log.schedule(f'  Start time for this OB is {start_time:.2f} UT')
