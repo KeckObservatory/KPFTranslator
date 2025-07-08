@@ -227,7 +227,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildCalibration = [Calibration({})]
         # Example Calibrations
         if Path(self.SLEWCALFILE.ascii).exists():
-            self.example_calOB = ObservingBlock(self.SLEWCALFILE.ascii)
+#             self.example_calOB = ObservingBlock(self.SLEWCALFILE.ascii)
+            self.log.warning('Using temporary hack for slewcal file')
+            self.example_calOB = ObservingBlock('/s/sdata1701/OBs/jwalawender/Calibrations/SlewCal_EtalonFiber.yaml')
         else:
             self.example_calOB = ObservingBlock({})
         self.example_cal_file = Path(__file__).parent.parent / 'ObservingBlocks' / 'exampleOBs' / 'Calibrations.yaml'
