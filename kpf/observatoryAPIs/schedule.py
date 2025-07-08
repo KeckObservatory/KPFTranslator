@@ -5,7 +5,7 @@ import datetime
 
 
 def get_semester_dates(date):
-    if isinstance(date, datetime):
+    if isinstance(date, datetime.datetime):
         if date.month == 1:
             semester = f'{date.year-1}B'
             semester_start_str = f'{date.year-1}-08-01 00:00:00'
