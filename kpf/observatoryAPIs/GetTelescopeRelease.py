@@ -17,7 +17,7 @@ class GetTelescopeRelease(KPFFunction):
         '''
         '''
         query = 'getTelescopeReadyState'
-        params = {'telnr': arge.get('telnr', 1)}
+        params = {'telnr': args.get('telnr', 1)}
         result = query_schedule_API(query, params)
         log.debug(f'getTelescopeReadyState returned {result}')
         return result.get('State', '') == 'Ready'

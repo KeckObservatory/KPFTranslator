@@ -11,8 +11,9 @@ import numpy as np
 import ktl
 import keygrabber
 
+from kpf import log, cfg
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.databases.schedule import get_semester_dates
+from kpf.observatoryAPIs.schedule import get_semester_dates
 
 
 def round_microseconds(ut, ndecimals=2):
