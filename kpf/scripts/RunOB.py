@@ -150,7 +150,12 @@ class RunOB(KPFScript):
         # Execute science observations
         if len(OB.Observations) > 0:
             log.info(f'Configuring for Observations')
-            VerifyCurrentBase.execute({'query_user': True})
+            try:
+                VerifyCurrentBase.execute({'query_user': True})
+            except Exception as e:
+                log.error('Exception encountered during VerifyCurrentBase')
+                log.error(e)
+                CleanupAfterScience.execute(args, OB=OB)
             for i,observation in enumerate(OB.Observations):
                 # Configure for Science
                 try:
