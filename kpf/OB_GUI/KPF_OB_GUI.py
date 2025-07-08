@@ -963,18 +963,24 @@ class MainWindow(QtWidgets.QMainWindow):
         # Count what we need to load ahead of time for the progress bar
         schedule_file_contents = {}
         Nsched = 0
+        pbar_msg = []
         for i,WB in enumerate(self.KPFCC_weather_bands):
             if schedule_files[i].exists():
                 schedule_file_contents[WB] = Table.read(schedule_files[i], format='ascii.csv')
-                Nsched += len(schedule_file_contents[WB])
+                nOBs = len(schedule_file_contents[WB])
+                Nsched += nOBs
+                pbar_msg.append(f'Schedule for weather band {WB} contains {nOBs} OBs')
             else:
                 schedule_file_contents[WB] = []
+                pbar_msg.append(f'Could not find schedule for weather band {WB}')
                 self.log.error(f'No schedule file found at {schedule_files[i]}')
         self.log.debug(f"Pre-counted {Nsched} OBs to get for KPF-CC in all weather bands")
         # Create progress bar if we have a lot of OBs to retrieve
         usepbar = Nsched > 15
         if usepbar:
-            pbar_title = f"Retrieving {Nsched} OBs for all weather bands"
+            pbar_title = f"Retrieving {Nsched} OBs for all weather bands\n\n"
+            if len(pbar_msg) > 0:
+                pbar_title += '\n'.join(pbar_msg)
             progress = QtWidgets.QProgressDialog(pbar_title, "Cancel", 0, Nsched)
             progress.setWindowModality(QtCore.Qt.WindowModal) # Make it modal (blocks interaction with parent)
             progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
@@ -999,7 +1005,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.KPFCC_start_times[WB].append(start_decimal)
                     retrievedOBcount += 1
                 else:
-                    
                     errmsg = f"{entry['Target']} Failed: {result[1]} ({result[0]})"
                     self.log.error(errmsg)
                     errs.append(errmsg)
