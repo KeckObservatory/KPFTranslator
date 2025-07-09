@@ -29,6 +29,7 @@ from kpf.calbench.PredictNDFilters import PredictNDFilters
 from kpf.expmeter.PredictExpMeterParameters import PredictExpMeterParameters
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
 from kpf.expmeter.SetupExpMeter import SetupExpMeter
+from kpf.observatoryAPIs import round_microseconds, truncate_isoformat
 
 
 class ExecuteSci(KPFFunction):
