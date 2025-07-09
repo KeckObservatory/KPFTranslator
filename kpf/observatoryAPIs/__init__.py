@@ -72,6 +72,9 @@ def truncate_isoformat(ut, ndecimals=2):
 ## query_observatoryAPI
 ##-------------------------------------------------------------------------
 def query_observatoryAPI(api, query, params, post=False):
+    if api == 'proposal' and 'hash' not in params.keys():
+        params['hash'] = os.getenv('APIHASH', default='')
+        print('Removing hash')
     url = cfg.get('ObservatoryAPIs', f'{api}_url')
     log.debug(f"Running {api} API query: {url}{query}")
     params_for_log = copy.deepcopy(params)
@@ -80,6 +83,7 @@ def query_observatoryAPI(api, query, params, post=False):
     if post == False:
         r = requests.get(f"{url}{query}", params=params)
     else:
+        log.debug('Using POST')
         r = requests.post(f"{url}{query}", json=params, verify=False)
     try:
         result = json.loads(r.text)
@@ -103,13 +107,12 @@ def getObserverInfo(observerID):
     return query_observatoryAPI('schedule', 'getObserverInfo', {'obsid': observerID})
 
 
-def addObservingBlockHistory(history):
+def addObservingBlockHistory(history, post=True):
+    if 'comment' not in history.keys(): history['comment'] = ''
     return query_observatoryAPI('proposal', 'addObservingBlockHistory', history)
 
 
 def get_OBs_from_KPFCC_API(params):
-    if 'hash' not in params.keys():
-        params['hash'] = os.getenv('APIHASH', default='')
     result = query_observatoryAPI('proposal', 'getKPFObservingBlock', params)
     if result is None:
         return []
