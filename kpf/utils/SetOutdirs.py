@@ -185,28 +185,3 @@ class SetOutdirs(KPFFunction):
             tests.append(success)
 
         return np.all(np.array(tests))
-
-    @classmethod
-    def add_cmdline_args(cls, parser):
-        parser = cls._add_bool_arg(parser, 'CRED2',
-            'Set CRED2 OUTDIR (kpfguide.OUTDIR)?', default=True)
-        parser = cls._add_bool_arg(parser, 'FVC1',
-            'Set FVC1 OUTDIR (kpffvc.SCIOUTDIR)?', default=False)
-        parser = cls._add_bool_arg(parser, 'FVC2',
-            'Set FVC2 OUTDIR (kpffvc.CAHKOUTDIR)?', default=False)
-        parser = cls._add_bool_arg(parser, 'FVC3',
-            'Set FVC3 OUTDIR (kpffvc.CALOUTDIR)?', default=False)
-        parser = cls._add_bool_arg(parser, 'FVC4',
-            'Set FVC4 OUTDIR (kpffvc.EXTOUTDIR)?', default=False)
-        parser = cls._add_bool_arg(parser, 'ExpMeter',
-            'Set ExpMeter OUTDIR (kpf_expmeter.DATADIR)?', default=True)
-        parser = cls._add_bool_arg(parser, 'CaHK',
-            'Set CaHK OUTDIR (kpf_hk.RECORDDIR)?', default=True)
-        parser = cls._add_bool_arg(parser, 'Green',
-            'Set Green OUTDIR (kpfgreen.FITSDIR)?', default=True)
-        parser = cls._add_bool_arg(parser, 'Red',
-            'Set Red OUTDIR (kpfred.FITSDIR)?', default=True)
-        parser = cls._add_bool_arg(parser, 'L0',
-            'Set Red OUTDIR (kpfassemble.OUTDIR)?', default=True)
-
-        return super().add_cmdline_args(parser)
