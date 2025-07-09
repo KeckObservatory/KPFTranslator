@@ -56,7 +56,7 @@ class SubmitObserverComment(KPFFunction):
         else:
             PIinfo = result.get('data', {})
             email = {'To': PIinfo.get('Email'),
-                     'From': 'kpfcc@keck.hawaii.edu',
+                     'From': 'cc@keck.hawaii.edu',
                      'Subject': f'KPF Observer Comment on {OB.summary()}',
                      'Message': args.get('comment', ''),
                      }
