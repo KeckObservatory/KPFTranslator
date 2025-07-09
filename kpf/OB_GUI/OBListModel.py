@@ -86,13 +86,15 @@ class OBListModel(QtCore.QAbstractListModel):
         all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
         n_visits = len(all_visits)
         n_observed = observed_tonight(OB)
-        if n_observed == 0:
-            return QtGui.QImage(f'{self.icon_path}/status-offline.png')
-        else:
-            if all_visits.ind(ind.row()) < n_observed:
+        if n_observed > 0:
+            if all_visits.index(ind.row()) < n_observed:
                 return QtGui.QImage(f'{self.icon_path}/tick.png')
             else:
                 return QtGui.QImage(f'{self.icon_path}/status-away.png')
+        # If no other makers apply, use this one
+        return QtGui.QImage(f'{self.icon_path}/status-offline.png')
+
+
 
     def update_current_next(self):
         if self.start_times is None:
