@@ -14,9 +14,6 @@ class GetObservingBlocksByProgram(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        url = cfg.get('Database', 'url', fallback=None)
-        if url is None:
-            raise FailedPreCondition('Database URL is not defined in configuration')
         program = args.get('program', None)
         if program is None:
             raise FailedPreCondition('Program must be provided')

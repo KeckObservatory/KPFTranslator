@@ -1,3 +1,4 @@
+import os
 import copy
 import datetime
 import json
@@ -8,10 +9,11 @@ urllib3.disable_warnings() # We're going to do verify=False, so ignore warnings
 import numpy as np
 
 from kpf import log, cfg
+from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 
 
 def get_semester_dates(date):
-    if isinstance(date, datetime):
+    if isinstance(date, datetime.datetime):
         if date.month == 1:
             semester = f'{date.year-1}B'
             semester_start_str = f'{date.year-1}-08-01 00:00:00'

@@ -6,7 +6,7 @@ from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.observatoryAPIs import addObservingBlockHistory, getPI, getObserverInfo
+from kpf.observatoryAPIs import addObservingBlockHistory, getPI
 from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
 from kpf.utils.SendEmail import SendEmail
 
@@ -50,14 +50,17 @@ class SubmitObserverComment(KPFFunction):
             log.error('Unable to retrieve OB from API')
             log.error(OB)
             return
-        PI_ID = getPI(OB.semid)[0]
-        PIinfo = getObserverInfo(PI_ID.get('Principal'))[0]
-        email = {'To': PIinfo.get('Email'),
-                 'From': 'kpfcc@keck.hawaii.edu',
-                 'Subject': f'Observer Comment on {OB.summary()}',
-                 'Message': args.get('comment', ''),
-                 }
-        SendEmail.execute(email)
+        result = getPI(OB.semid)
+        if result.get('success', False) == False:
+            log.error('Unable to retrieve PIinfo from API')
+        else:
+            PIinfo = result.get('data', {})
+            email = {'To': PIinfo.get('Email'),
+                     'From': 'kpfcc@keck.hawaii.edu',
+                     'Subject': f'KPF Observer Comment on {OB.summary()}',
+                     'Message': args.get('comment', ''),
+                     }
+            SendEmail.execute(email)
 
 #         import json
 #         import logging
