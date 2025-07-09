@@ -224,8 +224,6 @@ class ObservingBlock(object):
 
     def __repr__(self, prune=True):
         lines = []
-        if self.OBID != '':
-            lines += [f"# Database ID: '{self.OBID}'"]
         if self.Target is not None:
             lines += ['Target:']
             lines += self.Target.__repr__(prune=prune).strip('\n').split('\n')
@@ -239,7 +237,8 @@ class ObservingBlock(object):
             for i,obs in enumerate(self.Observations):
                 lines.append(f'# Observation {i+1}')
                 lines += obs.__repr__(prune=prune).strip('\n').split('\n')
-        lines += [f"# Metadata:",
+        lines += [f"# Metadata:"]
+        lines += [f"id: '{self.OBID}'",
                   f"ProgramID: '{self.ProgramID}'",
                   f"semester: '{self.semester}'",
                   f"semid: '{self.semid}'",
