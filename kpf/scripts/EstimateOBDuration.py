@@ -113,7 +113,7 @@ class EstimateOBDuration(KPFScript):
         if OB.Observations is not None:
             duration += estimate_observation_time(OB.Observations, cfg, fast=fast)
 
-        print(f"{duration/60:.0f} min")
+#         print(f"{duration/60:.0f} min")
         return duration/60
 
     @classmethod
