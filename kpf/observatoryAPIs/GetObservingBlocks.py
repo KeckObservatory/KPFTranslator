@@ -22,9 +22,16 @@ class GetObservingBlocks(KPFFunction):
         if args.get('show_history', False):
             print(f'# Observing History for {OBs[0].summary()}')
             for i,h in enumerate(OBs[0].History):
-                print(f"- Observer: {h['observer']}")
-                print(f"  Start Times: {h['exposure_start_times']}")
-                print(f"  Exposure Times: {h['exposure_times']}")
+                print(f"- Observer: {h.get('observer')} (at {h.get('timestamp')})")
+                start_times = h.get('exposure_start_times', [])
+                if len(start_times) > 0:
+                    print(f"  Start Times: {start_times}")
+                exposure_times = h.get('exposure_times', [])
+                if len(exposure_times) > 0:
+                    print(f"  Exposure Times: {exposure_times}")
+                comment = h.get('comment', '')
+                if len(comment) > 0:
+                    print(f"  Observer comment: {comment}")
         return OBs
 
     @classmethod
