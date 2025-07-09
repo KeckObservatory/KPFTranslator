@@ -121,7 +121,7 @@ class RunOB(KPFScript):
             # Clean up after calibrations
             if len(OB.Observations) > 0:
                 # Don't stop FIU if we have observations to perform
-                args['stowFIU'] = False
+                args['FIUdest'] = 'Observing'
             CleanupAfterCalibrations.execute(args, OB=OB)
             if len(OB.Observations) > 0:
                 kpfconfig['SCRIPTMSG'].write('Slew Cal complete. Setting FIU to observing mode')

@@ -84,16 +84,13 @@ class CleanupAfterCalibrations(KPFScript):
                                 log.error(f'Sending email failed')
                                 log.error(email_err)
 
-
-
-
         runagitator = ktl.cache('kpfconfig', 'USEAGITATOR').read(binary=True)
         if runagitator is True:
             StopAgitator.execute({})
 
-        if args.get('stowFIU', True):
-            log.info(f"Stowing FIU")
-            ConfigureFIU.execute({'mode': 'Stowed'})
+        FIUdest = args.get('FIUdest', 'Stowed')
+        log.info(f"Sending FIU to {FIUdest}")
+        ConfigureFIU.execute({'mode': FIUdest})
 
         # Turn off exposure meter controlled exposure
         log.debug('Clearing kpf_expmeter.USETHRESHOLD')
