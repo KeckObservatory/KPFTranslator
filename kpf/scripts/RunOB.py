@@ -154,7 +154,10 @@ class RunOB(KPFScript):
             user_input = input()
             log.debug(f'response: "{user_input}"')
             if user_input.lower() in ['a', 'abort', 'q', 'quit']:
-                raise KPFException("User chose to halt execution")
+                log.error("User chose to halt execution")
+                CleanupAfterScience.execute(args, OB=OB)
+                clear_script_keywords()
+                return
 
         # Execute science observations
         if len(OB.Observations) > 0:
