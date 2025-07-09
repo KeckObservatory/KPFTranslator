@@ -957,7 +957,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.OBListHeader.setText('   StartTime '+self.hdr)
         # Form location to look for KPF-CC schedule files
         utnow = datetime.datetime.utcnow()
-        date = utnow-datetime.timedelta(days=1)
+        date = utnow-datetime.timedelta(hours=20) # Switch dates at 10am HST, 2000UT
         date_str = date.strftime('%Y-%m-%d').lower()
         schedule_files = [self.schedule_path / f'{date_str}_{WB}.csv'
                           for WB in self.KPFCC_weather_bands]
