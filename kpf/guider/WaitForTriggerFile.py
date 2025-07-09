@@ -24,7 +24,12 @@ class WaitForTriggerFile(KPFFunction):
         # Wait for cube file to be updated
         expr = f"$kpfguide.LASTTRIGFILE != '{initial_lastfile}'"
         success = ktl.waitFor(expr, timeout=20)
-        log.info(f"New cube file: {LASTTRIGFILE.read()}")
+        if success:
+            cube_file = LASTTRIGFILE.read()
+            log.info(f"New cube file: {cube_file}")
+        else:
+            cube_file = None
+            log.error(f"kpfguide.LASTTRIGFILE did not update")
         return cube_file
 
     @classmethod
