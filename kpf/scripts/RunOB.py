@@ -146,6 +146,20 @@ class RunOB(KPFScript):
                 log.error(e)
                 CleanupAfterScience.execute(args, OB=OB)
                 return
+            log.debug('Asking for user input')
+            print()
+            print("###############################################################")
+            print("    Before continuing, please ensure that the OA has placed")
+            print("    the star on the KPF PO and they have initiated tip tilt")
+            print("    corrections (if desired).")
+            print()
+            print("    Press 'Enter' to begin exposure(s) or 'a' to abort script")
+            print("###############################################################")
+            print()
+            user_input = input()
+            log.debug(f'response: "{user_input}"')
+            if user_input.lower() in ['a', 'abort', 'q', 'quit']:
+                raise KPFException("User chose to halt execution")
 
         # Execute science observations
         if len(OB.Observations) > 0:
