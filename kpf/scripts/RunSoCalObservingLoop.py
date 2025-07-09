@@ -76,7 +76,7 @@ class RunSoCalObservingLoop(KPFScript):
     def pre_condition(cls, args, OB=None):
         SoCalOBfile = Path(cfg.get('SoCal', 'SoCalOB', fallback='/tmp/SoCalOB.yaml'))
         if SoCalOBfile.exists() == False:
-            raise PreConfitionFailed(f'SoCal OB File does not exist: {SoCalOBfile}')
+            raise FailedPreCondition(f'SoCal OB File does not exist: {SoCalOBfile}')
 
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
