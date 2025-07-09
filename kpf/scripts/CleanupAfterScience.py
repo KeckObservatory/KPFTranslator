@@ -49,9 +49,6 @@ class CleanupAfterScience(KPFScript):
         if runagitator is True:
             StopAgitator.execute({})
 
-        # Clear target info
-        log.debug('Clearing target info')
-        SetTargetInfo.execute({})
         # Turn off exposure meter controlled exposure
         log.debug('Clearing kpf_expmeter.USETHRESHOLD')
         USETHRESHOLD = ktl.cache('kpf_expmeter', 'USETHRESHOLD')
