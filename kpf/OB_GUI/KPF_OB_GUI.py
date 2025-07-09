@@ -946,7 +946,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.log.error("Retrieval of OBs canceled by user.")
                     break
                 progress.setValue(i+1)
-        self.OBListHeader.setText('    StartTime '+self.hdr)
+        self.OBListHeader.setText(self.hdr)
         self.set_SortOrWeather()
 
     def load_OBs_from_schedule(self):
@@ -954,6 +954,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.verify_overwrite_of_OB_list() == False:
             return
         self.KPFCC = True
+        self.OBListHeader.setText('   StartTime '+self.hdr)
         # Form location to look for KPF-CC schedule files
         utnow = datetime.datetime.utcnow()
         date = utnow-datetime.timedelta(days=1)

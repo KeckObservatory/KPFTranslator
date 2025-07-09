@@ -1,3 +1,4 @@
+from pathlib import Path
 from datetime import datetime, timedelta
 import numpy as np
 
@@ -49,6 +50,7 @@ class OBListModel(QtCore.QAbstractListModel):
         self.sort_key = None
         self.log = log
         self.INSTRUME = INSTRUME
+        self.icon_path = Path(__file__).parent / 'icons'
 
     def data(self, ind, role):
         if role == QtCore.Qt.DisplayRole:
@@ -76,21 +78,21 @@ class OBListModel(QtCore.QAbstractListModel):
         # Check if this OB is next or current
         self.update_current_next()
         if ind.row() == self.currentOB:
-            return QtGui.QImage('icons/arrow.png')
+            return QtGui.QImage(f'{self.icon_path}/arrow.png')
         elif ind.row() == self.nextOB:
-            return QtGui.QImage('icons/arrow-curve-000-left.png')
+            return QtGui.QImage(f'{self.icon_path}/arrow-curve-000-left.png')
         # Check observed state
         OB = self.OBs[ind.row()]
         all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
         n_visits = len(all_visits)
         n_observed = observed_tonight(OB)
         if n_observed == 0:
-            return QtGui.QImage('icons/status-offline.png')
+            return QtGui.QImage(f'{self.icon_path}/status-offline.png')
         else:
             if all_visits.ind(ind.row()) < n_observed:
-                return QtGui.QImage('icons/tick.png')
+                return QtGui.QImage(f'{self.icon_path}/tick.png')
             else:
-                return QtGui.QImage('icons/status-away.png')
+                return QtGui.QImage(f'{self.icon_path}/status-away.png')
 
     def update_current_next(self):
         if self.start_times is None:
