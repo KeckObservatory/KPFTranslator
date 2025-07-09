@@ -101,6 +101,9 @@ class StartOfNight(KPFFunction):
         if HKCOOLING.read() != 'On':
             log.warning('HK Detector Cooling is not On')
 
+        # Set Observer
+        SetObserverFromSchedule.execute({})
+
         # Configure FIU
         log.info('Configure FIU for "Observing"')
         ConfigureFIU.execute({'mode': 'Observing'})
