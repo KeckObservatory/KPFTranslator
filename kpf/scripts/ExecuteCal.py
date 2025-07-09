@@ -287,7 +287,9 @@ class ExecuteCal(KPFFunction):
             # ENABLED status for each detector.
             SetTriggeredDetectors.execute(calibration)
             # Start next exposure
-            log.info(f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})")
+            msg = f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})"
+            log.info(msg)
+#             kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})
             if exptime > 10:
                 WaitForL0File.execute({})
