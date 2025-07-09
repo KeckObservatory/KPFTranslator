@@ -15,7 +15,7 @@ class SendPCUtoHome(KPFFunction):
     - `ao.PCSFSTST`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         PCSFSTST = ktl.cache('ao', 'PCSFSTST')
         success = PCSFSTST.waitFor('!= "FAULT"')
         if success is not True:

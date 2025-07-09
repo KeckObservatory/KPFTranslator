@@ -1288,7 +1288,7 @@ class MainWindow(QtWidgets.QMainWindow):
         result = ConfirmationPopup('Execute Science OB?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
             if self.OBListModel.telescope_interactions_allowed():
-                SelectTarget.execute({'target': SOB.Target.TargetName})
+                SelectTarget.execute(SOB.Target.to_dict())
             if self.KPFCC == True:
                 # Log execution
                 now = datetime.datetime.utcnow()
