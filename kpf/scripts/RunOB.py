@@ -185,31 +185,37 @@ class RunOB(KPFScript):
                 except ScriptStopTriggered as scriptstop:
                     log.error('Script Stop Triggered')
                     CleanupAfterScience.execute(args, OB=OB)
+                    clear_script_keywords()
                     return
                 except Exception as e:
                     log.error('Exception encountered during ConfigureForScience')
                     log.error(e)
                     CleanupAfterScience.execute(args, OB=OB)
+                    clear_script_keywords()
                     return
                 # Execute Observation
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
                 try:
                     history, scriptstop = ExecuteSci.execute(observation_dict)
+                    log.info(f'History of execution:')
+                    log.info(f"  Start Times: {history['exposure_start_times']}")
+                    log.info(f"  Exposure Times: {history['exposure_times']}")
+                    log.debug(history)
                     if OB.OBID != '':
                         history['id'] = OB.OBID
                         log.info('Submitting execution history to KPFCC API')
                         log.debug(f"  {history['id']}")
-                        log.debug(f"  {history['exposure_start_times']}")
-                        log.debug(f"  {history['exposure_times']}")
                         result = addObservingBlockHistory(history)
                         log.debug(f"KPFCC API Response: {result}")
                     if scriptstop:
                         raise ScriptStopTriggered("SCRIPTSTOP triggered")
                 except ScriptStopTriggered as scriptstop:
                     log.error('Script Stop Triggered')
+                    break
                 except Exception as e:
                     log.error('Exception encountered during ExecuteSci')
                     log.error(e)
+                    break
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
 
