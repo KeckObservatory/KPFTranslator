@@ -1,4 +1,4 @@
-#! /usr/bin/env kpython3
+#! /kroot/rel/default/bin/kpython3
 
 import sys
 from pathlib import Path
