@@ -3,8 +3,7 @@ import datetime
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.observatoryAPIs.KPFCC import get_OBs_from_KPFCC_API
-from kpf.observatoryAPIs.schedule import get_semester_dates
+from kpf.observatoryAPIs import get_semester_dates, get_OBs_from_KPFCC_API
 
 
 ##-------------------------------------------------------------------------

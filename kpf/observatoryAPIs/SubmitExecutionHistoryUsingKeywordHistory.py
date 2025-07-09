@@ -12,7 +12,7 @@ import keygrabber
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.observatoryAPIs.KPFCC import query_KPFCC_API
+from kpf.observatoryAPIs import addObservingBlockHistory
 
 
 ##-------------------------------------------------------------------------
@@ -87,7 +87,7 @@ class SubmitExecutionHistoryUsingKeywordHistory(KPFFunction):
 
         log.info('Submitting history to DB:')
         log.info(params)
-        result = query_KPFCC_API('addObservingBlockHistory', params=params)
+        result = addObservingBlockHistory(params)
         log.info(f"Response: {result}")
 
     @classmethod

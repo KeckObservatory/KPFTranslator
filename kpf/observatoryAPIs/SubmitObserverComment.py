@@ -6,8 +6,7 @@ from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.observatoryAPIs.KPFCC import query_KPFCC_API
-from kpf.observatoryAPIs.schedule import getPI, getObserverInfo
+from kpf.observatoryAPIs import addObservingBlockHistory, getPI, getObserverInfo
 from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
 from kpf.utils.SendEmail import SendEmail
 
@@ -41,7 +40,7 @@ class SubmitObserverComment(KPFFunction):
 #         params["comment"] = '\n'.join(comments)
         log.info('Submitting data to DB:')
         log.info(params)
-        result = query_KPFCC_API('addObservingBlockHistory', params=params)
+        result = addObservingBlockHistory(params)
         log.info(f"Response: {result}")
 
         # Email PI

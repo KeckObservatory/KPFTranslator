@@ -41,7 +41,7 @@ from kpf.spectrograph.SetObserver import SetObserver
 from kpf.spectrograph.SetProgram import SetProgram
 from kpf.utils.StartOfNight import StartOfNight
 from kpf.utils.EndOfNight import EndOfNight
-from kpf.observatoryAPIs.schedule import get_semester_dates
+from kpf.observatoryAPIs import get_semester_dates
 from kpf.observatoryAPIs.GetScheduledPrograms import GetScheduledPrograms
 from kpf.observatoryAPIs.GetTelescopeRelease import GetTelescopeRelease
 from kpf.fiu.ConfigureFIU import ConfigureFIU

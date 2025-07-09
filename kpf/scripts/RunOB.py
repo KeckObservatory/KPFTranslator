@@ -25,7 +25,7 @@ from kpf.scripts.WaitForConfigureScience import WaitForConfigureScience
 from kpf.scripts.ExecuteSci import ExecuteSci
 from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.spectrograph.SetProgram import SetProgram
-from kpf.observatoryAPIs.KPFCC import query_KPFCC_API
+from kpf.observatoryAPIs import addObservingBlockHistory
 
 
 class RunOB(KPFScript):
@@ -184,7 +184,7 @@ class RunOB(KPFScript):
                         log.debug(f"  {history['id']}")
                         log.debug(f"  {history['exposure_start_times']}")
                         log.debug(f"  {history['exposure_times']}")
-                        result = query_KPFCC_API('addObservingBlockHistory', params=history)
+                        result = addObservingBlockHistory(history)
                         log.debug(f"KPFCC API Response: {result}")
                     if scriptstop:
                         raise ScriptStopTriggered("SCRIPTSTOP triggered")

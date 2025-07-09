@@ -3,7 +3,7 @@ import datetime
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.observatoryAPIs.schedule import get_semester_dates, query_schedule_API
+from kpf.observatoryAPIs import get_semester_dates, query_observatoryAPI
 
 
 class GetScheduledPrograms(KPFFunction):
@@ -45,7 +45,7 @@ class GetScheduledPrograms(KPFFunction):
                   'numdays': numdays,
                   'telnr': args.get('telnr', 1),
                   'instrument': 'KPF'}
-        all_programs = query_schedule_API(query, params)
+        all_programs = query_observatoryAPI('schedule', query, params)
         classical_programs = [p for p in all_programs if p['Instrument'] == 'KPF' and p['Semester'] == semester]
         cadence_programs = [p for p in all_programs if p['Instrument'] == 'KPF-CC' and p['Semester'] == semester]
         return classical_programs, cadence_programs
