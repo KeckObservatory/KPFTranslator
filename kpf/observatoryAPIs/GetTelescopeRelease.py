@@ -18,7 +18,7 @@ class GetTelescopeRelease(KPFFunction):
     def perform(cls, args):
         utnow = datetime.datetime.utcnow()
         if utnow.hour > 8:
-            log.debug(f'UT hour > 8 assume release')
+#             log.debug(f'UT hour > 8 assume release')
             return True
         params = {'telnr': args.get('telnr', 1)}
         result = query_observatoryAPI('schedule', 'getTelescopeReadyState', params)
