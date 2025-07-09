@@ -289,7 +289,7 @@ class ExecuteCal(KPFFunction):
             # Start next exposure
             msg = f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})"
             log.info(msg)
-#             kpfconfig['SCRIPTMSG'].write(msg)
+            kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})
             if exptime > 10:
                 WaitForL0File.execute({})
