@@ -168,6 +168,8 @@ class RunOB(KPFScript):
                 log.error('Exception encountered during VerifyCurrentBase')
                 log.error(e)
                 CleanupAfterScience.execute(args, OB=OB)
+                clear_script_keywords()
+                return
 
             for i,observation in enumerate(OB.Observations):
                 # Configure for Science
