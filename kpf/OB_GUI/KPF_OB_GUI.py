@@ -1199,7 +1199,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 field.setText(', '.join(strings))
             # Calculate OB Duration
             duration = EstimateOBDuration.execute({'fast': self.fast}, OB=SOB)
-            self.SOB_ExecutionTime.setText(f"{duration/60:.0f} min")
+            self.SOB_ExecutionTime.setText(f"{duration:.0f} min")
         self.set_SOB_enabled()
 
     def remove_SOB(self):
@@ -1483,7 +1483,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if OBValid:
             self.SciOBString.setText(self.SciObservingBlock.summary())
             duration = EstimateOBDuration.execute({}, OB=self.SciObservingBlock)
-            self.SciOBEstimatedDuration.setText(f"{duration/60:.0f} min")
+            self.SciOBEstimatedDuration.setText(f"{duration:.0f} min")
         else:
             self.SciOBString.setText('')
             self.SciOBEstimatedDuration.setText('')
@@ -1555,7 +1555,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if OBValid:
             self.CalOBString.setText(self.CalObservingBlock.summary())
             duration = EstimateOBDuration.execute({}, OB=self.CalObservingBlock)
-            self.CalEstimatedDuration.setText(f"{duration/60:.0f} min")
+            self.CalEstimatedDuration.setText(f"{duration:.0f} min")
         else:
             self.CalOBString.setText('')
             self.CalEstimatedDuration.setText('')

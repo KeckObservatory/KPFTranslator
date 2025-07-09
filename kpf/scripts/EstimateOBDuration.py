@@ -114,7 +114,7 @@ class EstimateOBDuration(KPFScript):
             duration += estimate_observation_time(OB.Observations, cfg, fast=fast)
 
         print(f"{duration/60:.0f} min")
-        return duration
+        return duration/60
 
     @classmethod
     def post_condition(cls, args, OB=None):

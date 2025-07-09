@@ -122,7 +122,7 @@ class RunSoCalObservingLoop(KPFScript):
         # Start Loop
         start_time = args.get('StartTimeHST', 9)
         # End time subtracts off max duration of observation and 3 minutes of buffer
-        end_time = args.get('EndTimeHST', 12) - max([SoCal_duration, Etalon_duration])/3600 - 0.05
+        end_time = args.get('EndTimeHST', 12) - max([SoCal_duration, Etalon_duration])/60 - 0.05
         now = datetime.datetime.now()
         now_decimal = (now.hour + now.minute/60 + now.second/3600)
         if now_decimal < start_time:
