@@ -104,9 +104,9 @@ def getObserverInfo(observerID):
     return query_observatoryAPI('schedule', 'getObserverInfo', {'obsid': observerID})
 
 
-def addObservingBlockHistory(history, post=True):
+def addObservingBlockHistory(history):
     if 'comment' not in history.keys(): history['comment'] = ''
-    return query_observatoryAPI('proposal', 'addObservingBlockHistory', history)
+    return query_observatoryAPI('proposal', 'addObservingBlockHistory', history, post=True)
 
 
 def get_OBs_from_KPFCC_API(params):
