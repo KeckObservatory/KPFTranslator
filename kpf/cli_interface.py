@@ -256,7 +256,7 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
         logger.debug('Requested function is a script')
         parser.add_argument("-f", "--file", dest="file", type=str,
             help="The OB file to run.")
-        parser.add_argument("-d", "--db", dest="dbid", type=str,
+        parser.add_argument("-d", "--obid", "--id", dest="obid", type=str,
             help="The unique database ID of the OB to run.")
 
     if parsed_args.help is True:
@@ -280,6 +280,7 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
     if script is True:
         OB = None
         input_file = parsed_func_args.get('file', None)
+        OBid = parsed_func_args.get('obid', None)
         if input_file is not None:
             logger.debug(f"Found an input file: {input_file}")
             # Load the file
@@ -305,6 +306,8 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
                 logger.error("Filetype not supported. Must be .yaml, .yml, or .json")
                 return
             OB = ObservingBlock(OBdict)
+        elif OBid is not None:
+            raise NotImplementedError('Direct OB retrieval is not yet supported')
 
     if parsed_args.dry_run:
         logger.info("Dry run:")
