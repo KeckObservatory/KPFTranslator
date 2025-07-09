@@ -66,8 +66,6 @@ class RunOB(KPFScript):
         if OB.OBID not in [None, '']:
             log.info(f"OB ID = {OB.OBID}")
 
-        initial_program = ktl.cache('kpfexpose', 'PROGNAME').read()
-
         # Set Target info for OA's Tip Tilt GUI
         if OB.Target is not None:
             SetTargetInfo.execute({}, OB=OB)
@@ -121,13 +119,10 @@ class RunOB(KPFScript):
                     clear_script_keywords()
                     return
             # Clean up after calibrations
-            log.info(f'Cleaning up after Calibrations')
             if len(OB.Observations) > 0:
                 # Don't stop FIU if we have observations to perform
                 args['stowFIU'] = False
             CleanupAfterCalibrations.execute(args, OB=OB)
-            # Restore initial program name
-            SetProgram.execute({'progname': initial_program})
             if len(OB.Observations) > 0:
                 kpfconfig['SCRIPTMSG'].write('Slew Cal complete. Setting FIU to observing mode')
 
