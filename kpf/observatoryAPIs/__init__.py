@@ -74,7 +74,7 @@ def truncate_isoformat(ut, ndecimals=2):
 def query_observatoryAPI(api, query, params, post=False):
     if api == 'proposal' and 'hash' not in params.keys():
         params['hash'] = os.getenv('APIHASH', default='')
-        print('Removing hash')
+#         print('Removing hash')
     url = cfg.get('ObservatoryAPIs', f'{api}_url')
     log.debug(f"Running {api} API query: {url}{query}")
     params_for_log = copy.deepcopy(params)
