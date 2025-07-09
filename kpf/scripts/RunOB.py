@@ -85,7 +85,6 @@ class RunOB(KPFScript):
 
         # Execute calibrations
         if len(OB.Calibrations) > 0:
-            log.info(f'Executing Calibrations')
             # Configure for Calibrations
             try:
                 if len(OB.Observations) > 0:
@@ -102,6 +101,7 @@ class RunOB(KPFScript):
                 CleanupAfterCalibrations.execute(args, OB=OB)
                 clear_script_keywords()
                 return
+
             # Loop over calibrations and execute
             for i,calibration in enumerate(OB.Calibrations):
                 log.info(f'Executing Calibration {i+1}/{len(OB.Calibrations)}')
@@ -118,6 +118,7 @@ class RunOB(KPFScript):
                     CleanupAfterCalibrations.execute(args, OB=OB)
                     clear_script_keywords()
                     return
+
             # Clean up after calibrations
             if len(OB.Observations) > 0:
                 # Don't stop FIU if we have observations to perform
@@ -161,7 +162,7 @@ class RunOB(KPFScript):
 
         # Execute science observations
         if len(OB.Observations) > 0:
-
+            # Verify Current Base
             try:
                 VerifyCurrentBase.execute({'query_user': True})
             except Exception as e:
@@ -171,6 +172,7 @@ class RunOB(KPFScript):
                 clear_script_keywords()
                 return
 
+            # Iterate over observations
             for i,observation in enumerate(OB.Observations):
                 # Configure for Science
                 try:
