@@ -18,11 +18,11 @@ GUI_list = [
             {'name': 'KPF OB GUI',
              'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/OB_GUI/KPF_OB_GUI.py'],
              'display': 'control0',
-             'position': '0,5,190,-1,-1'},
+             'position': '0,135,30,-1,-1'},
             {'name': 'KPF TipTilt GUI',
              'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/TT_GUI/TipTiltGUI.py', '--monitor'],
              'display': 'control0',
-             'position': '0,925,30,-1,-1'},
+             'position': '0,1225,30,-1,-1'},
             # Control1
             {'name': 'KPF Fiber Injection Unit (FIU)',
              'cmd': ['kpf', 'start', 'fiu_gui'],
