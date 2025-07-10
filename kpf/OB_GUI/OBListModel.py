@@ -141,6 +141,7 @@ class OBListModel(QtCore.QAbstractListModel):
             decimal_now = now.hour + now.minute/60 + now.second/3600
             masked_start_times = np.ma.MaskedArray(self.start_times)
             past = np.ma.masked_greater(np.array(masked_start_times) - decimal_now, 0)
+            past.mask = past.mask | np.array([o is True for o in self.observed])
             self.currentOB = past.argmax() # Current is nearest start time in past
             future = np.ma.masked_less_equal(np.array(masked_start_times) - decimal_now, 0)
             future.mask = future.mask | np.array([o is True for o in self.observed])
