@@ -673,9 +673,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_LST(self, value):
         self.SiderealTimeValue.setText(value[:-3])
         self.update_counter += 1
-        if self.update_counter > 120:
+        if self.update_counter > 60:
+            self.update_counter = 0
             self.update_SOB_display()
             self.telescope_released = GetTelescopeRelease.execute({})
+            self.OBListModel.update_observed_status()
 
     # kpfconfig.SLEWCALREQ
     def update_SlewCalReq(self, value):
