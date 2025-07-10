@@ -1,4 +1,5 @@
 import time
+import numpy as np
 import ktl
 
 from kpf import log, cfg
@@ -30,7 +31,7 @@ def expeter_flux_target(Mphotons_per_A, band):
                   '604.375': (8.58+9.59)/2,
                   '710.625': (8.34+6.62)/2,
                   '816.875': (6.58+6.73)/2}
-    snr_estimate = photons_per_A**0.5/snr_ratios[band]
+    snr_estimate = Mphotons_per_A**0.5/snr_ratios[band]
     return expmeter_threshold, snr_estimate
 
 
@@ -61,31 +62,35 @@ class SetExpMeterTerminationParameters(KPFFunction):
     def pre_condition(cls, args):
         check_input(args, 'ExpMeterThreshold', allowed_types=[int, float],
                     value_min=0)
-        check_input(args, 'ExpMeterBin', allowed_types=[int, float, str])
-        band = float(args.get('ExpMeterBin'))
-        tbin = ktl.cache('kpf_expmeter', 'THRESHOLDBIN')
-        allowed_values = list(tbin._getEnumerators())
-        allowed_values.pop(allowed_values.index('All'))
-        allowed_floats = np.array([float(x) for x in allowed_values])
-        if int(band) not in [1, 2, 3, 4]:
-            band = (np.abs(allowed_floats-band)).argmin()+1
-        if band not in [1, 2, 3, 4]:
-            raise FailedPreCondition(f'Unable to parse ExpMeterBin: {args.get("ExpMeterBin")}')
+#         check_input(args, 'ExpMeterBin', allowed_types=[int, float, str])
+#         band = float(args.get('ExpMeterBin'))
+#         tbin = ktl.cache('kpf_expmeter', 'THRESHOLDBIN')
+#         allowed_values = list(tbin._getEnumerators())
+#         allowed_values.pop(allowed_values.index('All'))
+#         allowed_floats = np.array([float(x) for x in allowed_values])
+#         if int(band) not in [1, 2, 3, 4]:
+#             band = (np.abs(allowed_floats-band)).argmin()+1
+#         if band not in [1, 2, 3, 4]:
+#             raise FailedPreCondition(f'Unable to parse ExpMeterBin: {args.get("ExpMeterBin")}')
 
     @classmethod
     def perform(cls, args):
-        band = float(args.get('ExpMeterBin'))
         tbin = ktl.cache('kpf_expmeter', 'THRESHOLDBIN')
         allowed_values = list(tbin._getEnumerators())
         allowed_values.pop(allowed_values.index('All'))
         allowed_floats = np.array([float(x) for x in allowed_values])
-        if int(band) not in [1, 2, 3, 4]:
-            band = (np.abs(allowed_floats-band)).argmin()+1
+
+        floatband = float(args.get('ExpMeterBin'))
+        if int(floatband) in [1, 2, 3, 4]:
+            intband = int(floatband)
+        else:
+            intband = (np.abs(allowed_floats-floatband)).argmin()+1
+        stringband = {1: '498.125', 2: '604.375', 3: '710.625', 4: '816.875'}[intband]
 
         spectrograph_flux = args.get('ExpMeterThreshold')
-        expmeter_flux, snr_estimate = expeter_flux_target(spectrograph_flux, band)
+        expmeter_flux, snr_estimate = expeter_flux_target(spectrograph_flux, stringband)
         kpf_expmeter = ktl.cache('kpf_expmeter')
-        kpf_expmeter['THRESHOLDBIN'].write(band)
+        kpf_expmeter['THRESHOLDBIN'].write(stringband)
         kpf_expmeter['THRESHOLD'].write(expmeter_flux)
         kpf_expmeter['USETHRESHOLD'].write('Yes')
 
@@ -95,9 +100,9 @@ class SetExpMeterTerminationParameters(KPFFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser):
-        parser.add_argument('ExpMeterBin', type=int,
-                            choices=[1,2,3,4],
-                            help="Which exposure meter band to use (1, 2, 3, or 4)")
+        parser.add_argument('ExpMeterBin', type=str,
+                            choices=['1', '2', '3', '4', '498.125','604.375','710.625','816.875'],
+                            help="Which exposure meter band to use")
         parser.add_argument('ExpMeterThreshold', type=float,
                             help="Threshold flux in e-/nm in the main spectrograph")
         return super().add_cmdline_args(parser)
