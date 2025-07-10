@@ -191,6 +191,7 @@ class RunSoCalObservingLoop(KPFScript):
         # Cleanup
         try:
             CleanupAfterCalibrations.execute({}, OB=SlewCal_OB)
+            clear_script_keywords()
         except Exception as e:
             log.error("CleanupAfterCalibrations failed:")
             log.error(e)
