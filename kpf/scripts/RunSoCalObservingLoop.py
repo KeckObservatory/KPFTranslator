@@ -11,7 +11,8 @@ from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (set_script_keywords, clear_script_keywords,
-                         add_script_log, check_script_running)
+                         add_script_log, check_script_running,
+                         wait_for_script)
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
