@@ -23,9 +23,9 @@ class EastNorth(KPFFunction):
     @classmethod
     def pre_condition(cls, args):
         max_offset = cfg.getfloat('telescope', 'max_offset', fallback=900)
-        check_input(args, 'East', allowed_types=[int, float],
+        check_input(args, 'NodE', allowed_types=[int, float],
                     value_min=-max_offset, value_max=max_offset)
-        check_input(args, 'North', allowed_types=[int, float],
+        check_input(args, 'NodN', allowed_types=[int, float],
                     value_min=-max_offset, value_max=max_offset)
 
     @classmethod
