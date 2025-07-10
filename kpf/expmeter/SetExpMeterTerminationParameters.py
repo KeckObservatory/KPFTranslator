@@ -7,7 +7,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-def expeter_flux_target(Mphotons_per_A, band):
+def expeter_flux_target(kphotons_per_A, band):
     # photons/A near bin center divided by TOTCORR
     # bin1 / 498.125nm = 0.105 (1.8%)
     # bin2 / 604.375nm = 0.115 (1.6%)
@@ -17,7 +17,7 @@ def expeter_flux_target(Mphotons_per_A, band):
                           '604.375': 0.115,
                           '710.625': 0.087,
                           '816.875': 0.117}
-    expmeter_threshold = 1e6*Mphotons_per_A/peak_photon_ratios[band]
+    expmeter_threshold = 1e3*kphotons_per_A/peak_photon_ratios[band]
     # SNR Estimate
     # bin1: mean_rootpeakN_over_SNR452 = 14.92
     # bin1: mean_rootpeakN_over_SNR548 = 6.32
@@ -31,7 +31,7 @@ def expeter_flux_target(Mphotons_per_A, band):
                   '604.375': (8.58+9.59)/2,
                   '710.625': (8.34+6.62)/2,
                   '816.875': (6.58+6.73)/2}
-    snr_estimate = Mphotons_per_A**0.5/snr_ratios[band]
+    snr_estimate = (1e3*kphotons_per_A)**0.5/snr_ratios[band]
     return expmeter_threshold, snr_estimate
 
 
