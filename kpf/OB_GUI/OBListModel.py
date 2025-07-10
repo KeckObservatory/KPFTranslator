@@ -4,7 +4,9 @@ import numpy as np
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
+from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.observatoryAPIs.GetTelescopeRelease import GetTelescopeRelease
+from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
 from kpf.magiq.RemoveTarget import RemoveTarget, RemoveAllTargets
 from kpf.magiq.AddTarget import AddTarget
 from kpf.magiq.SetTargetList import SetTargetList
@@ -96,6 +98,16 @@ class OBListModel(QtCore.QAbstractListModel):
                 return QtGui.QImage(f'{self.icon_path}/status-away.png')
             else:
                 return QtGui.QImage(f'{self.icon_path}/status-offline.png')
+
+    def refresh_OBs_to_get_history(self):
+        self.log.debug(f'Refreshing OBs to get history')
+        for i,OB in enumerate(self.OBs):
+            refreshed = GetObservingBlocks.execute({'id': OB.OBID})[0]
+            if isinstance(refreshed, ObservingBlock):
+                self.OBs[i] = refreshed
+        self.log.debug(f'  Done')
+        self.update_observed_status()
+        self.log.debug(f'  Updated observed status')
 
     def update_observed_status(self):
         self.observed = [False]*len(self.OBs)
