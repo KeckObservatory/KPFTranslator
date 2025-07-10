@@ -68,7 +68,7 @@ class KPFFunction(object):
             cls.post_condition(args)
         except Exception as e:
             log.error(f"Exception encountered in post-condition: {e}")
-            logger.error(traceback.format_exc(), exc_info=True)
+            log.error(traceback.format_exc(), exc_info=True)
             raise e
 
         return return_value
