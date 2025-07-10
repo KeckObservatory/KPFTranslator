@@ -101,11 +101,19 @@ class OBListModel(QtCore.QAbstractListModel):
 
     def refresh_OBs_to_get_history(self):
         self.log.debug(f'Refreshing OBs to get history')
+        refreshed = 0
         for i,OB in enumerate(self.OBs):
-            refreshed = GetObservingBlocks.execute({'id': OB.OBID})[0]
-            if isinstance(refreshed, ObservingBlock):
-                self.OBs[i] = refreshed
-        self.log.debug(f'  Done')
+            if OB.OBID == '':
+                self.log.debug(f"  Could not refresh line {i+1}")
+            else:
+                try:
+                    refreshed = GetObservingBlocks.execute({'id': OB.OBID})[0]
+                    if isinstance(refreshed, ObservingBlock):
+                        self.OBs[i] = refreshed
+                        refreshed += 1
+                except Exception as e:
+                    self.log.debug(f"  Could not refresh line {i+1}")
+        self.log.debug(f'  Refreshed {refreshed} out of {len(self.OBs)}')
         self.update_observed_status()
         self.log.debug(f'  Updated observed status')
 
