@@ -1001,17 +1001,22 @@ class MainWindow(QtWidgets.QMainWindow):
             self.KPFCC_start_times[WB] = []
             for entry in schedule_file_contents[WB]:
                 scheduledOBcount += 1
-                result = GetObservingBlocks.execute({'OBid': entry['unique_id']})[0]
-                if isinstance(result, ObservingBlock):
-                    self.KPFCC_OBs[WB].append(result)
-                    start = entry['StartExposure'].split(':')
-                    start_decimal = int(start[0]) + int(start[1])/60
-                    self.KPFCC_start_times[WB].append(start_decimal)
-                    retrievedOBcount += 1
-                else:
-                    errmsg = f"{entry['Target']} Failed: {result[1]} ({result[0]})"
+                if entry['unique_id'] == '':
+                    errmsg = f"{entry['Target']} Failed: no id"
                     self.log.error(errmsg)
                     errs.append(errmsg)
+                else:
+                    result = GetObservingBlocks.execute({'OBid': entry['unique_id']})[0]
+                    if isinstance(result, ObservingBlock):
+                        self.KPFCC_OBs[WB].append(result)
+                        start = entry['StartExposure'].split(':')
+                        start_decimal = int(start[0]) + int(start[1])/60
+                        self.KPFCC_start_times[WB].append(start_decimal)
+                        retrievedOBcount += 1
+                    else:
+                        errmsg = f"{entry['Target']} Failed: {result[1]} ({result[0]})"
+                        self.log.error(errmsg)
+                        errs.append(errmsg)
                 if usepbar:
                     if progress.wasCanceled():
                         self.log.error("Retrieval of OBs canceled by user.")
