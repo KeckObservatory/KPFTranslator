@@ -46,7 +46,7 @@ class SetObserverFromSchedule(KPFFunction):
         print(f"########################################")
         print()
         progname = input()
-        if progname.strip() not in project_codes+ToO_project_codes:
+        if progname.strip() not in project_codes:
             log.warning(f"Project code {progname} not on schedule")
 
         # Set the program
