@@ -9,28 +9,42 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 def expeter_flux_target(kphotons_per_A, band):
     # photons/A near bin center divided by TOTCORR
-    # bin1 / 498.125nm = 0.105 (1.8%)
-    # bin2 / 604.375nm = 0.115 (1.6%)
-    # bin3 / 710.625nm = 0.087 (2.0%)
-    # bin4 / 816.875nm = 0.117 (0.6%)
-    peak_photon_ratios = {'498.125': 0.105,
-                          '604.375': 0.115,
+    # bin1 / 498.125nm = 0.104 (1.4%)
+    # bin2 / 604.375nm = 0.116 (0.8%)
+    # bin3 / 710.625nm = 0.087 (2.2%)
+    # bin4 / 816.875nm = 0.116 (0.8%)
+    # mean photons/A in bin divided by TOTCORR
+    # bin1 / 498.125nm = 0.092 (1.2%)
+    # bin2 / 604.375nm = 0.066 (1.6%)
+    # bin3 / 710.625nm = 0.067 (0.6%)
+    # bin4 / 816.875nm = 0.088 (0.8%)
+    peak_photon_ratios = {'498.125': 0.104,
+                          '604.375': 0.116,
                           '710.625': 0.087,
-                          '816.875': 0.117}
+                          '816.875': 0.116}
     expmeter_threshold = 1e3*kphotons_per_A/peak_photon_ratios[band]
-    # SNR Estimate
-    # bin1: mean_rootpeakN_over_SNR452 = 14.92
-    # bin1: mean_rootpeakN_over_SNR548 = 6.32
-    # bin2: mean_rootpeakN_over_SNR548 = 8.58
-    # bin2: mean_rootpeakN_over_SNR652 = 9.59
+    # SNR Estimate from photons/A near bin center
+    # bin1: mean_rootpeakN_over_SNR452 = 14.84
+    # bin1: mean_rootpeakN_over_SNR548 = 6.29
+    # bin2: mean_rootpeakN_over_SNR548 = 8.60
+    # bin2: mean_rootpeakN_over_SNR652 = 9.61
     # bin3: mean_rootpeakN_over_SNR652 = 8.34
     # bin3: mean_rootpeakN_over_SNR747 = 6.62
-    # bin4: mean_rootpeakN_over_SNR747 = 6.58
-    # bin4: mean_rootpeakN_over_SNR852 = 6.73
-    snr_ratios = {'498.125': (14.92+6.32)/2,
-                  '604.375': (8.58+9.59)/2,
+    # bin4: mean_rootpeakN_over_SNR747 = 6.56
+    # bin4: mean_rootpeakN_over_SNR852 = 6.71
+    # SNR Estimate from photons/A over entire bin
+    # bin1: mean_rootmeanN_over_SNR452 = 13.94
+    # bin1: mean_rootmeanN_over_SNR548 = 5.91
+    # bin2: mean_rootmeanN_over_SNR548 = 6.51
+    # bin2: mean_rootmeanN_over_SNR652 = 7.28
+    # bin3: mean_rootmeanN_over_SNR652 = 7.32
+    # bin3: mean_rootmeanN_over_SNR747 = 5.81
+    # bin4: mean_rootmeanN_over_SNR747 = 5.70
+    # bin4: mean_rootmeanN_over_SNR852 = 5.83
+    snr_ratios = {'498.125': (14.84+6.29)/2,
+                  '604.375': (8.60+9.61)/2,
                   '710.625': (8.34+6.62)/2,
-                  '816.875': (6.58+6.73)/2}
+                  '816.875': (6.56+6.71)/2}
     snr_estimate = (1e3*kphotons_per_A)**0.5/snr_ratios[band]
     return expmeter_threshold, snr_estimate
 
