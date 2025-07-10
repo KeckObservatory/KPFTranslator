@@ -119,7 +119,6 @@ class RunSoCalObservingLoop(KPFScript):
         Etalon_duration = EstimateOBDuration.execute({}, OB=SlewCal_OB)
         log.debug(f"Estimated Etalon observation time = {Etalon_duration}")
 
-
         # Start Loop
         start_time = args.get('StartTimeHST', 9)
         # End time subtracts off max duration of observation and 3 minutes of buffer
