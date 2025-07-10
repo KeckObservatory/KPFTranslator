@@ -15,14 +15,14 @@ from kpf.magiq.SetTargetList import SetTargetList
 ##-------------------------------------------------------------------------
 def observed_tonight(OB):
     now = datetime.utcnow()
-    exposures_tonight = []
+    N_visits_tonight = 0
     for hist in OB.History:
         if len(hist.get('exposure_start_times', [])) > 0:
-            for timestring in hist.get('exposure_start_times'):
-                tstamp = datetime.strptime(timestring[:19], '%Y-%m-%dT%H:%M:%S')
-                if (now-tstamp).days <= 1 and (tstamp.day == now.day):
-                    exposures_tonight.append(timestring)
-    return len(exposures_tonight)
+            timestring = hist.get('exposure_start_times')[0]
+            tstamp = datetime.strptime(timestring[:19], '%Y-%m-%dT%H:%M:%S')
+            if (now-tstamp).days <= 1 and (tstamp.day == now.day):
+                N_visits_tonight += 1
+    return N_visits_tonight
 
 
 ##-------------------------------------------------------------------------
@@ -45,6 +45,7 @@ class OBListModel(QtCore.QAbstractListModel):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = OBs
         self.start_times = None
+        self.update_observed_status()
         self.currentOB = -1
         self.nextOB = -1
         self.sort_key = None
@@ -82,19 +83,34 @@ class OBListModel(QtCore.QAbstractListModel):
         elif ind.row() == self.nextOB:
             return QtGui.QImage(f'{self.icon_path}/arrow-curve-000-left.png')
         # Check observed state
-        OB = self.OBs[ind.row()]
-        all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
-        n_visits = len(all_visits)
-        n_observed = observed_tonight(OB)
-        if n_observed > 0:
-            if all_visits.index(ind.row()) < n_observed:
-                return QtGui.QImage(f'{self.icon_path}/tick.png')
-            else:
+        if self.observed[ind.row()] is False:
+            return QtGui.QImage(f'{self.icon_path}/status-offline.png')
+        elif self.observed[ind.row()] is True:
+            return QtGui.QImage(f'{self.icon_path}/tick.png')
+        else:
+            OB = self.OBs[ind.row()]
+            all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
+            print(all_visits)
+            print(all_visits.index(ind.row()), self.observed[ind.row()])
+            if all_visits.index(ind.row()) < self.observed[ind.row()]:
                 return QtGui.QImage(f'{self.icon_path}/status-away.png')
-        # If no other makers apply, use this one
-        return QtGui.QImage(f'{self.icon_path}/status-offline.png')
+            else:
+                return QtGui.QImage(f'{self.icon_path}/status-offline.png')
 
-
+    def update_observed_status(self):
+        self.observed = [False]*len(self.OBs)
+        for i,OB in enumerate(self.OBs):
+            scheduled_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
+            N_scheduled_visits = len(scheduled_visits)
+            N_visits_tonight = observed_tonight(OB)
+            if N_visits_tonight == 0:
+                self.observed[i] = False
+            elif N_visits_tonight < N_scheduled_visits:
+                self.observed[i] = N_visits_tonight
+            else:
+                self.observed[i] = True
+        print('Observed:', self.observed)
+        self.update_current_next()
 
     def update_current_next(self):
         if self.start_times is None:
@@ -103,13 +119,17 @@ class OBListModel(QtCore.QAbstractListModel):
         else:
             now = datetime.utcnow()
             decimal_now = now.hour + now.minute/60 + now.second/3600
-            past = np.ma.masked_greater(np.array(self.start_times) - decimal_now, 0)
+            masked_start_times = np.ma.MaskedArray(self.start_times)
+            past = np.ma.masked_greater(np.array(masked_start_times) - decimal_now, 0)
             self.currentOB = past.argmax() # Current is nearest start time in past
-            future = np.ma.masked_less_equal(np.array(self.start_times) - decimal_now, 0)
+            future = np.ma.masked_less_equal(np.array(masked_start_times) - decimal_now, 0)
+            future.mask = future.mask | np.array([o is True for o in self.observed])
             if np.all(future.mask):
                 self.nextOB = -1 # If nothing is in the future, there is no next
             else:
                 self.nextOB = future.argmin() # Next is nearest start time in future
+#             print(f"Current: {self.currentOB} {self.observed[self.currentOB]}")
+#             print(f"Next: {self.nextOB} {self.observed[self.nextOB]}")
 
     def rowCount(self, ind):
         return len(self.OBs)
@@ -134,6 +154,7 @@ class OBListModel(QtCore.QAbstractListModel):
         elif self.sort_key == 'Jmag':
             self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
         self.layoutChanged.emit()
+        self.update_observed_status()
 
     def set_list(self, OBs, start_times=None):
         self.log.debug('OBListModel.set_list')
