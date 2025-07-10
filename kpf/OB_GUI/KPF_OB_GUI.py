@@ -1332,7 +1332,7 @@ class MainWindow(QtWidgets.QMainWindow):
         tmp_file_path = log_file_path / date_str
         if tmp_file_path.exists() is False:
             tmp_file_path.mkdir(mode=0o777, parents=False)
-        tmp_file = tmp_file_path / f'test_executedOB_{now_str}.yaml'
+        tmp_file = tmp_file_path / f'executedOB_{now_str}.yaml'
         SOB.write_to(tmp_file)
         launch_command_in_xterm(f'RunOB -f {tmp_file}')
 
