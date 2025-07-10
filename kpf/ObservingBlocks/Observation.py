@@ -112,7 +112,7 @@ class Observation(BaseOBComponent):
         if self.get('TakeSimulCal') == True:
             details.append(f'simulcal')
         if self.get('ExpMeterMode') == 'control':
-            thresh_str = f'{self.get("ExpMeterThreshold")/1e3:,.0f}k'
+            thresh_str = f'{self.get("ExpMeterThreshold"):.1f}'
             bin_str = self.expmeter_bands[self.get("ExpMeterBin")-1]
             details.append(f'{thresh_str}@{bin_str}')
         if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
