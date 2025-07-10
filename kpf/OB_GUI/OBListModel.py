@@ -90,8 +90,8 @@ class OBListModel(QtCore.QAbstractListModel):
         else:
             OB = self.OBs[ind.row()]
             all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
-            print(all_visits)
-            print(all_visits.index(ind.row()), self.observed[ind.row()])
+#             print(all_visits)
+#             print(all_visits.index(ind.row()), self.observed[ind.row()])
             if all_visits.index(ind.row()) < self.observed[ind.row()]:
                 return QtGui.QImage(f'{self.icon_path}/status-away.png')
             else:
@@ -109,7 +109,7 @@ class OBListModel(QtCore.QAbstractListModel):
                 self.observed[i] = N_visits_tonight
             else:
                 self.observed[i] = True
-        print('Observed:', self.observed)
+#         print('Observed:', self.observed)
         self.update_current_next()
 
     def update_current_next(self):
