@@ -899,7 +899,7 @@ class MainWindow(QMainWindow):
         # Set SUB_HIGH to nothing to make sure bias remains in the resulting subtracted frame
         self.SUB_HIGH.ktl_keyword.write('')
         # Take Image Cube to get sky
-        sky_multiplier = 9
+        sky_multiplier = 4
         duration = sky_multiplier*1/self.FPS.ktl_keyword.read(binary=True)
         self.log.info(f'Taking sky frame: TakeGuiderImageCube {duration:.1f} seconds')
         trigger_file = TakeGuiderCube.execute({'duration': duration,
