@@ -44,6 +44,12 @@ class RecoverFromLowPowerMode(KPFFunction):
         kpfconfig['CA_HK_ENABLED'].write('Yes')
         log.warning('Enabling HKTEMP alarm')
         kpfmon['HKTEMPDIS'].write('')
+        log.warning('Enabling ST_EXPOSE2 alarm')
+        kpfmon['ST_EXPOSE2DIS'].write('')
+        log.warning(f"Enabling {kpfpower['OUTLET_J1_NAME'].read()} alarm")
+        kpfmon['OUTLET_J1_OODIS'].write('')
+        log.warning(f"Enabling {kpfpower['OUTLET_J2_NAME'].read()} alarm")
+        kpfmon['OUTLET_J2_OODIS'].write('')
         log.warning(f"Enabling {kpfpower['OUTLET_J5_NAME'].read()} alarm")
         kpfmon['OUTLET_J5_OODIS'].write('')
 
@@ -53,6 +59,8 @@ class RecoverFromLowPowerMode(KPFFunction):
         kpfpower['OUTLET_K2'].write('On')
         log.debug(f"Powering on {kpfpower['OUTLET_K3_NAME'].read()}")
         kpfpower['OUTLET_K3'].write('On')
+        log.warning(f"Enabling {kpfpower['OUTLET_K2_NAME'].read()} alarm")
+        kpfmon['OUTLET_K2_OODIS'].write('')
         log.warning(f"Enabling {kpfpower['OUTLET_K3_NAME'].read()} alarm")
         kpfmon['OUTLET_K3_OODIS'].write('')
 
