@@ -58,10 +58,3 @@ class RecoverFromLowPowerMode(KPFFunction):
     @classmethod
     def post_condition(cls, args):
         pass
-
-    @classmethod
-    def add_cmdline_args(cls, parser):
-        parser.add_argument("--force", dest="force",
-                            default=False, action="store_true",
-                            help="Force change? This will terminate any running scripts.")
-        return super().add_cmdline_args(parser, cfg)
