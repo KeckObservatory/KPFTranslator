@@ -109,7 +109,7 @@ def check_scriptstop():
         raise ScriptStopTriggered("SCRIPTSTOP triggered")
 
 
-def wait_for_script(newscript='queued script', timeout=1200):
+def wait_for_script(newscript='queued script', timeout=1800):
     SCRIPTPID = ktl.cache('kpfconfig', 'SCRIPTPID')
     pid = SCRIPTPID.read(binary=True)
     if pid >= 0:
