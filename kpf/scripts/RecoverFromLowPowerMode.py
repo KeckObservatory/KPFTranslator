@@ -41,6 +41,10 @@ class RecoverFromLowPowerMode(KPFTranslatorFunction):
         kpf_hk['COOLTARG'].write(-60)
         log.info('Enabling Ca HK detector')
         kpfconfig['CA_HK_ENABLED'].write('Yes')
+        log.warning('Enabling HKTEMP alarm')
+        kpfmon['HKTEMPDIS'].write('')
+        log.warning(f"Enabling {kpfpower['OUTLET_J5_NAME'].read()} alarm")
+        kpfmon['OUTLET_J5_OODIS'].write('')
 
         # Power up CRED2 detector systems
         log.info('Powering on CRED2 detector systems')
@@ -48,6 +52,8 @@ class RecoverFromLowPowerMode(KPFTranslatorFunction):
         kpfpower['OUTLET_K2'].write('On')
         log.debug(f"Powering on {kpfpower['OUTLET_K3_NAME'].read()}")
         kpfpower['OUTLET_K3'].write('On')
+        log.warning(f"Enabling {kpfpower['OUTLET_K3_NAME'].read()} alarm")
+        kpfmon['OUTLET_K3_OODIS'].write('')
 
     @classmethod
     def post_condition(cls, args):

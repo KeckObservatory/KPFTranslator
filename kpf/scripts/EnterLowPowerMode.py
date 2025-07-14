@@ -31,12 +31,15 @@ class EnterLowPowerMode(KPFFunction):
     def perform(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         kpfpower = ktl.cache('kpfpower')
+        kpfmon = ktl.cache('kpfmon')
         log.warning('Configuring KPF for Low Power Mode')
 
         # Power down Ca HK detector systems
         kpf_hk = ktl.cache('kpf_hk')
         log.warning('Disabling Ca HK detector')
         kpfconfig['CA_HK_ENABLED'].write('No')
+        log.warning('Disabling HKTEMP alarm for next 24 hours')
+        kpfmon['HKTEMPDIS'].write('1 day hence')
         log.warning('Turning Ca HK detector cooling off')
         kpf_hk['COOLING'].write('off')
         time.sleep(5)
@@ -45,6 +48,8 @@ class EnterLowPowerMode(KPFFunction):
         kpfpower['OUTLET_J1'].write('Off')
         log.warning(f"Powering off {kpfpower['OUTLET_J2_NAME'].read()}")
         kpfpower['OUTLET_J2'].write('Off')
+        log.warning(f"Disabling {kpfpower['OUTLET_J5_NAME'].read()} alarm for next 24 hours")
+        kpfmon['OUTLET_J5_OODIS'].write('1 day hence')
         log.warning(f"Powering off {kpfpower['OUTLET_J5_NAME'].read()}")
         kpfpower['OUTLET_J5'].write('Off')
 
@@ -56,6 +61,8 @@ class EnterLowPowerMode(KPFFunction):
         time.sleep(5)
         log.warning(f"Powering off {kpfpower['OUTLET_K2_NAME'].read()}")
         kpfpower['OUTLET_K2'].write('Off')
+        log.warning(f"Disabling {kpfpower['OUTLET_K3_NAME'].read()} alarm for next 24 hours")
+        kpfmon['OUTLET_K3_OODIS'].write('1 day hence')
         log.warning(f"Powering off {kpfpower['OUTLET_K3_NAME'].read()}")
         kpfpower['OUTLET_K3'].write('Off')
 
