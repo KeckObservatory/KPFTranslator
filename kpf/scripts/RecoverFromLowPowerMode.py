@@ -7,7 +7,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class RecoverFromLowPowerMode(KPFTranslatorFunction):
+class RecoverFromLowPowerMode(KPFFunction):
     '''Recover from low power mode.
 
     - Power on the Ca HK systems
