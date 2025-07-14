@@ -851,6 +851,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     newOB = ObservingBlock(file)
                     if newOB.validate() == True:
                         self.OBListModel.appendOB(newOB)
+                    self.file_path = Path(file).parent
 
     def save_OB_to_file(self, OB, default=None):
         self.log.debug('save_OB_to_file')
