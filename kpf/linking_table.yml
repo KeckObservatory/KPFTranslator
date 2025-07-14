@@ -235,8 +235,12 @@ links:
         cmd: scripts.ConfigureForCalibrations.ConfigureForCalibrations
     ConfigureForScience:
         cmd: scripts.ConfigureForScience.ConfigureForScience
+    EnterLowPowerMode:
+        cmd: scripts.EnterLowPowerMode.EnterLowPowerMode
     EstimateOBDuration:
         cmd: scripts.EstimateOBDuration.EstimateOBDuration
+    RecoverFromLowPowerMode:
+        cmd: scripts.RecoverFromLowPowerMode.RecoverFromLowPowerMode
     RunOB:
         cmd: scripts.RunOB.RunOB
     RunOBs:
