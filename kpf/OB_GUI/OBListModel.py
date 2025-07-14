@@ -109,7 +109,7 @@ class OBListModel(QtCore.QAbstractListModel):
                 try:
                     refreshed = GetObservingBlocks.execute({'id': OB.OBID})[0]
                     if isinstance(refreshed, ObservingBlock):
-                        self.OBs[i] = refreshed
+                        self.OBs[i].History = refreshed.History
                         refreshed += 1
                 except Exception as e:
                     self.log.debug(f"  Could not refresh line {i+1}")
