@@ -273,12 +273,15 @@
 </tr>
 </tbody>
 </table>
-<h2 id="comparing-using-exposure-time-calculators-etcs">Comparing Using Exposure Time Calculators (ETCs)</h2>
-<p>Using the <a href="http://etc.ucolick.org/web_s2n/hires">HIRES ETC at UCO</a> and the <a href="../sensitivity/">KPF ETC</a>, we can compare the signal to noise in observations of a common target in each instrument.  It should be noted that the plot below is not a direct comparison of the two instruments, but is a comparison of two exposure time calculators.  Subtle differences in assumptions made in each piece of software may bias this result, so this should be taken as illustrative, not definitive.</p>
-<p><img alt="Comparison of the signal to noise estimates from ETCs for KPF and HIRES.  Inputs to the ETCs were as similar as possible." src="../figures/KPFvsHIRES.png" /></p>
+<h2 id="instrument-efficiency-comparison">Instrument Efficiency Comparison</h2>
+<p>Prior to delivery of KPF, the KPF Team made a series of HIRES observations of a spectrophotometric standard using deckers that spanned the full range of slit widths (but not all slit lengths, which only affects spatial information).  In the plot below, each blue line plots the peak-of-blaze efficiency from the top of the atmosphere to detected photoelectrons.  The red line is the predicted KPF efficiency curve based on Steve Gibson’s detailed optical model, efficiency curves for each optic (measured, if available), and a model of seeing and the atmosphere that match the airmass and seeing values for the actual HIRES observations.  We saw later that the KPF model is pretty good — it’s ~10% low for wavelengths &gt; 500 nm and is too high for bluer wavelengths (&gt;&gt;10% off for the bluest wavelength).</p>
+<p><img alt="Comparison of the measured efficiency for HIRES to the KPF modeled efficiency (later validated, but see discussion above)." src="../figures/KPFvsHIRES.png" /></p>
 <blockquote>
-<p>Comparison of the signal to noise estimates from ETCs for KPF and HIRES.  Inputs to the ETCs were as similar as possible.</p>
+<p>Comparison of the measured efficiency for HIRES to the KPF modeled efficiency (later validated, but see discussion above).</p>
 </blockquote>
+<p>The huge range of HIRES efficiency depending on decker is the biggest factor.  For science at lower resolution, KPF and HIRES have comparable efficiency. For high-resolution, KPF is much more efficient.</p>
+<h2 id="common-observations">Common Observations</h2>
+<p>WMKO obtained observations designed to compare KPF and HIRES directly on a variety of science targets during 2025A.  We will be posting links to the data here soon.</p>
               
             </div>
           </div><footer>
