@@ -44,11 +44,13 @@ class ConfigureForScience(KPFFunction):
         log.info('-------------------------')
 
         # Offset if requested
-        NodN = observation.get('NodN', 0)
-        NodE = observation.get('NodE', 0)
-        if abs(NodN) > 0.01 or abs(NodE) > 0.01:
-            # Offset Telescope
-            EastNorth.execute(observation)
+#         NodN = observation.get('NodN', 0)
+#         NodE = observation.get('NodE', 0)
+#         if abs(NodN) > 0.01 or abs(NodE) > 0.01:
+#             EastNorth.execute(observation)
+
+        check_scriptstop()
+
         # Confirm guiding
         ConfirmGuiding.execute(observation)
 
