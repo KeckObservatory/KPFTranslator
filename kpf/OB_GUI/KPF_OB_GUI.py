@@ -86,10 +86,12 @@ def create_GUI_log():
 ##-------------------------------------------------------------------------
 ## Wrapper to launch script in xterm
 ##-------------------------------------------------------------------------
-def launch_command_in_xterm(script_name, capture_stdout=False):
+def launch_command_in_xterm(script_name, capture_stdout=False, window_title=None):
     '''Pop up an xterm with the script running.
     '''
     kpfdo = Path(__file__).parent.parent / 'kpfdo'
+    if window_title is None:
+        window_title = script_name
     if capture_stdout:
         ## Set up script stdout file
         log = logging.getLogger('KPFTranslator')
@@ -113,7 +115,7 @@ def launch_command_in_xterm(script_name, capture_stdout=False):
         script_cmd = f'{kpfdo} {script_name} > {stdout_file} ; echo "Done!" ; sleep 30'
     else:
         script_cmd = f'{kpfdo} {script_name} ; echo "Done!" ; sleep 30'
-    cmd = ['xterm', '-title', f'{script_name}', '-name', f'{script_name}',
+    cmd = ['xterm', '-title', f'{window_title}', '-name', f'{window_title}',
            '-fn', '10x20', '-bg', 'black', '-fg', 'white',
            '-e', f'{script_cmd}']
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -1340,7 +1342,8 @@ class MainWindow(QtWidgets.QMainWindow):
             tmp_file_path.mkdir(mode=0o777, parents=False)
         tmp_file = tmp_file_path / f'executedOB_{now_str}.yaml'
         SOB.write_to(tmp_file)
-        launch_command_in_xterm(f'RunOB -f {tmp_file}')
+        launch_command_in_xterm(f'RunOB -f {tmp_file}',
+                                window_title=f"RunOB {SOB.summary()}")
 
 
     ##--------------------------------------------------------------
