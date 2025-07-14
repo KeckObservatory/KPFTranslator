@@ -43,15 +43,15 @@ class RecoverFromLowPowerMode(KPFFunction):
         log.info('Enabling Ca HK detector')
         kpfconfig['CA_HK_ENABLED'].write('Yes')
         log.warning('Enabling HKTEMP alarm')
-        kpfmon['HKTEMPDIS'].write('')
+        kpfmon['HKTEMPDIS'].write(0)
         log.warning('Enabling ST_EXPOSE2 alarm')
-        kpfmon['ST_EXPOSE2DIS'].write('')
+        kpfmon['ST_EXPOSE2DIS'].write(0)
         log.warning(f"Enabling {kpfpower['OUTLET_J1_NAME'].read()} alarm")
-        kpfmon['OUTLET_J1_OODIS'].write('')
+        kpfmon['OUTLET_J1_OODIS'].write(0)
         log.warning(f"Enabling {kpfpower['OUTLET_J2_NAME'].read()} alarm")
-        kpfmon['OUTLET_J2_OODIS'].write('')
+        kpfmon['OUTLET_J2_OODIS'].write(0)
         log.warning(f"Enabling {kpfpower['OUTLET_J5_NAME'].read()} alarm")
-        kpfmon['OUTLET_J5_OODIS'].write('')
+        kpfmon['OUTLET_J5_OODIS'].write(0)
 
         # Power up CRED2 detector systems
         log.info('Powering on CRED2 detector systems')
@@ -60,9 +60,9 @@ class RecoverFromLowPowerMode(KPFFunction):
         log.debug(f"Powering on {kpfpower['OUTLET_K3_NAME'].read()}")
         kpfpower['OUTLET_K3'].write('On')
         log.warning(f"Enabling {kpfpower['OUTLET_K2_NAME'].read()} alarm")
-        kpfmon['OUTLET_K2_OODIS'].write('')
+        kpfmon['OUTLET_K2_OODIS'].write(0)
         log.warning(f"Enabling {kpfpower['OUTLET_K3_NAME'].read()} alarm")
-        kpfmon['OUTLET_K3_OODIS'].write('')
+        kpfmon['OUTLET_K3_OODIS'].write(0)
 
     @classmethod
     def post_condition(cls, args):
