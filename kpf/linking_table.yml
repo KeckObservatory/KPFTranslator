@@ -250,6 +250,8 @@ links:
     SendTargetToMagiq:
         cmd: scripts.SendTargetToMagiq.SendTargetToMagiq
     # SoCal
+    CheckSoCalEnabled:
+        cmd: socal.CheckSoCalEnabled.CheckSoCalEnabled
     DisableSoCal:
         cmd: socal.DisableSoCal.DisableSoCal
     EnableSoCal:
@@ -317,6 +319,8 @@ links:
     EastNorth:
         cmd: telescope.EastNorth.EastNorth
     # Utils
+    CheckAllowScheduledCals:
+        cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
     GetScheduledProgram:
