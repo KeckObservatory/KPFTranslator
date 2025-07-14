@@ -217,7 +217,7 @@ links:
     GetObservingBlocks:
         cmd: observatoryAPIs.GetObservingBlocks.GetObservingBlocks
     GetObservingBlocksByProgram:
-        cmd: observatoryAPIs.GetObservingBlocks.GetObservingBlocksByProgram
+        cmd: observatoryAPIs.GetObservingBlocksByProgram.GetObservingBlocksByProgram
     GetScheduledPrograms:
         cmd: observatoryAPIs.GetScheduledPrograms.GetScheduledPrograms
     GetTelescopeRelease:
