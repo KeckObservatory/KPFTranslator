@@ -24,6 +24,7 @@ class RecoverFromLowPowerMode(KPFFunction):
     def perform(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         kpfpower = ktl.cache('kpfpower')
+        kpfmon = ktl.cache('kpfmon')
         log.warning('Recovering KPF from Low Power Mode')
 
         # Power up Ca HK detector systems
