@@ -159,9 +159,28 @@ class RunOB(KPFScript):
                 CleanupAfterScience.execute(args, OB=OB)
                 clear_script_keywords()
                 return
-
-        # Execute science observations
-        if len(OB.Observations) > 0:
+            # Verify dcs TARGNAME against OB.Target.TargetName
+            dcsint = cfg.getint('telescope', 'telnr', fallback=1)
+            TARGNAME = ktl.cache(f'dcs{dcsint:1d}', 'TARGNAME').read()
+            if TARGNAME.strip().lower() != OB.Target.TargetName.lower():
+                log.warning('Target name mismatch detected')
+                log.warning(f"dcs.TARGNAME '{TARGNAME}' != OB TargetName '{OB.Target.TargetName}'")
+                log.debug('Asking for user input')
+                print()
+                print("###############################################################")
+                print("    WARNING: The telescope control system target name: {TARGNAME}")
+                print("    WARNING: does not match the OB target name: {OB.Target.TargetName}")
+                print()
+                print("    Press 'Enter' to begin exposure(s) anyway or 'a' to abort script")
+                print("###############################################################")
+                print()
+                user_input = input()
+                log.debug(f'response: "{user_input}"')
+                if user_input.lower() in ['a', 'abort', 'q', 'quit']:
+                    log.error("User chose to halt execution")
+                    CleanupAfterScience.execute(args, OB=OB)
+                    clear_script_keywords()
+                    return
             # Verify Current Base
             try:
                 VerifyCurrentBase.execute({'query_user': True})
@@ -172,9 +191,12 @@ class RunOB(KPFScript):
                 clear_script_keywords()
                 return
 
-            # Iterate over observations
+
+        if len(OB.Observations) > 0:
             for i,observation in enumerate(OB.Observations):
+                # -------------------------------------------------------------
                 # Configure for Science
+                # -------------------------------------------------------------
                 try:
                     observation_dict = observation.to_dict()
                     observation_dict['Gmag'] = OB.Target.get('Gmag')
