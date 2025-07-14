@@ -52,7 +52,9 @@ class RunOB(KPFScript):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, OB=None):
+        # -------------------------------------------------------------
         # If requested wait for an existing script to complete
+        # -------------------------------------------------------------
         if args.get('waitforscript', False) == True:
             newscript = f'{Path(__file__).name.replace(".py", "")}(PID {os.getpid()})'
             wait_for_script(newscript=newscript)
@@ -66,11 +68,15 @@ class RunOB(KPFScript):
         if OB.OBID not in [None, '']:
             log.info(f"OB ID = {OB.OBID}")
 
+        # -------------------------------------------------------------
         # Set Target info for OA's Tip Tilt GUI
+        # -------------------------------------------------------------
         if OB.Target is not None:
             SetTargetInfo.execute({}, OB=OB)
 
+        # -------------------------------------------------------------
         # Add slew cal to OB if keywords indicate one is requested
+        # -------------------------------------------------------------
         kpfconfig = ktl.cache('kpfconfig')
         if len(OB.Observations) > 0 and kpfconfig['SLEWCALREQ'].read(binary=True) is True:
             slewcal_OBfile = Path(kpfconfig['SLEWCALFILE'].read())
@@ -83,9 +89,11 @@ class RunOB(KPFScript):
             # Now that slewcal has been added, reset the SLEWCALREQ value
             kpfconfig['SLEWCALREQ'].write(False)
 
-        # Execute calibrations
+
         if len(OB.Calibrations) > 0:
+            # -------------------------------------------------------------
             # Configure for Calibrations
+            # -------------------------------------------------------------
             try:
                 if len(OB.Observations) > 0:
                     kpfconfig['SCRIPTMSG'].write('Executing Slew Cal')
@@ -102,7 +110,9 @@ class RunOB(KPFScript):
                 clear_script_keywords()
                 return
 
+            # -------------------------------------------------------------
             # Loop over calibrations and execute
+            # -------------------------------------------------------------
             for i,calibration in enumerate(OB.Calibrations):
                 log.info(f'Executing Calibration {i+1}/{len(OB.Calibrations)}')
                 try:
@@ -119,7 +129,9 @@ class RunOB(KPFScript):
                     clear_script_keywords()
                     return
 
+            # -------------------------------------------------------------
             # Clean up after calibrations
+            # -------------------------------------------------------------
             if len(OB.Observations) > 0:
                 # Don't stop FIU if we have observations to perform
                 args['FIUdest'] = 'Observing'
@@ -127,8 +139,11 @@ class RunOB(KPFScript):
             if len(OB.Observations) > 0:
                 kpfconfig['SCRIPTMSG'].write('Slew Cal complete. Setting FIU to observing mode')
 
-        # Configure for Acquisition
+
         if OB.Target is not None:
+            # -------------------------------------------------------------
+            # Configure for Acquisition
+            # -------------------------------------------------------------
             log.info(f'Configuring for Acquisition')
             try:
                 ConfigureForAcquisition.execute(args, OB=OB)
@@ -142,6 +157,7 @@ class RunOB(KPFScript):
                 log.error(e)
                 CleanupAfterScience.execute(args, OB=OB)
                 return
+            # Proceed once target is on fiber and tip tilt is active
             log.debug('Asking for user input')
             print()
             print("###############################################################")
@@ -215,7 +231,10 @@ class RunOB(KPFScript):
                     CleanupAfterScience.execute(args, OB=OB)
                     clear_script_keywords()
                     return
+
+                # -------------------------------------------------------------
                 # Execute Observation
+                # -------------------------------------------------------------
                 log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
                 try:
                     history, scriptstop = ExecuteSci.execute(observation_dict)
@@ -238,6 +257,9 @@ class RunOB(KPFScript):
                     log.error('Exception encountered during ExecuteSci')
                     log.error(e)
                     break
+            # -------------------------------------------------------------
+            # Cleanup After Science
+            # -------------------------------------------------------------
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
 

@@ -59,12 +59,12 @@ class ConfigureForScience(KPFFunction):
 
         check_scriptstop()
 
+        # Set source select shutters
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         if exposestatus.read() != 'Ready':
             log.info(f"Waiting for kpfexpose to be Ready")
             WaitForReady.execute({})
             log.debug(f"kpfexpose is Ready")
-        # Set source select shutters
         log.info(f"Set Source Select Shutters")
         SetSourceSelectShutters.execute({'OpenScienceShutter': True,
                                          'OpenSkyShutter': not observation.get('BlockSky', False),
