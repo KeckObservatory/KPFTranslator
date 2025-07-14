@@ -196,7 +196,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.program_strings.append(f"{progID} on {', '.join(dates)}")
         # KPF-CC Settings and Values
         self.schedule_path = Path(f'/s/sdata1701/Schedules/')
-        self.default_schedule = self.schedule_path / 'default.json'
         self.KPFCC_weather_bands = ['1', '2', '3']#, 'backups']
         self.KPFCC_weather_band = '1'
         self.KPFCC_OBs = {}
@@ -1275,7 +1274,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.execution_history_file = logdir / f'KPFCC_executions_{semester}.csv'
         if self.execution_history_file.exists() is False:
             with open(self.execution_history_file, 'w') as f:
-                contents = ['# timestamp', 'decimalUT', 'executedID',
+                contents = ['# timestamp', 'decimalUT', 'executedID', 'OB summary',
                             'executed_line', 'scheduleUT',
                             'schedule_current_line', 'scheduleUT_current',
                             'schedule_next_line', 'scheduleUT_next',
@@ -1307,6 +1306,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 start_next = self.OBListModel.start_times[self.OBListModel.nextOB]
                 on_schedule = self.SOBindex in [self.OBListModel.currentOB, self.OBListModel.nextOB]
                 contents = [now_str, f'{decimal_now:.2f}', f'{SOB.OBID}',
+                            f'{SOB.summary().replace(",", "_")}',
                             f'{self.SOBindex}', f'{start_time:.2f}',
                             f'{self.OBListModel.currentOB}', f'{start_current:.2f}',
                             f'{self.OBListModel.nextOB}', f'{start_next:.2f}',
