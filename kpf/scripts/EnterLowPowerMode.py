@@ -44,6 +44,26 @@ class EnterLowPowerMode(KPFFunction):
         kpf_hk['COOLING'].write('off')
         time.sleep(5)
         log.warning('Powering off Ca HK detector systems')
+        # Wait for HK ready to avoid confusing kpfexpose EXPLAIN%
+        log.warning('Waiting for kpf_hk.EXPSTATE = Ready')
+        ready = kpf_hk['EXPSTATE'].waitFor("== 'Ready'", timeout=60)
+        while ready == False:
+            log.warning('Asking for user input')
+            print()
+            print("###############################################################")
+            print("  Continue waiting for hpf_hk.EXPSTATE=Ready or shut down now?")
+            print()
+            print("  Wait (w) or Abort (a)? [w]")
+            print("###############################################################")
+            print()
+            user_input = input()
+            log.debug(f'response: "{user_input}"')
+            if user_input.lower() in ['a', 'abort', 'q', 'quit']:
+                return
+            else:
+                log.debug('Waiting for kpf_hk.EXPSTATE = Ready')
+                ready = kpf_hk['EXPSTATE'].waitFor("== 'Ready'", timeout=60)
+
         log.warning(f"Powering off {kpfpower['OUTLET_J1_NAME'].read()}")
         kpfpower['OUTLET_J1'].write('Off')
         log.warning(f"Powering off {kpfpower['OUTLET_J2_NAME'].read()}")
