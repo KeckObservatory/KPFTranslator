@@ -25,51 +25,38 @@ class EnterLowPowerMode(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        log.info('Configuring KPF for Low Power Mode')
-        force = args.get('force', False)
-        SCRIPTNAME = ktl.cache('kpfconfig', 'SCRIPTNAME')
-        SCRIPTNAME.monitor()
-        if SCRIPTNAME not in ['None', '']:
-            log.warning(f'A script ({SCRIPTNAME}) is running')
-            if force is True:
-                log.warning(f'Requesting script stop')
-                kpfconfig['SCRIPTSTOP'].write('Yes')
-                no_script_running = SCRIPTNAME.waitFor("==''", timeout=120)
-                if no_script_running is False:
-                    log.error('Script failed to stop')
-                    raise FailedToReachDestination(f'{SCRIPTNAME.read()}', '')
-            else:
-                raise FailedPreCondition('A script is running, not setting Low Power Mode')
+        pass
 
     @classmethod
     def perform(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         kpfpower = ktl.cache('kpfpower')
+        log.warning('Configuring KPF for Low Power Mode')
 
         # Power down Ca HK detector systems
         kpf_hk = ktl.cache('kpf_hk')
-        log.info('Disabling Ca HK detector')
+        log.warning('Disabling Ca HK detector')
         kpfconfig['CA_HK_ENABLED'].write('No')
-        log.info('Turning Ca HK detector cooling off')
+        log.warning('Turning Ca HK detector cooling off')
         kpf_hk['COOLING'].write('off')
-        time.sleep(3)
-        log.info('Powering off Ca HK detector systems')
-        log.debug(f"Powering off {kpfpower['OUTLET_J1_NAME'].read()}")
+        time.sleep(5)
+        log.warning('Powering off Ca HK detector systems')
+        log.warning(f"Powering off {kpfpower['OUTLET_J1_NAME'].read()}")
         kpfpower['OUTLET_J1'].write('Off')
-        log.debug(f"Powering off {kpfpower['OUTLET_J2_NAME'].read()}")
+        log.warning(f"Powering off {kpfpower['OUTLET_J2_NAME'].read()}")
         kpfpower['OUTLET_J2'].write('Off')
-        log.debug(f"Powering off {kpfpower['OUTLET_J5_NAME'].read()}")
+        log.warning(f"Powering off {kpfpower['OUTLET_J5_NAME'].read()}")
         kpfpower['OUTLET_J5'].write('Off')
 
         # Power down CRED2 detector systems
         kpfguide = ktl.cache('kpfguide')
-        log.info('Powering off CRED2 detector systems')
+        log.warning('Powering off CRED2 detector systems')
         kpfguide['CONTINUOUS'].write('Inactive')
         kpfguide['SAVE'].write('Inactive')
-        time.sleep(2)
-        log.debug(f"Powering off {kpfpower['OUTLET_K2_NAME'].read()}")
+        time.sleep(5)
+        log.warning(f"Powering off {kpfpower['OUTLET_K2_NAME'].read()}")
         kpfpower['OUTLET_K2'].write('Off')
-        log.debug(f"Powering off {kpfpower['OUTLET_K3_NAME'].read()}")
+        log.warning(f"Powering off {kpfpower['OUTLET_K3_NAME'].read()}")
         kpfpower['OUTLET_K3'].write('Off')
 
 
