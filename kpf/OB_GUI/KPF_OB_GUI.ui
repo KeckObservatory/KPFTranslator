@@ -32,7 +32,7 @@
      <rect>
       <x>10</x>
       <y>80</y>
-      <width>331</width>
+      <width>291</width>
       <height>81</height>
      </rect>
     </property>
@@ -141,13 +141,13 @@
    <widget class="QWidget" name="gridLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>320</x>
       <y>80</y>
-      <width>361</width>
+      <width>391</width>
       <height>81</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="status_layout" rowstretch="100,100,100" columnstretch="35,65">
+    <layout class="QGridLayout" name="status_layout" rowstretch="100,100,100" columnstretch="30,70">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
@@ -240,13 +240,13 @@
    <widget class="QWidget" name="gridLayoutWidget_8">
     <property name="geometry">
      <rect>
-      <x>740</x>
+      <x>730</x>
       <y>80</y>
-      <width>331</width>
+      <width>341</width>
       <height>81</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="slewcal_layout" rowstretch="100,100,100" columnstretch="100,100">
+    <layout class="QGridLayout" name="slewcal_layout" rowstretch="100,100,100" columnstretch="40,60">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
@@ -336,7 +336,7 @@
    <widget class="Line" name="line_5">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>300</x>
       <y>80</y>
       <width>20</width>
       <height>81</height>
@@ -349,7 +349,7 @@
    <widget class="Line" name="line_6">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>710</x>
       <y>80</y>
       <width>20</width>
       <height>81</height>

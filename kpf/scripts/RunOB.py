@@ -136,7 +136,7 @@ class RunOB(KPFScript):
             if len(OB.Observations) > 0:
                 # Don't stop FIU if we have observations to perform
                 args['FIUdest'] = 'Observing'
-                SCRIPTMSG.write('Calibrations complete. Setting FIU to observing')
+                SCRIPTMSG.write('Calibrations complete. Setting FIU to observing.')
             CleanupAfterCalibrations.execute(args, OB=OB)
 
 
