@@ -216,9 +216,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildCalibration = [Calibration({})]
         # Example Calibrations
         if Path(self.SLEWCALFILE.ascii).exists():
-#             self.example_calOB = ObservingBlock(self.SLEWCALFILE.ascii)
-            self.log.warning('Using temporary hack for slewcal file')
-            self.example_calOB = ObservingBlock('/s/sdata1701/OBs/jwalawender/Calibrations/SlewCal_EtalonFiber.yaml')
+            try:
+                self.example_calOB = ObservingBlock(self.SLEWCALFILE.ascii)
+            except Exception as e:
+                self.log.warning(f'Faied to load slewcal file: {self.SLEWCALFILE.ascii}')
+                self.log.debug(e)
         else:
             self.example_calOB = ObservingBlock({})
         self.example_cal_file = Path(__file__).parent.parent / 'ObservingBlocks' / 'exampleOBs' / 'Calibrations.yaml'
@@ -986,8 +988,15 @@ class MainWindow(QtWidgets.QMainWindow):
         for i,WB in enumerate(self.KPFCC_weather_bands):
             nOBs_this_WB = len(schedule_file_contents[WB])
             self.log.debug(f'Getting {nOBs_this_WB} OBs for weather band {WB}')
-            self.KPFCC_OBs[WB] = []
-            self.KPFCC_start_times[WB] = []
+            # Pre-load a slewcal OB for convienience
+            try:
+                self.KPFCC_OBs[WB] = [ObservingBlock(self.SLEWCALFILE.ascii)]
+                self.KPFCC_start_times[WB] = [0]
+            except Exception as e:
+                self.log.warning(f'Failed to load slewcal for KPFCC schedule')
+                self.log.debug(e)
+                self.KPFCC_OBs[WB] = []
+                self.KPFCC_start_times[WB] = []
             for entry in schedule_file_contents[WB]:
                 scheduledOBcount += 1
                 if entry['unique_id'] == '':
@@ -1011,6 +1020,13 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.log.error("Retrieval of OBs canceled by user.")
                         break
                     progress.setValue(scheduledOBcount)
+            # Append a slewcal OB for convienience
+            try:
+                self.KPFCC_OBs[WB].append(ObservingBlock(self.SLEWCALFILE.ascii))
+                self.KPFCC_start_times[WB].append(24)
+            except Exception as e:
+                self.log.warning(f'Failed to load slewcal for KPFCC schedule')
+                self.log.debug(e)
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) KPF-CC OBs for all weather bands"]
         msg.extend(errs)
         ConfirmationPopup('Retrieved OBs from Database', '\n'.join(msg), info_only=True).exec_()
