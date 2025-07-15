@@ -1053,23 +1053,29 @@ class MainWindow(QtWidgets.QMainWindow):
         if not OBselected:
             enabled = False
             tool_tip = 'No OB selected.'
+            caltt = tool_tip
         # Is SCRIPTSTOP requested?
         elif self.SCRIPTSTOP.ktl_keyword.ascii == 'Yes':
             enabled = False
             tool_tip = 'SCRIPTSTOP has been requested.'
+            caltt = tool_tip
         # Is Target observable
         elif self.SOBobservable == False:
             enabled = True
             tool_tip = 'WARNING: Target is not observable.'
+            caltt = tool_tip
         else:
             enabled = True
             tool_tip = ''
+            SOB = self.OBListModel.OBs[self.SOBindex]
+            cal_only = (len(SOB.Observations) == 0) and (len(SOB.Calibrations) > 0)
+            caltt = {False: '', True: 'Slewcal disabled for Calibration OB'}[cal_only]
         self.log.debug(f"  {enabled} {tool_tip}")
         self.SOB_ShowButton.setEnabled(OBselected)
         self.SOB_ExecuteButton.setEnabled(enabled)
         self.SOB_ExecuteButton.setToolTip(tool_tip)
-        self.SOB_ExecuteSlewCalButton.setEnabled(enabled)
-        self.SOB_ExecuteSlewCalButton.setToolTip(tool_tip)
+        self.SOB_ExecuteSlewCalButton.setEnabled(enabled and not cal_only)
+        self.SOB_ExecuteSlewCalButton.setToolTip(caltt)
         self.SOB_RemoveFromList.setEnabled(enabled)
 
     def clear_SOB_Target(self):
