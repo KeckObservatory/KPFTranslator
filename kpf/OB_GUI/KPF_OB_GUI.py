@@ -111,14 +111,15 @@ def launch_command_in_xterm(script_name, capture_stdout=False, window_title=None
                 os.chmod(script_log_path, 0o777)
             except OSError as e:
                 pass
-        stdout_file = script_log_path / f"kpfdo_{script_name}_{now_str}.log"
+        script_name_for_log = script_name.split()[0]
+        stdout_file = script_log_path / f"kpfdo_{script_name_for_log}_{now_str}.log"
         script_cmd = f'{kpfdo} {script_name} > {stdout_file} ; echo "Done!" ; sleep 30'
     else:
         script_cmd = f'{kpfdo} {script_name} ; echo "Done!" ; sleep 30'
     cmd = ['xterm', '-title', f'{window_title}', '-name', f'{window_title}',
            '-fn', '10x20', '-bg', 'black', '-fg', 'white',
            '-e', f'{script_cmd}']
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(cmd)#, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #     stdout_output, stderr_output = proc.communicate(timeout=)
 #     return stdout_output, stderr_output
 
@@ -1056,7 +1057,7 @@ class MainWindow(QtWidgets.QMainWindow):
             tool_tip = 'No OB selected.'
             caltt = tool_tip
         # Is a script currently running?
-        elif self.SCRIPTNAME.ktl_keyword.ascii != '':
+        elif self.SCRIPTNAME.ktl_keyword.ascii not in ['', 'None']:
             tool_tip = 'A script is already running'
             caltt = tool_tip
         # Is SCRIPTSTOP requested?
@@ -1364,7 +1365,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if slewcal == True:
             self.SLEWCALREQ.write(True)
             self.SLEWCALREQ.waitFor("== 'Yes", timeout=0.3)
-        launch_command_in_xterm(f'RunOB -f {tmp_file}',
+        launch_command_in_xterm(f'RunOB -f {tmp_file}', capture_stdout=True,
                                 window_title=f"RunOB {SOB.summary()}")
 
 
