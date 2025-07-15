@@ -1048,15 +1048,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_SOB_enabled(self):
         self.log.debug(f"set_SOB_enabled")
+        cal_only = False
+        enabled = False
         # Is an OB selected?
         OBselected = self.SOBindex >= 0
         if not OBselected:
-            enabled = False
             tool_tip = 'No OB selected.'
             caltt = tool_tip
         # Is SCRIPTSTOP requested?
         elif self.SCRIPTSTOP.ktl_keyword.ascii == 'Yes':
-            enabled = False
             tool_tip = 'SCRIPTSTOP has been requested.'
             caltt = tool_tip
         # Is Target observable
