@@ -154,33 +154,6 @@
      <property name="verticalSpacing">
       <number>6</number>
      </property>
-     <item row="0" column="1">
-      <widget class="QLabel" name="expose_status_value">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Expose Status:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_10">
        <property name="font">
@@ -235,6 +208,33 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Script Message:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="ScriptMessageValue">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="gridLayoutWidget_8">
@@ -265,7 +265,31 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
+     <item row="2" column="1">
+      <widget class="QLabel" name="disabled_detectors_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="slewcaltime_value">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
       <widget class="QLabel" name="label_12">
        <property name="font">
         <font>
@@ -281,7 +305,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLabel" name="slewcaltime_value">
+      <widget class="QLabel" name="expose_status_value">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
@@ -292,42 +316,18 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="disabled_detectors_value">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_6">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_11">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Lamps:</string>
+        <string>Expose Status:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="LampsValue">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
        </property>
       </widget>
      </item>

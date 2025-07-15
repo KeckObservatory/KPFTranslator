@@ -153,6 +153,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # kpfconfig
         self.kpfconfig = ktl.cache('kpfconfig')
         self.SCRIPTNAME = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTNAME'))
+        self.SCRIPTMSG = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTMSG'))
         self.SCRIPTSTOP = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTSTOP'))
         self.SLEWCALREQ = self.kpfconfig['SLEWCALREQ']
         self.SLEWCALTIME = kPyQt.kFactory(self.kpfconfig['SLEWCALTIME'])
@@ -292,6 +293,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SCRIPTNAME.stringCallback.connect(self.update_scriptname_value)
         self.SCRIPTNAME.primeCallback()
 
+        # script message
+        self.ScriptMessageValue = self.findChild(QtWidgets.QLabel, 'ScriptMessageValue')
+        self.SCRIPTMSG.stringCallback.connect(self.ScriptMessageValue.setText)
+        self.SCRIPTMSG.primeCallback()
+
         # script stop
         self.scriptstop_value = self.findChild(QtWidgets.QLabel, 'scriptstop_value')
         self.SCRIPTSTOP.stringCallback.connect(self.update_scriptstop_value)
@@ -317,11 +323,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ObjectValue = self.findChild(QtWidgets.QLabel, 'ObjectValue')
         self.OBJECT.stringCallback.connect(self.ObjectValue.setText)
         self.OBJECT.primeCallback()
-
-        # lamps
-        self.LampsValue = self.findChild(QtWidgets.QLabel, 'LampsValue')
-        self.LAMPS.stringCallback.connect(self.LampsValue.setText)
-        self.LAMPS.primeCallback()
 
         # time since last cal
         self.slewcaltime_value = self.findChild(QtWidgets.QLabel, 'slewcaltime_value')
