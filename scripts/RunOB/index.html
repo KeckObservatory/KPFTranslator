@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>RunOB - KPF</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "RunOB";
+        var mkdocs_page_input_path = "scripts/RunOB.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">KPF Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../status/">Instrument Status</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystems</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../tiptilt/">Tip Tilt Sysyem</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../socal/">Solar Calibrator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../agitator/">Agitator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../computers/">Computers</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dataflow/">Data Flow</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../fastreadmode/">Fast Read Mode</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../communitycadence/">Community Cadence (KPF-CC)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../calibrations/">Daytime Calibrations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../nighttimecalibrations/">Nighttime Calibrations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../expmetertermination/">Exposure Meter Termination</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../buildingOBs/">Building OBs</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../SciOBparameters/">Science OB Parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../CalOBparameters/">Calibration OB Parameters</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Weather</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://mkwc.ifa.hawaii.edu/forecast/mko/index.cgi">MK Weather Center</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/skycams/CloudCamTimelapse.html">Keck Cloud Cameras</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Useful Keck Pages</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/observing/keckSchedule/keckSchedule.php">Telescope Schedule</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/">Keck Instruments</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/login/">Observer Login Page</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/software/obsplan/obsplan.php">Planning Tool</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://ucolick.org/calendar/keckcal2021-30/index.html">Twilight, Moon rise, etc.</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/offset.php">Offset & PA Calculator</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keckobservatory.org/observing/">General Keck Observing Info</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/TelLimits.html">Telescope Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/too_policies.html">ToO Interrupts</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Retrieve Your Data</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/UserGuide/PyKOA/TAPClients.html#pykoa">Retrieve Data using PyKOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Technical Documentation</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="" href="https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U">Troubleshooting</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tiptiltinstructions/">Tip Tilt Instructions for OAs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Instrument Scripts</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" >kpf.ao</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../ControlAOHatch/">ControlAOHatch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SendPCUtoHome/">SendPCUtoHome</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SendPCUtoKPF/">SendPCUtoKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetAFMtoMirror/">SetAFMtoMirror</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetAFStoNGS/">SetAFStoNGS</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetAODCStoSIM/">SetAODCStoSIM</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetAORotator/">SetAORotator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetAORotatorManual/">SetAORotatorManual</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetupAOforACAM/">SetupAOforACAM</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TurnLightSourceOff/">TurnLightSourceOff</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.cahk</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../PowerCycleCaHK/">PowerCycleCaHK</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.calbench</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetCalSource/">SetCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetFlatFieldFiberPos/">SetFlatFieldFiberPos</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetLFCtoAstroComb/">SetLFCtoAstroComb</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetLFCtoStandbyHigh/">SetLFCtoStandbyHigh</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetND/">SetND</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetND1/">SetND1</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetND2/">SetND2</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetSimulCalSource/">SetSimulCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeIntensityReading/">TakeIntensityReading</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForCalSource/">WaitForCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForFlatFieldFiberPos/">WaitForFlatFieldFiberPos</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForLampWarm/">WaitForLampWarm</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForLFCReady/">WaitForLFCReady</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForND/">WaitForND</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForND1/">WaitForND1</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForND2/">WaitForND2</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.engineering</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GridSearch/">GridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ImageBackIlluminatedFibers/">ImageBackIlluminatedFibers</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../Run2DGridSearch/">Run2DGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeADCGridData/">TakeADCGridData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../AnalyzeTipTiltPerformance/">AnalyzeTipTiltPerformance</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../Fit2DGridSearch/">Fit2DGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../CountCameraErrors/">CountCameraErrors</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.expmeter</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../BuildMasterBias/">BuildMasterBias</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetExpMeterExpTime/">SetExpMeterExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetExpMeterTerminationParameters/">SetExpMeterTerminationParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../PredictExpMeterParameters/">PredictExpMeterParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetMasterBiasToDefault/">SetMasterBiasToDefault</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetupExpMeter/">SetupExpMeter</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeExpMeterBiases/">TakeExpMeterBiases</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.fiu</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../ConfigureFIU/">ConfigureFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ControlFoldMirror/">ControlFoldMirror</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ControlHatch/">ControlHatch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../InitializeTipTilt/">InitializeTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../LockFIU/">LockFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../UnlockFIU/">UnlockFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../MeasureTipTiltMirrorRange/">MeasureTipTiltMirrorRange</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetADCAngles/">SetADCAngles</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetADCOffsets/">SetADCOffsets</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetTipTiltCalculations/">SetTipTiltCalculations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetTipTiltControl/">SetTipTiltControl</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetTipTiltGain/">SetTipTiltGain</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetTipTiltPosition/">SetTipTiltPosition</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetTipTiltTargetPixel/">SetTipTiltTargetPixel</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownTipTilt/">ShutdownTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StartTipTilt/">StartTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StopTipTilt/">StopTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TestTipTiltMirrorRange/">TestTipTiltMirrorRange</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../VerifyCurrentBase/">VerifyCurrentBase</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForConfigureFIU/">WaitForConfigureFIU</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.fvc</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../FVCPower/">FVCPower</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../PredictFVCParameters/">PredictFVCParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeFVCContinuous/">TakeFVCContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeFVCExposure/">TakeFVCExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetFVCExpTime/">SetFVCExpTime</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.guider</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../CollectGuiderDarkCubes/">CollectGuiderDarkCubes</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../DisplayGuiderContinuous/">DisplayGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GetGaiaStars/">GetGaiaStars</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GuiderLastfile/">GuiderLastfile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GuiderOutdir/">GuiderOutdir</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../PredictGuiderParameters/">PredictGuiderParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetGuiderExpTime/">SetGuiderExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetGuiderFPS/">SetGuiderFPS</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetGuiderGain/">SetGuiderGain</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetGuiderOutdir/">SetGuiderOutdir</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StartGuiderContinuous/">StartGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StartTriggerFile/">StartTriggerFile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StopGuiderContinuous/">StopGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StopTriggerFile/">StopTriggerFile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderCube/">TakeGuiderCube</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderExposure/">TakeGuiderExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForTriggerFile/">WaitForTriggerFile</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.magiq</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../AddTarget/">AddTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GetTargetList/">GetTargetList</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../RemoveTarget/">RemoveTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../RemoveAllTargets/">RemoveAllTargets</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SelectTarget/">SelectTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetTargetList/">SetTargetList</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetObservingBlocks/">GetObservingBlocks</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GetScheduledPrograms/">GetScheduledPrograms</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SubmitObserverComment/">SubmitObserverComment</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" >kpf.scripts</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../CleanupAfterCalibrations/">CleanupAfterCalibrations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../CleanupAfterScience/">CleanupAfterScience</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ConfigureForAcquisition/">ConfigureForAcquisition</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ConfigureForCalibrations/">ConfigureForCalibrations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ConfigureForScience/">ConfigureForScience</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../EnterLowPowerMode/">EnterLowPowerMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../EstimateOBDuration/">EstimateOBDuration</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../RecoverFromLowPowerMode/">RecoverFromLowPowerMode</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">RunOB</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../RunOBs/">RunOBs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../RunSoCalObservingLoop/">RunSoCalObservingLoop</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.socal</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../CheckSoCalEnabled/">CheckSoCalEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../DisableSoCal/">DisableSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../EnableSoCal/">EnableSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../IsSoCalClosed/">IsSoCalClosed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../IsSoCalOpen/">IsSoCalOpen</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../IsSoCalShutDown/">IsSoCalShutDown</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ParkSoCal/">ParkSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SoCalStartAutonomous/">SoCalStartAutonomous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SoCalStopAutonomous/">SoCalStopAutonomous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForSoCalOnTarget/">WaitForSoCalOnTarget</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../RecoverDetectors/">RecoverDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ResetCaHKDetector/">ResetCaHKDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ResetExpMeterDetector/">ResetExpMeterDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ResetGreenDetector/">ResetGreenDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ResetRedDetector/">ResetRedDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ResetDetectors/">ResetDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetExpTime/">SetExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetObject/">SetObject</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetObserver/">SetObserver</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetProgram/">SetProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetReadModeFast/">SetReadModeFast</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetReadModeNormal/">SetReadModeNormal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetSourceSelectShutters/">SetSourceSelectShutters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetTimedShutters/">SetTimedShutters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetTriggeredDetectors/">SetTriggeredDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StartAgitator/">StartAgitator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StartExposure/">StartExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StopAgitator/">StopAgitator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForL0File/">WaitForL0File</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForReadout/">WaitForReadout</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../WaitForReady/">WaitForReady</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.telescope</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../EastNorth/">EastNorth</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StartGUIs/">StartGUIs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StartOfNight/">StartOfNight</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../StopGUIs/">StopGUIs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ZeroOutSlewCalTime/">ZeroOutSlewCalTime</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Technical Documentation</li>
+          <li class="breadcrumb-item">Instrument Scripts</li>
+          <li class="breadcrumb-item">kpf.scripts</li>
+      <li class="breadcrumb-item active">RunOB</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="runob"><code>RunOB</code></h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="kpf.scripts.RunOB.RunOB"></a>
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFScript">KPFScript</span></code></p>
+
+
+      <p>Script to run an OB.</p>
+<h2 id="kpf.scripts.RunOB.RunOB--args">ARGS:</h2>
+<ul>
+<li><strong>leave_lamps_on</strong> - <code>bool</code> Leave calibration lamps on when done?</li>
+<li><strong>OB</strong> - <code>ObservingBlock</code> or <code>dict</code> A valid observing block (OB).</li>
+</ul>
+
+              <details class="quote">
+                <summary>Source code in <code>kpf/scripts/RunOB.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunOB</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Script to run an OB.</span>
+
+<span class="sd">    ARGS:</span>
+<span class="sd">    =====</span>
+<span class="sd">    * __leave_lamps_on__ - `bool` Leave calibration lamps on when done?</span>
+<span class="sd">    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># If specified obey the ALLOWSCHEDULEDCALS keyword</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scheduled&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ALLOWSCHEDULEDCALS</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;ALLOWSCHEDULEDCALS&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ALLOWSCHEDULEDCALS</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="s1">&#39;ALLOWSCHEDULEDCALS is No&#39;</span><span class="p">)</span>
+        <span class="c1"># Validate the OB</span>
+        <span class="n">OB</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+        <span class="c1"># Check for script running unless waitforscript is set</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;waitforscript&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">check_script_running</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@add_script_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># -------------------------------------------------------------</span>
+        <span class="c1"># If requested wait for an existing script to complete</span>
+        <span class="c1"># -------------------------------------------------------------</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;waitforscript&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">newscript</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">(PID </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
+            <span class="n">wait_for_script</span><span class="p">(</span><span class="n">newscript</span><span class="o">=</span><span class="n">newscript</span><span class="p">)</span>
+        <span class="n">set_script_keywords</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">OB</span> <span class="o">=</span> <span class="n">ObservingBlock</span><span class="p">(</span><span class="n">OB</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">OBID</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OB ID = </span><span class="si">{</span><span class="n">OB</span><span class="o">.</span><span class="n">OBID</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># -------------------------------------------------------------</span>
+        <span class="c1"># Set Target info for OA&#39;s Tip Tilt GUI</span>
+        <span class="c1"># -------------------------------------------------------------</span>
+        <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">Target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">SetTargetInfo</span><span class="o">.</span><span class="n">execute</span><span class="p">({},</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+
+        <span class="c1"># -------------------------------------------------------------</span>
+        <span class="c1"># Add slew cal to OB if keywords indicate one is requested</span>
+        <span class="c1"># -------------------------------------------------------------</span>
+        <span class="n">SLEWCALREQ</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;SLEWCALREQ&#39;</span><span class="p">)</span>
+        <span class="n">SLEWCALFILE</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;SLEWCALFILE&#39;</span><span class="p">)</span>
+        <span class="n">SCRIPTMSG</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;SCRIPTMSG&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Observations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">SLEWCALREQ</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">slewcal_OBfile</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">SLEWCALFILE</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Slewcal has been requested&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading: </span><span class="si">{</span><span class="n">slewcal_OBfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">slewcal_OBfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">slewcal_OBdict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">slewcal_OB</span> <span class="o">=</span> <span class="n">ObservingBlock</span><span class="p">(</span><span class="n">slewcal_OBdict</span><span class="p">)</span>
+            <span class="n">OB</span><span class="o">.</span><span class="n">Calibrations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">slewcal_OB</span><span class="o">.</span><span class="n">Calibrations</span><span class="p">)</span>
+            <span class="c1"># Now that slewcal has been added, reset the SLEWCALREQ value</span>
+            <span class="n">SLEWCALREQ</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Calibrations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="c1"># Configure for Calibrations</span>
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">SCRIPTMSG</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Configuring for Calibrations&#39;</span><span class="p">)</span>
+                <span class="n">ConfigureForCalibrations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ScriptStopTriggered</span> <span class="k">as</span> <span class="n">scriptstop</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Script Stop Triggered&#39;</span><span class="p">)</span>
+                <span class="n">CleanupAfterCalibrations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                <span class="n">clear_script_keywords</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Exception encountered during ExecuteSci&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">CleanupAfterCalibrations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                <span class="n">clear_script_keywords</span><span class="p">()</span>
+                <span class="k">return</span>
+
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="c1"># Loop over calibrations and execute</span>
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">calibration</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Calibrations</span><span class="p">):</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Executing Calibration </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Calibrations</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">ExecuteCal</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">calibration</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+                <span class="k">except</span> <span class="n">ScriptStopTriggered</span> <span class="k">as</span> <span class="n">scriptstop</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Script Stop Triggered&#39;</span><span class="p">)</span>
+                    <span class="n">CleanupAfterCalibrations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                    <span class="n">clear_script_keywords</span><span class="p">()</span>
+                    <span class="k">return</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Exception encountered during ExecuteCal&#39;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="n">CleanupAfterCalibrations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                    <span class="n">clear_script_keywords</span><span class="p">()</span>
+                    <span class="k">return</span>
+
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="c1"># Clean up after calibrations</span>
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Observations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Don&#39;t stop FIU if we have observations to perform</span>
+                <span class="n">args</span><span class="p">[</span><span class="s1">&#39;FIUdest&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Observing&#39;</span>
+                <span class="n">SCRIPTMSG</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Calibrations complete. Setting FIU to observing.&#39;</span><span class="p">)</span>
+            <span class="n">CleanupAfterCalibrations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">Target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="c1"># Configure for Acquisition</span>
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Configuring for Acquisition&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ConfigureForAcquisition</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                <span class="n">WaitForConfigureAcquisition</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ScriptStopTriggered</span> <span class="k">as</span> <span class="n">scriptstop</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Script Stop Triggered&#39;</span><span class="p">)</span>
+                <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Exception encountered during ConfigureForAcquisition&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="c1"># Proceed once target is on fiber and tip tilt is active</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Asking for user input&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;###############################################################&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Before continuing, please ensure that the OA has placed&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    the star on the KPF PO and they have initiated tip tilt&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    corrections (if desired).&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Press &#39;Enter&#39; to begin exposure(s) or &#39;a&#39; to abort script&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;###############################################################&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: &quot;</span><span class="si">{</span><span class="n">user_input</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;abort&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;quit&#39;</span><span class="p">]:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;User chose to halt execution&quot;</span><span class="p">)</span>
+                <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                <span class="n">clear_script_keywords</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="c1"># Verify dcs TARGNAME against OB.Target.TargetName</span>
+            <span class="n">dcsint</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;telescope&#39;</span><span class="p">,</span> <span class="s1">&#39;telnr&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">TARGNAME</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dcs</span><span class="si">{</span><span class="n">dcsint</span><span class="si">:</span><span class="s1">1d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGNAME&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">TARGNAME</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">TargetName</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Target name mismatch detected&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dcs.TARGNAME &#39;</span><span class="si">{</span><span class="n">TARGNAME</span><span class="si">}</span><span class="s2">&#39; != OB TargetName &#39;</span><span class="si">{</span><span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">TargetName</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Asking for user input&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;###############################################################&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    WARNING: The telescope control system target name: </span><span class="si">{TARGNAME}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    WARNING: does not match the OB target name: </span><span class="si">{OB.Target.TargetName}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Press &#39;Enter&#39; to begin exposure(s) anyway or &#39;a&#39; to abort script&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;###############################################################&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">()</span>
+                <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: &quot;</span><span class="si">{</span><span class="n">user_input</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;abort&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;quit&#39;</span><span class="p">]:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;User chose to halt execution&quot;</span><span class="p">)</span>
+                    <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                    <span class="n">clear_script_keywords</span><span class="p">()</span>
+                    <span class="k">return</span>
+            <span class="c1"># Verify Current Base</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">VerifyCurrentBase</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;query_user&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Exception encountered during VerifyCurrentBase&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                <span class="n">clear_script_keywords</span><span class="p">()</span>
+                <span class="k">return</span>
+
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Observations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">observation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Observations</span><span class="p">):</span>
+                <span class="c1"># -------------------------------------------------------------</span>
+                <span class="c1"># Configure for Science</span>
+                <span class="c1"># -------------------------------------------------------------</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">observation_dict</span> <span class="o">=</span> <span class="n">observation</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                    <span class="n">observation_dict</span><span class="p">[</span><span class="s1">&#39;Gmag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Gmag&#39;</span><span class="p">)</span>
+                    <span class="n">ConfigureForScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">observation_dict</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">ProgramID</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">SetProgram</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;progname&#39;</span><span class="p">:</span> <span class="n">OB</span><span class="o">.</span><span class="n">ProgramID</span><span class="p">})</span>
+                    <span class="n">WaitForConfigureScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">observation_dict</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ScriptStopTriggered</span> <span class="k">as</span> <span class="n">scriptstop</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Script Stop Triggered&#39;</span><span class="p">)</span>
+                    <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                    <span class="n">clear_script_keywords</span><span class="p">()</span>
+                    <span class="k">return</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Exception encountered during ConfigureForScience&#39;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+                    <span class="n">clear_script_keywords</span><span class="p">()</span>
+                    <span class="k">return</span>
+
+                <span class="c1"># -------------------------------------------------------------</span>
+                <span class="c1"># Execute Observation</span>
+                <span class="c1"># -------------------------------------------------------------</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Executing Observation </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Observations</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">history</span><span class="p">,</span> <span class="n">scriptstop</span> <span class="o">=</span> <span class="n">ExecuteSci</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">observation_dict</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;History of execution:&#39;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Start Times: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;exposure_start_times&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Exposure Times: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;exposure_times&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">OBID</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">history</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">OBID</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Submitting execution history to KPFCC API&#39;</span><span class="p">)</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">addObservingBlockHistory</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;KPFCC API Response: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">scriptstop</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">ScriptStopTriggered</span><span class="p">(</span><span class="s2">&quot;SCRIPTSTOP triggered&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ScriptStopTriggered</span> <span class="k">as</span> <span class="n">scriptstop</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Script Stop Triggered&#39;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Exception encountered during ExecuteSci&#39;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="k">break</span>
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="c1"># Cleanup After Science</span>
+            <span class="c1"># -------------------------------------------------------------</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cleaning up after Observations&#39;</span><span class="p">)</span>
+            <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+
+        <span class="n">clear_script_keywords</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--leave_lamps_on&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;leave_lamps_on&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Leave the calibration lamps on after cleanup phase?&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--waitforscript&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;waitforscript&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Wait for running script to end before starting?&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--scheduled&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;scheduled&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Script is scheduled and should obey ALLOWSCHEDULEDCALS keyword&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../RecoverFromLowPowerMode/" class="btn btn-neutral float-left" title="RecoverFromLowPowerMode"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../RunOBs/" class="btn btn-neutral float-right" title="RunOBs">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+      <span><a href="../RecoverFromLowPowerMode/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../RunOBs/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
