@@ -31,4 +31,22 @@ The huge range of HIRES efficiency depending on decker is the biggest factor.  F
 
 ## Common Observations
 
-WMKO obtained observations designed to compare KPF and HIRES directly on a variety of science targets during 2025A.  We will be posting links to the data here soon.
+WMKO obtained observations designed to compare KPF and HIRES directly on a variety of science targets during 2025A.  Here is a list of what was observed:
+
+| Target           | Magnitude | KPF Exposures | HIRES Exposures | HIRES Config (Ech, XD, Slit, Bin) | Requestor   |
+| -----------      | --------- | ------------- | --------------- | --------------------------------- | ----------- |
+| 29/P-comet       | V~16      | 4x300 s       | 4x300 s         | 0.1, -0.06, 1.148", 2x2           | McKay       |
+| TW Hydra         | V=10.5    | 2x300 s       | 2x300 s         | 0.0, 0.90, 1.148", 2x2            | Hillenbrand |
+| HD 96735         | R=8.8     | 2x120 s       | 2x120 s         | 0.0, -0.10, 0.861", 3x1           | Zhang       |
+| HIP 54597        | R=9.8     | 2x240 s       | 2x240 s         | 0.0, -0.10, 0.861", 3x1           | Zhang       |
+| J1622+5521       | R=16.2    | 2x1800 s      | 2x1800 s        | 0.1, 0.763, 1.148", 2x2           | Redfield    |
+| HD 187982        | V=5.3     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 0.4", 1x1            | Cooke       |
+| HD 199478        | V=5.2     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 0.4", 1x1            | Cooke       |
+| BD+35 1801       | R=8.0     | 3x60 s        | 3x60 s          | 0.1, -0.06, 0.4", 1x1             | Nisak       |
+| J142543.3+540619 | R=17.8    | 3x600 s       | 3x600 s         | 0.102, 0.7625, 1.148", 2x2        | O’Meara     |
+| BL Lac           | R=17.2    | 4x600 s       | 1x2400 s        | 0.102, 0.7625, 1.148", 2x2        | O’Meara     |
+| HR 7596          | R=5.6     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 1.148", 1x1          | Staff       |
+| HR 7596          | R=5.6     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 0.861", 1x1          | Staff       |
+| HR 7596          | R=5.6     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 0.574", 1x1          | Staff       |
+
+We will be posting links to the data here soon.
