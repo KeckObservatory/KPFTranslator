@@ -1055,6 +1055,10 @@ class MainWindow(QtWidgets.QMainWindow):
         if not OBselected:
             tool_tip = 'No OB selected.'
             caltt = tool_tip
+        # Is a script currently running?
+        elif self.SCRIPTNAME.ktl_keyword.ascii != '':
+            tool_tip = 'A script is already running'
+            caltt = tool_tip
         # Is SCRIPTSTOP requested?
         elif self.SCRIPTSTOP.ktl_keyword.ascii == 'Yes':
             tool_tip = 'SCRIPTSTOP has been requested.'
