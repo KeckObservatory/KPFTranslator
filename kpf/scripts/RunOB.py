@@ -77,9 +77,11 @@ class RunOB(KPFScript):
         # -------------------------------------------------------------
         # Add slew cal to OB if keywords indicate one is requested
         # -------------------------------------------------------------
-        kpfconfig = ktl.cache('kpfconfig')
-        if len(OB.Observations) > 0 and kpfconfig['SLEWCALREQ'].read(binary=True) is True:
-            slewcal_OBfile = Path(kpfconfig['SLEWCALFILE'].read())
+        SLEWCALREQ = ktl.cache('kpfconfig', 'SLEWCALREQ')
+        SLEWCALFILE = ktl.cache('kpfconfig', 'SLEWCALFILE')
+        SCRIPTMSG = ktl.cache('kpfconfig', 'SCRIPTMSG')
+        if len(OB.Observations) > 0 and SLEWCALREQ.read(binary=True) is True:
+            slewcal_OBfile = Path(SLEWCALFILE.read())
             log.info('Slewcal has been requested')
             log.debug(f"Reading: {slewcal_OBfile}")
             with open(slewcal_OBfile, 'r') as file:
@@ -87,7 +89,7 @@ class RunOB(KPFScript):
                 slewcal_OB = ObservingBlock(slewcal_OBdict)
             OB.Calibrations.extend(slewcal_OB.Calibrations)
             # Now that slewcal has been added, reset the SLEWCALREQ value
-            kpfconfig['SLEWCALREQ'].write(False)
+            SLEWCALREQ.write(False)
 
 
         if len(OB.Calibrations) > 0:
@@ -95,8 +97,7 @@ class RunOB(KPFScript):
             # Configure for Calibrations
             # -------------------------------------------------------------
             try:
-                if len(OB.Observations) > 0:
-                    kpfconfig['SCRIPTMSG'].write('Executing Slew Cal')
+                SCRIPTMSG.write('Configuring for Calibrations')
                 ConfigureForCalibrations.execute(args, OB=OB)
             except ScriptStopTriggered as scriptstop:
                 log.error('Script Stop Triggered')
@@ -135,9 +136,8 @@ class RunOB(KPFScript):
             if len(OB.Observations) > 0:
                 # Don't stop FIU if we have observations to perform
                 args['FIUdest'] = 'Observing'
+                SCRIPTMSG.write('Calibrations complete. Setting FIU to observing mode')
             CleanupAfterCalibrations.execute(args, OB=OB)
-            if len(OB.Observations) > 0:
-                kpfconfig['SCRIPTMSG'].write('Slew Cal complete. Setting FIU to observing mode')
 
 
         if OB.Target is not None:

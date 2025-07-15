@@ -61,6 +61,9 @@ class CleanupAfterCalibrations(KPFScript):
                 log.debug(f"  {key}: {calibration.get(key)}")
         log.info('-------------------------')
 
+        SCRIPTMSG = ktl.cache('kpfconfig', 'SCRIPTMSG')
+        SCRIPTMSG.write('')
+
         # Power off lamps
         if args.get('leave_lamps_on', False) == True:
             log.info('Not turning lamps off because leave_lamps_on option was invoked')
