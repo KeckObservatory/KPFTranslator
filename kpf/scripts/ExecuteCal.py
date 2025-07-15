@@ -287,14 +287,16 @@ class ExecuteCal(KPFFunction):
             # ENABLED status for each detector.
             SetTriggeredDetectors.execute(calibration)
             # Start next exposure
-            msg = f"Starting expoure {j+1}/{nexp} ({calibration.get('Object')})"
-            log.info(msg)
+            msg = f"Starting expoure {j+1}/{nexp}"
             kpfconfig['SCRIPTMSG'].write(msg)
+            log.info(msg+ f" ({calibration.get('Object')})")
             StartExposure.execute({})
             if exptime > 10:
                 WaitForL0File.execute({})
             WaitForReadout.execute({})
-            log.info(f"Readout has begun")
+            msg = f"Reading out {j+1}/{nexp}"
+            kpfconfig['SCRIPTMSG'].write(msg)
+            log.info(msg)
             # Stop agitator after each exposure if we are in normal read mode
             if runagitator and not fast_read_mode:
                 StopAgitator.execute({})

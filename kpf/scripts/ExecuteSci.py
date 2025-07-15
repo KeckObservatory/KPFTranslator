@@ -164,7 +164,7 @@ class ExecuteSci(KPFFunction):
             rounded_ut = round_microseconds(d + datetime.timedelta(hours=10))
             history['exposure_start_times'].append(truncate_isoformat(rounded_ut))
             history['exposure_times'].append(ELAPSED.read(binary=True))
-            msg = f"Readout has begun for exposure {j+1}/{nexp}"
+            msg = f"Reading out {j+1}/{nexp}"
             log.info(msg)
             kpfconfig['SCRIPTMSG'].write(msg)
             if runagitator and not fast_read_mode:
