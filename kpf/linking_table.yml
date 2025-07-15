@@ -247,8 +247,6 @@ links:
         cmd: scripts.RunOBs.RunOBs
     RunSoCalObservingLoop:
         cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
-    SendTargetToMagiq:
-        cmd: scripts.SendTargetToMagiq.SendTargetToMagiq
     # SoCal
     CheckSoCalEnabled:
         cmd: socal.CheckSoCalEnabled.CheckSoCalEnabled
@@ -323,8 +321,6 @@ links:
         cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
-    GetScheduledProgram:
-        cmd: utils.GetScheduledProgram.GetScheduledProgram
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:
