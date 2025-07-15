@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from kpf import log, cfg
-from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts.RunOB import RunOB
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
@@ -12,11 +10,7 @@ class RunOBs(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        # If specified obey the ALLOWSCHEDULEDCALS keyword
-        if args.get('scheduled', False) == True:
-            ALLOWSCHEDULEDCALS = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
-            if ALLOWSCHEDULEDCALS.read(binary=True) == False:
-                raise FailedPreCondition('ALLOWSCHEDULEDCALS is No')
+        pass
 
     @classmethod
     def perform(cls, args):
@@ -25,15 +19,15 @@ class RunOBs(KPFFunction):
             try:
                 OB = ObservingBlock(file)
             except Exception as e:
-                log.error(f'Unable to parse OB from {file}')
-                log.error(e)
+                print(f'ERROR: Unable to parse OB from {file}')
+                print(e)
                 break
             if OB.validate():
                 RunOB.execute({'waitforscript': True,
                                'scheduled': True},
                               OB=OB)
             else:
-                log.error(f'OB from {file} was invalid, not executing OB')
+                print(f'ERROR: OB from {file} was invalid, not executing OB')
 
     @classmethod
     def post_condition(cls, args):
