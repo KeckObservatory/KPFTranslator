@@ -487,7 +487,7 @@
         <rect>
          <x>10</x>
          <y>150</y>
-         <width>181</width>
+         <width>141</width>
          <height>23</height>
         </rect>
        </property>
@@ -776,19 +776,6 @@
         <string>Notes for the Observer:</string>
        </property>
       </widget>
-      <widget class="QCheckBox" name="SlewCal">
-       <property name="geometry">
-        <rect>
-         <x>200</x>
-         <y>150</y>
-         <width>111</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>with SlewCal?</string>
-       </property>
-      </widget>
       <widget class="QPushButton" name="SOB_AddComment">
        <property name="geometry">
         <rect>
@@ -813,6 +800,19 @@
        </property>
        <property name="text">
         <string>Remove Selected OB from List</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SOB_ExecuteSlewCalButton">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>150</y>
+         <width>151</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Execute with SlewCal</string>
        </property>
       </widget>
      </widget>

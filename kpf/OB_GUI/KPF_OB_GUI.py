@@ -154,7 +154,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.kpfconfig = ktl.cache('kpfconfig')
         self.SCRIPTNAME = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTNAME'))
         self.SCRIPTSTOP = kPyQt.kFactory(ktl.cache('kpfconfig', 'SCRIPTSTOP'))
-        self.SLEWCALREQ = kPyQt.kFactory(ktl.cache('kpfconfig', 'SLEWCALREQ'))
+        self.SLEWCALREQ = self.kpfconfig['SLEWCALREQ']
         self.SLEWCALTIME = kPyQt.kFactory(self.kpfconfig['SLEWCALTIME'])
         self.SLEWCALFILE = self.kpfconfig['SLEWCALFILE']
         self.SLEWCALFILE.monitor()
@@ -398,11 +398,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_AddComment.clicked.connect(self.add_comment)
         self.SOB_ExecuteButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteButton')
         self.SOB_ExecuteButton.clicked.connect(self.execute_SOB)
+        self.SOB_ExecuteSlewCalButton self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteSlewCalButton')
+        self.SOB_ExecuteSlewCalButton.clicked.connect(self.execute_SOB_with_slewcal)
         self.SOB_RemoveFromList = self.findChild(QtWidgets.QPushButton, 'SOB_RemoveFromList')
         self.SOB_RemoveFromList.clicked.connect(self.remove_SOB)
-        self.SlewCal = self.findChild(QtWidgets.QCheckBox, 'SlewCal')
-        self.SlewCal.stateChanged.connect(self.SlewCal_checkbox_state_change)
-        self.SLEWCALREQ.stringCallback.connect(self.update_SlewCalReq)
         self.update_SOB_display()
 
         #-------------------------------------------------------------------
@@ -680,18 +679,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.telescope_released = GetTelescopeRelease.execute({})
             self.OBListModel.refresh_OBs_to_get_history()
             self.log.debug('Updated: telescope_released and observed_status')
-
-    # kpfconfig.SLEWCALREQ
-    def update_SlewCalReq(self, value):
-        self.log.debug(f"update_SlewCalReq: {value} {(value == 'Yes')}")
-        if self.SlewCal.isChecked() != (value == 'Yes'):
-            self.SlewCal.setChecked((value == 'Yes'))
-
-    def SlewCal_checkbox_state_change(self, value):
-        self.log.debug(f"SlewCal_checkbox_state_change: {value} {(value == 2)}")
-        if (self.SLEWCALREQ.read() == 'Yes') != (value == 2):
-            self.log.info(f'Modifying kpfconfig.SLEWCALREQ = {(value == 2)}')
-            self.kpfconfig['SLEWCALREQ'].write((value == 2))
 
 
     ##-------------------------------------------
@@ -1061,11 +1048,12 @@ class MainWindow(QtWidgets.QMainWindow):
             enabled = True
             tool_tip = ''
         self.log.debug(f"  {enabled} {tool_tip}")
+        self.SOB_ShowButton.setEnabled(OBselected)
         self.SOB_ExecuteButton.setEnabled(enabled)
         self.SOB_ExecuteButton.setToolTip(tool_tip)
+        self.SOB_ExecuteSlewCalButton.setEnabled(enabled)
+        self.SOB_ExecuteSlewCalButton.setToolTip(tool_tip)
         self.SOB_RemoveFromList.setEnabled(enabled)
-        self.SlewCal.setEnabled(enabled)
-        self.SOB_ShowButton.setEnabled(OBselected)
 
     def clear_SOB_Target(self):
         self.log.debug(f"clear_SOB_Target")
@@ -1288,7 +1276,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def execute_scheduled_OB(self):
         self.log.error('execute_scheduled_OB not implemented')
 
-    def execute_SOB(self):
+    def execute_SOB(self, slewcal=False):
         if self.SOBindex < 0:
             return
         self.log.debug(f"execute_SOB")
@@ -1328,7 +1316,10 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.log.debug('User opted not to execute OB')
 
-    def RunOB(self, SOB):
+    def execute_SOB_with_slewcal(self):
+        self.execute_SOB(slewcal=True)
+
+    def RunOB(self, SOB, slewcal=False):
         self.log.debug(f"RunOB")
         # Write to temporary file
         utnow = datetime.datetime.utcnow()
@@ -1343,6 +1334,9 @@ class MainWindow(QtWidgets.QMainWindow):
             tmp_file_path.mkdir(mode=0o777, parents=False)
         tmp_file = tmp_file_path / f'executedOB_{now_str}.yaml'
         SOB.write_to(tmp_file)
+        if slewcal == True:
+            self.SLEWCALREQ.write(True)
+            self.SLEWCALREQ.waitFor("== 'Yes", timeout=0.3)
         launch_command_in_xterm(f'RunOB -f {tmp_file}',
                                 window_title=f"RunOB {SOB.summary()}")
 
