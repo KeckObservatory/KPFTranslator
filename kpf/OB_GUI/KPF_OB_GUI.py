@@ -398,7 +398,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_AddComment.clicked.connect(self.add_comment)
         self.SOB_ExecuteButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteButton')
         self.SOB_ExecuteButton.clicked.connect(self.execute_SOB)
-        self.SOB_ExecuteSlewCalButton self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteSlewCalButton')
+        self.SOB_ExecuteSlewCalButton = self.findChild(QtWidgets.QPushButton, 'SOB_ExecuteSlewCalButton')
         self.SOB_ExecuteSlewCalButton.clicked.connect(self.execute_SOB_with_slewcal)
         self.SOB_RemoveFromList = self.findChild(QtWidgets.QPushButton, 'SOB_RemoveFromList')
         self.SOB_RemoveFromList.clicked.connect(self.remove_SOB)
