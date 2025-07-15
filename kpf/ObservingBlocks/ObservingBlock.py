@@ -201,12 +201,13 @@ class ObservingBlock(object):
         '''
         if self.Target is not None:
             out = f"{self.Target}"
-#             out = (f"{self.TargetName.value:16s} {rastr:10s} {decstr:>9s} "
-#                    f"{str(self.Gmag):>4s} {str(self.Jmag):>4s}")
-
         else:
             if len(self.Observations) == 0:
-                out = 'Calibration      '
+                is_slewcal = [(str(cal.Object)=='slewcal') for cal in self.Calibrations]
+                if np.all(is_slewcal):
+                    out = 'SlewCal          '
+                else:
+                    out = 'Calibration      '
             else:
                 out = ' '*17
             out += '-' + ' '*10
