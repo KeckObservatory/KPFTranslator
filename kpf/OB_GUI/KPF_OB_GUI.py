@@ -240,6 +240,17 @@ class MainWindow(QtWidgets.QMainWindow):
         ActionExit.triggered.connect(self.exit)
 
         #-------------------------------------------------------------------
+        # Menu Bar: Observing
+        self.RunStartOfNight = self.findChild(QtWidgets.QAction, 'actionRun_Start_of_Night')
+        self.RunStartOfNight.triggered.connect(self.run_start_of_night)
+        self.SetObserverNames = self.findChild(QtWidgets.QAction, 'actionSet_Observer_Names')
+        self.SetObserverNames.triggered.connect(self.set_observer)
+        self.SetProgramID = self.findChild(QtWidgets.QAction, 'actionSet_Program_ID')
+        self.SetProgramID.triggered.connect(self.set_programID)
+        self.RunEndOfNight = self.findChild(QtWidgets.QAction, 'actionRun_End_of_Night')
+        self.RunEndOfNight.triggered.connect(self.run_end_of_night)
+
+        #-------------------------------------------------------------------
         # Menu Bar: OB List
         ActionClearOBList = self.findChild(QtWidgets.QAction, 'action_ClearOBList')
         ActionClearOBList.triggered.connect(self.clear_OB_list)
@@ -253,17 +264,6 @@ class MainWindow(QtWidgets.QMainWindow):
         LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
 
         #-------------------------------------------------------------------
-        # Menu Bar: Observing
-        self.RunStartOfNight = self.findChild(QtWidgets.QAction, 'actionRun_Start_of_Night')
-        self.RunStartOfNight.triggered.connect(self.run_start_of_night)
-        self.SetObserverNames = self.findChild(QtWidgets.QAction, 'actionSet_Observer_Names')
-        self.SetObserverNames.triggered.connect(self.set_observer)
-        self.SetProgramID = self.findChild(QtWidgets.QAction, 'actionSet_Program_ID')
-        self.SetProgramID.triggered.connect(self.set_programID)
-        self.RunEndOfNight = self.findChild(QtWidgets.QAction, 'actionRun_End_of_Night')
-        self.RunEndOfNight.triggered.connect(self.run_end_of_night)
-
-        #-------------------------------------------------------------------
         # Menu Bar: FIU
         self.ConfigureFIU_Observing = self.findChild(QtWidgets.QAction, 'actionConfigure_FIU_for_Observing')
         self.ConfigureFIU_Observing.triggered.connect(self.configure_FIU_observing)
@@ -271,6 +271,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ConfigureFIU_Calibrations.triggered.connect(self.configure_FIU_calibrations)
         self.ConfigureFIU_Stow = self.findChild(QtWidgets.QAction, 'actionConfigure_FIU_to_Stow_Position')
         self.ConfigureFIU_Stow.triggered.connect(self.configure_FIU_stow)
+
+        #-------------------------------------------------------------------
+        # Menu Bar: Magiq 
+        self.SendOBListToMagiq = self.findChild(QtWidgets.QAction, 'actionSend_Current_OBs_as_Star_List')
+        self.SendOBListToMagiq.triggered.connect(self.OBListModel.update_star_list)
+        self.SendOBListToMagiq.setEnabled(False)
 
         #-------------------------------------------------------------------
         # Main Window
@@ -572,12 +578,15 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.telescope_released:
                 self.SelectedInstrument.setStyleSheet("color:green")
                 self.SelectedInstrument.setToolTip(f'{release_str}')
+                self.SendOBListToMagiq.setEnabled(True)
             else:
                 self.SelectedInstrument.setStyleSheet("color:orange")
                 self.SelectedInstrument.setToolTip(f'{release_str}. {diabled_msg}')
+                self.SendOBListToMagiq.setEnabled(False)
         else:
             self.SelectedInstrument.setStyleSheet("color:red")
             self.SelectedInstrument.setToolTip(f'Instrument is not KPF. {diabled_msg}')
+            self.SendOBListToMagiq.setEnabled(False)
 
     # kpfconfig.SLEWCALTIME
     def update_slewcaltime_value(self, value):

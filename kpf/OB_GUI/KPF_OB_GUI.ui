@@ -1697,10 +1697,17 @@
     <addaction name="actionConfigure_FIU_for_Calibrations"/>
     <addaction name="actionConfigure_FIU_to_Stow_Position"/>
    </widget>
+   <widget class="QMenu" name="menuMagiq">
+    <property name="title">
+     <string>Magiq</string>
+    </property>
+    <addaction name="actionSend_Current_OBs_as_Star_List"/>
+   </widget>
    <addaction name="menuFile_2"/>
-   <addaction name="menuFile"/>
    <addaction name="menuObserving_Metadata"/>
+   <addaction name="menuFile"/>
    <addaction name="menuFIU"/>
+   <addaction name="menuMagiq"/>
   </widget>
   <action name="actionLoad_Targets">
    <property name="text">
@@ -1795,6 +1802,11 @@
   <action name="action_ClearOBList">
    <property name="text">
     <string>Clear OB List</string>
+   </property>
+  </action>
+  <action name="actionSend_Current_OBs_as_Star_List">
+   <property name="text">
+    <string>Send Current OBs as Star List</string>
    </property>
   </action>
  </widget>
