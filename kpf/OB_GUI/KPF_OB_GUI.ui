@@ -1704,8 +1704,8 @@
     <addaction name="actionSend_Current_OBs_as_Star_List"/>
    </widget>
    <addaction name="menuFile_2"/>
-   <addaction name="menuObserving_Metadata"/>
    <addaction name="menuFile"/>
+   <addaction name="menuObserving_Metadata"/>
    <addaction name="menuFIU"/>
    <addaction name="menuMagiq"/>
   </widget>
