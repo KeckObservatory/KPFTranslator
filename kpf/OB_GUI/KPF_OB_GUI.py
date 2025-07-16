@@ -997,10 +997,10 @@ class MainWindow(QtWidgets.QMainWindow):
         errs = []
         try:
             slewcalOB = ObservingBlock(self.SLEWCALFILE.ascii)
-            comment = ['Slewcals should be run with a science OB. ',
-                       'FIU will be in calibration mode when this finishes.\n',
+            comment = ['This is a pure calibration OB, so the FIU will be in ',
+                       'calibration or stow mode when this finishes.\n\n',
                        'Run "FIU->Configure FIU for Observing" from the Menu ',
-                       'bar to allow target acquisition.']
+                       'bar to allow target acquisition once this OB has completed.']
             slewcalOB.CommentToObserver = ''.join(comment)
         except Exception as e:
             self.log.warning(f'Failed to load slewcal for KPFCC schedule')
