@@ -386,17 +386,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_TargetRALabel = self.findChild(QtWidgets.QLabel, 'TargetRALabel')
         self.SOB_TargetDec = self.findChild(QtWidgets.QLabel, 'SOB_TargetDec')
         self.SOB_TargetDecLabel = self.findChild(QtWidgets.QLabel, 'TargetDecLabel')
-        self.SOB_Jmag = self.findChild(QtWidgets.QLabel, 'SOB_Jmag')
-        self.SOB_Gmag = self.findChild(QtWidgets.QLabel, 'SOB_Gmag')
+        self.SOB_Mags = self.findChild(QtWidgets.QLabel, 'SOB_Mags')
         self.SOB_Observation1 = self.findChild(QtWidgets.QLabel, 'SOB_Observation1')
         self.SOB_Observation2 = self.findChild(QtWidgets.QLabel, 'SOB_Observation2')
         self.SOB_Observation3 = self.findChild(QtWidgets.QLabel, 'SOB_Observation3')
 
         # Calculated Values
         self.SOB_ExecutionTime = self.findChild(QtWidgets.QLabel, 'SOB_ExecutionTime')
-        self.SOB_EL = self.findChild(QtWidgets.QLabel, 'SOB_EL')
-        self.SOB_Az = self.findChild(QtWidgets.QLabel, 'SOB_Az')
-        self.SOB_Airmass = self.findChild(QtWidgets.QLabel, 'SOB_Airmass')
+        self.SOB_AltAz = self.findChild(QtWidgets.QLabel, 'SOB_AltAz')
         self.SOB_AzSlew = self.findChild(QtWidgets.QLabel, 'SOB_AzSlew')
         self.SOB_ELSlew = self.findChild(QtWidgets.QLabel, 'SOB_ELSlew')
 
@@ -998,16 +995,25 @@ class MainWindow(QtWidgets.QMainWindow):
         scheduledOBcount = 0
         retrievedOBcount = 0
         errs = []
+        try:
+            slewcalOB = ObservingBlock(self.SLEWCALFILE.ascii)
+            comment = ['Slewcals should be run with a science OB. ',
+                       'FIU will be in calibration mode when this finishes.\n',
+                       'Run "FIU->Configure FIU for Observing" from the Menu ',
+                       'bar to allow target acquisition.']
+            slewcalOB.CommentToObserver = ''.join(comment)
+        except Exception as e:
+            self.log.warning(f'Failed to load slewcal for KPFCC schedule')
+            self.log.debug(e)
+            slewcalOB = None
         for i,WB in enumerate(self.KPFCC_weather_bands):
             nOBs_this_WB = len(schedule_file_contents[WB])
             self.log.debug(f'Getting {nOBs_this_WB} OBs for weather band {WB}')
             # Pre-load a slewcal OB for convienience
-            try:
-                self.KPFCC_OBs[WB] = [ObservingBlock(self.SLEWCALFILE.ascii)]
+            if slewcalOB is not None:
+                self.KPFCC_OBs[WB] = [slewcalOB]
                 self.KPFCC_start_times[WB] = [0]
-            except Exception as e:
-                self.log.warning(f'Failed to load slewcal for KPFCC schedule')
-                self.log.debug(e)
+            else:
                 self.KPFCC_OBs[WB] = []
                 self.KPFCC_start_times[WB] = []
             for entry in schedule_file_contents[WB]:
@@ -1034,12 +1040,9 @@ class MainWindow(QtWidgets.QMainWindow):
                         break
                     progress.setValue(scheduledOBcount)
             # Append a slewcal OB for convienience
-            try:
-                self.KPFCC_OBs[WB].append(ObservingBlock(self.SLEWCALFILE.ascii))
+            if slewcalOB is not None:
+                self.KPFCC_OBs[WB].append(slewcalOB)
                 self.KPFCC_start_times[WB].append(24)
-            except Exception as e:
-                self.log.warning(f'Failed to load slewcal for KPFCC schedule')
-                self.log.debug(e)
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) KPF-CC OBs for all weather bands"]
         msg.extend(errs)
         ConfirmationPopup('Retrieved OBs from Database', '\n'.join(msg), info_only=True).exec_()
@@ -1100,13 +1103,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_GaiaID.setText('--')
         self.SOB_TargetRA.setText('--')
         self.SOB_TargetDec.setText('--')
-        self.SOB_Jmag.setText('--')
-        self.SOB_Gmag.setText('--')
-        self.SOB_EL.setText('--')
-        self.SOB_EL.setStyleSheet("color:black")
-        self.SOB_EL.setToolTip("")
-        self.SOB_Az.setText('--')
-        self.SOB_Airmass.setText('--')
+        self.SOB_Mags.setText('--')
+        self.SOB_AltAz.setText('--')
+        self.SOB_AltAz.setStyleSheet("color:black")
+        self.SOB_AltAz.setToolTip("")
         self.SOB_AzSlew.setText('--')
         self.SOB_ELSlew.setText('--')
         self.SOBobservable = False
@@ -1117,8 +1117,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clear_SOB_Target()
         self.SOB_TargetName.setText(SOB.Target.get('TargetName'))
         self.SOB_GaiaID.setText(SOB.Target.get('GaiaID'))
-        self.SOB_Jmag.setText(f"{SOB.Target.get('Jmag'):.2f}")
-        self.SOB_Gmag.setText(f"{SOB.Target.get('Gmag'):.2f}")
+        self.SOB_Mags.setText(f"G={SOB.Target.get('Gmag'):.2f}, J={SOB.Target.get('Jmag'):.2f}")
         # Display RA and Dec
         try:
             coord_string = SOB.Target.coord.to_string('hmsdms', sep=':', precision=2)
@@ -1159,21 +1158,18 @@ class MainWindow(QtWidgets.QMainWindow):
             target_altz = SOB.Target.coord.transform_to(AltAzSystem)
             elapsed = (datetime.datetime.now()-tick).total_seconds()*1000
             self.log.debug(f'Calculated target AltAz coordinates in {elapsed:.0f}ms')
-            self.SOB_EL.setText(f"{target_altz.alt.deg:.1f} deg")
-            self.SOB_Az.setText(f"{target_altz.az.deg:.1f} deg")
+            self.SOB_AltAz.setText(f"{target_altz.alt.deg:.1f}, {target_altz.az.deg:.1f} deg")
             self.SOBobservable = above_horizon(target_altz.az.deg, target_altz.alt.deg)
             if self.SOBobservable:
-                self.SOB_Airmass.setText(f"{target_altz.secz:.2f}")
                 if target_altz.alt.deg > self.ADC_horizon:
-                    self.SOB_EL.setStyleSheet("color:black")
-                    self.SOB_EL.setToolTip("")
+                    self.SOB_AltAz.setStyleSheet("color:black")
+                    self.SOB_AltAz.setToolTip("")
                 else:
-                    self.SOB_EL.setStyleSheet("color:orange")
-                    self.SOB_EL.setToolTip(f"ADC correction is poor below EL~{self.ADC_horizon:.0f}")
+                    self.SOB_AltAz.setStyleSheet("color:orange")
+                    self.SOB_AltAz.setToolTip(f"ADC correction is poor below EL~{self.ADC_horizon:.0f}")
             else:
-                self.SOB_Airmass.setText("--")
-                self.SOB_EL.setStyleSheet("color:red")
-                self.SOB_EL.setToolTip("Below Keck horizon")
+                self.SOB_AltAz.setStyleSheet("color:red")
+                self.SOB_AltAz.setToolTip("Below Keck horizon")
             if near_horizon(target_altz.az.deg, target_altz.alt.deg):
                 # Calculate AZ Slew Distance
                 #  Azimuth range for telescope is -125 to 0 to 325
