@@ -993,6 +993,8 @@ class MainWindow(QtWidgets.QMainWindow):
             progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
             progress.setValue(0)
             self.log.debug('Created progress bar')
+        elif Nsched == 0:
+            ConfirmationPopup('Found no OBs in schedule', '\n'.join(pbar_msg), info_only=True).exec_()
         scheduledOBcount = 0
         retrievedOBcount = 0
         errs = []
