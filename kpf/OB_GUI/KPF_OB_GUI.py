@@ -532,14 +532,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scriptname_value.setText(f"{scriptname_string}")
         if value in ['None', '']:
             self.scriptname_value.setStyleSheet("color:green")
+            self.RunStartOfNight.setEnabled(self.SelectedInstrument.text() != 'OSIRIS')
+            self.RunEndOfNight.setEnabled(True)
             self.ConfigureFIU_Observing.setEnabled(True)
             self.ConfigureFIU_Calibrations.setEnabled(True)
             self.ConfigureFIU_Stow.setEnabled(True)
+            self.SetObserverNames.setEnabled(True)
+            self.SetProgramID.setEnabled(True)
         else:
             self.scriptname_value.setStyleSheet("color:orange")
+            self.RunStartOfNight.setEnabled(False)
+            self.RunEndOfNight.setEnabled(False)
             self.ConfigureFIU_Observing.setEnabled(False)
             self.ConfigureFIU_Calibrations.setEnabled(False)
             self.ConfigureFIU_Stow.setEnabled(False)
+            self.SetObserverNames.setEnabled(False)
+            self.SetProgramID.setEnabled(False)
 
     # kpfexpose.EXPOSE
     def update_expose_status_value(self, value):
