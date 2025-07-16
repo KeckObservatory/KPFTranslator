@@ -564,16 +564,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.expose_status_value.setText(exposure_status_string)
         if status == 'Ready':
             self.expose_status_value.setStyleSheet("color:green")
-            self.RunStartOfNight.setEnabled(self.SelectedInstrument.text() != 'OSIRIS')
-            self.SetObserverNames.setEnabled(True)
-            self.SetProgramID.setEnabled(True)
-            self.RunEndOfNight.setEnabled(self.SelectedInstrument.text() != 'OSIRIS')
         elif status in ['Start', 'InProgress', 'Readout']:
             self.expose_status_value.setStyleSheet("color:orange")
-            self.RunStartOfNight.setEnabled(False)
-            self.SetObserverNames.setEnabled(False)
-            self.SetProgramID.setEnabled(False)
-            self.RunEndOfNight.setEnabled(False)
 
     # dcs.INSTRUME
     def update_selected_instrument(self, value):
