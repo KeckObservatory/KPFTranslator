@@ -31,22 +31,62 @@ The huge range of HIRES efficiency depending on decker is the biggest factor.  F
 
 ## Common Observations
 
-WMKO obtained observations designed to compare KPF and HIRES directly on a variety of science targets during 2025A.  Here is a list of what was observed:
+WMKO obtained observations designed to compare KPF and HIRES directly on a variety of science targets during 2025A.  This comparison reflects the status of the instruments as they were on 2025 May 15.  Unfortunately, at the time, KPF was impacted by excess pattern noise which raised the apparent read noise from the nominal ~5 electrons to ~13 electrons.  This will affect all of the KPF data below. Please see the [KPF status](status.md) page for the current state of KPF.
 
-| Target           | Magnitude | KPF Exposures | HIRES Exposures | HIRES Config (Ech, XD, Slit, Bin) | Requestor   |
-| -----------      | --------- | ------------- | --------------- | --------------------------------- | ----------- |
-| 29/P-comet       | V~16      | 4x300 s       | 4x300 s         | 0.1, -0.06, 1.148", 2x2           | McKay       |
-| TW Hydra         | V=10.5    | 2x300 s       | 2x300 s         | 0.0, 0.90, 1.148", 2x2            | Hillenbrand |
-| HD 96735         | R=8.8     | 2x120 s       | 2x120 s         | 0.0, -0.10, 0.861", 3x1           | Zhang       |
-| HIP 54597        | R=9.8     | 2x240 s       | 2x240 s         | 0.0, -0.10, 0.861", 3x1           | Zhang       |
-| J1622+5521       | R=16.2    | 2x1800 s      | 2x1800 s        | 0.1, 0.763, 1.148", 2x2           | Redfield    |
-| HD 187982        | V=5.3     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 0.4", 1x1            | Cooke       |
-| HD 199478        | V=5.2     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 0.4", 1x1            | Cooke       |
-| BD+35 1801       | R=8.0     | 3x60 s        | 3x60 s          | 0.1, -0.06, 0.4", 1x1             | Nisak       |
-| J142543.3+540619 | R=17.8    | 3x600 s       | 3x600 s         | 0.102, 0.7625, 1.148", 2x2        | O’Meara     |
-| BL Lac           | R=17.2    | 4x600 s       | 1x2400 s        | 0.102, 0.7625, 1.148", 2x2        | O’Meara     |
-| HR 7596          | R=5.6     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 1.148", 1x1          | Staff       |
-| HR 7596          | R=5.6     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 0.861", 1x1          | Staff       |
-| HR 7596          | R=5.6     | 1x20 s        | 1x15 s          | 0.0, 0.2423, 0.574", 1x1          | Staff       |
+Here is a list of what was observed:
 
-We will be posting links to the data here soon.
+| Target           | Mag     | KPF      | HIRES (Ech, XD, Slit, Bin)            | Requestor   |
+| -----------      | ------- | -------- | ------------------------------------- | ----------- |
+| 29/P-comet       | V~16    | 4x300 s  | 4x300 s (0.1, -0.06, 1.148", 2x2)     | McKay       |
+| TW Hydra         | V=10.5  | 2x300 s  | 2x300 s (0.0, 0.90, 1.148", 2x2)      | Hillenbrand |
+| HD 96735         | R=8.8   | 2x120 s  | 2x120 s (0.0, -0.10, 0.861", 3x1)     | Zhang       |
+| HIP 54597        | R=9.8   | 2x240 s  | 2x240 s (0.0, -0.10, 0.861", 3x1)     | Zhang       |
+| J1622+5521       | R=16.2  | 2x1800 s | 2x1800 s (0.1, 0.763, 1.148", 2x2)    | Redfield    |
+| HD 187982        | V=5.3   | 1x20 s   | 1x15 s (0.0, 0.2423, 0.4", 1x1)       | Cooke       |
+| HD 199478        | V=5.2   | 1x20 s   | 1x15 s (0.0, 0.2423, 0.4", 1x1)       | Cooke       |
+| BD+35 1801       | R=8.0   | 3x60 s   | 3x60 s (0.1, -0.06, 0.4", 1x1)        | Nisak       |
+| J142543.3+540619 | R=17.8  | 3x600 s  | 3x600 s (0.102, 0.7625, 1.148", 2x2)  | O’Meara     |
+| BL Lac           | R=17.2  | 4x600 s  | 1x2400 s (0.102, 0.7625, 1.148", 2x2) | O’Meara     |
+| HR 7596          | R=5.6   | 1x20 s   | 1x15 s (0.0, 0.2423, 1.148", 1x1)     | Staff       |
+| HR 7596          | R=5.6   | 1x20 s   | 1x15 s (0.0, 0.2423, 0.861", 1x1)     | Staff       |
+| HR 7596          | R=5.6   | 1x20 s   | 1x15 s (0.0, 0.2423, 0.574", 1x1)     | Staff       |
+
+### HIRES Raw Data
+
+* All HIRES Science Files: [HIRES_sci_27859_1.tar](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/HIRES_raw/HIRES_sci_27859_1.tar)
+* All HIRES Calibration Files: [HIRES_cal_27859_1.tar](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/HIRES_raw/HIRES_cal_27859_1.tar)
+
+### Reduced Data
+
+The reduced data for KPF is available in the table below.  The "Level 1" file is the extracted 1D spectrum. For details on working with KPF L1 files, see the [KPF DRP page on L1 data format](https://kpf-pipeline.readthedocs.io/en/latest/tutorials/KPF_Data_Tutorial_L1.html).
+
+We're working on getting consistent HIRES reductions and will post the reduced data here once it is available.
+
+| Target           | KPF L1 Files |
+| -----------      | ------------ |
+| 29/P-comet       | [KP.20250516.22710.24](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.22710.24_L1.fits) |
+|                  | [KP.20250516.22765.38](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.22765.38_L1.fits) |
+|                  | [KP.20250516.23176.73](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.23176.73_L1.fits) |
+|                  | [KP.20250516.23597.65](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.23597.65_L1.fits) |
+|                  | [KP.20250516.23946.39](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.23946.39_L1.fits) |
+| TW Hydra         | [KP.20250516.28039.30](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.28039.30_L1.fits) |
+|                  | [KP.20250516.28387.71](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.28387.71_L1.fits) |
+| HD 96735         | [KP.20250516.29269.54](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.29269.54_L1.fits) |
+|                  | [KP.20250516.29438.05](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.29438.05_L1.fits) |
+| HIP 54597        | [KP.20250516.31424.80](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.31424.80_L1.fits) |
+|                  | [KP.20250516.31713.37](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.31713.37_L1.fits) |
+| J1622+5521       | [KP.20250516.41859.48](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.41859.48_L1.fits) |
+|                  | [KP.20250516.43707.83](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.43707.83_L1.fits) |
+| HD 187982        | [KP.20250516.52220.22](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.52220.22_L1.fits) |
+| HD 199478        | [KP.20250516.52378.17](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.52378.17_L1.fits) |
+| BD+35 1801       | [KP.20250516.20851.88](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.20851.88_L1.fits) |
+|                  | [KP.20250516.21018.50](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.21018.50_L1.fits) |
+|                  | [KP.20250516.21139.89](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.21139.89_L1.fits) |
+| J142543.3+540619 | [KP.20250516.32813.20](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.32813.20_L1.fits) |
+|                  | [KP.20250516.33461.60](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.33461.60_L1.fits) |
+|                  | [KP.20250516.34123.45](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.34123.45_L1.fits) |
+| BL Lac           | [KP.20250516.46263.92](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.46263.92_L1.fits) |
+|                  | [KP.20250516.46912.59](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.46912.59_L1.fits) |
+|                  | [KP.20250516.47561.22](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.47561.22_L1.fits) |
+|                  | [KP.20250516.48209.59](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.48209.59_L1.fits) |
+| HR 7596          | [KP.20250516.53456.67](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.53456.67_L1.fits) |
