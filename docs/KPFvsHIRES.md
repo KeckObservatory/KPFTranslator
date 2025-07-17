@@ -56,11 +56,20 @@ Here is a list of what was observed:
 * All HIRES Science Files: [HIRES_sci_27859_1.tar](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/HIRES_raw/HIRES_sci_27859_1.tar)
 * All HIRES Calibration Files: [HIRES_cal_27859_1.tar](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/HIRES_raw/HIRES_cal_27859_1.tar)
 
-### Reduced Data
+### HIRES Reduced Data
+
+A subset of the HIRES observations were reduced automatically at KOA for the following targets:
+
+* BD+35 1801
+* TW Hya
+* J142543.3+540619
+* J1622+5521 targets
+
+These files are available here: [HIRES_sci_51156_1.tar](https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/HIRES_KOA_reduced/HIRES_sci_51156_1.tar)
+
+### KPF Reduced Data
 
 The reduced data for KPF is available in the table below.  The "Level 1" file is the extracted 1D spectrum. For details on working with KPF L1 files, see the [KPF DRP page on L1 data format](https://kpf-pipeline.readthedocs.io/en/latest/tutorials/KPF_Data_Tutorial_L1.html).
-
-We're working on getting consistent HIRES reductions and will post the reduced data here once it is available.
 
 | Target           | KPF L1 Files |
 | -----------      | ------------ |
