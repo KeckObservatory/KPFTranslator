@@ -1018,7 +1018,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.KPFCC_start_times[WB] = []
             for entry in schedule_file_contents[WB]:
                 scheduledOBcount += 1
-                if entry['unique_id'] == '':
+                if entry['unique_id'] in ['', None, 'None']:
                     errmsg = f"{entry['Target']} Failed: no id"
                     self.log.error(errmsg)
                     errs.append(errmsg)
