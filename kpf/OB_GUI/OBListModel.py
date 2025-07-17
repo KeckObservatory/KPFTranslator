@@ -103,7 +103,7 @@ class OBListModel(QtCore.QAbstractListModel):
         self.log.debug(f'Refreshing OBs to get history')
         refreshed = 0
         for i,OB in enumerate(self.OBs):
-            if OB.OBID == in ['', None, 'None']:
+            if OB.OBID in ['', None, 'None']:
                 self.log.debug(f"  Could not refresh line {i+1}")
             else:
                 try:
