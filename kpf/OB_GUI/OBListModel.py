@@ -17,26 +17,6 @@ from kpf.magiq.SetTargetList import SetTargetList
 
 
 ##-------------------------------------------------------------------------
-## Define observed_tonight function
-##-------------------------------------------------------------------------
-def observed_tonight(OB):
-    visits = [h for h in OB.History if len(h.get('exposure_start_times', [])) > 0]
-    return len(visits)
-
-
-# def old_observed_tonight(OB):
-#     now = datetime.utcnow()
-#     N_visits_tonight = 0
-#     for hist in OB.History:
-#         if len(hist.get('exposure_start_times', [])) > 0:
-#             timestring = hist.get('exposure_start_times')[0]
-#             tstamp = datetime.strptime(timestring[:19], '%Y-%m-%dT%H:%M:%S')
-#             if (now-tstamp).days <= 1 and (tstamp.day == now.day):
-#                 N_visits_tonight += 1
-#     return N_visits_tonight
-
-
-##-------------------------------------------------------------------------
 ## Define Model for OB List
 ##-------------------------------------------------------------------------
 class OBListModel(QtCore.QAbstractListModel):
@@ -79,9 +59,12 @@ class OBListModel(QtCore.QAbstractListModel):
             output_line = f"{str(OB):s}"
         else:
             start_time_decimal = self.start_times[ind.row()]
-            sthr = int(np.floor(start_time_decimal))
-            stmin = (start_time_decimal-sthr)*60
-            start_time_str = f"{sthr:02d}:{stmin:02.0f} UT"
+            if np.isclose(start_time_decimal, 0) or np.isclose(start_time_decimal, 24):
+                start_time_str = f"--:-- UT"
+            else:
+                sthr = int(np.floor(start_time_decimal))
+                stmin = (start_time_decimal-sthr)*60
+                start_time_str = f"{sthr:02d}:{stmin:02.0f} UT"
             output_line = f"{start_time_str}  {str(OB):s}"
         if OB.edited == True:
             output_line += ' [edited]'
@@ -98,9 +81,17 @@ class OBListModel(QtCore.QAbstractListModel):
             return QtGui.QImage(f'{self.icon_path}/arrow-curve-000-left.png')
         # Check observed state
         if self.observed[ind.row()] is False:
+            # Not observed yet tonight
             return QtGui.QImage(f'{self.icon_path}/status-offline.png')
         elif self.observed[ind.row()] is True:
+            # All observations of this OB scheduled are complete
             return QtGui.QImage(f'{self.icon_path}/tick.png')
+        elif self.observed[ind.row()] is None:
+            # There is no history, so there is no observed status
+            return QtGui.QImage(f'{self.icon_path}/question-small-white.png')
+        elif self.observed[ind.row()] < 0:
+            # This is a calibration OB
+            return QtGui.QImage(f'{self.icon_path}/light-bulb-off.png')
         else:
             OB = self.OBs[ind.row()]
             all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
@@ -130,38 +121,26 @@ class OBListModel(QtCore.QAbstractListModel):
         self.update_observed_status()
         self.log.debug(f'  Updated observed status')
 
-#     def refresh_OBs_to_get_history(self):
-#         self.log.debug(f'Refreshing OBs to get history')
-#         refreshed = 0
-#         for i,OB in enumerate(self.OBs):
-#             if OB.OBID in ['', None, 'None']:
-#                 self.log.debug(f"  Could not refresh line {i+1}")
-#             else:
-#                 try:
-#                     self.log.debug(f'  Refreshing OB: {OB.OBID}')
-#                     refreshed = GetObservingBlocks.execute({'OBid': OB.OBID})[0]
-#                     if isinstance(refreshed, ObservingBlock):
-#                         self.OBs[i].History = refreshed.History
-#                         refreshed += 1
-#                 except Exception as e:
-#                     self.log.debug(f"  Could not refresh line {i+1}")
-#         self.log.debug(f'  Refreshed {refreshed} out of {len(self.OBs)}')
-#         self.update_observed_status()
-#         self.log.debug(f'  Updated observed status')
-
     def update_observed_status(self):
         self.observed = [False]*len(self.OBs)
         for i,OB in enumerate(self.OBs):
-            scheduled_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
-            N_scheduled_visits = len(scheduled_visits)
-            N_visits_tonight = observed_tonight(OB)
-            if N_visits_tonight == 0:
-                self.observed[i] = False
-            elif N_visits_tonight < N_scheduled_visits:
-                self.observed[i] = N_visits_tonight
+            if len(OB.Observations) == 0 and len(OB.Calibrations) > 0:
+                # This is a calibration OB
+                self.observed[i] = -1
+            elif OB.OBID in ['', 'None', None]:
+                # There is no history, so there is no observed status
+                self.observed[i] = None
             else:
-                self.observed[i] = True
-#         print('Observed:', self.observed)
+                scheduled_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
+                N_scheduled_visits = len(scheduled_visits)
+                visits_tonight = [h for h in OB.History if len(h.get('exposure_start_times', [])) > 0]
+                N_visits_tonight = len(visits_tonight)
+                if N_visits_tonight == 0:
+                    self.observed[i] = False
+                elif N_visits_tonight < N_scheduled_visits:
+                    self.observed[i] = N_visits_tonight
+                else:
+                    self.observed[i] = True
         self.update_current_next()
 
     def update_current_next(self):
@@ -181,8 +160,6 @@ class OBListModel(QtCore.QAbstractListModel):
                 self.nextOB = -1 # If nothing is in the future, there is no next
             else:
                 self.nextOB = future.argmin() # Next is nearest start time in future
-#             print(f"Current: {self.currentOB} {self.observed[self.currentOB]}")
-#             print(f"Next: {self.nextOB} {self.observed[self.nextOB]}")
 
     def rowCount(self, ind):
         return len(self.OBs)

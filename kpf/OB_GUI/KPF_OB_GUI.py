@@ -224,15 +224,29 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildCalibration = [Calibration({})]
         # Example Calibrations
         try:
-            self.example_calOB = ObservingBlock(self.SLEWCALFILE.ascii)
+            self.slewcalOB = ObservingBlock(self.SLEWCALFILE.ascii)
         except Exception as e:
             self.log.warning(f'Faied to load slewcal file: {self.SLEWCALFILE.ascii}')
             self.log.debug(e)
+            try:
+                self.log.debug('Loading temporary slewcal OB')
+                self.slewcalOB = ObservingBlock('/s/sdata1701/OBs/jwalawender/Calibrations/SlewCal_EtalonFiber.yaml')
+            except:
+                self.slewcalOB = None
+        if self.slewcalOB is not None:
+            comment = ['This is a pure calibration OB, so the FIU will be in ',
+                       'calibration or stow mode when this finishes.\n\n',
+                       'Run "FIU->Configure FIU for Observing" from the Menu ',
+                       'bar to allow target acquisition once this OB has completed.']
+            self.slewcalOB.CommentToObserver = ''.join(comment)
+            self.example_calOB = copy.deepcopy(self.slewcalOB)
+        else:
             self.example_calOB = ObservingBlock({})
+        # Load other example Cal OBs
         self.example_cal_file = Path(__file__).parent.parent / 'ObservingBlocks' / 'exampleOBs' / 'Calibrations.yaml'
         if self.example_cal_file.exists():
-            example_cal_OB = ObservingBlock(self.example_cal_file)
-            self.example_calOB.Calibrations.extend(example_cal_OB.Calibrations)
+            example_OB = ObservingBlock(self.example_cal_file)
+            self.example_calOB.Calibrations.extend(example_OB.Calibrations)
 
     def setupUi(self):
         self.log.debug('setupUi')
@@ -1003,23 +1017,12 @@ class MainWindow(QtWidgets.QMainWindow):
         scheduledOBcount = 0
         retrievedOBcount = 0
         errs = []
-        try:
-            slewcalOB = ObservingBlock(self.SLEWCALFILE.ascii)
-            comment = ['This is a pure calibration OB, so the FIU will be in ',
-                       'calibration or stow mode when this finishes.\n\n',
-                       'Run "FIU->Configure FIU for Observing" from the Menu ',
-                       'bar to allow target acquisition once this OB has completed.']
-            slewcalOB.CommentToObserver = ''.join(comment)
-        except Exception as e:
-            self.log.warning(f'Failed to load slewcal for KPFCC schedule')
-            self.log.debug(e)
-            slewcalOB = None
         for i,WB in enumerate(self.KPFCC_weather_bands):
             nOBs_this_WB = len(schedule_file_contents[WB])
             self.log.debug(f'Getting {nOBs_this_WB} OBs for weather band {WB}')
             # Pre-load a slewcal OB for convienience
-            if slewcalOB is not None:
-                self.KPFCC_OBs[WB] = [slewcalOB]
+            if self.slewcalOB is not None:
+                self.KPFCC_OBs[WB] = [self.slewcalOB]
                 self.KPFCC_start_times[WB] = [0]
             else:
                 self.KPFCC_OBs[WB] = []
@@ -1048,8 +1051,8 @@ class MainWindow(QtWidgets.QMainWindow):
                         break
                     progress.setValue(scheduledOBcount)
             # Append a slewcal OB for convienience
-            if slewcalOB is not None:
-                self.KPFCC_OBs[WB].append(slewcalOB)
+            if self.slewcalOB is not None:
+                self.KPFCC_OBs[WB].append(self.slewcalOB)
                 self.KPFCC_start_times[WB].append(24)
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) KPF-CC OBs for all weather bands"]
         msg.extend(errs)
