@@ -5,7 +5,7 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
+from kpf.spectrograph.QueryReadMode import QueryReadMode
 from kpf.utils.SendEmail import SendEmail
 
 
