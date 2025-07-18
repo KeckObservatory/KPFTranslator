@@ -7,7 +7,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class QueryReadMode(KPFTranslatorFunction):
+class QueryReadMode(KPFFunction):
     '''Returns string describing the read mode.
     '''
     @classmethod
