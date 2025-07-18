@@ -109,6 +109,14 @@ def addObservingBlockHistory(history):
     return query_observatoryAPI('proposal', 'addObservingBlockHistory', history, post=True)
 
 
+def getObservingBlockHistory(utdate=None):
+    if utdate in [None, 'today']:
+        utdate = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+    result = query_observatoryAPI('proposal', 'getObservingBlockHistory',
+                                  {"utdate": utdate})
+    return result.get('history', [])
+
+
 def get_OBs_from_KPFCC_API(params):
     result = query_observatoryAPI('proposal', 'getKPFObservingBlock', params)
     if result is None:
