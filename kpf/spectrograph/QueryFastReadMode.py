@@ -4,6 +4,7 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+from kpf.spectrograph.QueryReadMode import QueryReadMode
 
 
 class QueryFastReadMode(KPFFunction):
@@ -19,24 +20,8 @@ class QueryFastReadMode(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        green_ACF = ktl.cache('kpfgreen', 'ACF').read()
-        red_ACF = ktl.cache('kpfred', 'ACF').read()
-
-        green_normal_file = cfg.get('acf_files', 'green_normal')
-        green_fast_file = cfg.get('acf_files', 'green_fast')
-        red_normal_file = cfg.get('acf_files', 'red_normal')
-        red_fast_file = cfg.get('acf_files', 'red_fast')
-
-        if (green_ACF == green_normal_file) and (red_ACF == red_normal_file):
-            mode = 'normal'
-        elif (green_ACF == green_fast_file) and (red_ACF == red_fast_file):
-            mode = 'fast'
-        else:
-            mode = 'unknown'
-
-        log.debug(f"ACF Files: {green_ACF}/{red_ACF} mode is {mode}")
-        print(f"ACF Files: {green_ACF}/{red_ACF} mode is {mode}")
-        return mode == 'fast'
+        green_mode, red_mode = QueryReadMode.execute({})
+        return (green_mode == 'fast') and (red_mode == 'fast')
 
     @classmethod
     def post_condition(cls, args):
