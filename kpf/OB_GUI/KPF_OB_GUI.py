@@ -542,6 +542,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ConfigureFIU_Stow.setEnabled(True)
             self.SetObserverNames.setEnabled(True)
             self.SetProgramID.setEnabled(True)
+            self.OBListModel.refresh_history() # Refresh history, it may have updated
         else:
             self.scriptname_value.setStyleSheet("color:orange")
             self.RunStartOfNight.setEnabled(False)
@@ -689,10 +690,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_LST(self, value):
         self.SiderealTimeValue.setText(value[:-3])
         self.update_counter += 1
-        if self.update_counter > 120:
+        if self.update_counter > 180:
             self.log.debug('Updating: SOB info, telescope_released, and history')
             self.update_counter = 0
-            self.update_SOB_display()
+            self.update_SOB_display() # Updates alt, az
             self.telescope_released = GetTelescopeRelease.execute({})
             self.OBListModel.refresh_history()
 
