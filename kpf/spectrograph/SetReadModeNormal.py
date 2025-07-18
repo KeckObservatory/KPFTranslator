@@ -56,5 +56,8 @@ class SetReadModeNormal(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        if QueryFastReadMode.execute({}) != False:
-            raise FailedPostCondition(f"Read mode change failed")
+        green_mode, red_mode = QueryReadMode.execute({})
+        if green_mode != "normal":
+            raise FailedToReachDestination(green_mode, "normal")
+        if red_mode != "normal":
+            raise FailedToReachDestination(red_mode, "normal")
