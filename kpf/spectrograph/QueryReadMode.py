@@ -11,11 +11,11 @@ class QueryReadMode(KPFFunction):
     '''Returns string describing the read mode.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         ACFFILE = ktl.cache('kpfgreen', 'ACFFILE')
         green_normal_file = cfg.get('acf_files', 'green_normal')
         green_fast_file = cfg.get('acf_files', 'green_fast')
@@ -44,5 +44,5 @@ class QueryReadMode(KPFFunction):
         return green_mode, red_mode
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
