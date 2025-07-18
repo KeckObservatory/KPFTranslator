@@ -223,13 +223,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildObservation = [Observation({})]
         self.BuildCalibration = [Calibration({})]
         # Example Calibrations
-        if Path(self.SLEWCALFILE.ascii).exists():
-            try:
-                self.example_calOB = ObservingBlock(self.SLEWCALFILE.ascii)
-            except Exception as e:
-                self.log.warning(f'Faied to load slewcal file: {self.SLEWCALFILE.ascii}')
-                self.log.debug(e)
-        else:
+        try:
+            self.example_calOB = ObservingBlock(self.SLEWCALFILE.ascii)
+        except Exception as e:
+            self.log.warning(f'Faied to load slewcal file: {self.SLEWCALFILE.ascii}')
+            self.log.debug(e)
             self.example_calOB = ObservingBlock({})
         self.example_cal_file = Path(__file__).parent.parent / 'ObservingBlocks' / 'exampleOBs' / 'Calibrations.yaml'
         if self.example_cal_file.exists():
