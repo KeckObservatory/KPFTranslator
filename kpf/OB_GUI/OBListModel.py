@@ -4,9 +4,13 @@ import numpy as np
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
+import ktl
+
+from kpf import cfg
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.observatoryAPIs.GetTelescopeRelease import GetTelescopeRelease
 from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
+from kpf.observatoryAPIs.GetExecutionHistory import GetExecutionHistory
 from kpf.magiq.RemoveTarget import RemoveTarget, RemoveAllTargets
 from kpf.magiq.AddTarget import AddTarget
 from kpf.magiq.SetTargetList import SetTargetList
@@ -16,15 +20,20 @@ from kpf.magiq.SetTargetList import SetTargetList
 ## Define observed_tonight function
 ##-------------------------------------------------------------------------
 def observed_tonight(OB):
-    now = datetime.utcnow()
-    N_visits_tonight = 0
-    for hist in OB.History:
-        if len(hist.get('exposure_start_times', [])) > 0:
-            timestring = hist.get('exposure_start_times')[0]
-            tstamp = datetime.strptime(timestring[:19], '%Y-%m-%dT%H:%M:%S')
-            if (now-tstamp).days <= 1 and (tstamp.day == now.day):
-                N_visits_tonight += 1
-    return N_visits_tonight
+    visits = [h for h in OB.History if len(h.get('exposure_start_times', [])) > 0]
+    return len(visits)
+
+
+# def old_observed_tonight(OB):
+#     now = datetime.utcnow()
+#     N_visits_tonight = 0
+#     for hist in OB.History:
+#         if len(hist.get('exposure_start_times', [])) > 0:
+#             timestring = hist.get('exposure_start_times')[0]
+#             tstamp = datetime.strptime(timestring[:19], '%Y-%m-%dT%H:%M:%S')
+#             if (now-tstamp).days <= 1 and (tstamp.day == now.day):
+#                 N_visits_tonight += 1
+#     return N_visits_tonight
 
 
 ##-------------------------------------------------------------------------
@@ -43,17 +52,20 @@ class OBListModel(QtCore.QAbstractListModel):
     - replace list
     - edit OB
     '''
-    def __init__(self, *args, OBs=[], log=None, INSTRUME=None, **kwargs):
+    def __init__(self, *args, log=None, mock_date=False, **kwargs):
         super(OBListModel, self).__init__(*args, **kwargs)
-        self.OBs = OBs
+        self.OBs = []
         self.start_times = None
         self.update_observed_status()
         self.currentOB = -1
         self.nextOB = -1
         self.sort_key = None
         self.log = log
-        self.INSTRUME = INSTRUME
+        self.mock_date = mock_date
         self.icon_path = Path(__file__).parent / 'icons'
+        dcsint = cfg.getint('telescope', 'telnr', fallback=1)
+        self.INSTRUME = ktl.cache(f'dcs{dcsint}', 'INSTRUME')
+        self.INSTRUME.monitor()
 
     def data(self, ind, role):
         if role == QtCore.Qt.DisplayRole:
@@ -92,31 +104,50 @@ class OBListModel(QtCore.QAbstractListModel):
         else:
             OB = self.OBs[ind.row()]
             all_visits = [i for i,v in enumerate(self.OBs) if v.OBID == OB.OBID]
-#             print(all_visits)
-#             print(all_visits.index(ind.row()), self.observed[ind.row()])
             if all_visits.index(ind.row()) < self.observed[ind.row()]:
+                return QtGui.QImage(f'{self.icon_path}/tick.png')
+            else:
                 return QtGui.QImage(f'{self.icon_path}/status-away.png')
-            else:
-                return QtGui.QImage(f'{self.icon_path}/status-offline.png')
 
-    def refresh_OBs_to_get_history(self):
-        self.log.debug(f'Refreshing OBs to get history')
+    def refresh_history(self):
+        self.log.debug(f'refresh_history')
+        date_str = 'today'
+        if self.mock_date == True:
+            date_str = '2025-07-10'
+            self.log.warning(f'Using history from {date_str} for testing')
+        history = GetExecutionHistory.execute({'utdate': date_str})
+        OBIDs = [OB.OBID for OB in self.OBs]
         refreshed = 0
+        # Clear History in OBs and replace with refreshed values
         for i,OB in enumerate(self.OBs):
-            if OB.OBID in ['', None, 'None']:
-                self.log.debug(f"  Could not refresh line {i+1}")
-            else:
-                try:
-                    self.log.debug(f'  Refreshing OB: {OB.OBID}')
-                    refreshed = GetObservingBlocks.execute({'OBid': OB.OBID})[0]
-                    if isinstance(refreshed, ObservingBlock):
-                        self.OBs[i].History = refreshed.History
-                        refreshed += 1
-                except Exception as e:
-                    self.log.debug(f"  Could not refresh line {i+1}")
+            self.OBs[i].History = []
+        for i,h in enumerate(history):
+            if h.get('id') in OBIDs:
+                matched_index = OBIDs.index(h.get('id'))
+                self.OBs[matched_index].History.append(h)
+                refreshed += 1
         self.log.debug(f'  Refreshed {refreshed} out of {len(self.OBs)}')
         self.update_observed_status()
         self.log.debug(f'  Updated observed status')
+
+#     def refresh_OBs_to_get_history(self):
+#         self.log.debug(f'Refreshing OBs to get history')
+#         refreshed = 0
+#         for i,OB in enumerate(self.OBs):
+#             if OB.OBID in ['', None, 'None']:
+#                 self.log.debug(f"  Could not refresh line {i+1}")
+#             else:
+#                 try:
+#                     self.log.debug(f'  Refreshing OB: {OB.OBID}')
+#                     refreshed = GetObservingBlocks.execute({'OBid': OB.OBID})[0]
+#                     if isinstance(refreshed, ObservingBlock):
+#                         self.OBs[i].History = refreshed.History
+#                         refreshed += 1
+#                 except Exception as e:
+#                     self.log.debug(f"  Could not refresh line {i+1}")
+#         self.log.debug(f'  Refreshed {refreshed} out of {len(self.OBs)}')
+#         self.update_observed_status()
+#         self.log.debug(f'  Updated observed status')
 
     def update_observed_status(self):
         self.observed = [False]*len(self.OBs)
@@ -241,7 +272,7 @@ class OBListModel(QtCore.QAbstractListModel):
     ## Telescope Related Functions
     ##-------------------------------------------
     def telescope_interactions_allowed(self):
-        checks = [self.INSTRUME.ktl_keyword.ascii in ['KPF', 'KPF-CC'],
+        checks = [self.INSTRUME.ascii in ['KPF', 'KPF-CC'],
                   GetTelescopeRelease.execute({}),
                   ]
         ok = np.all(checks)

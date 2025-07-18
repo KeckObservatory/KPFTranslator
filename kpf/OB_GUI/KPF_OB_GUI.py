@@ -5,6 +5,7 @@ import traceback
 import time
 import copy
 from pathlib import Path
+import argparse
 import logging
 from logging.handlers import RotatingFileHandler
 # import json
@@ -60,12 +61,15 @@ def schedule(self, message, *args, **kwargs):
 logging.Logger.schedule = schedule
 
 
-def create_GUI_log():
+def create_GUI_log(verbose=False):
     guilog = logging.getLogger('KPF_OB_GUI')
     guilog.setLevel(logging.DEBUG)
     ## Set up console output
     LogConsoleHandler = logging.StreamHandler()
-    LogConsoleHandler.setLevel(logging.INFO)
+    if verbose:
+        LogConsoleHandler.setLevel(logging.DEBUG)
+    else:
+        LogConsoleHandler.setLevel(logging.INFO)
     LogFormat = logging.Formatter('%(asctime)s %(levelname)8s: %(message)s')
     LogConsoleHandler.setFormatter(LogFormat)
     guilog.addHandler(LogConsoleHandler)
@@ -129,11 +133,12 @@ def launch_command_in_xterm(script_name, capture_stdout=False, window_title=None
 ##-------------------------------------------------------------------------
 class MainWindow(QtWidgets.QMainWindow):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, clargs, *args, **kwargs):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         ui_file = Path(__file__).parent / 'KPF_OB_GUI.ui'
         uic.loadUi(f"{ui_file}", self)
         self.log = guilog
+        self.clargs = clargs
         self.pid = os.getpid()
         self.log.info(f'Initializing OB GUI. PID={self.pid}')
         self.file_path = Path('/s/sdata1701/OBs')
@@ -209,7 +214,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.KPFCC_start_times[WB] = None
         self.prepare_execution_history_file()
         # Add OB List Model Component
-        self.OBListModel = OBListModel(OBs=[], log=self.log, INSTRUME=self.INSTRUME)
+        self.OBListModel = OBListModel(log=self.log,
+                                       mock_date=self.clargs.mock_date)
         # Add OB Builder Component
         self.SciObservingBlock = None
         self.CalObservingBlock = None
@@ -684,11 +690,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SiderealTimeValue.setText(value[:-3])
         self.update_counter += 1
         if self.update_counter > 120:
+            self.log.debug('Updating: SOB info, telescope_released, and history')
             self.update_counter = 0
             self.update_SOB_display()
             self.telescope_released = GetTelescopeRelease.execute({})
-            self.OBListModel.refresh_OBs_to_get_history()
-            self.log.debug('Updated: telescope_released and observed_status')
+            self.OBListModel.refresh_history()
 
 
     ##-------------------------------------------
@@ -961,6 +967,9 @@ class MainWindow(QtWidgets.QMainWindow):
         utnow = datetime.datetime.utcnow()
         date = utnow-datetime.timedelta(hours=20) # Switch dates at 10am HST, 2000UT
         date_str = date.strftime('%Y-%m-%d').lower()
+        if self.clargs.mock_date == True:
+            date_str = '2025-07-10'
+            self.log.warning(f'Using schedule from {date_str} for testing')
         schedule_files = [self.schedule_path / f'{date_str}_{WB}.csv'
                           for WB in self.KPFCC_weather_bands]
         # Count what we need to load ahead of time for the progress bar
@@ -1046,6 +1055,7 @@ class MainWindow(QtWidgets.QMainWindow):
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) KPF-CC OBs for all weather bands"]
         msg.extend(errs)
         ConfirmationPopup('Retrieved OBs from Database', '\n'.join(msg), info_only=True).exec_()
+        self.OBListModel.refresh_history()
         self.set_SortOrWeather()
         self.set_weather_band(self.KPFCC_weather_band)
 
@@ -1637,9 +1647,9 @@ class MainWindow(QtWidgets.QMainWindow):
 ##-------------------------------------------------------------------------
 ## Define main()
 ##-------------------------------------------------------------------------
-def main():
+def main(clargs):
     application = QtWidgets.QApplication(sys.argv)
-    main_window = MainWindow()
+    main_window = MainWindow(clargs)
     main_window.setupUi()
     main_window.show()
     return kPyQt.run(application)
@@ -1648,11 +1658,24 @@ def main():
 ## if __name__ == '__main__':
 ##-------------------------------------------------------------------------
 if __name__ == '__main__':
-    guilog = create_GUI_log()
+    ## Parse Command Line Arguments
+    p = argparse.ArgumentParser(description='''
+    ''')
+    ## add flags
+    p.add_argument("-v", "--verbose", dest="verbose",
+        default=False, action="store_true",
+        help="Be verbose! (default = False)")
+    ## add options
+    p.add_argument("--mock_date", dest="mock_date",
+        default=False, action="store_true",
+        help="Pull a fixed date for schedule and history (intended for testing).")
+    clargs = p.parse_args()
+
+    guilog = create_GUI_log(verbose=clargs.verbose)
     guilog.info(f"-----------------------------")
     guilog.info(f"Starting KPF OB GUI")
     try:
-        main()
+        main(clargs)
     except Exception as e:
         guilog.error(e)
         guilog.error(traceback.format_exc())
