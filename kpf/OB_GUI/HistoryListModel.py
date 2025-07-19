@@ -2,7 +2,11 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import numpy as np
 
+import keygrabber
+
 from PyQt5 import QtWidgets, QtCore, QtGui
+
+from kpf import cfg
 
 
 ##-------------------------------------------------------------------------
@@ -29,7 +33,10 @@ class HistoryListModel(QtCore.QAbstractListModel):
         exposure = self.exposures[ind.row()]
         start_time = self.exposure_start_times[ind.row()]
         start_str = start_time.strftime('%H:%M:%S')
-        output_line = f"{exposure.get('target'):15s} {start_str:<12s} {exposure.get('exptime'):.0f} s"
+        output_line = f"{exposure.get('target'):15s}"
+        output_line += f" {start_str:<11s}"
+        output_line += f" {exposure.get('exptime'):5.0f} s  "
+        output_line += f" {exposure.get('L0_file', '')}"
         return output_line
 
     def icon_output(self, ind):
@@ -44,8 +51,27 @@ class HistoryListModel(QtCore.QAbstractListModel):
             for j,st_str in enumerate(h.get('exposure_start_times')):
                 st = datetime.strptime(f"{st_str}0000", '%Y-%m-%dT%H:%M:%S.%f')
                 exptime = h.get('exposure_times')[j]
-                self.exposures.append({'target': target,
-                                       'exptime': exptime})
+                exposure_data = {'target': target, 'exptime': exptime}
+                # Try to determine L0 file name
+                try:
+                    fastreadtime = cfg.getfloat('time_estimates', f'readout_red_fast')
+                    normalreadtime = cfg.getfloat('time_estimates', f'readout_red')
+                    assemblytime = cfg.getfloat('time_estimates', f'assembly')
+                    stHST = st-timedelta(hours=10)
+                    begin = stHST+timedelta(seconds=exptime+fastreadtime)
+                    end = stHST+timedelta(seconds=exptime+normalreadtime+assemblytime+10)
+                    L0_hist = keygrabber.retrieve({'kpfassemble': ['LOUTFILE']},
+                                         begin=begin.timestamp(),
+                                         end=end.timestamp())
+                    for entry in L0_hist:
+                        L0_time = datetime.fromtimestamp(entry.get('time'))
+                        assembly_delay = L0_time-(stHST+timedelta(seconds=exptime))
+                        if assembly_delay.total_seconds() > 0:
+                            exposure_data['L0_file'] = Path(entry.get('ascvalue')).name
+                except Exception as e:
+                    print('Failed to get keyword history')
+                    print(e)
+                self.exposures.append(exposure_data)
                 self.exposure_start_times.append(st)
         self.sort()
 
