@@ -434,6 +434,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #-------------------------------------------------------------------
         # Tab: Execution History
+        self.HistoryListHeader = self.findChild(QtWidgets.QLabel, 'HistoryListHeader')
         self.HistoryListView = self.findChild(QtWidgets.QListView, 'HistoryList')
         self.HistoryListView.setModel(self.HistoryListModel)
 #         self.HistoryListView.selectionModel().selectionChanged.connect(self.select_OB)

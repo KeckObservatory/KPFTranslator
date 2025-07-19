@@ -29,7 +29,7 @@ class HistoryListModel(QtCore.QAbstractListModel):
         exposure = self.exposures[ind.row()]
         start_time = self.exposure_start_times[ind.row()]
         start_str = start_time.strftime('%H:%M:%S')
-        output_line = f"{exposure.get('target'):15s} {start_str:8s} {exposure.get('exptime'):.0f} s"
+        output_line = f"{exposure.get('target'):15s} {start_str:<12s} {exposure.get('exptime'):.0f} s"
         return output_line
 
     def icon_output(self, ind):
@@ -47,30 +47,15 @@ class HistoryListModel(QtCore.QAbstractListModel):
                 self.exposures.append({'target': target,
                                        'exptime': exptime})
                 self.exposure_start_times.append(st)
-        print(self.exposures)
-        self.layoutChanged.emit()
+        self.sort()
 
     def rowCount(self, ind):
         return len(self.exposures)
 
-#     def sort(self, key=None):
-#         self.log.debug(f'OBListModel.sort: {key} {self.sort_key}')
-#         if key is not None:
-#             self.sort_key = key
-#         if self.sort_key == 'time' and self.start_times is not None:
-#             zipped = [z for z in zip(self.start_times, self.OBs)]
-#             zipped.sort(key=lambda z: z[0])
-#             self.OBs = [z[1] for z in zipped]
-#             self.start_times = [z[0] for z in zipped]
-#         elif self.sort_key == 'Name':
-#             self.OBs.sort(key=lambda o: o.Target.TargetName.value, reverse=False)
-#         elif self.sort_key == 'RA':
-#             self.OBs.sort(key=lambda o: o.Target.coord.ra.deg, reverse=False)
-#         elif self.sort_key == 'Dec':
-#             self.OBs.sort(key=lambda o: o.Target.coord.dec.deg, reverse=False)
-#         elif self.sort_key == 'Gmag':
-#             self.OBs.sort(key=lambda o: o.Target.Gmag.value, reverse=False)
-#         elif self.sort_key == 'Jmag':
-#             self.OBs.sort(key=lambda o: o.Target.Jmag.value, reverse=False)
-#         self.layoutChanged.emit()
-#         self.update_observed_status()
+    def sort(self, key=None):
+        self.log.debug(f'HistoryListModel.sort')
+        zipped = [z for z in zip(self.exposure_start_times, self.exposures)]
+        zipped.sort(key=lambda z: z[0])
+        self.exposures = [z[1] for z in zipped]
+        self.exposure_start_times = [z[0] for z in zipped]
+        self.layoutChanged.emit()

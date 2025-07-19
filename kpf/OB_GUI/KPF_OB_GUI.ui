@@ -868,7 +868,7 @@
          <x>10</x>
          <y>50</y>
          <width>691</width>
-         <height>571</height>
+         <height>601</height>
         </rect>
        </property>
        <property name="font">
@@ -881,6 +881,25 @@
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QLabel" name="HistoryListHeader">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>571</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>   TargetName      StartTimeUT  ExposureTime</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_9">
       <property name="geometry">
@@ -888,11 +907,11 @@
         <x>730</x>
         <y>10</y>
         <width>321</width>
-        <height>661</height>
+        <height>461</height>
        </rect>
       </property>
       <property name="title">
-       <string>GroupBox</string>
+       <string>Selected Exposure</string>
       </property>
      </widget>
     </widget>
