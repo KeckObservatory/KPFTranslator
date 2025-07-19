@@ -1341,9 +1341,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 hdrline = ', '.join(contents)
                 f.write(hdrline+'\n')
 
-    def execute_scheduled_OB(self):
-        self.log.error('execute_scheduled_OB not implemented')
-
     def execute_SOB(self, slewcal=False):
         if self.SOBindex < 0:
             return
