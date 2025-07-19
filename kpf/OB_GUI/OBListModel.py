@@ -10,7 +10,6 @@ from kpf import cfg
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.observatoryAPIs.GetTelescopeRelease import GetTelescopeRelease
 from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
-from kpf.observatoryAPIs.GetExecutionHistory import GetExecutionHistory
 from kpf.magiq.RemoveTarget import RemoveTarget, RemoveAllTargets
 from kpf.magiq.AddTarget import AddTarget
 from kpf.magiq.SetTargetList import SetTargetList
@@ -32,7 +31,7 @@ class OBListModel(QtCore.QAbstractListModel):
     - replace list
     - edit OB
     '''
-    def __init__(self, *args, log=None, mock_date=False, **kwargs):
+    def __init__(self, *args, log=None, **kwargs):
         super(OBListModel, self).__init__(*args, **kwargs)
         self.OBs = []
         self.start_times = None
@@ -41,7 +40,6 @@ class OBListModel(QtCore.QAbstractListModel):
         self.nextOB = -1
         self.sort_key = None
         self.log = log
-        self.mock_date = mock_date
         self.icon_path = Path(__file__).parent / 'icons'
         dcsint = cfg.getint('telescope', 'telnr', fallback=1)
         self.INSTRUME = ktl.cache(f'dcs{dcsint}', 'INSTRUME')
@@ -100,13 +98,8 @@ class OBListModel(QtCore.QAbstractListModel):
             else:
                 return QtGui.QImage(f'{self.icon_path}/status-away.png')
 
-    def refresh_history(self):
+    def refresh_history(self, history):
         self.log.debug(f'refresh_history')
-        date_str = 'today'
-        if self.mock_date == True:
-            date_str = '2025-07-10'
-            self.log.warning(f'Using history from {date_str} for testing')
-        history = GetExecutionHistory.execute({'utdate': date_str})
         OBIDs = [OB.OBID for OB in self.OBs]
         refreshed = 0
         # Clear History in OBs and replace with refreshed values

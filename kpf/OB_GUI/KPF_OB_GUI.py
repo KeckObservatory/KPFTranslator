@@ -25,6 +25,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 
 from kpf import cfg
 from kpf.OB_GUI.OBListModel import OBListModel
+from kpf.OB_GUI.HistoryListModel import HistoryListModel
 from kpf.OB_GUI.Popups import (ConfirmationPopup, InputPopup,
                                OBContentsDisplay, EditableMessageBox,
                                ObserverCommentBox, SelectProgramPopup)
@@ -36,6 +37,7 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.observatoryAPIs.SubmitObserverComment import SubmitObserverComment
 from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
 from kpf.observatoryAPIs.GetObservingBlocksByProgram import GetObservingBlocksByProgram
+from kpf.observatoryAPIs.GetExecutionHistory import GetExecutionHistory
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObserver import SetObserver
@@ -214,8 +216,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.KPFCC_start_times[WB] = None
         self.prepare_execution_history_file()
         # Add OB List Model Component
-        self.OBListModel = OBListModel(log=self.log,
-                                       mock_date=self.clargs.mock_date)
+        self.OBListModel = OBListModel(log=self.log)
+        self.HistoryListModel = HistoryListModel(log=self.log)
         # Add OB Builder Component
         self.SciObservingBlock = None
         self.CalObservingBlock = None
@@ -429,6 +431,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_RemoveFromList.clicked.connect(self.remove_SOB)
         self.update_SOB_display()
 
+
+        #-------------------------------------------------------------------
+        # Tab: Execution History
+        self.HistoryListView = self.findChild(QtWidgets.QListView, 'HistoryList')
+        self.HistoryListView.setModel(self.HistoryListModel)
+#         self.HistoryListView.selectionModel().selectionChanged.connect(self.select_OB)
+
         #-------------------------------------------------------------------
         # Tab: Build Science OB
         # Observing Block
@@ -554,7 +563,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ConfigureFIU_Stow.setEnabled(True)
             self.SetObserverNames.setEnabled(True)
             self.SetProgramID.setEnabled(True)
-            self.OBListModel.refresh_history() # Refresh history, it may have updated
+            self.refresh_history() # Refresh history, it may have updated
         else:
             self.scriptname_value.setStyleSheet("color:orange")
             self.RunStartOfNight.setEnabled(False)
@@ -707,7 +716,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.update_counter = 0
             self.update_SOB_display() # Updates alt, az
             self.telescope_released = GetTelescopeRelease.execute({})
-            self.OBListModel.refresh_history()
+            self.refresh_history()
 
 
     ##-------------------------------------------
@@ -1078,10 +1087,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.GUITaskLabel.setText("".join(msg))
         msg.extend(errs)
 #         ConfirmationPopup('Retrieved OBs from Database', '\n'.join(msg), info_only=True).exec_()
-        self.OBListModel.refresh_history()
+        self.refresh_history()
         self.set_SortOrWeather()
         self.set_weather_band(self.KPFCC_weather_band)
 
+    def refresh_history(self):
+        self.log.debug(f"refresh_history")
+        date_str = 'today'
+        if self.clargs.mock_date == True:
+            date_str = '2025-07-10'
+            self.log.warning(f'Using history from {date_str} for testing')
+        history = GetExecutionHistory.execute({'utdate': date_str})
+        self.OBListModel.refresh_history(history)
+        self.HistoryListModel.refresh_history(history)
 
     ##-------------------------------------------
     ## Methods for Selected OB
