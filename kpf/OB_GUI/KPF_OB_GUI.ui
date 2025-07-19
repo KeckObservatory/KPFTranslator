@@ -390,7 +390,7 @@
       <widget class="QComboBox" name="SortOrWeather">
        <property name="geometry">
         <rect>
-         <x>140</x>
+         <x>420</x>
          <y>30</y>
          <width>121</width>
          <height>21</height>
@@ -419,7 +419,7 @@
       <widget class="QLabel" name="SortOrWeatherLabel">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>290</x>
          <y>30</y>
          <width>121</width>
          <height>21</height>
@@ -442,7 +442,7 @@
         <rect>
          <x>10</x>
          <y>60</y>
-         <width>671</width>
+         <width>571</width>
          <height>21</height>
         </rect>
        </property>
@@ -453,20 +453,91 @@
         </font>
        </property>
        <property name="text">
-        <string>TargetName       RA          Dec          Gmag</string>
+        <string>   StartTime TargetName       RA          Dec      Gmag Jmag Observations</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="ExecuteScheduledOB">
+      <widget class="QLabel" name="SiderealTimeValue">
        <property name="geometry">
         <rect>
-         <x>510</x>
+         <x>180</x>
          <y>30</y>
-         <width>191</width>
-         <height>23</height>
+         <width>71</width>
+         <height>21</height>
         </rect>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
-        <string>Execute Scheduled OB</string>
+        <string>23:59:59</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_8">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>30</y>
+         <width>38</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>UT:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="UTValue">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>30</y>
+         <width>71</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>23:59:59</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_9">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>30</y>
+         <width>38</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>LST:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </widget>
@@ -773,6 +844,56 @@
         <string>Execute with SlewCal</string>
        </property>
       </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Execution History</string>
+     </attribute>
+     <widget class="QGroupBox" name="groupBox_8">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>711</width>
+        <height>661</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Execution History</string>
+      </property>
+      <widget class="QListView" name="HistoryList">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>691</width>
+         <height>571</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_9">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>10</y>
+        <width>321</width>
+        <height>661</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>GroupBox</string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="ScienceOB">
@@ -1441,7 +1562,7 @@
      <rect>
       <x>340</x>
       <y>40</y>
-      <width>461</width>
+      <width>471</width>
       <height>21</height>
      </rect>
     </property>
@@ -1466,72 +1587,6 @@
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-   </widget>
-   <widget class="QWidget" name="gridLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>820</x>
-      <y>10</y>
-      <width>251</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_8">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Universal Time (UT):</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_9">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Sidereal Time (LST):</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="UTValue">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>HH:MM:SS</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="SiderealTimeValue">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>HH:MM:SS</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </widget>
    <widget class="QLabel" name="ProgIDLabel">
     <property name="geometry">
@@ -1572,10 +1627,10 @@
    <widget class="QLabel" name="SelectedInstrument">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>720</x>
       <y>10</y>
-      <width>101</width>
-      <height>22</height>
+      <width>91</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
@@ -1593,10 +1648,10 @@
    <widget class="QLabel" name="SelectedInstrumentLabel">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>550</x>
       <y>10</y>
       <width>161</width>
-      <height>22</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
@@ -1609,6 +1664,51 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>10</y>
+      <width>241</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>24</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="GUITaskLabel">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>30</y>
+      <width>241</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="Line" name="line_7">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>10</y>
+      <width>20</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
     </property>
    </widget>
   </widget>
