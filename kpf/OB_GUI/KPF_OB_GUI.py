@@ -186,6 +186,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.LAMPS = kPyQt.kFactory(ktl.cache('kpflamps', 'LAMPS'))
         # Selected OB
         self.SOBindex = -1
+        self.exp_index = -1
         self.SOBobservable = False
         self.update_counter = 0
         # Coordinate Systems
@@ -437,7 +438,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.HistoryListHeader = self.findChild(QtWidgets.QLabel, 'HistoryListHeader')
         self.HistoryListView = self.findChild(QtWidgets.QListView, 'HistoryList')
         self.HistoryListView.setModel(self.HistoryListModel)
-#         self.HistoryListView.selectionModel().selectionChanged.connect(self.select_OB)
+        self.HistoryListView.selectionModel().selectionChanged.connect(self.select_exposure)
+
+        self.MarkExposureJunk = self.findChild(QtWidgets.QPushButton, 'MarkExposureJunk')
+        self.MarkExposureJunk.clicked.connect(self.mark_exposure_junk)
 
         #-------------------------------------------------------------------
         # Tab: Build Science OB
@@ -1425,6 +1429,23 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SLEWCALREQ.waitFor("== 'Yes", timeout=0.3)
         launch_command_in_xterm(f'RunOB -f {tmp_file}', capture_stdout=True,
                                 window_title=f"RunOB {SOB.summary()}")
+
+
+    ##--------------------------------------------------------------
+    ## Methods for History Tab
+    ##--------------------------------------------------------------
+    def select_exposure(self, selected, deselected):
+        self.log.debug(f"select_exposure {selected} {deselected}")
+        if len(selected.indexes()) > 0:
+            self.exp_index = selected.indexes()[0].row()
+        else:
+            self.exp_index = -1
+
+
+    def mark_exposure_junk(self):
+        self.log.debug(f'mark_exposure_junk')
+        if self.exp_index > 0:
+            pass
 
 
     ##--------------------------------------------------------------
