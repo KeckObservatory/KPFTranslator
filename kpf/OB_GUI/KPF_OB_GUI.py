@@ -1074,7 +1074,7 @@ class MainWindow(QtWidgets.QMainWindow):
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) OBs for all weather bands"]
         self.GUITaskLabel.setText("".join(msg))
         msg.extend(errs)
-        ConfirmationPopup('Retrieved OBs from Database', '\n'.join(msg), info_only=True).exec_()
+#         ConfirmationPopup('Retrieved OBs from Database', '\n'.join(msg), info_only=True).exec_()
         self.OBListModel.refresh_history()
         self.set_SortOrWeather()
         self.set_weather_band(self.KPFCC_weather_band)
