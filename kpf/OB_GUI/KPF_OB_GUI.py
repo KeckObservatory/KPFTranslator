@@ -985,7 +985,7 @@ class MainWindow(QtWidgets.QMainWindow):
             programOBs = GetObservingBlocksByProgram.execute({'program': progID})
             self.OBListModel.extend(programOBs)
             self.log.debug(f'  Got {len(programOBs)} for {progID}, total KPF-CC OB count is now {len(self.OBListModel.OBs)}')
-            self.ProgressBar.setValue((i+1)/len(progIDs)*100)
+            self.ProgressBar.setValue(int((i+1)/len(progIDs)*100))
 #             if usepbar:
 #                 if progress.wasCanceled():
 #                     self.log.error("Retrieval of OBs canceled by user.")
@@ -1074,7 +1074,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         errmsg = f"{entry['Target']} Failed: {result[1]} ({result[0]})"
                         self.log.error(errmsg)
                         errs.append(errmsg)
-                self.ProgressBar.setValue(scheduledOBcount/Nsched*100)
+                self.ProgressBar.setValue(int(scheduledOBcount/Nsched*100))
 #                 if usepbar:
 #                     if progress.wasCanceled():
 #                         self.log.error("Retrieval of OBs canceled by user.")
