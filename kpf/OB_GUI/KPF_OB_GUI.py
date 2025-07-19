@@ -317,7 +317,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.GUITaskLabel = self.findChild(QtWidgets.QLabel, 'GUITaskLabel')
         self.ProgressBar = self.findChild(QtWidgets.QProgressBar, 'progressBar')
         self.ProgressBar.setValue(0)
-        self.ProgressBar.setVisible(True)
+        self.ProgressBar.setVisible(False)
 
         # script name
         self.scriptname_value = self.findChild(QtWidgets.QLabel, 'scriptname_value')
@@ -926,6 +926,7 @@ class MainWindow(QtWidgets.QMainWindow):
             select_program_popup = SelectProgramPopup(self.program_strings)
             if select_program_popup.exec():
                 progID = select_program_popup.ProgID
+                self.ProgressBar.setVisible(True)
                 self.ProgressBar.setMinimum(0)
                 self.ProgressBar.setMaximum(0)
                 msg = f"Retrieving OBs for program {progID}"
@@ -958,6 +959,7 @@ class MainWindow(QtWidgets.QMainWindow):
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
         progIDs = set([p['ProjCode'] for p in cadence])
         self.OBListModel.clear_list()
+        self.ProgressBar.setVisible(True)
         self.ProgressBar.setValue(0)
         self.GUITaskLabel.setText(f'Retrieving OBs from all {len(progIDs)} KPF-CC programs.')
         # Create progress bar if we have a lot of programs to query
@@ -986,6 +988,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug(f"load_OBs_from_schedule")
         if self.verify_overwrite_of_OB_list() == False:
             return
+        self.ProgressBar.setVisible(True)
         self.ProgressBar.setValue(0)
         self.KPFCC = True
         self.OBListHeader.setText('   StartTime '+self.hdr)
