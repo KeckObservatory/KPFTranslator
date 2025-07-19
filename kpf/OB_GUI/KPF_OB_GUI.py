@@ -502,6 +502,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildCalibrationView.textChanged.connect(self.edit_Calibrations)
         self.clear_Calibrations()
 
+        if clargs.loadschedule == True:
+            self.load_OBs_from_schedule()
 
     ##-------------------------------------------
     ## Methods to display updates from keywords
@@ -1708,6 +1710,9 @@ if __name__ == '__main__':
     p.add_argument("--mock_date", dest="mock_date",
         default=False, action="store_true",
         help="Pull a fixed date for schedule and history (intended for testing).")
+    p.add_argument("--loadschedule", dest="loadschedule",
+        default=False, action="store_true",
+        help="Load KPF-CC schedule on startup.")
     clargs = p.parse_args()
 
     guilog = create_GUI_log(verbose=clargs.verbose)
