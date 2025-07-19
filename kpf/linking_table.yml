@@ -247,8 +247,8 @@ links:
         cmd: scripts.RunOB.RunOB
     RunOBs:
         cmd: scripts.RunOBs.RunOBs
-    RunSoCalObservingLoop:
-        cmd: scripts.RunSoCalObservingLoop.RunSoCalObservingLoop
+    RunSoCal:
+        cmd: scripts.RunSoCal.RunSoCal
     # SoCal
     CheckSoCalEnabled:
         cmd: socal.CheckSoCalEnabled.CheckSoCalEnabled

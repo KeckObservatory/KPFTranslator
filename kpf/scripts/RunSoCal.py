@@ -25,7 +25,7 @@ from kpf.socal.SoCalStartAutonomous import SoCalStartAutonomous
 from kpf.socal.WaitForSoCalOnTarget import WaitForSoCalOnTarget
 
 
-class RunSoCalObservingLoop(KPFScript):
+class RunSoCal(KPFScript):
     '''This script runs a control loop to execute SoCal observations.
 
     When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means
