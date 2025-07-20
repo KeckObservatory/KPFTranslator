@@ -117,6 +117,13 @@ def getObservingBlockHistory(utdate=None):
     return result.get('history', [])
 
 
+def setKPFJunkValue(OBid, timestamp, junk=True):
+    params = {"id": OBid,
+              "timestamp": timestamp,
+              "value": junk}
+    return query_observatoryAPI('proposal', 'setKPFJunkValue', params, post=True)
+
+
 def get_OBs_from_KPFCC_API(params):
     result = query_observatoryAPI('proposal', 'getKPFObservingBlock', params)
     if result is None:
