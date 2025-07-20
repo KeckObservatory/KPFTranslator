@@ -866,9 +866,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>50</y>
+         <y>80</y>
          <width>691</width>
-         <height>601</height>
+         <height>571</height>
         </rect>
        </property>
        <property name="font">
@@ -885,7 +885,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>30</y>
+         <y>60</y>
          <width>571</width>
          <height>21</height>
         </rect>
@@ -897,22 +897,22 @@
         </font>
        </property>
        <property name="text">
-        <string>   TargetName      StartTimeUT  ExpTime    L0 File</string>
+        <string>   TargetName      StartTimeUT  ExpTime  L0 File</string>
        </property>
       </widget>
-     </widget>
-     <widget class="QGroupBox" name="groupBox_9">
-      <property name="geometry">
-       <rect>
-        <x>730</x>
-        <y>10</y>
-        <width>321</width>
-        <height>461</height>
-       </rect>
-      </property>
-      <property name="title">
-       <string>Selected Exposure</string>
-      </property>
+      <widget class="QPushButton" name="MarkExposureJunk">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>221</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Mark Selected Exposure as Junk</string>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="ScienceOB">
