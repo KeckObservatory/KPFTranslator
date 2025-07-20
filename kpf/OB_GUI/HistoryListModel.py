@@ -31,12 +31,11 @@ class HistoryListModel(QtCore.QAbstractListModel):
 
     def string_output(self, ind):
         exposure = self.exposures[ind.row()]
-        start_time = self.exposure_start_times[ind.row()]
-        start_str = start_time.strftime('%H:%M:%S')
         output_line = f"{exposure.get('target'):15s}"
-        output_line += f" {start_str:<11s}"
+        output_line += f" {exposure.get('start_time', '')[11:]:<11s}"
         output_line += f" {exposure.get('exptime'):5.0f} s  "
         output_line += f" {exposure.get('L0_file', '')}"
+        output_line += f" {exposure.get('id', '')}"
         return output_line
 
     def icon_output(self, ind):
@@ -57,8 +56,10 @@ class HistoryListModel(QtCore.QAbstractListModel):
                 exptime = h.get('exposure_times')[j]
                 junk = h.get('junk', [False]*len(h.get('exposure_times')))[j]
                 exposure_data = {'target': target,
+                                 'start_time': st_str,
                                  'exptime': exptime,
-                                 'junk': junk}
+                                 'junk': junk,
+                                 'id': h.get('id')}
                 # Try to determine L0 file name
                 try:
                     fastreadtime = cfg.getfloat('time_estimates', f'readout_red_fast')
