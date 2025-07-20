@@ -40,7 +40,11 @@ class HistoryListModel(QtCore.QAbstractListModel):
         return output_line
 
     def icon_output(self, ind):
-        return QtGui.QImage(f'{self.icon_path}/tick.png')
+        exposure = self.exposures[ind.row()]
+        if exposure.get('junk') == True:
+            return QtGui.QImage(f'{self.icon_path}/cross-script.png')
+        else:
+            return QtGui.QImage(f'{self.icon_path}/tick.png')
 
     def refresh_history(self, history):
         self.log.debug(f'refresh_history')
@@ -51,7 +55,10 @@ class HistoryListModel(QtCore.QAbstractListModel):
             for j,st_str in enumerate(h.get('exposure_start_times')):
                 st = datetime.strptime(f"{st_str}0000", '%Y-%m-%dT%H:%M:%S.%f')
                 exptime = h.get('exposure_times')[j]
-                exposure_data = {'target': target, 'exptime': exptime}
+                junk = h.get('junk', [False]*len(h.get('exposure_times')))[j]
+                exposure_data = {'target': target,
+                                 'exptime': exptime,
+                                 'junk': junk}
                 # Try to determine L0 file name
                 try:
                     fastreadtime = cfg.getfloat('time_estimates', f'readout_red_fast')
