@@ -120,7 +120,7 @@ def getObservingBlockHistory(utdate=None):
 def setKPFJunkValue(OBid, timestamp, junk=True):
     params = {"id": OBid,
               "timestamp": timestamp,
-              "value": junk}
+              "value": str(junk)}
     return query_observatoryAPI('proposal', 'setKPFJunkValue', params, post=True)
 
 
