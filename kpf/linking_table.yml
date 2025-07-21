@@ -224,6 +224,8 @@ links:
         cmd: observatoryAPIs.GetScheduledPrograms.GetScheduledPrograms
     GetTelescopeRelease:
         cmd: observatoryAPIs.GetTelescopeRelease.GetTelescopeRelease
+    SetJunkStatus:
+        cmd: observatoryAPIs.SetJunkStatus.SetJunkStatus
     SubmitObserverComment:
         cmd: observatoryAPIs.SubmitObserverComment.SubmitObserverComment
     # Scripts
