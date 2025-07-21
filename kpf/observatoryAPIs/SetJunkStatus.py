@@ -12,7 +12,7 @@ class SetJunkStatus(KPFFunction):
     '''
     @classmethod
     def pre_condition(cls, args):
-        OBid = args.get('OBid', None)
+        OBid = args.get('id', None)
         if OBid is None:
             raise FailedPreCondition('OBid must be provided')
 
@@ -20,7 +20,7 @@ class SetJunkStatus(KPFFunction):
     def perform(cls, args):
         log.info(f"Running {cls.__name__}")
         log.debug(args)
-        result = setKPFJunkValue(args.get('OBid'),
+        result = setKPFJunkValue(args.get('id'),
                                  args.get('timestamp'),
                                  junk=args.get('junk', False))
         log.info(f"Response: {result}")
