@@ -1436,7 +1436,7 @@ class MainWindow(QtWidgets.QMainWindow):
     ## Methods for History Tab
     ##--------------------------------------------------------------
     def select_exposure(self, selected, deselected):
-        self.log.debug(f"select_exposure {selected} {deselected}")
+        self.log.debug(f"select_exposure {selected}")
         if len(selected.indexes()) > 0:
             self.exp_index = selected.indexes()[0].row()
             exposure = self.HistoryListModel.exposures[self.exp_index]
@@ -1454,10 +1454,15 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.exp_index > 0:
             exposure = self.HistoryListModel.exposures[self.exp_index]
             is_junk = exposure.get('junk') in ['True', True]
-            SetJunkStatus.execute({'id': exposure.get('id'),
-                                   'timestamp': exposure.get('timestamp'),
-                                   'junk': not is_junk})
-            self.HistoryListModel.sort()
+            params = {'id': exposure.get('id'),
+                      'start_time': exposure.get('start_time'),
+                      'junk': not is_junk}
+            SetJunkStatus.execute(params)
+            self.refresh_history()
+            if is_junk:
+                self.MarkExposureJunk.setText('Mark Selected Exposure as Junk')
+            else:
+                self.MarkExposureJunk.setText('Mark Selected Exposure as Good')
 
 
     ##--------------------------------------------------------------
