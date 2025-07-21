@@ -897,7 +897,7 @@
         </font>
        </property>
        <property name="text">
-        <string>   TargetName      StartTimeUT  ExpTime  L0 File                     OBid</string>
+        <string>   TargetName      StartTimeUT  ExpTime  L0 File</string>
        </property>
       </widget>
       <widget class="QPushButton" name="MarkExposureJunk">
