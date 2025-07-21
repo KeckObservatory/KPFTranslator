@@ -23,29 +23,9 @@ def expeter_flux_target(kphotons_per_A, band):
                           '710.625': 0.087,
                           '816.875': 0.116}
     expmeter_threshold = 1e3*kphotons_per_A/peak_photon_ratios[band]
-    # SNR Estimate from photons/A near bin center
-    # bin1: mean_rootpeakN_over_SNR452 = 14.84
-    # bin1: mean_rootpeakN_over_SNR548 = 6.29
-    # bin2: mean_rootpeakN_over_SNR548 = 8.60
-    # bin2: mean_rootpeakN_over_SNR652 = 9.61
-    # bin3: mean_rootpeakN_over_SNR652 = 8.34
-    # bin3: mean_rootpeakN_over_SNR747 = 6.62
-    # bin4: mean_rootpeakN_over_SNR747 = 6.56
-    # bin4: mean_rootpeakN_over_SNR852 = 6.71
-    # SNR Estimate from photons/A over entire bin
-    # bin1: mean_rootmeanN_over_SNR452 = 13.94
-    # bin1: mean_rootmeanN_over_SNR548 = 5.91
-    # bin2: mean_rootmeanN_over_SNR548 = 6.51
-    # bin2: mean_rootmeanN_over_SNR652 = 7.28
-    # bin3: mean_rootmeanN_over_SNR652 = 7.32
-    # bin3: mean_rootmeanN_over_SNR747 = 5.81
-    # bin4: mean_rootmeanN_over_SNR747 = 5.70
-    # bin4: mean_rootmeanN_over_SNR852 = 5.83
-    snr_ratios = {'498.125': (14.84+6.29)/2,
-                  '604.375': (8.60+9.61)/2,
-                  '710.625': (8.34+6.62)/2,
-                  '816.875': (6.56+6.71)/2}
-    snr_estimate = (1e3*kphotons_per_A)**0.5/snr_ratios[band]
+    # Estimate SNR using empirical relation from example observations.
+    # SNR is taken from DRP output at a few wavelengths.
+    snr_estimate = 120*(1e3*kphotons_per_A)**0.5
     return expmeter_threshold, snr_estimate
 
 
