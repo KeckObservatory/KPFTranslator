@@ -38,6 +38,7 @@ from kpf.observatoryAPIs.SubmitObserverComment import SubmitObserverComment
 from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
 from kpf.observatoryAPIs.GetObservingBlocksByProgram import GetObservingBlocksByProgram
 from kpf.observatoryAPIs.GetExecutionHistory import GetExecutionHistory
+from kpf.observatoryAPIs.SetJunkStatus import SetJunkStatus
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObserver import SetObserver
@@ -1438,6 +1439,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug(f"select_exposure {selected} {deselected}")
         if len(selected.indexes()) > 0:
             self.exp_index = selected.indexes()[0].row()
+            exposure = self.HistoryListModel.exposures[self.exp_index]
+            is_junk = exposure.get('junk') in ['True', True]
+            if is_junk:
+                self.MarkExposureJunk.setText('Mark Selected Exposure as Good')
+            else:
+                self.MarkExposureJunk.setText('Mark Selected Exposure as Junk')
         else:
             self.exp_index = -1
 
@@ -1445,7 +1452,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def mark_exposure_junk(self):
         self.log.debug(f'mark_exposure_junk')
         if self.exp_index > 0:
-            pass
+            exposure = self.HistoryListModel.exposures[self.exp_index]
+            is_junk = exposure.get('junk') in ['True', True]
+            SetJunkStatus.execute({'id': exposure.get('id'),
+                                   'timestamp': exposure.get('timestamp'),
+                                   'junk': not is_junk})
+            self.HistoryListModel.sort()
 
 
     ##--------------------------------------------------------------

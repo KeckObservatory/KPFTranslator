@@ -34,7 +34,7 @@ class HistoryListModel(QtCore.QAbstractListModel):
         output_line = f"{exposure.get('target'):15s}"
         output_line += f" {exposure.get('start_time', '')[11:]:<11s}"
         output_line += f" {exposure.get('exptime'):5.0f} s  "
-        output_line += f" {exposure.get('L0_file', '')}"
+        output_line += f" {exposure.get('L0_file', '')} "
         output_line += f" {exposure.get('id', '')}"
         return output_line
 
