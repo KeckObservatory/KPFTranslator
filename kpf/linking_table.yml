@@ -216,6 +216,8 @@ links:
     # Observatory APIs
     GetExecutionHistory:
         cmd: observatoryAPIs.GetExecutionHistory.GetExecutionHistory
+    GetKPFCCObservingBlocks:
+        cmd: observatoryAPIs.GetKPFCCObservingBlocks.GetKPFCCObservingBlocks
     GetObservingBlocks:
         cmd: observatoryAPIs.GetObservingBlocks.GetObservingBlocks
     GetObservingBlocksByProgram:
