@@ -30,13 +30,11 @@ class HistoryListModel(QtCore.QAbstractListModel):
             return self.icon_output(ind)
 
     def string_output(self, ind):
-        #   StartTimeUT  TargetName      ExpTime  L0 File
         exposure = self.exposures[ind.row()]
         output_line = f"{exposure.get('start_time', '')[11:]:<11s}   "
         output_line += f"{exposure.get('target'):15s} "
         output_line += f"{exposure.get('exptime'):5.0f} s   "
         output_line += f"{exposure.get('L0_file', '')} "
-#         output_line += f" {exposure.get('id', '')}"
         return output_line
 
     def icon_output(self, ind):
