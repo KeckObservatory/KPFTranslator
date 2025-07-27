@@ -1,0 +1,115 @@
+Calibrations:
+- CalSource: 'Dark'
+  Object: 'Bias'
+  nExp: 1
+  ExpTime: 0
+  TriggerCaHK: True
+  TriggerGreen: True
+  TriggerRed: True
+- CalSource: 'Dark'
+  Object: 'Dark'
+  nExp: 1
+  ExpTime: 60
+  TriggerCaHK: True
+  TriggerGreen: True
+  TriggerRed: True
+- CalSource: 'EtalonFiber'
+  Object: 'Etalon'
+  nExp: 1
+  ExpTime: 60
+  TriggerCaHK: False
+  TriggerGreen: True
+  TriggerRed: True
+  IntensityMonitor: False
+  CalND1: 'OD 1.0'
+  CalND2: 'OD 0.1'
+  OpenScienceShutter: True
+  OpenSkyShutter: True
+  TakeSimulCal: True
+  WideFlatPos: 'Blank'
+- CalSource: 'LFCFiber'
+  Object: 'LFC'
+  nExp: 1
+  ExpTime: 60
+  TriggerCaHK: False
+  TriggerGreen: True
+  TriggerRed: True
+  IntensityMonitor: False
+  CalND1: 'OD 1.0'
+  CalND2: 'OD 0.1'
+  OpenScienceShutter: True
+  OpenSkyShutter: True
+  TakeSimulCal: True
+  WideFlatPos: 'Blank'
+- CalSource: 'Th_daily'
+  Object: 'ThAr'
+  nExp: 1
+  ExpTime: 20
+  TriggerCaHK: False
+  TriggerGreen: True
+  TriggerRed: True
+  IntensityMonitor: False
+  CalND1: 'OD 0.1'
+  CalND2: 'OD 0.1'
+  OpenScienceShutter: True
+  OpenSkyShutter: True
+  TakeSimulCal: True
+  WideFlatPos: 'Blank'
+- CalSource: 'Th_daily'
+  Object: 'ThAr_forCaHK'
+  nExp: 1
+  ExpTime: 120
+  TriggerCaHK: False
+  TriggerGreen: True
+  TriggerRed: True
+  IntensityMonitor: False
+  CalND1: 'OD 0.1'
+  CalND2: 'OD 0.1'
+  OpenScienceShutter: True
+  OpenSkyShutter: True
+  TakeSimulCal: True
+  WideFlatPos: 'Blank'
+- CalSource: 'U_daily'
+  Object: 'UNe'
+  nExp: 1
+  ExpTime: 5
+  TriggerCaHK: False
+  TriggerGreen: True
+  TriggerRed: True
+  IntensityMonitor: False
+  CalND1: 'OD 0.1'
+  CalND2: 'OD 0.1'
+  OpenScienceShutter: True
+  OpenSkyShutter: True
+  TakeSimulCal: True
+  WideFlatPos: 'Blank'
+- CalSource: 'BrdbandFiber'
+  Object: 'Flat'
+  nExp: 1
+  ExpTime: 60
+  TriggerCaHK: False
+  TriggerGreen: True
+  TriggerRed: True
+  IntensityMonitor: False
+  CalND1: 'OD 0.1'
+  CalND2: 'OD 0.1'
+  OpenScienceShutter: True
+  OpenSkyShutter: True
+  TakeSimulCal: True
+  WideFlatPos: Blank
+# - CalSource: 'SoCal-SciSky'
+#   Object: 'SoCal'
+#   nExp: 1
+#   ExpTime: 12
+#   TriggerCaHK: False
+#   TriggerGreen: True
+#   TriggerRed: True
+#   IntensityMonitor: False
+#   CalND1: 'OD 0.1'
+#   CalND2: 'OD 0.1'
+#   OpenScienceShutter: True
+#   OpenSkyShutter: True
+#   TakeSimulCal: True
+#   WideFlatPos: 'Blank'
+# WideFlat?
+# SoCal-Cal

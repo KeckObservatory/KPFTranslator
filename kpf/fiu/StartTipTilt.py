@@ -3,12 +3,12 @@ from datetime import datetime, timedelta
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input, LostTipTiltStar)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class StartTipTilt(KPFTranslatorFunction):
+class StartTipTilt(KPFFunction):
     '''Start the tip tilt control loop.  This uses the ALL_LOOPS keyword to
     start all functions including DAR (via DAR_ENABLE), tip tilt calculations
     (via TIPTILT_CALC), tip tilt control (via TIPTILT_CONTROL), offloading to
@@ -22,11 +22,11 @@ class StartTipTilt(KPFTranslatorFunction):
     - `kpfguide.ALL_LOOPS`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         expr = "($kpffiu.TTXSRV == 'Closed') and ($kpffiu.TTYSRV == 'Closed')"
         servo_loops_closed = ktl.waitFor(expr, timeout=0.5)
         if not servo_loops_closed:
@@ -42,5 +42,5 @@ class StartTipTilt(KPFTranslatorFunction):
         kpfguide['ALL_LOOPS'].write('Active')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

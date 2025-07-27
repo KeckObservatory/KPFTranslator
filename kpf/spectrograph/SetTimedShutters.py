@@ -1,13 +1,14 @@
 from time import sleep
+import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetTimedShutters(KPFTranslatorFunction):
+class SetTimedShutters(KPFFunction):
     '''Selects which timed shutters will be triggered by setting the
     `kpfexpose.TIMED_SHUTTERS` keyword value.
     
@@ -19,14 +20,13 @@ class SetTimedShutters(KPFTranslatorFunction):
     :TimedShutter_FlatField: `bool` Open the TimedShutter_FlatField shutter? (default=False)
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         # Scrambler 2 SimulCal 3 FF_Fiber 4 Ca_HK
         timed_shutters_list = []
-        
         if args.get('TimedShutter_Scrambler', False) is True:
             timed_shutters_list.append('Scrambler')
         if args.get('TimedShutter_SimulCal', False) is True:
@@ -37,31 +37,32 @@ class SetTimedShutters(KPFTranslatorFunction):
             timed_shutters_list.append('Ca_HK')
         timed_shutters_string = ','.join(timed_shutters_list)
         log.debug(f"Setting timed shutters to '{timed_shutters_string}'")
-        kpfexpose = ktl.cache('kpfexpose')
-        kpfexpose['TIMED_TARG'].write(timed_shutters_string)
-        shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        sleep(shim_time)
+        TIMED_TARG = ktl.cache('kpfexpose', 'TIMED_TARG')
+        TIMED_TARG.write(timed_shutters_string)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
-        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
-        sleep(timeshim)
-        shutters = kpfexpose['TIMED_TARG'].read()
-        log.debug(f"TIMED_TARG: {shutters}")
-        shutter_list = shutters.split(',')
+    def post_condition(cls, args):
+        TIMED_TARG = ktl.cache('kpfexpose', 'TIMED_TARG')
+        TIMED_TARG.monitor()
         shutter_names = [('Scrambler', 'TimedShutter_Scrambler'),
                          ('SimulCal', 'TimedShutter_SimulCal'),
                          ('FF_Fiber', 'TimedShutter_FlatField'),
                          ('Ca_HK', 'TimedShutter_CaHK')]
-        for shutter in shutter_names:
-            shutter_status = shutter[0] in shutter_list
-            shutter_target = args.get(shutter[1], False)
-            if shutter_target != shutter_status:
-                raise FailedToReachDestination(shutter_status, shutter_target)
+        shutter_tests = [False]
+        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
+        total_time = 0
+        while np.all(shutter_tests) != True and total_time < 0.25:
+            shutter_tests = []
+            for shutter in shutter_names:
+                if args.get(shutter[1], False) is True:
+                    shutter_tests.append(shutter[0] in TIMED_TARG.ascii.split(','))
+            sleep(timeshim)
+            total_time += timeshim
+        if np.all(shutter_tests) != True:
+            raise FailedToReachDestination(TIMED_TARG.ascii, 'TBD')
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--Scrambler", "--scrambler",
                             dest="TimedShutter_Scrambler",
                             default=False, action="store_true",
@@ -78,4 +79,4 @@ class SetTimedShutters(KPFTranslatorFunction):
                             dest="TimedShutter_FlatField",
                             default=False, action="store_true",
                             help="Open the FlatField Timed Shutter during exposure?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

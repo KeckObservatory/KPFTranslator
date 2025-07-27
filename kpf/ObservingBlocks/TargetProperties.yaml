@@ -1,0 +1,74 @@
+- name: 'TargetName'
+  comment: 'Name of the target'
+  valuetype: str
+  defaultvalue: ''
+- name: 'GaiaID'
+  comment: 'Gaia ID of the target (e.g. DR3 123456789012345678)'
+  valuetype: str
+  defaultvalue: ''
+- name: 'twoMASSID'
+  comment: '2MASS ID of the target (e.g. J12345678-1234567)'
+  valuetype: str
+  defaultvalue: ''
+  altname: '2MASSID'
+- name: 'Parallax'
+  comment: '[arcsec] Parallax of the target'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'RadialVelocity'
+  comment: '[km/s] Estimated radial velocity of the target'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'Gmag'
+  comment: '[magnitude] Gaia G magnitude of the target'
+  valuetype: float
+  defaultvalue: 0
+  precision: 1
+- name: 'Jmag'
+  comment: '[magnitude] J magnitude of the target'
+  valuetype: float
+  defaultvalue: 0
+  precision: 1
+- name: 'Teff'
+  comment: '[K] Effective temperature of the target'
+  valuetype: float
+  defaultvalue: 45000
+  precision: 0
+- name: 'RA'
+  comment: '[hh:mm:ss.ss] Right Ascension of the target (at Epoch)'
+  valuetype: str
+  defaultvalue: ''
+- name: 'Dec'
+  comment: '[dd:mm:ss.ss] Declination of the target (at Epoch)'
+  valuetype: str
+  defaultvalue: ''
+- name: 'Equinox'
+  comment: '[str] Equinox of the coordinate system (in Jyear format, e.g. J2000 or decimal year, e.g. 2000.0)'
+  valuetype: str
+  defaultvalue: 'J2000'
+- name: 'PMRA'
+  comment: '[seconds-of-time/year] Proper motion in RA'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'PMDEC'
+  comment: '[arcsec/year] Proper motion in Dec'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'Epoch'
+  comment: '[str] Epoch of the coordinate measurement'
+  valuetype: str
+  defaultvalue: 'J2000'
+- name: 'DRA'
+  comment: '[arcsec/hr divided by 15] Non sidereal tracking rate in RA'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'DDEC'
+  comment: '[arcsec/hr] Non sidereal tracking rate in Dec'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3

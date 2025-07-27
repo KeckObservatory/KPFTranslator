@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class UnlockFIU(KPFTranslatorFunction):
+class UnlockFIU(KPFFunction):
     '''Unlock the FIU mechanisms
 
     KTL Keywords Used:
@@ -19,11 +19,11 @@ class UnlockFIU(KPFTranslatorFunction):
     - `kpffiu.TTYLCK`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpffiu = ktl.cache('kpffiu')
         kpffiu['adc1lck'].write('')
         kpffiu['adc2lck'].write('')
@@ -34,5 +34,5 @@ class UnlockFIU(KPFTranslatorFunction):
         kpffiu['ttylck'].write('')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

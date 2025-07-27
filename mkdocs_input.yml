@@ -1,0 +1,92 @@
+site_name: KPF
+site_description: Public documentation for the Keck Planet Finder (KPF) instrument at the W. M. Keck Observatory.
+site_author: Josh Walawender
+repo_url: https://github.com/KeckObservatory/KPFTranslator/
+repo_name: KPFTranslator
+edit_uri: ''
+
+remote_branch: gh-pages
+
+theme:
+  name: readthedocs
+  titles_only: true
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - python
+
+markdown_extensions:
+  - codehilite
+
+plugins:
+- search
+- mkdocstrings
+
+nav:
+  - "KPF Home": index.md
+  - "Instrument Status": status.md
+  - "Instrument Info":
+    - "Instrument Subsystems":
+      - "Spectrograph": spectrograph.md
+      - "FIU": fiu.md
+      - "Tip Tilt Sysyem": tiptilt.md
+      - "Guider": guider.md
+      - "Ca H&K Spectrograph": cahk.md
+      - "Exposure Meter": exposuremeter.md
+      - "Calibration Bench": calbench.md
+      - "Solar Calibrator": socal.md
+      - "Agitator": agitator.md
+      - "Computers": computers.md
+    - "Instrument Specifications":
+      - "Detectors": detectors.md
+      - "Sensitivity": sensitivity.md
+      - "Data Flow": dataflow.md
+      - "KPF vs. HIRES": KPFvsHIRES.md
+    - "Fast Read Mode": fastreadmode.md
+  - "Observing with KPF":
+    - "Community Cadence (KPF-CC)": communitycadence.md
+    - "Afternoon Setup": afternoonsetup.md
+    - "Daytime Calibrations": calibrations.md
+    - "Observing Procedures": observingprocedures.md
+    - "Nighttime Calibrations": nighttimecalibrations.md
+    - "Exposure Meter Termination": expmetertermination.md
+    - "Observing Blocks":
+      - "Building OBs": buildingOBs.md
+      - "Science OB Parameters": SciOBparameters.md
+      - "Calibration OB Parameters": CalOBparameters.md
+    - "Retrieving Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
+    - "Data Reduction": kpfdrp.md
+  - "General Observing Info": 
+    - "Weather":
+      - "MK Weather Center": http://mkwc.ifa.hawaii.edu/forecast/mko/index.cgi
+      - "Keck Cloud Cameras": https://www3.keck.hawaii.edu/skycams/CloudCamTimelapse.html
+    - "Useful Keck Pages":
+      - "Telescope Schedule": https://www2.keck.hawaii.edu/observing/keckSchedule/keckSchedule.php
+      - "Target List Format": https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html
+      - "Keck Instruments": http://www2.keck.hawaii.edu/inst/
+      - "Observer Login Page": https://www3.keck.hawaii.edu/login/
+      - "Planning Tool": https://www2.keck.hawaii.edu/software/obsplan/obsplan.php
+      - "Twilight, Moon rise, etc.": https://ucolick.org/calendar/keckcal2021-30/index.html
+      - "Offset & PA Calculator": https://www2.keck.hawaii.edu/inst/common/offset.php
+      - "General Keck Observing Info": https://www.keckobservatory.org/observing/
+      - "Pre-observing Checklist": https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html
+      - "Remote Observing": http://www2.keck.hawaii.edu/inst/common/mainland_observing.html
+      - "Telescope Limits": https://www2.keck.hawaii.edu/inst/common/TelLimits.html
+      - "Telescope Info": http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf
+    - "Keck Policies":
+      - "ToO Interrupts": https://www2.keck.hawaii.edu/inst/common/too_policies.html
+      - "Split Nights": http://www2.keck.hawaii.edu/observing/SplitNights.html
+      - "Remote Observing": http://www2.keck.hawaii.edu/inst/common/mainland_observing.html
+      - "Other Policies": http://www2.keck.hawaii.edu/observing/policies.html
+  - "After Your Observing Run":
+    - "Post-observing Comment Form": https://www2.keck.hawaii.edu/inst/PILogin/login.php
+    - "Retrieve Your Data":
+      - "Retrieve Data from KOA": https://koa.ipac.caltech.edu/
+      - "Retrieve Data using PyKOA": https://koa.ipac.caltech.edu/UserGuide/PyKOA/TAPClients.html#pykoa
+      - "Data Proprietary Period": http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf
+    - "Acknowledging Keck": https://www2.keck.hawaii.edu/observing/keck_authors.html
+    - "Acknowledging KPF": references.md
+  - "Technical Documentation":
+    - "Troubleshooting": https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U
+    - "Tip Tilt Instructions for OAs": tiptiltinstructions.md
+    - "Instrument Software": KPFTranslator.md

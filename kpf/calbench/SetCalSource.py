@@ -2,12 +2,12 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetCalSource(KPFTranslatorFunction):
+class SetCalSource(KPFFunction):
     '''Selects which source is fed from the octagon in to the cal bench via the
     `kpfcal.OCTAGON` keyword.
 
@@ -21,7 +21,7 @@ class SetCalSource(KPFTranslatorFunction):
     - `kpfcal.OCTAGON`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         keyword = ktl.cache('kpfcal', 'OCTAGON')
         allowed_values = list(keyword._getEnumerators())
         if 'Unknown' in allowed_values:
@@ -29,24 +29,22 @@ class SetCalSource(KPFTranslatorFunction):
         check_input(args, 'CalSource', allowed_values=allowed_values)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         target = args.get('CalSource')
-        kpfcal = ktl.cache('kpfcal')
+        OCTAGON = ktl.cache('kpfcal', 'OCTAGON')
         log.debug(f"Setting Cal Source (Octagon) to {target}")
-        kpfcal['OCTAGON'].write(target, wait=args.get('wait', True))
+        OCTAGON.write(target, wait=args.get('wait', True))
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         target = args.get('CalSource')
         timeout = cfg.getfloat('times', 'octagon_move_time', fallback=90)
-        expr = f"($kpfcal.OCTAGON == {target})"
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            kpfcal = ktl.cache('kpfcal')
-            raise FailedToReachDestination(kpfcal['OCTAGON'].read(), target)
+        OCTAGON = ktl.cache('kpfcal', 'OCTAGON')
+        if OCTAGON.waitFor(f'== "{target}"', timeout=timeout) is not True:
+            raise FailedToReachDestination(OCTAGON.read(), target)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('CalSource', type=str,
                             choices=['Home', 'EtalonFiber', 'BrdbandFiber',
                                      'U_gold', 'U_daily', 'Th_daily', 'Th_gold',
@@ -55,5 +53,5 @@ class SetCalSource(KPFTranslatorFunction):
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",
                             help="Send move and return immediately?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
 

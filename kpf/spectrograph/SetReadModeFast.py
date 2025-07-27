@@ -2,14 +2,14 @@ from pathlib import Path
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.spectrograph.QueryReadMode import QueryReadMode
 from kpf.utils.SendEmail import SendEmail
 
 
-class SetReadModeFast(KPFTranslatorFunction):
+class SetReadModeFast(KPFFunction):
     '''Configure both detectors to fast read mode by changing the ACF files
     they are using.
 
@@ -18,11 +18,11 @@ class SetReadModeFast(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         green_mode, red_mode = QueryReadMode.execute({})
         if green_mode != 'fast':
             msg = f'Setting Green CCD read mode fast'
@@ -56,7 +56,9 @@ class SetReadModeFast(KPFTranslatorFunction):
             time.sleep(1)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         green_mode, red_mode = QueryReadMode.execute({})
-        if green_mode != 'fast' or red_mode != 'fast':
-            raise FailedPostCondition(f"Read mode change failed")
+        if green_mode != "fast":
+            raise FailedToReachDestination(green_mode, "fast")
+        if red_mode != "fast":
+            raise FailedToReachDestination(red_mode, "fast")

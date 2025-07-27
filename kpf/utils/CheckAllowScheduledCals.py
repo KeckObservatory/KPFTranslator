@@ -1,23 +1,22 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
-from kpf.utils.SendEmail import SendEmail
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 ##-------------------------------------------------------------------------
 ## CheckAllowScheduledCals
 ##-------------------------------------------------------------------------
-class CheckAllowScheduledCals(KPFTranslatorFunction):
+class CheckAllowScheduledCals(KPFFunction):
     '''
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         ALLOWSCHEDULEDCALS = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
         if ALLOWSCHEDULEDCALS.read() == 'Yes':
             print('ALLOWSCHEDULEDCALS is "Yes"')
@@ -35,5 +34,5 @@ class CheckAllowScheduledCals(KPFTranslatorFunction):
                 log.error(email_err)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, argsKPFFunction):
         pass

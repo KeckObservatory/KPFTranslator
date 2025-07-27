@@ -12,12 +12,12 @@ except:
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class GetGaiaStars(KPFTranslatorFunction):
+class GetGaiaStars(KPFFunction):
     '''Build a ds9 region file of Gaia catalog stars which ought to be present
     in the specified guider image.
 
@@ -25,7 +25,7 @@ class GetGaiaStars(KPFTranslatorFunction):
         file (str): The file to retrieve stars for.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         if Vizier is None:
             raise FailedPreCondition('Unable to import astroquery.vizier')
         file = Path(args.get('file', '/tmp/CRED2.fits')).expanduser().absolute()
@@ -33,7 +33,7 @@ class GetGaiaStars(KPFTranslatorFunction):
             raise FailedPreCondition(f'Fould not find input file: {file}')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         catalog_id = cfg.get('stellar_catalog', 'catalog_id',
                              fallback='I/345/gaia2')
         search_radius = cfg.getfloat('stellar_catalog', 'search_radius',
@@ -86,11 +86,11 @@ class GetGaiaStars(KPFTranslatorFunction):
                         FO.write(line+'\n')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('file', type=str,
                             help='The CRED2 file to retrieve stars for')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

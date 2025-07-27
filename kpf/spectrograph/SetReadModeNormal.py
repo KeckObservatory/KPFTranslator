@@ -2,14 +2,13 @@ from pathlib import Path
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.spectrograph.QueryReadMode import QueryReadMode
-from kpf.utils.SendEmail import SendEmail
 
 
-class SetReadModeNormal(KPFTranslatorFunction):
+class SetReadModeNormal(KPFFunction):
     '''Configure both detectors to normal read mode by changing the ACF files
     they are using.
 
@@ -18,11 +17,11 @@ class SetReadModeNormal(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         green_mode, red_mode = QueryReadMode.execute({})
         if green_mode != 'normal':
             msg = f'Setting Green CCD read mode normal'
@@ -56,7 +55,9 @@ class SetReadModeNormal(KPFTranslatorFunction):
             time.sleep(1)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         green_mode, red_mode = QueryReadMode.execute({})
-        if green_mode != 'normal' or red_mode != 'normal':
-            raise FailedPostCondition(f"Read mode change failed")
+        if green_mode != "normal":
+            raise FailedToReachDestination(green_mode, "normal")
+        if red_mode != "normal":
+            raise FailedToReachDestination(red_mode, "normal")

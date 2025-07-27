@@ -10,9 +10,11 @@ prefix = contents['common'].get('prefix')
 scriptsdir = Path('docs/scripts/')
 scriptsdir.mkdir(parents=False, exist_ok=True)
 
-all_scripts = ['# Scripts\n', '\n']
-
 packages = {}
+
+mkdocs_config_input = Path(__file__).parent / 'mkdocs_input.yml'
+with open(mkdocs_config_input, 'r') as f:
+    mkdocs_config = f.read()
 
 for script in contents['links'].keys():
     full_script = contents['links'].get(script).get('cmd')
@@ -21,29 +23,25 @@ for script in contents['links'].keys():
         packages[package] = []
     packages[package].append(full_script)
 
-for package in packages.keys():
+mkdocs_config_file = Path(__file__).parent / 'mkdocs.yml'
+if mkdocs_config_file.exists(): mkdocs_config_file.unlink()
+with open(mkdocs_config_file, 'w') as f:
+    f.write(mkdocs_config)
+    f.write('    - "Instrument Scripts":\n')
+    for package in packages.keys():
+        f.write(f'      - "kpf.{package}":\n')
+        for script in packages[package]:
+            scriptname = script.split('.')[-1]
+            f.write(f'        - "{scriptname}": scripts/{scriptname}.md\n')
 
-    all_scripts.append(f'- `kpf.{package}`\n')
-
-    for script in packages[package]:
-        scriptname = script.split('.')[-1]
-        print(package, script, scriptname)
-        
-        md_file = Path(f"docs/scripts/{scriptname}.md")
-        if md_file.exists() == True:
-            md_file.unlink()
-        with open(md_file, 'w') as s:
-            s.writelines([f'# `{scriptname}`\n',
-                          f'\n',
-                          f'::: {prefix}.{script}\n',
-                          f'    handler: python\n',
-                          f'    options:\n',
-                          f'      show_source: true\n',
-                          ])
-        all_scripts.append(f"    - [{scriptname}]({scriptname}.md)\n")
-
-script_list_file = Path('docs/scripts/scripts.md')
-if script_list_file.exists() == True:
-    script_list_file.unlink()
-with open(script_list_file, 'w') as scripts_list:
-    scripts_list.writelines(all_scripts)
+            md_file = Path(f"docs/scripts/{scriptname}.md")
+            if md_file.exists() == True:
+                md_file.unlink()
+            with open(md_file, 'w') as s:
+                s.writelines([f'# `{scriptname}`\n',
+                              f'\n',
+                              f'::: {prefix}.{script}\n',
+                              f'    handler: python\n',
+                              f'    options:\n',
+                              f'      show_source: true\n',
+                              ])

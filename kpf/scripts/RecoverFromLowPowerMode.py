@@ -2,12 +2,12 @@ import time
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class RecoverFromLowPowerMode(KPFTranslatorFunction):
+class RecoverFromLowPowerMode(KPFFunction):
     '''Recover from low power mode.
 
     - Power on the Ca HK systems
@@ -17,13 +17,15 @@ class RecoverFromLowPowerMode(KPFTranslatorFunction):
 
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         kpfpower = ktl.cache('kpfpower')
+        kpfmon = ktl.cache('kpfmon')
+        log.warning('Recovering KPF from Low Power Mode')
 
         # Power up Ca HK detector systems
         kpf_hk = ktl.cache('kpf_hk')
@@ -40,6 +42,16 @@ class RecoverFromLowPowerMode(KPFTranslatorFunction):
         kpf_hk['COOLTARG'].write(-60)
         log.info('Enabling Ca HK detector')
         kpfconfig['CA_HK_ENABLED'].write('Yes')
+        log.warning('Enabling HKTEMP alarm')
+        kpfmon['HKTEMPDIS'].write(0)
+        log.warning('Enabling ST_EXPOSE2 alarm')
+        kpfmon['ST_EXPOSE2DIS'].write(0)
+        log.warning(f"Enabling {kpfpower['OUTLET_J1_NAME'].read()} alarm")
+        kpfmon['OUTLET_J1_OODIS'].write(0)
+        log.warning(f"Enabling {kpfpower['OUTLET_J2_NAME'].read()} alarm")
+        kpfmon['OUTLET_J2_OODIS'].write(0)
+        log.warning(f"Enabling {kpfpower['OUTLET_J5_NAME'].read()} alarm")
+        kpfmon['OUTLET_J5_OODIS'].write(0)
 
         # Power up CRED2 detector systems
         log.info('Powering on CRED2 detector systems')
@@ -47,14 +59,11 @@ class RecoverFromLowPowerMode(KPFTranslatorFunction):
         kpfpower['OUTLET_K2'].write('On')
         log.debug(f"Powering on {kpfpower['OUTLET_K3_NAME'].read()}")
         kpfpower['OUTLET_K3'].write('On')
+        log.warning(f"Enabling {kpfpower['OUTLET_K2_NAME'].read()} alarm")
+        kpfmon['OUTLET_K2_OODIS'].write(0)
+        log.warning(f"Enabling {kpfpower['OUTLET_K3_NAME'].read()} alarm")
+        kpfmon['OUTLET_K3_OODIS'].write(0)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        parser.add_argument("--force", dest="force",
-                            default=False, action="store_true",
-                            help="Force change? This will terminate any running scripts.")
-        return super().add_cmdline_args(parser, cfg)

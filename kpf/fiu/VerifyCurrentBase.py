@@ -2,12 +2,12 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class VerifyCurrentBase(KPFTranslatorFunction):
+class VerifyCurrentBase(KPFFunction):
     '''Check whether the tip tilt system's target pixel (kpffiu.CURRENT_BASE)
     is consistent with the selected pointing origin (dcs.PONAME)
 
@@ -19,11 +19,11 @@ class VerifyCurrentBase(KPFTranslatorFunction):
     - `kpfguide.SKY_BASE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         ponamekw = ktl.cache('dcs1', 'PONAME')
         poname = ponamekw.read().upper()
 
@@ -55,8 +55,26 @@ class VerifyCurrentBase(KPFTranslatorFunction):
             log.error(msg)
         print(msg)
 
+        if args.get('query_user', False) == True and poname_match == False:
+            # Check with user
+            log.debug('Asking for user input')
+            print()
+            print("#####################################################")
+            print("The dcs.PONAME value is incosistent with CURRENT_BASE")
+            print("Please double check that the target object is where you")
+            print("want it to be before proceeding.")
+            print()
+            print("Do you wish to continue executing this OB?")
+            print("(y/n) [y]:")
+            print("#####################################################")
+            print()
+            user_input = input()
+            log.debug(f'response: "{user_input}"')
+            if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
+                raise KPFException("User chose to halt execution")
+
         return poname_match
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

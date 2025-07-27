@@ -2,13 +2,13 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.calbench import standardize_lamp_name
 
 
-class CalLampPower(KPFTranslatorFunction):
+class CalLampPower(KPFFunction):
     '''Powers off one of the cal lamps via the `kpflamps` keyword service. Uses
     the lamp names from the OCTAGON when appropriate.
 
@@ -33,7 +33,7 @@ class CalLampPower(KPFTranslatorFunction):
     - `kpflamps.SKYLED`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         # Check lamp name
         lamp = standardize_lamp_name(args.get('lamp', None))
         if lamp is None:
@@ -43,7 +43,7 @@ class CalLampPower(KPFTranslatorFunction):
         check_input(args, 'power', allowed_values=['on', 'off'])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         lamp = standardize_lamp_name(args.get('lamp'))
         pwr = args.get('power')
         log.debug(f"Turning {pwr} {lamp}")
@@ -51,7 +51,7 @@ class CalLampPower(KPFTranslatorFunction):
         kpflamps[lamp].write(pwr)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         lamp = standardize_lamp_name(args.get('lamp'))
         pwr = args.get('power')
         timeout = cfg.getfloat('times', 'lamp_timeout', fallback=1)
@@ -61,7 +61,7 @@ class CalLampPower(KPFTranslatorFunction):
             raise FailedPostCondition(kpflamps[lamp], pwr)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('lamp', type=str,
                             choices=['BrdbandFiber', 'U_gold', 'U_daily',
                                      'Th_daily', 'Th_gold', 'WideFlat',
@@ -71,4 +71,4 @@ class CalLampPower(KPFTranslatorFunction):
         parser.add_argument('power', type=str,
                             choices=['on', 'off'],
                             help='Desired power state: "on" or "off"')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

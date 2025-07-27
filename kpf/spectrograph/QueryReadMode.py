@@ -2,47 +2,39 @@ from pathlib import Path
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class QueryReadMode(KPFTranslatorFunction):
+class QueryReadMode(KPFFunction):
     '''Returns string describing the read mode.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        kpfgreen = ktl.cache('kpfgreen')
-        green_normal_file = cfg.get('acf_files', 'green_normal')
-        green_fast_file = cfg.get('acf_files', 'green_fast')
-        green_ACFFILE = Path(kpfgreen['ACFFILE'].read()).stem
-        if green_ACFFILE == green_normal_file:
-            green_mode = 'normal'
-        elif green_ACFFILE == green_fast_file:
-            green_mode = 'fast'
-        else:
-            green_mode = 'unknown'
+    def perform(cls, args):
+        modes = {'green': '', 'red': ''}
+        for side in modes.keys():
+            normal_file = cfg.get('acf_files', f'{side}_normal')
+            fast_file = cfg.get('acf_files', f'{side}_fast')
+            ACFFILE = ktl.cache(f'kpf{side}', 'ACFFILE')
+            ACFFILE.monitor()
+            filename = Path(ACFFILE.ascii).stem
+            if filename == normal_file:
+                modes[side] = 'normal'
+            elif green_ACFFILE == green_fast_file:
+                modes[side] = 'fast'
+            else:
+                green_mode = 'unknown'
 
-        kpfred = ktl.cache('kpfred')
-        red_normal_file = cfg.get('acf_files', 'red_normal')
-        red_fast_file = cfg.get('acf_files', 'red_fast')
-        red_ACFFILE = Path(kpfred['ACFFILE'].read()).stem
-        if red_ACFFILE == red_normal_file:
-            red_mode = 'normal'
-        elif red_ACFFILE == red_fast_file:
-            red_mode = 'fast'
-        else:
-            red_mode = 'unknown'
-
-        log.debug(f"Green read mode: {green_mode}, Red read mode: {red_mode}")
-        print(f"Green read mode: {green_mode}")
-        print(f"Red read mode: {red_mode}")
-        return green_mode, red_mode
+        log.debug(f"Green read mode: {modes['green']}, Red read mode: {modes['red']}")
+        print(f"Green read mode: {modes['green']}")
+        print(f"Red read mode: {modes['red']}")
+        return modes['green'], modes['red']
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

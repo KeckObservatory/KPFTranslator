@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class ControlFoldMirror(KPFTranslatorFunction):
+class ControlFoldMirror(KPFFunction):
     '''Insert or remove the FIU Cal Fold Mirror from the beam.
 
     Args:
@@ -18,30 +18,29 @@ class ControlFoldMirror(KPFTranslatorFunction):
     - `kpffiu.FOLDNAM`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         destination = args.get('destination', '').strip()
         if destination.lower() not in ['in', 'out']:
             raise FailedPreCondition(f"Requested state {destination} is invalid")
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         destination = args.get('destination', '').strip()
-        kpffiu = ktl.cache('kpffiu')
-        kpffiu['FOLDNAM'].write(destination)
+        FOLDNAM = ktl.cache('kpffiu', 'FOLDNAM')
+        FOLDNAM.write(destination)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         destination = args.get('destination', '').strip()
         timeout = cfg.getfloat('times', 'fiu_fold_mirror_move_time', fallback=5)
-        success = ktl.waitFor(f'($kpffiu.foldnam == {destination})', timeout=timeout)
-        if success is not True:
-            foldnam = ktl.cache('kpffiu', 'FOLDNAM')
-            raise FailedToReachDestination(foldnam.read(), destination)
+        FOLDNAM = ktl.cache('kpffiu', 'FOLDNAM')
+        if FOLDNAM.waitFor(f'== "{destination}"', timeout=timeout) is not True:
+            raise FailedToReachDestination(FOLDNAM.read(), destination)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('destination', type=str,
                             choices=['in', 'out'],
                             help='Desired fold mirror position')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
 

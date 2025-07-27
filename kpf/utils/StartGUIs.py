@@ -7,9 +7,9 @@ from astropy.table import Table
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 # List of GUIs for KPF
@@ -18,11 +18,11 @@ GUI_list = [
             {'name': 'KPF OB GUI',
              'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/OB_GUI/KPF_OB_GUI.py'],
              'display': 'control0',
-             'position': '0,5,190,-1,-1'},
+             'position': '0,135,30,-1,-1'},
             {'name': 'KPF TipTilt GUI',
              'cmd': ['/home/kpfeng/ddoi/KPFTranslator/default/KPFTranslator/kpf/TT_GUI/TipTiltGUI.py', '--monitor'],
              'display': 'control0',
-             'position': '0,925,30,-1,-1'},
+             'position': '0,1225,30,-1,-1'},
             # Control1
             {'name': 'KPF Fiber Injection Unit (FIU)',
              'cmd': ['kpf', 'start', 'fiu_gui'],
@@ -91,26 +91,19 @@ def waitfor_window_to_appear(name, env=None, timeout=20):
     return name in window_names
 
 
-class StartGUIs(KPFTranslatorFunction):
+class StartGUIs(KPFFunction):
     '''Start KPF GUIs
 
-    ### ARGS
-    None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         # Get DISPLAY varibales
         env = os.environ
         uidisp = {}
-#         for dispno in [0, 1, 2, 3]:
-#             uidisp_proc = subprocess.run(['uidisp', f'{dispno}'], env=env,
-#                                          stdout=subprocess.PIPE)
-#             uidisp[dispno] = uidisp_proc.stdout.decode().strip('\n')
-
         kvncstatus_proc = subprocess.run(['kvncstatus'], env=env,
                                          stdout=subprocess.PIPE)
         kvncstatus = Table.read(kvncstatus_proc.stdout.decode(), format='ascii')
@@ -173,13 +166,13 @@ class StartGUIs(KPFTranslatorFunction):
                         time.sleep(1)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--position", "-p",
                             dest="position_only",
                             default=False, action="store_true",
                             help="Only position the GUIs, do not start")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
