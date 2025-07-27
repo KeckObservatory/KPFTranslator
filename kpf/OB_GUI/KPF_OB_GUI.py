@@ -1088,7 +1088,7 @@ class MainWindow(QMainWindow):
         date_str = date.strftime('%Y%b%d').lower()
         tmp_file = Path(f'/s/sdata1701/KPFTranslator_logs/{date_str}/executedOB_{now_str}.yaml').expanduser()
         self.OB.write_to_file(tmp_file)
-        RunSciOB_cmd = f'kpfdo RunSciOB -f {tmp_file} ; echo "Done!" ; sleep 30'
+        RunSciOB_cmd = f'echo "{now_str}" >> /home/kpfeng/script_canary2.txt ; kpfdo RunSciOB -f {tmp_file} ; echo "Done!" ; sleep 30'
         # Pop up an xterm with the script running
         cmd = ['xterm', '-title', 'RunSciOB', '-name', 'RunSciOB',
                '-fn', '10x20', '-bg', 'black', '-fg', 'white',
