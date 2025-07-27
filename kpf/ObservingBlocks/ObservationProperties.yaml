@@ -1,13 +1,13 @@
 - name: 'Object'
-  comment: 'Object name for the FITS header'
+  comment: 'This value will go in to the FITS header as the OBJECT keyword value. This is can be used as a notes field for the observer to explain how this set of exposures differs from any following observations of this target. This field can be left blank or set to the target name, it is entirely up to the observer.'
   valuetype: str
   defaultvalue: ''
 - name: 'nExp'
-  comment: 'Number of Exposures'
+  comment: 'Number of Exposures to take for this observation.'
   valuetype: int
   defaultvalue: 1
 - name: 'ExpTime'
-  comment: '[seconds] Exposure Time'
+  comment: '[seconds] The exposure time in seconds. Note that if the exposure meter is controlling the exposure duration, this exposure time is the maximum value which will be allowed (the exposure meter may cut the exposure short if the desired flux level is reached).'
   valuetype: float
   defaultvalue: 60
   precision: 0
@@ -28,7 +28,7 @@
   valuetype: bool
   defaultvalue: False
 - name: 'ExpMeterMode'
-  comment: 'Exposure meter mode? (monitor, control, off)'
+  comment: 'Exposure meter mode (monitor, control, off). In "monitor" the exposure meter will take exposure during the science exposure and record fluxes. This data will be stored in the resulting FITS file can be used to determine the flux weighted exposure midpoint in time for accurate barycentric correction.  In "control" the exposure meter will terminate the exposure when the desired threshold is reached (see ExpMeterBin and ExpMeterThreshold)'
   valuetype: str
   defaultvalue: monitor
 - name: 'AutoExpMeter'
@@ -36,7 +36,7 @@
   valuetype: bool
   defaultvalue: True
 - name: 'ExpMeterExpTime'
-  comment: '[seconds] Exposure Time for the exposure meter'
+  comment: '[seconds] The exposure time in seconds for individual exposure meter exposures. This is ignored if AutoExpMeter is True.'
   valuetype: float
   defaultvalue: 1
   precision: 2
@@ -54,7 +54,7 @@
   valuetype: bool
   defaultvalue: True
 - name: 'AutoNDFilters'
-  comment: 'Automatically set ND filters for the simultaneous calibration light?'
+  comment: 'Automatically set ND filters for the simultaneous calibration light? This requires that Teff be within the allowed range of the exposure time calculator software (2700 - 6600 K).'
   valuetype: bool
   defaultvalue: True
 - name: 'CalND1'

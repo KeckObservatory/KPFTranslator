@@ -52,8 +52,7 @@ nav:
     - "Exposure Meter Termination": expmetertermination.md
     - "Observing Blocks":
       - "Building OBs": buildingOBs.md
-      - "Science OB Parameters": SciOBparameters.md
-      - "Calibration OB Parameters": CalOBparameters.md
+      - "OB Parameters": OBparameters.md
     - "Retrieving Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
     - "Data Reduction": kpfdrp.md
   - "General Observing Info": 
@@ -201,10 +200,13 @@ nav:
         - "SelectTarget": scripts/SelectTarget.md
         - "SetTargetList": scripts/SetTargetList.md
       - "kpf.observatoryAPIs":
+        - "GetExecutionHistory": scripts/GetExecutionHistory.md
+        - "GetKPFCCObservingBlocks": scripts/GetKPFCCObservingBlocks.md
         - "GetObservingBlocks": scripts/GetObservingBlocks.md
         - "GetObservingBlocksByProgram": scripts/GetObservingBlocksByProgram.md
         - "GetScheduledPrograms": scripts/GetScheduledPrograms.md
         - "GetTelescopeRelease": scripts/GetTelescopeRelease.md
+        - "SetJunkStatus": scripts/SetJunkStatus.md
         - "SubmitObserverComment": scripts/SubmitObserverComment.md
       - "kpf.scripts":
         - "CleanupAfterCalibrations": scripts/CleanupAfterCalibrations.md
@@ -216,8 +218,7 @@ nav:
         - "EstimateOBDuration": scripts/EstimateOBDuration.md
         - "RecoverFromLowPowerMode": scripts/RecoverFromLowPowerMode.md
         - "RunOB": scripts/RunOB.md
-        - "RunOBs": scripts/RunOBs.md
-        - "RunSoCalObservingLoop": scripts/RunSoCalObservingLoop.md
+        - "RunSoCal": scripts/RunSoCal.md
       - "kpf.socal":
         - "CheckSoCalEnabled": scripts/CheckSoCalEnabled.md
         - "DisableSoCal": scripts/DisableSoCal.md
@@ -231,6 +232,7 @@ nav:
         - "WaitForSoCalOnTarget": scripts/WaitForSoCalOnTarget.md
       - "kpf.spectrograph":
         - "QueryFastReadMode": scripts/QueryFastReadMode.md
+        - "QueryReadMode": scripts/QueryReadMode.md
         - "RecoverDetectors": scripts/RecoverDetectors.md
         - "ResetCaHKDetector": scripts/ResetCaHKDetector.md
         - "ResetExpMeterDetector": scripts/ResetExpMeterDetector.md

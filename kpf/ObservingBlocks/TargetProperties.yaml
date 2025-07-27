@@ -1,5 +1,5 @@
 - name: 'TargetName'
-  comment: 'Name of the target'
+  comment: 'Name of the target, chosen by the observer. This will appear in the TARGNAME FITS header field and is the equivalent of the star list target name, but is not the same as the OBJECT field (see the Observation Properties for that).'
   valuetype: str
   defaultvalue: ''
 - name: 'GaiaID'
@@ -12,7 +12,7 @@
   defaultvalue: ''
   altname: '2MASSID'
 - name: 'Parallax'
-  comment: '[arcsec] Parallax of the target'
+  comment: '[milliarcsec] Parallax of the target'
   valuetype: float
   defaultvalue: 0
   precision: 3
@@ -22,17 +22,17 @@
   defaultvalue: 0
   precision: 3
 - name: 'Gmag'
-  comment: '[magnitude] Gaia G magnitude of the target'
+  comment: '[magnitude] Gaia G magnitude of the target. This is used for the algorithm which automatically sets the exposure meter exposure time and the algorithm which sets the simultaneous calibration filters.'
   valuetype: float
   defaultvalue: 0
   precision: 1
 - name: 'Jmag'
-  comment: '[magnitude] J magnitude of the target'
+  comment: '[magnitude] J magnitude of the target. This is used by the algorithm which automatically sets the guider gain and frame rate.'
   valuetype: float
   defaultvalue: 0
   precision: 1
 - name: 'Teff'
-  comment: '[K] Effective temperature of the target'
+  comment: '[K] Effective temperature of the target (allowed range 2600 - 45000 K). This is used by the algorithm which sets the simultaneous calibration filters. For that to work, this must lie within the range of 2700 - 6600 K.'
   valuetype: float
   defaultvalue: 45000
   precision: 0
