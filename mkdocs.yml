@@ -50,9 +50,7 @@ nav:
     - "Observing Procedures": observingprocedures.md
     - "Nighttime Calibrations": nighttimecalibrations.md
     - "Exposure Meter Termination": expmetertermination.md
-    - "Observing Blocks":
-      - "Building OBs": buildingOBs.md
-      - "OB Parameters": OBparameters.md
+    - "Observing Blocks": buildingOBs.md
     - "Retrieving Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
     - "Data Reduction": kpfdrp.md
   - "General Observing Info": 
