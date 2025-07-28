@@ -21,6 +21,10 @@ Note that not all properties are needed in every case. For example, an observati
 
 ## Example On Sky Science OB
 
+This is an example of what the text file form of an OB might look like. The file is a  `yaml` format which resolves in to a python dict with keys for "Target", "Calibrations" and "Observations" (not all are required).  The "Target" entry is a dict with the various [Target Properties](../TargetProperties).  The "Calibrations" entry (if present) is a **list** of dictionaries, each with the various [Calibration Properties](../CalibrationProperties).  Similarly, the "Observations" entry is a **list** of dictionaries, each with the various [Observation Properties](../ObservationProperties).
+
+Th example below has a Target, no Calibrations, and a single Observaton:
+
 ```
 Target:
   TargetName: HR 4710
