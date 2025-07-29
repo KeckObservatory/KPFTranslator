@@ -105,15 +105,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../expmetertermination/">Exposure Meter Termination</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
-    <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../buildingOBs/">Building OBs</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../SciOBparameters/">Science OB Parameters</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../CalOBparameters/">Calibration OB Parameters</a>
-                </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../buildingOBs/">Observing Blocks</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
                   </li>
@@ -438,6 +430,10 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocks/">GetObservingBlocks</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
@@ -445,6 +441,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetScheduledPrograms/">GetScheduledPrograms</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetJunkStatus/">SetJunkStatus</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/SubmitObserverComment/">SubmitObserverComment</a>
                 </li>
@@ -470,9 +468,7 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOB/">RunOB</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOBs/">RunOBs</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCalObservingLoop/">RunSoCalObservingLoop</a>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCal/">RunSoCal</a>
                 </li>
     </ul>
                 </li>
@@ -503,6 +499,8 @@
                 <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryReadMode/">QueryReadMode</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/RecoverDetectors/">RecoverDetectors</a>
                 </li>
@@ -657,15 +655,15 @@
 </blockquote>
 <p>The huge range of HIRES efficiency depending on decker is the biggest factor.  For science at lower resolution, KPF and HIRES have comparable efficiency. For high-resolution, KPF is much more efficient.</p>
 <h2 id="common-observations">Common Observations</h2>
-<p>WMKO obtained observations designed to compare KPF and HIRES directly on a variety of science targets during 2025A.  Here is a list of what was observed:</p>
+<p>WMKO obtained observations designed to compare KPF and HIRES directly on a variety of science targets during 2025A.  This comparison reflects the status of the instruments as they were on 2025 May 15.  Unfortunately, at the time, KPF was impacted by excess pattern noise which raised the apparent read noise from the nominal ~5 electrons to ~13 electrons.  This will affect all of the KPF data below. Please see the <a href="../status/">KPF status</a> page for the current state of KPF.</p>
+<p>Here is a list of what was observed:</p>
 <table>
 <thead>
 <tr>
 <th>Target</th>
-<th>Magnitude</th>
-<th>KPF Exposures</th>
-<th>HIRES Exposures</th>
-<th>HIRES Config (Ech, XD, Slit, Bin)</th>
+<th>Mag</th>
+<th>KPF</th>
+<th>HIRES (Ech, XD, Slit, Bin)</th>
 <th>Requestor</th>
 </tr>
 </thead>
@@ -674,109 +672,225 @@
 <td>29/P-comet</td>
 <td>V~16</td>
 <td>4x300 s</td>
-<td>4x300 s</td>
-<td>0.1, -0.06, 1.148", 2x2</td>
+<td>4x300 s (0.1, -0.06, 1.148", 2x2)</td>
 <td>McKay</td>
 </tr>
 <tr>
 <td>TW Hydra</td>
 <td>V=10.5</td>
 <td>2x300 s</td>
-<td>2x300 s</td>
-<td>0.0, 0.90, 1.148", 2x2</td>
+<td>2x300 s (0.0, 0.90, 1.148", 2x2)</td>
 <td>Hillenbrand</td>
 </tr>
 <tr>
 <td>HD 96735</td>
 <td>R=8.8</td>
 <td>2x120 s</td>
-<td>2x120 s</td>
-<td>0.0, -0.10, 0.861", 3x1</td>
+<td>2x120 s (0.0, -0.10, 0.861", 3x1)</td>
 <td>Zhang</td>
 </tr>
 <tr>
 <td>HIP 54597</td>
 <td>R=9.8</td>
 <td>2x240 s</td>
-<td>2x240 s</td>
-<td>0.0, -0.10, 0.861", 3x1</td>
+<td>2x240 s (0.0, -0.10, 0.861", 3x1)</td>
 <td>Zhang</td>
 </tr>
 <tr>
 <td>J1622+5521</td>
 <td>R=16.2</td>
 <td>2x1800 s</td>
-<td>2x1800 s</td>
-<td>0.1, 0.763, 1.148", 2x2</td>
+<td>2x1800 s (0.1, 0.763, 1.148", 2x2)</td>
 <td>Redfield</td>
 </tr>
 <tr>
 <td>HD 187982</td>
 <td>V=5.3</td>
 <td>1x20 s</td>
-<td>1x15 s</td>
-<td>0.0, 0.2423, 0.4", 1x1</td>
+<td>1x15 s (0.0, 0.2423, 0.4", 1x1)</td>
 <td>Cooke</td>
 </tr>
 <tr>
 <td>HD 199478</td>
 <td>V=5.2</td>
 <td>1x20 s</td>
-<td>1x15 s</td>
-<td>0.0, 0.2423, 0.4", 1x1</td>
+<td>1x15 s (0.0, 0.2423, 0.4", 1x1)</td>
 <td>Cooke</td>
 </tr>
 <tr>
 <td>BD+35 1801</td>
 <td>R=8.0</td>
 <td>3x60 s</td>
-<td>3x60 s</td>
-<td>0.1, -0.06, 0.4", 1x1</td>
+<td>3x60 s (0.1, -0.06, 0.4", 1x1)</td>
 <td>Nisak</td>
 </tr>
 <tr>
 <td>J142543.3+540619</td>
 <td>R=17.8</td>
 <td>3x600 s</td>
-<td>3x600 s</td>
-<td>0.102, 0.7625, 1.148", 2x2</td>
+<td>3x600 s (0.102, 0.7625, 1.148", 2x2)</td>
 <td>O’Meara</td>
 </tr>
 <tr>
 <td>BL Lac</td>
 <td>R=17.2</td>
 <td>4x600 s</td>
-<td>1x2400 s</td>
-<td>0.102, 0.7625, 1.148", 2x2</td>
+<td>1x2400 s (0.102, 0.7625, 1.148", 2x2)</td>
 <td>O’Meara</td>
 </tr>
 <tr>
 <td>HR 7596</td>
 <td>R=5.6</td>
 <td>1x20 s</td>
-<td>1x15 s</td>
-<td>0.0, 0.2423, 1.148", 1x1</td>
+<td>1x15 s (0.0, 0.2423, 1.148", 1x1)</td>
 <td>Staff</td>
 </tr>
 <tr>
 <td>HR 7596</td>
 <td>R=5.6</td>
 <td>1x20 s</td>
-<td>1x15 s</td>
-<td>0.0, 0.2423, 0.861", 1x1</td>
+<td>1x15 s (0.0, 0.2423, 0.861", 1x1)</td>
 <td>Staff</td>
 </tr>
 <tr>
 <td>HR 7596</td>
 <td>R=5.6</td>
 <td>1x20 s</td>
-<td>1x15 s</td>
-<td>0.0, 0.2423, 0.574", 1x1</td>
+<td>1x15 s (0.0, 0.2423, 0.574", 1x1)</td>
 <td>Staff</td>
 </tr>
 </tbody>
 </table>
-<p>We will be posting links to the data here soon.</p>
+<h3 id="hires-raw-data">HIRES Raw Data</h3>
+<ul>
+<li>All HIRES Science Files: <a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/HIRES_raw/HIRES_sci_27859_1.tar">HIRES_sci_27859_1.tar</a></li>
+<li>All HIRES Calibration Files: <a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/HIRES_raw/HIRES_cal_27859_1.tar">HIRES_cal_27859_1.tar</a></li>
+</ul>
+<h3 id="hires-reduced-data">HIRES Reduced Data</h3>
+<p>A subset of the HIRES observations were reduced automatically at KOA for the following targets:</p>
+<ul>
+<li>BD+35 1801</li>
+<li>TW Hya</li>
+<li>J142543.3+540619</li>
+<li>J1622+5521 targets</li>
+</ul>
+<p>These files are available here: <a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/HIRES_KOA_reduced/HIRES_sci_51156_1.tar">HIRES_sci_51156_1.tar</a></p>
+<h3 id="kpf-reduced-data">KPF Reduced Data</h3>
+<p>The reduced data for KPF is available in the table below.  The "Level 1" file is the extracted 1D spectrum. For details on working with KPF L1 files, see the <a href="https://kpf-pipeline.readthedocs.io/en/latest/tutorials/KPF_Data_Tutorial_L1.html">KPF DRP page on L1 data format</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>KPF L1 Files</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>29/P-comet</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.22710.24_L1.fits">KP.20250516.22710.24</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.22765.38_L1.fits">KP.20250516.22765.38</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.23176.73_L1.fits">KP.20250516.23176.73</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.23597.65_L1.fits">KP.20250516.23597.65</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.23946.39_L1.fits">KP.20250516.23946.39</a></td>
+</tr>
+<tr>
+<td>TW Hydra</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.28039.30_L1.fits">KP.20250516.28039.30</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.28387.71_L1.fits">KP.20250516.28387.71</a></td>
+</tr>
+<tr>
+<td>HD 96735</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.29269.54_L1.fits">KP.20250516.29269.54</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.29438.05_L1.fits">KP.20250516.29438.05</a></td>
+</tr>
+<tr>
+<td>HIP 54597</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.31424.80_L1.fits">KP.20250516.31424.80</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.31713.37_L1.fits">KP.20250516.31713.37</a></td>
+</tr>
+<tr>
+<td>J1622+5521</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.41859.48_L1.fits">KP.20250516.41859.48</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.43707.83_L1.fits">KP.20250516.43707.83</a></td>
+</tr>
+<tr>
+<td>HD 187982</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.52220.22_L1.fits">KP.20250516.52220.22</a></td>
+</tr>
+<tr>
+<td>HD 199478</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.52378.17_L1.fits">KP.20250516.52378.17</a></td>
+</tr>
+<tr>
+<td>BD+35 1801</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.20851.88_L1.fits">KP.20250516.20851.88</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.21018.50_L1.fits">KP.20250516.21018.50</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.21139.89_L1.fits">KP.20250516.21139.89</a></td>
+</tr>
+<tr>
+<td>J142543.3+540619</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.32813.20_L1.fits">KP.20250516.32813.20</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.33461.60_L1.fits">KP.20250516.33461.60</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.34123.45_L1.fits">KP.20250516.34123.45</a></td>
+</tr>
+<tr>
+<td>BL Lac</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.46263.92_L1.fits">KP.20250516.46263.92</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.46912.59_L1.fits">KP.20250516.46912.59</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.47561.22_L1.fits">KP.20250516.47561.22</a></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.48209.59_L1.fits">KP.20250516.48209.59</a></td>
+</tr>
+<tr>
+<td>HR 7596</td>
+<td><a href="https://www2.keck.hawaii.edu/inst/KPF_HIRES_comparison/KPF_L1/KP.20250516.53456.67_L1.fits">KP.20250516.53456.67</a></td>
+</tr>
+</tbody>
+</table>
               
             </div>
           </div><footer>

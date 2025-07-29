@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Building OBs - KPF</title>
+    <title>Observing Blocks - KPF</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Building OBs";
+        var mkdocs_page_name = "Observing Blocks";
         var mkdocs_page_input_path = "buildingOBs.md";
         var mkdocs_page_url = null;
       </script>
@@ -105,15 +105,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../expmetertermination/">Exposure Meter Termination</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" >Observing Blocks</a>
-    <ul class="current">
-                <li class="toctree-l2 current"><a class="reference internal current" href="#">Building OBs</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../SciOBparameters/">Science OB Parameters</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../CalOBparameters/">Calibration OB Parameters</a>
-                </li>
-    </ul>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Observing Blocks</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
                   </li>
@@ -438,6 +430,10 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocks/">GetObservingBlocks</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
@@ -445,6 +441,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetScheduledPrograms/">GetScheduledPrograms</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetJunkStatus/">SetJunkStatus</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/SubmitObserverComment/">SubmitObserverComment</a>
                 </li>
@@ -470,9 +468,7 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOB/">RunOB</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOBs/">RunOBs</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCalObservingLoop/">RunSoCalObservingLoop</a>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCal/">RunSoCal</a>
                 </li>
     </ul>
                 </li>
@@ -503,6 +499,8 @@
                 <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryReadMode/">QueryReadMode</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/RecoverDetectors/">RecoverDetectors</a>
                 </li>
@@ -592,8 +590,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Observing with KPF</li>
-          <li class="breadcrumb-item">Observing Blocks</li>
-      <li class="breadcrumb-item active">Building OBs</li>
+      <li class="breadcrumb-item active">Observing Blocks</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -603,26 +600,59 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="building-observing-blocks-obs">Building Observing Blocks (OBs)</h1>
-<p>The basic unit of KPF nighttime operations is the Observing Block (OB). An OB describes a single visit to a science target and the observations made there. The data contained in the OB is a set of keyword-value pairs. Observers can prepare OBs as text files which can be read in by the KPF software and executed or (once logged in to the KPF VNCs) they can use tools there to build the OBs and save them as files. </p>
-<p>The data in an OB can be divided in to a few rough categories:</p>
-<p><strong>Target information</strong>: The OB will contain information about the target beyond what is in a typical Keck Star List entry in order to flow that information to the FITS header and the data reduction pipeline (DRP).</p>
-<p><strong>Instrument Setup</strong>: The OB will also contain information about how to configure the instrument for this set of observations.</p>
-<p><strong>Observations</strong>: Finally, the OB will contain a list of "observations" to be made of the target. For typical KPF observers, this will only have one entry, but multiple entries are supported. Each entry describes a set of exposures on the target and contains the information on how those exposures should be executed.</p>
-<h2 id="kpf-ob-gui">KPF OB GUI</h2>
-<p>A graphical tool has been built to help observers build their KPF OBs, it is launched automatically as part of the script to start all GUIs.</p>
-<p><img alt="A screenshot of the KPF OB GUI" src="../figures/KPF_OB_GUI.png" /></p>
-<blockquote>
-<p>A screenshot of the KPF OB GUI.</p>
-</blockquote>
-<p>The top section of the GUI, "Instrument Status" shows whether an instrument script (e.g. an observation or calibration set) is being run and allows users to request that script stop.</p>
-<p>The middle section can be used to load an OB from a file, build an OB from scratch using a Gaia DR3 catalog query, save the OB to a file, or execute the OB.</p>
-<p>The lower section is where a user can fill out the OB parameters as described in the "KPF Science OB Contents" section above.</p>
+<p>The basic unit of KPF nighttime operations is the Observing Block (OB). An OB describes a single visit to a science target and the observations made there. The data contained in the OB is a set of keyword-value pairs. </p>
+<p>Observers can create OBs in 3 ways:</p>
+<ul>
+<li>As text files which can be read in by the KPF software and executed.</li>
+<li>As a database entry by filling out an OB via the <a href="https://www3.keck.hawaii.edu/login/?url=https://www3.keck.hawaii.edu/observers/kpf-cc/rel/index.html?">KPF-CC Web Form</a>. Please note that the KPF-CC web form is not capable of recording all features of an OB, but should cover 90+% of use cases.  Classical observers are also welcome to use the form.</li>
+<li>Building an OB "live" using the KPF OB GUI.</li>
+</ul>
+<p>The data in an OB can be divided in to three categories:</p>
+<p><strong>Target</strong>: The OB will contain information about the target beyond what is in a typical Keck Star List entry in order to flow that information to the FITS header and the data reduction pipeline (DRP).  The target section is only needed if the OB has observations (i.e. it is not purely a calibration OB). Here is a description of all <a href="../TargetProperties">Target Properties</a>.</p>
+<p><strong>Calibrations</strong>: An OB can contain calibrations, these are not typically used by the observer (slewcals are handled separately). Here is a description of all <a href="../CalibrationProperties">Calibration Properties</a>. The Calibrations section of an ON is a list of Calibration entries.</p>
+<p><strong>Observations</strong>: Finally, the OB will contain a list of observations to be made of the target. For typical KPF observers, this will only have one entry, but multiple entries are supported. Each entry describes a set of exposures on the target and contains the information on how those exposures should be executed. Here is a description of all <a href="../ObservationProperties">Observation Properties</a>. The Observations section of an ON is a list of Observation entries.</p>
+<p>Note that not all properties are needed in every case. For example, an observation with <code>ExpMeterMode: 'monitor'</code> will not need values for <code>ExpMeterBin</code> and <code>ExpMeterThreshold</code>.</p>
+<h2 id="example-on-sky-science-ob">Example On Sky Science OB</h2>
+<p>This is an example of what the text file form of an OB might look like. The file is a  <code>yaml</code> format which resolves in to a python dict with keys for "Target", "Calibrations" and "Observations" (not all are required).  The "Target" entry is a dict with the various <a href="../TargetProperties">Target Properties</a>.  The "Calibrations" entry (if present) is a <strong>list</strong> of dictionaries, each with the various <a href="../CalibrationProperties">Calibration Properties</a>.  Similarly, the "Observations" entry is a <strong>list</strong> of dictionaries, each with the various <a href="../ObservationProperties">Observation Properties</a>.</p>
+<p>Th example below has a Target, no Calibrations, and a single Observaton:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Target</span><span class="o">:</span>
+<span class="w">  </span><span class="n">TargetName</span><span class="o">:</span><span class="w"> </span><span class="n">HR</span><span class="w"> </span><span class="mi">4710</span>
+<span class="w">  </span><span class="n">GaiaID</span><span class="o">:</span><span class="w"> </span><span class="n">DR3</span><span class="w"> </span><span class="mi">5859393710380907776</span>
+<span class="w">  </span><span class="n">twoMASSID</span><span class="o">:</span><span class="w"> </span><span class="n">J12231377</span><span class="o">-</span><span class="mi">6737534</span>
+<span class="w">  </span><span class="n">Parallax</span><span class="o">:</span><span class="w"> </span><span class="mf">19.730</span>
+<span class="w">  </span><span class="n">RadialVelocity</span><span class="o">:</span><span class="w"> </span><span class="mf">33.910</span>
+<span class="w">  </span><span class="n">Gmag</span><span class="o">:</span><span class="w"> </span><span class="mf">6.11</span>
+<span class="w">  </span><span class="n">Jmag</span><span class="o">:</span><span class="w"> </span><span class="mf">4.97</span>
+<span class="w">  </span><span class="n">Teff</span><span class="o">:</span><span class="w"> </span><span class="mi">4750</span>
+<span class="w">  </span><span class="n">RA</span><span class="o">:</span><span class="w"> </span><span class="mi">12</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mf">11.79</span>
+<span class="w">  </span><span class="n">Dec</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mi">67</span><span class="o">:</span><span class="mi">37</span><span class="o">:</span><span class="mf">49.47</span>
+<span class="w">  </span><span class="n">Equinox</span><span class="o">:</span><span class="w"> </span><span class="n">J2000</span>
+<span class="w">  </span><span class="n">PMRA</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">11.258</span>
+<span class="w">  </span><span class="n">PMDEC</span><span class="o">:</span><span class="w"> </span><span class="mf">0.256</span>
+<span class="w">  </span><span class="n">Epoch</span><span class="o">:</span><span class="w"> </span><span class="mf">2016.00</span>
+<span class="w">  </span><span class="n">DRA</span><span class="o">:</span><span class="w"> </span><span class="mf">0.000</span>
+<span class="w">  </span><span class="n">DDEC</span><span class="o">:</span><span class="w"> </span><span class="mf">0.000</span>
+<span class="n">Observations</span><span class="o">:</span>
+<span class="o">-</span><span class="w"> </span><span class="n">Object</span><span class="o">:</span><span class="w"> </span><span class="n">test1</span>
+<span class="w">  </span><span class="n">nExp</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">  </span><span class="n">ExpTime</span><span class="o">:</span><span class="w"> </span><span class="mi">60</span>
+<span class="w">  </span><span class="n">TriggerCaHK</span><span class="o">:</span><span class="w"> </span><span class="n">True</span>
+<span class="w">  </span><span class="n">TriggerGreen</span><span class="o">:</span><span class="w"> </span><span class="n">True</span>
+<span class="w">  </span><span class="n">TriggerRed</span><span class="o">:</span><span class="w"> </span><span class="n">True</span>
+<span class="w">  </span><span class="n">BlockSky</span><span class="o">:</span><span class="w"> </span><span class="n">False</span>
+<span class="w">  </span><span class="n">ExpMeterMode</span><span class="o">:</span><span class="w"> </span><span class="n">control</span>
+<span class="w">  </span><span class="n">AutoExpMeter</span><span class="o">:</span><span class="w"> </span><span class="n">True</span>
+<span class="w">  </span><span class="n">ExpMeterBin</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">  </span><span class="n">ExpMeterThreshold</span><span class="o">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="w">  </span><span class="n">TakeSimulCal</span><span class="o">:</span><span class="w"> </span><span class="n">True</span>
+<span class="w">  </span><span class="n">AutoNDFilters</span><span class="o">:</span><span class="w"> </span><span class="n">True</span>
+</code></pre></div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../expmetertermination/" class="btn btn-neutral float-left" title="Exposure Meter Termination"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../SciOBparameters/" class="btn btn-neutral float-right" title="Science OB Parameters">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../kpfdrp/" class="btn btn-neutral float-right" title="Data Reduction">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -652,7 +682,7 @@
       <span><a href="../expmetertermination/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../SciOBparameters/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../kpfdrp/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

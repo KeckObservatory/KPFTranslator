@@ -105,15 +105,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../expmetertermination/">Exposure Meter Termination</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
-    <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../buildingOBs/">Building OBs</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../SciOBparameters/">Science OB Parameters</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../CalOBparameters/">Calibration OB Parameters</a>
-                </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../buildingOBs/">Observing Blocks</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
                   </li>
@@ -438,6 +430,10 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetObservingBlocks/">GetObservingBlocks</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
@@ -445,6 +441,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../GetScheduledPrograms/">GetScheduledPrograms</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetJunkStatus/">SetJunkStatus</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SubmitObserverComment/">SubmitObserverComment</a>
                 </li>
@@ -470,9 +468,7 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../RunOB/">RunOB</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../RunOBs/">RunOBs</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../RunSoCalObservingLoop/">RunSoCalObservingLoop</a>
+                <li class="toctree-l3"><a class="reference internal" href="../RunSoCal/">RunSoCal</a>
                 </li>
     </ul>
                 </li>
@@ -503,6 +499,8 @@
                 <li class="toctree-l2 current"><a class="reference internal current" >kpf.spectrograph</a>
     <ul class="current">
                 <li class="toctree-l3"><a class="reference internal" href="../QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../QueryReadMode/">QueryReadMode</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../RecoverDetectors/">RecoverDetectors</a>
                 </li>
@@ -672,7 +670,10 @@ they are using.</p>
 <span class="normal">57</span>
 <span class="normal">58</span>
 <span class="normal">59</span>
-<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetReadModeNormal</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetReadModeNormal</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Configure both detectors to normal read mode by changing the ACF files</span>
 <span class="sd">    they are using.</span>
 
@@ -720,8 +721,11 @@ they are using.</p>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">QueryFastReadMode</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span> <span class="o">!=</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">FailedPostCondition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read mode change failed&quot;</span><span class="p">)</span>
+        <span class="n">green_mode</span><span class="p">,</span> <span class="n">red_mode</span> <span class="o">=</span> <span class="n">QueryReadMode</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+        <span class="k">if</span> <span class="n">green_mode</span> <span class="o">!=</span> <span class="s2">&quot;normal&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FailedToReachDestination</span><span class="p">(</span><span class="n">green_mode</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">red_mode</span> <span class="o">!=</span> <span class="s2">&quot;normal&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FailedToReachDestination</span><span class="p">(</span><span class="n">red_mode</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 

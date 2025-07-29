@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Calibration OB Parameters - KPF</title>
+    <title>Observation Properties - KPF</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Calibration OB Parameters";
-        var mkdocs_page_input_path = "CalOBparameters.md";
+        var mkdocs_page_name = "Observation Properties";
+        var mkdocs_page_input_path = "ObservationProperties.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -92,7 +92,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Observing with KPF</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../communitycadence/">Community Cadence (KPF-CC)</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
@@ -105,15 +105,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../expmetertermination/">Exposure Meter Termination</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" >Observing Blocks</a>
-    <ul class="current">
-                <li class="toctree-l2"><a class="reference internal" href="../buildingOBs/">Building OBs</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../SciOBparameters/">Science OB Parameters</a>
-                </li>
-                <li class="toctree-l2 current"><a class="reference internal current" href="#">Calibration OB Parameters</a>
-                </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../buildingOBs/">Observing Blocks</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
                   </li>
@@ -438,6 +430,10 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocks/">GetObservingBlocks</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
@@ -445,6 +441,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetScheduledPrograms/">GetScheduledPrograms</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetJunkStatus/">SetJunkStatus</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/SubmitObserverComment/">SubmitObserverComment</a>
                 </li>
@@ -470,9 +468,7 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOB/">RunOB</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOBs/">RunOBs</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCalObservingLoop/">RunSoCalObservingLoop</a>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCal/">RunSoCal</a>
                 </li>
     </ul>
                 </li>
@@ -503,6 +499,8 @@
                 <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryReadMode/">QueryReadMode</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/RecoverDetectors/">RecoverDetectors</a>
                 </li>
@@ -591,9 +589,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Observing with KPF</li>
-          <li class="breadcrumb-item">Observing Blocks</li>
-      <li class="breadcrumb-item active">Calibration OB Parameters</li>
+      <li class="breadcrumb-item active">Observation Properties</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -602,14 +598,48 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h1 id="observation-properties">Observation Properties</h1>
+<p><strong>Object</strong>: <code>str</code>
+  This value will go in to the FITS header as the OBJECT keyword value. This is can be used as a notes field for the observer to explain how this set of exposures differs from any following observations of this target. This field can be left blank or set to the target name, it is entirely up to the observer.</p>
+<p><strong>nExp</strong>: <code>int</code>
+  Number of Exposures to take for this observation.</p>
+<p><strong>ExpTime</strong>: <code>float</code>
+  [seconds] The exposure time in seconds. Note that if the exposure meter is controlling the exposure duration, this exposure time is the maximum value which will be allowed (the exposure meter may cut the exposure short if the desired flux level is reached).</p>
+<p><strong>TriggerCaHK</strong>: <code>bool</code>
+  Trigger the Ca H &amp; K detector for this observation?</p>
+<p><strong>TriggerGreen</strong>: <code>bool</code>
+  Trigger the Green detector for this observation?</p>
+<p><strong>TriggerRed</strong>: <code>bool</code>
+  Trigger the Red detector for this observation?</p>
+<p><strong>BlockSky</strong>: <code>bool</code>
+  Block the sky fiber during the observation?</p>
+<p><strong>ExpMeterMode</strong>: <code>str</code>
+  Exposure meter mode (monitor, control, off). In "monitor" the exposure meter will take exposure during the science exposure and record fluxes. This data will be stored in the resulting FITS file can be used to determine the flux weighted exposure midpoint in time for accurate barycentric correction.  In "control" the exposure meter will terminate the exposure when the desired threshold is reached (see ExpMeterBin and ExpMeterThreshold)</p>
+<p><strong>AutoExpMeter</strong>: <code>bool</code>
+  Set the exposure time on the exposure meter automatically based on the target G magnitude?</p>
+<p><strong>ExpMeterExpTime</strong>: <code>float</code>
+  [seconds] The exposure time in seconds for individual exposure meter exposures. This is ignored if AutoExpMeter is True.</p>
+<p><strong>ExpMeterBin</strong>: <code>int</code>
+  Which wavelength bin to use for exposure meter termination? (1=498nm, 2=604nm, 3=711nm, 4=817nm)</p>
+<p><strong>ExpMeterThreshold</strong>: <code>float</code>
+  [ke-/angstrom] Flux at the science detector at peak of order at which to terminate the exposure</p>
+<p><strong>TakeSimulCal</strong>: <code>bool</code>
+  Inject simultaneous calibration light on to the detector during exposure?</p>
+<p><strong>AutoNDFilters</strong>: <code>bool</code>
+  Automatically set ND filters for the simultaneous calibration light? This requires that Teff be within the allowed range of the exposure time calculator software (2700 - 6600 K).</p>
+<p><strong>CalND1</strong>: <code>str</code>
+  Cal Bench filter 1 position. Throughput = 10^-OD. Values: OD 0.1, OD 1.0, OD 1.3, OD 2.0, OD 3.0, OD 4.0</p>
+<p><strong>CalND2</strong>: <code>str</code>
+  Cal Bench filter 2 position. Throughput = 10^-OD. Values: OD 0.1, OD 0.3, OD 0.5, OD 0.8, OD 1.0, OD 4.0</p>
+<p><strong>NodN</strong>: <code>float</code>
+  [arcseconds] Distance to nod the telescope North before starting exposure.</p>
+<p><strong>NodE</strong>: <code>float</code>
+  [arcseconds] Distance to nod the telescope East before starting exposure.</p>
+<p><strong>GuideHere</strong>: <code>bool</code>
+  Should the tip tilt system try to lock on to target at this position?</p>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../SciOBparameters/" class="btn btn-neutral float-left" title="Science OB Parameters"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../kpfdrp/" class="btn btn-neutral float-right" title="Data Reduction">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -635,10 +665,6 @@
         </span>
     
     
-      <span><a href="../SciOBparameters/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../kpfdrp/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>RunOBs - KPF</title>
+    <title>GetExecutionHistory - KPF</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "RunOBs";
-        var mkdocs_page_input_path = "scripts/RunOBs.md";
+        var mkdocs_page_name = "GetExecutionHistory";
+        var mkdocs_page_input_path = "scripts/GetExecutionHistory.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -105,15 +105,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../expmetertermination/">Exposure Meter Termination</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
-    <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../buildingOBs/">Building OBs</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../SciOBparameters/">Science OB Parameters</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../CalOBparameters/">Calibration OB Parameters</a>
-                </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../buildingOBs/">Observing Blocks</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
                   </li>
@@ -436,8 +428,12 @@
                 </li>
     </ul>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
-    <ul>
+                <li class="toctree-l2 current"><a class="reference internal current" >kpf.observatoryAPIs</a>
+    <ul class="current">
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetObservingBlocks/">GetObservingBlocks</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
@@ -446,12 +442,14 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetTelescopeRelease/">GetTelescopeRelease</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetJunkStatus/">SetJunkStatus</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SubmitObserverComment/">SubmitObserverComment</a>
                 </li>
     </ul>
                 </li>
-                <li class="toctree-l2 current"><a class="reference internal current" >kpf.scripts</a>
-    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" >kpf.scripts</a>
+    <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../CleanupAfterCalibrations/">CleanupAfterCalibrations</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CleanupAfterScience/">CleanupAfterScience</a>
@@ -470,9 +468,7 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../RunOB/">RunOB</a>
                 </li>
-                <li class="toctree-l3 current"><a class="reference internal current" href="#">RunOBs</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../RunSoCalObservingLoop/">RunSoCalObservingLoop</a>
+                <li class="toctree-l3"><a class="reference internal" href="../RunSoCal/">RunSoCal</a>
                 </li>
     </ul>
                 </li>
@@ -503,6 +499,8 @@
                 <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../QueryReadMode/">QueryReadMode</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../RecoverDetectors/">RecoverDetectors</a>
                 </li>
@@ -593,8 +591,8 @@
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Technical Documentation</li>
           <li class="breadcrumb-item">Instrument Scripts</li>
-          <li class="breadcrumb-item">kpf.scripts</li>
-      <li class="breadcrumb-item active">RunOBs</li>
+          <li class="breadcrumb-item">kpf.observatoryAPIs</li>
+      <li class="breadcrumb-item active">GetExecutionHistory</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -603,23 +601,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="runobs"><code>RunOBs</code></h1>
+                <h1 id="getexecutionhistory"><code>GetExecutionHistory</code></h1>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<a id="kpf.scripts.RunOBs.RunOBs"></a>
+<a id="kpf.observatoryAPIs.GetExecutionHistory.GetExecutionHistory"></a>
     <div class="doc doc-contents first">
             <p class="doc doc-class-bases">
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Script to run a list of OBs as scheduled cals.</p>
+      
 
               <details class="quote">
-                <summary>Source code in <code>kpf/scripts/RunOBs.py</code></summary>
+                <summary>Source code in <code>kpf/observatoryAPIs/GetExecutionHistory.py</code></summary>
                 <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">10</span>
 <span class="normal">11</span>
 <span class="normal">12</span>
@@ -640,49 +638,17 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunOBs</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Script to run a list of OBs as scheduled cals.</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GetExecutionHistory</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="c1"># If specified obey the ALLOWSCHEDULEDCALS keyword</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scheduled&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">ALLOWSCHEDULEDCALS</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;ALLOWSCHEDULEDCALS&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">ALLOWSCHEDULEDCALS</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="s1">&#39;ALLOWSCHEDULEDCALS is No&#39;</span><span class="p">)</span>
+        <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;files&#39;</span><span class="p">):</span>
-            <span class="n">file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">OB</span> <span class="o">=</span> <span class="n">ObservingBlock</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to parse OB from </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                <span class="k">break</span>
-            <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
-                <span class="n">RunOB</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;waitforscript&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                               <span class="s1">&#39;scheduled&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
-                              <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OB from </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1"> was invalid, not executing OB&#39;</span><span class="p">)</span>
+        <span class="n">utdate</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;utdate&#39;</span><span class="p">,</span> <span class="s1">&#39;today&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">getObservingBlockHistory</span><span class="p">(</span><span class="n">utdate</span><span class="o">=</span><span class="n">utdate</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
@@ -690,8 +656,8 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;files&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The OB files to run&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;utdate&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;today&#39;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The UT date to retrieve.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -719,8 +685,8 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../RunOB/" class="btn btn-neutral float-left" title="RunOB"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../RunSoCalObservingLoop/" class="btn btn-neutral float-right" title="RunSoCalObservingLoop">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../SetTargetList/" class="btn btn-neutral float-left" title="SetTargetList"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../GetKPFCCObservingBlocks/" class="btn btn-neutral float-right" title="GetKPFCCObservingBlocks">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -747,10 +713,10 @@
         </span>
     
     
-      <span><a href="../RunOB/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../SetTargetList/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../RunSoCalObservingLoop/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../GetKPFCCObservingBlocks/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

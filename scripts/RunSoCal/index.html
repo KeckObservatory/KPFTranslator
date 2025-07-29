@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>RunSoCalObservingLoop - KPF</title>
+    <title>RunSoCal - KPF</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "RunSoCalObservingLoop";
-        var mkdocs_page_input_path = "scripts/RunSoCalObservingLoop.md";
+        var mkdocs_page_name = "RunSoCal";
+        var mkdocs_page_input_path = "scripts/RunSoCal.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -105,15 +105,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../expmetertermination/">Exposure Meter Termination</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
-    <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../buildingOBs/">Building OBs</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../SciOBparameters/">Science OB Parameters</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../CalOBparameters/">Calibration OB Parameters</a>
-                </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../buildingOBs/">Observing Blocks</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
                   </li>
@@ -438,6 +430,10 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetObservingBlocks/">GetObservingBlocks</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
@@ -445,6 +441,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../GetScheduledPrograms/">GetScheduledPrograms</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../SetJunkStatus/">SetJunkStatus</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SubmitObserverComment/">SubmitObserverComment</a>
                 </li>
@@ -470,9 +468,7 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../RunOB/">RunOB</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../RunOBs/">RunOBs</a>
-                </li>
-                <li class="toctree-l3 current"><a class="reference internal current" href="#">RunSoCalObservingLoop</a>
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">RunSoCal</a>
                 </li>
     </ul>
                 </li>
@@ -503,6 +499,8 @@
                 <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../QueryReadMode/">QueryReadMode</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../RecoverDetectors/">RecoverDetectors</a>
                 </li>
@@ -594,7 +592,7 @@
           <li class="breadcrumb-item">Technical Documentation</li>
           <li class="breadcrumb-item">Instrument Scripts</li>
           <li class="breadcrumb-item">kpf.scripts</li>
-      <li class="breadcrumb-item active">RunSoCalObservingLoop</li>
+      <li class="breadcrumb-item active">RunSoCal</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -603,14 +601,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="runsocalobservingloop"><code>RunSoCalObservingLoop</code></h1>
+                <h1 id="runsocal"><code>RunSoCal</code></h1>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<a id="kpf.scripts.RunSoCalObservingLoop.RunSoCalObservingLoop"></a>
+<a id="kpf.scripts.RunSoCal.RunSoCal"></a>
     <div class="doc doc-contents first">
             <p class="doc doc-class-bases">
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFScript">KPFScript</span></code></p>
@@ -647,7 +645,7 @@ the loop as long as there is enough time before the end time to complete a
 SoCal observation.</p>
 <p>Once the end time has passed, the system will perform basic cleanup of KPF,
 then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p>
-<h3 id="kpf.scripts.RunSoCalObservingLoop.RunSoCalObservingLoop--arguments">Arguments</h3>
+<h3 id="kpf.scripts.RunSoCal.RunSoCal--arguments">Arguments</h3>
 <ul>
 <li><strong>StartTimeHST</strong> - <code>float</code> The time (in decimal hours HST) to begin observing.</li>
 <li><strong>EndTimeHST</strong> - <code>float</code> The time (in decimal hours HST) to end observing.</li>
@@ -657,7 +655,7 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
 </ul>
 
               <details class="quote">
-                <summary>Source code in <code>kpf/scripts/RunSoCalObservingLoop.py</code></summary>
+                <summary>Source code in <code>kpf/scripts/RunSoCal.py</code></summary>
                 <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
 <span class="normal"> 29</span>
 <span class="normal"> 30</span>
@@ -866,7 +864,7 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
 <span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
-<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCalObservingLoop</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCal</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;This script runs a control loop to execute SoCal observations.</span>
 
 <span class="sd">    When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means</span>
@@ -1101,7 +1099,7 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../RunOBs/" class="btn btn-neutral float-left" title="RunOBs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../RunOB/" class="btn btn-neutral float-left" title="RunOB"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../CheckSoCalEnabled/" class="btn btn-neutral float-right" title="CheckSoCalEnabled">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -1129,7 +1127,7 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
         </span>
     
     
-      <span><a href="../RunOBs/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../RunOB/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../CheckSoCalEnabled/" style="color: #fcfcfc">Next &raquo;</a></span>

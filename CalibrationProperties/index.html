@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Calibration Properties - KPF</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Calibration Properties";
+        var mkdocs_page_input_path = "CalibrationProperties.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">KPF Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../status/">Instrument Status</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystems</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../tiptilt/">Tip Tilt Sysyem</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../socal/">Solar Calibrator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../agitator/">Agitator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../computers/">Computers</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../dataflow/">Data Flow</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../fastreadmode/">Fast Read Mode</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../communitycadence/">Community Cadence (KPF-CC)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibrations/">Daytime Calibrations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../nighttimecalibrations/">Nighttime Calibrations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../expmetertermination/">Exposure Meter Termination</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../buildingOBs/">Observing Blocks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Weather</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://mkwc.ifa.hawaii.edu/forecast/mko/index.cgi">MK Weather Center</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/skycams/CloudCamTimelapse.html">Keck Cloud Cameras</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Useful Keck Pages</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/observing/keckSchedule/keckSchedule.php">Telescope Schedule</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/">Keck Instruments</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/login/">Observer Login Page</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/software/obsplan/obsplan.php">Planning Tool</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://ucolick.org/calendar/keckcal2021-30/index.html">Twilight, Moon rise, etc.</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/offset.php">Offset & PA Calculator</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keckobservatory.org/observing/">General Keck Observing Info</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/TelLimits.html">Telescope Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/too_policies.html">ToO Interrupts</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Retrieve Your Data</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/UserGuide/PyKOA/TAPClients.html#pykoa">Retrieve Data using PyKOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Technical Documentation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U">Troubleshooting</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tiptiltinstructions/">Tip Tilt Instructions for OAs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Scripts</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" >kpf.ao</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ControlAOHatch/">ControlAOHatch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SendPCUtoHome/">SendPCUtoHome</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SendPCUtoKPF/">SendPCUtoKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAFMtoMirror/">SetAFMtoMirror</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAFStoNGS/">SetAFStoNGS</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAODCStoSIM/">SetAODCStoSIM</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAORotator/">SetAORotator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAORotatorManual/">SetAORotatorManual</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetupAOforACAM/">SetupAOforACAM</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetupAOforKPF/">SetupAOforKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TurnHepaOff/">TurnHepaOff</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TurnHepaOn/">TurnHepaOn</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TurnLightSourceOff/">TurnLightSourceOff</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.cahk</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PowerCycleCaHK/">PowerCycleCaHK</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.calbench</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CalLampPower/">CalLampPower</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictNDFilters/">PredictNDFilters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetCalSource/">SetCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetFlatFieldFiberPos/">SetFlatFieldFiberPos</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetLFCtoAstroComb/">SetLFCtoAstroComb</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetLFCtoStandbyHigh/">SetLFCtoStandbyHigh</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetND/">SetND</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetND1/">SetND1</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetND2/">SetND2</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetSimulCalSource/">SetSimulCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeIntensityReading/">TakeIntensityReading</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForCalSource/">WaitForCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForFlatFieldFiberPos/">WaitForFlatFieldFiberPos</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForLampWarm/">WaitForLampWarm</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForLFCReady/">WaitForLFCReady</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForND/">WaitForND</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForND1/">WaitForND1</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForND2/">WaitForND2</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.engineering</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GridSearch/">GridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ImageBackIlluminatedFibers/">ImageBackIlluminatedFibers</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/Run2DGridSearch/">Run2DGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeADCGridData/">TakeADCGridData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TriggerRedMiniFill/">TriggerRedMiniFill</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/AnalyzeGridSearch/">AnalyzeGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/AnalyzeTipTiltPerformance/">AnalyzeTipTiltPerformance</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/Fit2DGridSearch/">Fit2DGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CountCameraErrors/">CountCameraErrors</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.expmeter</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/BuildMasterBias/">BuildMasterBias</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetExpMeterExpTime/">SetExpMeterExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetExpMeterTerminationParameters/">SetExpMeterTerminationParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictExpMeterParameters/">PredictExpMeterParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetMasterBiasToDefault/">SetMasterBiasToDefault</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetupExpMeter/">SetupExpMeter</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeExpMeterBiases/">TakeExpMeterBiases</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.fiu</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ConfigureFIU/">ConfigureFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ControlFoldMirror/">ControlFoldMirror</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ControlHatch/">ControlHatch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/InitializeTipTilt/">InitializeTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/LockFIU/">LockFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/UnlockFIU/">UnlockFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/MeasureTipTiltMirrorRange/">MeasureTipTiltMirrorRange</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetADCAngles/">SetADCAngles</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetADCOffsets/">SetADCOffsets</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltCalculations/">SetTipTiltCalculations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltControl/">SetTipTiltControl</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltGain/">SetTipTiltGain</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltPosition/">SetTipTiltPosition</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltTargetPixel/">SetTipTiltTargetPixel</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ShutdownTipTilt/">ShutdownTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartTipTilt/">StartTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopTipTilt/">StopTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TestTipTiltMirrorRange/">TestTipTiltMirrorRange</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/VerifyCurrentBase/">VerifyCurrentBase</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForConfigureFIU/">WaitForConfigureFIU</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.fvc</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/FVCPower/">FVCPower</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictFVCParameters/">PredictFVCParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeFVCContinuous/">TakeFVCContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeFVCExposure/">TakeFVCExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetFVCExpTime/">SetFVCExpTime</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.guider</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CollectGuiderDarkCubes/">CollectGuiderDarkCubes</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/DisplayGuiderContinuous/">DisplayGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetGaiaStars/">GetGaiaStars</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GuiderLastfile/">GuiderLastfile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GuiderOutdir/">GuiderOutdir</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictGuiderParameters/">PredictGuiderParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetGuiderExpTime/">SetGuiderExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetGuiderFPS/">SetGuiderFPS</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetGuiderGain/">SetGuiderGain</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetGuiderOutdir/">SetGuiderOutdir</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartGuiderContinuous/">StartGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartTriggerFile/">StartTriggerFile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopGuiderContinuous/">StopGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopTriggerFile/">StopTriggerFile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeGuiderCube/">TakeGuiderCube</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeGuiderExposure/">TakeGuiderExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForTriggerFile/">WaitForTriggerFile</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.magiq</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/AddTarget/">AddTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetTargetList/">GetTargetList</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RemoveTarget/">RemoveTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RemoveAllTargets/">RemoveAllTargets</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SelectTarget/">SelectTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTargetList/">SetTargetList</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocks/">GetObservingBlocks</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetScheduledPrograms/">GetScheduledPrograms</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetJunkStatus/">SetJunkStatus</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SubmitObserverComment/">SubmitObserverComment</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.scripts</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CleanupAfterCalibrations/">CleanupAfterCalibrations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CleanupAfterScience/">CleanupAfterScience</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ConfigureForAcquisition/">ConfigureForAcquisition</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ConfigureForCalibrations/">ConfigureForCalibrations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ConfigureForScience/">ConfigureForScience</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EnterLowPowerMode/">EnterLowPowerMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EstimateOBDuration/">EstimateOBDuration</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RecoverFromLowPowerMode/">RecoverFromLowPowerMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOB/">RunOB</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCal/">RunSoCal</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.socal</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CheckSoCalEnabled/">CheckSoCalEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/DisableSoCal/">DisableSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EnableSoCal/">EnableSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/IsSoCalClosed/">IsSoCalClosed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/IsSoCalOpen/">IsSoCalOpen</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/IsSoCalShutDown/">IsSoCalShutDown</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ParkSoCal/">ParkSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SoCalStartAutonomous/">SoCalStartAutonomous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SoCalStopAutonomous/">SoCalStopAutonomous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForSoCalOnTarget/">WaitForSoCalOnTarget</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryReadMode/">QueryReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RecoverDetectors/">RecoverDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetCaHKDetector/">ResetCaHKDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetExpMeterDetector/">ResetExpMeterDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetGreenDetector/">ResetGreenDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetRedDetector/">ResetRedDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetDetectors/">ResetDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetExpTime/">SetExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetObject/">SetObject</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetObserver/">SetObserver</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetProgram/">SetProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetReadModeFast/">SetReadModeFast</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetReadModeNormal/">SetReadModeNormal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetSourceSelectShutters/">SetSourceSelectShutters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTimedShutters/">SetTimedShutters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTriggeredDetectors/">SetTriggeredDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartAgitator/">StartAgitator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartExposure/">StartExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopAgitator/">StopAgitator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForL0File/">WaitForL0File</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForReadout/">WaitForReadout</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForReady/">WaitForReady</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.telescope</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EastNorth/">EastNorth</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EndOfNight/">EndOfNight</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetObserverFromSchedule/">SetObserverFromSchedule</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetOutdirs/">SetOutdirs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartGUIs/">StartGUIs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartOfNight/">StartOfNight</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopGUIs/">StopGUIs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ZeroOutSlewCalTime/">ZeroOutSlewCalTime</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Calibration Properties</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="calibration-properties">Calibration Properties</h1>
+<p><strong>CalSource</strong>: <code>str</code>
+  Name of the calibration source</p>
+<p><strong>Object</strong>: <code>str</code>
+  Object name for the FITS header</p>
+<p><strong>nExp</strong>: <code>int</code>
+  Number of Exposures</p>
+<p><strong>ExpTime</strong>: <code>float</code>
+  [seconds] Exposure Time</p>
+<p><strong>TriggerCaHK</strong>: <code>bool</code>
+  Trigger the Ca H &amp; K detector for this observation?</p>
+<p><strong>TriggerGreen</strong>: <code>bool</code>
+  Trigger the Green detector for this observation?</p>
+<p><strong>TriggerRed</strong>: <code>bool</code>
+  Trigger the Red detector for this observation?</p>
+<p><strong>IntensityMonitor</strong>: <code>bool</code>
+  Run an Intensity Monitor measurement on this lamp before taking data?</p>
+<p><strong>CalND1</strong>: <code>str</code>
+  Cal Bench filter 1 position. Throughput = 10^-OD. Values: OD 0.1, OD 1.0, OD 1.3, OD 2.0, OD 3.0, OD 4.0</p>
+<p><strong>CalND2</strong>: <code>str</code>
+  Cal Bench filter 2 position. Throughput = 10^-OD. Values: OD 0.1, OD 0.3, OD 0.5, OD 0.8, OD 1.0, OD 4.0</p>
+<p><strong>OpenScienceShutter</strong>: <code>bool</code>
+  Open the Source Select Shutter for the Science fiber?</p>
+<p><strong>OpenSkyShutter</strong>: <code>bool</code>
+  Open the Source Select Shutter for the Sky fiber?</p>
+<p><strong>TakeSimulCal</strong>: <code>bool</code>
+  Inject simultaneous calibration light on to the detector during exposure?</p>
+<p><strong>WideFlatPos</strong>: <code>str</code>
+  If the WideFlat source is chosen, which wheel position to use?</p>
+<p><strong>ExpMeterMode</strong>: <code>str</code>
+  Exposure meter mode? (monitor, control, off)</p>
+<p><strong>ExpMeterExpTime</strong>: <code>float</code>
+  [seconds] Exposure Time for the exposure meter</p>
+<p><strong>ExpMeterBin</strong>: <code>int</code>
+  Which wavelength bin to use for exposure meter termination? (1=498nm, 2=604nm, 3=711nm, 4=817nm)</p>
+<p><strong>ExpMeterThreshold</strong>: <code>float</code>
+  [e-/nm] Threshold flux at the science detector at which to terminate the exposure</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

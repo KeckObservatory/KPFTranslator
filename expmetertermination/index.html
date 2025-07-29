@@ -105,15 +105,7 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Exposure Meter Termination</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >Observing Blocks</a>
-    <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../buildingOBs/">Building OBs</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../SciOBparameters/">Science OB Parameters</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../CalOBparameters/">Calibration OB Parameters</a>
-                </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../buildingOBs/">Observing Blocks</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
                   </li>
@@ -438,6 +430,10 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocks/">GetObservingBlocks</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
@@ -445,6 +441,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetScheduledPrograms/">GetScheduledPrograms</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetJunkStatus/">SetJunkStatus</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/SubmitObserverComment/">SubmitObserverComment</a>
                 </li>
@@ -470,9 +468,7 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOB/">RunOB</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOBs/">RunOBs</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCalObservingLoop/">RunSoCalObservingLoop</a>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCal/">RunSoCal</a>
                 </li>
     </ul>
                 </li>
@@ -503,6 +499,8 @@
                 <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryReadMode/">QueryReadMode</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/RecoverDetectors/">RecoverDetectors</a>
                 </li>
@@ -603,21 +601,26 @@
               
                 <h1 id="exposure-meter-termination">Exposure Meter Termination</h1>
 <p>KPF contains an <a href="../exposuremeter/">exposure meter</a> which can measure the flux weighted midpoint of an exposure. This can also be used to terminate a science exposure once a desired signal level is reached. To do this the system will track the flux measured in the exposure meter spectra binned in to 4 passbands, each about 100nm wide, centered on 498.125nm, 604.375nm, 710.625nm, and 816.875nm respectively.</p>
-<p>To use exposure meter termination, the observer sets <code>ExpMeterMode: control</code> in the OB and then chooses one wavelength band to trigger on (using the <code>ExpMeterBin</code> OB value) and then chooses the target flux (in e-/nm via the <code>ExpMeterThreshold</code> OB value) in the resulting <strong>science</strong> spectrum that is desired.  The system will convert the target value for the science spectrum in to a total ADU count for the exposure meter in that particular bandpass and when that threshold is surpassed, the exposure will stop.  Regardless of whether that exposure meter threshold is passed, the exposure will stop when the nominal exposure time is reached.  Thus when using exposure meter termination, the <code>ExpTime</code> parameter should be thought of as the maximum allowed exposure time.</p>
+<p>To use exposure meter termination, the observer sets <code>ExpMeterMode: control</code> in the Observations section of the OB and then chooses one wavelength band to trigger on (using the <code>ExpMeterBin</code> value) and then chooses the target flux (in Mphotons/A at peak of blaze via the <code>ExpMeterThreshold</code> value) in the resulting <strong>science</strong> spectrum that is desired.  The system will convert the target value for the science spectrum in to a total ADU count for the exposure meter in that particular bandpass and when that threshold is surpassed, the exposure will stop.  Regardless of whether that exposure meter threshold is passed, the exposure will stop when the nominal exposure time is reached.  Thus when using exposure meter termination, the <code>ExpTime</code> parameter should be thought of as the maximum allowed exposure time.</p>
 <p>For example, an OB with the following values:</p>
 <div class="codehilite"><pre><span></span><code>  ExpTime: 300
   ExpMeterMode: control
   ExpMeterBin: 604.375
-  ExpMeterThreshold: 50000
+  ExpMeterThreshold: 10
 </code></pre></div>
 
-<p>will terminate when the exposure meter flux reaches a value which should result in approximately 50,000 e-/nm signal in the resulting science spectrum at about 604nm <strong>or</strong> when the total exposure time reaches 300 seconds, whichever comes first.</p>
+<p>will terminate when the exposure meter flux reaches a value which should result in approximately 10,000,000 photons/A signal in the resulting science spectrum at about 604nm <strong>or</strong> when the total exposure time reaches 300 seconds, whichever comes first.</p>
+<h2 id="signal-to-noise">Signal to Noise</h2>
+<p>A very approximate signal to noise estimate is to take the <code>ExpMeterThreshold</code> value (again this is in Mphotons/A), take the square root, and multiply by 120:</p>
+<p><code>SNR ~ 120*ExpMeterThreshold^0.5</code></p>
+<p>This roughly predicts the DRP derived SNR values in the reduced data.  The figure below shows the SNR values (reported by the DRP in various wavelengths) plotted against the <code>ExpMeterThreshold</code> value (Mphotons/A). Note that there is some scatter in the plot below, in part due to a mismatch between the exposure meter termination wavelength bins and the wavelength of the SNR measurement from the DRP.</p>
+<p><img alt="SNR values (reported by the DRP in various wavelengths) plotted against the ExpMeterThreshold value (kphotons/A)." src="../figures/flux_vs_SNR.png" /></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../nighttimecalibrations/" class="btn btn-neutral float-left" title="Nighttime Calibrations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../buildingOBs/" class="btn btn-neutral float-right" title="Building OBs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../buildingOBs/" class="btn btn-neutral float-right" title="Observing Blocks">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
