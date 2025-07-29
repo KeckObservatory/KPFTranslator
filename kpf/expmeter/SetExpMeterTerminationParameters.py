@@ -7,35 +7,21 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-def expeter_flux_target(kphotons_per_A, band):
+def expeter_flux_target(Mphotons_per_A, band):
     # photons/A near bin center divided by TOTCORR
     # bin1 / 498.125nm = 0.104 (1.4%)
     # bin2 / 604.375nm = 0.116 (0.8%)
     # bin3 / 710.625nm = 0.087 (2.2%)
     # bin4 / 816.875nm = 0.116 (0.8%)
-    # mean photons/A in bin divided by TOTCORR
-    # bin1 / 498.125nm = 0.092 (1.2%)
-    # bin2 / 604.375nm = 0.066 (1.6%)
-    # bin3 / 710.625nm = 0.067 (0.6%)
-    # bin4 / 816.875nm = 0.088 (0.8%)
     peak_photon_ratios = {'498.125': 0.104,
                           '604.375': 0.116,
                           '710.625': 0.087,
                           '816.875': 0.116}
-    expmeter_threshold = 1e3*kphotons_per_A/peak_photon_ratios[band]
+    expmeter_threshold = 1e6*Mphotons_per_A/peak_photon_ratios[band]
     # Estimate SNR using empirical relation from example observations.
     # SNR is taken from DRP output at a few wavelengths.
-    snr_estimate = 120*(1e3*kphotons_per_A)**0.5
+    snr_estimate = 120*(Mphotons_per_A)**0.5
     return expmeter_threshold, snr_estimate
-
-
-# def expeter_flux_target(spectrograph_flux, band):
-#     slope = {'498.125': 7503.438,
-#              '604.375': 50044.28,
-#              '710.625': 30752.42,
-#              '816.875': 42361.16}
-#     expmeter_flux = spectrograph_flux*slope[band]
-#     return expmeter_flux
 
 
 class SetExpMeterTerminationParameters(KPFFunction):
@@ -98,5 +84,5 @@ class SetExpMeterTerminationParameters(KPFFunction):
                             choices=['1', '2', '3', '4', '498.125','604.375','710.625','816.875'],
                             help="Which exposure meter band to use")
         parser.add_argument('ExpMeterThreshold', type=float,
-                            help="Threshold flux in e-/nm in the main spectrograph")
+                            help="Threshold flux in Mphotons/A in the main spectrograph")
         return super().add_cmdline_args(parser)

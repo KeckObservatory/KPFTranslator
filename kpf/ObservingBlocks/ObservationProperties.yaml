@@ -45,7 +45,7 @@
   valuetype: int
   defaultvalue: 1
 - name: 'ExpMeterThreshold'
-  comment: '[ke-/angstrom] Flux at the science detector at peak of order at which to terminate the exposure'
+  comment: '[Mphotons/angstrom] Flux at the science detector at peak of order at which to terminate the exposure'
   valuetype: float
   defaultvalue: 50000
   precision: 0
