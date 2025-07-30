@@ -34,7 +34,7 @@
   Which wavelength bin to use for exposure meter termination? (1=498nm, 2=604nm, 3=711nm, 4=817nm)
 
 **ExpMeterThreshold**: `float`
-  [ke-/angstrom] Flux at the science detector at peak of order at which to terminate the exposure
+  [Mphotons/angstrom] Flux at the science detector at peak of order at which to terminate the exposure
 
 **TakeSimulCal**: `bool`
   Inject simultaneous calibration light on to the detector during exposure?
