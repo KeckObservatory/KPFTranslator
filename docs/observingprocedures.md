@@ -27,11 +27,16 @@ It is important that this not be run while other instruments are observing. To c
 - Set observers from telescope schedule
 
 
+### Load your OBs in the KPF OB GUI
+
+In the KPF OB GUI, from the "OB List" menu, choose a method to load OBs for the night. Depending on your program, this may mean loading a schedule for KPF-CC (Community Cadence), loading OBs from the database for a classical program, or opening OB files on disk.  This should populate the "Observing Block List" are of the GUI and will send these targets to the Magiq sar list (which will also be visible in the observer Magiq GUI).
+
+
 ### Slew to the Vicinity of Your First Target
 
-When ready to move the telescope, the OA will ask you for your first target and load the coordinates from your starlist file. They will select a bright star near your target and will attempt to acquire that in the guider, then will double-check the accuracy of pointing by acquiring one or two additional stars from the SAO or GSC catalogs.
+When ready to move the telescope, the OA will ask you for your first target and load the coordinates from Magiq. They will select a bright star near your target and will attempt to acquire that in the guider, then will double-check the accuracy of pointing by acquiring one or two additional stars from the SAO or GSC catalogs.
 
-To monitor the guider images, run `Telescope GUIs --> MAGIQ Guider UI` from the background menu.
+To monitor the guider images, use the Magiq Observer UI which is available from `Telescope GUIs --> MAGIQ Guider UI` in the FVWM background menu if it is not already up.
 
 ### Focus the Telescope
 
@@ -39,17 +44,9 @@ The OA will run the telescope focus procedure (typically Autofoc) near your scie
 
 # Performing Observations
 
-### Highlight Your Target in Magiq
-
-In the Magiq star list (at the bottom of the Magiq User GUI), right click your target and select the option to highlight it for the OA (you can get the same result by middle clicking the target).  This highlighting will show up on the OA's GUI making it easier for them to find the target you want to go to.  Let the OA know to slew to the target when your current exposure is done.
-
 ### Execute Your OB
 
-Observers can load previously saved OBs or create them on the fly for KPF observing. To load and execute a saved OB:
-
-- Click Load OB from File
-- Select the OB from the file list
-- Click Execute This OB (or Execute OB with Slew Cal)
+Executing an OB is as simple as selecting it in the "Observing Block List" in the KPF OB GUI and clicking the "Execute Selected OB" button (or "Execute with SlewCal"). **This will highlight the target in Magiq so that the OA can begin slewing the telescope.**
 
 The GUI will first prompt the observers to confirm the OB execution. Once confirmed, an xterm will launch and prompt the observers with addtional information if and when needed, so watch the contents of this xterm.
 
