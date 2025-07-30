@@ -26,12 +26,12 @@
 * L0 File Generation
     * [Deprecated L0 files](#deprecated-l0-files)
 * Agitator
-    * [Agitator Sounds Wrong or Speed is Wrong](#)
+    * [Agitator Sounds Wrong or Speed is Wrong](#agitator-sounds-wrong-or-speed-is-wrong)
 * Vacuum
-    * [Vacuum Chamber Vacuum Levels Rising](#)
+    * [Vacuum Chamber Vacuum Levels Rising](#vacuum-chamber-vacuum-levels-rising)
 * SoCal
-    * [Enclosure Won’t Open or Close](#)
-    * [Enclosure Won’t Open](#)
+    * [Enclosure Lid Does not Move 1](#enclosure-lid-does-not-move-1)
+    * [Enclosure Lid Does not Move 2](#enclosure-lid-does-not-move-2)
 
 
 # General Principles
@@ -449,11 +449,35 @@ L0 files may be deprecated when switching to fast-readout mode. The observers ma
 
 <u>Symptom</u>:
 
+The agitator is not working as expected.  This is usually seen in the agitator speed value (see screenshots) or by listening to the sounds.  This is a plot of what the kpfmot.AGITSPD keyword value looks like as the agitator is cycled on during exposures.  It goes to a negative value of a few thousand during operation.
+
+![This is a plot of what the kpfmot.AGITSPD keyword value looks like as the agitator is cycled on during exposures.  It goes to a negative value of a few thousand during operation.](figures/AgitatorSpeedGood.png)
+
+This is an example of a bad agitator speed behavior.  It goes positive for one data point, then back to zero.
+
+![This is an example of a bad agitator speed behavior.  It goes positive for one data point, then back to zero.](figures/AgitatorSpeedBad.png)
+
+You can listen to the agitator mechanism via the “KPF crypt M5075” camera on the [facility camera list](https://www.keck.hawaii.edu/twiki/bin/view/Operations/FacilityCameras) (note this is an internal web page at Keck).  In normal operation the agitator makes a regular (roughly 1-2 Hz) mechanical oscillation sound.  When the bad behavior above occurred it was either silent (note there is background fan noise on that camera) or would make a single mechanical “cachunk” sound, then stop.
 
 <u>Problem</u>:
 
+The motor is not initialized properly.
 
 <u>Solution</u>:
+
+Initialize using:
+
+`modify -s kpfmot agitmod=pos`
+
+`modify -s kpfmot agitini=no`
+
+This leaves the system in Halt mode.  Initialize using:
+
+`modify -s kpfmot agitmod=pos`
+
+`modify -s kpfmot agitini=yes`
+
+Note: if the ini command fails with: `Error setting agitini: agitini: ERR_STST_COND_TIMEOUT (-5239) StdStage condition did not become true within the time limit` try restarting the dispatcher (kpf restart kpfmot) in order to get it to release the thread lock on communications and they to initialize again.
 
 # Vacuum
 
@@ -461,31 +485,75 @@ L0 files may be deprecated when switching to fast-readout mode. The observers ma
 
 <u>Symptom</u>:
 
+Vacuum levels in the chamber are rising, but the vacuum levels at the pump are falling.  These are `kpfvac.VCH_HIVAC` and `kpfvac.VCART_HIVAC` keywords respectively.
+
+This might manifest as a “vac chamber trouble” alert from kpfmon.
 
 <u>Problem</u>:
+
+The gate valve between the vacuum chamber and the pump has closed.
+
+The gate valve is currently (late 2023) not instrumented and is controlled by compressed air from the facility.  As long as facility compressed air is working, the valve is open and the pump should be keeping the vacuum chamber at good vacuum levels.  If the gate valve closes, it is presumably because compressed air has failed.
+
+Below is a Grafana plot showing that as chamber pressure was rising, vac cart pressure was falling.  This is the signature of the gate valve being closed. In this example, the gate valve closed at about 14:12 local time and was opened again around 15:15 local time.
+
+![This is the signature of the gate valve being closed. In this above example, the gate valve closed at about 14:12 local time and was opened again around 15:15 local time.](figures/VacuumLevelsProblem.png)
 
 
 <u>Solution</u>:
 
 # SoCal
 
-## Enclosure Won’t Open or Close
+## Enclosure Lid Does not Move 1
 
 <u>Symptom</u>:
 
+Enclosure will not move.  It may begin moving, then stop and reverse.
 
 <u>Problem</u>:
 
+Enclosure motor is hitting an overcurrent limit.
+
+To verify this is the problem, log in to the dome controller from kpfeng@kpfserver:
+
+`ssh socal`
+
+This connects to the Raspberry Pi controller in the dome enclosure.  The username and IP address has configured in the `~/.ssh/config` file on kpfserver (you can ssh manually using `pi@192.168.23.244`) and the SSH key for kpfserver has been installed on the Pi, so it should not ask for a password, but if it does, the password in in the usual `showpasswords` location.
+
+View the dome log file in the `~/dome.log` and look for errors which indicate the nature of the problem.
+
+The `~/grep_for_dome_error` script will exclude many of the noisy, not useful lines in the dome.log file and help with examining the log.
 
 <u>Solution</u>:
 
+If the log file indicates overcurrent on the motors is the issue.  Ensure the mechanisms are clear of obstruction and reasonably well balanced (it doesn’t need to be perfect).
 
-## Enclosure Won’t Open
+
+## Enclosure Lid Does not Move 2
 
 <u>Symptom</u>:
 
+Enclosure will not move.  It may begin moving, then stop and reverse.
 
 <u>Problem</u>:
 
+Enclosure motor is not getting current.
+
+To verify this is the problem, log in to the dome controller from kpfeng@kpfserver:
+
+`ssh socal`
+
+This connects to the Raspberry Pi controller in the dome enclosure.  The username and IP address has configured in the `~/.ssh/config` file on kpfserver (you can ssh manually using `pi@192.168.23.244`) and the SSH key for kpfserver has been installed on the Pi, so it should not ask for a password, but if it does, the password in in the usual `showpasswords` location.
+
+View the dome log file in the `~/dome.log` and look for errors similar to:
+
+```
+2024-07-09 19:09:37,752 WARNING  Operation timed out (35.0 secs), max measured motor
+current: 0.0 A.
+```
+
+The `~/grep_for_dome_error` script will exclude many of the noisy, not useful lines in the dome.log file and help with examining the log.
 
 <u>Solution</u>:
+
+Reboot the controller (raspberry pi): `sudo reboot` and restart the kpfsocal3 dispatcher: `kpf restart kpfsocal3`.  Multiple reboots may be required.
