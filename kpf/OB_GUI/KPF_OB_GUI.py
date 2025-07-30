@@ -1445,21 +1445,38 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.exp_index = -1
 
-
     def mark_exposure_junk(self):
+        if self.exp_index < 0:
+            self.log.warning('mark_exposure_junk: No exposure selected')
+            return
         self.log.debug(f'mark_exposure_junk')
-        if self.exp_index > 0:
-            exposure = self.HistoryListModel.exposures[self.exp_index]
-            is_junk = exposure.get('junk') in ['True', True]
-            params = {'id': exposure.get('id'),
-                      'start_time': exposure.get('start_time'),
-                      'junk': not is_junk}
-            SetJunkStatus.execute(params)
-            self.refresh_history()
-            if is_junk:
-                self.MarkExposureJunk.setText('Mark Selected Exposure as Junk')
-            else:
-                self.MarkExposureJunk.setText('Mark Selected Exposure as Good')
+        junk_comment = InputPopup('Marking exposure as Junk', 'Reason for toggling junk flag:')
+        if junk_comment.exec_():
+            comment = junk_comment.result.strip()
+        else:
+            return
+        exposure = self.HistoryListModel.exposures[self.exp_index]
+        is_junk = exposure.get('junk') in ['True', True]
+        params = {'id': exposure.get('id'),
+                  'start_time': exposure.get('start_time'),
+                  'junk': not is_junk}
+        SetJunkStatus.execute(params)
+        # Write a log line to a file with the user comment
+        line = f"{exposure.get('start_time')}, {not is_junk}, '{comment}'"
+        logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
+        date_str = exposure.get('start_time', '')[:10]
+        junk_log_file = logdir / f"exposure_status_{date_str}.csv"
+        needs_header = not junk_log_file.exists()
+        with open(junk_log_file, 'a') as jlf:
+            if needs_header:
+                jlf.write('# Exposure Start Time, New Junk Status, User Comment\n')
+            jlf.write(line+'\n')
+        # Update display elements
+        self.refresh_history()
+        if is_junk:
+            self.MarkExposureJunk.setText('Mark Selected Exposure as Junk')
+        else:
+            self.MarkExposureJunk.setText('Mark Selected Exposure as Good')
 
 
     ##--------------------------------------------------------------
