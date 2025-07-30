@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Troubleshooting - KPF</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Troubleshooting";
+        var mkdocs_page_input_path = "troubleshooting.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">KPF Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../status/">Instrument Status</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystems</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../tiptilt/">Tip Tilt Sysyem</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../socal/">Solar Calibrator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../agitator/">Agitator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../computers/">Computers</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../dataflow/">Data Flow</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../fastreadmode/">Fast Read Mode</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../communitycadence/">Community Cadence (KPF-CC)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibrations/">Daytime Calibrations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../nighttimecalibrations/">Nighttime Calibrations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../expmetertermination/">Exposure Meter Termination</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../buildingOBs/">Observing Blocks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Weather</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://mkwc.ifa.hawaii.edu/forecast/mko/index.cgi">MK Weather Center</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/skycams/CloudCamTimelapse.html">Keck Cloud Cameras</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Useful Keck Pages</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/observing/keckSchedule/keckSchedule.php">Telescope Schedule</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/">Keck Instruments</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/login/">Observer Login Page</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/software/obsplan/obsplan.php">Planning Tool</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://ucolick.org/calendar/keckcal2021-30/index.html">Twilight, Moon rise, etc.</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/offset.php">Offset & PA Calculator</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keckobservatory.org/observing/">General Keck Observing Info</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/TelLimits.html">Telescope Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/too_policies.html">ToO Interrupts</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Retrieve Your Data</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/UserGuide/PyKOA/TAPClients.html#pykoa">Retrieve Data using PyKOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Technical Documentation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U">Troubleshooting</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tiptiltinstructions/">Tip Tilt Instructions for OAs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Scripts</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" >kpf.ao</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ControlAOHatch/">ControlAOHatch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SendPCUtoHome/">SendPCUtoHome</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SendPCUtoKPF/">SendPCUtoKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAFMtoMirror/">SetAFMtoMirror</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAFStoNGS/">SetAFStoNGS</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAODCStoSIM/">SetAODCStoSIM</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAORotator/">SetAORotator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetAORotatorManual/">SetAORotatorManual</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetupAOforACAM/">SetupAOforACAM</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetupAOforKPF/">SetupAOforKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TurnHepaOff/">TurnHepaOff</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TurnHepaOn/">TurnHepaOn</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TurnLightSourceOff/">TurnLightSourceOff</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.cahk</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PowerCycleCaHK/">PowerCycleCaHK</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.calbench</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CalLampPower/">CalLampPower</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictNDFilters/">PredictNDFilters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetCalSource/">SetCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetFlatFieldFiberPos/">SetFlatFieldFiberPos</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetLFCtoAstroComb/">SetLFCtoAstroComb</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetLFCtoStandbyHigh/">SetLFCtoStandbyHigh</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetND/">SetND</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetND1/">SetND1</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetND2/">SetND2</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetSimulCalSource/">SetSimulCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeIntensityReading/">TakeIntensityReading</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForCalSource/">WaitForCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForFlatFieldFiberPos/">WaitForFlatFieldFiberPos</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForLampWarm/">WaitForLampWarm</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForLFCReady/">WaitForLFCReady</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForND/">WaitForND</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForND1/">WaitForND1</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForND2/">WaitForND2</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.engineering</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GridSearch/">GridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ImageBackIlluminatedFibers/">ImageBackIlluminatedFibers</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/Run2DGridSearch/">Run2DGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeADCGridData/">TakeADCGridData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TriggerRedMiniFill/">TriggerRedMiniFill</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/AnalyzeGridSearch/">AnalyzeGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/AnalyzeTipTiltPerformance/">AnalyzeTipTiltPerformance</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/Fit2DGridSearch/">Fit2DGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CountCameraErrors/">CountCameraErrors</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.expmeter</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/BuildMasterBias/">BuildMasterBias</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetExpMeterExpTime/">SetExpMeterExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetExpMeterTerminationParameters/">SetExpMeterTerminationParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictExpMeterParameters/">PredictExpMeterParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetMasterBiasToDefault/">SetMasterBiasToDefault</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetupExpMeter/">SetupExpMeter</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeExpMeterBiases/">TakeExpMeterBiases</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.fiu</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ConfigureFIU/">ConfigureFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ControlFoldMirror/">ControlFoldMirror</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ControlHatch/">ControlHatch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/InitializeTipTilt/">InitializeTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/LockFIU/">LockFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/UnlockFIU/">UnlockFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/MeasureTipTiltMirrorRange/">MeasureTipTiltMirrorRange</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetADCAngles/">SetADCAngles</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetADCOffsets/">SetADCOffsets</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltCalculations/">SetTipTiltCalculations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltControl/">SetTipTiltControl</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltGain/">SetTipTiltGain</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltPosition/">SetTipTiltPosition</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTipTiltTargetPixel/">SetTipTiltTargetPixel</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ShutdownTipTilt/">ShutdownTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartTipTilt/">StartTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopTipTilt/">StopTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TestTipTiltMirrorRange/">TestTipTiltMirrorRange</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/VerifyCurrentBase/">VerifyCurrentBase</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForConfigureFIU/">WaitForConfigureFIU</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.fvc</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/FVCPower/">FVCPower</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictFVCParameters/">PredictFVCParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeFVCContinuous/">TakeFVCContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeFVCExposure/">TakeFVCExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetFVCExpTime/">SetFVCExpTime</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.guider</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CollectGuiderDarkCubes/">CollectGuiderDarkCubes</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/DisplayGuiderContinuous/">DisplayGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetGaiaStars/">GetGaiaStars</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GuiderLastfile/">GuiderLastfile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GuiderOutdir/">GuiderOutdir</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictGuiderParameters/">PredictGuiderParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetGuiderExpTime/">SetGuiderExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetGuiderFPS/">SetGuiderFPS</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetGuiderGain/">SetGuiderGain</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetGuiderOutdir/">SetGuiderOutdir</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartGuiderContinuous/">StartGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartTriggerFile/">StartTriggerFile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopGuiderContinuous/">StopGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopTriggerFile/">StopTriggerFile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeGuiderCube/">TakeGuiderCube</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeGuiderExposure/">TakeGuiderExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForTriggerFile/">WaitForTriggerFile</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.magiq</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/AddTarget/">AddTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetTargetList/">GetTargetList</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RemoveTarget/">RemoveTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RemoveAllTargets/">RemoveAllTargets</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SelectTarget/">SelectTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTargetList/">SetTargetList</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocks/">GetObservingBlocks</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetScheduledPrograms/">GetScheduledPrograms</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetJunkStatus/">SetJunkStatus</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SubmitObserverComment/">SubmitObserverComment</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.scripts</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CleanupAfterCalibrations/">CleanupAfterCalibrations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CleanupAfterScience/">CleanupAfterScience</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ConfigureForAcquisition/">ConfigureForAcquisition</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ConfigureForCalibrations/">ConfigureForCalibrations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ConfigureForScience/">ConfigureForScience</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EnterLowPowerMode/">EnterLowPowerMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EstimateOBDuration/">EstimateOBDuration</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RecoverFromLowPowerMode/">RecoverFromLowPowerMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunOB/">RunOB</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RunSoCal/">RunSoCal</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.socal</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CheckSoCalEnabled/">CheckSoCalEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/DisableSoCal/">DisableSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EnableSoCal/">EnableSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/IsSoCalClosed/">IsSoCalClosed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/IsSoCalOpen/">IsSoCalOpen</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/IsSoCalShutDown/">IsSoCalShutDown</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ParkSoCal/">ParkSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SoCalStartAutonomous/">SoCalStartAutonomous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SoCalStopAutonomous/">SoCalStopAutonomous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForSoCalOnTarget/">WaitForSoCalOnTarget</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/QueryReadMode/">QueryReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/RecoverDetectors/">RecoverDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetCaHKDetector/">ResetCaHKDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetExpMeterDetector/">ResetExpMeterDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetGreenDetector/">ResetGreenDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetRedDetector/">ResetRedDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ResetDetectors/">ResetDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetExpTime/">SetExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetObject/">SetObject</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetObserver/">SetObserver</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetProgram/">SetProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetReadModeFast/">SetReadModeFast</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetReadModeNormal/">SetReadModeNormal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetSourceSelectShutters/">SetSourceSelectShutters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTimedShutters/">SetTimedShutters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetTriggeredDetectors/">SetTriggeredDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartAgitator/">StartAgitator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartExposure/">StartExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopAgitator/">StopAgitator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForL0File/">WaitForL0File</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForReadout/">WaitForReadout</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/WaitForReady/">WaitForReady</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.telescope</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EastNorth/">EastNorth</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/EndOfNight/">EndOfNight</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetObserverFromSchedule/">SetObserverFromSchedule</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/SetOutdirs/">SetOutdirs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartGUIs/">StartGUIs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StartOfNight/">StartOfNight</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/StopGUIs/">StopGUIs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ZeroOutSlewCalTime/">ZeroOutSlewCalTime</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Troubleshooting</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="troubleshooting">Troubleshooting</h1>
+<h3 id="table-of-contents">Table of Contents</h3>
+<ul>
+<li><a href="#general-principles">General Principles</a></li>
+<li><a href="#log-file-locations">Log File Locations</a></li>
+<li>Scripts<ul>
+<li><a href="#existing-script-is-running">Existing Script is Running</a></li>
+<li><a href="#agitator-use-is-disabled">Agitator Use is Disabled</a></li>
+</ul>
+</li>
+<li>Calibrations<ul>
+<li><a href="#calibration-source-is-not-working">Calibration Source is Not Working</a></li>
+<li><a href="#slewcal-or-simultaneous-calibration-source-is-wrong">SlewCal or Simultaneous Calibration Source is Wrong</a></li>
+<li><a href="#etalon-light-source-is-off">Etalon Light Source is Off</a></li>
+</ul>
+</li>
+<li>Guider<ul>
+<li><a href="#target-is-not-visible-in-guider">Target is not Visible in Guider</a></li>
+</ul>
+</li>
+<li>FIU<ul>
+<li><a href="#fiu-mode-change-fails">FIU Mode Change Fails</a></li>
+<li><a href="#tip-tilt-performance-is-poor">Tip Tilt Performance is Poor</a></li>
+</ul>
+</li>
+<li>Detectors<ul>
+<li><a href="#kpfexposeexpose-is-not-ready">kpfexpose.EXPOSE is not Ready</a></li>
+<li><a href="#detector-refuses-to-be-triggered">Detector Refuses to be Triggered</a></li>
+<li><a href="#detector-fails-to-trigger-without-error">Detector Fails to Trigger Without Error</a></li>
+<li><a href="#green-or-red-ccdpower-fails-to-turn-on">Green or Red CCDPOWER Fails to turn on</a></li>
+<li><a href="#ca-hk-detector-stuck">Ca HK Detector Stuck</a></li>
+<li><a href="#exposure-meter-in-error-state">Exposure Meter in Error State</a></li>
+</ul>
+</li>
+<li>L0 File Generation<ul>
+<li><a href="#deprecated-l0-files">Deprecated L0 files</a></li>
+</ul>
+</li>
+<li>Agitator<ul>
+<li><a href="#agitator-sounds-wrong-or-speed-is-wrong">Agitator Sounds Wrong or Speed is Wrong</a></li>
+</ul>
+</li>
+<li>Vacuum<ul>
+<li><a href="#vacuum-chamber-vacuum-levels-rising">Vacuum Chamber Vacuum Levels Rising</a></li>
+</ul>
+</li>
+<li>SoCal<ul>
+<li><a href="#enclosure-lid-does-not-move-1">Enclosure Lid Does not Move 1</a></li>
+<li><a href="#enclosure-lid-does-not-move-2">Enclosure Lid Does not Move 2</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="general-principles">General Principles</h1>
+<p>DO NOT use <code>control-c</code> to stop a script, this can leave the instrument in an unsafe state.  Use <code>kpfconfig.SCRIPTSTOP</code> to request a stop (also available as a button in the KPF OB GUI).</p>
+<h1 id="log-file-locations">Log File Locations</h1>
+<p>Relevant log files for KPF are located in the following locations:</p>
+<ul>
+<li>Services and dispatchers write their logs to the <code>/usr/local/kroot/var/log</code> directory <strong>on the server on which they run</strong>.  Most services run on kpfserver, but FIU related services run on kpffiuserver for example. A shortcut to that directory is available on the command line: <code>cdlog</code></li>
+<li>The KPF Translator writes logs to the data disk: <code>/s/sdata1701/KPFTranslator_logs</code><ul>
+<li>A shortcut to that directory is available on the command line: <code>cdtlog</code></li>
+<li>Within that directory, all KPF translator log lines are written to: <code>KPFTranslator.log</code></li>
+<li>Also within that directory are date directories such as <code>2023jul01</code> which contain logs which are written by high level scripts such as <code>RunOB</code>. The log lines in these files are duplicates of what is in the KPFTranslator.log file in the directory above, but are duplicated here for easier searching and examination.  It is also an easy way to see what high level scripts were run on a particular night.</li>
+</ul>
+</li>
+<li>The command line interface for all of the translators writes to the date directories in <code>/s/sdata1701/KPFTranslator_logs</code> in a <code>cli_logs</code> subdirectory of the date.  For example: <code>/s/sdata1701/KPFTranslator_logs/2023jul01/cli_logs/cli_interface.log</code></li>
+<li>The KPF OB GUI writes logs to the data disk in <code>/s/sdata1701/KPFTranslator_logs/OB_GUI.log</code></li>
+</ul>
+<h1 id="scripts">Scripts</h1>
+<h2 id="existing-script-is-running">Existing Script is Running</h2>
+<p><u>Symptom</u>:</p>
+<p>A script fails on the command line with a message similar to:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">kpf</span><span class="p">.</span><span class="n">FailedPreCondition</span><span class="o">:</span><span class="w"> </span><span class="n">Failed</span><span class="w"> </span><span class="n">PreCondition</span><span class="o">:</span><span class="w"> </span><span class="n">Existing</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">RunCalOB</span><span class="p">.</span><span class="n">py</span><span class="w"> </span><span class="p">(</span><span class="mi">3303940</span><span class="p">)</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span>
+<span class="nf">If</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">offending</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="kr">not</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="p">(</span><span class="n">PID</span><span class="w"> </span><span class="kr">not</span><span class="w"> </span><span class="n">listed</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">ps</span><span class="p">)</span>
+<span class="n">then</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">keywords</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">cleared</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">running</span><span class="o">:</span>
+<span class="w">  </span><span class="n">reset_script_keywords</span>
+<span class="kr">or</span><span class="w"> </span><span class="n">invoking</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">FVWM</span><span class="w"> </span><span class="n">background</span><span class="w"> </span><span class="n">menu</span><span class="o">:</span>
+<span class="w">  </span><span class="n">KPF</span><span class="w"> </span><span class="n">Trouble</span><span class="w"> </span><span class="kr">Recovery</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">Reset</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">keywords</span>
+</code></pre></div>
+
+<p>This may sometimes be seen at night if a scheduled calibration happens to be running when the science observer is trying to control the instrument (e.g. running the start of night script or running an observation).  Observing takes precedence over calibrations, so if this is the case, the calibration can be stopped as described below.</p>
+<p><u>Problem</u>:</p>
+<p>The keywords used to track whether a script is running indicate that another script is currently using the system.</p>
+<p><u>Solution 1</u>: Another script is running and needs to be stopped</p>
+<p>If another script is running and you need to terminate it in order to start something else, you should use the kpfconfig.SCRIPTSTOP keyword.  You can do this by setting the SCRIPTSTOP keyword to “Yes” either on the command line:</p>
+<p><code>modify -s kpfconfig SCRIPTSTOP=Yes</code></p>
+<p>or via the KPF OB GUI’s STOP button which performs the same action.</p>
+<p>Setting SCRIPTSTOP to “Yes”  will <strong>request</strong> that the running script terminate in an orderly fashion. This may take several minutes depending on when the running script reaches a sensible breakpoint.  <strong>It is important to use SCRIPTSTOP to halt a script (instead of hitting ctrl-c)</strong> because cleanup actions will be performed after a SCRIPTSTOP (e.g. turning off laps to preserve their lifetime).</p>
+<p>One of the things which can delay the running script terminating is a long exposure in progress.  You can halt an exposure in progress by requesting kpfexpose to end the current exposure:</p>
+<p><code>modify -s kpfexpose EXPOSE=End</code></p>
+<p>Once the exposure is complete and has read out, most scripts will then check SCRIPTSTOP and begin the termination and cleanup steps.</p>
+<p><u>Solution 2</u>: No other scripts are running</p>
+<p>Sometimes the script keywords will be set as if a script is running, but the script has crashed and is not actually running.  In this case, other scripts will be blocked until the script keywords are cleared.  This can be done from the FWWM background menu using the <code>KPF Trouble Recovery --&gt; Reset script keywords</code> entry or from the command line by invoking <code>reset_script_keywords</code>.</p>
+<h2 id="agitator-use-is-disabled">Agitator Use is Disabled</h2>
+<p><u>Symptom</u>:</p>
+<p>When executing the start of night script, the log shows a warning such as:
+<code>2023-05-06 00:22:27,449  WARNING: Agitator use is disabled for tonight</code></p>
+<p><u>Problem</u>:</p>
+<p>This means that the <code>kpfconfig.USEAGITATOR</code> keyword is set to “No”.  This keyword is meant to indicate the mechanism’s health.  A WMKO staff member will set this keyword to No if the agitator mechanism is not functional for some reason.</p>
+<p><u>Solution</u>:</p>
+<p>The agitator can be reenabled by simply setting the keyword to “Yes”.  <strong>This should only be done by WMKO staff</strong> and should only be done if the agitator is fully functional.  A broken or misbehaving agitator mechanism presents a significant danger to the science fibers.</p>
+<h1 id="calibrations">Calibrations</h1>
+<h2 id="calibration-source-is-not-working">Calibration Source is Not Working</h2>
+<p><u>Symptom</u>:</p>
+<p>A calibration set is run, but does not take data for a lamp.</p>
+<p><u>Problem</u>:</p>
+<p>The lamp may be disabled in kpfconfig. The log may contain a line similar to:
+<code>2023-05-06 00:22:27,449  WARNING: Cal source EtalonFiber is disabled</code></p>
+<p><u>Solution</u>:</p>
+<p>The cal source has likely been disabled for a reason.  <strong>Reenabling it should only be done by WMKO staff</strong> with knowledge of why it was disabled in the first place.</p>
+<h2 id="slewcal-or-simultaneous-calibration-source-is-wrong">SlewCal or Simultaneous Calibration Source is Wrong</h2>
+<p><u>Symptom</u>:</p>
+<p>With the simultaneous calibration source (which is printed to the start of night log) or the slew cal source (visible in the OB GUI) are not the desired value.</p>
+<p><u>Problem</u>:</p>
+<p>These two sources are set from the same place and are always kept to the same value using the kpfconfig.SIMULCALSOURCE keyword.</p>
+<p><u>Solution</u>:</p>
+<p><strong>This value should only be changed by WMKO staff</strong>. The choice of calibration source is influenced by our desire to maintain the lifetime of the various lamps and calibration sources and by the need for warmup times on certain sources.  This is not something the user should adjust, contact a WMKO Staff Astronomer if you feel it is set incorrectly.</p>
+<h2 id="etalon-light-source-is-off">Etalon Light Source is Off</h2>
+<p><u>Symptom</u>:</p>
+<p>There is no light visible from the etalon in spectra. This can be confirmed visually looking at the fibers coming from the SuperK light source which feeds the etalon.  Under normal conditions, glow can be seen at some fiber interfaces.</p>
+<p><u>Problem</u>:</p>
+<p>The Super-K light source is off or otherwise incapacitated.</p>
+<p><u>Solution</u>:</p>
+<p>Note: A safety issue is that the super-K puts out considerable power, including in the infrared.  The optical output is connected to the etalon so this won’t be a problem.  But one shouldn’t disconnect that fiber and look into the beam.  It is exceptionally bright in the optical so this is probably obvious, but I mention it just in case.</p>
+<p>Check that the SuperK is powered on at the PDU (port M7 available via the Power GUI, or <code>gshow -s kpfpower OUTLET_M7</code>).</p>
+<p>If the system is powered on, check that the interlock lights are green as seen in the photo below.  The interlock is just two very thin wires that I twisted together.</p>
+<p>Check that the key is in the On position (see photo below).</p>
+<p><img alt="SuperK light source interlocks and status lights." src="../figures/SuperK-interlocks.jpeg" /></p>
+<p>If these indicate that the status is ok, then the SuperK may need to be powered on from software.  There is currently no keyword based client for this and this must be done from a Windows machine running the NKT Control software. There is a small Windows machine (<code>tc-su-kpfetalon</code> or <code>10.104.10.157</code>) connected via USB which is accessible via VNC.  VNC in as user kpfeng.</p>
+<p>Once connected via VNC, the Control software should be available on the desktop.  Start that and connect to the device.  Once connected, the system should look like the screenshot below when in an operational state.  The power on the light, use the “Emission ON/OFF” button.</p>
+<p><img alt="Screenshot of the NKT CONTROL software for the SuperK running on tc-su-kpfetalon." src="../figures/tc-su-kpfetalon-VNC.png" /></p>
+<h1 id="guider">Guider</h1>
+<h2 id="target-is-not-visible-in-guider">Target is not Visible in Guider</h2>
+<p><u>Symptom</u>:</p>
+<p>The observer’s target is not visible on the guider after slewing there.  This could be due to one of several problems.  Often this is related to the small field of view (FoV) of the guider which is approximately 30x40 arc seconds.</p>
+<p><u>Problem 1</u>: Telescope pointing</p>
+<p>The telescope pointing is off (Ca or Ce is wrong) or the star is a high proper motion star and is not at the expected coordinates.</p>
+<p><u>Solution 1</u>:</p>
+<p>The OA should check a nearby, bright pointing star.  If it centers up nicely, this suggests that either the coordinates of the target are wrong (or simply not corrected for proper motions).  The star may be just off the edge of the field, so the OA can check by making a few small telescope moves to probe the area just off the edge of the field.</p>
+<p><u>Problem 2</u>: Guider sensitivity</p>
+<p>The star is too faint for the current guider camera settings or the extinction from clouds has made the star too faint to detect.</p>
+<p><u>Solution 2</u>:</p>
+<p>If it is not already, increase the guider camera’s gain setting to high and see if the star appears.  This can be accomplished either in the tip tilt GUI or via command line: <code>kpfSetGuiderGain high</code>.</p>
+<p>If the target star is faint in J band magnitude (e.g. Jmag &gt; 12) (Note that 2MASS is a good source to determine expected J magnitude), then the guider may need to have the frames per second (FPS) value lowered to increase sensitivity.  If conditions are good (i.e. little or no extinction from clouds), then there is a tool which can set reasonable guesses for the guider gain and FPS based on the J magnitude of the star.  For example: <code>kpfPredictGuiderParameters 13.2</code> (for Jmag=13.2) will set both guider gain and FPS.</p>
+<p>If there is substantial extinction from clouds, the user may need to manually configure the guider parameters.  This is best done by editing the observing block.  In the KPF OB GUI, this can be accomplished by setting the GuiderMode to manual, and setting the gain and FPS below (see screenshot).</p>
+<p><img alt="Screenshot of the Tip Tilt GUI's guider control section." src="../figures/GuiderSetupInTipTiltGUI.png" /></p>
+<p>Alternatively the observer may set these manually using the command line tools <code>kpfSetGuiderGain</code> and <code>kpfSetGuiderFPS</code>, but if an OB is executed it will overwrite the previous values, so to use the new values for science, they must be copied to the OB prior to execution.</p>
+<p><u>Problem 3</u>: Light is not reaching the guide camera</p>
+<p>The light is not reaching the guide camera due to an obstruction.</p>
+<p><u>Solution 3</u>:</p>
+<p>Look at the FIU GUI to see if there is an obstruction.  Possible culprits include:
+* The AO hatch is closed: check keywords or FIU GUI. The hatch can be opened using the command line <code>kpfControlAOHatch open</code> or from the FVWM menu: <code>KPF Utilities -&gt; Open AO Hatch</code>
+* The FIU hatch is closed: check keywords or FIU GUI. The hatch can be opened using the command line <code>kpfControlHatch</code> open or from the FVWM menu: <code>KPF Utilities -&gt; Open FIU Hatch</code>
+* The FIU is in the wrong mode: check keywords or FIU GUI. The FIU may be in calibration mode or in an unknown state, either of which can result in the calibration fold mirror blocking the light. The mode can be set using the command line <code>kpfConfigureFIU Observing</code> or from the FVWM menu: <code>KPF Utilities -&gt; Set FIU Mode to Observing</code></p>
+<h1 id="fiu">FIU</h1>
+<h2 id="fiu-mode-change-fails">FIU Mode Change Fails</h2>
+<p><u>Symptom</u>:</p>
+<p>The FIU failed to reach destination mode (<code>kpffiu.MODE</code>) after repeated attempts. One possible error code which you might see is:</p>
+<p><code>decode_write_response_event(): MODE (on behalf of MODE): ERR_WRITE_SW_ERROR (-5401) There was an error in the device-specific write routine for this keyword:  check the log files</code></p>
+<p><u>Problem</u>:</p>
+<p>One possible reason for this is that the fold mirror is in a limit switch.  To establish if this is the case:</p>
+<div class="codehilite"><pre><span></span><code>gshow -s kpffiu FOLDLIM
+     FOLDLIM = Positive
+</code></pre></div>
+
+<p><u>Solution</u>:</p>
+<p>Reset and home the fold mirror stage</p>
+<div class="codehilite"><pre><span></span><code>modify -s kpffiu FOLDCAL=Reset
+modify -s kpffiu FOLDCAL=Homed
+</code></pre></div>
+
+<p>Then either set <code>FOLDNAM</code> to the destination or set <code>MODE</code> to the desired destination.</p>
+<h2 id="tip-tilt-performance-is-poor">Tip Tilt Performance is Poor</h2>
+<p><u>Symptom</u>:</p>
+<p>Tip tilt performance is poor.  The star is moving a lot on the guider, perhaps primarily in either the X or Y pixel direction.</p>
+<p><u>Problem</u>:</p>
+<p>One possibility is that the XY stage is failing.  The symptom is that the stage has lost range and can not reach the commanded position.  To determine if this is the case, stop observing and stop the tip tilt loops and:</p>
+<ul>
+<li>Watch the kpffiu <code>TTXVAX</code> and <code>TTYVAX</code> keywords (e.g. via an xshow).</li>
+<li>Command one of the axis to someplace near the nominal limit and watch to see if the keyword value reached the location it was commanded to go.  The X stage should be able to go from -15 to +15 and the Y stage should be able to go -20 to +20 (they actually can access a bit more, but this is a reasonable amount to test). For example:<ul>
+<li><code>modify -s kpffiu TTXVAX=-15</code> (note where the keyword actually goes)</li>
+<li><code>modify -s kpffiu TTXVAX=15</code> (note where the keyword actually goes)</li>
+<li><code>modify -s kpffiu TTYVAX=-20</code> (note where the keyword actually goes)</li>
+<li><code>modify -s kpffiu TTYVAX=20</code> (note where the keyword actually goes)</li>
+</ul>
+</li>
+<li>If one or more of the above tests falls far short of the destination, then we need to tell the software not to use that part of the range. </li>
+</ul>
+<p>It is worth repeating the test above to see if you get consistent results.  If the results are not consistent, then the procedure below will be of limited utility.</p>
+<p><u>Solution</u>:</p>
+<p>There are several components to this fix and it is important to understand what each does, so that you can perform the fix properly. The section below explains how the keywords are used, then we will discuss how to set them.</p>
+<p><u>Understanding Tip Tilt Keywords</u></p>
+<ul>
+<li>The <code>kpffiu</code> service handles commands to the tip tilt stage.<ul>
+<li><code>TTXVAX</code> and <code>TTYVAX</code> report the position of the stage in arc seconds of tilt.  This is tilt of the stage, not movement of the star on the focal plane.</li>
+<li><code>TTXRAW</code> and <code>TTYRAW</code> are the position of the stage in raw encoder counts.</li>
+<li><code>TTXRON</code> and <code>TTYRON</code> define the home position of the stage for the stage controller in raw encoder counts.</li>
+</ul>
+</li>
+<li>The <code>kpfguide</code> service handles the control loop used to decide where to command the stage to go.<ul>
+<li><code>TIPTILT_HOME</code> defines the (x, y) coordinates of the home position in arc seconds of motion of the stage. This is where the stage will be positioned if no tip tilt moves are needed – it is the center of the stage motion.</li>
+<li><code>TIPTILT_XRANGE</code> and <code>TIPTILT_YRANGE</code> define the maximum range of motion which the guide system should use during observing (in units of arc seconds of stage motion). This is the half width of the range, so the stage can go from the home position - range to home position + range.</li>
+</ul>
+</li>
+</ul>
+<p>The combination of <code>kpfguide.TIPTILT_HOME</code> and <code>kpffiu.TT{x,y}RON</code> define the center of motion of the stage and we want those to be in agreement.  Unfortunately, these are in different units, so we need to keep that in mind and ensure they are consistent when we set new values. Once the center position is defined, the system uses <code>kpfguide.TIPTILT_{x,y}RANGE</code> to decide how far to push the tip tilt mirror before offloading to the telescope.</p>
+<p><u>Setting Up the Tip Tilt Center Position and Limits</u></p>
+<p>Above we discovered the limits (in <code>TT{x,y}VAX</code> units) where the stage seems to be able to go.  Use those values to determine the home position (center point between the limits) and the range (distance from home to one limit).  Use those calculated values to set <code>kpfguide.TIPTILT_HOME</code> and <code>kpfguide.TIPTILT_{x,y}RANGE</code>.</p>
+<p>Now move the stage to the home position by setting <code>kpffiu.TT{x,y}VAX</code> and read off the <code>kpffiu.TT{x,y}RAW</code> value.  Update the <code>kpffiu.TT{x,y}RON</code> strings with that value, maintaining the proper formatting: <code>|{raw value}|0|Home.</code></p>
+<p>There is an experimental script to do the above steps, but you must manually verify that the results look reasonble. Run <code>kpfMeasureTipTiltMirrorRange</code> and it will print out a set of modify commands for you to run (it does not execute them itself).  Check the logic and math, the script is experimental! Note that if the script finds a limit which is unexpected (i.e. less range than nominal), it will set up the above keywords to a range 1 arc second smaller than where the limit is.  It adds this safety margin to the <code>kpfguide.TIPTILT_{x,y}RANGE</code> keywords, so if you calculate something slightly different than the script, this may be why.</p>
+<h1 id="detectors">Detectors</h1>
+<h2 id="kpfexposeexpose-is-not-ready">kpfexpose.EXPOSE is not Ready</h2>
+<p><u>Symptom</u>:</p>
+<p>The <code>kpfexpose.EXPOSE</code> keyword is reporting an unexpected state such as reporting "InProgress" even though the exposure should have finished or is reporting "Error".</p>
+<p>If <code>kpfexpose.EXPOSE</code> is not ready, it will not allow users to take new exposures which is how this will likely manifest.</p>
+<p><u>Problem</u>:</p>
+<p>One of the detectors may not be in a normal state.</p>
+<p>Use the <code>EXPLAINNR</code> keyword to determine which detector is blocking <code>kpfexpose.EXPOSE</code> from becoming "Ready". For example, if <code>kpfexpose.EXPLAINNR</code> is reporting "hk:ACQPHASE=wait", that indicates that the CaHK detector is not in the Ready phase. The detailed solution will depend on which camera and what is causing the blockage.</p>
+<p><u>Solution 1</u>: Reset the Red or Green detector</p>
+<p>If either the Red or Green camera is the problem as reported by <code>kpfexpose.EXPLAINNR</code> or by the relevant camera's <code>EXPSTATE</code> keyword, the setting the particular camera's <code>EXPOSE</code> keyword to "Reset" may resolve things (e.g. <code>modify -s kpfgreen EXPOSE=Reset</code>).</p>
+<p><u>Solution 2</u>: Abort Ca HK Exposure</p>
+<p>If the Ca HK detector appears to be the problem (e.g. <code>kpfexpose.EXPLAINNR</code> value is "hk:ACQPHASE=wait"), then aborting the exposure in progress may free up the Ca HK detector. To do so run: <code>modify -s kpf_hk EXPOSE=abort</code></p>
+<p><u>Solution 3</u>: Restart the relevant keyword service or dispatchers</p>
+<p>If the above has not helped, restarting the service may free things up. Possible services to restart include <code>kpfexpose</code>, <code>kpfgreen</code>, <code>kpfred</code>, <code>kpf_hk</code>. It is suggested that you only restart the service if there is some indication that it is the source of the problem (either from <code>kpfexpose.EXPLAINNR</code> or from the service's <code>EXPSTATE</code> for example).</p>
+<h2 id="detector-refuses-to-be-triggered">Detector Refuses to be Triggered</h2>
+<p><u>Symptom</u>:</p>
+<p>When running an OB, or invoking command line scripts, a particular detector is not set to be triggered even though it is requested.</p>
+<p><u>Problem</u>:</p>
+<p>The detector may be disabled in <code>kpfconfig</code>. The log may contain a line similar to:</p>
+<p><code>2023-05-06 00:22:27,449  WARNING: Green detector is not enabled</code></p>
+<p><u>Solution</u>:</p>
+<p>The detector has likely been disabled for a reason.  <strong>Reenabling it should only be done by WMKO staff with knowledge of why it was disabled in the first place.</strong></p>
+<h2 id="detector-fails-to-trigger-without-error">Detector Fails to Trigger Without Error</h2>
+<p><u>Symptom</u>:</p>
+<p>The detector is not exposing and not producing output files, but <code>kpfexpose</code> is unaware of the problem and takes exposures as normal triggering all selected cameras.</p>
+<p><u>Problem</u>:</p>
+<p>Something is stuck in the dispatcher code for driving the Archon (this only applies to red and green detectors).</p>
+<p><u>Solution</u>:</p>
+<p>Restart dispatcher 0 on the affected detector: <code>kpf restart kpfgreen0</code></p>
+<h2 id="green-or-red-ccdpower-fails-to-turn-on">Green or Red CCDPOWER Fails to turn on</h2>
+<p><u>Symptom</u>:</p>
+<p>When trying to power up the detector by setting the CCDPOWER keyword to “On”, the keyword does not successfully transition to on.  The stderr file for the relevant camerad process (e.g. <code>gcamerad.stderr</code>) contains statements like:</p>
+<p><code>(Archon::Interface::archon_cmd) ERROR: Archon controller returned error processing command: POWERON</code></p>
+<p><u>Problem</u>:</p>
+<p>There is something wrong in the ACF file for the Archon.</p>
+<p><u>Solution</u>:</p>
+<p>Resend the ACF file by either modifying the appropriate ACF keyword or using the <code>kpfSetReadModeNormal</code> or <code>kpfSetReadModeFast</code> scripts.</p>
+<h2 id="ca-hk-detector-stuck">Ca HK Detector Stuck</h2>
+<p><u>Symptom</u>:</p>
+<p>The HK detector is stuck in the exposing state.</p>
+<p>or</p>
+<p>The <code>kpfexpose.EXPOSE</code> status is stuck and <code>kpfexpose.EXPLAINNR</code> is "hk:ACQPHASE=wait".</p>
+<p><u>Problem</u>:</p>
+<p>Some combination of hardware and software is stuck.</p>
+<p><u>Solution</u>:</p>
+<ol>
+<li>Abort the existing HK exposure: <code>modify -s kpf_hk expose=abort</code> (alternatively, the same action is available via the FWWM menu under <code>KPF Troubleshooting Menu -&gt; KPF Trouble Recovery → Reset Ca HK Detector</code>).</li>
+<li>Then restart the kpf_hk service: <code>kpf restart kpf_hk</code></li>
+<li>Take test exposures to see if the system has recovered.</li>
+<li>If the system is still stuck, power cycle the Andor Camera, and the HK Galil on power strip J, ports 1, 2, and 5, then restart kpf_hk again.  This can be accomplished in one step using: <code>kpfPowerCycleCaHK</code> (alternatively the same tool is available via the FWWM menu under <code>KPF Troubleshooting Menu -&gt; KPF Trouble Recovery -&gt; Power Cycle Ca HK Detector</code>).</li>
+<li>If the detector is still not responsive, check the log files on <code>kpffiuserver</code>. If the <code>kpf_hk.stderr</code> file contains lines like this after a restart of the kpf_hk service: </li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="k">open</span><span class="p">()</span><span class="w"> </span><span class="n">failed</span><span class="err">:</span><span class="w"> </span><span class="n">No</span><span class="w"> </span><span class="n">such</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="n">directory</span>
+<span class="n">Failed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">configure</span><span class="w"> </span><span class="nb">camera</span><span class="err">:</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="n">failure</span><span class="p">,</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/usr/local/etc/andor&quot;</span><span class="err">:</span><span class="w"> </span><span class="n">DRV_VXDNOTINSTALLED</span>
+</code></pre></div>
+
+<p>Then it means that the USB connection is unhappy for some reason.  The recovery is to ask for a reboot of <code>kpffiuserver</code>. This will require restarting the <code>kpffiu</code> service as well.</p>
+<h2 id="exposure-meter-in-error-state">Exposure Meter in Error State</h2>
+<p><u>Symptom</u>:</p>
+<p>The exposure meter is in an error state: <code>kpf_expmeter.EXPSTATE=Error</code></p>
+<p><u>Problem</u>:</p>
+<p>Something in the SBIG CCD control software is unhappy.</p>
+<p><u>Solution 1</u>:</p>
+<p>First, try resetting the exposure meter detector:</p>
+<p><code>modify -s kpf_expmeter EXPOSE=Reset</code></p>
+<p>Check the status: <code>gshow -s kpf_expmeter EXPSTATE</code> should become “Ready”.</p>
+<p><u>Solution 2</u>:</p>
+<p>If the above solution fails to recover the system, power cycle the camera on power port L3.</p>
+<p><img alt="Screenshot of the exposure meter power status in the Power GUI.." src="../figures/ExpMeterOnPowerGUI.jpeg" /></p>
+<p>Then do <code>kpf restart kpf_expmeter</code>.  This is equivalent to <code>kpf restart kpf_expmeter1</code> (exposure meter camera) and <code>kpf restart kpf_expmeter2</code> (exposure meter DRP).</p>
+<p>Sometimes <code>kpf_expmeter2</code> is stuck in a busy state after a <code>kpf_expmeter1</code> restart. Both <code>kpf_expmeter1</code> and <code>kpf_expmeter2</code> need to be ready before kpfexpose can trigger new exposures.</p>
+<p>You may need to set the <code>TOP</code>, <code>LEFT</code>, <code>WIDTH</code>, and <code>HEIGHT</code> keywords after restarting the software.  The values are:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">[</span><span class="n">kpfeng@kpfserver</span><span class="o">]</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">gshow</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="n">kpf_expmeter</span><span class="w"> </span><span class="nf">LEFT</span><span class="w"> </span><span class="k">TOP</span><span class="w"> </span><span class="n">WIDTH</span><span class="w"> </span><span class="n">HEIGHT</span>
+<span class="w">        </span><span class="nf">LEFT</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mi">1</span>
+<span class="w">         </span><span class="k">TOP</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mi">0</span>
+<span class="w">       </span><span class="n">WIDTH</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mi">651</span>
+<span class="w">      </span><span class="n">HEIGHT</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mi">300</span>
+</code></pre></div>
+
+<p>The correct values are checked in <code>testAll</code>, so you can always run that to verify values are ok.</p>
+<h1 id="l0-file-generation">L0 File Generation</h1>
+<h2 id="deprecated-l0-files">Deprecated L0 files</h2>
+<p>L0 files are generated by gathering the “sub-FITS” files from the Green, Red, CaHK, EM, and guide cameras, processing some of them (EM and guide camera), adding telemetry drawn from KTL keywords and the sub-FITS headers to the new L0 FITS header, and writing the L0 file.  This process happens automatically by using keywords to notify a dispatcher that a recent exposure is ready for L0 file creation.  If this dispatcher is stopped or dies, it can be restarted with the command <code>kpf restart assemble</code>.  If L0 files need to be generated manually (e.g., because the dispatcher stopped or L0 files need to be regenerated), it can be done with the command </p>
+<p><code>l0_assemble --outdir path NNNNN MMMMM</code></p>
+<p>where <code>path</code> is the directory where the L0 files should be written (e.g., <code>/sdata1701/kpfeng/DATE/L0</code>), <code>NNNNN</code> is the first <code>FRAMENO</code> (a header keyword for Green and Red FITS images and an index which is incremented with each exposure; e.g. <code>33015</code>), and <code>MMMMM</code> is the last <code>FRAMENO</code> in a range of files (e.g., <code>33020</code>).  The final argument is optional if only one L0 file needs to be generated. </p>
+<p>L0 files may be deprecated when switching to fast-readout mode. The observers may find broken L1/L2 files, and the L0 files are missing green/red/CaHK components. If L0 files needed to be regenerated, it is better to write to a new directory (e.g., <code>/sdata1701/kpfeng/DATE/new_L0</code>), and inform Jeff Mader so he can ingest the new L0 files to Keck Observatory Archive. </p>
+<h1 id="agitator">Agitator</h1>
+<h2 id="agitator-sounds-wrong-or-speed-is-wrong">Agitator Sounds Wrong or Speed is Wrong</h2>
+<p><u>Symptom</u>:</p>
+<p>The agitator is not working as expected.  This is usually seen in the agitator speed value (see screenshots) or by listening to the sounds.  This is a plot of what the kpfmot.AGITSPD keyword value looks like as the agitator is cycled on during exposures.  It goes to a negative value of a few thousand during operation.</p>
+<p><img alt="This is a plot of what the kpfmot.AGITSPD keyword value looks like as the agitator is cycled on during exposures.  It goes to a negative value of a few thousand during operation." src="../figures/AgitatorSpeedGood.png" /></p>
+<p>This is an example of a bad agitator speed behavior.  It goes positive for one data point, then back to zero.</p>
+<p><img alt="This is an example of a bad agitator speed behavior.  It goes positive for one data point, then back to zero." src="../figures/AgitatorSpeedBad.png" /></p>
+<p>You can listen to the agitator mechanism via the “KPF crypt M5075” camera on the <a href="https://www.keck.hawaii.edu/twiki/bin/view/Operations/FacilityCameras">facility camera list</a> (note this is an internal web page at Keck).  In normal operation the agitator makes a regular (roughly 1-2 Hz) mechanical oscillation sound.  When the bad behavior above occurred it was either silent (note there is background fan noise on that camera) or would make a single mechanical “cachunk” sound, then stop.</p>
+<p><u>Problem</u>:</p>
+<p>The motor is not initialized properly.</p>
+<p><u>Solution</u>:</p>
+<p>Initialize using:</p>
+<p><code>modify -s kpfmot agitmod=pos</code></p>
+<p><code>modify -s kpfmot agitini=no</code></p>
+<p>This leaves the system in Halt mode.  Initialize using:</p>
+<p><code>modify -s kpfmot agitmod=pos</code></p>
+<p><code>modify -s kpfmot agitini=yes</code></p>
+<p>Note: if the ini command fails with: <code>Error setting agitini: agitini: ERR_STST_COND_TIMEOUT (-5239) StdStage condition did not become true within the time limit</code> try restarting the dispatcher (kpf restart kpfmot) in order to get it to release the thread lock on communications and they to initialize again.</p>
+<h1 id="vacuum">Vacuum</h1>
+<h2 id="vacuum-chamber-vacuum-levels-rising">Vacuum Chamber Vacuum Levels Rising</h2>
+<p><u>Symptom</u>:</p>
+<p>Vacuum levels in the chamber are rising, but the vacuum levels at the pump are falling.  These are <code>kpfvac.VCH_HIVAC</code> and <code>kpfvac.VCART_HIVAC</code> keywords respectively.</p>
+<p>This might manifest as a “vac chamber trouble” alert from kpfmon.</p>
+<p><u>Problem</u>:</p>
+<p>The gate valve between the vacuum chamber and the pump has closed.</p>
+<p>The gate valve is currently (late 2023) not instrumented and is controlled by compressed air from the facility.  As long as facility compressed air is working, the valve is open and the pump should be keeping the vacuum chamber at good vacuum levels.  If the gate valve closes, it is presumably because compressed air has failed.</p>
+<p>Below is a Grafana plot showing that as chamber pressure was rising, vac cart pressure was falling.  This is the signature of the gate valve being closed. In this example, the gate valve closed at about 14:12 local time and was opened again around 15:15 local time.</p>
+<p><img alt="This is the signature of the gate valve being closed. In this above example, the gate valve closed at about 14:12 local time and was opened again around 15:15 local time." src="../figures/VacuumLevelsProblem.png" /></p>
+<p><u>Solution</u>:</p>
+<h1 id="socal">SoCal</h1>
+<h2 id="enclosure-lid-does-not-move-1">Enclosure Lid Does not Move 1</h2>
+<p><u>Symptom</u>:</p>
+<p>Enclosure will not move.  It may begin moving, then stop and reverse.</p>
+<p><u>Problem</u>:</p>
+<p>Enclosure motor is hitting an overcurrent limit.</p>
+<p>To verify this is the problem, log in to the dome controller from kpfeng@kpfserver:</p>
+<p><code>ssh socal</code></p>
+<p>This connects to the Raspberry Pi controller in the dome enclosure.  The username and IP address has configured in the <code>~/.ssh/config</code> file on kpfserver (you can ssh manually using <code>pi@192.168.23.244</code>) and the SSH key for kpfserver has been installed on the Pi, so it should not ask for a password, but if it does, the password in in the usual <code>showpasswords</code> location.</p>
+<p>View the dome log file in the <code>~/dome.log</code> and look for errors which indicate the nature of the problem.</p>
+<p>The <code>~/grep_for_dome_error</code> script will exclude many of the noisy, not useful lines in the dome.log file and help with examining the log.</p>
+<p><u>Solution</u>:</p>
+<p>If the log file indicates overcurrent on the motors is the issue.  Ensure the mechanisms are clear of obstruction and reasonably well balanced (it doesn’t need to be perfect).</p>
+<h2 id="enclosure-lid-does-not-move-2">Enclosure Lid Does not Move 2</h2>
+<p><u>Symptom</u>:</p>
+<p>Enclosure will not move.  It may begin moving, then stop and reverse.</p>
+<p><u>Problem</u>:</p>
+<p>Enclosure motor is not getting current.</p>
+<p>To verify this is the problem, log in to the dome controller from kpfeng@kpfserver:</p>
+<p><code>ssh socal</code></p>
+<p>This connects to the Raspberry Pi controller in the dome enclosure.  The username and IP address has configured in the <code>~/.ssh/config</code> file on kpfserver (you can ssh manually using <code>pi@192.168.23.244</code>) and the SSH key for kpfserver has been installed on the Pi, so it should not ask for a password, but if it does, the password in in the usual <code>showpasswords</code> location.</p>
+<p>View the dome log file in the <code>~/dome.log</code> and look for errors similar to:</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">2024</span><span class="o">-</span><span class="mf">07</span><span class="o">-</span><span class="mf">09</span><span class="w"> </span><span class="mf">19</span><span class="p">:</span><span class="mf">09</span><span class="p">:</span><span class="mf">37</span><span class="p">,</span><span class="mf">752</span><span class="w"> </span><span class="n">WARNING</span><span class="w">  </span><span class="n">Operation</span><span class="w"> </span><span class="n">timed</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="p">(</span><span class="mf">35.0</span><span class="w"> </span><span class="n">secs</span><span class="p">),</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="n">measured</span><span class="w"> </span><span class="n">motor</span>
+<span class="n">current</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="n">A</span><span class="mf">.</span>
+</code></pre></div>
+
+<p>The <code>~/grep_for_dome_error</code> script will exclude many of the noisy, not useful lines in the dome.log file and help with examining the log.</p>
+<p><u>Solution</u>:</p>
+<p>Reboot the controller (raspberry pi): <code>sudo reboot</code> and restart the kpfsocal3 dispatcher: <code>kpf restart kpfsocal3</code>.  Multiple reboots may be required.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
