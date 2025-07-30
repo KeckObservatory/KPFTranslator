@@ -622,21 +622,16 @@
 <li>Set data output directory</li>
 <li>Set observers from telescope schedule</li>
 </ul>
+<h3 id="load-your-obs-in-the-kpf-ob-gui">Load your OBs in the KPF OB GUI</h3>
+<p>In the KPF OB GUI, from the "OB List" menu, choose a method to load OBs for the night. Depending on your program, this may mean loading a schedule for KPF-CC (Community Cadence), loading OBs from the database for a classical program, or opening OB files on disk.  This should populate the "Observing Block List" are of the GUI and will send these targets to the Magiq sar list (which will also be visible in the observer Magiq GUI).</p>
 <h3 id="slew-to-the-vicinity-of-your-first-target">Slew to the Vicinity of Your First Target</h3>
-<p>When ready to move the telescope, the OA will ask you for your first target and load the coordinates from your starlist file. They will select a bright star near your target and will attempt to acquire that in the guider, then will double-check the accuracy of pointing by acquiring one or two additional stars from the SAO or GSC catalogs.</p>
-<p>To monitor the guider images, run <code>Telescope GUIs --&gt; MAGIQ Guider UI</code> from the background menu.</p>
+<p>When ready to move the telescope, the OA will ask you for your first target and load the coordinates from Magiq. They will select a bright star near your target and will attempt to acquire that in the guider, then will double-check the accuracy of pointing by acquiring one or two additional stars from the SAO or GSC catalogs.</p>
+<p>To monitor the guider images, use the Magiq Observer UI which is available from <code>Telescope GUIs --&gt; MAGIQ Guider UI</code> in the FVWM background menu if it is not already up.</p>
 <h3 id="focus-the-telescope">Focus the Telescope</h3>
 <p>The OA will run the telescope focus procedure (typically Autofoc) near your science field. On some nights, they will opt for the Mira focus procedure which takes slightly longer but is needed to calibrate the secondary mirror tilt.</p>
 <h1 id="performing-observations">Performing Observations</h1>
-<h3 id="highlight-your-target-in-magiq">Highlight Your Target in Magiq</h3>
-<p>In the Magiq star list (at the bottom of the Magiq User GUI), right click your target and select the option to highlight it for the OA (you can get the same result by middle clicking the target).  This highlighting will show up on the OA's GUI making it easier for them to find the target you want to go to.  Let the OA know to slew to the target when your current exposure is done.</p>
 <h3 id="execute-your-ob">Execute Your OB</h3>
-<p>Observers can load previously saved OBs or create them on the fly for KPF observing. To load and execute a saved OB:</p>
-<ul>
-<li>Click Load OB from File</li>
-<li>Select the OB from the file list</li>
-<li>Click Execute This OB (or Execute OB with Slew Cal)</li>
-</ul>
+<p>Executing an OB is as simple as selecting it in the "Observing Block List" in the KPF OB GUI and clicking the "Execute Selected OB" button (or "Execute with SlewCal"). <strong>This will highlight the target in Magiq so that the OA can begin slewing the telescope.</strong></p>
 <p>The GUI will first prompt the observers to confirm the OB execution. Once confirmed, an xterm will launch and prompt the observers with addtional information if and when needed, so watch the contents of this xterm.</p>
 <p>Executing the OB will not start an exposure immediately. The system will first configure the instrument and will then prompt the observer to confirm once the OA has acquired the target. While configuring the instrument, the OB will provide information on how to set the gain and frames per second on the guider.  Because of this, <strong>it is important to execute the OB during the slew</strong> and before the OA acquires the target, so they have the right exposure parameters to see the target on the guider.</p>
 <p>The log lines which show up in the xterm with the running OB contain useful information.  In general, lines with INFO are attempting to explain what the instrument is doing.  Lines with WARNING are indicating that a minor problem has occurred, but the system is handling it -- these lines are purely informational, no action is needed on the part of the observer in response.  Lines with ERROR indicate a serious problems which may require user intervention.</p>

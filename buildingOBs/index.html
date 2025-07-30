@@ -614,7 +614,7 @@
 <p>Note that not all properties are needed in every case. For example, an observation with <code>ExpMeterMode: 'monitor'</code> will not need values for <code>ExpMeterBin</code> and <code>ExpMeterThreshold</code>.</p>
 <h2 id="example-on-sky-science-ob">Example On Sky Science OB</h2>
 <p>This is an example of what the text file form of an OB might look like. The file is a  <code>yaml</code> format which resolves in to a python dict with keys for "Target", "Calibrations" and "Observations" (not all are required).  The "Target" entry is a dict with the various <a href="../TargetProperties">Target Properties</a>.  The "Calibrations" entry (if present) is a <strong>list</strong> of dictionaries, each with the various <a href="../CalibrationProperties">Calibration Properties</a>.  Similarly, the "Observations" entry is a <strong>list</strong> of dictionaries, each with the various <a href="../ObservationProperties">Observation Properties</a>.</p>
-<p>Th example below has a Target, no Calibrations, and a single Observaton:</p>
+<p>The example below has a Target, no Calibrations, and a single Observaton:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">Target</span><span class="o">:</span>
 <span class="w">  </span><span class="n">TargetName</span><span class="o">:</span><span class="w"> </span><span class="n">HR</span><span class="w"> </span><span class="mi">4710</span>
 <span class="w">  </span><span class="n">GaiaID</span><span class="o">:</span><span class="w"> </span><span class="n">DR3</span><span class="w"> </span><span class="mi">5859393710380907776</span>
