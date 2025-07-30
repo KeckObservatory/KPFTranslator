@@ -190,8 +190,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.program_strings.append(f"{progID} on {', '.join(dates)}")
         # KPF-CC Settings and Values
         self.schedule_path = Path(f'/s/sdata1701/Schedules/')
-        self.KPFCC_weather_bands = ['1', '2', '3']#, 'backups']
-        self.KPFCC_weather_band = '1'
+        self.KPFCC_weather_bands = ['band1', 'band2', 'band3', 'backups']
+        self.KPFCC_weather_band = self.KPFCC_weather_bands[0]
         self.KPFCC_OBs = {}
         self.KPFCC_start_times = {}
         for WB in self.KPFCC_weather_bands:
@@ -1007,13 +1007,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.KPFCC = True
         self.OBListHeader.setText('   StartTime '+self.hdr)
         # Form location to look for KPF-CC schedule files
-        utnow = datetime.datetime.utcnow()
-        date = utnow-datetime.timedelta(hours=20) # Switch dates at 10am HST, 2000UT
-        date_str = date.strftime('%Y-%m-%d').lower()
         if self.clargs.mock_date == True:
+            semester = '2025A'
             date_str = '2025-07-10'
             self.log.warning(f'Using schedule from {date_str} for testing')
-        schedule_files = [self.schedule_path / f'{date_str}_{WB}.csv'
+        else:
+            semester, start, end = get_semester_dates(datetime.datetime.now())
+            utnow = datetime.datetime.utcnow()
+            date = utnow-datetime.timedelta(hours=20) # Switch dates at 10am HST, 2000UT
+            date_str = date.strftime('%Y-%m-%d').lower()
+        schedule_files = [self.schedule_path / semester / date_str / WB / 'output' / 'night_plan.csv'
                           for WB in self.KPFCC_weather_bands]
         # Count what we need to load ahead of time for the progress bar
         schedule_file_contents = {}
