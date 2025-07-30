@@ -3,22 +3,29 @@ class OBProperty(object):
                  comment='', precision=None, altname=None):
         self.name = name if altname is None else altname
         self.valuetype = eval(valuetype)
-        self._value = None if defaultvalue is None else self.valuetype(defaultvalue)
+        self._value = defaultvalue
         self.comment = comment
         self.precision = precision
         self.defaultvalue = defaultvalue
 
     def get(self, string=False):
-        if self._value is not None and string == False:
+        if self._value is None:
+            return None
+        elif string == False:
             return self.valuetype(self._value)
-        elif self._value is not None and string == True:
+        elif string == True:
             return self.__str__()
         else:
             return self._value
 
     def set(self, value):
         if value is None:
-            self._value = self.defaultvalue
+            self._value = None
+        if self.valuetype is bool:
+            if value not in [True, False, 'True', 'False']:
+                self._value = value
+            else:
+                self._value = self.valuetype(value)
         else:
             try:
                 self._value = self.valuetype(value)
@@ -26,11 +33,15 @@ class OBProperty(object):
                 raise TypeError(f"Input {value} can not be cast as {self.valuetype}")
 
     def __str__(self):
-        if self.valuetype == float and self.precision is not None:
-            return ('{0:.%df}' % self.precision).format(self._value)
+        if self._value is None:
+            return ''
+        elif self.valuetype == float and self.precision is not None:
+            return ('{0:.%df}' % self.precision).format(self.get())
         return f"{self._value}"
 
     def __repr__(self):
+        if self._value is None:
+            return ''
         return f"{self._value}"
 
     # creating a property object
@@ -108,9 +119,10 @@ class BaseOBComponent(object):
                     prune_list.extend(prune[1])
         lines = []
         for i,p in enumerate(self.properties):
-            if self.get(p['name']) is not None and p['name'] not in prune_list:
+            if p['name'] not in prune_list:
                 outname = p['name'] if p['altname'] is None else p['altname']
-                outtext = f"{self.get(p['name'], string=True)}"
+                strvalue = self.get(p['name'], string=True)
+                outtext = f"{strvalue}" if self.get(p['name']) is not None else ''
                 prepend = '- ' if self.list_element == True and i == 0 else '  '
                 comment_text = self.add_comment(p['name']) if comment == True else ''
                 lines.append(f"{prepend}{outname}: {outtext}{comment_text}")

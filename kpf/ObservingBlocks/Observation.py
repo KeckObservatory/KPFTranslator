@@ -41,35 +41,55 @@ class Observation(BaseOBComponent):
                 ]
 
     def check_property(self, pname):
-#         if pname == 'Object':
-#             if self.get(pname) in ['', None]:
-#                 return True, ' # ERROR: Object field is empty'
-        if pname == 'nExp':
-            if self.get(pname) < 1:
+        if pname == 'Object':
+            if self.get(pname) in ['', None]:
+                return False, ' # WARNING: Object field is empty'
+        elif pname == 'nExp':
+            if self.get(pname) is None:
+                return True, f' # ERROR: {pname} not specified'
+            elif self.get(pname) < 1:
                 return True, ' # ERROR: nExp < 1'
         elif pname == 'ExpTime':
-            if self.get(pname) < 0:
+            if self.get(pname) is None:
+                return True, f' # ERROR: {pname} not specified'
+            elif self.get(pname) < 0:
                 return True, ' # ERROR: ExpTime < 0'
+        elif pname in ['TriggerCaHK', 'TriggerGreen', 'TriggerRed']:
+            if self.get(pname) is None:
+                return True, f' # ERROR: {pname} not specified'
+            elif self.get(pname) not in [True, False, 'True', 'False']:
+                return True, f' # ERROR: {pname} must be True or False'
         elif pname == 'ExpMeterMode':
-            if self.get(pname) not in ['off', False, 'control', 'monitor']:
+            if self.get(pname) is None:
+                return True, f' # ERROR: {pname} not specified'
+            elif self.get(pname) not in ['off', False, 'control', 'monitor']:
                 return True, ' # ERROR: ExpMeterMode invalid'
         elif pname == 'AutoExpMeter':
             if self.get('ExpMeterMode') in ['off', False]:
                 return False, ' # Unused: ExpMeterMode = off'
         elif pname == 'ExpMeterExpTime':
-            if self.get(pname) < 0:
+            if self.get(pname) is None and self.get('ExpMeterMode') not in ['off', 'False', False]:
+                return True, f' # ERROR: {pname} not specified'
+            elif self.get(pname) < 0:
                 return True, ' # ERROR: ExpMeterExpTime < 0'
             elif self.get('ExpMeterMode') in ['off', False]:
                 return False, ' # Unused: ExpMeterMode = off'
             elif self.get('AutoExpMeter') == True:
                 return False, ' # Unused: AutoExpMeter = True'
         elif pname == 'ExpMeterBin':
-            if self.get(pname) not in [1, 2, 3, 4]:
+            if self.get(pname) is None and self.get('ExpMeterMode') == 'control':
+                return True, f' # ERROR: {pname} not specified'
+            elif self.get(pname) not in [1, 2, 3, 4]:
                 return True, ' # ERROR: ExpMeterBin must be 1, 2, 3, or 4'
             elif self.get('ExpMeterMode') != 'control':
                 return False, ' # Unused: ExpMeterMode != control'
         elif pname == 'ExpMeterThreshold':
-            if self.get(pname) < 0:
+            if self.get(pname) is None:
+                if self.get('ExpMeterMode') == 'control':
+                    return True, f' # ERROR: {pname} not specified'
+                else:
+                    return False, ''
+            elif self.get(pname) < 0:
                 return True, ' # ERROR: ExpMeterThreshold < 0'
             elif self.get('ExpMeterMode') != 'control':
                 return False, ' # Unused: ExpMeterMode != control'
