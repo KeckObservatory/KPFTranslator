@@ -25,7 +25,7 @@ class QueryReadMode(KPFFunction):
             filename = Path(ACFFILE.ascii).stem
             if filename == normal_file:
                 modes[side] = 'normal'
-            elif green_ACFFILE == green_fast_file:
+            elif filename == green_fast_file:
                 modes[side] = 'fast'
             else:
                 green_mode = 'unknown'
