@@ -40,6 +40,7 @@ class OBListModel(QtCore.QAbstractListModel):
         self.nextOB = -1
         self.sort_key = None
         self.log = log
+        self.magiq_enabled = True
         self.icon_path = Path(__file__).parent / 'icons'
         dcsint = cfg.getint('telescope', 'telnr', fallback=1)
         self.INSTRUME = ktl.cache(f'dcs{dcsint}', 'INSTRUME')
@@ -202,7 +203,7 @@ class OBListModel(QtCore.QAbstractListModel):
         self.sort()
         if OB.Target is not None:
             targetname = OB.Target.TargetName
-            if self.telescope_interactions_allowed():
+            if self.telescope_interactions_allowed() and self.magiq_enabled:
                 self.log.info(f"Adding {targetname} to Magiq star list")
                 AddTarget.execute(OB.Target.to_dict())
 
@@ -227,7 +228,7 @@ class OBListModel(QtCore.QAbstractListModel):
         self.sort()
         if removed.Target is not None:
             targetname = removed.Target.TargetName
-            if self.telescope_interactions_allowed():
+            if self.telescope_interactions_allowed() and self.magiq_enabled:
                 self.log.info(f"Removing {targetname} from Magiq star list")
                 RemoveTarget.execute({'TargetName': targetname})
 
@@ -254,7 +255,7 @@ class OBListModel(QtCore.QAbstractListModel):
         return ok
 
     def update_star_list(self):
-        if self.telescope_interactions_allowed():
+        if self.telescope_interactions_allowed() and self.magiq_enabled:
             self.log.debug('update_star_list')
             star_list = [OB.Target.to_star_list() for OB in self.OBs
                          if OB.Target is not None]

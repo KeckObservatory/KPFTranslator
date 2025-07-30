@@ -300,6 +300,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SendOBListToMagiq.triggered.connect(self.OBListModel.update_star_list)
         self.SendOBListToMagiq.setEnabled(False)
 
+        self.DisableMagiq = self.findChild(QtWidgets.QAction, 'actionDisable_Magiq')
+        self.DisableMagiq.triggered.connect(self.toggle_magiq_enabled)
+
         #-------------------------------------------------------------------
         # Main Window
 
@@ -606,12 +609,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SelectedInstrument.setText(value)
         release_str = {True: 'Telescope Released.',
                        False: 'Telescope NOT Released.'}[self.telescope_released]
-        diabled_msg = 'Telescope moves and Magiq integration disabled'
+        diabled_msg = 'Telescope moves and Magiq integration disabled.'
         if value in ['KPF', 'KPF-CC']:
-            if self.telescope_released:
+            if self.telescope_released and self.OBListModel.magiq_enabled:
                 self.SelectedInstrument.setStyleSheet("color:green")
                 self.SelectedInstrument.setToolTip(f'{release_str}')
                 self.SendOBListToMagiq.setEnabled(True)
+            elif self.telescope_released and not self.OBListModel.magiq_enabled:
+                self.SelectedInstrument.setStyleSheet("color:orange")
+                self.SelectedInstrument.setToolTip(f'{release_str}. Magiq integration disabled.')
+                self.SendOBListToMagiq.setEnabled(False)
             else:
                 self.SelectedInstrument.setStyleSheet("color:orange")
                 self.SelectedInstrument.setToolTip(f'{release_str}. {diabled_msg}')
@@ -812,6 +819,15 @@ class MainWindow(QtWidgets.QMainWindow):
             launch_command_in_xterm(f'EndOfNight')
         else:
             self.log.debug('Confirmation is no, not running script')
+
+    def toggle_magiq_enabled(self):
+        self.log.info('Toggling self.OBListModel.magiq_enabled')
+        self.OBListModel.magiq_enabled = not self.OBListModel.magiq_enabled
+        self.log.debug(f"magiq_enabled = {self.OBListModel.magiq_enabled}")
+        action = {True: 'Disable', False: 'Enable'}[self.OBListModel.magiq_enabled]
+        action_text = f"{action} Magiq Star List Integration"
+        self.DisableMagiq.setText(action_text)
+        self.update_selected_instrument(self.SelectedInstrument.text())
 
 
     ##-------------------------------------------
@@ -1376,7 +1392,7 @@ class MainWindow(QtWidgets.QMainWindow):
                f"{SOB.summary()}"]
         result = ConfirmationPopup('Execute Science OB?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
-            if SOB.Target is not None and self.OBListModel.telescope_interactions_allowed():
+            if SOB.Target is not None and self.OBListModel.telescope_interactions_allowed() and self.OBListModel.enable_magiq:
                 SelectTarget.execute(SOB.Target.to_dict())
             if self.KPFCC == True:
                 # Log execution

@@ -1779,6 +1779,7 @@
      <string>Magiq</string>
     </property>
     <addaction name="actionSend_Current_OBs_as_Star_List"/>
+    <addaction name="actionDisable_Magiq"/>
    </widget>
    <addaction name="menuFile_2"/>
    <addaction name="menuFile"/>
@@ -1884,6 +1885,11 @@
   <action name="actionSend_Current_OBs_as_Star_List">
    <property name="text">
     <string>Send Current OBs as Star List</string>
+   </property>
+  </action>
+  <action name="actionDisable_Magiq">
+   <property name="text">
+    <string>Disable Magiq Star List Integration</string>
    </property>
   </action>
  </widget>
