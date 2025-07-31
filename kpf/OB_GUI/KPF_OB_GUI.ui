@@ -969,7 +969,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Query Simbad</string>
@@ -1031,7 +1031,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Clear Target</string>
@@ -1096,7 +1096,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Clear Observations</string>
@@ -1135,7 +1135,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Send to OB List</string>
@@ -1242,7 +1242,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Save OB to File</string>
@@ -1258,7 +1258,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Load OB from File</string>
@@ -1323,7 +1323,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Send to OB List</string>
@@ -1430,7 +1430,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Save OB to File</string>
@@ -1446,7 +1446,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Load OB from File</string>
@@ -1511,7 +1511,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+        <string/>
        </property>
        <property name="text">
         <string>Clear All Calibrations</string>
