@@ -119,8 +119,15 @@ class EndOfNight(KPFFunction):
                     ControlAOHatch.execute({'destination': 'closed'})
                 except FailedToReachDestination:
                     log.error(f"AO hatch did not move successfully")
+                except Exceptions as e:
+                    log.error(f"Failure controlling AO hatch")
+                    log.error(e)
                 log.info('Sending PCU stage to Home position')
-                SendPCUtoHome.execute({})
+                try:
+                    SendPCUtoHome.execute({})
+                except Exceptions as e:
+                    log.error(f"Failure sending PCU to home")
+                    log.error(e)
     #             log.info('Turning on AO HEPA Filter System')
     #             TurnHepaOn.execute({})
             else:
