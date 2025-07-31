@@ -1024,9 +1024,9 @@
       <widget class="QPushButton" name="BS_ClearTargetButton">
        <property name="geometry">
         <rect>
-         <x>330</x>
+         <x>310</x>
          <y>60</y>
-         <width>101</width>
+         <width>121</width>
          <height>23</height>
         </rect>
        </property>
@@ -1035,6 +1035,22 @@
        </property>
        <property name="text">
         <string>Clear Target</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BS_ValidateTargetButton">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>60</y>
+         <width>111</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Validate Target</string>
        </property>
       </widget>
      </widget>
@@ -1110,6 +1126,22 @@
          <width>571</width>
          <height>591</height>
         </rect>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BS_ValidateObservationsButton">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>30</y>
+         <width>151</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Validate Observations</string>
        </property>
       </widget>
      </widget>
@@ -1504,9 +1536,9 @@
       <widget class="QPushButton" name="BC_ClearCalibrationsButton">
        <property name="geometry">
         <rect>
-         <x>270</x>
+         <x>430</x>
          <y>30</y>
-         <width>141</width>
+         <width>151</width>
          <height>23</height>
         </rect>
        </property>
@@ -1553,6 +1585,22 @@
        </property>
        <property name="text">
         <string>Append Example Calibration:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BS_ValidateCalibrationsButton">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>30</y>
+         <width>151</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>This will set the current exposure to End, triggering a readout and will request the current script to stop at the next opportunity (typically after the exposure is done).</string>
+       </property>
+       <property name="text">
+        <string>Validate Calibrations</string>
        </property>
       </widget>
      </widget>

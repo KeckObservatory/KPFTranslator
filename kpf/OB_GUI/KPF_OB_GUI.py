@@ -451,18 +451,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildTargetValid = self.findChild(QtWidgets.QLabel, 'BS_TargetValid')
         self.ClearTargetButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearTargetButton')
         self.ClearTargetButton.clicked.connect(self.clear_Target)
+        self.ValidateTargetButton = self.findChild(QtWidgets.QPushButton, 'BS_ValidateTargetButton')
+        self.ValidateTargetButton.clicked.connect(self.validate_Target)
         self.BuildTargetView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_TargetView')
         self.BuildTargetView.setFont(QtGui.QFont('Courier New', 11))
         self.set_Target(Target({}))
-        self.BuildTargetView.textChanged.connect(self.edit_Target)
+        self.BuildTargetView.textChanged.connect(self.validate_Target)
         # Observations
         self.BuildObservationValid = self.findChild(QtWidgets.QLabel, 'BS_ObservationsValid')
         self.ClearObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ClearObservationsButton')
         self.ClearObservationsButton.clicked.connect(self.clear_Observations)
+        self.ValidateObservationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ValidateObservationsButton')
+        self.ValidateObservationsButton.clicked.connect(self.validate_Observations)
         self.BuildObservationView = self.findChild(QtWidgets.QPlainTextEdit, 'BS_ObservationsView')
         self.BuildObservationView.setFont(QtGui.QFont('Courier New', 11))
         self.set_Observations([Observation({})])
-        self.BuildObservationView.textChanged.connect(self.edit_Observations)
+        self.BuildObservationView.textChanged.connect(self.validate_Observations)
 
         #-------------------------------------------------------------------
         # Tab: Build Calibration OB
@@ -481,6 +485,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildCalibrationValid = self.findChild(QtWidgets.QLabel, 'BC_CalibrationsValid')
         self.ClearCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BC_ClearCalibrationsButton')
         self.ClearCalibrationsButton.clicked.connect(self.clear_Calibrations)
+        self.ValidateCalibrationsButton = self.findChild(QtWidgets.QPushButton, 'BS_ValidateCalibrationsButton')
+        self.ValidateCalibrationsButton.clicked.connect(self.validate_Calibrations)
         self.ExampleCalibrations = self.findChild(QtWidgets.QComboBox, 'BC_ExampleCalibrations')
         self.ExampleCalibrations.addItems([''])
         self.ExampleCalibrations.addItems([cal.get('Object') for cal in self.example_calOB.Calibrations])
@@ -488,7 +494,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildCalibrationView = self.findChild(QtWidgets.QPlainTextEdit, 'BC_CalibrationsView')
         self.BuildCalibrationView.setFont(QtGui.QFont('Courier New', 11))
         self.set_Calibrations(self.BuildCalibration)
-        self.BuildCalibrationView.textChanged.connect(self.edit_Calibrations)
+        self.BuildCalibrationView.textChanged.connect(self.validate_Calibrations)
         self.clear_Calibrations()
 
         if clargs.loadschedule == True:
@@ -1532,33 +1538,32 @@ class MainWindow(QtWidgets.QMainWindow):
         valid.setText(str(isvalid))
         valid.setStyleSheet(f"color:{color}")
 
-    def BuildOBC_edit(self, input_class_name):
-        self.log.debug(f"Running BuildOBC_edit for {input_class_name}")
-        thing = getattr(self, f'Build{input_class_name}')
+    def BuildOBC_validate_text(self, input_class_name):
+        self.log.debug(f"Running BuildOBC_validate_text for {input_class_name}")
         view = getattr(self, f'Build{input_class_name}View')
-        edited_lines = view.document().toPlainText()
-        if edited_lines == '' and thing is None:
-            return
-        if type(thing) == list:
-            lines = ''
-            for i,item in enumerate(thing):
-                lines += f'# {input_class_name} {i+1}\n'
-                lines += item.__repr__(prune=False, comment=True)
-        else:
-            lines = thing.__repr__(prune=False, comment=True)
-        if edited_lines != lines:
-            try:
-                new_data = yaml.safe_load(edited_lines)
-                class_dict = {"Target": Target, "Observation": Observation, "Calibration": Calibration}
-                if input_class_name == 'Target':
-                    new_thing = class_dict[input_class_name](new_data)
-                elif input_class_name in ['Observation', 'Calibration']:
-                    new_thing = [class_dict[input_class_name](item) for item in new_data]
-                self.BuildOBC_set(new_thing)
-            except Exception as e:
-                self.log.error(f'Failed to parse edited {input_class_name} text')
-                self.log.error(e)
-                self.log.error(f'Not changing contents')
+        valid = getattr(self, f'Build{input_class_name}Valid')
+        new_data = yaml.safe_load(view.document().toPlainText())
+        if new_data in ['', None]:
+            if input_class_name == 'Target':
+                new_data = {}
+            elif input_class_name in ['Observation', 'Calibration']:
+                new_data = [{}]
+        class_dict = {"Target": Target, "Observation": Observation, "Calibration": Calibration}
+        try:
+            if input_class_name == 'Target':
+                new_thing = class_dict[input_class_name](new_data)
+                isvalid = new_thing.validate()
+            elif input_class_name in ['Observation', 'Calibration']:
+                new_thing = [class_dict[input_class_name](item) for item in new_data]
+                isvalid = np.all([item.validate() for item in new_thing])
+        except Exception as e:
+            self.log.debug(f"Unable to form {input_class_name}:")
+            self.log.debug(e)
+            isvalid = False
+        color = {True: 'green', False: 'orange'}[isvalid]
+        valid.setText(str(isvalid))
+        valid.setStyleSheet(f"color:{color}")
+        return isvalid
 
 
     ##--------------------------------------------------------------
@@ -1572,8 +1577,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_Target(Target({}))
 
     def edit_Target(self):
-        self.BuildOBC_edit('Target')
-        self.form_SciOB()
+        isvalid = self.BuildOBC_validate_text('Target')
+        if isvalid == False:
+            self.validate_SciOB(force_invalidate=True)
+
+    def validate_Target(self):
+        isvalid = self.BuildOBC_validate_text('Target')
+        if isvalid:
+            self.form_SciOB()
+        else:
+            self.validate_SciOB(force_invalidate=True)
 
     def query_Simbad(self):
         self.log.debug(f"Running query_Simbad")
@@ -1598,8 +1611,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_Observations([Observation({})])
 
     def edit_Observations(self):
-        self.BuildOBC_edit('Observation')
-        self.form_SciOB()
+        isvalid = self.BuildOBC_validate_text('Observation')
+        if isvalid == False:
+            self.validate_SciOB(force_invalidate=True)
+
+    def validate_Observations(self):
+        isvalid = self.BuildOBC_validate_text('Observation')
+        if isvalid:
+            self.form_SciOB()
+        else:
+            self.validate_SciOB(force_invalidate=True)
 
 
     ##--------------------------------------------------------------
@@ -1617,17 +1638,23 @@ class MainWindow(QtWidgets.QMainWindow):
         newOB = ObservingBlock(OBdict)
         newOB.Target = self.BuildTarget
         newOB.Observations = self.BuildObservation
-        if newOB.__repr__() == self.SciObservingBlock.__repr__():
-            self.log.debug('newOB and existing OB match')
-            return
+#         if newOB.__repr__() == self.SciObservingBlock.__repr__():
+#             self.log.debug('newOB and existing OB match')
+#             return
         self.SciObservingBlock = ObservingBlock(OBdict)
         self.SciObservingBlock.Target = self.BuildTarget
         self.SciObservingBlock.Observations = self.BuildObservation
-        # Validate
-        OBValid = self.SciObservingBlock.validate()
+        self.validate_SciOB()
+
+    def validate_SciOB(self, force_invalidate=False):
+        if force_invalidate == True:
+            OBValid = False
+        else:
+            OBValid = self.SciObservingBlock.validate()
         color = {True: 'green', False: 'orange'}[OBValid]
         self.SciOBValid.setText(str(OBValid))
         self.SciOBValid.setStyleSheet(f"color:{color}")
+        self.SendSciOBToList.setEnabled(OBValid)
         if OBValid:
             self.SciOBString.setText(self.SciObservingBlock.summary())
             duration = EstimateOBDuration.execute({}, OB=self.SciObservingBlock)
@@ -1672,9 +1699,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildOBC_set([], input_class_name='Calibration')
         self.ExampleCalibrations.setCurrentText('')
 
-    def edit_Calibrations(self):
-        self.BuildOBC_edit('Calibration')
-        self.form_CalOB()
+#     def edit_Calibrations(self):
+#         self.BuildOBC_edit('Calibration')
+#         self.form_CalOB()
+
+    def validate_Calibrations(self):
+        self.BuildOBC_validate_text('Calibration')
 
     def add_example_calibration(self, value):
         self.log.debug(f'add_example_calibration: {value}')
@@ -1700,6 +1730,7 @@ class MainWindow(QtWidgets.QMainWindow):
         color = {True: 'green', False: 'orange'}[OBValid]
         self.CalOBValid.setText(str(OBValid))
         self.CalOBValid.setStyleSheet(f"color:{color}")
+        self.SendCalOBToList.setEnabled(OBValid)
         if OBValid:
             self.CalOBString.setText(self.CalObservingBlock.summary())
             duration = EstimateOBDuration.execute({}, OB=self.CalObservingBlock)
