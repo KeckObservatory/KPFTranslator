@@ -37,7 +37,7 @@ class Observation(BaseOBComponent):
                 (self.get('AutoExpMeter') == True, ['ExpMeterExpTime']),
                 (self.get('AutoNDFilters') == True, ['CalND1', 'CalND2']),
                 (self.get('TakeSimulCal') == False, ['AutoNDFilters', 'CalND1', 'CalND2']),
-                (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
+#                 (abs(self.get('NodE')) < 0.01  and abs(self.get('NodN')) < 0.01, ['NodE', 'NodN']),
                 ]
 
     def check_property(self, pname):
@@ -115,8 +115,8 @@ class Observation(BaseOBComponent):
             thresh_str = f'{self.get("ExpMeterThreshold"):.1f}'
             bin_str = self.expmeter_bands[self.get("ExpMeterBin")-1]
             details.append(f'{thresh_str}@{bin_str}')
-        if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
-            details.append('offset')
+#         if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
+#             details.append('offset')
         details = f"({';'.join(details)})" if len(details) > 0 else ''
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"
 
@@ -127,7 +127,7 @@ class Observation(BaseOBComponent):
         details = []
         if self.get('ExpMeterMode') == 'control':
             details.append('max')
-        if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
-            details.append('offset')
+#         if abs(self.get('NodE')) > 0.001 or abs(self.get('NodN')) > 0.001:
+#             details.append('offset')
         details = f"({';'.join(details)})" if len(details) > 0 else ''
         return f"{self.nExp.value:d}x{self.ExpTime.value:.0f}s{details}"

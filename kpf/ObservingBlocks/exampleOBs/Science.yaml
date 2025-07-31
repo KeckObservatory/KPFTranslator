@@ -32,9 +32,9 @@ Observations:
   AutoNDFilters: True
   CalND1: OD 0.1
   CalND2: OD 0.1
-  NodN: 0.00
-  NodE: 0.00
-  GuideHere: True
+#   NodN: 0.00
+#   NodE: 0.00
+#   GuideHere: True
 - Object: test2
   nExp: 1
   ExpTime: 60
@@ -51,9 +51,9 @@ Observations:
   AutoNDFilters: True
   CalND1: OD 0.1
   CalND2: OD 0.1
-  NodN: 0.00
-  NodE: 0.00
-  GuideHere: True
+#   NodN: 0.00
+#   NodE: 0.00
+#   GuideHere: True
 - Object: test3
   nExp: 1
   ExpTime: 60
@@ -70,6 +70,6 @@ Observations:
   AutoNDFilters: False
   CalND1: OD 0.1
   CalND2: OD 0.1
-  NodN: 0.00
-  NodE: 0.00
-  GuideHere: True
+#   NodN: 0.00
+#   NodE: 0.00
+#   GuideHere: True
