@@ -42,7 +42,6 @@ nav:
       - "Sensitivity": sensitivity.md
       - "Data Flow": dataflow.md
       - "KPF vs. HIRES": KPFvsHIRES.md
-    - "Fast Read Mode": fastreadmode.md
   - "Observing with KPF":
     - "Community Cadence (KPF-CC)": communitycadence.md
     - "Afternoon Setup": afternoonsetup.md
@@ -51,7 +50,7 @@ nav:
     - "Nighttime Calibrations": nighttimecalibrations.md
     - "Exposure Meter Termination": expmetertermination.md
     - "Observing Blocks": buildingOBs.md
-    - "Retrieving Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
+    - "Fast Read Mode": fastreadmode.md
     - "Data Reduction": kpfdrp.md
   - "General Observing Info": 
     - "Weather":
@@ -78,6 +77,7 @@ nav:
   - "After Your Observing Run":
     - "Post-observing Comment Form": https://www2.keck.hawaii.edu/inst/PILogin/login.php
     - "Retrieve Your Data":
+      - "Retrieving Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
       - "Retrieve Data from KOA": https://koa.ipac.caltech.edu/
       - "Retrieve Data using PyKOA": https://koa.ipac.caltech.edu/UserGuide/PyKOA/TAPClients.html#pykoa
       - "Data Proprietary Period": http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf
