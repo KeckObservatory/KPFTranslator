@@ -88,8 +88,6 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../fastreadmode/">Fast Read Mode</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Observing with KPF</span></p>
               <ul>
@@ -107,7 +105,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../buildingOBs/">Observing Blocks</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../fastreadmode/">Fast Read Mode</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../kpfdrp/">Data Reduction</a>
                   </li>
@@ -169,6 +167,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >Retrieve Your Data</a>
     <ul>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
+                </li>
                 <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
                 </li>
                 <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/UserGuide/PyKOA/TAPClients.html#pykoa">Retrieve Data using PyKOA</a>
@@ -769,7 +769,14 @@
 <span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
-<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Send KPF in to an end of night configuration.</span>
 
 <span class="sd">    - kpffiu.MODE = Stowed</span>
@@ -864,8 +871,15 @@
                     <span class="n">ControlAOHatch</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="s1">&#39;closed&#39;</span><span class="p">})</span>
                 <span class="k">except</span> <span class="n">FailedToReachDestination</span><span class="p">:</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AO hatch did not move successfully&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">Exceptions</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure controlling AO hatch&quot;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Sending PCU stage to Home position&#39;</span><span class="p">)</span>
-                <span class="n">SendPCUtoHome</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">SendPCUtoHome</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+                <span class="k">except</span> <span class="n">Exceptions</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure sending PCU to home&quot;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
     <span class="c1">#             log.info(&#39;Turning on AO HEPA Filter System&#39;)</span>
     <span class="c1">#             TurnHepaOn.execute({})</span>
             <span class="k">else</span><span class="p">:</span>
