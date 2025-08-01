@@ -2,12 +2,12 @@ import time
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class WaitForLFCReady(KPFTranslatorFunction):
+class WaitForLFCReady(KPFFunction):
     '''Wait for the Laser Frequency Comb (LFC) to be ready and in "AstroComb"
     mode
 
@@ -20,11 +20,11 @@ class WaitForLFCReady(KPFTranslatorFunction):
     - `kpfcal.SPECFLAT`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         expr = f"($kpfmon.HB_MENLOSTA == 'OK')"
         expr += f"and ($kpfmon.LFCREADYSTA == 'OK')"
         expr += f"and ($kpfcal.WOBBLE == 'False')"
@@ -36,5 +36,5 @@ class WaitForLFCReady(KPFTranslatorFunction):
         return success
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

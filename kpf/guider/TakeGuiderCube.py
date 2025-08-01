@@ -3,15 +3,15 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.guider.StartTriggerFile import StartTriggerFile
 from kpf.guider.StopTriggerFile import StopTriggerFile
 from kpf.guider.WaitForTriggerFile import WaitForTriggerFile
 
 
-class TakeGuiderCube(KPFTranslatorFunction):
+class TakeGuiderCube(KPFFunction):
     '''Take a "trigger file" from the guide camera of a given duration.
 
     Args:
@@ -25,18 +25,18 @@ class TakeGuiderCube(KPFTranslatorFunction):
     - `kpfguide.LASTTRIGFILE`
     - `kpfguide.ALL_LOOPS`
 
-    Scripts Called:
+    Functions Called:
 
     - `kpf.guider.StartTriggerFile`
     - `kpf.guider.StopTriggerFile`
     - `kpf.guider.WaitForTriggerFile`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'duration', value_min=0)
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         duration = float(args.get('duration'))
         kpfguide = ktl.cache('kpfguide')
         # Read initial conditions, so we can set them back at the end
@@ -68,14 +68,14 @@ class TakeGuiderCube(KPFTranslatorFunction):
         return cube_file
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('duration', type=float,
                             help='The duration in seconds')
         parser.add_argument("--noTRIGCUBE", dest="ImageCube",
                             default=True, action="store_false",
                             help="Collect the full image cube?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

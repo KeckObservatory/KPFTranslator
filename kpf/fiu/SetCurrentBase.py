@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetCurrentBase(KPFTranslatorFunction):
+class SetCurrentBase(KPFFunction):
     '''Sets the CURRENT_BASE keyword to the value of SCIENCE_BASE or SKY_BASE
     based upon the pointing origin (PO) reported by DCS.  The target pixel for
     tip tilt controll will be this value, but modified by the DAR correction
@@ -18,11 +18,11 @@ class SetCurrentBase(KPFTranslatorFunction):
     - `kpfguide.SKY_BASE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         poname = args.get('PO', 'KPF')
         basename = {'KPF': 'SCIENCE_BASE',
@@ -33,5 +33,5 @@ class SetCurrentBase(KPFTranslatorFunction):
         kpfguide['CURRENT_BASE'].write(basexy)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

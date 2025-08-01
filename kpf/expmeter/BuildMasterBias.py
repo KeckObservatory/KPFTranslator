@@ -7,9 +7,9 @@ import ccdproc
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 # Suppress warnings about DATE-BEG and DATE-END, for example:
 # WARNING: FITSFixedWarning: 'datfix' made the change 'Set MJD-BEG to 60199.135879 from DATE-BEG.
@@ -19,7 +19,7 @@ from astropy.wcs import FITSFixedWarning
 warnings.filterwarnings('ignore', category=FITSFixedWarning, append=True)
 
 
-class BuildMasterBias(KPFTranslatorFunction):
+class BuildMasterBias(KPFFunction):
     '''Combine a set of bias files to make a master bias.
 
     Args:
@@ -31,11 +31,11 @@ class BuildMasterBias(KPFTranslatorFunction):
     - `kpf_expmeter.BIAS_FILE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'files', allowed_types=[list])
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         biasfiles = [Path(biasfile) for biasfile in args.get('files')]
         log.debug(f"Combining {len(biasfiles)} bias frames:")
 
@@ -75,11 +75,11 @@ class BuildMasterBias(KPFTranslatorFunction):
             bias_file.write(f"{outputfile}")
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('files', nargs='*',
                             help="The files to combine")
         parser.add_argument("--output", dest="output", type=str,
@@ -88,4 +88,4 @@ class BuildMasterBias(KPFTranslatorFunction):
         parser.add_argument("--update", dest="update",
                             default=False, action="store_true",
                             help="Update the bias file in use with the newly generated file?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

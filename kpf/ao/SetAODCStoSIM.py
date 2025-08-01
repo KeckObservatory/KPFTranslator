@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetAODCStoSIM(KPFTranslatorFunction):
+class SetAODCStoSIM(KPFFunction):
     '''Set AO in AO DCS sim mode, so AO doesn't communicate with telescope
 
     KTL Keywords Used:
@@ -15,26 +15,27 @@ class SetAODCStoSIM(KPFTranslatorFunction):
     - `ao.AODCSSFP`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
+    def perform(cls, args):
+        AODCSSIM = ktl.cache('ao', 'AODCSSIM')
+        AOCOMSIM = ktl.cache('ao', 'AOCOMSIM')
+        AODCSSFP = ktl.cache('ao', 'AODCSSFP')
         log.debug("Setting AO DCS to Sim")
-        ao['AODCSSIM'].write('1')
-        ao['AOCOMSIM'].write('1')
-        ao['AODCSSFP'].write('0')
+        AODCSSIM.write('1')
+        AOCOMSIM.write('1')
+        AODCSSFP.write('0')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
-        aodcssim_success = ktl.waitfor('($ao.AODCSSIM == enabled)', timeout=3)
-        if not aodcssim_success:
-            raise FailedToReachDestination(ao['AODCSSIM'].read(), 'enabled')
-        aocomsim_success = ktl.waitfor('($ao.AOCOMSIM == enabled)', timeout=3)
-        if not aocomsim_success:
-            raise FailedToReachDestination(ao['AOCOMSIM'].read(), 'enabled')
-        aodcssfp_success = ktl.waitfor('($ao.AODCSSFP == disabled)', timeout=3)
-        if not aodcssfp_success:
-            raise FailedToReachDestination(ao['AODCSSFP'].read(), 'disabled')
+    def post_condition(cls, args):
+        AODCSSIM = ktl.cache('ao', 'AODCSSIM')
+        if not AODCSSIM.waitfor('== "enabled"', timeout=3):
+            raise FailedToReachDestination(AODCSSIM.read(), 'enabled')
+        AOCOMSIM = ktl.cache('ao', 'AOCOMSIM')
+        if not AOCOMSIM.waitfor('== "enabled"', timeout=3):
+            raise FailedToReachDestination(AOCOMSIM.read(), 'enabled')
+        AODCSSFP = ktl.cache('ao', 'AODCSSFP')
+        if not AODCSSFP.waitfor('== "disabled"', timeout=3):
+            raise FailedToReachDestination(AODCSSFP.read(), 'disabled')

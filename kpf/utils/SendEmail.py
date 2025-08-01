@@ -1,15 +1,15 @@
 import smtplib
 from email.mime.text import MIMEText
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 ##-----------------------------------------------------------------------------
 ## SendEmail
 ##-----------------------------------------------------------------------------
-class SendEmail(KPFTranslatorFunction):
+class SendEmail(KPFFunction):
     '''Send an email
 
     ARGS:
@@ -20,22 +20,22 @@ class SendEmail(KPFTranslatorFunction):
     :Message: `str` Message body of the email.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         msg = MIMEText(args.get('Message', 'Test email. Please ignore.'))
         msg['To'] = args.get('To', 'kpf_info@keck.hawaii.edu')
         msg['From'] = args.get('From', 'kpf_info@keck.hawaii.edu')
         msg['Subject'] = args.get('Subject', 'KPF Alert')
-        log.warning(f"Sending email, To {msg['To']}")
-        log.warning(f"Sending email, Subject {msg['Subject']}")
-        log.warning(f"{msg['Message']}")
+        log.warning(f"Sending email, To {msg.get('To')}")
+        log.warning(f"Sending email, Subject {msg.get('Subject')}")
+        log.warning(f"{args.get('Message')}")
         s = smtplib.SMTP('relay.keck.hawaii.edu')
         s.send_message(msg)
         s.quit()
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

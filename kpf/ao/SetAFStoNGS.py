@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetAFStoNGS(KPFTranslatorFunction):
+class SetAFStoNGS(KPFFunction):
     '''ACAM should be set to NGS focus. LGS focus will not work for KPF.
 
     KTL Keywords Used:
@@ -15,20 +15,21 @@ class SetAFStoNGS(KPFTranslatorFunction):
     - `ao.OBASSTST`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
+    def perform(cls, args):
+        OBASNAME = ktl.cache('ao', 'OBASNAME')
+        OBASSLEW = ktl.cache('ao', 'OBASSLEW')
         log.debug(f"Setting AFS to NGS")
-        ao['OBASNAME'].write('ngs')
-        ao['OBASSLEW'].write('1')
+        OBASNAME.write('ngs')
+        OBASSLEW.write('1')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         expr = f'($ao.OBASSTST == INPOS) and ($ao.OBASNAME == ngs)'
         aoamstst_success = ktl.waitfor(expr, timeout=60)
         if not aoamstst_success:
-            ao = ktl.cache('ao')
-            raise FailedToReachDestination(ao['OBASNAME'].read(), 'ngs')
+            OBASNAME = ktl.cache('ao', 'OBASNAME')
+            raise FailedToReachDestination(OBASNAME.read(), 'ngs')

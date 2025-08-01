@@ -1,13 +1,14 @@
 from time import sleep
+import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetTriggeredDetectors(KPFTranslatorFunction):
+class SetTriggeredDetectors(KPFFunction):
     '''Selects which cameras will be triggered by setting the
     `kpfexpose.TRIG_TARG` keyword value.
     
@@ -19,11 +20,11 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
     :TriggerExpMeter: `bool` Trigger the ExpMeter detector? (default=False)
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         detector_list = []
         if args.get('TriggerRed', False) is True:
@@ -51,35 +52,38 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
 
         detectors_string = ','.join(detector_list)
         log.debug(f"Setting triggered detectors to '{detectors_string}'")
-        kpfexpose = ktl.cache('kpfexpose')
-        kpfexpose['TRIG_TARG'].write(detectors_string)
-        shim_time = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        sleep(shim_time)
+        TRIG_TARG = ktl.cache('kpfexpose', 'TRIG_TARG')
+        TRIG_TARG.write(detectors_string)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
-        kpfexpose = ktl.cache('kpfexpose')
-        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        sleep(timeshim)
-        detectors = kpfexpose['TRIG_TARG'].read()
-        detector_list = detectors.split(',')
-        detector_names = [('Red', 'TriggerRed'),
-                          ('Green', 'TriggerGreen'),
-                          ('Ca_HK', 'TriggerCaHK'),
-                          ('ExpMeter', 'TriggerExpMeter'),
-#                           ('Guide', 'TriggerGuide'),
+        TRIG_TARG = ktl.cache('kpfexpose', 'TRIG_TARG')
+        TRIG_TARG.monitor()
+        detector_names = [('Red', 'TriggerRed',
+                           kpfconfig[f'RED_ENABLED'].read(binary=True)),
+                          ('Green', 'TriggerGreen',
+                           kpfconfig[f'GREEN_ENABLED'].read(binary=True)),
+                          ('Ca_HK', 'TriggerCaHK',
+                           kpfconfig[f'CA_HK_ENABLED'].read(binary=True)),
+                          ('ExpMeter', 'TriggerExpMeter',
+                           kpfconfig[f'EXPMETER_ENABLED'].read(binary=True)),
                           ]
-        # Don't check on guide because there is no enabled keyword for it
-        for detector in detector_names:
-            detector_status = detector[0] in detector_list
-            enabled = kpfconfig[f'{detector[0].upper()}_ENABLED'].read(binary=True)
-            detector_target = args.get(detector[1], False) and enabled
-            if detector_target != detector_status:
-                raise FailedToReachDestination(detector_status, detector_target)
+        detector_tests = [False]
+        timeshim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.01)
+        total_time = 0
+        while np.all(detector_tests) != True and total_time < 0.25:
+            detector_tests = []
+            for detector in detector_names:
+                if args.get(detector[1], False) and detector[2]:
+                    detector_tests.append(detector[0] in TRIG_TARG.ascii.split(','))
+            sleep(timeshim)
+            total_time += timeshim
+        if np.all(detector_tests) != True:
+            raise FailedToReachDestination(TRIG_TARG.ascii, 'TBD')
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--Red", "--red", "-r",
                             dest="TriggerRed",
                             default=False, action="store_true",
@@ -100,4 +104,4 @@ class SetTriggeredDetectors(KPFTranslatorFunction):
                             dest="TriggerGuide",
                             default=False, action="store_true",
                             help="Trigger the Guider detector during exposure?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

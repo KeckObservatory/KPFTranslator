@@ -2,13 +2,13 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.guider import guider_is_active, guider_is_saving
 
 
-class StopGuiderContinuous(KPFTranslatorFunction):
+class StopGuiderContinuous(KPFFunction):
     '''Stop the guider's continuous exposure mode and stop saving images.
 
     KTL Keywords Used:
@@ -17,17 +17,17 @@ class StopGuiderContinuous(KPFTranslatorFunction):
     - `kpfguide.SAVE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
         kpfguide['CONTINUOUS'].write('inactive')
         kpfguide['SAVE'].write('inactive')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         if guider_is_active() != False:
             raise FailedPostCondition('Guider is not inactive')
         if guider_is_saving() != False:

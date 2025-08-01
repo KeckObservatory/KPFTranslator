@@ -1,13 +1,13 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.spectrograph.WaitForReady import WaitForReady
 
 
-class SetProgram(KPFTranslatorFunction):
+class SetProgram(KPFFunction):
     '''Sets the PROGNAME keyword for the science detectors in the kpfexpose
     keyword service.
     
@@ -16,32 +16,28 @@ class SetProgram(KPFTranslatorFunction):
     :progname: `str` The program ID to set.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'progname')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
-        progname = args.get('progname')
+    def perform(cls, args):
+        PROGNAME = ktl.cache('kpfexpose', 'PROGNAME')
+        prognameval = args.get('progname')
         log.debug('Waiting for kpfexpose to be ready')
         WaitForReady.execute({})
-        log.info(f"Setting PROGNAME to '{progname}'")
-        kpfexpose['PROGNAME'].write(progname)
-        time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        time.sleep(time_shim)
+        log.info(f"Setting PROGNAME to '{prognameval}'")
+        PROGNAME.write(prognameval)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
-        progname = args.get('progname')
+    def post_condition(cls, args):
+        PROGNAME = ktl.cache('kpfexpose', 'PROGNAME')
+        prognameval = args.get('progname')
         timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
-        expr = f"($kpfexpose.PROGNAME == '{progname}')"
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            prognamekw = ktl.cache('kpfexpose', 'PROGNAME')
-            raise FailedToReachDestination(prognamekw.read(), progname)
+        if PROGNAME.waitFor(f"== '{prognameval}'", timeout=timeout) != True:
+            raise FailedToReachDestination(PROGNAME.read(), prognameval)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('progname', type=str,
                             help='The PROGNAME keyword')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

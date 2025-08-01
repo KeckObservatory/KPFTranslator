@@ -3,12 +3,12 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class StopTriggerFile(KPFTranslatorFunction):
+class StopTriggerFile(KPFFunction):
     '''Stop a "trigger file" from the guide camera.
 
     KTL Keywords Used:
@@ -16,15 +16,15 @@ class StopTriggerFile(KPFTranslatorFunction):
     - `kpfguide.TRIGGER`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        kpfguide = ktl.cache('kpfguide')
+    def perform(cls, args):
+        TRIGGER = ktl.cache('kpfguide', 'TRIGGER')
         log.info(f"Stopping guider trigger file data collection")
-        kpfguide['TRIGGER'].write('Inactive')
+        TRIGGER.write('Inactive')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

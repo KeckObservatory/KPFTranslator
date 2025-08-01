@@ -2,12 +2,12 @@ import time
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class EnterLowPowerMode(KPFTranslatorFunction):
+class EnterLowPowerMode(KPFFunction):
     '''Set KPF to a low power mode.
 
     This is intended for use during power outages. This reduces power use in
@@ -24,62 +24,81 @@ class EnterLowPowerMode(KPFTranslatorFunction):
     - Power off CRED2 (K2, K3)
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
-        log.info('Configuring KPF for Low Power Mode')
-        force = args.get('force', False)
-        SCRIPTNAME = ktl.cache('kpfconfig', 'SCRIPTNAME')
-        SCRIPTNAME.monitor()
-        if SCRIPTNAME not in ['None', '']:
-            log.warning(f'A script ({SCRIPTNAME}) is running')
-            if force is True:
-                log.warning(f'Requesting script stop')
-                kpfconfig['SCRIPTSTOP'].write('Yes')
-                no_script_running = SCRIPTNAME.waitFor("==''", timeout=120)
-                if no_script_running is False:
-                    log.error('Script failed to stop')
-                    raise FailedToReachDestination(f'{SCRIPTNAME.read()}', '')
-            else:
-                raise FailedPreCondition('A script is running, not setting Low Power Mode')
+    def pre_condition(cls, args):
+        pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfconfig = ktl.cache('kpfconfig')
         kpfpower = ktl.cache('kpfpower')
+        kpfmon = ktl.cache('kpfmon')
+        log.warning('Configuring KPF for Low Power Mode')
 
         # Power down Ca HK detector systems
         kpf_hk = ktl.cache('kpf_hk')
-        log.info('Disabling Ca HK detector')
+        log.warning('Disabling Ca HK detector')
         kpfconfig['CA_HK_ENABLED'].write('No')
-        log.info('Turning Ca HK detector cooling off')
+        log.warning('Disabling HKTEMP alarm for next 24 hours')
+        kpfmon['HKTEMPDIS'].write('1 day hence')
+        log.warning('Disabling ST_EXPOSE2 alarm for next 24 hours')
+        kpfmon['ST_EXPOSE2DIS'].write('1 day hence')
+        log.warning('Turning Ca HK detector cooling off')
         kpf_hk['COOLING'].write('off')
-        time.sleep(3)
-        log.info('Powering off Ca HK detector systems')
-        log.debug(f"Powering off {kpfpower['OUTLET_J1_NAME'].read()}")
+        time.sleep(5)
+        log.warning('Powering off Ca HK detector systems')
+        # Wait for HK ready to avoid confusing kpfexpose EXPLAIN%
+        log.warning('Waiting for kpf_hk.EXPSTATE = Ready')
+        ready = kpf_hk['EXPSTATE'].waitFor("== 'Ready'", timeout=60)
+        while ready == False:
+            log.warning('Asking for user input')
+            print()
+            print("###############################################################")
+            print("  Continue waiting for hpf_hk.EXPSTATE=Ready or shut down now?")
+            print()
+            print("  Wait (w) or Abort (a)? [w]")
+            print("###############################################################")
+            print()
+            user_input = input()
+            log.debug(f'response: "{user_input}"')
+            if user_input.lower() in ['a', 'abort', 'q', 'quit']:
+                return
+            else:
+                log.debug('Waiting for kpf_hk.EXPSTATE = Ready')
+                ready = kpf_hk['EXPSTATE'].waitFor("== 'Ready'", timeout=60)
+
+        log.warning(f"Disabling {kpfpower['OUTLET_J1_NAME'].read()} alarm for next 24 hours")
+        kpfmon['OUTLET_J1_OODIS'].write('1 day hence')
+        log.warning(f"Powering off {kpfpower['OUTLET_J1_NAME'].read()}")
         kpfpower['OUTLET_J1'].write('Off')
-        log.debug(f"Powering off {kpfpower['OUTLET_J2_NAME'].read()}")
+
+        log.warning(f"Disabling {kpfpower['OUTLET_J2_NAME'].read()} alarm for next 24 hours")
+        kpfmon['OUTLET_J2_OODIS'].write('1 day hence')
+        log.warning(f"Powering off {kpfpower['OUTLET_J2_NAME'].read()}")
         kpfpower['OUTLET_J2'].write('Off')
-        log.debug(f"Powering off {kpfpower['OUTLET_J5_NAME'].read()}")
+
+        log.warning(f"Disabling {kpfpower['OUTLET_J5_NAME'].read()} alarm for next 24 hours")
+        kpfmon['OUTLET_J5_OODIS'].write('1 day hence')
+        log.warning(f"Powering off {kpfpower['OUTLET_J5_NAME'].read()}")
         kpfpower['OUTLET_J5'].write('Off')
 
         # Power down CRED2 detector systems
         kpfguide = ktl.cache('kpfguide')
-        log.info('Powering off CRED2 detector systems')
+        log.warning('Powering off CRED2 detector systems')
         kpfguide['CONTINUOUS'].write('Inactive')
         kpfguide['SAVE'].write('Inactive')
-        time.sleep(2)
-        log.debug(f"Powering off {kpfpower['OUTLET_K2_NAME'].read()}")
+        time.sleep(5)
+
+        log.warning(f"Disabling {kpfpower['OUTLET_K2_NAME'].read()} alarm for next 24 hours")
+        kpfmon['OUTLET_K2_OODIS'].write('1 day hence')
+        log.warning(f"Powering off {kpfpower['OUTLET_K2_NAME'].read()}")
         kpfpower['OUTLET_K2'].write('Off')
-        log.debug(f"Powering off {kpfpower['OUTLET_K3_NAME'].read()}")
+
+        log.warning(f"Disabling {kpfpower['OUTLET_K3_NAME'].read()} alarm for next 24 hours")
+        kpfmon['OUTLET_K3_OODIS'].write('1 day hence')
+        log.warning(f"Powering off {kpfpower['OUTLET_K3_NAME'].read()}")
         kpfpower['OUTLET_K3'].write('Off')
 
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
-
-    @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
-        parser.add_argument("--force", dest="force",
-                            default=False, action="store_true",
-                            help="Force change? This will terminate any running scripts.")
-        return super().add_cmdline_args(parser, cfg)

@@ -42,7 +42,6 @@ nav:
       - "Sensitivity": sensitivity.md
       - "Data Flow": dataflow.md
       - "KPF vs. HIRES": KPFvsHIRES.md
-    - "Fast Read Mode": fastreadmode.md
   - "Observing with KPF":
     - "Community Cadence (KPF-CC)": communitycadence.md
     - "Afternoon Setup": afternoonsetup.md
@@ -50,11 +49,8 @@ nav:
     - "Observing Procedures": observingprocedures.md
     - "Nighttime Calibrations": nighttimecalibrations.md
     - "Exposure Meter Termination": expmetertermination.md
-    - "Observing Blocks":
-      - "Building OBs": buildingOBs.md
-      - "Science OB Parameters": SciOBparameters.md
-      - "Calibration OB Parameters": CalOBparameters.md
-    - "Retrieving Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
+    - "Observing Blocks": buildingOBs.md
+    - "Fast Read Mode": fastreadmode.md
     - "Data Reduction": kpfdrp.md
   - "General Observing Info": 
     - "Weather":
@@ -81,13 +77,189 @@ nav:
   - "After Your Observing Run":
     - "Post-observing Comment Form": https://www2.keck.hawaii.edu/inst/PILogin/login.php
     - "Retrieve Your Data":
+      - "Retrieving Data in Real Time": https://koa.ipac.caltech.edu/rti-gui/login
       - "Retrieve Data from KOA": https://koa.ipac.caltech.edu/
       - "Retrieve Data using PyKOA": https://koa.ipac.caltech.edu/UserGuide/PyKOA/TAPClients.html#pykoa
       - "Data Proprietary Period": http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf
     - "Acknowledging Keck": https://www2.keck.hawaii.edu/observing/keck_authors.html
     - "Acknowledging KPF": references.md
   - "Technical Documentation":
-    - "Instrument Software": KPFTranslator.md
-    - "Operations Scripts": scripts/scripts.md
-    - "Troubleshooting": https://keckobservatory.atlassian.net/wiki/external/Yzg1NGM2NzVkMjUwNGRmMGE4ODBiNThiNWY1YzViY2U
+    - "Troubleshooting": troubleshooting.md
     - "Tip Tilt Instructions for OAs": tiptiltinstructions.md
+    - "Instrument Software": KPFTranslator.md
+    - "Instrument Scripts":
+      - "kpf.ao":
+        - "ControlAOHatch": scripts/ControlAOHatch.md
+        - "SendPCUtoHome": scripts/SendPCUtoHome.md
+        - "SendPCUtoKPF": scripts/SendPCUtoKPF.md
+        - "SetAFMtoMirror": scripts/SetAFMtoMirror.md
+        - "SetAFStoNGS": scripts/SetAFStoNGS.md
+        - "SetAODCStoSIM": scripts/SetAODCStoSIM.md
+        - "SetAORotator": scripts/SetAORotator.md
+        - "SetAORotatorManual": scripts/SetAORotatorManual.md
+        - "SetupAOforACAM": scripts/SetupAOforACAM.md
+        - "SetupAOforKPF": scripts/SetupAOforKPF.md
+        - "TurnHepaOff": scripts/TurnHepaOff.md
+        - "TurnHepaOn": scripts/TurnHepaOn.md
+        - "TurnLightSourceOff": scripts/TurnLightSourceOff.md
+      - "kpf.cahk":
+        - "PowerCycleCaHK": scripts/PowerCycleCaHK.md
+      - "kpf.calbench":
+        - "CalLampPower": scripts/CalLampPower.md
+        - "IsCalSourceEnabled": scripts/IsCalSourceEnabled.md
+        - "PredictNDFilters": scripts/PredictNDFilters.md
+        - "SetCalSource": scripts/SetCalSource.md
+        - "SetFlatFieldFiberPos": scripts/SetFlatFieldFiberPos.md
+        - "SetLFCtoAstroComb": scripts/SetLFCtoAstroComb.md
+        - "SetLFCtoStandbyHigh": scripts/SetLFCtoStandbyHigh.md
+        - "SetND": scripts/SetND.md
+        - "SetND1": scripts/SetND1.md
+        - "SetND2": scripts/SetND2.md
+        - "SetSimulCalSource": scripts/SetSimulCalSource.md
+        - "TakeIntensityReading": scripts/TakeIntensityReading.md
+        - "WaitForCalSource": scripts/WaitForCalSource.md
+        - "WaitForFlatFieldFiberPos": scripts/WaitForFlatFieldFiberPos.md
+        - "WaitForLampWarm": scripts/WaitForLampWarm.md
+        - "WaitForLFCReady": scripts/WaitForLFCReady.md
+        - "WaitForND": scripts/WaitForND.md
+        - "WaitForND1": scripts/WaitForND1.md
+        - "WaitForND2": scripts/WaitForND2.md
+      - "kpf.engineering":
+        - "GridSearch": scripts/GridSearch.md
+        - "ImageBackIlluminatedFibers": scripts/ImageBackIlluminatedFibers.md
+        - "Run2DGridSearch": scripts/Run2DGridSearch.md
+        - "TakeADCGridData": scripts/TakeADCGridData.md
+        - "TakeADCOffsetGridData": scripts/TakeADCOffsetGridData.md
+        - "TakeGuiderSensitivityData": scripts/TakeGuiderSensitivityData.md
+        - "TriggerGreenMiniFill": scripts/TriggerGreenMiniFill.md
+        - "TriggerRedMiniFill": scripts/TriggerRedMiniFill.md
+        - "AnalyzeGridSearch": scripts/AnalyzeGridSearch.md
+        - "AnalyzeTipTiltPerformance": scripts/AnalyzeTipTiltPerformance.md
+        - "Fit2DGridSearch": scripts/Fit2DGridSearch.md
+        - "CountCameraErrors": scripts/CountCameraErrors.md
+      - "kpf.expmeter":
+        - "BuildMasterBias": scripts/BuildMasterBias.md
+        - "SetExpMeterExpTime": scripts/SetExpMeterExpTime.md
+        - "SetExpMeterTerminationParameters": scripts/SetExpMeterTerminationParameters.md
+        - "PredictExpMeterParameters": scripts/PredictExpMeterParameters.md
+        - "SetMasterBiasToDefault": scripts/SetMasterBiasToDefault.md
+        - "SetupExpMeter": scripts/SetupExpMeter.md
+        - "TakeExpMeterBiases": scripts/TakeExpMeterBiases.md
+      - "kpf.fiu":
+        - "ConfigureFIU": scripts/ConfigureFIU.md
+        - "ControlFoldMirror": scripts/ControlFoldMirror.md
+        - "ControlHatch": scripts/ControlHatch.md
+        - "InitializeTipTilt": scripts/InitializeTipTilt.md
+        - "LockFIU": scripts/LockFIU.md
+        - "UnlockFIU": scripts/UnlockFIU.md
+        - "MeasureTipTiltMirrorRange": scripts/MeasureTipTiltMirrorRange.md
+        - "SetADCAngles": scripts/SetADCAngles.md
+        - "SetADCOffsets": scripts/SetADCOffsets.md
+        - "SetTipTiltCalculations": scripts/SetTipTiltCalculations.md
+        - "SetTipTiltControl": scripts/SetTipTiltControl.md
+        - "SetTipTiltGain": scripts/SetTipTiltGain.md
+        - "SetTipTiltPosition": scripts/SetTipTiltPosition.md
+        - "SetTipTiltTargetPixel": scripts/SetTipTiltTargetPixel.md
+        - "ShutdownTipTilt": scripts/ShutdownTipTilt.md
+        - "StartTipTilt": scripts/StartTipTilt.md
+        - "StopTipTilt": scripts/StopTipTilt.md
+        - "TestTipTiltMirrorRange": scripts/TestTipTiltMirrorRange.md
+        - "VerifyCurrentBase": scripts/VerifyCurrentBase.md
+        - "WaitForConfigureFIU": scripts/WaitForConfigureFIU.md
+      - "kpf.fvc":
+        - "FVCPower": scripts/FVCPower.md
+        - "PredictFVCParameters": scripts/PredictFVCParameters.md
+        - "TakeFVCContinuous": scripts/TakeFVCContinuous.md
+        - "TakeFVCExposure": scripts/TakeFVCExposure.md
+        - "SetFVCExpTime": scripts/SetFVCExpTime.md
+      - "kpf.guider":
+        - "CollectGuiderDarkCubes": scripts/CollectGuiderDarkCubes.md
+        - "DisplayGuiderContinuous": scripts/DisplayGuiderContinuous.md
+        - "GetGaiaStars": scripts/GetGaiaStars.md
+        - "GuiderLastfile": scripts/GuiderLastfile.md
+        - "GuiderOutdir": scripts/GuiderOutdir.md
+        - "PredictGuiderParameters": scripts/PredictGuiderParameters.md
+        - "SetGuiderExpTime": scripts/SetGuiderExpTime.md
+        - "SetGuiderFPS": scripts/SetGuiderFPS.md
+        - "SetGuiderGain": scripts/SetGuiderGain.md
+        - "SetGuiderOutdir": scripts/SetGuiderOutdir.md
+        - "StartGuiderContinuous": scripts/StartGuiderContinuous.md
+        - "StartTriggerFile": scripts/StartTriggerFile.md
+        - "StopGuiderContinuous": scripts/StopGuiderContinuous.md
+        - "StopTriggerFile": scripts/StopTriggerFile.md
+        - "TakeGuiderCube": scripts/TakeGuiderCube.md
+        - "TakeGuiderExposure": scripts/TakeGuiderExposure.md
+        - "WaitForTriggerFile": scripts/WaitForTriggerFile.md
+      - "kpf.magiq":
+        - "AddTarget": scripts/AddTarget.md
+        - "GetTargetList": scripts/GetTargetList.md
+        - "RemoveTarget": scripts/RemoveTarget.md
+        - "RemoveAllTargets": scripts/RemoveAllTargets.md
+        - "SelectTarget": scripts/SelectTarget.md
+        - "SetTargetList": scripts/SetTargetList.md
+      - "kpf.observatoryAPIs":
+        - "GetExecutionHistory": scripts/GetExecutionHistory.md
+        - "GetKPFCCObservingBlocks": scripts/GetKPFCCObservingBlocks.md
+        - "GetObservingBlocks": scripts/GetObservingBlocks.md
+        - "GetObservingBlocksByProgram": scripts/GetObservingBlocksByProgram.md
+        - "GetScheduledPrograms": scripts/GetScheduledPrograms.md
+        - "GetTelescopeRelease": scripts/GetTelescopeRelease.md
+        - "SetJunkStatus": scripts/SetJunkStatus.md
+        - "SubmitObserverComment": scripts/SubmitObserverComment.md
+      - "kpf.scripts":
+        - "CleanupAfterCalibrations": scripts/CleanupAfterCalibrations.md
+        - "CleanupAfterScience": scripts/CleanupAfterScience.md
+        - "ConfigureForAcquisition": scripts/ConfigureForAcquisition.md
+        - "ConfigureForCalibrations": scripts/ConfigureForCalibrations.md
+        - "ConfigureForScience": scripts/ConfigureForScience.md
+        - "EnterLowPowerMode": scripts/EnterLowPowerMode.md
+        - "EstimateOBDuration": scripts/EstimateOBDuration.md
+        - "RecoverFromLowPowerMode": scripts/RecoverFromLowPowerMode.md
+        - "RunOB": scripts/RunOB.md
+        - "RunSoCal": scripts/RunSoCal.md
+      - "kpf.socal":
+        - "CheckSoCalEnabled": scripts/CheckSoCalEnabled.md
+        - "DisableSoCal": scripts/DisableSoCal.md
+        - "EnableSoCal": scripts/EnableSoCal.md
+        - "IsSoCalClosed": scripts/IsSoCalClosed.md
+        - "IsSoCalOpen": scripts/IsSoCalOpen.md
+        - "IsSoCalShutDown": scripts/IsSoCalShutDown.md
+        - "ParkSoCal": scripts/ParkSoCal.md
+        - "SoCalStartAutonomous": scripts/SoCalStartAutonomous.md
+        - "SoCalStopAutonomous": scripts/SoCalStopAutonomous.md
+        - "WaitForSoCalOnTarget": scripts/WaitForSoCalOnTarget.md
+      - "kpf.spectrograph":
+        - "QueryFastReadMode": scripts/QueryFastReadMode.md
+        - "QueryReadMode": scripts/QueryReadMode.md
+        - "RecoverDetectors": scripts/RecoverDetectors.md
+        - "ResetCaHKDetector": scripts/ResetCaHKDetector.md
+        - "ResetExpMeterDetector": scripts/ResetExpMeterDetector.md
+        - "ResetGreenDetector": scripts/ResetGreenDetector.md
+        - "ResetRedDetector": scripts/ResetRedDetector.md
+        - "ResetDetectors": scripts/ResetDetectors.md
+        - "SetExpTime": scripts/SetExpTime.md
+        - "SetObject": scripts/SetObject.md
+        - "SetObserver": scripts/SetObserver.md
+        - "SetProgram": scripts/SetProgram.md
+        - "SetReadModeFast": scripts/SetReadModeFast.md
+        - "SetReadModeNormal": scripts/SetReadModeNormal.md
+        - "SetSourceSelectShutters": scripts/SetSourceSelectShutters.md
+        - "SetTimedShutters": scripts/SetTimedShutters.md
+        - "SetTriggeredDetectors": scripts/SetTriggeredDetectors.md
+        - "StartAgitator": scripts/StartAgitator.md
+        - "StartExposure": scripts/StartExposure.md
+        - "StopAgitator": scripts/StopAgitator.md
+        - "WaitForL0File": scripts/WaitForL0File.md
+        - "WaitForReadout": scripts/WaitForReadout.md
+        - "WaitForReady": scripts/WaitForReady.md
+      - "kpf.telescope":
+        - "EastNorth": scripts/EastNorth.md
+      - "kpf.utils":
+        - "CheckAllowScheduledCals": scripts/CheckAllowScheduledCals.md
+        - "EndOfNight": scripts/EndOfNight.md
+        - "SetObserverFromSchedule": scripts/SetObserverFromSchedule.md
+        - "SetOutdirs": scripts/SetOutdirs.md
+        - "StartGUIs": scripts/StartGUIs.md
+        - "StartOfNight": scripts/StartOfNight.md
+        - "StopGUIs": scripts/StopGUIs.md
+        - "ZeroOutSlewCalTime": scripts/ZeroOutSlewCalTime.md

@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class TurnHepaOn(KPFTranslatorFunction):
+class TurnHepaOn(KPFFunction):
     '''Turn HEPA Filter system on
 
     KTL Keywords Used:
@@ -14,18 +14,17 @@ class TurnHepaOn(KPFTranslatorFunction):
     - `ao.OBHPASTA`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
-        log.debug('Setting AO HEPA filter to on')
-        ao['OBHPAON'].write(1)
+    def perform(cls, args):
+        OBHPAON = ktl.cache('ao', 'OBHPAON')
+        log.debug('Setting AO HEPA filter to off')
+        OBHPAON.write(1)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
-        success = ktl.waitfor('($ao.OBHPASTA == on)', timeout=3)
-        if success is not True:
-            ao = ktl.cache('ao')
-            raise FailedToReachDestination(ao['OBHPASTA'].read(), 'on')
+    def post_condition(cls, args):
+        OBHPASTA = ktl.cache('ao', 'OBHPASTA')
+        if OBHPASTA.waitfor('== "on"', timeout=3) is not True:
+            raise FailedToReachDestination(OBHPASTA.read(), 'on')

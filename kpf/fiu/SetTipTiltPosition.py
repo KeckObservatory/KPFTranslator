@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetTipTiltPosition(KPFTranslatorFunction):
+class SetTipTiltPosition(KPFFunction):
     '''Set the position of the tip tilt mirror.
 
     This should only be used in an engineering context. To control the position
@@ -23,12 +23,12 @@ class SetTipTiltPosition(KPFTranslatorFunction):
     - `kpffiu.TTYVAX`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'x')
         check_input(args, 'y')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpffiu = ktl.cache('kpffiu')
         kpffiu['TTXVAX'].write(args.get('x'))
         kpffiu['TTYVAX'].write(args.get('y'))
@@ -36,7 +36,7 @@ class SetTipTiltPosition(KPFTranslatorFunction):
         time.sleep(time_shim)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         kpffiu = ktl.cache('kpffiu')
         timeout = cfg.getfloat('times', 'tip_tilt_move_time', fallback=0.1)
         tol = cfg.getfloat('tolerances', 'tip_tilt_move_tolerance', fallback=0.1)
@@ -54,9 +54,9 @@ class SetTipTiltPosition(KPFTranslatorFunction):
             raise FailedToReachDestination(kpffiu['TTYVAX'].read(), ydest)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('x', type=float,
                             help="X position of the tip tilt mirror (TTXVAX)")
         parser.add_argument('y', type=float,
                             help="X position of the tip tilt mirror (TTYVAX)")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

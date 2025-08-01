@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class WaitForTriggerFile(KPFTranslatorFunction):
+class WaitForTriggerFile(KPFFunction):
     '''Wait for a trigger file in progress to finish being collected.
 
     KTL Keywords Used:
@@ -13,21 +13,25 @@ class WaitForTriggerFile(KPFTranslatorFunction):
     - `kpfguide.LASTTRIGFILE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'initial_lastfile')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         initial_lastfile = args.get('initial_lastfile', False)
-        kpfguide = ktl.cache('kpfguide')
+        LASTTRIGFILE = ktl.cache('kpfguide', 'LASTTRIGFILE')
         log.debug(f"Waiting for guider trigger file to be written out")
         # Wait for cube file to be updated
         expr = f"$kpfguide.LASTTRIGFILE != '{initial_lastfile}'"
         success = ktl.waitFor(expr, timeout=20)
-        cube_file = kpfguide['LASTTRIGFILE'].read()
-        log.info(f"New cube file: {cube_file}")
+        if success:
+            cube_file = LASTTRIGFILE.read()
+            log.info(f"New cube file: {cube_file}")
+        else:
+            cube_file = None
+            log.error(f"kpfguide.LASTTRIGFILE did not update")
         return cube_file
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass

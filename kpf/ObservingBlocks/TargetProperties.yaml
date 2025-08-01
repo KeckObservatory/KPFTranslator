@@ -1,0 +1,74 @@
+- name: 'TargetName'
+  comment: 'Name of the target, chosen by the observer. This will appear in the TARGNAME FITS header field and is the equivalent of the star list target name, but is not the same as the OBJECT field (see the Observation Properties for that).'
+  valuetype: str
+  defaultvalue: ''
+- name: 'GaiaID'
+  comment: 'Gaia ID of the target (e.g. DR3 123456789012345678)'
+  valuetype: str
+  defaultvalue: ''
+- name: 'twoMASSID'
+  comment: '2MASS ID of the target (e.g. J12345678-1234567)'
+  valuetype: str
+  defaultvalue: ''
+  altname: '2MASSID'
+- name: 'Parallax'
+  comment: '[milliarcsec] Parallax of the target'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'RadialVelocity'
+  comment: '[km/s] Estimated radial velocity of the target'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'Gmag'
+  comment: '[magnitude] Gaia G magnitude of the target. This is used for the algorithm which automatically sets the exposure meter exposure time and the algorithm which sets the simultaneous calibration filters.'
+  valuetype: float
+  defaultvalue: 0
+  precision: 1
+- name: 'Jmag'
+  comment: '[magnitude] J magnitude of the target. This is used by the algorithm which automatically sets the guider gain and frame rate.'
+  valuetype: float
+  defaultvalue: 0
+  precision: 1
+- name: 'Teff'
+  comment: '[K] Effective temperature of the target (allowed range 2600 - 45000 K). This is used by the algorithm which sets the simultaneous calibration filters. For that to work, this must lie within the range of 2700 - 6600 K.'
+  valuetype: float
+  defaultvalue: 45000
+  precision: 0
+- name: 'RA'
+  comment: '[hh:mm:ss.ss] Right Ascension of the target (at Epoch)'
+  valuetype: str
+  defaultvalue: ''
+- name: 'Dec'
+  comment: '[dd:mm:ss.ss] Declination of the target (at Epoch)'
+  valuetype: str
+  defaultvalue: ''
+- name: 'Equinox'
+  comment: '[str] Equinox of the coordinate system (in Jyear format, e.g. J2000 or decimal year, e.g. 2000.0)'
+  valuetype: str
+  defaultvalue: 'J2000'
+- name: 'PMRA'
+  comment: '[seconds-of-time/year] Proper motion in RA'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'PMDEC'
+  comment: '[arcsec/year] Proper motion in Dec'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'Epoch'
+  comment: '[str] Epoch of the coordinate measurement'
+  valuetype: str
+  defaultvalue: 'J2000'
+- name: 'DRA'
+  comment: '[arcsec/hr divided by 15] Non sidereal tracking rate in RA'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3
+- name: 'DDEC'
+  comment: '[arcsec/hr] Non sidereal tracking rate in Dec'
+  valuetype: float
+  defaultvalue: 0
+  precision: 3

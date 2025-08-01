@@ -1,11 +1,11 @@
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetGuiderFPS(KPFTranslatorFunction):
+class SetGuiderFPS(KPFFunction):
     '''Set the guider FPS (frames per second) via the kpfguide.FPS
     keyword.
 
@@ -17,19 +17,19 @@ class SetGuiderFPS(KPFTranslatorFunction):
     - `kpfguide.FPS`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'GuideFPS', value_min=0.0001, value_max=400)
         return True
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         fpskw = ktl.cache('kpfguide', 'FPS')
         fps = args.get('GuideFPS')
         log.debug(f'Setting guider FPS to {fps}')
         fpskw.write(fps)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         fpstol = cfg.getfloat('tolerances', 'guider_fps_tolerance', fallback=0.01)
         fpskw = ktl.cache('kpfguide', 'FPS')
         fps = args.get('GuideFPS')
@@ -40,7 +40,7 @@ class SetGuiderFPS(KPFTranslatorFunction):
             raise FailedToReachDestination(fpskw.read(), fps)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('GuideFPS', type=float,
                             help='The frames per second (FPS)')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

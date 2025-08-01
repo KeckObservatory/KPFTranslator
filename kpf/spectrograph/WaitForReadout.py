@@ -2,13 +2,13 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.spectrograph.ResetDetectors import *
 
 
-class WaitForReadout(KPFTranslatorFunction):
+class WaitForReadout(KPFFunction):
     '''Waits for the `kpfexpose.EXPOSE` keyword to be "Readout".  This will
     block until the camera enters the readout state.
     
@@ -17,11 +17,11 @@ class WaitForReadout(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         pass
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfexpose = ktl.cache('kpfexpose')
         exptime = kpfexpose['EXPOSURE'].read(binary=True)
         starting_status = kpfexpose['EXPOSE'].read(binary=True)
@@ -59,7 +59,7 @@ class WaitForReadout(KPFTranslatorFunction):
             RecoverDetectors.execute({})
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         expr = "($kpfexpose.EXPOSE == 'Ready') or ($kpfexpose.EXPOSE == 'Readout')"
         timeout = cfg.getfloat('times', 'kpfexpose_reset_time', fallback=10)
         ok = ktl.waitFor(expr, timeout=timeout)

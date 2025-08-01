@@ -1,12 +1,12 @@
 import time
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetObserver(KPFTranslatorFunction):
+class SetObserver(KPFFunction):
     '''Sets the OBSERVER keyword for the science detectors in the kpfexpose
     keyword service.
     
@@ -15,31 +15,25 @@ class SetObserver(KPFTranslatorFunction):
     :observer: `str` The desired value of the OBSERVER keyword.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'observer')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        kpfexpose = ktl.cache('kpfexpose')
-        observer = args.get('observer')
-        log.info(f"Setting OBSERVER to {observer}")
-        kpfexpose['OBSERVER'].write(observer)
-        time_shim = cfg.getfloat('times', 'kpfexpose_shim_time', fallback=0.1)
-        time.sleep(time_shim)
+    def perform(cls, args):
+        OBSERVER = ktl.cache('kpfexpose', 'OBSERVER')
+        log.info(f"Setting OBSERVER to {args.get('observer')}")
+        OBSERVER.write(args.get('observer'))
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
-        observer = args.get('observer')
+    def post_condition(cls, args):
+        observerval = args.get('observer')
         timeout = cfg.getfloat('times', 'kpfexpose_response_time', fallback=1)
-        expr = f'($kpfexpose.OBSERVER == "{observer}")'
-        success = ktl.waitFor(expr, timeout=timeout)
-        if success is not True:
-            observerkw = ktl.cache('kpfexpose', 'OBSERVER')
-            raise FailedToReachDestination(observerkw.read().strip(),
-                                           observer.strip())
+        OBSERVER = ktl.cache('kpfexpose', 'OBSERVER')
+        if OBSERVER.waitFor(f'== "{observerval}"', timeout=timeout) is not True:
+            raise FailedToReachDestination(OBSERVER.read(), observerval)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('observer', type=str,
                             help='The OBSERVER keyword')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

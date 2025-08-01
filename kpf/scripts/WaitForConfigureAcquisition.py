@@ -7,13 +7,13 @@ import numpy as np
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 
 
-class WaitForConfigureAcquisition(KPFTranslatorFunction):
+class WaitForConfigureAcquisition(KPFScript):
     '''Script which waits for the configure for Acquisition step.
 
     ARGS:
@@ -21,16 +21,13 @@ class WaitForConfigureAcquisition(KPFTranslatorFunction):
     None
     '''
     @classmethod
-    def pre_condition(cls, OB, logger, cfg):
-        check_input(OB, 'Template_Name', allowed_values=['kpf_sci'])
-        check_input(OB, 'Template_Version', version_check=True, value_min='0.5')
+    def pre_condition(cls, args, OB=None):
+        pass
 
     @classmethod
-    def perform(cls, OB, logger, cfg):
-        WaitForConfigureFIU.execute({'mode': 'Observing', 'wait': False})
-        SCRIPTMSG = ktl.cache('kpfconfig', 'SCRIPTMSG')
-        SCRIPTMSG.write("") # Clear SCRIPTMSG, useful if slew cal was executed
+    def perform(cls, args, OB=None):
+        WaitForConfigureFIU.execute({'mode': 'Observing'})
 
     @classmethod
-    def post_condition(cls, OB, logger, cfg):
+    def post_condition(cls, args, OB=None):
         pass

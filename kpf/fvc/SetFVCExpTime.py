@@ -2,12 +2,12 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetFVCExpTime(KPFTranslatorFunction):
+class SetFVCExpTime(KPFFunction):
     '''Set the exposure time of the specified fiber viewing camera
 
     Args:
@@ -25,7 +25,7 @@ class SetFVCExpTime(KPFTranslatorFunction):
     - `kpfpower.KPFFVC3`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'camera', allowed_values=['SCI', 'CAHK', 'CAL', 'EXT'])
         check_input(args, 'exptime', value_min=0.005, value_max=60)
         # Check if power is on
@@ -37,7 +37,7 @@ class SetFVCExpTime(KPFTranslatorFunction):
                 raise FailedPreCondition(f"{camera}FVC power is not On")
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         camera = args.get('camera')
         kpffvc = ktl.cache('kpffvc')
         exptime = args.get('exptime')
@@ -45,7 +45,7 @@ class SetFVCExpTime(KPFTranslatorFunction):
         kpffvc[f'{camera}EXPTIME'].write(exptime)
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         camera = args.get('camera')
         exptime = args.get('exptime')
         timeout = cfg.getfloat('times', 'fvc_command_timeout', fallback=5)
@@ -58,10 +58,10 @@ class SetFVCExpTime(KPFTranslatorFunction):
             raise FailedToReachDestination(exptimekw.read(), exptime)
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('camera', type=str,
                             choices=['SCI', 'CAHK', 'CAL', 'EXT'],
                             help='The FVC camera')
         parser.add_argument('exptime', type=float,
                             help='The exposure time in seconds')
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

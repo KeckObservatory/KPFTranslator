@@ -2,13 +2,13 @@ from pathlib import Path
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.guider import guider_is_saving, guider_is_active
 
 
-class TriggerSingleGuiderExposure(KPFTranslatorFunction):
+class TriggerSingleGuiderExposure(KPFFunction):
     '''Trigger a single guider exposure using the EXPOSE keyword.
 
     Args:
@@ -21,21 +21,21 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
     - `kpfguide.EXPOSE`
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         if guider_is_active() == True:
             raise FailedPreCondition('Guider is active')
         if guider_is_saving() == True:
             raise FailedPreCondition('Guider is saving')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
+    def perform(cls, args):
         kpfguide = ktl.cache('kpfguide')
-        kpfexpose = ktl.cache('kpfexpose')
+        OBJECT = ktl.cache('kpfexpose', 'OBJECT')
         exptime = kpfguide['EXPTIME'].read(binary=True)
         lastfile = kpfguide['LASTFILE']
         initial_lastfile = lastfile.read()
         log.debug(f"Triggering a new guider exposure.")
-        log.debug(f"kpfexpose.OBJECT = {kpfexpose['OBJECT'].read()}")
+        log.debug(f"kpfexpose.OBJECT = {OBJECT.read()}")
         kpfguide['EXPOSE'].write('yes')
         if args.get('wait', True) is True:
             expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
@@ -44,12 +44,12 @@ class TriggerSingleGuiderExposure(KPFTranslatorFunction):
                 log.error(f'Failed to get new LASTFILE from guider')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
+    def post_condition(cls, args):
         pass
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",
                             help="Start exposure and return immediately?")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)

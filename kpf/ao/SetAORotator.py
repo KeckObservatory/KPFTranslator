@@ -2,12 +2,12 @@ from collections import OrderedDict
 
 import ktl
 
-from kpf.KPFTranslatorFunction import KPFTranslatorFunction
-from kpf import (log, KPFException, FailedPreCondition, FailedPostCondition,
-                 FailedToReachDestination, check_input)
+from kpf import log, cfg
+from kpf.exceptions import *
+from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
-class SetAORotator(KPFTranslatorFunction):
+class SetAORotator(KPFFunction):
     '''Set the AO rotator destination
 
     KTL Keywords Used:
@@ -21,26 +21,26 @@ class SetAORotator(KPFTranslatorFunction):
             rotator.
     '''
     @classmethod
-    def pre_condition(cls, args, logger, cfg):
+    def pre_condition(cls, args):
         check_input(args, 'dest')
 
     @classmethod
-    def perform(cls, args, logger, cfg):
-        ao = ktl.cache('ao')
+    def perform(cls, args):
+        OBRT = ktl.cache('ao', 'OBRT')
+        OBRTMOVE = ktl.cache('ao', 'OBRTMOVE')
         dest = args.get('dest', 0)
         log.debug(f"Setting AO Rotator to {dest:.1f}")
-        ao['OBRT'].write(dest)
-        ao['OBRTMOVE'].write('1')
+        OBRT.write(dest)
+        OBRTMOVE.write('1')
 
     @classmethod
-    def post_condition(cls, args, logger, cfg):
-        success = ktl.waitfor('($ao.OBRTSTST == INPOS)', timeout=180)
-        if success is not True:
-            ao = ktl.cache('ao')
-            raise FailedToReachDestination(ao['OBRTSTST'].read(), 'INPOS')
+    def post_condition(cls, args):
+        OBRTSTST = ktl.cache('ao', 'OBRTSTST')
+        if OBRTSTST.waitfor('== "INPOS"', timeout=180) is not True:
+            raise FailedToReachDestination(OBRTSTST.read(), 'INPOS')
 
     @classmethod
-    def add_cmdline_args(cls, parser, cfg=None):
+    def add_cmdline_args(cls, parser):
         parser.add_argument('dest', type=float,
                             help="Desired rotator position")
-        return super().add_cmdline_args(parser, cfg)
+        return super().add_cmdline_args(parser)
