@@ -81,14 +81,17 @@ class BaseOBComponent(object):
             this_property.set(value)
 
     def from_dict(self, input_dict):
-        for key in input_dict.keys():
-            input_value = input_dict[key]
-            key = self.get_property_name(key)
+        for dictkey in input_dict.keys():
+            input_value = input_dict[dictkey]
+            key = self.get_property_name(dictkey)
             try:
                 this_property = getattr(self, key)
                 this_property.set(input_value)
             except AttributeError as e:
                 print(f"No property named {key}")
+            except Exception as e:
+                print(f'Failed while parsing {key}')
+                raise e
         return self
 
     def to_dict(self):
