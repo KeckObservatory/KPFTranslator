@@ -88,6 +88,8 @@ class RunSoCal(KPFScript):
             if ALLOWSCHEDULED.read() == 'No':
                 log.warning(f'Not running {cls.__name__} because ALLOWSCHEDULEDCALS is No')
                 return
+            else:
+                log.debug(f'{cls.__name__}: Checked kpfconfig.ALLOWSCHEDULEDCALS')
 
         # Start SoCal in autonomous mode
         SoCalStartAutonomous.execute({})
