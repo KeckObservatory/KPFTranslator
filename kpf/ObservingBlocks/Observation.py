@@ -41,10 +41,10 @@ class Observation(BaseOBComponent):
                 ]
 
     def check_property(self, pname):
-#         if pname == 'Object':
-#             if self.get(pname) in ['', None]:
-#                 return True, ' # ERROR: Object field is empty'
-        if pname == 'nExp':
+        if pname == 'Object':
+            if self.get(pname) in ['', None]:
+                return False, ' # Object field is empty'
+        elif pname == 'nExp':
             if self.get(pname) < 1:
                 return True, ' # ERROR: nExp < 1'
         elif pname == 'ExpTime':
@@ -54,7 +54,9 @@ class Observation(BaseOBComponent):
             if self.get(pname) not in ['off', False, 'control', 'monitor']:
                 return True, ' # ERROR: ExpMeterMode invalid'
         elif pname == 'AutoExpMeter':
-            if self.get('ExpMeterMode') in ['off', False]:
+            if type(self.get(pname)) != bool:
+                return True, ' # ERROR: Invalid boolean'
+            elif self.get('ExpMeterMode') in ['off', False]:
                 return False, ' # Unused: ExpMeterMode = off'
         elif pname == 'ExpMeterExpTime':
             if self.get(pname) < 0:
@@ -81,11 +83,19 @@ class Observation(BaseOBComponent):
             elif self.get('TakeSimulCal') == True and self.get('AutoNDFilters') == True:
                 return False, ' # Unused: AutoNDFilters = True'
         elif pname == 'AutoNDFilters':
+            if type(self.get(pname)) != bool:
+                return True, ' # ERROR: Invalid boolean'
             if self.get('TakeSimulCal') == False:
                 return False, ' # Unused: TakeSimulCal = False'
         elif pname == 'GuideHere':
+            if type(self.get(pname)) != bool:
+                return True, ' # ERROR: Invalid boolean'
             if self.get(pname) == False:
                 return False, ' # Tip tilt disabled!'
+        elif pname in ['TriggerCaHK', 'TriggerGreen', 'TriggerRed', 'BlockSky', 'TakeSimulCal']:
+            print(f"Checking {pname}: {type(self.get(pname))} {self.get(pname)}")
+            if type(self.get(pname)) != bool:
+                return True, ' # ERROR: Invalid boolean'
         return False, ''
 
 

@@ -19,6 +19,12 @@ class OBProperty(object):
     def set(self, value):
         if value is None:
             self._value = self.defaultvalue
+        elif self.valuetype == bool:
+            if value in ['True', 'true', 'False', 'false', True, False]:
+                self._value = self.valuetype(value)
+            else:
+                print(value)
+                self._value = value
         else:
             try:
                 self._value = self.valuetype(value)
@@ -71,6 +77,8 @@ class BaseOBComponent(object):
             return this_property.__str__()
         elif string == True and this_property.valuetype == str:
             return f"'{this_property.__str__()}'"
+        elif this_property.valuetype == bool:
+            return this_property._value
         else:
             return this_property.value
 
