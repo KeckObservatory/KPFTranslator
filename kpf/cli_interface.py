@@ -286,7 +286,6 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
                 logger.debug(f"Found the specified input file: {input_file}")
             else:
                 logger.error(f"Could not find file: {input_file}")
-            OBid = parsed_func_args.get('obid', None)
             if input_file is not None:
                 # Load the file
                 if ".yml" in str(input_file) or ".yaml" in str(input_file):
@@ -322,8 +321,6 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
                     logger.debug(f"  {OB.summary()}")
                 except Exception as e:
                     logger.error('Unable to parse input file as an OB')
-        elif OBid is not None:
-            raise NotImplementedError('Direct OB retrieval is not yet supported')
 
     if parsed_args.dry_run:
         logger.info("Dry run:")
