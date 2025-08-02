@@ -270,7 +270,7 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
         # Append these parsed args onto whatever was (or wasn't)
         # found in the input file (i.e. if -f was used)
         parsed_func_args = vars(parser.parse_args(final_args))
-        logger.debug("Parsed.")
+        logger.debug("Parsed arguments.")
     except ArgumentError as e:
         logger.error("Failed to parse arguments!")
         logger.error(e)
@@ -279,25 +279,35 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
 
     if script is True:
         OB = None
-        input_file = parsed_func_args.get('file', None)
+        input_file_string = parsed_func_args.get('file', None)
+        input_file = Path(input_file_string).expanduser().absolute()
+        if input_file.exists():
+            logger.debug(f"Found the specified input file: {input_file}")
+        else:
+            logger.error(f"Could not find file: {input_file}")
         OBid = parsed_func_args.get('obid', None)
         if input_file is not None:
-            logger.debug(f"Found an input file: {input_file}")
             # Load the file
-            if ".yml" in input_file or ".yaml" in input_file:
+            if ".yml" in str(input_file) or ".yaml" in str(input_file):
+                logger.debug(f"Parsing input file as YAML")
                 import yaml
                 with open(input_file, "r") as stream:
                     try:
                         OBdict = yaml.safe_load(stream)
+                        logger.debug(f"YAML parsed.")
+                        logger.debug(OBdict.keys())
                     except yaml.YAMLError as e:
                         logger.error(f"Failed to load {parsed_args.file}")
                         logger.error(e)
                         return
-            elif ".json" in input_file:
+            elif ".json" in str(input_file):
+                logger.debug(f"Parsing input file as JSON")
                 import json
                 with open(input_file, "r") as stream:
                     try:
                         OBdict = json.load(stream)
+                        logger.debug(f"JSON parsed.")
+                        logger.debug(OBdict.keys())
                     except json.JSONDecodeError as e:
                         logger.error(f"Failed to load {parsed_args.file}")
                         logger.error(e)
@@ -305,7 +315,12 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
             else:
                 logger.error("Filetype not supported. Must be .yaml, .yml, or .json")
                 return
-            OB = ObservingBlock(OBdict)
+            try:
+                logger.debug(f"Froming an ObservingBlock object")
+                OB = ObservingBlock(OBdict)
+                logger.debug(f"  {OB.summary()}")
+            except Exception as e:
+                logger.error('Unable to parse input file as an OB')
         elif OBid is not None:
             raise NotImplementedError('Direct OB retrieval is not yet supported')
 
