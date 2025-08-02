@@ -4,6 +4,8 @@
 | -------------- | ---------------------- |
 | Instrument Scientist: | Josh Walawender |
 | Deputy Instrument Scientist: | Sherry Yeh |
+| Current Status:  | [KPF Instrument Status](status.md) |
+
 
 ## Instrument Description
 
