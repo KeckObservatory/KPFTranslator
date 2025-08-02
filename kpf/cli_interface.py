@@ -280,47 +280,48 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
     if script is True:
         OB = None
         input_file_string = parsed_func_args.get('file', None)
-        input_file = Path(input_file_string).expanduser().absolute()
-        if input_file.exists():
-            logger.debug(f"Found the specified input file: {input_file}")
-        else:
-            logger.error(f"Could not find file: {input_file}")
-        OBid = parsed_func_args.get('obid', None)
-        if input_file is not None:
-            # Load the file
-            if ".yml" in str(input_file) or ".yaml" in str(input_file):
-                logger.debug(f"Parsing input file as YAML")
-                import yaml
-                with open(input_file, "r") as stream:
-                    try:
-                        OBdict = yaml.safe_load(stream)
-                        logger.debug(f"YAML parsed.")
-                        logger.debug(OBdict.keys())
-                    except yaml.YAMLError as e:
-                        logger.error(f"Failed to load {parsed_args.file}")
-                        logger.error(e)
-                        return
-            elif ".json" in str(input_file):
-                logger.debug(f"Parsing input file as JSON")
-                import json
-                with open(input_file, "r") as stream:
-                    try:
-                        OBdict = json.load(stream)
-                        logger.debug(f"JSON parsed.")
-                        logger.debug(OBdict.keys())
-                    except json.JSONDecodeError as e:
-                        logger.error(f"Failed to load {parsed_args.file}")
-                        logger.error(e)
-                        return
+        if input_file_string is not None:
+            input_file = Path(input_file_string).expanduser().absolute()
+            if input_file.exists():
+                logger.debug(f"Found the specified input file: {input_file}")
             else:
-                logger.error("Filetype not supported. Must be .yaml, .yml, or .json")
-                return
-            try:
-                logger.debug(f"Froming an ObservingBlock object")
-                OB = ObservingBlock(OBdict)
-                logger.debug(f"  {OB.summary()}")
-            except Exception as e:
-                logger.error('Unable to parse input file as an OB')
+                logger.error(f"Could not find file: {input_file}")
+            OBid = parsed_func_args.get('obid', None)
+            if input_file is not None:
+                # Load the file
+                if ".yml" in str(input_file) or ".yaml" in str(input_file):
+                    logger.debug(f"Parsing input file as YAML")
+                    import yaml
+                    with open(input_file, "r") as stream:
+                        try:
+                            OBdict = yaml.safe_load(stream)
+                            logger.debug(f"YAML parsed.")
+                            logger.debug(OBdict.keys())
+                        except yaml.YAMLError as e:
+                            logger.error(f"Failed to load {parsed_args.file}")
+                            logger.error(e)
+                            return
+                elif ".json" in str(input_file):
+                    logger.debug(f"Parsing input file as JSON")
+                    import json
+                    with open(input_file, "r") as stream:
+                        try:
+                            OBdict = json.load(stream)
+                            logger.debug(f"JSON parsed.")
+                            logger.debug(OBdict.keys())
+                        except json.JSONDecodeError as e:
+                            logger.error(f"Failed to load {parsed_args.file}")
+                            logger.error(e)
+                            return
+                else:
+                    logger.error("Filetype not supported. Must be .yaml, .yml, or .json")
+                    return
+                try:
+                    logger.debug(f"Froming an ObservingBlock object")
+                    OB = ObservingBlock(OBdict)
+                    logger.debug(f"  {OB.summary()}")
+                except Exception as e:
+                    logger.error('Unable to parse input file as an OB')
         elif OBid is not None:
             raise NotImplementedError('Direct OB retrieval is not yet supported')
 
