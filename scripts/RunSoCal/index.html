@@ -864,7 +864,9 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
 <span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
-<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCal</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCal</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;This script runs a control loop to execute SoCal observations.</span>
 
 <span class="sd">    When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means</span>
@@ -927,6 +929,8 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
             <span class="k">if</span> <span class="n">ALLOWSCHEDULED</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;No&#39;</span><span class="p">:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Not running </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> because ALLOWSCHEDULEDCALS is No&#39;</span><span class="p">)</span>
                 <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">: Checked kpfconfig.ALLOWSCHEDULEDCALS&#39;</span><span class="p">)</span>
 
         <span class="c1"># Start SoCal in autonomous mode</span>
         <span class="n">SoCalStartAutonomous</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
