@@ -17,7 +17,7 @@ class OBProperty(object):
             return self._value
 
     def set(self, value):
-        if value is None:
+        if value in [None, 'None', 'none']:
             self._value = self.defaultvalue
         else:
             try:
