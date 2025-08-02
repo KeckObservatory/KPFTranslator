@@ -976,13 +976,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ProgressBar.setVisible(True)
         self.ProgressBar.setValue(0)
         self.GUITaskLabel.setText(f'Retrieving OBs from all {len(progIDs)} KPF-CC programs.')
-        # Create progress bar if we have a lot of programs to query
-#         usepbar = len(progIDs) > 5 
-#         if usepbar:
-#             progress = QtWidgets.QProgressDialog("Retrieving OBs from Database", "Cancel", 0, len(progIDs))
-#             progress.setWindowModality(QtCore.Qt.WindowModal) # Make it modal (blocks interaction with parent)
-#             progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
-#             progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
         # Iterate of KPF-CC programIDs and retrieve their OBs from DB
         for i,progID in enumerate(progIDs):
             self.log.debug(f'Retrieving OBs for {progID}')
@@ -990,11 +983,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.OBListModel.extend(programOBs)
             self.log.debug(f'  Got {len(programOBs)} for {progID}, total KPF-CC OB count is now {len(self.OBListModel.OBs)}')
             self.ProgressBar.setValue(int((i+1)/len(progIDs)*100))
-#             if usepbar:
-#                 if progress.wasCanceled():
-#                     self.log.error("Retrieval of OBs canceled by user.")
-#                     break
-#                 progress.setValue(i+1)
         self.GUITaskLabel.setText(f'Retrieved {len(self.OBListModel.OBs)} OBs from all {len(progIDs)} KPF-CC programs.')
         self.set_SortOrWeather()
 
@@ -1039,18 +1027,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.debug(f"Pre-counted {Nsched} OBs to get for KPF-CC in all weather bands")
         GUImsg = [f"Loading {Nsched} OBs from schedule"]
         self.GUITaskLabel.setText('\n'.join(GUImsg))
-        # Create progress bar if we have a lot of OBs to retrieve
-#         usepbar = Nsched > 15
-#         if usepbar:
-#             pbar_title = f"Retrieving {Nsched} OBs for all weather bands\n\n"
-#             if len(pbar_msg) > 0:
-#                 pbar_title += '\n'.join(pbar_msg)
-#             progress = QtWidgets.QProgressDialog(pbar_title, "Cancel", 0, Nsched)
-#             progress.setWindowModality(QtCore.Qt.WindowModal) # Make it modal (blocks interaction with parent)
-#             progress.setAutoClose(True) # Dialog closes automatically when value reaches maximum
-#             progress.setAutoReset(True) # Dialog resets automatically when value reaches maximum
-#             progress.setValue(0)
-#             self.log.debug('Created progress bar')
         if Nsched == 0:
             ConfirmationPopup('Found no OBs in schedule', '\n'.join(pbar_msg), info_only=True).exec_()
         scheduledOBcount = 0
@@ -1086,11 +1062,6 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.log.error(errmsg)
                         errs.append(errmsg)
                 self.ProgressBar.setValue(int(scheduledOBcount/Nsched*100))
-#                 if usepbar:
-#                     if progress.wasCanceled():
-#                         self.log.error("Retrieval of OBs canceled by user.")
-#                         break
-#                     progress.setValue(scheduledOBcount)
             # Append a slewcal OB for convienience
             if self.slewcalOB is not None:
                 self.KPFCC_OBs[WB].append(self.slewcalOB)
@@ -1098,7 +1069,6 @@ class MainWindow(QtWidgets.QMainWindow):
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) OBs for all weather bands"]
         self.GUITaskLabel.setText("".join(msg))
         msg.extend(errs)
-#         ConfirmationPopup('Retrieved OBs from Database', '\n'.join(msg), info_only=True).exec_()
         self.refresh_history()
         self.set_SortOrWeather()
         self.set_weather_band(self.KPFCC_weather_band)
