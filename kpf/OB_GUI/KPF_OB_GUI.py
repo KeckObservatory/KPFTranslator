@@ -1024,10 +1024,14 @@ class MainWindow(QtWidgets.QMainWindow):
         pbar_msg = []
         for i,WB in enumerate(self.KPFCC_weather_bands):
             if schedule_files[i].exists():
-                schedule_file_contents[WB] = Table.read(schedule_files[i], format='ascii.csv')
-                nOBs = len(schedule_file_contents[WB])
-                Nsched += nOBs
-                pbar_msg.append(f'Schedule for weather band {WB} contains {nOBs} OBs')
+                try:
+                    schedule_file_contents[WB] = Table.read(schedule_files[i], format='ascii.csv')
+                    nOBs = len(schedule_file_contents[WB])
+                    Nsched += nOBs
+                    pbar_msg.append(f'Schedule for weather band {WB} contains {nOBs} OBs')
+                except Exception as e:
+                    self.log.error(f'Unable to parse schedule: {schedule_files[i]}')
+                    pbar_msg.append(f'Could not parse schedule for weather band {WB}')
             else:
                 schedule_file_contents[WB] = []
                 pbar_msg.append(f'Could not find schedule for weather band {WB}')
