@@ -996,9 +996,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.KPFCC = True
         self.OBListHeader.setText('   StartTime '+self.hdr)
         # Form location to look for KPF-CC schedule files
-        if self.clargs.mock_date == True:
-            semester = '2025A'
-            date_str = '2025-07-10'
+        if self.clargs.mock_date is not None:
+            mock_date = datetime.datetime.strptime(self.clargs.mock_date, '%Y-%m-%d')
+            semester, start, end = get_semester_dates(mock_date)
+            date_str = mock_date.strftime('%Y-%m-%d').lower()
             self.log.warning(f'Using schedule from {date_str} for testing')
         else:
             semester, start, end = get_semester_dates(datetime.datetime.now())
@@ -1077,10 +1078,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def refresh_history(self):
         self.log.debug(f"refresh_history")
         date_str = 'today'
-        if self.clargs.mock_date == True:
-            date_str = '2025-07-10'
+        if self.clargs.mock_date is not None:
+            mock_date = datetime.datetime.strptime(self.clargs.mock_date, '%Y-%m-%d')
+            mock_date += datetime.timedelta(days=1)
+            semester, start, end = get_semester_dates(mock_date)
+            date_str = mock_date.strftime('%Y-%m-%d').lower()
             self.log.warning(f'Using history from {date_str} for testing')
         history = GetExecutionHistory.execute({'utdate': date_str})
+        self.log.debug(f"  got {len(history)} entried for utdate={date_str}")
         self.OBListModel.refresh_history(history)
         self.HistoryListModel.refresh_history(history)
 
@@ -1737,9 +1742,8 @@ if __name__ == '__main__':
         default=False, action="store_true",
         help="Be verbose! (default = False)")
     ## add options
-    p.add_argument("--mock_date", dest="mock_date",
-        default=False, action="store_true",
-        help="Pull a fixed date for schedule and history (intended for testing).")
+    p.add_argument("-m", "--mock_date", dest="mock_date", type=str,
+        help="Pull the specified date for schedule and history (intended for testing).")
     p.add_argument("--loadschedule", dest="loadschedule",
         default=False, action="store_true",
         help="Load KPF-CC schedule on startup.")
