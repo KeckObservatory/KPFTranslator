@@ -178,7 +178,7 @@ class RunOB(KPFScript):
             # Verify dcs TARGNAME against OB.Target.TargetName
             dcsint = cfg.getint('telescope', 'telnr', fallback=1)
             TARGNAME = ktl.cache(f'dcs{dcsint:1d}', 'TARGNAME').read()
-            if TARGNAME.strip().lower() != OB.Target.TargetName.lower():
+            if str(TARGNAME).strip().lower() != str(OB.Target.TargetName).lower():
                 log.warning('Target name mismatch detected')
                 log.warning(f"dcs.TARGNAME '{TARGNAME}' != OB TargetName '{OB.Target.TargetName}'")
                 log.debug('Asking for user input')
