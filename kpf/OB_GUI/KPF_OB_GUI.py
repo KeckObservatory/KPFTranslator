@@ -1378,7 +1378,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.log.schedule(f'  Start time for this OB is {start_time:.2f} UT')
                     self.log.schedule(f'  Start time for scheduled OB is {start_current:.2f} UT')
                     self.log.schedule(f'  Start time for next OB is {start_next:.2f} UT')
-            self.RunOB(SOB)
+            self.RunOB(SOB, slewcal=slewcal)
         else:
             self.log.debug('User opted not to execute OB')
 
