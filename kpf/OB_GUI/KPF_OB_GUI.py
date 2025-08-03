@@ -1350,7 +1350,7 @@ class MainWindow(QtWidgets.QMainWindow):
                f"{SOB.summary()}"]
         result = ConfirmationPopup('Execute Science OB?', msg).exec_()
         if result == QtWidgets.QMessageBox.Yes:
-            if SOB.Target is not None and self.OBListModel.telescope_interactions_allowed() and self.OBListModel.enable_magiq:
+            if SOB.Target is not None and self.OBListModel.telescope_interactions_allowed() and self.OBListModel.magiq_enabled:
                 SelectTarget.execute(SOB.Target.to_dict())
             if self.KPFCC == True:
                 # Log execution
