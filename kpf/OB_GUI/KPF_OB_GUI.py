@@ -565,6 +565,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ConfigureFIU_Stow.setEnabled(False)
             self.SetObserverNames.setEnabled(False)
             self.SetProgramID.setEnabled(False)
+        self.set_SOB_enabled()
 
     # kpfexpose.EXPOSE
     def update_expose_status_value(self, value):
