@@ -1402,7 +1402,7 @@ class MainWindow(QtWidgets.QMainWindow):
         SOB.write_to(tmp_file)
         if slewcal == True:
             self.SLEWCALREQ.write(True)
-            self.SLEWCALREQ.waitFor("== 'Yes", timeout=0.3)
+            self.SLEWCALREQ.waitFor("== 'Yes'", timeout=0.3)
         launch_command_in_xterm(f'RunOB -f {tmp_file}',
                                 window_title=f"RunOB {SOB.summary()}")
 
