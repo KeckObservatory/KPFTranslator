@@ -43,7 +43,7 @@ class Target(BaseOBComponent):
         try:
             ra = Angle(self.RA.value, unit=u.hourangle)
             dec = Angle(self.Dec.value, unit=u.degree)
-            pm_ra_cosdec = (self.PMRA.value*15*np.cos(dec.to(u.radian).value))*u.arcsec/u.yr
+            pm_ra_cosdec = self.PMRA.value*15*u.arcsec/u.yr
             equinox = parse_time_input(self.Equinox.value)
             epoch = parse_time_input(self.Epoch.value)
             self.coord = SkyCoord(ra, dec, frame=FK5(equinox=equinox),
@@ -209,7 +209,7 @@ class Target(BaseOBComponent):
             target_dict['RA'] = ra_dec_string.split()[0]
             target_dict['Dec'] = ra_dec_string.split()[1]
             target_dict['Equinox'] = 'J2000'
-            target_dict['PMRA'] = target_coord.pm_ra_cosdec.to(u.arcsec/u.year).value*15
+            target_dict['PMRA'] = target_coord.pm_ra_cosdec.to(u.arcsec/u.year).value/15#/np.cos(target_coord.dec.to(u.radian).value)
             target_dict['PMDEC'] = target_coord.pm_dec.to(u.arcsec/u.year).value
             target_dict['Epoch'] = target_coord.obstime.decimalyear
         except:
