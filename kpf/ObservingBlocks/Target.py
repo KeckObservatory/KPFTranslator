@@ -113,9 +113,12 @@ class Target(BaseOBComponent):
         '''Return a string which is a Keck formatted star list line
         '''
         try:
-            pmcoord = self.coord.apply_space_motion(new_obstime=Time.now())
-            rastr = pmcoord.ra.to_string(unit=u.hourangle, sep=' ', precision=raprecision)
-            decstr = pmcoord.dec.to_string(unit=u.deg, sep=' ', precision=decprecision, alwayssign=True)
+#             pmcoord = self.coord.apply_space_motion(new_obstime=Time.now())
+            rastr = self.coord.ra.to_string(unit=u.hourangle,
+                                            sep=' ', precision=raprecision)
+            decstr = self.coord.dec.to_string(unit=u.deg,
+                                              sep=' ', precision=decprecision,
+                                              alwayssign=True)
         except:
             rastr = str(self.RA).replace(':', ' ')
             decstr = str(self.Dec).replace(':', ' ')
