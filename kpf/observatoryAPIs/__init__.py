@@ -105,7 +105,6 @@ def getObserverInfo(observerID):
 
 
 def addObservingBlockHistory(history):
-    if 'comment' not in history.keys(): history['comment'] = ' ' # API needs this
     return query_observatoryAPI('proposal', 'addObservingBlockHistory', history, post=True)
 
 
