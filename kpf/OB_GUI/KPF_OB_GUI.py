@@ -1161,6 +1161,8 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             coord_string = SOB.Target.coord.to_string('hmsdms', sep=':', precision=2)
             RA_str, Dec_str = coord_string.split()
+            RAlabel = f"RA (epoch={SOB.Target.Epoch}):"
+            DecLabel = f"Dec (epoch={SOB.Target.Epoch}):"
         except Exception as e:
             self.log.error('Failed to stringify coordinate')
             self.log.error(e)
@@ -1168,20 +1170,18 @@ class MainWindow(QtWidgets.QMainWindow):
             Dec_str = SOB.Target.get('Dec')
             self.SOB_TargetRALabel.setText('RA (Epoch=?):')
             self.SOB_TargetDecLabel.setText('Dec (Epoch=?):')
-        RAlabel = f"RA:"
-        DecLabel = f"Dec:"
         # If proper motion values are set, try to propagate proper motions
-        if abs(SOB.Target.PMRA.value) > 0.001 or abs(SOB.Target.PMDEC.value) > 0.001:
-            try:
-                now = Time(datetime.datetime.utcnow())
-                coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
-                coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
-                RA_str, Dec_str = coord_now_string.split()
-                RAlabel = f"RA (epoch=now):"
-                DecLabel = f"Dec (epoch=now):"
-            except Exception as e:
-                self.log.error('Failed to propagate proper motions for display')
-                self.log.error(e)
+#         if abs(SOB.Target.PMRA.value) > 0.001 or abs(SOB.Target.PMDEC.value) > 0.001:
+#             try:
+#                 now = Time(datetime.datetime.utcnow())
+#                 coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
+#                 coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
+#                 RA_str, Dec_str = coord_now_string.split()
+#                 RAlabel = f"RA (epoch=now):"
+#                 DecLabel = f"Dec (epoch=now):"
+#             except Exception as e:
+#                 self.log.error('Failed to propagate proper motions for display')
+#                 self.log.error(e)
         self.SOB_TargetRA.setText(RA_str)
         self.SOB_TargetDec.setText(Dec_str)
         self.SOB_TargetRALabel.setText(RAlabel)
