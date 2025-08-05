@@ -183,7 +183,9 @@ class RunOB(KPFScript):
                 CleanupAfterScience.execute(args, OB=OB)
                 return
             # Proceed once target is on fiber and tip tilt is active
-            log.debug('Asking for user input')
+            msg = 'Waiting for user confirmation to begin exposures'
+            log.info(msg)
+            SCRIPTMSG.write(msg)
             print()
             print("###############################################################")
             print("    Before continuing, please ensure that the OA has placed")
@@ -195,6 +197,7 @@ class RunOB(KPFScript):
             print()
             user_input = input()
             log.debug(f'response: "{user_input}"')
+            SCRIPTMSG.write('')
             if user_input.lower() in ['a', 'abort', 'q', 'quit']:
                 log.error("User chose to halt execution")
                 CleanupAfterScience.execute(args, OB=OB)
@@ -206,7 +209,9 @@ class RunOB(KPFScript):
             if str(TARGNAME).strip().lower() != str(OB.Target.TargetName).lower():
                 log.warning('Target name mismatch detected')
                 log.warning(f"dcs.TARGNAME '{TARGNAME}' != OB TargetName '{OB.Target.TargetName}'")
-                log.debug('Asking for user input')
+                msg = 'Waiting for user confirmation on target name mismatch'
+                log.info(msg)
+                SCRIPTMSG.write(msg)
                 print()
                 print("###############################################################")
                 print("    WARNING: The telescope control system target name: {TARGNAME}")
@@ -217,6 +222,7 @@ class RunOB(KPFScript):
                 print()
                 user_input = input()
                 log.debug(f'response: "{user_input}"')
+                SCRIPTMSG.write('')
                 if user_input.lower() in ['a', 'abort', 'q', 'quit']:
                     log.error("User chose to halt execution")
                     CleanupAfterScience.execute(args, OB=OB)

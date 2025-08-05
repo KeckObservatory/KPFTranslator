@@ -57,7 +57,10 @@ class VerifyCurrentBase(KPFFunction):
 
         if args.get('query_user', False) == True and poname_match == False:
             # Check with user
-            log.debug('Asking for user input')
+            SCRIPTMSG = ktl.cache('kpfconfig', 'SCRIPTMSG')
+            msg = 'Waiting for user confirmation on PO mismatch'
+            log.info(msg)
+            SCRIPTMSG.write(msg)
             print()
             print("#####################################################")
             print("The dcs.PONAME value is incosistent with CURRENT_BASE")
@@ -70,6 +73,7 @@ class VerifyCurrentBase(KPFFunction):
             print()
             user_input = input()
             log.debug(f'response: "{user_input}"')
+            SCRIPTMSG.write('')
             if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
                 raise KPFException("User chose to halt execution")
 
