@@ -614,15 +614,49 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFScript">KPFScript</span></code></p>
 
 
-      <p>Script which configures the instrument for Cal OBs.</p>
-<h2 id="kpf.scripts.ConfigureForCalibrations.ConfigureForCalibrations--args">ARGS:</h2>
+      <p>Script which configures the instrument for calibration exposures.</p>
 <ul>
-<li><strong>OB</strong> - <code>ObservingBlock</code> or <code>dict</code> A valid observing block (OB).</li>
+<li>Powers on requested calibration lamps</li>
+<li>Configures FIU to calibration mode</li>
+</ul>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>OB</code></b>
+                  (<code><span title="kpf.ObservingBlocks.ObservingBlock.ObservingBlock">ObservingBlock</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>A valid observing block (OB).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Functions Called:</p>
+<ul>
+<li><code>kpf.ObservingBlocks.ObservingBlock</code></li>
+<li><code>kpf.calbench.IsCalSourceEnabled</code></li>
+<li><code>kpf.calbench.CalLampPower</code></li>
+<li><code>kpf.fiu.ConfigureFIU</code></li>
 </ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/scripts/ConfigureForCalibrations.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
@@ -671,12 +705,27 @@
 <span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
-<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureForCalibrations</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which configures the instrument for Cal OBs.</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureForCalibrations</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which configures the instrument for calibration exposures.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).</span>
+<span class="sd">    - Powers on requested calibration lamps</span>
+<span class="sd">    - Configures FIU to calibration mode</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        OB (ObservingBlock): A valid observing block (OB).</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.ObservingBlocks.ObservingBlock`</span>
+<span class="sd">    - `kpf.calbench.IsCalSourceEnabled`</span>
+<span class="sd">    - `kpf.calbench.CalLampPower`</span>
+<span class="sd">    - `kpf.fiu.ConfigureFIU`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

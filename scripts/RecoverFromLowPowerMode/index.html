@@ -621,6 +621,24 @@
 <li>Re-enable Ca HK detector</li>
 <li>Power on CRED2 systems</li>
 </ul>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfconfig.CA_HK_ENABLED</code></li>
+<li><code>kpfpower.OUTLET_J1%</code></li>
+<li><code>kpfpower.OUTLET_J2%</code></li>
+<li><code>kpfpower.OUTLET_J5%</code></li>
+<li><code>kpfpower.OUTLET_K2%</code></li>
+<li><code>kpfpower.OUTLET_K3%</code></li>
+<li><code>kpfmon.HKTEMPDIS</code></li>
+<li><code>kpfmon.ST_EXPOSE2DIS</code></li>
+<li><code>kpfmon.OUTLET_J1_OODIS</code></li>
+<li><code>kpfmon.OUTLET_J2_OODIS</code></li>
+<li><code>kpfmon.OUTLET_J5_OODIS</code></li>
+<li><code>kpfmon.OUTLET_K2_OODIS</code></li>
+<li><code>kpfmon.OUTLET_K3_OODIS</code></li>
+<li><code>kpf_hk.COOLING</code></li>
+<li><code>kpf_hk.COOLTARG</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/scripts/RecoverFromLowPowerMode.py</code></summary>
@@ -683,7 +701,24 @@
 <span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
-<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RecoverFromLowPowerMode</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RecoverFromLowPowerMode</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Recover from low power mode.</span>
 
 <span class="sd">    - Power on the Ca HK systems</span>
@@ -691,6 +726,23 @@
 <span class="sd">    - Re-enable Ca HK detector</span>
 <span class="sd">    - Power on CRED2 systems</span>
 
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfconfig.CA_HK_ENABLED`</span>
+<span class="sd">    - `kpfpower.OUTLET_J1%`</span>
+<span class="sd">    - `kpfpower.OUTLET_J2%`</span>
+<span class="sd">    - `kpfpower.OUTLET_J5%`</span>
+<span class="sd">    - `kpfpower.OUTLET_K2%`</span>
+<span class="sd">    - `kpfpower.OUTLET_K3%`</span>
+<span class="sd">    - `kpfmon.HKTEMPDIS`</span>
+<span class="sd">    - `kpfmon.ST_EXPOSE2DIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_J1_OODIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_J2_OODIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_J5_OODIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_K2_OODIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_K3_OODIS`</span>
+<span class="sd">    - `kpf_hk.COOLING`</span>
+<span class="sd">    - `kpf_hk.COOLTARG`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

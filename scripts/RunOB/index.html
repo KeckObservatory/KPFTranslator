@@ -615,10 +615,77 @@
 
 
       <p>Script to run an OB.</p>
-<h2 id="kpf.scripts.RunOB.RunOB--args">ARGS:</h2>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>OB</code></b>
+                  (<code><span title="kpf.ObservingBlocks.ObservingBlock.ObservingBlock">ObservingBlock</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>A valid observing block (OB).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>leave_lamps_on</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Leave the calibration lamps on after cleanup phase?</p>
+              </div>
+            </li>
+            <li>
+              <b><code>waitforscript</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Wait for a running script to end before starting?</p>
+              </div>
+            </li>
+            <li>
+              <b><code>scheduled</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Script should obey ALLOWSCHEDULEDCALS keyword.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
 <ul>
-<li><strong>leave_lamps_on</strong> - <code>bool</code> Leave calibration lamps on when done?</li>
-<li><strong>OB</strong> - <code>ObservingBlock</code> or <code>dict</code> A valid observing block (OB).</li>
+<li><code>kpfconfig.ALLOWSCHEDULEDCALS</code></li>
+<li><code>kpfconfig.SLEWCALREQ</code></li>
+<li><code>kpfconfig.SLEWCALFILE</code></li>
+<li><code>kpfconfig.SCRIPTMSG</code></li>
+<li><code>dcs1.TARGNAME</code></li>
+</ul>
+<p>Functions Called:</p>
+<ul>
+<li><code>kpf.fiu.VerifyCurrentBase</code></li>
+<li><code>kpf.scripts.SetTargetInfo</code></li>
+<li><code>kpf.scripts.ConfigureForCalibrations</code></li>
+<li><code>kpf.scripts.ExecuteCal</code></li>
+<li><code>kpf.scripts.CleanupAfterCalibrations</code></li>
+<li><code>kpf.scripts.ConfigureForAcquisition</code></li>
+<li><code>kpf.scripts.WaitForConfigureAcquisition</code></li>
+<li><code>kpf.scripts.ConfigureForScience</code></li>
+<li><code>kpf.scripts.WaitForConfigureScience</code></li>
+<li><code>kpf.scripts.ExecuteSci</code></li>
+<li><code>kpf.scripts.CleanupAfterScience</code></li>
+<li><code>kpf.spectrograph.SetProgram</code></li>
+<li><code>kpf.observatoryAPIs.addObservingBlockHistory</code></li>
 </ul>
 
               <details class="quote">
@@ -875,13 +942,63 @@
 <span class="normal">280</span>
 <span class="normal">281</span>
 <span class="normal">282</span>
-<span class="normal">283</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunOB</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunOB</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script to run an OB.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    * __leave_lamps_on__ - `bool` Leave calibration lamps on when done?</span>
-<span class="sd">    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).</span>
+<span class="sd">    Args:</span>
+<span class="sd">        OB (ObservingBlock): A valid observing block (OB).</span>
+<span class="sd">        leave_lamps_on (bool): Leave the calibration lamps on after cleanup phase?</span>
+<span class="sd">        waitforscript (bool): Wait for a running script to end before starting?</span>
+<span class="sd">        scheduled (bool): Script should obey ALLOWSCHEDULEDCALS keyword.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfconfig.ALLOWSCHEDULEDCALS`</span>
+<span class="sd">    - `kpfconfig.SLEWCALREQ`</span>
+<span class="sd">    - `kpfconfig.SLEWCALFILE`</span>
+<span class="sd">    - `kpfconfig.SCRIPTMSG`</span>
+<span class="sd">    - `dcs1.TARGNAME`</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.fiu.VerifyCurrentBase`</span>
+<span class="sd">    - `kpf.scripts.SetTargetInfo`</span>
+<span class="sd">    - `kpf.scripts.ConfigureForCalibrations`</span>
+<span class="sd">    - `kpf.scripts.ExecuteCal`</span>
+<span class="sd">    - `kpf.scripts.CleanupAfterCalibrations`</span>
+<span class="sd">    - `kpf.scripts.ConfigureForAcquisition`</span>
+<span class="sd">    - `kpf.scripts.WaitForConfigureAcquisition`</span>
+<span class="sd">    - `kpf.scripts.ConfigureForScience`</span>
+<span class="sd">    - `kpf.scripts.WaitForConfigureScience`</span>
+<span class="sd">    - `kpf.scripts.ExecuteSci`</span>
+<span class="sd">    - `kpf.scripts.CleanupAfterScience`</span>
+<span class="sd">    - `kpf.spectrograph.SetProgram`</span>
+<span class="sd">    - `kpf.observatoryAPIs.addObservingBlockHistory`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1025,7 +1142,7 @@
             <span class="c1"># Verify dcs TARGNAME against OB.Target.TargetName</span>
             <span class="n">dcsint</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;telescope&#39;</span><span class="p">,</span> <span class="s1">&#39;telnr&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">TARGNAME</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dcs</span><span class="si">{</span><span class="n">dcsint</span><span class="si">:</span><span class="s1">1d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGNAME&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">TARGNAME</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">TargetName</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">TARGNAME</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">TargetName</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Target name mismatch detected&#39;</span><span class="p">)</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dcs.TARGNAME &#39;</span><span class="si">{</span><span class="n">TARGNAME</span><span class="si">}</span><span class="s2">&#39; != OB TargetName &#39;</span><span class="si">{</span><span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">TargetName</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Asking for user input&#39;</span><span class="p">)</span>

@@ -618,14 +618,36 @@
 <p>This is intended for use during power outages. This reduces power use in
 the AO electronics room. We do not currently recommend any changes in the
 basement due to the sensitivity of the spectrograph to thermal changes.</p>
-<p>Procedure:
-- If a script is running exit or terminate it (depending on --force arg)
-- Disable HK detector
-- Stop HK cooling
-- Power off HK systems: J1, J2, J5
-- Stop CRED2 exposures (CONTINUOUS and SAVE)
-- Stop CRED2 cooling (if on)
-- Power off CRED2 (K2, K3)</p>
+<p>Procedure:</p>
+<ul>
+<li>If a script is running exit or terminate it (depending on --force arg)</li>
+<li>Disable HK detector</li>
+<li>Stop HK cooling</li>
+<li>Power off HK systems: J1, J2, J5</li>
+<li>Stop CRED2 exposures (CONTINUOUS and SAVE)</li>
+<li>Stop CRED2 cooling (if on)</li>
+<li>Power off CRED2 (K2, K3)</li>
+</ul>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfconfig.CA_HK_ENABLED</code></li>
+<li><code>kpfpower.OUTLET_J1%</code></li>
+<li><code>kpfpower.OUTLET_J2%</code></li>
+<li><code>kpfpower.OUTLET_J5%</code></li>
+<li><code>kpfpower.OUTLET_K2%</code></li>
+<li><code>kpfpower.OUTLET_K3%</code></li>
+<li><code>kpfmon.HKTEMPDIS</code></li>
+<li><code>kpfmon.ST_EXPOSE2DIS</code></li>
+<li><code>kpfmon.OUTLET_J1_OODIS</code></li>
+<li><code>kpfmon.OUTLET_J2_OODIS</code></li>
+<li><code>kpfmon.OUTLET_J5_OODIS</code></li>
+<li><code>kpfmon.OUTLET_K2_OODIS</code></li>
+<li><code>kpfmon.OUTLET_K3_OODIS</code></li>
+<li><code>kpf_hk.COOLING</code></li>
+<li><code>kpf_hk.EXPSTATE</code></li>
+<li><code>kpfguide.CONTINUOUS</code></li>
+<li><code>kpfguide.SAVE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/scripts/EnterLowPowerMode.py</code></summary>
@@ -723,7 +745,28 @@ basement due to the sensitivity of the spectrograph to thermal changes.</p>
 <span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnterLowPowerMode</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnterLowPowerMode</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Set KPF to a low power mode.</span>
 
 <span class="sd">    This is intended for use during power outages. This reduces power use in</span>
@@ -731,6 +774,7 @@ basement due to the sensitivity of the spectrograph to thermal changes.</p>
 <span class="sd">    basement due to the sensitivity of the spectrograph to thermal changes.</span>
 
 <span class="sd">    Procedure:</span>
+
 <span class="sd">    - If a script is running exit or terminate it (depending on --force arg)</span>
 <span class="sd">    - Disable HK detector</span>
 <span class="sd">    - Stop HK cooling</span>
@@ -738,6 +782,26 @@ basement due to the sensitivity of the spectrograph to thermal changes.</p>
 <span class="sd">    - Stop CRED2 exposures (CONTINUOUS and SAVE)</span>
 <span class="sd">    - Stop CRED2 cooling (if on)</span>
 <span class="sd">    - Power off CRED2 (K2, K3)</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfconfig.CA_HK_ENABLED`</span>
+<span class="sd">    - `kpfpower.OUTLET_J1%`</span>
+<span class="sd">    - `kpfpower.OUTLET_J2%`</span>
+<span class="sd">    - `kpfpower.OUTLET_J5%`</span>
+<span class="sd">    - `kpfpower.OUTLET_K2%`</span>
+<span class="sd">    - `kpfpower.OUTLET_K3%`</span>
+<span class="sd">    - `kpfmon.HKTEMPDIS`</span>
+<span class="sd">    - `kpfmon.ST_EXPOSE2DIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_J1_OODIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_J2_OODIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_J5_OODIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_K2_OODIS`</span>
+<span class="sd">    - `kpfmon.OUTLET_K3_OODIS`</span>
+<span class="sd">    - `kpf_hk.COOLING`</span>
+<span class="sd">    - `kpf_hk.EXPSTATE`</span>
+<span class="sd">    - `kpfguide.CONTINUOUS`</span>
+<span class="sd">    - `kpfguide.SAVE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
@@ -745,7 +809,7 @@ basement due to the sensitivity of the spectrograph to thermal changes.</p>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
+        <span class="n">CA_HK_ENABLED</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;CA_HK_ENABLED&#39;</span><span class="p">)</span>
         <span class="n">kpfpower</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfpower&#39;</span><span class="p">)</span>
         <span class="n">kpfmon</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfmon&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Configuring KPF for Low Power Mode&#39;</span><span class="p">)</span>
@@ -753,7 +817,7 @@ basement due to the sensitivity of the spectrograph to thermal changes.</p>
         <span class="c1"># Power down Ca HK detector systems</span>
         <span class="n">kpf_hk</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_hk&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Disabling Ca HK detector&#39;</span><span class="p">)</span>
-        <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;CA_HK_ENABLED&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;No&#39;</span><span class="p">)</span>
+        <span class="n">CA_HK_ENABLED</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;No&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Disabling HKTEMP alarm for next 24 hours&#39;</span><span class="p">)</span>
         <span class="n">kpfmon</span><span class="p">[</span><span class="s1">&#39;HKTEMPDIS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;1 day hence&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Disabling ST_EXPOSE2 alarm for next 24 hours&#39;</span><span class="p">)</span>

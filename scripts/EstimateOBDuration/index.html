@@ -618,9 +618,42 @@
 configuration time, slew time, acquire time, and readout time and combines
 those with the information in the observing block to estimate how long it
 will take to execute the observing block.</p>
-<h2 id="kpf.scripts.EstimateOBDuration.EstimateOBDuration--args">ARGS:</h2>
-<p>:fast: <code>bool</code> Estimate the duration assuming fast read mode?
-:OB: <code>dict</code> or <code>ObservingBlock</code> A fully specified observing block (OB).</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>fast</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Estimate the duration assuming fast read mode?</p>
+              </div>
+            </li>
+            <li>
+              <b><code>OB</code></b>
+                  (<code><span title="kpf.ObservingBlocks.ObservingBlock.ObservingBlock">ObservingBlock</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>A valid observing block (OB).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Functions Called:</p>
+<ul>
+<li><code>kpf.calbench.standardize_lamp_name</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/scripts/EstimateOBDuration.py</code></summary>
@@ -665,16 +698,22 @@ will take to execute the observing block.</p>
 <span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
-<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EstimateOBDuration</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EstimateOBDuration</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Estimate the duration of the input OB. Uses estimates of instrument</span>
 <span class="sd">    configuration time, slew time, acquire time, and readout time and combines</span>
 <span class="sd">    those with the information in the observing block to estimate how long it</span>
 <span class="sd">    will take to execute the observing block.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :fast: `bool` Estimate the duration assuming fast read mode?</span>
-<span class="sd">    :OB: `dict` or `ObservingBlock` A fully specified observing block (OB).</span>
+<span class="sd">    Args:</span>
+<span class="sd">        fast (bool): Estimate the duration assuming fast read mode?</span>
+<span class="sd">        OB (ObservingBlock): A valid observing block (OB).</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.calbench.standardize_lamp_name`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

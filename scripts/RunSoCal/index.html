@@ -645,13 +645,76 @@ the loop as long as there is enough time before the end time to complete a
 SoCal observation.</p>
 <p>Once the end time has passed, the system will perform basic cleanup of KPF,
 then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p>
-<h3 id="kpf.scripts.RunSoCal.RunSoCal--arguments">Arguments</h3>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>StartTimeHST</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The time (in decimal hours HST) to begin observing.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>EndTimeHST</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The time (in decimal hours HST) to end observing.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>park</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>If True, the script will park SoCal when complete.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>waitforscript</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Wait for a running script to end before starting?</p>
+              </div>
+            </li>
+            <li>
+              <b><code>scheduled</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Script should obey ALLOWSCHEDULEDCALS keyword.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
 <ul>
-<li><strong>StartTimeHST</strong> - <code>float</code> The time (in decimal hours HST) to begin observing.</li>
-<li><strong>EndTimeHST</strong> - <code>float</code> The time (in decimal hours HST) to end observing.</li>
-<li><strong>park</strong> - <code>bool</code> If True, the script will park SoCal when complete.</li>
-<li><strong>scheduled</strong> - <code>bool</code> If True, the script will not run if the keyword
-            <code>kpfconfig.ALLOWSCHEDULEDCALS</code> is "No".</li>
+<li><code>kpfconfig.ALLOWSCHEDULEDCALS</code></li>
+<li><code>kpfconfig.SLEWCALFILE</code></li>
+</ul>
+<p>Functions Called:</p>
+<ul>
+<li><code>kpf.fiu.ConfigureFIU</code></li>
+<li><code>kpf.scripts.ExecuteCal</code></li>
+<li><code>kpf.scripts.CleanupAfterCalibrations</code></li>
+<li><code>kpf.scripts.EstimateOBDuration</code></li>
+<li><code>kpf.socal.ParkSoCal</code></li>
+<li><code>kpf.socal.SoCalStartAutonomous</code></li>
+<li><code>kpf.socal.WaitForSoCalOnTarget</code></li>
 </ul>
 
               <details class="quote">
@@ -866,7 +929,22 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
 <span class="normal">235</span>
 <span class="normal">236</span>
 <span class="normal">237</span>
-<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCal</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunSoCal</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;This script runs a control loop to execute SoCal observations.</span>
 
 <span class="sd">    When the script is invoked, it puts SoCal in AUTONOMOUS mode. This means</span>
@@ -907,12 +985,27 @@ then it will park SoCal using <code>ParkSoCal</code> if the park flag is set.</p
 <span class="sd">    Once the end time has passed, the system will perform basic cleanup of KPF,</span>
 <span class="sd">    then it will park SoCal using `ParkSoCal` if the park flag is set.</span>
 
-<span class="sd">    ## Arguments</span>
-<span class="sd">    * __StartTimeHST__ - `float` The time (in decimal hours HST) to begin observing.</span>
-<span class="sd">    * __EndTimeHST__ - `float` The time (in decimal hours HST) to end observing.</span>
-<span class="sd">    * __park__ - `bool` If True, the script will park SoCal when complete.</span>
-<span class="sd">    * __scheduled__ - `bool` If True, the script will not run if the keyword</span>
-<span class="sd">                `kpfconfig.ALLOWSCHEDULEDCALS` is &quot;No&quot;.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        StartTimeHST (float): The time (in decimal hours HST) to begin observing.</span>
+<span class="sd">        EndTimeHST (float): The time (in decimal hours HST) to end observing.</span>
+<span class="sd">        park (bool): If True, the script will park SoCal when complete.</span>
+<span class="sd">        waitforscript (bool): Wait for a running script to end before starting?</span>
+<span class="sd">        scheduled (bool): Script should obey ALLOWSCHEDULEDCALS keyword.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfconfig.ALLOWSCHEDULEDCALS`</span>
+<span class="sd">    - `kpfconfig.SLEWCALFILE`</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.fiu.ConfigureFIU`</span>
+<span class="sd">    - `kpf.scripts.ExecuteCal`</span>
+<span class="sd">    - `kpf.scripts.CleanupAfterCalibrations`</span>
+<span class="sd">    - `kpf.scripts.EstimateOBDuration`</span>
+<span class="sd">    - `kpf.socal.ParkSoCal`</span>
+<span class="sd">    - `kpf.socal.SoCalStartAutonomous`</span>
+<span class="sd">    - `kpf.socal.WaitForSoCalOnTarget`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

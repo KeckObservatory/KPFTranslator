@@ -615,6 +615,11 @@
 
 
       <p>Script which cleans up at the end of Science OBs.</p>
+<ul>
+<li>Stops agitator motion</li>
+<li>Disables kpf_expmeter.USETHRESHOLD</li>
+<li>Resets kpfguide.SKY_OFFSET to "0 0"</li>
+</ul>
 
 
 <table class="field-list">
@@ -704,8 +709,16 @@
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CleanupAfterScience</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CleanupAfterScience</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which cleans up at the end of Science OBs.</span>
+
+<span class="sd">    - Stops agitator motion</span>
+<span class="sd">    - Disables kpf_expmeter.USETHRESHOLD</span>
+<span class="sd">    - Resets kpfguide.SKY_OFFSET to &quot;0 0&quot;</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        OB (ObservingBlock): A valid observing block (OB).</span>

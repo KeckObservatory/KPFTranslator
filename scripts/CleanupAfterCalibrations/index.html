@@ -615,6 +615,13 @@
 
 
       <p>Script which cleans up after OBs with calibrations.</p>
+<ul>
+<li>Turns off calibration lamps (if specified)</li>
+<li>Stops agitator motion</li>
+<li>Sets FIU to stowed (or to specified mode)</li>
+<li>Disables kpf_expmeter.USETHRESHOLD</li>
+<li>Clears target info from keywords</li>
+</ul>
 
 
 <table class="field-list">
@@ -643,6 +650,14 @@
                 <p>A valid observing block (OB).</p>
               </div>
             </li>
+            <li>
+              <b><code>FIUdest</code></b>
+                  (<code>string</code>)
+              –
+              <div class="doc-md-description">
+                <p>Where to send the FIU (default = Stowed)</p>
+              </div>
+            </li>
         </ul>
       </td>
     </tr>
@@ -652,16 +667,18 @@
 <li><code>kpfconfig.USEAGITATOR</code></li>
 <li><code>kpf_expmeter.USETHRESHOLD</code></li>
 </ul>
-<p>Functions Called:
-- <code>kpf.calbench.CalLampPower</code>
-- <code>kpf.calbench.IsCalSourceEnabled</code>
-- <code>kpf.calbench.SetLFCtoStandbyHigh</code>
-- <code>kpf.fiu.ConfigureFIU</code>
-- <code>kpf.spectrograph.SetObject</code>
-- <code>kpf.spectrograph.StopAgitator</code>
-- <code>kpf.spectrograph.WaitForL0File</code>
-- <code>kpf.spectrograph.WaitForReady</code>
-- <code>kpf.scripts.SetTargetInfo</code></p>
+<p>Functions Called:</p>
+<ul>
+<li><code>kpf.calbench.CalLampPower</code></li>
+<li><code>kpf.calbench.IsCalSourceEnabled</code></li>
+<li><code>kpf.calbench.SetLFCtoStandbyHigh</code></li>
+<li><code>kpf.fiu.ConfigureFIU</code></li>
+<li><code>kpf.spectrograph.SetObject</code></li>
+<li><code>kpf.spectrograph.StopAgitator</code></li>
+<li><code>kpf.spectrograph.WaitForL0File</code></li>
+<li><code>kpf.spectrograph.WaitForReady</code></li>
+<li><code>kpf.scripts.SetTargetInfo</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/scripts/CleanupAfterCalibrations.py</code></summary>
@@ -764,12 +781,27 @@
 <span class="normal">120</span>
 <span class="normal">121</span>
 <span class="normal">122</span>
-<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CleanupAfterCalibrations</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CleanupAfterCalibrations</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which cleans up after OBs with calibrations.</span>
+
+<span class="sd">    - Turns off calibration lamps (if specified)</span>
+<span class="sd">    - Stops agitator motion</span>
+<span class="sd">    - Sets FIU to stowed (or to specified mode)</span>
+<span class="sd">    - Disables kpf_expmeter.USETHRESHOLD</span>
+<span class="sd">    - Clears target info from keywords</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        leave_lamps_on (bool): Leave calibration lamps on when done?</span>
 <span class="sd">        OB (ObservingBlock): A valid observing block (OB).</span>
+<span class="sd">        FIUdest (string): Where to send the FIU (default = Stowed)</span>
 
 <span class="sd">    KTL Keywords Used:</span>
 
@@ -777,6 +809,7 @@
 <span class="sd">    - `kpf_expmeter.USETHRESHOLD`</span>
 
 <span class="sd">    Functions Called:</span>
+
 <span class="sd">    - `kpf.calbench.CalLampPower`</span>
 <span class="sd">    - `kpf.calbench.IsCalSourceEnabled`</span>
 <span class="sd">    - `kpf.calbench.SetLFCtoStandbyHigh`</span>

@@ -620,11 +620,52 @@
 <li>Sets source select shutters</li>
 <li>Set triggered detectors</li>
 </ul>
-<h2 id="kpf.scripts.ConfigureForScience.ConfigureForScience--args">ARGS:</h2>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>observation</code></b>
+                  (<code>dict</code>)
+              –
+              <div class="doc-md-description">
+                <p>A observation OB component in dictionary format (e.g.
+                using the output of the <code>.to_dict()</code> method of a
+                <code>kpf.ObservingBlocks.Observation.Observation</code> instance).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfexpose.EXPOSE</code></li>
+</ul>
+<p>Functions Called:</p>
+<ul>
+<li><code>kpf.calbench.SetSimulCalSource</code></li>
+<li><code>kpf.guider.ConfirmGuiding</code></li>
+<li><code>kpf.spectrograph.SetSourceSelectShutters</code></li>
+<li><code>kpf.spectrograph.SetTriggeredDetectors</code></li>
+<li><code>kpf.spectrograph.WaitForReady</code></li>
+<li><code>kpf.telescope.EastNorth</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/scripts/ConfigureForScience.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">25</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span>
@@ -684,16 +725,41 @@
 <span class="normal">82</span>
 <span class="normal">83</span>
 <span class="normal">84</span>
-<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureForScience</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigureForScience</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which configures the instrument for Science observations.</span>
 
 <span class="sd">    - Sets octagon / simulcal source</span>
 <span class="sd">    - Sets source select shutters</span>
 <span class="sd">    - Set triggered detectors</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
+<span class="sd">    Args:</span>
+<span class="sd">        observation (dict): A observation OB component in dictionary format (e.g.</span>
+<span class="sd">                            using the output of the `.to_dict()` method of a</span>
+<span class="sd">                            `kpf.ObservingBlocks.Observation.Observation` instance).</span>
 
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfexpose.EXPOSE`</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.calbench.SetSimulCalSource`</span>
+<span class="sd">    - `kpf.guider.ConfirmGuiding`</span>
+<span class="sd">    - `kpf.spectrograph.SetSourceSelectShutters`</span>
+<span class="sd">    - `kpf.spectrograph.SetTriggeredDetectors`</span>
+<span class="sd">    - `kpf.spectrograph.WaitForReady`</span>
+<span class="sd">    - `kpf.telescope.EastNorth`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">observation</span><span class="p">):</span>
