@@ -11,9 +11,19 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SetTargetInfo(KPFScript):
     '''Set the target info keywords based on the target information in the OB.
 
-    ### ARGS
-    **OB**: (`dict`) A fully specified observing block (OB) or at least the
-            target components of an OB.
+    Args:
+        OB (ObservingBlock): A valid observing block (OB).
+
+    KTL Keywords Used:
+
+    - `kpfconfig.TARGET_NAME`
+    - `kpfconfig.TARGET_GAIA`
+    - `kpfconfig.TARGET_2MASS`
+    - `kpfconfig.TARGET_GMAG`
+    - `kpfconfig.TARGET_JMAG`
+    - `kpfconfig.TARGET_PAR`
+    - `kpfconfig.TARGET_RADV`
+    - `kpf_expmeter.TARGET_TEFF`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):

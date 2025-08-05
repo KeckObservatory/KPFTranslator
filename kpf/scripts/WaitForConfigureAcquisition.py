@@ -16,9 +16,9 @@ from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 class WaitForConfigureAcquisition(KPFScript):
     '''Script which waits for the configure for Acquisition step.
 
-    ARGS:
-    =====
-    None
+    Functions Called:
+
+    - `kpf.fiu.WaitForConfigureFIU`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):

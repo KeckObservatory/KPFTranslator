@@ -24,9 +24,16 @@ from kpf.scripts.SetTargetInfo import SetTargetInfo
 class CleanupAfterCalibrations(KPFScript):
     '''Script which cleans up after OBs with calibrations.
 
+    - Turns off calibration lamps (if specified)
+    - Stops agitator motion
+    - Sets FIU to stowed (or to specified mode)
+    - Disables kpf_expmeter.USETHRESHOLD
+    - Clears target info from keywords
+
     Args:
         leave_lamps_on (bool): Leave calibration lamps on when done?
         OB (ObservingBlock): A valid observing block (OB).
+        FIUdest (string): Where to send the FIU (default = Stowed)
 
     KTL Keywords Used:
 
@@ -34,6 +41,7 @@ class CleanupAfterCalibrations(KPFScript):
     - `kpf_expmeter.USETHRESHOLD`
 
     Functions Called:
+
     - `kpf.calbench.CalLampPower`
     - `kpf.calbench.IsCalSourceEnabled`
     - `kpf.calbench.SetLFCtoStandbyHigh`

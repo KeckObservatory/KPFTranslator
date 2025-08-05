@@ -31,10 +31,35 @@ from kpf.observatoryAPIs import addObservingBlockHistory
 class RunOB(KPFScript):
     '''Script to run an OB.
 
-    ARGS:
-    =====
-    * __leave_lamps_on__ - `bool` Leave calibration lamps on when done?
-    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
+    Args:
+        OB (ObservingBlock): A valid observing block (OB).
+        leave_lamps_on (bool): Leave the calibration lamps on after cleanup phase?
+        waitforscript (bool): Wait for a running script to end before starting?
+        scheduled (bool): Script should obey ALLOWSCHEDULEDCALS keyword.
+
+    KTL Keywords Used:
+
+    - `kpfconfig.ALLOWSCHEDULEDCALS`
+    - `kpfconfig.SLEWCALREQ`
+    - `kpfconfig.SLEWCALFILE`
+    - `kpfconfig.SCRIPTMSG`
+    - `dcs1.TARGNAME`
+
+    Functions Called:
+
+    - `kpf.fiu.VerifyCurrentBase`
+    - `kpf.scripts.SetTargetInfo`
+    - `kpf.scripts.ConfigureForCalibrations`
+    - `kpf.scripts.ExecuteCal`
+    - `kpf.scripts.CleanupAfterCalibrations`
+    - `kpf.scripts.ConfigureForAcquisition`
+    - `kpf.scripts.WaitForConfigureAcquisition`
+    - `kpf.scripts.ConfigureForScience`
+    - `kpf.scripts.WaitForConfigureScience`
+    - `kpf.scripts.ExecuteSci`
+    - `kpf.scripts.CleanupAfterScience`
+    - `kpf.spectrograph.SetProgram`
+    - `kpf.observatoryAPIs.addObservingBlockHistory`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):

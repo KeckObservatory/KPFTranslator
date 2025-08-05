@@ -18,9 +18,15 @@ class WaitForConfigureScience(KPFScript):
     '''Script which waits for the instrument to be configured for Science
     observations.
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfconfig.SIMULCALSOURCE`
+
+    Functions Called:
+
+    - `kpf.calbench.WaitForCalSource`
+    - `kpf.fiu.WaitForConfigureFIU`
+    - `kpf.spectrograph.WaitForReady`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):
