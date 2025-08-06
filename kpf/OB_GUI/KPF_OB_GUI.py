@@ -1089,7 +1089,7 @@ class MainWindow(QtWidgets.QMainWindow):
             date_str = mock_date.strftime('%Y-%m-%d').lower()
             self.log.warning(f'Using history from {date_str} for testing')
         history = GetExecutionHistory.execute({'utdate': date_str})
-        self.log.debug(f"  got {len(history)} entried for utdate={date_str}")
+        self.log.debug(f"  got {len(history)} entries for utdate={date_str}")
         self.OBListModel.refresh_history(history)
         self.HistoryListModel.refresh_history(history)
 
