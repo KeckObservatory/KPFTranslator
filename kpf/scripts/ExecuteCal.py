@@ -328,7 +328,7 @@ class ExecuteCal(KPFFunction):
             # ENABLED status for each detector.
             SetTriggeredDetectors.execute(calibration)
             # Start next exposure
-            msg = f"Starting expoure {j+1}/{nexp}"
+            msg = f"Starting exposure {j+1}/{nexp}"
             kpfconfig['SCRIPTMSG'].write(msg)
             log.info(msg+ f" ({calibration.get('Object')})")
             StartExposure.execute({})
