@@ -1052,15 +1052,19 @@ class MainWindow(QtWidgets.QMainWindow):
                     errs.append(errmsg)
                     self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
                 else:
-                    result = GetObservingBlocks.execute({'OBid': entry['id']})[0]
-                    if isinstance(result, ObservingBlock):
-                        self.KPFCC_OBs[WB].append(result)
+                    result = GetObservingBlocks.execute({'OBid': entry['id']})
+                    if len(result) > 0:
+                        OB = result[0]
+                    else:
+                        OB = None
+                    if isinstance(OB, ObservingBlock):
+                        self.KPFCC_OBs[WB].append(OB)
                         start = entry['StartExposure'].split(':')
                         start_decimal = int(start[0]) + int(start[1])/60
                         self.KPFCC_start_times[WB].append(start_decimal)
                         retrievedOBcount += 1
                     else:
-                        errmsg = f"{entry['Target']} Failed: {result[1]} ({result[0]})"
+                        errmsg = f"{entry['Target']}: Failed to retrieve OB"
                         self.log.error(errmsg)
                         errs.append(errmsg)
                 self.ProgressBar.setValue(int(scheduledOBcount/Nsched*100))
