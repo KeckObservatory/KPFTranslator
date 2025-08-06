@@ -614,7 +614,9 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      
+      <p>Return a boolean indicating whether the telescope has been released.</p>
+<p>Note that this uses the schedule API which resets at local midnight, so if
+the current time is after midnight and before 8am, this assumes release.</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/observatoryAPIs/GetTelescopeRelease.py</code></summary>
@@ -639,9 +641,13 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GetTelescopeRelease</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GetTelescopeRelease</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Return a boolean indicating whether the telescope has been released.</span>
 
+<span class="sd">    Note that this uses the schedule API which resets at local midnight, so if</span>
+<span class="sd">    the current time is after midnight and before 8am, this assumes release.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

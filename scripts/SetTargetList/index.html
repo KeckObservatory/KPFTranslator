@@ -618,6 +618,34 @@
 <p>MAGIQ API documentation:
 http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</p>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>StarList</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The full star list to submit.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Functions Called:</p>
+<ul>
+<li><code>kpf.observatoryAPIs.GetTelescopeRelease</code></li>
+</ul>
+
               <details class="quote">
                 <summary>Source code in <code>kpf/magiq/SetTargetList.py</code></summary>
                 <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
@@ -644,11 +672,25 @@ http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</p>
 <span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
-<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetTargetList</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetTargetList</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Given a list of OBs, generate a Keck Star List and send to MAGIQ.</span>
 
 <span class="sd">    MAGIQ API documentation:</span>
 <span class="sd">    http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        StarList (str): The full star list to submit.</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.observatoryAPIs.GetTelescopeRelease`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

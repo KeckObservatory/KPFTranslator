@@ -614,8 +614,87 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>MAGIQ API documentation:
+      <p>Add the specified target to the OA star list.</p>
+<p>MAGIQ API documentation:
 http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>TargetName</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the target to add.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>ra</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The right ascension of the target.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>dec</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The declination of the target.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>frame</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The frame (e.g. J2000)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>DRA</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The RA differential tracking rate (as per the keck star
+         list documentation) [optional].</p>
+              </div>
+            </li>
+            <li>
+              <b><code>DDEC</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The DEC differential tracking rate (as per the keck star
+          list documentation) [optional].</p>
+              </div>
+            </li>
+            <li>
+              <b><code>options</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The option string as documented in the Magiq API.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Functions Called:</p>
+<ul>
+<li><code>kpf.observatoryAPIs.GetTelescopeRelease</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/magiq/AddTarget.py</code></summary>
@@ -651,11 +730,41 @@ http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</p>
 <span class="normal">38</span>
 <span class="normal">39</span>
 <span class="normal">40</span>
-<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AddTarget</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AddTarget</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Add the specified target to the OA star list.</span>
 
 <span class="sd">    MAGIQ API documentation:</span>
 <span class="sd">    http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        TargetName (str): The name of the target to add.</span>
+<span class="sd">        ra (str): The right ascension of the target.</span>
+<span class="sd">        dec (str): The declination of the target.</span>
+<span class="sd">        frame (str): The frame (e.g. J2000)</span>
+<span class="sd">        DRA (float): The RA differential tracking rate (as per the keck star</span>
+<span class="sd">                     list documentation) [optional].</span>
+<span class="sd">        DDEC (float): The DEC differential tracking rate (as per the keck star</span>
+<span class="sd">                      list documentation) [optional].</span>
+<span class="sd">        options (str): The option string as documented in the Magiq API.</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.observatoryAPIs.GetTelescopeRelease`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

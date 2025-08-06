@@ -614,7 +614,13 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      
+      <p>Get all the ObservingBlocks from all of the programs using the KPF-CC
+instrument on the current semester schedule.</p>
+<p>Functions Called:</p>
+<ul>
+<li><code>kpf.observatoryAPIs.GetScheduledPrograms</code></li>
+<li><code>kpf.observatoryAPIs.GetObservingBlocksByProgram</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/observatoryAPIs/GetKPFCCObservingBlocks.py</code></summary>
@@ -660,8 +666,20 @@
 <span class="normal">54</span>
 <span class="normal">55</span>
 <span class="normal">56</span>
-<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GetKPFCCObservingBlocks</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GetKPFCCObservingBlocks</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Get all the ObservingBlocks from all of the programs using the KPF-CC</span>
+<span class="sd">    instrument on the current semester schedule.</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.observatoryAPIs.GetScheduledPrograms`</span>
+<span class="sd">    - `kpf.observatoryAPIs.GetObservingBlocksByProgram`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

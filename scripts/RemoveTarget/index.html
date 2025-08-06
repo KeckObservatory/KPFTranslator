@@ -614,8 +614,37 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>MAGIQ API documentation:
+      <p>Remove the specified target from the OA star list.</p>
+<p>MAGIQ API documentation:
 http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>TargetName</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the target to remove.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Functions Called:</p>
+<ul>
+<li><code>kpf.observatoryAPIs.GetTelescopeRelease</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/magiq/RemoveTarget.py</code></summary>
@@ -647,11 +676,25 @@ http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</p>
 <span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
-<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RemoveTarget</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RemoveTarget</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Remove the specified target from the OA star list.</span>
 
 <span class="sd">    MAGIQ API documentation:</span>
 <span class="sd">    http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        TargetName (str): The name of the target to remove.</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.observatoryAPIs.GetTelescopeRelease`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

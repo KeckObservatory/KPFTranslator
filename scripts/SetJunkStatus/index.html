@@ -614,8 +614,50 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      
+      <p>Set the junk status of the specified exposure for the specified OB in
+the KPF-CC database.</p>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>id</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The unique identifier for the OB.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>start_time</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The start time of the exposure (in 
+              YYYY-mm-ddTHH:MM:SS.ss format) to mark.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>junk</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Mark exposure as junk (True) or not junk (False).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
               <details class="quote">
                 <summary>Source code in <code>kpf/observatoryAPIs/SetJunkStatus.py</code></summary>
                 <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">10</span>
@@ -651,8 +693,22 @@
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetJunkStatus</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetJunkStatus</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the junk status of the specified exposure for the specified OB in</span>
+<span class="sd">    the KPF-CC database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        id (str): The unique identifier for the OB.</span>
+<span class="sd">        start_time (str): The start time of the exposure (in </span>
+<span class="sd">                          YYYY-mm-ddTHH:MM:SS.ss format) to mark.</span>
+<span class="sd">        junk (bool): Mark exposure as junk (True) or not junk (False).</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
@@ -676,8 +732,8 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;OBid&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The unique identifier for the OB to retrieve.&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The unique identifier for the OB.&#39;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;start_time&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The start_time of the exposure.&#39;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--junk&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;junk&quot;</span><span class="p">,</span>
