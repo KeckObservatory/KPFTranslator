@@ -99,17 +99,6 @@ class Calibration(BaseOBComponent):
         return comment
 
 
-    def validate(self):
-        '''
-        '''
-        valid = True
-        for p in self.properties:
-            error, comment = self.check_property(p['name'])
-            if error == True:
-                valid = False
-        return valid
-
-
     def __str__(self):
         if self.CalSource.value == 'EtalonFiber':
             calsource = 'Etalon'

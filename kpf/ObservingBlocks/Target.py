@@ -52,14 +52,14 @@ class Target(BaseOBComponent):
                                   obstime=epoch,
                                   )
         except Exception as e:
-            print(e)
+#             print(e)
             self.coord = None
 
 
     def check_property(self, pname):
         if pname in ['RA', 'Dec']:
             if self.coord is None:
-                return True, ' # ERROR: Invalid SkyCoord'
+                return False, ' # WARNING: Invalid SkyCoord'
         elif pname == 'TargetName':
             if self.get(pname) in ['', None]:
                 return True, ' # ERROR: TargetName is empty'
@@ -80,18 +80,6 @@ class Target(BaseOBComponent):
     def add_comment(self, pname):
         error, comment = self.check_property(pname)
         return comment
-
-
-    def validate(self):
-        '''
-        '''
-        valid = True
-        for p in self.properties:
-            error, comment = self.check_property(p['name'])
-            if error == True:
-                print(f"{p['name']} is INVALID: {comment}")
-                valid = False
-        return valid
 
 
     def __str__(self, raprecision=1, decprecision=0, magprecision=1):

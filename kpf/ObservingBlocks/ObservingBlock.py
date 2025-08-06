@@ -119,28 +119,28 @@ class ObservingBlock(object):
             log.warning(OBdict.keys())
             log.warning(OBdict)
 
-    def validate(self):
+    def validate(self, verbose=False):
         valid = True
         # Check that components are the correct types and are individually valid
         if self.Target is not None:
             if not isinstance(self.Target, Target):
                 log.debug('Target component is not a Target object')
                 valid = False
-            if not self.Target.validate():
+            if not self.Target.validate(verbose=verbose):
                 log.debug('Target component is not a valid Target object')
                 valid = False
         for i,observation in enumerate(self.Observations):
             if not isinstance(observation, Observation):
                 log.debug(f'Observation component {i+1} is not a Observation object')
                 valid = False
-            if observation.validate() != True:
+            if observation.validate(verbose=verbose) != True:
                 log.debug(f'Observation component {i+1} is not a valid Observation object')
                 valid = False
         for i,calibration in enumerate(self.Calibrations):
             if not isinstance(calibration, Calibration):
                 log.debug(f'Calibration component {i+1} is not a Calibration object')
                 valid = False
-            if not calibration.validate():
+            if not calibration.validate(verbose=verbose):
                 log.debug(f'Calibration component {i+1} is not a valid Calibration object')
                 valid = False
         # If we have science observations, we must have a target

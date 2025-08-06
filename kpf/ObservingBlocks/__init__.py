@@ -126,8 +126,16 @@ class BaseOBComponent(object):
     def add_comment(self, pname):
         return ''
 
-    def validate(self):
-        return True
+    def validate(self, verbose=False):
+        '''
+        '''
+        valid = True
+        for p in self.properties:
+            error, comment = self.check_property(p['name'])
+            if error == True:
+                if verbose: print(f"{p['name']} is INVALID: {comment}")
+                valid = False
+        return valid
 
     def __str__(self):
         output = ''
