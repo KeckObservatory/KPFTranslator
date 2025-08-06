@@ -281,10 +281,10 @@ class ExecuteCal(KPFFunction):
                 calibration['OpenCalSciSkyShutter'] = calibration['OpenScienceShutter'] or calibration['OpenSkyShutter']
             SetSourceSelectShutters.execute(calibration)
         # Timed Shutters
-        calibration['TimedShutter_CaHK'] = calibration.get('TriggerCaHK', False)
-        calibration['TimedShutter_Scrambler'] = calibration.get('TriggerGreen', False) or calibration.get('TriggerRed', False)
-        calibration['TimedShutter_SimulCal'] = calibration.get('TakeSimulCal', False)
-        calibration['TimedShutter_FlatField'] = calibration.get('WideFlatPos', 'Blank') != 'Blank'
+        calibration['TimedShutter_CaHK'] = calibration.get('TriggerCaHK', False) and calsource.lower() != 'dark'
+        calibration['TimedShutter_Scrambler'] = (calibration.get('TriggerGreen', False) or calibration.get('TriggerRed', False)) and calsource.lower() != 'dark'
+        calibration['TimedShutter_SimulCal'] = calibration.get('TakeSimulCal', False) and calsource.lower() != 'dark'
+        calibration['TimedShutter_FlatField'] = (calibration.get('WideFlatPos', 'Blank') != 'Blank') and calsource.lower() != 'dark'
         log.info(f"Setting timed shutters")
         SetTimedShutters.execute(calibration)
 
