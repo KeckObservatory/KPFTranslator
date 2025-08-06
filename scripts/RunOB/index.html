@@ -967,7 +967,13 @@
 <span class="normal">305</span>
 <span class="normal">306</span>
 <span class="normal">307</span>
-<span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunOB</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunOB</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script to run an OB.</span>
 
 <span class="sd">    Args:</span>
@@ -1122,7 +1128,9 @@
                 <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="c1"># Proceed once target is on fiber and tip tilt is active</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Asking for user input&#39;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Waiting for user confirmation to begin exposures&#39;</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">SCRIPTMSG</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;###############################################################&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Before continuing, please ensure that the OA has placed&quot;</span><span class="p">)</span>
@@ -1134,6 +1142,7 @@
             <span class="nb">print</span><span class="p">()</span>
             <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
             <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: &quot;</span><span class="si">{</span><span class="n">user_input</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="n">SCRIPTMSG</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;abort&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;quit&#39;</span><span class="p">]:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;User chose to halt execution&quot;</span><span class="p">)</span>
                 <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
@@ -1145,7 +1154,9 @@
             <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">TARGNAME</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">TargetName</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Target name mismatch detected&#39;</span><span class="p">)</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dcs.TARGNAME &#39;</span><span class="si">{</span><span class="n">TARGNAME</span><span class="si">}</span><span class="s2">&#39; != OB TargetName &#39;</span><span class="si">{</span><span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">TargetName</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Asking for user input&#39;</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Waiting for user confirmation on target name mismatch&#39;</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">SCRIPTMSG</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">()</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;###############################################################&quot;</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    WARNING: The telescope control system target name: </span><span class="si">{TARGNAME}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1156,6 +1167,7 @@
                 <span class="nb">print</span><span class="p">()</span>
                 <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: &quot;</span><span class="si">{</span><span class="n">user_input</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+                <span class="n">SCRIPTMSG</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;abort&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;quit&#39;</span><span class="p">]:</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;User chose to halt execution&quot;</span><span class="p">)</span>
                     <span class="n">CleanupAfterScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>

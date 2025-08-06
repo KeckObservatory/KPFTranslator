@@ -616,8 +616,19 @@
 
       <p>Waits for the <code>kpfexpose.EXPOSE</code> keyword to be "Readout".  This will
 block until the camera enters the readout state.</p>
-<h2 id="kpf.spectrograph.WaitForReadout.WaitForReadout--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfexpose.EXPOSE</code></li>
+<li><code>kpfexpose.EXPLAINR</code></li>
+<li><code>kpfexpose.EXPLAINNR</code></li>
+<li><code>kpfexpose.EXPOSURE</code></li>
+<li><code>kpfexpose.TRIG_TARG</code></li>
+<li><code>kpfgreen.EXPSTATE</code></li>
+<li><code>kpfred.EXPSTATE</code></li>
+<li><code>kpf_hk.EXPSTATE</code></li>
+<li><code>kpfgreen.NEXTFILE</code></li>
+<li><code>kpfred.NEXTFILE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/WaitForReadout.py</code></summary>
@@ -678,13 +689,31 @@ block until the camera enters the readout state.</p>
 <span class="normal">65</span>
 <span class="normal">66</span>
 <span class="normal">67</span>
-<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForReadout</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForReadout</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Waits for the `kpfexpose.EXPOSE` keyword to be &quot;Readout&quot;.  This will</span>
 <span class="sd">    block until the camera enters the readout state.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfexpose.EXPOSE`</span>
+<span class="sd">    - `kpfexpose.EXPLAINR`</span>
+<span class="sd">    - `kpfexpose.EXPLAINNR`</span>
+<span class="sd">    - `kpfexpose.EXPOSURE`</span>
+<span class="sd">    - `kpfexpose.TRIG_TARG`</span>
+<span class="sd">    - `kpfgreen.EXPSTATE`</span>
+<span class="sd">    - `kpfred.EXPSTATE`</span>
+<span class="sd">    - `kpf_hk.EXPSTATE`</span>
+<span class="sd">    - `kpfgreen.NEXTFILE`</span>
+<span class="sd">    - `kpfred.NEXTFILE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

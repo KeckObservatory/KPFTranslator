@@ -615,8 +615,10 @@
 
 
       <p>Returns True if both ACF files are consistent with fast read mode.</p>
-<h2 id="kpf.spectrograph.QueryFastReadMode.QueryFastReadMode--args">ARGS:</h2>
-<p>None</p>
+<p>Functions Called:</p>
+<ul>
+<li><code>kpf.spectrograph.QueryReadMode</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/QueryFastReadMode.py</code></summary>
@@ -641,9 +643,9 @@
 <span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">QueryFastReadMode</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Returns True if both ACF files are consistent with fast read mode.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.spectrograph.QueryReadMode`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

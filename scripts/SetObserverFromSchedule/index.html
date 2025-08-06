@@ -619,12 +619,42 @@ based on the current date and the scheduled programs.</p>
 <p>If only one KPF program is on the schedule, the script will use that to set
 the observer names.  If multiple programs are on the schedule, it will use
 the progname input (see below) or query the user if no progname is given.</p>
-<h2 id="kpf.utils.SetObserverFromSchedule.SetObserverFromSchedule--args">ARGS:</h2>
-<p>:progname: <code>str</code> The program name to set if a choice is needed.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>progname</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The program name to set if a choice is needed.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Functions Called:</p>
+<ul>
+<li><code>kpf.spectrograph.SetObserver</code></li>
+<li><code>kpf.spectrograph.SetProgram</code></li>
+<li><code>kpf.observatoryAPIs.GetScheduledPrograms</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/utils/SetObserverFromSchedule.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
@@ -685,7 +715,10 @@ the progname input (see below) or query the user if no progname is given.</p>
 <span class="normal">75</span>
 <span class="normal">76</span>
 <span class="normal">77</span>
-<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetObserverFromSchedule</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetObserverFromSchedule</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Look up the telescope schedule and try to determine the observer names</span>
 <span class="sd">    based on the current date and the scheduled programs.</span>
 
@@ -693,9 +726,14 @@ the progname input (see below) or query the user if no progname is given.</p>
 <span class="sd">    the observer names.  If multiple programs are on the schedule, it will use</span>
 <span class="sd">    the progname input (see below) or query the user if no progname is given.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :progname: `str` The program name to set if a choice is needed.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        progname (str): The program name to set if a choice is needed.</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.spectrograph.SetObserver`</span>
+<span class="sd">    - `kpf.spectrograph.SetProgram`</span>
+<span class="sd">    - `kpf.observatoryAPIs.GetScheduledPrograms`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

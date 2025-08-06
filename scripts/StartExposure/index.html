@@ -617,8 +617,18 @@
       <p>Begins an triggered exposure by setting the <code>kpfexpose.EXPOSE</code> keyword
 to Start.  This will return immediately after.  Use commands like
 WaitForReadout or WaitForReady to determine when an exposure is done.</p>
-<h2 id="kpf.spectrograph.StartExposure.StartExposure--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfexpose.EXPOSE</code></li>
+<li><code>kpfexpose.EXPOSURE</code></li>
+<li><code>kpfexpose.TRIG_TARG</code></li>
+<li><code>kpfconfig.RED_ENABLED</code></li>
+<li><code>kpfconfig.GREEN_ENABLED</code></li>
+<li><code>kpfconfig.CA_HK_ENABLED</code></li>
+<li><code>kpfgreen.EXPSTATE</code></li>
+<li><code>kpfred.EXPSTATE</code></li>
+<li><code>kpf_hk.EXPSTATE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/StartExposure.py</code></summary>
@@ -697,14 +707,30 @@ WaitForReadout or WaitForReady to determine when an exposure is done.</p>
 <span class="normal">84</span>
 <span class="normal">85</span>
 <span class="normal">86</span>
-<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartExposure</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StartExposure</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Begins an triggered exposure by setting the `kpfexpose.EXPOSE` keyword</span>
 <span class="sd">    to Start.  This will return immediately after.  Use commands like</span>
 <span class="sd">    WaitForReadout or WaitForReady to determine when an exposure is done.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfexpose.EXPOSE`</span>
+<span class="sd">    - `kpfexpose.EXPOSURE`</span>
+<span class="sd">    - `kpfexpose.TRIG_TARG`</span>
+<span class="sd">    - `kpfconfig.RED_ENABLED`</span>
+<span class="sd">    - `kpfconfig.GREEN_ENABLED`</span>
+<span class="sd">    - `kpfconfig.CA_HK_ENABLED`</span>
+<span class="sd">    - `kpfgreen.EXPSTATE`</span>
+<span class="sd">    - `kpfred.EXPSTATE`</span>
+<span class="sd">    - `kpf_hk.EXPSTATE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

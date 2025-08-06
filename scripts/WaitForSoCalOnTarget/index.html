@@ -616,8 +616,19 @@
 
       <p>Returns True if, within a set timeout, a set of conditions which suggest
 that SoCal is on the Sun accurately evaluate to True.</p>
-<h2 id="kpf.socal.WaitForSoCalOnTarget.WaitForSoCalOnTarget--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfsocal.ENCSTA</code></li>
+<li><code>kpfsocal.EKOONLINE</code></li>
+<li><code>kpfsocal.EKOMODE</code></li>
+<li><code>kpfsocal.PYRIRRAD</code></li>
+<li><code>kpfsocal.AUTONOMOUS</code></li>
+<li><code>kpfsocal.CAN_OPEN</code></li>
+<li><code>kpfsocal.IS_OPEN</code></li>
+<li><code>kpfsocal.IS_TRACKING</code></li>
+<li><code>kpfsocal.ONLINE</code></li>
+<li><code>kpfsocal.STATE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/socal/WaitForSoCalOnTarget.py</code></summary>
@@ -674,13 +685,31 @@ that SoCal is on the Sun accurately evaluate to True.</p>
 <span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
-<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForSoCalOnTarget</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForSoCalOnTarget</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Returns True if, within a set timeout, a set of conditions which suggest</span>
 <span class="sd">    that SoCal is on the Sun accurately evaluate to True.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfsocal.ENCSTA`</span>
+<span class="sd">    - `kpfsocal.EKOONLINE`</span>
+<span class="sd">    - `kpfsocal.EKOMODE`</span>
+<span class="sd">    - `kpfsocal.PYRIRRAD`</span>
+<span class="sd">    - `kpfsocal.AUTONOMOUS`</span>
+<span class="sd">    - `kpfsocal.CAN_OPEN`</span>
+<span class="sd">    - `kpfsocal.IS_OPEN`</span>
+<span class="sd">    - `kpfsocal.IS_TRACKING`</span>
+<span class="sd">    - `kpfsocal.ONLINE`</span>
+<span class="sd">    - `kpfsocal.STATE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

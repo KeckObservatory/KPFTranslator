@@ -616,12 +616,66 @@
 
       <p>Opens and closes the source select shutters via the 
 <code>kpfexpose.SRC_SHUTTERS</code> keyword.</p>
-<h2 id="kpf.spectrograph.SetSourceSelectShutters.SetSourceSelectShutters--args">ARGS:</h2>
-<p>:OpenScienceShutter: <code>bool</code> Open the SciSelect shutter? (default=False)
-:OpenSkyShutter: <code>bool</code> Open the SkySelect shutter? (default=False)
-:OpenCalSciSkyShutter: <code>bool</code> Open the Cal_SciSky shutter? (default=False)
-:OpenSoCalSciShutter: <code>bool</code> Open the SoCalSci shutter? (default=False)
-:OpenSoCalCalShutter: <code>bool</code> Open the SoCalCal shutter? (default=False)</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>OpenScienceShutter</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Open the SciSelect shutter? (default=False)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>OpenSkyShutter</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Open the SkySelect shutter? (default=False)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>OpenCalSciSkyShutter</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Open the Cal_SciSky shutter? (default=False)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>OpenSoCalSciShutter</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Open the SoCalSci shutter? (default=False)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>OpenSoCalCalShutter</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Open the SoCalCal shutter? (default=False)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfexpose.SRC_SHUTTERS</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/SetSourceSelectShutters.py</code></summary>
@@ -701,17 +755,23 @@
 <span class="normal">84</span>
 <span class="normal">85</span>
 <span class="normal">86</span>
-<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetSourceSelectShutters</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetSourceSelectShutters</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Opens and closes the source select shutters via the </span>
 <span class="sd">    `kpfexpose.SRC_SHUTTERS` keyword.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :OpenScienceShutter: `bool` Open the SciSelect shutter? (default=False)</span>
-<span class="sd">    :OpenSkyShutter: `bool` Open the SkySelect shutter? (default=False)</span>
-<span class="sd">    :OpenCalSciSkyShutter: `bool` Open the Cal_SciSky shutter? (default=False)</span>
-<span class="sd">    :OpenSoCalSciShutter: `bool` Open the SoCalSci shutter? (default=False)</span>
-<span class="sd">    :OpenSoCalCalShutter: `bool` Open the SoCalCal shutter? (default=False)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        OpenScienceShutter (bool): Open the SciSelect shutter? (default=False)</span>
+<span class="sd">        OpenSkyShutter (bool): Open the SkySelect shutter? (default=False)</span>
+<span class="sd">        OpenCalSciSkyShutter (bool): Open the Cal_SciSky shutter? (default=False)</span>
+<span class="sd">        OpenSoCalSciShutter (bool): Open the SoCalSci shutter? (default=False)</span>
+<span class="sd">        OpenSoCalCalShutter (bool): Open the SoCalCal shutter? (default=False)</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfexpose.SRC_SHUTTERS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

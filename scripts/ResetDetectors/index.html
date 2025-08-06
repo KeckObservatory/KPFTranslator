@@ -620,14 +620,16 @@ This sets EXPOSE=Reset for the appropriate service.  For the
 ktlcamerad services, that just means, “even though you’ve not received
 (from camerad) the normal sequence of messages for a completed exposure,
 pretend everything is fine for starting a new exposure.”</p>
-<h2 id="kpf.spectrograph.ResetDetectors.ResetDetectors--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfexpose.EXPOSE</code></li>
+<li><code>kpfexpose.EXPLAINR</code></li>
+<li><code>kpfexpose.EXPLAINNR</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/ResetDetectors.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">155</span>
 <span class="normal">156</span>
 <span class="normal">157</span>
 <span class="normal">158</span>
@@ -664,7 +666,11 @@ pretend everything is fine for starting a new exposure.”</p>
 <span class="normal">189</span>
 <span class="normal">190</span>
 <span class="normal">191</span>
-<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ResetDetectors</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ResetDetectors</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Resets the kpfexpose service by setting kpfexpose.EXPOSE = Reset</span>
 
 <span class="sd">    Description from Will Deich:</span>
@@ -673,9 +679,11 @@ pretend everything is fine for starting a new exposure.”</p>
 <span class="sd">    (from camerad) the normal sequence of messages for a completed exposure,</span>
 <span class="sd">    pretend everything is fine for starting a new exposure.”</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfexpose.EXPOSE`</span>
+<span class="sd">    - `kpfexpose.EXPLAINR`</span>
+<span class="sd">    - `kpfexpose.EXPLAINNR`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

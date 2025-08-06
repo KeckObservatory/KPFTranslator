@@ -616,8 +616,15 @@
 
       <p>Parks SoCal. This includes setting AUTONOMOUS to "Manual", closing the
 enclosure, and parking the solar tracker.</p>
-<h2 id="kpf.socal.ParkSoCal.ParkSoCal--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfsocal.ENCCMD</code></li>
+<li><code>kpfsocal.ENCSTA</code></li>
+<li><code>kpfsocal.EKOSLEW</code></li>
+<li><code>kpfsocal.EKOTARGALT</code></li>
+<li><code>kpfsocal.EKOTARGAZ</code></li>
+<li><code>kpfsocal.EKOMODE</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/socal/ParkSoCal.py</code></summary>
@@ -654,13 +661,23 @@ enclosure, and parking the solar tracker.</p>
 <span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ParkSoCal</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ParkSoCal</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Parks SoCal. This includes setting AUTONOMOUS to &quot;Manual&quot;, closing the</span>
 <span class="sd">    enclosure, and parking the solar tracker.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfsocal.ENCCMD`</span>
+<span class="sd">    - `kpfsocal.ENCSTA`</span>
+<span class="sd">    - `kpfsocal.EKOSLEW`</span>
+<span class="sd">    - `kpfsocal.EKOTARGALT`</span>
+<span class="sd">    - `kpfsocal.EKOTARGAZ`</span>
+<span class="sd">    - `kpfsocal.EKOMODE`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

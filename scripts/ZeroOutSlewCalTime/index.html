@@ -615,8 +615,10 @@
 
 
       <p>Zero out the slew cal timer by setting it to the current timestamp.</p>
-<h4 id="kpf.utils.ZeroOutSlewCalTime.ZeroOutSlewCalTime--args">ARGS</h4>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfconfig.LASTSLEWCAL</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/utils/ZeroOutSlewCalTime.py</code></summary>
@@ -637,11 +639,13 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ZeroOutSlewCalTime</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">30</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ZeroOutSlewCalTime</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Zero out the slew cal timer by setting it to the current timestamp.</span>
 
-<span class="sd">    ### ARGS</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfconfig.LASTSLEWCAL`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

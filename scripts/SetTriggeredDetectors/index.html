@@ -616,11 +616,62 @@
 
       <p>Selects which cameras will be triggered by setting the
 <code>kpfexpose.TRIG_TARG</code> keyword value.</p>
-<h2 id="kpf.spectrograph.SetTriggeredDetectors.SetTriggeredDetectors--args">ARGS:</h2>
-<p>:TriggerRed: <code>bool</code> Trigger the Red detector? (default=False)
-:TriggerGreen: <code>bool</code> Trigger the Green detector? (default=False)
-:TriggerCaHK: <code>bool</code> Trigger the CaH&amp;K detector? (default=False)
-:TriggerExpMeter: <code>bool</code> Trigger the ExpMeter detector? (default=False)</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>TriggerRed</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Trigger the Red detector? (default=False)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>TriggerGreen</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Trigger the Green detector? (default=False)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>TriggerCaHK</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Trigger the CaH&amp;K detector? (default=False)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>TriggerExpMeter</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Trigger the ExpMeter detector? (default=False)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfexpose.TRIG_TARG</code></li>
+<li><code>kpfconfig.RED_ENABLED</code></li>
+<li><code>kpfconfig.GREEN_ENABLED</code></li>
+<li><code>kpfconfig.CA_HK_ENABLED</code></li>
+<li><code>kpfconfig.EXPMETER_ENABLED</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/SetTriggeredDetectors.py</code></summary>
@@ -720,16 +771,30 @@
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
-<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetTriggeredDetectors</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetTriggeredDetectors</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Selects which cameras will be triggered by setting the</span>
 <span class="sd">    `kpfexpose.TRIG_TARG` keyword value.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    :TriggerRed: `bool` Trigger the Red detector? (default=False)</span>
-<span class="sd">    :TriggerGreen: `bool` Trigger the Green detector? (default=False)</span>
-<span class="sd">    :TriggerCaHK: `bool` Trigger the CaH&amp;K detector? (default=False)</span>
-<span class="sd">    :TriggerExpMeter: `bool` Trigger the ExpMeter detector? (default=False)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        TriggerRed (bool): Trigger the Red detector? (default=False)</span>
+<span class="sd">        TriggerGreen (bool): Trigger the Green detector? (default=False)</span>
+<span class="sd">        TriggerCaHK (bool): Trigger the CaH&amp;K detector? (default=False)</span>
+<span class="sd">        TriggerExpMeter (bool): Trigger the ExpMeter detector? (default=False)</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfexpose.TRIG_TARG`</span>
+<span class="sd">    - `kpfconfig.RED_ENABLED`</span>
+<span class="sd">    - `kpfconfig.GREEN_ENABLED`</span>
+<span class="sd">    - `kpfconfig.CA_HK_ENABLED`</span>
+<span class="sd">    - `kpfconfig.EXPMETER_ENABLED`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

@@ -696,7 +696,11 @@ is consistent with the selected pointing origin (dcs.PONAME)</p>
 <span class="normal">77</span>
 <span class="normal">78</span>
 <span class="normal">79</span>
-<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VerifyCurrentBase</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VerifyCurrentBase</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Check whether the tip tilt system&#39;s target pixel (kpffiu.CURRENT_BASE)</span>
 <span class="sd">    is consistent with the selected pointing origin (dcs.PONAME)</span>
 
@@ -746,7 +750,10 @@ is consistent with the selected pointing origin (dcs.PONAME)</p>
 
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;query_user&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">poname_match</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="c1"># Check with user</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Asking for user input&#39;</span><span class="p">)</span>
+            <span class="n">SCRIPTMSG</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;SCRIPTMSG&#39;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Waiting for user confirmation on PO mismatch&#39;</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">SCRIPTMSG</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#####################################################&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The dcs.PONAME value is incosistent with CURRENT_BASE&quot;</span><span class="p">)</span>
@@ -759,6 +766,7 @@ is consistent with the selected pointing origin (dcs.PONAME)</p>
             <span class="nb">print</span><span class="p">()</span>
             <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
             <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: &quot;</span><span class="si">{</span><span class="n">user_input</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="n">SCRIPTMSG</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;abort&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;quit&#39;</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="n">KPFException</span><span class="p">(</span><span class="s2">&quot;User chose to halt execution&quot;</span><span class="p">)</span>
 

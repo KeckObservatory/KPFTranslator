@@ -616,8 +616,18 @@
 
       <p>Configure both detectors to normal read mode by changing the ACF files
 they are using.</p>
-<h2 id="kpf.spectrograph.SetReadModeNormal.SetReadModeNormal--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfgreen.ACFFILE</code></li>
+<li><code>kpfgreen.ACF</code></li>
+<li><code>kpfred.ACFFILE</code></li>
+<li><code>kpfred.ACF</code></li>
+</ul>
+<p>Functions Called:</p>
+<ul>
+<li><code>kpf.spectrograph.QueryReadMode</code></li>
+<li><code>kpf.utils.SendEmail</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/SetReadModeNormal.py</code></summary>
@@ -673,13 +683,29 @@ they are using.</p>
 <span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
-<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetReadModeNormal</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetReadModeNormal</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Configure both detectors to normal read mode by changing the ACF files</span>
 <span class="sd">    they are using.</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfgreen.ACFFILE`</span>
+<span class="sd">    - `kpfgreen.ACF`</span>
+<span class="sd">    - `kpfred.ACFFILE`</span>
+<span class="sd">    - `kpfred.ACF`</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.spectrograph.QueryReadMode`</span>
+<span class="sd">    - `kpf.utils.SendEmail`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

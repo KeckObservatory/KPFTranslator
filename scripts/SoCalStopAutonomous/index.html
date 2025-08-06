@@ -615,8 +615,10 @@
 
 
       <p>Stop SoCal's AUTONOMOUS mode by setting AUTONOMOUS=0</p>
-<h2 id="kpf.socal.SoCalStopAutonomous.SoCalStopAutonomous--args">ARGS:</h2>
-<p>None</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfsocal.AUTONOMOUS</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/socal/SoCalStopAutonomous.py</code></summary>
@@ -645,9 +647,9 @@
 <span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SoCalStopAutonomous</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Stop SoCal&#39;s AUTONOMOUS mode by setting AUTONOMOUS=0</span>
 
-<span class="sd">    ARGS:</span>
-<span class="sd">    =====</span>
-<span class="sd">    None</span>
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfsocal.AUTONOMOUS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
