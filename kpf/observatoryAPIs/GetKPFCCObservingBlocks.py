@@ -13,7 +13,13 @@ from kpf.observatoryAPIs import get_semester_dates
 ## GetKPFCCObservingBlocks
 ##-------------------------------------------------------------------------
 class GetKPFCCObservingBlocks(KPFFunction):
-    '''
+    '''Get all the ObservingBlocks from all of the programs using the KPF-CC
+    instrument on the current semester schedule.
+
+    Functions Called:
+
+    - `kpf.observatoryAPIs.GetScheduledPrograms`
+    - `kpf.observatoryAPIs.GetObservingBlocksByProgram`
     '''
     @classmethod
     def pre_condition(cls, args):

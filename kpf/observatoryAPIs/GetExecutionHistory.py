@@ -8,7 +8,7 @@ from kpf.observatoryAPIs import getObservingBlockHistory
 ## GetExecutionHistory
 ##-------------------------------------------------------------------------
 class GetExecutionHistory(KPFFunction):
-    '''
+    '''Get one night's worth of history entries from the KPF-CC database API.
     '''
     @classmethod
     def pre_condition(cls, args):
