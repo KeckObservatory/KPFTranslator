@@ -13,8 +13,9 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class ZeroOutSlewCalTime(KPFFunction):
     '''Zero out the slew cal timer by setting it to the current timestamp.
 
-    ### ARGS
-    None
+    KTL Keywords Used:
+
+    - `kpfconfig.LASTSLEWCAL`
     '''
     @classmethod
     def pre_condition(cls, args):

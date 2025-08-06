@@ -20,9 +20,14 @@ class SetObserverFromSchedule(KPFFunction):
     the observer names.  If multiple programs are on the schedule, it will use
     the progname input (see below) or query the user if no progname is given.
 
-    ARGS:
-    =====
-    :progname: `str` The program name to set if a choice is needed.
+    Args:
+        progname (str): The program name to set if a choice is needed.
+
+    Functions Called:
+
+    - `kpf.spectrograph.SetObserver`
+    - `kpf.spectrograph.SetProgram`
+    - `kpf.observatoryAPIs.GetScheduledPrograms`
     '''
     @classmethod
     def pre_condition(cls, args):
