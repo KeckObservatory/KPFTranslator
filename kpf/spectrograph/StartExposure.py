@@ -13,10 +13,18 @@ class StartExposure(KPFFunction):
     '''Begins an triggered exposure by setting the `kpfexpose.EXPOSE` keyword
     to Start.  This will return immediately after.  Use commands like
     WaitForReadout or WaitForReady to determine when an exposure is done.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfexpose.EXPOSE`
+    - `kpfexpose.EXPOSURE`
+    - `kpfexpose.TRIG_TARG`
+    - `kpfconfig.RED_ENABLED`
+    - `kpfconfig.GREEN_ENABLED`
+    - `kpfconfig.CA_HK_ENABLED`
+    - `kpfgreen.EXPSTATE`
+    - `kpfred.EXPSTATE`
+    - `kpf_hk.EXPSTATE`
     '''
     @classmethod
     def pre_condition(cls, args):

@@ -9,10 +9,13 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SetExpTime(KPFFunction):
     '''Sets the exposure time for the science detectors in the kpfexpose
     keyword service.
-    
-    ARGS:
-    =====
-    :ExpTime: `float` The exposure time in seconds
+
+    Args:
+        ExpTime (float): The exposure time in seconds
+
+    KTL Keywords Used:
+
+    - `kpfexpose.EXPOSURE`
     '''
     @classmethod
     def pre_condition(cls, args):

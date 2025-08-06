@@ -9,10 +9,13 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SetObserver(KPFFunction):
     '''Sets the OBSERVER keyword for the science detectors in the kpfexpose
     keyword service.
-    
-    ARGS:
-    =====
-    :observer: `str` The desired value of the OBSERVER keyword.
+
+    Args:
+        observer (str): The desired value of the OBSERVER keyword.
+
+    KTL Keywords Used:
+
+    - `kpfexpose.OBSERVER`
     '''
     @classmethod
     def pre_condition(cls, args):

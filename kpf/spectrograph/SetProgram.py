@@ -10,10 +10,13 @@ from kpf.spectrograph.WaitForReady import WaitForReady
 class SetProgram(KPFFunction):
     '''Sets the PROGNAME keyword for the science detectors in the kpfexpose
     keyword service.
-    
-    ARGS:
-    =====
-    :progname: `str` The program ID to set.
+
+    Args:
+        progname (str): The program ID to set.
+
+    KTL Keywords Used:
+
+    - `kpfexpose.PROGNAME`
     '''
     @classmethod
     def pre_condition(cls, args):

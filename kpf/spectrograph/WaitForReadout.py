@@ -11,10 +11,19 @@ from kpf.spectrograph.ResetDetectors import *
 class WaitForReadout(KPFFunction):
     '''Waits for the `kpfexpose.EXPOSE` keyword to be "Readout".  This will
     block until the camera enters the readout state.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfexpose.EXPOSE`
+    - `kpfexpose.EXPLAINR`
+    - `kpfexpose.EXPLAINNR`
+    - `kpfexpose.EXPOSURE`
+    - `kpfexpose.TRIG_TARG`
+    - `kpfgreen.EXPSTATE`
+    - `kpfred.EXPSTATE`
+    - `kpf_hk.EXPSTATE`
+    - `kpfgreen.NEXTFILE`
+    - `kpfred.NEXTFILE`
     '''
     @classmethod
     def pre_condition(cls, args):

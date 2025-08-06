@@ -11,14 +11,17 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SetSourceSelectShutters(KPFFunction):
     '''Opens and closes the source select shutters via the 
     `kpfexpose.SRC_SHUTTERS` keyword.
-    
-    ARGS:
-    =====
-    :OpenScienceShutter: `bool` Open the SciSelect shutter? (default=False)
-    :OpenSkyShutter: `bool` Open the SkySelect shutter? (default=False)
-    :OpenCalSciSkyShutter: `bool` Open the Cal_SciSky shutter? (default=False)
-    :OpenSoCalSciShutter: `bool` Open the SoCalSci shutter? (default=False)
-    :OpenSoCalCalShutter: `bool` Open the SoCalCal shutter? (default=False)
+
+    Args:
+        OpenScienceShutter (bool): Open the SciSelect shutter? (default=False)
+        OpenSkyShutter (bool): Open the SkySelect shutter? (default=False)
+        OpenCalSciSkyShutter (bool): Open the Cal_SciSky shutter? (default=False)
+        OpenSoCalSciShutter (bool): Open the SoCalSci shutter? (default=False)
+        OpenSoCalCalShutter (bool): Open the SoCalCal shutter? (default=False)
+
+    KTL Keywords Used:
+
+    - `kpfexpose.SRC_SHUTTERS`
     '''
     @classmethod
     def pre_condition(cls, args):

@@ -13,10 +13,19 @@ class WaitForReady(KPFFunction):
     '''Waits for the `kpfexpose.EXPOSE` keyword to be "Ready".  This will
     block until the camera is ready for another exposure.  Times out after
     waiting for exposure time plus a set buffer time.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfexpose.EXPOSE`
+    - `kpfexpose.EXPLAINR`
+    - `kpfexpose.EXPLAINNR`
+    - `kpfexpose.EXPOSURE`
+    - `kpfexpose.TRIG_TARG`
+    - `kpfgreen.EXPSTATE`
+    - `kpfred.EXPSTATE`
+    - `kpf_hk.EXPSTATE`
+    - `kpfgreen.NEXTFILE`
+    - `kpfred.NEXTFILE`
     '''
     @classmethod
     def pre_condition(cls, args):
