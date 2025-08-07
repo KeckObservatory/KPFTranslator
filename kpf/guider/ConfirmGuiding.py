@@ -6,7 +6,13 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 
 class ConfirmGuiding(KPFFunction):
-    '''
+    '''Verify that the tip tilt system is running.  If it is not, query user
+    and wait for verification before returning.
+
+    KTL Keywords Used:
+
+    - `kpfguide.ALL_LOOPS`
+    - `kpfconfig.SCRIPTMSG`
     '''
     @classmethod
     def pre_condition(cls, args):

@@ -33,6 +33,20 @@ class CollectGuiderDarkCubes(KPFFunction):
     - Set GAIN = Low
     - Take 10s trigger cube
     - Set kpfguide.SENSORSETP = 0
+
+    Args:
+        scheduled (bool): Obey ALLOWSCHEDULEDCALS keyword
+
+    KTL Keywords Used:
+
+    - `kpfconfig.ALLOWSCHEDULEDCALS`
+    - `kpfguide.OUTDIR`
+    - `kpfguide.SENSORSETP`
+    - `kpfguide.SENSORTEMP`
+    - `kpfguide.CONTINUOUS`
+    - `kpfguide.SUB_HIGH`
+    - `kpfguide.SUB_MEDIUM`
+    - `kpfguide.SUB_LOW`
     '''
     @classmethod
     @obey_scriptrun

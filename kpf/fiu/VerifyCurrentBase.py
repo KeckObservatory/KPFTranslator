@@ -17,6 +17,7 @@ class VerifyCurrentBase(KPFFunction):
     - `kpfguide.CURRENT_BASE`
     - `kpfguide.SCIENCE_BASE`
     - `kpfguide.SKY_BASE`
+    - `kpfconfig.SCRIPTMSG`
     '''
     @classmethod
     def pre_condition(cls, args):
