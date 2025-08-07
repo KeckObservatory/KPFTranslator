@@ -7,7 +7,8 @@ from kpf.observatoryAPIs import get_OBs_from_KPFCC_API
 ## GetObservingBlocks
 ##-------------------------------------------------------------------------
 class GetObservingBlocks(KPFFunction):
-    '''
+    '''Retrieve the OB associated with the given unique ID in the KPF-CC
+    database.
     '''
     @classmethod
     def pre_condition(cls, args):

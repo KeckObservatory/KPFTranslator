@@ -64,6 +64,11 @@ class TakeExpMeterBiases(KPFFunction):
     @classmethod
     @obey_scriptrun
     def pre_condition(cls, args):
+        # If specified obey the ALLOWSCHEDULEDCALS keyword
+        if args.get('scheduled', False) == True:
+            ALLOWSCHEDULEDCALS = ktl.cache('kpfconfig', 'ALLOWSCHEDULEDCALS')
+            if ALLOWSCHEDULEDCALS.read(binary=True) == False:
+                raise FailedPreCondition('ALLOWSCHEDULEDCALS is No')
         check_input(args, 'nExp', allowed_types=[int])
         kpf_expmeter = ktl.cache('kpf_expmeter')
         # Check exposure meter enabled
@@ -191,4 +196,7 @@ class TakeExpMeterBiases(KPFFunction):
         parser.add_argument("--output", dest="output", type=str,
                             default='',
                             help="The output combined bias file.")
+        parser.add_argument('--scheduled', dest="scheduled",
+            default=False, action="store_true",
+            help='Script is scheduled and should obey ALLOWSCHEDULEDCALS keyword')
         return super().add_cmdline_args(parser)

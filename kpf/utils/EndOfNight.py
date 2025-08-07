@@ -34,9 +34,34 @@ class EndOfNight(KPFFunction):
     - HEPA on
     - Send PCU to Home
 
-    ARGS:
-    =====
-    :AO: (bool) Close AO hatch, home PCU, and turn on HEPA? (default=True)
+    Args:
+        AO (bool): Close AO hatch, home PCU, and turn on HEPA? (default=True)
+
+    KTL Keywords Used:
+
+    - `kpfexpose.EXPOSE`
+    - `kpfconfig.SCRIPTNAME`
+    - `kpfconfig.SCRIPTPID`
+    - `kpfconfig.SCRIPTSTOP`
+    - `kpfconfig.SIMULCALSOURCE`
+    - `kpfconfig.ALLOWSCHEDULEDCALS`
+
+    Functions Called:
+
+    - `kpf.ao.ControlAOHatch`
+    - `kpf.ao.TurnHepaOn`
+    - `kpf.ao.SendPCUtoHome`
+    - `kpf.fiu.ShutdownTipTilt`
+    - `kpf.fiu.ConfigureFIU`
+    - `kpf.fiu.WaitForConfigureFIU`
+    - `kpf.spectrograph.WaitForReady`
+    - `kpf.spectrograph.SetProgram`
+    - `kpf.spectrograph.SetObserver`
+    - `kpf.spectrograph.SetObject`
+    - `kpf.spectrograph.StopAgitator`
+    - `kpf.calbench.CalLampPower`
+    - `kpf.fvc.FVCPower`
+    - `kpf.fiu.StopTipTilt`
     '''
     @classmethod
     @obey_scriptrun
@@ -151,13 +176,11 @@ class EndOfNight(KPFFunction):
         SetObserver.execute({'observer': ''})
         SetObject.execute({'Object': ''})
         # Power off Simulcal lamp
-        kpfconfig = ktl.cache('kpfconfig')
         calsource = kpfconfig['SIMULCALSOURCE'].read()
         if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
             CalLampPower.execute({'lamp': calsource, 'power': 'off'})
         # Allow scheduled cals
         log.info('Set ALLOWSCHEDULEDCALS to Yes')
-        kpfconfig = ktl.cache('kpfconfig')
         kpfconfig['ALLOWSCHEDULEDCALS'].write('Yes')
 
     @classmethod

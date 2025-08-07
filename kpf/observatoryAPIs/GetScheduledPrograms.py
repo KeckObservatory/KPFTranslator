@@ -17,7 +17,7 @@ class GetScheduledPrograms(KPFFunction):
     @classmethod
     def perform(cls, args):
         '''Returns list of dicts with the classical and cadence program info.
-        
+
         If no args, returns everything remaining on this semester's schedule.
         If args contains a value for "semester" then that is either interpreted
         as the semester string (e.g. "2025A") or it can be "current" which

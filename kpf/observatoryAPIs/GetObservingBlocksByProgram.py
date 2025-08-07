@@ -10,7 +10,8 @@ from kpf.observatoryAPIs import get_semester_dates, get_OBs_from_KPFCC_API
 ## GetObservingBlocksByProgram
 ##-------------------------------------------------------------------------
 class GetObservingBlocksByProgram(KPFFunction):
-    '''
+    '''Retrieve all OB associated with the given program ID in the KPF-CC
+    database.
     '''
     @classmethod
     def pre_condition(cls, args):

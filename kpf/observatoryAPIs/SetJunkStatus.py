@@ -8,7 +8,14 @@ from kpf.observatoryAPIs import setKPFJunkValue
 ## SetJunkStatus
 ##-------------------------------------------------------------------------
 class SetJunkStatus(KPFFunction):
-    '''
+    '''Set the junk status of the specified exposure for the specified OB in
+    the KPF-CC database.
+
+    Args:
+        id (str): The unique identifier for the OB.
+        start_time (str): The start time of the exposure (in 
+                          YYYY-mm-ddTHH:MM:SS.ss format) to mark.
+        junk (bool): Mark exposure as junk (True) or not junk (False).
     '''
     @classmethod
     def pre_condition(cls, args):
@@ -32,8 +39,8 @@ class SetJunkStatus(KPFFunction):
 
     @classmethod
     def add_cmdline_args(cls, parser):
-        parser.add_argument('OBid', type=str,
-                            help='The unique identifier for the OB to retrieve.')
+        parser.add_argument('id', type=str,
+                            help='The unique identifier for the OB.')
         parser.add_argument('start_time', type=str,
                             help='The start_time of the exposure.')
         parser.add_argument('--junk', dest="junk",

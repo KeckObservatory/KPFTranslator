@@ -8,10 +8,10 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 class StopAgitator(KPFFunction):
     '''Stop the agitator motion.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfmot.AGITATOR`
     '''
     @classmethod
     def pre_condition(cls, args):

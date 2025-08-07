@@ -15,7 +15,18 @@ from kpf.utils.SendEmail import SendEmail
 ## SubmitObserverComment
 ##-------------------------------------------------------------------------
 class SubmitObserverComment(KPFFunction):
-    '''
+    '''Adds a comment to the specified OB in the KPF-CC database. Also emails
+    the PI of the associated program immediately with the comment.
+
+    Args:
+        OBid (str): The unique identifier for the OB to comment on.
+        observer (str): The commenter/observer's name
+        comment (str): The comment to submit.
+
+    Functions Called:
+
+    - `kpf.observatoryAPIs.GetObservingBlocks`
+    - `kpf.utils.SendEmail`
     '''
     @classmethod
     def pre_condition(cls, args):
@@ -100,7 +111,7 @@ class SubmitObserverComment(KPFFunction):
     @classmethod
     def add_cmdline_args(cls, parser):
         parser.add_argument('OBid', type=str,
-                            help='The unique identifier for the OB to retrieve.')
+                            help='The unique identifier for the OB.')
         parser.add_argument('observer', type=str,
                             help='The observer submitting the comment.')
         parser.add_argument('comment', type=str,

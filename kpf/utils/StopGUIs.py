@@ -4,8 +4,6 @@ import subprocess
 import re
 import socket
 
-import ktl
-
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript

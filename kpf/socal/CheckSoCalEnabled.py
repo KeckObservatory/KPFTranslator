@@ -3,13 +3,19 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+from kpf.utils.SendEmail import SendEmail
 
 
 ##-------------------------------------------------------------------------
 ## CheckSoCalEnabled
 ##-------------------------------------------------------------------------
 class CheckSoCalEnabled(KPFFunction):
-    '''
+    '''Script to check if SoCal is enabled and to send an email reminder if it
+    is disabled.
+
+    KTL Keywords Used:
+
+    - `kpfsocal.CAN_OPEN`
     '''
     @classmethod
     def pre_condition(cls, args):

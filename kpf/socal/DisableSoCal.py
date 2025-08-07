@@ -8,9 +8,9 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class DisableSoCal(KPFFunction):
     '''Disables SoCal by setting kpfsocal.CAN_OPEN to No.
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfsocal.CAN_OPEN`
     '''
     @classmethod
     def pre_condition(cls, args):

@@ -13,9 +13,17 @@ class SetReadModeNormal(KPFFunction):
     '''Configure both detectors to normal read mode by changing the ACF files
     they are using.
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfgreen.ACFFILE`
+    - `kpfgreen.ACF`
+    - `kpfred.ACFFILE`
+    - `kpfred.ACF`
+
+    Functions Called:
+
+    - `kpf.spectrograph.QueryReadMode`
+    - `kpf.utils.SendEmail`
     '''
     @classmethod
     def pre_condition(cls, args):

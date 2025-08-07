@@ -12,12 +12,11 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SendEmail(KPFFunction):
     '''Send an email
 
-    ARGS:
-    =====
-    :To: `str` The email address to send the message to.
-    :From: `str` The email address to use as the from address.
-    :Subject: `str` Subject line for the email.
-    :Message: `str` Message body of the email.
+    Args:
+        To (str): The email address to send the message to.
+        From (str): The email address to use as the from address.
+        Subject (str): Subject line for the email.
+        Message (str): Message body of the email.
     '''
     @classmethod
     def pre_condition(cls, args):

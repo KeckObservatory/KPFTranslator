@@ -89,17 +89,6 @@ class Observation(BaseOBComponent):
         return False, ''
 
 
-    def validate(self):
-        '''
-        '''
-        valid = True
-        for p in self.properties:
-            error, comment = self.check_property(p['name'])
-            if error == True:
-                valid = False
-        return valid
-
-
     def add_comment(self, pname):
         error, comment = self.check_property(pname)
         return comment

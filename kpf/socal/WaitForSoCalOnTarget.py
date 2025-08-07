@@ -9,9 +9,18 @@ class WaitForSoCalOnTarget(KPFFunction):
     '''Returns True if, within a set timeout, a set of conditions which suggest
     that SoCal is on the Sun accurately evaluate to True.
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfsocal.ENCSTA`
+    - `kpfsocal.EKOONLINE`
+    - `kpfsocal.EKOMODE`
+    - `kpfsocal.PYRIRRAD`
+    - `kpfsocal.AUTONOMOUS`
+    - `kpfsocal.CAN_OPEN`
+    - `kpfsocal.IS_OPEN`
+    - `kpfsocal.IS_TRACKING`
+    - `kpfsocal.ONLINE`
+    - `kpfsocal.STATE`
     '''
     @classmethod
     def pre_condition(cls, args):

@@ -13,6 +13,10 @@ from kpf.scripts.SetTargetInfo import SetTargetInfo
 class CleanupAfterScience(KPFScript):
     '''Script which cleans up at the end of Science OBs.
 
+    - Stops agitator motion
+    - Disables kpf_expmeter.USETHRESHOLD
+    - Resets kpfguide.SKY_OFFSET to "0 0"
+
     Args:
         OB (ObservingBlock): A valid observing block (OB).
 

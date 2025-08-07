@@ -7,8 +7,10 @@ from kpf.observatoryAPIs import query_observatoryAPI
 
 
 class GetTelescopeRelease(KPFFunction):
-    '''
+    '''Return a boolean indicating whether the telescope has been released.
 
+    Note that this uses the schedule API which resets at local midnight, so if
+    the current time is after midnight and before 8am, this assumes release.
     '''
     @classmethod
     def pre_condition(cls, args):

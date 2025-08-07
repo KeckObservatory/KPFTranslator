@@ -11,6 +11,13 @@ class SetTargetList(KPFFunction):
 
     MAGIQ API documentation:
     http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php
+
+    Args:
+        StarList (str): The full star list to submit.
+
+    Functions Called:
+
+    - `kpf.observatoryAPIs.GetTelescopeRelease`
     '''
     @classmethod
     def pre_condition(cls, args):

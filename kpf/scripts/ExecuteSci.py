@@ -35,15 +35,47 @@ from kpf.observatoryAPIs import round_microseconds, truncate_isoformat
 class ExecuteSci(KPFFunction):
     '''Script which executes a single observation from a science sequence
 
-    This must have arguments as input, either from a file using the `-f` command
-    line tool, or passed in from the execution engine.
+    Args:
+        observation (dict): A observation OB component in dictionary format (e.g.
+                            using the output of the `.to_dict()` method of a
+                            `kpf.ObservingBlocks.Observation.Observation` instance).
 
-    ARGS:
-    =====
-    :observation: `dict` An observation component of a science observing block (OB).
+    KTL Keywords Used:
+
+    - `kpfconfig.SCRIPTSTOP`
+    - `kpfconfig.USEAGITATOR`
+    - `kpfconfig.TARGET_GMAG`
+    - `kpfconfig.SCRIPTMSG`
+    - `kpfexpose.EXPOSE`
+    - `kpfexpose.STARTTIME`
+    - `kpfexpose.ELAPSED`
+    - `kpfexpose.OBSERVER`
+    - `kpf_expmeter.TARGET_TEFF`
+    - `kpfguide.TRIGCUBE`
+
+    Functions Called:
+
+    - `kpf.spectrograph.QueryFastReadMode`
+    - `kpf.spectrograph.SetObject`
+    - `kpf.spectrograph.SetExpTime`
+    - `kpf.spectrograph.SetTimedShutters`
+    - `kpf.spectrograph.SetTriggeredDetectors`
+    - `kpf.spectrograph.StartAgitator`
+    - `kpf.spectrograph.StartExposure`
+    - `kpf.spectrograph.StopAgitator`
+    - `kpf.spectrograph.WaitForReady`
+    - `kpf.spectrograph.WaitForReadout`
+    - `kpf.calbench.SetND1`
+    - `kpf.calbench.SetND2`
+    - `kpf.calbench.WaitForND1`
+    - `kpf.calbench.WaitForND2`
+    - `kpf.calbench.PredictNDFilters`
+    - `kpf.expmeter.PredictExpMeterParameters`
+    - `kpf.expmeter.SetExpMeterExpTime`
+    - `kpf.expmeter.SetupExpMeter`
+
+    - ``
     '''
-    abortable = True
-
     @classmethod
     def pre_condition(cls, observation):
         pass
@@ -57,7 +89,6 @@ class ExecuteSci(KPFFunction):
         kpfconfig = ktl.cache('kpfconfig')
         SCRIPTSTOP = kpfconfig['SCRIPTSTOP']
         SCRIPTSTOP.monitor()
-        kpfguide = ktl.cache('kpfguide')
         exposestatus = ktl.cache('kpfexpose', 'EXPOSE')
         STARTTIME = ktl.cache('kpfexpose', 'STARTTIME')
         ELAPSED = ktl.cache('kpfexpose', 'ELAPSED')
@@ -116,8 +147,8 @@ class ExecuteSci(KPFFunction):
         exptime = observation.get('ExpTime')
         max_for_cube = cfg.getfloat('times', 'max_exptime_for_guide_cube', fallback=60)
         if float(exptime) > max_for_cube:
-            kpfguide = ktl.cache('kpfguide')
-            kpfguide['TRIGCUBE'].write('Inactive')
+            TRIGCUBE = ktl.cache('kpfguide', 'TRIGCUBE')
+            TRIGCUBE.write('Inactive')
 
         observation['TimedShutter_Scrambler'] = True
         observation['TimedShutter_FlatField'] = False

@@ -91,10 +91,13 @@ class EstimateOBDuration(KPFScript):
     those with the information in the observing block to estimate how long it
     will take to execute the observing block.
 
-    ARGS:
-    =====
-    :fast: `bool` Estimate the duration assuming fast read mode?
-    :OB: `dict` or `ObservingBlock` A fully specified observing block (OB).
+    Args:
+        fast (bool): Estimate the duration assuming fast read mode?
+        OB (ObservingBlock): A valid observing block (OB).
+
+    Functions Called:
+
+    - `kpf.calbench.standardize_lamp_name`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):

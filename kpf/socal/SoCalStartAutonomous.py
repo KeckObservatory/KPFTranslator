@@ -8,9 +8,9 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SoCalStartAutonomous(KPFFunction):
     '''Start SoCal's AUTONOMOUS mode by setting AUTONOMOUS=1
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfsocal.AUTONOMOUS`
     '''
     @classmethod
     def pre_condition(cls, args):

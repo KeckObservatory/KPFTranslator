@@ -10,9 +10,14 @@ class ParkSoCal(KPFFunction):
     '''Parks SoCal. This includes setting AUTONOMOUS to "Manual", closing the
     enclosure, and parking the solar tracker.
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfsocal.ENCCMD`
+    - `kpfsocal.ENCSTA`
+    - `kpfsocal.EKOSLEW`
+    - `kpfsocal.EKOTARGALT`
+    - `kpfsocal.EKOTARGAZ`
+    - `kpfsocal.EKOMODE`
     '''
     @classmethod
     def pre_condition(cls, args):

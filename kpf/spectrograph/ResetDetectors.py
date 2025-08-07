@@ -9,9 +9,9 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class ResetCaHKDetector(KPFFunction):
     '''Resets the Ca HK detector by aborting the exposure
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpf_hk.EXPOSE`
     '''
     @classmethod
     def pre_condition(cls, args):
@@ -37,9 +37,9 @@ class ResetCaHKDetector(KPFFunction):
 class ResetExpMeterDetector(KPFFunction):
     '''Resets the exposure meter detector
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpf_expmeter.EXPOSE`
     '''
     @classmethod
     def pre_condition(cls, args):
@@ -65,9 +65,10 @@ class ResetExpMeterDetector(KPFFunction):
 class ResetGreenDetector(KPFFunction):
     '''Resets the kpfgreen detector
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfgreen.EXPSTATE`
+    - `kpfgreen.EXPOSE`
     '''
     @classmethod
     def pre_condition(cls, args):
@@ -109,9 +110,10 @@ class ResetGreenDetector(KPFFunction):
 class ResetRedDetector(KPFFunction):
     '''Resets the kpfred detector
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfred.EXPSTATE`
+    - `kpfred.EXPOSE`
     '''
     @classmethod
     def pre_condition(cls, args):
@@ -159,9 +161,11 @@ class ResetDetectors(KPFFunction):
     (from camerad) the normal sequence of messages for a completed exposure,
     pretend everything is fine for starting a new exposure.”
     
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfexpose.EXPOSE`
+    - `kpfexpose.EXPLAINR`
+    - `kpfexpose.EXPLAINNR`
     '''
     @classmethod
     def pre_condition(cls, args):

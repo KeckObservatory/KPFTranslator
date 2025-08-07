@@ -14,6 +14,15 @@ from kpf.calbench.SetCalSource import SetCalSource
 class SetSimulCalSource(KPFFunction):
     '''Set the simultaneous calibration source based on the
     kpfconfig.SIMULCALSOURCE keyword.
+
+    KTL Keywords Used:
+
+    - `kpfconfig.SIMULCALSOURCE`
+    - `kpfcal.OCTAGON`
+
+    Functions Called:
+
+    - `kpf.calbench.SetCalSource`
     '''
     @classmethod
     def pre_condition(cls, args):

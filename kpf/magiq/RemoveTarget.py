@@ -8,10 +8,17 @@ from kpf.observatoryAPIs.GetTelescopeRelease import GetTelescopeRelease
 
 
 class RemoveTarget(KPFFunction):
-    '''
+    '''Remove the specified target from the OA star list.
 
     MAGIQ API documentation:
     http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php
+
+    Args:
+        TargetName (str): The name of the target to remove.
+
+    Functions Called:
+
+    - `kpf.observatoryAPIs.GetTelescopeRelease`
     '''
     @classmethod
     def pre_condition(cls, args):

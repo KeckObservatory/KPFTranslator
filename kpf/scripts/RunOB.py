@@ -31,10 +31,35 @@ from kpf.observatoryAPIs import addObservingBlockHistory
 class RunOB(KPFScript):
     '''Script to run an OB.
 
-    ARGS:
-    =====
-    * __leave_lamps_on__ - `bool` Leave calibration lamps on when done?
-    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
+    Args:
+        OB (ObservingBlock): A valid observing block (OB).
+        leave_lamps_on (bool): Leave the calibration lamps on after cleanup phase?
+        waitforscript (bool): Wait for a running script to end before starting?
+        scheduled (bool): Script should obey ALLOWSCHEDULEDCALS keyword.
+
+    KTL Keywords Used:
+
+    - `kpfconfig.ALLOWSCHEDULEDCALS`
+    - `kpfconfig.SLEWCALREQ`
+    - `kpfconfig.SLEWCALFILE`
+    - `kpfconfig.SCRIPTMSG`
+    - `dcs1.TARGNAME`
+
+    Functions Called:
+
+    - `kpf.fiu.VerifyCurrentBase`
+    - `kpf.scripts.SetTargetInfo`
+    - `kpf.scripts.ConfigureForCalibrations`
+    - `kpf.scripts.ExecuteCal`
+    - `kpf.scripts.CleanupAfterCalibrations`
+    - `kpf.scripts.ConfigureForAcquisition`
+    - `kpf.scripts.WaitForConfigureAcquisition`
+    - `kpf.scripts.ConfigureForScience`
+    - `kpf.scripts.WaitForConfigureScience`
+    - `kpf.scripts.ExecuteSci`
+    - `kpf.scripts.CleanupAfterScience`
+    - `kpf.spectrograph.SetProgram`
+    - `kpf.observatoryAPIs.addObservingBlockHistory`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):
@@ -158,7 +183,9 @@ class RunOB(KPFScript):
                 CleanupAfterScience.execute(args, OB=OB)
                 return
             # Proceed once target is on fiber and tip tilt is active
-            log.debug('Asking for user input')
+            msg = 'Waiting for user confirmation to begin exposures'
+            log.info(msg)
+            SCRIPTMSG.write(msg)
             print()
             print("###############################################################")
             print("    Before continuing, please ensure that the OA has placed")
@@ -170,6 +197,7 @@ class RunOB(KPFScript):
             print()
             user_input = input()
             log.debug(f'response: "{user_input}"')
+            SCRIPTMSG.write('')
             if user_input.lower() in ['a', 'abort', 'q', 'quit']:
                 log.error("User chose to halt execution")
                 CleanupAfterScience.execute(args, OB=OB)
@@ -181,7 +209,9 @@ class RunOB(KPFScript):
             if str(TARGNAME).strip().lower() != str(OB.Target.TargetName).lower():
                 log.warning('Target name mismatch detected')
                 log.warning(f"dcs.TARGNAME '{TARGNAME}' != OB TargetName '{OB.Target.TargetName}'")
-                log.debug('Asking for user input')
+                msg = 'Waiting for user confirmation on target name mismatch'
+                log.info(msg)
+                SCRIPTMSG.write(msg)
                 print()
                 print("###############################################################")
                 print("    WARNING: The telescope control system target name: {TARGNAME}")
@@ -192,6 +222,7 @@ class RunOB(KPFScript):
                 print()
                 user_input = input()
                 log.debug(f'response: "{user_input}"')
+                SCRIPTMSG.write('')
                 if user_input.lower() in ['a', 'abort', 'q', 'quit']:
                     log.error("User chose to halt execution")
                     CleanupAfterScience.execute(args, OB=OB)

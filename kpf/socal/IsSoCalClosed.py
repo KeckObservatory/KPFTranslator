@@ -8,9 +8,9 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class IsSoCalClosed(KPFFunction):
     '''Returns True if SoCal enclsoure is closed.
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfsocal.ENCSTA`
     '''
     @classmethod
     def pre_condition(cls, args):

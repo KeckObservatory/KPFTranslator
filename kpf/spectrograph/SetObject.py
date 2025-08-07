@@ -9,10 +9,13 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SetObject(KPFFunction):
     '''Sets the OBJECT keyword for the science detectors in the kpfexpose
     keyword service.
-    
-    ARGS:
-    =====
-    :Object: `str` The desired object keyword value.
+
+    Args:
+        Object (str): The desired object keyword value.
+
+    KTL Keywords Used:
+
+    - `kpfexpose.OBJECT`
     '''
     @classmethod
     def pre_condition(cls, args):

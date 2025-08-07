@@ -9,6 +9,11 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 class QueryReadMode(KPFFunction):
     '''Returns string describing the read mode.
+
+    KTL Keywords Used:
+
+    - `kpfgreen.ACFFILE`
+    - `kpfred.ACFFILE`
     '''
     @classmethod
     def pre_condition(cls, args):

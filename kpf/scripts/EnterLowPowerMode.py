@@ -15,6 +15,7 @@ class EnterLowPowerMode(KPFFunction):
     basement due to the sensitivity of the spectrograph to thermal changes.
 
     Procedure:
+
     - If a script is running exit or terminate it (depending on --force arg)
     - Disable HK detector
     - Stop HK cooling
@@ -22,6 +23,26 @@ class EnterLowPowerMode(KPFFunction):
     - Stop CRED2 exposures (CONTINUOUS and SAVE)
     - Stop CRED2 cooling (if on)
     - Power off CRED2 (K2, K3)
+
+    KTL Keywords Used:
+
+    - `kpfconfig.CA_HK_ENABLED`
+    - `kpfpower.OUTLET_J1%`
+    - `kpfpower.OUTLET_J2%`
+    - `kpfpower.OUTLET_J5%`
+    - `kpfpower.OUTLET_K2%`
+    - `kpfpower.OUTLET_K3%`
+    - `kpfmon.HKTEMPDIS`
+    - `kpfmon.ST_EXPOSE2DIS`
+    - `kpfmon.OUTLET_J1_OODIS`
+    - `kpfmon.OUTLET_J2_OODIS`
+    - `kpfmon.OUTLET_J5_OODIS`
+    - `kpfmon.OUTLET_K2_OODIS`
+    - `kpfmon.OUTLET_K3_OODIS`
+    - `kpf_hk.COOLING`
+    - `kpf_hk.EXPSTATE`
+    - `kpfguide.CONTINUOUS`
+    - `kpfguide.SAVE`
     '''
     @classmethod
     def pre_condition(cls, args):
@@ -29,7 +50,7 @@ class EnterLowPowerMode(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        kpfconfig = ktl.cache('kpfconfig')
+        CA_HK_ENABLED = ktl.cache('kpfconfig', 'CA_HK_ENABLED')
         kpfpower = ktl.cache('kpfpower')
         kpfmon = ktl.cache('kpfmon')
         log.warning('Configuring KPF for Low Power Mode')
@@ -37,7 +58,7 @@ class EnterLowPowerMode(KPFFunction):
         # Power down Ca HK detector systems
         kpf_hk = ktl.cache('kpf_hk')
         log.warning('Disabling Ca HK detector')
-        kpfconfig['CA_HK_ENABLED'].write('No')
+        CA_HK_ENABLED.write('No')
         log.warning('Disabling HKTEMP alarm for next 24 hours')
         kpfmon['HKTEMPDIS'].write('1 day hence')
         log.warning('Disabling ST_EXPOSE2 alarm for next 24 hours')
