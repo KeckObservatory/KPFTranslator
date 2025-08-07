@@ -23,7 +23,10 @@ class ConfirmGuiding(KPFFunction):
 
         if success == False:
             # Check with user
-            log.debug('Asking for user input')
+            SCRIPTMSG = ktl.cache('kpfconfig', 'SCRIPTMSG')
+            msg = 'Waiting for user confirmation on tip tilt status'
+            log.info(msg)
+            SCRIPTMSG.write(msg)
             print()
             print("#####################################################")
             print(f"Timed out waiting for ALL_LOOPS == {guide_here_txt}")
@@ -37,6 +40,7 @@ class ConfirmGuiding(KPFFunction):
             print()
             user_input = input()
             log.debug(f'response: "{user_input}"')
+            SCRIPTMSG.write('')
             if user_input.lower().strip() in ['n', 'no', 'a', 'abort', 'q', 'quit']:
                 raise KPFException("User chose to halt execution")
             elif user_input.lower().strip() in ['o', 'p', 'observe', 'proceed']:
