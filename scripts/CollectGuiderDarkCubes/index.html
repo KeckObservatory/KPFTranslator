@@ -630,6 +630,41 @@ the three gain settings for the detector.</p>
 - Take 10s trigger cube
 - Set kpfguide.SENSORSETP = 0</p>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>scheduled</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Obey ALLOWSCHEDULEDCALS keyword</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfconfig.ALLOWSCHEDULEDCALS</code></li>
+<li><code>kpfguide.OUTDIR</code></li>
+<li><code>kpfguide.SENSORSETP</code></li>
+<li><code>kpfguide.SENSORTEMP</code></li>
+<li><code>kpfguide.CONTINUOUS</code></li>
+<li><code>kpfguide.SUB_HIGH</code></li>
+<li><code>kpfguide.SUB_MEDIUM</code></li>
+<li><code>kpfguide.SUB_LOW</code></li>
+</ul>
+
               <details class="quote">
                 <summary>Source code in <code>kpf/guider/CollectGuiderDarkCubes.py</code></summary>
                 <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 19</span>
@@ -744,7 +779,21 @@ the three gain settings for the detector.</p>
 <span class="normal">128</span>
 <span class="normal">129</span>
 <span class="normal">130</span>
-<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CollectGuiderDarkCubes</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CollectGuiderDarkCubes</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Obtains CRED2 &quot;trigger file&quot; data cubes under dark conditions at each of</span>
 <span class="sd">    the three gain settings for the detector.</span>
 
@@ -761,6 +810,20 @@ the three gain settings for the detector.</p>
 <span class="sd">    - Set GAIN = Low</span>
 <span class="sd">    - Take 10s trigger cube</span>
 <span class="sd">    - Set kpfguide.SENSORSETP = 0</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scheduled (bool): Obey ALLOWSCHEDULEDCALS keyword</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfconfig.ALLOWSCHEDULEDCALS`</span>
+<span class="sd">    - `kpfguide.OUTDIR`</span>
+<span class="sd">    - `kpfguide.SENSORSETP`</span>
+<span class="sd">    - `kpfguide.SENSORTEMP`</span>
+<span class="sd">    - `kpfguide.CONTINUOUS`</span>
+<span class="sd">    - `kpfguide.SUB_HIGH`</span>
+<span class="sd">    - `kpfguide.SUB_MEDIUM`</span>
+<span class="sd">    - `kpfguide.SUB_LOW`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="nd">@obey_scriptrun</span>

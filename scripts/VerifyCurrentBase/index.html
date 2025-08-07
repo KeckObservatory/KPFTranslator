@@ -622,6 +622,7 @@ is consistent with the selected pointing origin (dcs.PONAME)</p>
 <li><code>kpfguide.CURRENT_BASE</code></li>
 <li><code>kpfguide.SCIENCE_BASE</code></li>
 <li><code>kpfguide.SKY_BASE</code></li>
+<li><code>kpfconfig.SCRIPTMSG</code></li>
 </ul>
 
               <details class="quote">
@@ -700,7 +701,8 @@ is consistent with the selected pointing origin (dcs.PONAME)</p>
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VerifyCurrentBase</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">84</span>
+<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VerifyCurrentBase</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Check whether the tip tilt system&#39;s target pixel (kpffiu.CURRENT_BASE)</span>
 <span class="sd">    is consistent with the selected pointing origin (dcs.PONAME)</span>
 
@@ -710,6 +712,7 @@ is consistent with the selected pointing origin (dcs.PONAME)</p>
 <span class="sd">    - `kpfguide.CURRENT_BASE`</span>
 <span class="sd">    - `kpfguide.SCIENCE_BASE`</span>
 <span class="sd">    - `kpfguide.SKY_BASE`</span>
+<span class="sd">    - `kpfconfig.SCRIPTMSG`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

@@ -616,6 +616,15 @@
 
       <p>Set the simultaneous calibration source based on the
 kpfconfig.SIMULCALSOURCE keyword.</p>
+<p>KTL Keywords Used:</p>
+<ul>
+<li><code>kpfconfig.SIMULCALSOURCE</code></li>
+<li><code>kpfcal.OCTAGON</code></li>
+</ul>
+<p>Functions Called:</p>
+<ul>
+<li><code>kpf.calbench.SetCalSource</code></li>
+</ul>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/SetSimulCalSource.py</code></summary>
@@ -638,9 +647,27 @@ kpfconfig.SIMULCALSOURCE keyword.</p>
 <span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
-<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetSimulCalSource</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetSimulCalSource</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Set the simultaneous calibration source based on the</span>
 <span class="sd">    kpfconfig.SIMULCALSOURCE keyword.</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - `kpfconfig.SIMULCALSOURCE`</span>
+<span class="sd">    - `kpfcal.OCTAGON`</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.calbench.SetCalSource`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
