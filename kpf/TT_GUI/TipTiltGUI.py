@@ -1652,20 +1652,14 @@ class MainWindow(QMainWindow):
         self.run_restart_kpfguide_popup(3)
 
     def run_restart_kpfguide_popup(self, num):
-        self.log.debug(f"run_restart_kpfguide_popup{num}")
-        restart_kpfguide_popup = QMessageBox()
-        restart_kpfguide_popup.setWindowTitle(f'Restart kpfguide{num} Confirmation')
-        restart_kpfguide_popup.setText(f"Do you really want to restart kpfguide{num}?")
-        restart_kpfguide_popup.setIcon(QMessageBox.Critical)
-        restart_kpfguide_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
-        bttn = restart_kpfguide_popup.exec_()
-        if bttn == QMessageBox.Yes:
-            self.log.debug(f'restart_kpfguide{num} confirmed')
+        msg = f"Do you really want to restart kpfguide{num}?"
+        result = ConfirmationPopup(f'Restart kpfguide{num} Confirmation', msg).exec_()
+        if result == QtWidgets.QMessageBox.Yes:
+            self.log.info(f'Confirmation is yes, restarting kpfguide{num}')
             self.restart_kpfguide(num)
         else:
-            self.log.debug(f'restart_kpfguide{num} cancelled')
-            return False
-
+            self.log.info('Confirmation is no, not restarting dispacther')
+            return
 
     def restart_kpfguide(self, num):
         self.log.warning(f"Recieved request to restart kpfguide{num}")
