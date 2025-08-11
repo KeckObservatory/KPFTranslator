@@ -48,6 +48,7 @@ from ginga.qtw.ImageViewQt import CanvasView
 
 from kpf.guider.PredictGuiderParameters import PredictGuiderParameters
 from kpf.guider.TakeGuiderCube import TakeGuiderCube
+from kpf.OB_GUI.Popups import ConfirmationPopup
 
 
 ##-------------------------------------------------------------------------
@@ -98,6 +99,9 @@ def create_GUI_log():
     return log
 
 
+##-------------------------------------------------------------------------
+## main
+##-------------------------------------------------------------------------
 def main(log):
     application = QApplication(sys.argv)
     if cmd_line_args.dark == True:
@@ -890,6 +894,23 @@ class MainWindow(QMainWindow):
         time.sleep(2)
 
     def obtain_sky_frame(self):
+        sky_multiplier = 4
+        duration = sky_multiplier*1/self.FPS.ktl_keyword.read(binary=True)
+        msg = [f"This script will:",
+               f"- Turn off tip tilt loops",
+               f"- Offset: en {self.SkyOffsetEastValue:.1f} {self.SkyOffsetNorthValue:.1f}",
+               f"- Expose for {duration:.1f} seconds of sky frame using the guider",
+               f"- Offset back to target",
+               f"",
+               f"Tip tilt loops will need to be (re)started once back on target."
+               ]
+        result = ConfirmationPopup('Offset and obtain guider sky frame?', msg).exec_()
+        if result == QtWidgets.QMessageBox.Yes:
+            self.log.info('Confirmation is yes, obtaining sky frame')
+        else:
+            self.log.info('Confirmation is no, not obtaining sky frame')
+            return
+
         # Turn loops off while we go get a sky frame
         self.ALL_LOOPS.write('Inactive')
         # Offset to sky position
@@ -899,8 +920,6 @@ class MainWindow(QMainWindow):
         # Set SUB_HIGH to nothing to make sure bias remains in the resulting subtracted frame
         self.SUB_HIGH.ktl_keyword.write('')
         # Take Image Cube to get sky
-        sky_multiplier = 4
-        duration = sky_multiplier*1/self.FPS.ktl_keyword.read(binary=True)
         self.log.info(f'Taking sky frame: TakeGuiderImageCube {duration:.1f} seconds')
         trigger_file = TakeGuiderCube.execute({'duration': duration,
                                            'ImageCube': False})
