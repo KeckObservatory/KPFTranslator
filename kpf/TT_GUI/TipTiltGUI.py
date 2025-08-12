@@ -847,7 +847,7 @@ class MainWindow(QMainWindow):
     ## Camera FPS
     def update_CameraFPS(self, value):
         self.log.debug(f'update_CameraFPS: {value}')
-        if float(value) > 10:
+        if float(value) >= 10:
             fps_string = f"{float(value):.0f}"
         elif float(value) > 1:
             fps_string = f"{float(value):.1f}"
