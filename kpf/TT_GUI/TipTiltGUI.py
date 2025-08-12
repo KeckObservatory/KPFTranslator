@@ -847,7 +847,13 @@ class MainWindow(QMainWindow):
     ## Camera FPS
     def update_CameraFPS(self, value):
         self.log.debug(f'update_CameraFPS: {value}')
-        self.CameraFPSValue.setText(f"{float(value):.1f}")
+        if float(value) > 10:
+            fps_string = f"{float(value):.0f}"
+        elif float(value) > 1:
+            fps_string = f"{float(value):.1f}"
+        else:
+            fps_string = f"{float(value):.2f}"
+        self.CameraFPSValue.setText(fps_string)
         self.CameraFPSSelector.setCurrentText('')
         self.colorize_recommended_values()
 #         self.reset_sky_frame()
