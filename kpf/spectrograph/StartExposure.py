@@ -55,7 +55,7 @@ class StartExposure(KPFFunction):
         timeout = 6
         left_start_state = ktl.waitFor(expr, timeout=timeout)
         if left_start_state is False:
-            log.error(f'We are still in start state after {timeout} s')
+            log.warning(f'We are still in start state after {timeout} s')
             # Figure out which detector is stuck in the start state?
             if is_GREEN_ENABLED:
                 green_expstate = ktl.cache('kpfgreen', 'EXPSTATE').read()
