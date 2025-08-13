@@ -1569,13 +1569,13 @@ class MainWindow(QMainWindow):
         pix_target = self.PIX_TARGET.ktl_keyword.binary
         FIUmode = self.MODE.ktl_keyword.ascii
         # If FIU is not in observing mode, put overlay warning text
-        if FIUmode != 'Observing':
-            self.add_mark(0.75*roidim, roidim, 'ModeIndicator', tag='FIUmode',
-                          label=f"FIU Mode is {FIUmode}",
-                          color='red', alpha=1)
-            return
-        else:
-            self.overlay_canvas.delete_objects_by_tag(['ModeIndicator'])
+#         if FIUmode != 'Observing':
+#             self.add_mark(0.75*roidim, roidim, 'ModeIndicator', tag='FIUmode',
+#                           label=f"FIU Mode is {FIUmode}",
+#                           color='red', alpha=1)
+#             return
+#         else:
+#             self.overlay_canvas.delete_objects_by_tag(['ModeIndicator'])
         # Add crosshair for pixel target
         self.add_mark(pix_target[0]-self.xcent+roidim,
                       pix_target[1]-self.ycent+roidim,
