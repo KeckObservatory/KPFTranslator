@@ -12,6 +12,8 @@ import re
 import copy
 import subprocess
 
+from kpf import cfg
+
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
 
@@ -133,7 +135,12 @@ class MainWindow(QMainWindow):
         self.ginga_log = ginga_log.get_logger("example1", log_stderr=True, level=40)
         self.log.debug('Initializing MainWindow')
         # Keywords
+        dcsint = cfg.getint('telescope', 'telnr', fallback=1)
         self.log.debug('Cacheing keyword services')
+        self.dcs = ktl.cache(f'dcs{dcsint}')
+        self.INSTRUME = kPyQt.kFactory(self.dcs['INSTRUME'])
+        self.INSTRUME.stringCallback.connect(self.update_selected_instrument)
+        self.INSTRUME.primeCallback()
         kpfguide = ktl.cache('kpfguide')
         self.CONTINUOUS = kPyQt.kFactory(kpfguide['CONTINUOUS'])
         self.SAVE = kPyQt.kFactory(kpfguide['SAVE'])
@@ -682,6 +689,13 @@ class MainWindow(QMainWindow):
 
 
     ##----------------------------------------------------------
+    ## dcs.INSTRUME
+    def update_selected_instrument(self, value):
+        self.log.debug('update_selected_instrument')
+        KPF_is_selected = 'KPF' in value
+        self.ObtainSkyFrameBtn.setEnabled(self.enable_control and KPF_is_selected)
+
+    ##----------------------------------------------------------
     ## update Plots
     def update_plots(self):
         self.update_TipTiltErrorPlot()
@@ -885,17 +899,17 @@ class MainWindow(QMainWindow):
         self.SUB_HIGH.ktl_keyword.write(self.default_sub_file)
 
     def en(self, e, n):
-        dcs = ktl.cache('dcs1')
+        
         self.log.info(f'RAOFF={float(e):.3f}')
-        dcs['RAOFF'].write(float(e))
+        self.dcs['RAOFF'].write(float(e))
         self.log.info(f'DECOFF={float(n):.3f}')
-        dcs['DECOFF'].write(float(n))
+        self.dcs['DECOFF'].write(float(n))
         self.log.info('REL2CURR=t')
-        dcs['REL2CURR'].write('t')
+        self.dcs['REL2CURR'].write('t')
         self.log.info('Sleep 2')
         time.sleep(2)
         self.log.info('WaitFor AXESTAT==tracking')
-        dcs['AXESTAT'].waitFor('==tracking')
+        self.dcs['AXESTAT'].waitFor('==tracking')
         self.log.info('Sleep 2')
         time.sleep(2)
 
@@ -911,7 +925,7 @@ class MainWindow(QMainWindow):
                f"Tip tilt loops will need to be (re)started once back on target."
                ]
         result = ConfirmationPopup('Offset and obtain guider sky frame?', msg).exec_()
-        if result == QtWidgets.QMessageBox.Yes:
+        if result == QMessageBox.Yes:
             self.log.info('Confirmation is yes, obtaining sky frame')
         else:
             self.log.info('Confirmation is no, not obtaining sky frame')
