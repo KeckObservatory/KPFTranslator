@@ -144,9 +144,9 @@ class ExecuteSci(KPFFunction):
         SetExpTime.execute(observation)
 
         # Turn off writing of guider FITS cube if exposure time is long
-        exptime = observation.get('ExpTime')
+        exptime = float(observation.get('ExpTime'))
         max_for_cube = cfg.getfloat('times', 'max_exptime_for_guide_cube', fallback=60)
-        if float(exptime) > max_for_cube:
+        if exptime > max_for_cube:
             TRIGCUBE = ktl.cache('kpfguide', 'TRIGCUBE')
             TRIGCUBE.write('Inactive')
 
@@ -185,7 +185,7 @@ class ExecuteSci(KPFFunction):
             # Start next exposure
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
-            msg = f"Starting {observation.get('ExpTime')} s exposure {j+1}/{nexp}"
+            msg = f"Starting {exptime:.0f} s exposure {j+1}/{nexp}"
             log.info(msg)
             kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})
