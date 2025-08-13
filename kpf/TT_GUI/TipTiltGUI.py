@@ -780,13 +780,13 @@ class MainWindow(QMainWindow):
             self.ControlCheckBox.setEnabled(enabled)
             self.OffloadCheckBox.setEnabled(enabled)
         else:
-            log.debug('Monitor mode in use')
+            self.log.debug('Monitor mode in use')
 
 
     ##----------------------------------------------------------
     ## Quit
     def quit(self):
-        log.info(f"Quitting KPF TipTilt GUI")
+        self.log.info(f"Quitting KPF TipTilt GUI")
         sys.exit()
 
     ##----------------------------------------------------------
@@ -832,7 +832,7 @@ class MainWindow(QMainWindow):
                 self.RecommendedFPSValue.setText(f"{self.GuiderParameters['GuideFPS']:.1f}")
                 self.colorize_recommended_values()
             except Exception as e:
-                log.warning(f'PredictGuiderParameters failed')
+                self.log.warning(f'PredictGuiderParameters failed')
                 print(e)
 
     def colorize_recommended_values(self):
@@ -1032,7 +1032,7 @@ class MainWindow(QMainWindow):
         ax.clear()
         plt.title('Flux')
         if npoints <= 1:
-            log.debug('update_FluxPlot: clearing plot')
+            self.log.debug('update_FluxPlot: clearing plot')
             ax.set_ylim(0,1e6)
             plt.yticks([])
             plt.xticks([])
@@ -1042,7 +1042,7 @@ class MainWindow(QMainWindow):
             self.FluxPlotCanvas.draw()
         else:
             tick = datetime.datetime.utcnow()
-            log.debug('update_FluxPlot')
+            self.log.debug('update_FluxPlot')
             recent = np.where(np.array(self.ObjectFluxTimes) > self.ObjectFluxTimes[-1]-self.FluxPlotAgeThreshold)[0]
             flux_times = np.array(self.ObjectFluxTimes)[recent]
             flux = np.array(self.ObjectFluxValues)[recent]
@@ -1065,7 +1065,7 @@ class MainWindow(QMainWindow):
             self.FluxPlotCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Plotted {npoints} Flux points in {elapsed*1000:.0f} ms')
+            self.log.debug(f'  Plotted {npoints} Flux points in {elapsed*1000:.0f} ms')
 
 
 
@@ -1147,7 +1147,7 @@ class MainWindow(QMainWindow):
         ax.clear()
         plt.title('Tip Tilt Error')
         if npoints <= 1:
-            log.debug('update_TipTiltErrorPlot: clearing plot')
+            self.log.debug('update_TipTiltErrorPlot: clearing plot')
             ax.set_ylim(0,3)
             plt.yticks([0,1,2])
             plt.xticks([])
@@ -1157,7 +1157,7 @@ class MainWindow(QMainWindow):
             self.TipTiltErrorPlotCanvas.draw()
         else:
             tick = datetime.datetime.utcnow()
-            log.debug('update_TipTiltErrorPlot')
+            self.log.debug('update_TipTiltErrorPlot')
 
             recent = np.where(np.array(self.TipTiltErrorTimes) > self.TipTiltErrorTimes[-1]-self.TipTiltErrorPlotAgeThreshold)[0]
             tterr_times = np.array(self.TipTiltErrorTimes)[recent]
@@ -1192,7 +1192,7 @@ class MainWindow(QMainWindow):
             self.TipTiltErrorPlotCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
+            self.log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
 
 
     ##----------------------------------------------------------
@@ -1258,7 +1258,7 @@ class MainWindow(QMainWindow):
             self.MirrorPositionCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
+            self.log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
 
 
     ##----------------------------------------------------------
@@ -1533,7 +1533,7 @@ class MainWindow(QMainWindow):
         try:
             filepath = Path(filepath)
         except:
-            log.warning(f'Unable to parse file: {filepath}')
+            self.log.warning(f'Unable to parse file: {filepath}')
             return
 
         roidim  = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
@@ -1568,13 +1568,13 @@ class MainWindow(QMainWindow):
             self.overlay_objects()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
+            self.log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
 
 
     def update_lastfile(self, value):
         p = Path(value)
         if p.exists() is False:
-            log.error(f'{p} not found')
+            self.log.error(f'{p} not found')
         else:
             self.load_file(f"{p}")
 
@@ -1709,4 +1709,3 @@ if __name__ == '__main__':
         log.error(e)
         log.error(traceback.format_exc())
     log.info(f"Exiting KPF TipTilt GUI")
-
