@@ -14,6 +14,7 @@ from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.fiu.ConfigureFIU import ConfigureFIU
+from kpf.fiu.StopTipTilt import StopTipTilt
 
 
 class ConfigureForCalibrations(KPFScript):
@@ -69,6 +70,7 @@ class ConfigureForCalibrations(KPFScript):
         check_scriptstop()
 
         ConfigureFIU.execute({'mode': 'Calibration'})
+        StopTipTilt.execute({})
 
         check_scriptstop()
 
