@@ -1558,18 +1558,15 @@ class MainWindow(QMainWindow):
             date_beg = hdul[0].header.get('DATE-BEG')
             ts = datetime.datetime.strptime(date_beg, '%Y-%m-%dT%H:%M:%S.%f')
             self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
-    
-            TipTiltCalc = self.TIPTILT_CALC.ktl_keyword.ascii
-            ObjectChoice = self.OBJECT_CHOICE.ktl_keyword.ascii
+#             TipTiltCalc = self.TIPTILT_CALC.ktl_keyword.ascii
+#             ObjectChoice = self.OBJECT_CHOICE.ktl_keyword.ascii
             image = AstroImage()
             image.load_nddata(cropped)
             self.ImageViewer.set_image(image)
-    
             self.overlay_objects()
-            tock = datetime.datetime.utcnow()
-            elapsed = (tock-tick).total_seconds()
-            self.log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
-
+#             tock = datetime.datetime.utcnow()
+#             elapsed = (tock-tick).total_seconds()
+#             self.log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
 
     def update_lastfile(self, value):
         p = Path(value)
@@ -1583,19 +1580,18 @@ class MainWindow(QMainWindow):
         pix_target = self.PIX_TARGET.ktl_keyword.binary
         FIUmode = self.MODE.ktl_keyword.ascii
         # If FIU is not in observing mode, put overlay warning text
-#         if FIUmode != 'Observing':
-#             self.add_mark(0.75*roidim, roidim, 'ModeIndicator', tag='FIUmode',
-#                           label=f"FIU Mode is {FIUmode}",
-#                           color='red', alpha=1)
-#             return
-#         else:
-#             self.overlay_canvas.delete_objects_by_tag(['ModeIndicator'])
+        if FIUmode != 'Observing':
+            label = f"FIU Mode is {FIUmode}"
+            color = 'red'
+        else:
+            label = False
+            color = 'green'
         # Add crosshair for pixel target
         self.add_mark(pix_target[0]-self.xcent+roidim,
                       pix_target[1]-self.ycent+roidim,
                       'crosshair', tag='PIX_TARGET',
-                      label=False,
-                      color='green', alpha=0.5)
+                      label=label,
+                      color=color, alpha=0.5)
         # Add circles for each detected object
         for obj in [1,2,3]:
             objectN_kfo = getattr(self, f'OBJECT{obj}')
@@ -1613,10 +1609,10 @@ class MainWindow(QMainWindow):
                 self.overlay_canvas.delete_objects_by_tag([f'OBJECT{obj}', f"OBJECT{obj}_TEXT", f"OBJECT{obj}_point"])
 
     def add_mark(self, x, y, marker,
-                 tag=None, label=True, dxtext=-10, dytext=3, **kwargs):
+                 tag=None, label=True, dxtext=-20, dytext=3, **kwargs):
         Marker = self.overlay_canvas.get_draw_class(marker)
         self.overlay_canvas.delete_objects_by_tag([tag, f"{tag}_TEXT", f"{tag}_point"])
-        if marker == 'crosshair' and label == False:
+        if marker == 'crosshair':
             self.overlay_canvas.add(Marker(x, y, text='', **kwargs), tag=tag)
         elif marker == 'circle':
             if 'radius' in kwargs.keys():
