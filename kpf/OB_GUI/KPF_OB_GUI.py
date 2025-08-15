@@ -1080,9 +1080,9 @@ class MainWindow(QtWidgets.QMainWindow):
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) OBs for all weather bands"]
         self.GUITaskLabel.setText("".join(msg))
         msg.extend(errs)
+        self.set_weather_band(self.KPFCC_weather_band)
         self.refresh_history()
         self.set_SortOrWeather()
-        self.set_weather_band(self.KPFCC_weather_band)
 
     def refresh_history(self):
         self.log.debug(f"refresh_history")
