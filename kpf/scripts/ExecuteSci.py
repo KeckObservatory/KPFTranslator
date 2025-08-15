@@ -153,6 +153,7 @@ class ExecuteSci(KPFFunction):
         observation['TimedShutter_Scrambler'] = True
         observation['TimedShutter_FlatField'] = False
         observation['TimedShutter_SimulCal'] = observation['TakeSimulCal']
+        observation['TimedShutter_CaHK'] = observation['TriggerCaHK']
         SetTimedShutters.execute(observation)
         SetTriggeredDetectors.execute(observation)
 
