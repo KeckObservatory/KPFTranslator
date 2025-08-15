@@ -9,7 +9,7 @@
 
 This is an attempt to summarize the status of various sub-systems of the instrument.  Each sub-system name is color coded to indicate the status at a glance: <font color="green">green</font> means functioning normally, <font color="orange">orange</font> means mostly normal, but with some caveats or minor issues, and <font color="red">red</font> means the sub-system is compromised in some way.
 
-Last Status Update: 2025-07-31
+Last Status Update: 2025-08-15
 
 - **<font color="red">Detector Noise</font>**: Starting in November of 2024, additional pattern noise has been present on the detectors.  We have been working on eliminating the spurious nose, but we have been unable to completely remove it.  As of late-April 2025 the read noise in the various amplifiers is between 12 and 13.5 electrons.
 - **<font color="green">Etalon</font>**: Operational.
