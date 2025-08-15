@@ -1046,13 +1046,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.KPFCC_start_times[WB] = []
             for entry in schedule_file_contents[WB]:
                 scheduledOBcount += 1
-                if entry['id'] in ['', None, 'None']:
-                    errmsg = f"{entry['Target']} Failed: no id"
+                if 'unique_id' not in entry.keys():
+                    errmsg = f"{entry['Target']} Failed: no id column"
+                    self.log.error(errmsg)
+                    errs.append(errmsg)
+                    self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
+                elif entry['unique_id'] in ['', None, 'None']:
+                    errmsg = f"{entry['Target']} Failed: no id value"
                     self.log.error(errmsg)
                     errs.append(errmsg)
                     self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
                 else:
-                    result = GetObservingBlocks.execute({'OBid': entry['id']})
+                    result = GetObservingBlocks.execute({'OBid': entry['unique_id']})
                     if len(result) > 0:
                         OB = result[0]
                     else:
