@@ -395,7 +395,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_Mags = self.findChild(QtWidgets.QLabel, 'SOB_Mags')
         self.SOB_Observation1 = self.findChild(QtWidgets.QLabel, 'SOB_Observation1')
         self.SOB_Observation2 = self.findChild(QtWidgets.QLabel, 'SOB_Observation2')
-        self.SOB_Observation3 = self.findChild(QtWidgets.QLabel, 'SOB_Observation3')
 
         # Calculated Values
         self.SOB_ExecutionTime = self.findChild(QtWidgets.QLabel, 'SOB_ExecutionTime')
@@ -1251,7 +1250,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.clear_SOB_Target()
             self.SOB_Observation1.setText('--')
             self.SOB_Observation2.setText('--')
-            self.SOB_Observation3.setText('--')
             self.SOB_ExecutionTime.setText('--')
             self.SOB_NotesForObserver.setText('')
             self.SOB_NotesForObserver.setToolTip('')
@@ -1276,8 +1274,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.set_SOB_Target(SOB)
             # Handle Calibrations and Observations components
             obs_and_cals = SOB.Calibrations + SOB.Observations
-            n_per_line = int(np.ceil(len(obs_and_cals)/3))
-            for i in [1,2,3]:
+            n_per_line = int(np.ceil(len(obs_and_cals)/2))
+            for i in [1,2]:
                 field = getattr(self, f'SOB_Observation{i}')
                 strings = [obs_and_cals.pop(0).summary() for j in range(n_per_line) if len(obs_and_cals) > 0]
                 field.setText(', '.join(strings))
