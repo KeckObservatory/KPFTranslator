@@ -1031,6 +1031,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.GUITaskLabel.setText('\n'.join(GUImsg))
         if Nsched == 0:
             ConfirmationPopup('Found no OBs in schedule', '\n'.join(pbar_msg), info_only=True).exec_()
+        # Column name for the database id changed in the schedule files, try to handle that
+        id_column_name = 'id' if 'id' in schedule_file_contents[self.KPFCC_weather_bands[0]].keys() else 'unique_id'
         scheduledOBcount = 0
         retrievedOBcount = 0
         errs = []
@@ -1046,18 +1048,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.KPFCC_start_times[WB] = []
             for entry in schedule_file_contents[WB]:
                 scheduledOBcount += 1
-                if 'unique_id' not in entry.keys():
+                if id_column_name not in entry.keys():
                     errmsg = f"{entry['Target']} Failed: no id column"
                     self.log.error(errmsg)
                     errs.append(errmsg)
                     self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
-                elif entry['unique_id'] in ['', None, 'None']:
+                elif entry[id_column_name] in ['', None, 'None']:
                     errmsg = f"{entry['Target']} Failed: no id value"
                     self.log.error(errmsg)
                     errs.append(errmsg)
                     self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
                 else:
-                    result = GetObservingBlocks.execute({'OBid': entry['unique_id']})
+                    result = GetObservingBlocks.execute({'OBid': entry[id_column_name]})
                     if len(result) > 0:
                         OB = result[0]
                     else:
