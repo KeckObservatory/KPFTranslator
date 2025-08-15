@@ -5,15 +5,15 @@
 * 2025 August: [26A Stability Announcement](KPF Stability Statement - August 15 2025.pdf)
 * 2023 September: [Keck Science Meeting presentation](Keck Science Meeting 2023 Breakout Session.pdf)
 
-### Current Subsystem Status
+### Status Summary by Subsystem
 
 This is an attempt to summarize the status of various sub-systems of the instrument.  Each sub-system name is color coded to indicate the status at a glance: <font color="green">green</font> means functioning normally, <font color="orange">orange</font> means mostly normal, but with some caveats or minor issues, and <font color="red">red</font> means the sub-system is compromised in some way.
 
 Last Status Update: 2025-08-15
 
 - **<font color="red">Detector Noise</font>**: Starting in November of 2024, additional pattern noise has been present on the detectors.  We have been working on eliminating the spurious nose, but we have been unable to completely remove it.  As of late-April 2025 the read noise in the various amplifiers is between 12 and 13.5 electrons.
-- **<font color="green">Etalon</font>**: Operational.
 - **<font color="red">LFC</font>**: Currently unreliable. 
+- **<font color="green">Etalon</font>**: Operational.
 - **<font color="green">Detector Cooling Systems</font>**: Both detectors are now cooled with closed cycle refrigerators (CCRs). The green side CCR has some lingering problems and has very little overhead on maintaining temperature, but it is holding the detector at target temperature and the control system is maintaining better than the goal of 1 mK stability.  Red side is performing well.
 - **<font color="green">Detector Errors</font>**: The red and green detectors suffer from occasional “start state errors” in which the affected detector remains in the start phase and does not produce a useful exposure. The observing scripts detect this, abort the current exposure (with read out) and start a fresh exposure on both cameras. **No action is necessary on the part of the observer.**  The occurrence rate is such that around one in every 180 exposures is affected by one of the two detectors experiencing this error.
 - **<font color="green">Ca H&K Detector</font>**: The CA H&K detector is operational.
