@@ -73,7 +73,11 @@ def truncate_isoformat(ut, ndecimals=2):
 ##-------------------------------------------------------------------------
 def query_observatoryAPI(api, query, params, post=False):
     if api == 'proposal' and 'hash' not in params.keys():
-        params['hash'] = os.getenv('APIHASH', default='')
+        hashenv = os.getenv('APIHASH', default=None)
+        if hashenv is None:
+            log.error('Unable to read environment variable APIHASH')
+        else:
+            params['hash'] = hashenv
     url = cfg.get('ObservatoryAPIs', f'{api}_url')
     log.debug(f"Running {api} API query: {url}{query}")
     log.debug(f"  Input params: {params}")
