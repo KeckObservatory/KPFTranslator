@@ -85,6 +85,11 @@ def query_observatoryAPI(api, query, params, post=False):
     try:
         result = json.loads(r.text)
         log.debug(f"  Query result: {result}")
+        if result.get('status', '') == 'ERROR':
+            message = result.get('message', '')
+            details = result.get('details', '')
+            log.error(f'Query Failed: {message}')
+            log.error(f'  Details: {details}')
     except Exception as e:
         log.error(f'Failed to parse result:')
         log.error(r.text)
