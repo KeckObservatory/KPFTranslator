@@ -65,11 +65,10 @@ def estimate_calibration_time(calibrations, cfg, fast=False):
 def estimate_observation_time(observations, cfg, fast=False):
     duration = 0
     readout = get_readout_time(observations, cfg, fast=fast)
-
-    # Configure FIU
-    duration += cfg.getfloat('time_estimates', 'FIU_mode_change', fallback=20)
-    # Slew
-    duration += cfg.getfloat('time_estimates', 'slew_time', fallback=120)
+    # Configure FIU and slew
+#     configureFIU = cfg.getfloat('time_estimates', 'FIU_mode_change', fallback=20)
+#     slew = cfg.getfloat('time_estimates', 'slew_time', fallback=120)
+#     duration += max([configureFIU, slew])
     # Acquire
     duration += cfg.getfloat('time_estimates', 'acquire_time', fallback=10)
     # Close Tip Tilt Loops
