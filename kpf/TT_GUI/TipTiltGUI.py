@@ -1580,7 +1580,7 @@ class MainWindow(QMainWindow):
         pix_target = self.PIX_TARGET.ktl_keyword.binary
         FIUmode = self.MODE.ktl_keyword.ascii
         # If FIU is not in observing mode, put overlay warning text
-        if FIUmode != 'Observing':
+        if 'Observing' not in FIUmode:
             label = f"FIU Mode is {FIUmode}"
             color = 'red'
         else:

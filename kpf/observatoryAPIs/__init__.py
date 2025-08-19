@@ -73,7 +73,11 @@ def truncate_isoformat(ut, ndecimals=2):
 ##-------------------------------------------------------------------------
 def query_observatoryAPI(api, query, params, post=False):
     if api == 'proposal' and 'hash' not in params.keys():
-        params['hash'] = os.getenv('APIHASH', default='')
+        hashenv = os.getenv('APIHASH', default=None)
+        if hashenv is None:
+            log.error('Unable to read environment variable APIHASH')
+        else:
+            params['hash'] = hashenv
     url = cfg.get('ObservatoryAPIs', f'{api}_url')
     log.debug(f"Running {api} API query: {url}{query}")
     log.debug(f"  Input params: {params}")
@@ -85,6 +89,12 @@ def query_observatoryAPI(api, query, params, post=False):
     try:
         result = json.loads(r.text)
         log.debug(f"  Query result: {result}")
+        if type(result) == dict:
+            if result.get('status', '') == 'ERROR':
+                message = result.get('message', '')
+                details = result.get('details', '')
+                log.error(f'Query Failed: {message}')
+                log.error(f'  Details: {details}')
     except Exception as e:
         log.error(f'Failed to parse result:')
         log.error(r.text)
