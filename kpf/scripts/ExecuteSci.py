@@ -186,7 +186,7 @@ class ExecuteSci(KPFFunction):
             # Start next exposure
             if runagitator and not fast_read_mode:
                 StartAgitator.execute({})
-            msg = f"Starting {exptime:.0f} s exposure {j+1}/{nexp}"
+            msg = f"Exposing {j+1}/{nexp} ({exptime:.0f} s)"
             log.info(msg)
             kpfconfig['SCRIPTMSG'].write(msg)
             StartExposure.execute({})

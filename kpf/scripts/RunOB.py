@@ -143,7 +143,9 @@ class RunOB(KPFScript):
             # Loop over calibrations and execute
             # -------------------------------------------------------------
             for i,calibration in enumerate(OB.Calibrations):
-                log.info(f'Executing Calibration {i+1}/{len(OB.Calibrations)}')
+                msg = f'Executing {calibration.summary()} (Calibration {i+1}/{len(OB.Calibrations)})'
+                log.info(msg)
+                SCRIPTMSG.write(msg)
                 try:
                     ExecuteCal.execute(calibration.to_dict())
                 except ScriptStopTriggered as scriptstop:
@@ -269,7 +271,9 @@ class RunOB(KPFScript):
                 # -------------------------------------------------------------
                 # Execute Observation
                 # -------------------------------------------------------------
-                log.info(f'Executing Observation {i+1}/{len(OB.Observations)}')
+                msg = f'Executing {observation.summary()} (Observation {i+1}/{len(OB.Observations)})'
+                log.info(msg)
+                SCRIPTMSG.write(msg)
                 try:
                     history, scriptstop = ExecuteSci.execute(observation_dict)
                     log.info(f'History of execution:')
