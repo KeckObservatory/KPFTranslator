@@ -77,6 +77,7 @@ class RunOB(KPFScript):
     @classmethod
     @add_script_log(Path(__file__).name.replace(".py", ""))
     def perform(cls, args, OB=None):
+        SCRIPTMSG = ktl.cache('kpfconfig', 'SCRIPTMSG')
         # -------------------------------------------------------------
         # If requested wait for an existing script to complete
         # -------------------------------------------------------------
@@ -92,6 +93,9 @@ class RunOB(KPFScript):
             OB = ObservingBlock(OB)
         if OB.OBID not in [None, '']:
             log.info(f"OB ID = {OB.OBID}")
+        msg = f"Executing: {OB.summary()}"
+        log.info(msg)
+        SCRIPTMSG.write(msg)
 
         # -------------------------------------------------------------
         # Set Target info for OA's Tip Tilt GUI
@@ -104,7 +108,6 @@ class RunOB(KPFScript):
         # -------------------------------------------------------------
         SLEWCALREQ = ktl.cache('kpfconfig', 'SLEWCALREQ')
         SLEWCALFILE = ktl.cache('kpfconfig', 'SLEWCALFILE')
-        SCRIPTMSG = ktl.cache('kpfconfig', 'SCRIPTMSG')
         if len(OB.Observations) > 0 and SLEWCALREQ.read(binary=True) is True:
             slewcal_OBfile = Path(SLEWCALFILE.read())
             log.info('Slewcal has been requested')
