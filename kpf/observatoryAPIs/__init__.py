@@ -75,7 +75,10 @@ def query_observatoryAPI(api, query, params, post=False):
     if api == 'proposal' and 'hash' not in params.keys():
         hashenv = os.getenv('APIHASH', default=None)
         if hashenv is None:
-            log.error('Unable to read environment variable APIHASH')
+            log.error('Unable to read environment variable APIHASH, retrying.')
+            hashenv = os.getenv('APIHASH', default=None)
+            if hashenv is None:
+                log.error('Unable to read environment variable APIHASH')
         else:
             params['hash'] = hashenv
     url = cfg.get('ObservatoryAPIs', f'{api}_url')
