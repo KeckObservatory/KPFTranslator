@@ -93,7 +93,7 @@ class RunOB(KPFScript):
             OB = ObservingBlock(OB)
         if OB.OBID not in [None, '']:
             log.info(f"OB ID = {OB.OBID}")
-        msg = f"Executing: {OB.summary()}"
+        msg = f"Executing OB: {OB.summary()}"
         log.info(msg)
         SCRIPTMSG.write(msg)
 
