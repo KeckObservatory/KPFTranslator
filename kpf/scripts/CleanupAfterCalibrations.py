@@ -109,15 +109,15 @@ class CleanupAfterCalibrations(KPFScript):
         USETHRESHOLD.write('No')
 
         # Set OBJECT back to empty string
-        log.info('Waiting for readout to finish')
-        WaitForReady.execute({})
-        SetObject.execute({'Object': ''})
+#         log.info('Waiting for readout to finish')
+#         WaitForReady.execute({})
+#         SetObject.execute({'Object': ''})
 
         # Clear target info
         SetTargetInfo.execute({})
 
         # Write L0 file name to log if can
-        WaitForL0File.execute({})
+#         WaitForL0File.execute({})
 
     @classmethod
     def post_condition(cls, args, OB=None):
