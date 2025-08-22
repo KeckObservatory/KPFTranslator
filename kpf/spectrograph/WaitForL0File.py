@@ -25,6 +25,7 @@ class WaitForL0File(KPFFunction):
         LOUTFILE = ktl.cache('kpfassemble', 'LOUTFILE')
         initial_LOUTFILE = LOUTFILE.read()
         timeout = 10
+        timeout = cfg.getfloat('times', 'L0_file_creation', fallback=10)
         found_new_file = LOUTFILE.waitFor(f'!="{initial_LOUTFILE}"',
                                           timeout=timeout)
         if found_new_file is True:
