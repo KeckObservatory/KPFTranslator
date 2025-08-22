@@ -86,6 +86,9 @@ class RunOB(KPFScript):
             wait_for_script(newscript=newscript)
         set_script_keywords(Path(__file__).name, os.getpid())
 
+        # -------------------------------------------------------------
+        # Log beginning of script
+        # -------------------------------------------------------------
         log.info('-------------------------')
         log.info(f"Running {cls.__name__}")
         log.info('-------------------------')
@@ -120,10 +123,11 @@ class RunOB(KPFScript):
             SLEWCALREQ.write(False)
 
 
+        # -------------------------------------------------------------
+        # Perform Calibrations
+        # -------------------------------------------------------------
         if len(OB.Calibrations) > 0:
-            # -------------------------------------------------------------
             # Configure for Calibrations
-            # -------------------------------------------------------------
             try:
                 SCRIPTMSG.write('Configuring for Calibrations')
                 ConfigureForCalibrations.execute(args, OB=OB)
@@ -139,9 +143,7 @@ class RunOB(KPFScript):
                 clear_script_keywords()
                 return
 
-            # -------------------------------------------------------------
             # Loop over calibrations and execute
-            # -------------------------------------------------------------
             for i,calibration in enumerate(OB.Calibrations):
                 msg = f'Executing {calibration.summary()} (Calibration {i+1}/{len(OB.Calibrations)})'
                 log.info(msg)
@@ -160,9 +162,7 @@ class RunOB(KPFScript):
                     clear_script_keywords()
                     return
 
-            # -------------------------------------------------------------
             # Clean up after calibrations
-            # -------------------------------------------------------------
             if len(OB.Observations) > 0:
                 # Don't stop FIU if we have observations to perform
                 args['FIUdest'] = 'Observing'
@@ -170,10 +170,10 @@ class RunOB(KPFScript):
             CleanupAfterCalibrations.execute(args, OB=OB)
 
 
+        # -------------------------------------------------------------
+        # Configure for Acquisition
+        # -------------------------------------------------------------
         if OB.Target is not None:
-            # -------------------------------------------------------------
-            # Configure for Acquisition
-            # -------------------------------------------------------------
             log.info(f'Configuring for Acquisition')
             try:
                 ConfigureForAcquisition.execute(args, OB=OB)
@@ -244,11 +244,12 @@ class RunOB(KPFScript):
                 return
 
 
+        # -------------------------------------------------------------
+        # Perform Observations
+        # -------------------------------------------------------------
         if len(OB.Observations) > 0:
             for i,observation in enumerate(OB.Observations):
-                # -------------------------------------------------------------
                 # Configure for Science
-                # -------------------------------------------------------------
                 try:
                     observation_dict = observation.to_dict()
                     observation_dict['Gmag'] = OB.Target.get('Gmag')
@@ -268,9 +269,7 @@ class RunOB(KPFScript):
                     clear_script_keywords()
                     return
 
-                # -------------------------------------------------------------
                 # Execute Observation
-                # -------------------------------------------------------------
                 msg = f'Executing {observation.summary()} (Observation {i+1}/{len(OB.Observations)})'
                 log.info(msg)
                 SCRIPTMSG.write(msg)
@@ -295,11 +294,10 @@ class RunOB(KPFScript):
                     log.error('Exception encountered during ExecuteSci')
                     log.error(e)
                     break
-            # -------------------------------------------------------------
             # Cleanup After Science
-            # -------------------------------------------------------------
             log.info(f'Cleaning up after Observations')
             CleanupAfterScience.execute(args, OB=OB)
+
 
         clear_script_keywords()
 
