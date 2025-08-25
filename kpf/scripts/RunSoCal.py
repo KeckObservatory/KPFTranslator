@@ -66,12 +66,27 @@ class RunSoCal(KPFScript):
     Once the end time has passed, the system will perform basic cleanup of KPF,
     then it will park SoCal using `ParkSoCal` if the park flag is set.
 
-    ## Arguments
-    * __StartTimeHST__ - `float` The time (in decimal hours HST) to begin observing.
-    * __EndTimeHST__ - `float` The time (in decimal hours HST) to end observing.
-    * __park__ - `bool` If True, the script will park SoCal when complete.
-    * __scheduled__ - `bool` If True, the script will not run if the keyword
-                `kpfconfig.ALLOWSCHEDULEDCALS` is "No".
+    Args:
+        StartTimeHST (float): The time (in decimal hours HST) to begin observing.
+        EndTimeHST (float): The time (in decimal hours HST) to end observing.
+        park (bool): If True, the script will park SoCal when complete.
+        waitforscript (bool): Wait for a running script to end before starting?
+        scheduled (bool): Script should obey ALLOWSCHEDULEDCALS keyword.
+
+    KTL Keywords Used:
+
+    - `kpfconfig.ALLOWSCHEDULEDCALS`
+    - `kpfconfig.SLEWCALFILE`
+
+    Functions Called:
+
+    - `kpf.fiu.ConfigureFIU`
+    - `kpf.scripts.ExecuteCal`
+    - `kpf.scripts.CleanupAfterCalibrations`
+    - `kpf.scripts.EstimateOBDuration`
+    - `kpf.socal.ParkSoCal`
+    - `kpf.socal.SoCalStartAutonomous`
+    - `kpf.socal.WaitForSoCalOnTarget`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):

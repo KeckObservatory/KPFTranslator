@@ -43,7 +43,7 @@ class Target(BaseOBComponent):
         try:
             ra = Angle(self.RA.value, unit=u.hourangle)
             dec = Angle(self.Dec.value, unit=u.degree)
-            pm_ra_cosdec = (self.PMRA.value*15*np.cos(dec.to(u.radian).value))*u.arcsec/u.yr
+            pm_ra_cosdec = self.PMRA.value*15*u.arcsec/u.yr
             equinox = parse_time_input(self.Equinox.value)
             epoch = parse_time_input(self.Epoch.value)
             self.coord = SkyCoord(ra, dec, frame=FK5(equinox=equinox),
@@ -52,14 +52,14 @@ class Target(BaseOBComponent):
                                   obstime=epoch,
                                   )
         except Exception as e:
-            print(e)
+#             print(e)
             self.coord = None
 
 
     def check_property(self, pname):
         if pname in ['RA', 'Dec']:
             if self.coord is None:
-                return True, ' # ERROR: Invalid SkyCoord'
+                return False, ' # WARNING: Invalid SkyCoord'
         elif pname == 'TargetName':
             if self.get(pname) in ['', None]:
                 return True, ' # ERROR: TargetName is empty'
@@ -82,18 +82,6 @@ class Target(BaseOBComponent):
         return comment
 
 
-    def validate(self):
-        '''
-        '''
-        valid = True
-        for p in self.properties:
-            error, comment = self.check_property(p['name'])
-            if error == True:
-                print(f"{p['name']} is INVALID: {comment}")
-                valid = False
-        return valid
-
-
     def __str__(self, raprecision=1, decprecision=0, magprecision=1):
         '''Show a one line representation similar to a Keck star list line.
         '''
@@ -113,9 +101,12 @@ class Target(BaseOBComponent):
         '''Return a string which is a Keck formatted star list line
         '''
         try:
-            pmcoord = self.coord.apply_space_motion(new_obstime=Time.now())
-            rastr = pmcoord.ra.to_string(unit=u.hourangle, sep=' ', precision=raprecision)
-            decstr = pmcoord.dec.to_string(unit=u.deg, sep=' ', precision=decprecision, alwayssign=True)
+#             pmcoord = self.coord.apply_space_motion(new_obstime=Time.now())
+            rastr = self.coord.ra.to_string(unit=u.hourangle,
+                                            sep=' ', precision=raprecision)
+            decstr = self.coord.dec.to_string(unit=u.deg,
+                                              sep=' ', precision=decprecision,
+                                              alwayssign=True)
         except:
             rastr = str(self.RA).replace(':', ' ')
             decstr = str(self.Dec).replace(':', ' ')
@@ -209,7 +200,7 @@ class Target(BaseOBComponent):
             target_dict['RA'] = ra_dec_string.split()[0]
             target_dict['Dec'] = ra_dec_string.split()[1]
             target_dict['Equinox'] = 'J2000'
-            target_dict['PMRA'] = target_coord.pm_ra_cosdec.to(u.arcsec/u.year).value*15
+            target_dict['PMRA'] = target_coord.pm_ra_cosdec.to(u.arcsec/u.year).value/15#/np.cos(target_coord.dec.to(u.radian).value)
             target_dict['PMDEC'] = target_coord.pm_dec.to(u.arcsec/u.year).value
             target_dict['Epoch'] = target_coord.obstime.decimalyear
         except:

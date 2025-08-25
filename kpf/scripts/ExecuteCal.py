@@ -11,7 +11,6 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
-from kpf.calbench.CalLampPower import CalLampPower
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
 from kpf.calbench.SetCalSource import SetCalSource
 from kpf.calbench.SetFlatFieldFiberPos import SetFlatFieldFiberPos
@@ -26,7 +25,6 @@ from kpf.calbench.WaitForLampWarm import WaitForLampWarm
 from kpf.calbench.WaitForLFCReady import WaitForLFCReady
 from kpf.calbench.WaitForND1 import WaitForND1
 from kpf.calbench.WaitForND2 import WaitForND2
-from kpf.fvc.FVCPower import FVCPower
 from kpf.spectrograph.QueryFastReadMode import QueryFastReadMode
 from kpf.spectrograph.SetObject import SetObject
 from kpf.spectrograph.SetExpTime import SetExpTime
@@ -39,12 +37,10 @@ from kpf.spectrograph.StopAgitator import StopAgitator
 from kpf.spectrograph.WaitForL0File import WaitForL0File
 from kpf.spectrograph.WaitForReady import WaitForReady
 from kpf.spectrograph.WaitForReadout import WaitForReadout
-from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
 from kpf.scripts.SetTargetInfo import SetTargetInfo
 from kpf.utils.ZeroOutSlewCalTime import ZeroOutSlewCalTime
 from kpf.expmeter.SetExpMeterExpTime import SetExpMeterExpTime
-from kpf.expmeter.SetupExpMeter import SetupExpMeter
 from kpf.utils.SendEmail import SendEmail
 from kpf.spectrograph.SetProgram import SetProgram
 
@@ -52,11 +48,56 @@ from kpf.spectrograph.SetProgram import SetProgram
 class ExecuteCal(KPFFunction):
     '''Script which executes a single observation from a Calibration sequence
 
-    ARGS:
-    =====
-    :calibration: `dict` A calibration OB component in dictionary format (e.g.
-                         using the output of the `.to_dict()` method of a
-                         `kpf.ObservingBlocks.Calibration.Calibration` instance).
+    Args:
+        calibration (dict): A calibration OB component in dictionary format (e.g.
+                            using the output of the `.to_dict()` method of a
+                            `kpf.ObservingBlocks.Calibration.Calibration` instance).
+
+    KTL Keywords Used:
+
+    - `kpfexpose.EXPOSE`
+    - `kpfconfig.USEAGITATOR`
+    - `kpfconfig.SIMULCALSOURCE`
+    - `kpfconfig.SCRIPTMSG`
+    - `kpfmon.HB_MENLOSTA`
+    - `kpfmon.LFCREADYSTA`
+    - `kpfcal.WOBBLE`
+    - `kpfcal.SPECFLATIR`
+
+    Functions Called:
+
+    - `kpf.calbench.IsCalSourceEnabled`
+    - `kpf.calbench.SetCalSource`
+    - `kpf.calbench.SetFlatFieldFiberPos`
+    - `kpf.calbench.SetLFCtoAstroComb`
+    - `kpf.calbench.SetLFCtoStandbyHigh`
+    - `kpf.calbench.SetND1`
+    - `kpf.calbench.SetND2`
+    - `kpf.calbench.TakeIntensityReading`
+    - `kpf.calbench.WaitForCalSource`
+    - `kpf.calbench.WaitForFlatFieldFiberPos`
+    - `kpf.calbench.WaitForLampWarm`
+    - `kpf.calbench.WaitForLFCReady`
+    - `kpf.calbench.WaitForND1`
+    - `kpf.calbench.WaitForND2`
+    - `kpf.spectrograph.QueryFastReadMode`
+    - `kpf.spectrograph.SetObject`
+    - `kpf.spectrograph.SetExpTime`
+    - `kpf.spectrograph.SetSourceSelectShutters`
+    - `kpf.spectrograph.SetTimedShutters`
+    - `kpf.spectrograph.SetTriggeredDetectors`
+    - `kpf.spectrograph.StartAgitator`
+    - `kpf.spectrograph.StartExposure`
+    - `kpf.spectrograph.StopAgitator`
+    - `kpf.spectrograph.WaitForL0File`
+    - `kpf.spectrograph.WaitForReady`
+    - `kpf.spectrograph.WaitForReadout`
+    - `kpf.fiu.WaitForConfigureFIU`
+    - `kpf.scripts.SetTargetInfo`
+    - `kpf.utils.ZeroOutSlewCalTime`
+    - `kpf.expmeter.SetExpMeterExpTime`
+    - `kpf.utils.SendEmail`
+    - `kpf.spectrograph.SetProgram`
     '''
     @classmethod
     def pre_condition(cls, calibration):
@@ -240,10 +281,10 @@ class ExecuteCal(KPFFunction):
                 calibration['OpenCalSciSkyShutter'] = calibration['OpenScienceShutter'] or calibration['OpenSkyShutter']
             SetSourceSelectShutters.execute(calibration)
         # Timed Shutters
-        calibration['TimedShutter_CaHK'] = calibration.get('TriggerCaHK', False)
-        calibration['TimedShutter_Scrambler'] = calibration.get('TriggerGreen', False) or calibration.get('TriggerRed', False)
-        calibration['TimedShutter_SimulCal'] = calibration.get('TakeSimulCal', False)
-        calibration['TimedShutter_FlatField'] = calibration.get('WideFlatPos', 'Blank') != 'Blank'
+        calibration['TimedShutter_CaHK'] = calibration.get('TriggerCaHK', False) and calsource.lower() != 'dark'
+        calibration['TimedShutter_Scrambler'] = (calibration.get('TriggerGreen', False) or calibration.get('TriggerRed', False)) and calsource.lower() != 'dark'
+        calibration['TimedShutter_SimulCal'] = calibration.get('TakeSimulCal', False) and calsource.lower() != 'dark'
+        calibration['TimedShutter_FlatField'] = (calibration.get('WideFlatPos', 'Blank') != 'Blank') and calsource.lower() != 'dark'
         log.info(f"Setting timed shutters")
         SetTimedShutters.execute(calibration)
 
@@ -287,7 +328,8 @@ class ExecuteCal(KPFFunction):
             # ENABLED status for each detector.
             SetTriggeredDetectors.execute(calibration)
             # Start next exposure
-            msg = f"Starting expoure {j+1}/{nexp}"
+            exptime = float(calibration.get('ExpTime'))
+            msg = f"Exposing {j+1}/{nexp} ({exptime:.0f} s)"
             kpfconfig['SCRIPTMSG'].write(msg)
             log.info(msg+ f" ({calibration.get('Object')})")
             StartExposure.execute({})

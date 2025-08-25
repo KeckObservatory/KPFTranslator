@@ -27,9 +27,11 @@ class ConfigureForAcquisition(KPFScript):
         OB (ObservingBlock): A valid observing block (OB).
 
     KTL Keywords Used:
+
     - `kpfconfig.SIMULCALSOURCE`
 
     Functions Called:
+
     - `kpf.calbench.SetCalSource`
     - `kpf.fiu.ConfigureFIU`
     - `kpf.scripts.SetTargetInfo`

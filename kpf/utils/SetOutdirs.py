@@ -12,10 +12,6 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 
 class SetOutdirs(KPFFunction):
     '''Set output directories for all detectors based on the current date.
-    
-    ARGS:
-    =====
-    None
     '''
     @classmethod
     def pre_condition(cls, args):

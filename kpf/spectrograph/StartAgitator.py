@@ -9,10 +9,10 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class StartAgitator(KPFFunction):
     '''Start the agitator motion and wait the appropriate startup time before
     returning.
-    
-    ARGS:
-    =====
-    None
+
+    KTL Keywords Used:
+
+    - `kpfmot.AGITATOR`
     '''
     @classmethod
     def pre_condition(cls, args):

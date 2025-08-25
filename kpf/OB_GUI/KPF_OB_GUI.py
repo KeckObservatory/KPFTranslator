@@ -395,7 +395,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SOB_Mags = self.findChild(QtWidgets.QLabel, 'SOB_Mags')
         self.SOB_Observation1 = self.findChild(QtWidgets.QLabel, 'SOB_Observation1')
         self.SOB_Observation2 = self.findChild(QtWidgets.QLabel, 'SOB_Observation2')
-        self.SOB_Observation3 = self.findChild(QtWidgets.QLabel, 'SOB_Observation3')
 
         # Calculated Values
         self.SOB_ExecutionTime = self.findChild(QtWidgets.QLabel, 'SOB_ExecutionTime')
@@ -996,9 +995,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.KPFCC = True
         self.OBListHeader.setText('   StartTime '+self.hdr)
         # Form location to look for KPF-CC schedule files
-        if self.clargs.mock_date == True:
-            semester = '2025A'
-            date_str = '2025-07-10'
+        if self.clargs.mock_date is not None:
+            mock_date = datetime.datetime.strptime(self.clargs.mock_date, '%Y-%m-%d')
+            semester, start, end = get_semester_dates(mock_date)
+            date_str = mock_date.strftime('%Y-%m-%d').lower()
             self.log.warning(f'Using schedule from {date_str} for testing')
         else:
             semester, start, end = get_semester_dates(datetime.datetime.now())
@@ -1030,6 +1030,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.GUITaskLabel.setText('\n'.join(GUImsg))
         if Nsched == 0:
             ConfirmationPopup('Found no OBs in schedule', '\n'.join(pbar_msg), info_only=True).exec_()
+        # Column name for the database id changed in the schedule files, try to handle that
+        id_column_name = 'id' if 'id' in schedule_file_contents[self.KPFCC_weather_bands[0]].keys() else 'unique_id'
         scheduledOBcount = 0
         retrievedOBcount = 0
         errs = []
@@ -1045,21 +1047,30 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.KPFCC_start_times[WB] = []
             for entry in schedule_file_contents[WB]:
                 scheduledOBcount += 1
-                if entry['id'] in ['', None, 'None']:
-                    errmsg = f"{entry['Target']} Failed: no id"
+                if id_column_name not in entry.keys():
+                    errmsg = f"{entry['Target']} Failed: no id column"
+                    self.log.error(errmsg)
+                    errs.append(errmsg)
+                    self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
+                elif entry[id_column_name] in ['', None, 'None']:
+                    errmsg = f"{entry['Target']} Failed: no id value"
                     self.log.error(errmsg)
                     errs.append(errmsg)
                     self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
                 else:
-                    result = GetObservingBlocks.execute({'OBid': entry['id']})[0]
-                    if isinstance(result, ObservingBlock):
-                        self.KPFCC_OBs[WB].append(result)
+                    result = GetObservingBlocks.execute({'OBid': entry[id_column_name]})
+                    if len(result) > 0:
+                        OB = result[0]
+                    else:
+                        OB = None
+                    if isinstance(OB, ObservingBlock):
+                        self.KPFCC_OBs[WB].append(OB)
                         start = entry['StartExposure'].split(':')
                         start_decimal = int(start[0]) + int(start[1])/60
                         self.KPFCC_start_times[WB].append(start_decimal)
                         retrievedOBcount += 1
                     else:
-                        errmsg = f"{entry['Target']} Failed: {result[1]} ({result[0]})"
+                        errmsg = f"{entry['Target']}: Failed to retrieve OB"
                         self.log.error(errmsg)
                         errs.append(errmsg)
                 self.ProgressBar.setValue(int(scheduledOBcount/Nsched*100))
@@ -1070,17 +1081,21 @@ class MainWindow(QtWidgets.QMainWindow):
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) OBs for all weather bands"]
         self.GUITaskLabel.setText("".join(msg))
         msg.extend(errs)
+        self.set_weather_band(self.KPFCC_weather_band)
         self.refresh_history()
         self.set_SortOrWeather()
-        self.set_weather_band(self.KPFCC_weather_band)
 
     def refresh_history(self):
         self.log.debug(f"refresh_history")
         date_str = 'today'
-        if self.clargs.mock_date == True:
-            date_str = '2025-07-10'
+        if self.clargs.mock_date is not None:
+            mock_date = datetime.datetime.strptime(self.clargs.mock_date, '%Y-%m-%d')
+            mock_date += datetime.timedelta(days=1)
+            semester, start, end = get_semester_dates(mock_date)
+            date_str = mock_date.strftime('%Y-%m-%d').lower()
             self.log.warning(f'Using history from {date_str} for testing')
         history = GetExecutionHistory.execute({'utdate': date_str})
+        self.log.debug(f"  got {len(history)} entries for utdate={date_str}")
         self.OBListModel.refresh_history(history)
         self.HistoryListModel.refresh_history(history)
 
@@ -1156,6 +1171,8 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             coord_string = SOB.Target.coord.to_string('hmsdms', sep=':', precision=2)
             RA_str, Dec_str = coord_string.split()
+            RAlabel = f"RA (epoch={SOB.Target.Epoch}):"
+            DecLabel = f"Dec (epoch={SOB.Target.Epoch}):"
         except Exception as e:
             self.log.error('Failed to stringify coordinate')
             self.log.error(e)
@@ -1163,20 +1180,18 @@ class MainWindow(QtWidgets.QMainWindow):
             Dec_str = SOB.Target.get('Dec')
             self.SOB_TargetRALabel.setText('RA (Epoch=?):')
             self.SOB_TargetDecLabel.setText('Dec (Epoch=?):')
-        RAlabel = f"RA:"
-        DecLabel = f"Dec:"
         # If proper motion values are set, try to propagate proper motions
-        if abs(SOB.Target.PMRA.value) > 0.001 or abs(SOB.Target.PMDEC.value) > 0.001:
-            try:
-                now = Time(datetime.datetime.utcnow())
-                coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
-                coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
-                RA_str, Dec_str = coord_now_string.split()
-                RAlabel = f"RA (epoch=now):"
-                DecLabel = f"Dec (epoch=now):"
-            except Exception as e:
-                self.log.error('Failed to propagate proper motions for display')
-                self.log.error(e)
+#         if abs(SOB.Target.PMRA.value) > 0.001 or abs(SOB.Target.PMDEC.value) > 0.001:
+#             try:
+#                 now = Time(datetime.datetime.utcnow())
+#                 coord_now = SOB.Target.coord.apply_space_motion(new_obstime=now)
+#                 coord_now_string = coord_now.to_string('hmsdms', sep=':', precision=2)
+#                 RA_str, Dec_str = coord_now_string.split()
+#                 RAlabel = f"RA (epoch=now):"
+#                 DecLabel = f"Dec (epoch=now):"
+#             except Exception as e:
+#                 self.log.error('Failed to propagate proper motions for display')
+#                 self.log.error(e)
         self.SOB_TargetRA.setText(RA_str)
         self.SOB_TargetDec.setText(Dec_str)
         self.SOB_TargetRALabel.setText(RAlabel)
@@ -1235,7 +1250,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.clear_SOB_Target()
             self.SOB_Observation1.setText('--')
             self.SOB_Observation2.setText('--')
-            self.SOB_Observation3.setText('--')
             self.SOB_ExecutionTime.setText('--')
             self.SOB_NotesForObserver.setText('')
             self.SOB_NotesForObserver.setToolTip('')
@@ -1260,8 +1274,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.set_SOB_Target(SOB)
             # Handle Calibrations and Observations components
             obs_and_cals = SOB.Calibrations + SOB.Observations
-            n_per_line = int(np.ceil(len(obs_and_cals)/3))
-            for i in [1,2,3]:
+            n_per_line = int(np.ceil(len(obs_and_cals)/2))
+            for i in [1,2]:
                 field = getattr(self, f'SOB_Observation{i}')
                 strings = [obs_and_cals.pop(0).summary() for j in range(n_per_line) if len(obs_and_cals) > 0]
                 field.setText(', '.join(strings))
@@ -1737,9 +1751,8 @@ if __name__ == '__main__':
         default=False, action="store_true",
         help="Be verbose! (default = False)")
     ## add options
-    p.add_argument("--mock_date", dest="mock_date",
-        default=False, action="store_true",
-        help="Pull a fixed date for schedule and history (intended for testing).")
+    p.add_argument("-m", "--mock_date", dest="mock_date", type=str,
+        help="Pull the specified date for schedule and history (intended for testing).")
     p.add_argument("--loadschedule", dest="loadschedule",
         default=False, action="store_true",
         help="Load KPF-CC schedule on startup.")

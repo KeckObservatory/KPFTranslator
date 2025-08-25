@@ -48,3 +48,12 @@
 **CalND2**: `str`
   Cal Bench filter 2 position. Throughput = 10^-OD. Values: OD 0.1, OD 0.3, OD 0.5, OD 0.8, OD 1.0, OD 4.0
 
+**NodN**: `float`
+  [arcseconds] Distance to nod the telescope North before starting exposure.
+
+**NodE**: `float`
+  [arcseconds] Distance to nod the telescope East before starting exposure.
+
+**GuideHere**: `bool`
+  Should the tip tilt system try to lock on to target at this position?
+

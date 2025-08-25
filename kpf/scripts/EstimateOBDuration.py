@@ -65,11 +65,10 @@ def estimate_calibration_time(calibrations, cfg, fast=False):
 def estimate_observation_time(observations, cfg, fast=False):
     duration = 0
     readout = get_readout_time(observations, cfg, fast=fast)
-
-    # Configure FIU
-    duration += cfg.getfloat('time_estimates', 'FIU_mode_change', fallback=20)
-    # Slew
-    duration += cfg.getfloat('time_estimates', 'slew_time', fallback=120)
+    # Configure FIU and slew
+#     configureFIU = cfg.getfloat('time_estimates', 'FIU_mode_change', fallback=20)
+#     slew = cfg.getfloat('time_estimates', 'slew_time', fallback=120)
+#     duration += max([configureFIU, slew])
     # Acquire
     duration += cfg.getfloat('time_estimates', 'acquire_time', fallback=10)
     # Close Tip Tilt Loops
@@ -91,10 +90,13 @@ class EstimateOBDuration(KPFScript):
     those with the information in the observing block to estimate how long it
     will take to execute the observing block.
 
-    ARGS:
-    =====
-    :fast: `bool` Estimate the duration assuming fast read mode?
-    :OB: `dict` or `ObservingBlock` A fully specified observing block (OB).
+    Args:
+        fast (bool): Estimate the duration assuming fast read mode?
+        OB (ObservingBlock): A valid observing block (OB).
+
+    Functions Called:
+
+    - `kpf.calbench.standardize_lamp_name`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):

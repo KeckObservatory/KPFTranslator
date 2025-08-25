@@ -15,6 +15,23 @@ class RecoverFromLowPowerMode(KPFFunction):
     - Re-enable Ca HK detector
     - Power on CRED2 systems
 
+    KTL Keywords Used:
+
+    - `kpfconfig.CA_HK_ENABLED`
+    - `kpfpower.OUTLET_J1%`
+    - `kpfpower.OUTLET_J2%`
+    - `kpfpower.OUTLET_J5%`
+    - `kpfpower.OUTLET_K2%`
+    - `kpfpower.OUTLET_K3%`
+    - `kpfmon.HKTEMPDIS`
+    - `kpfmon.ST_EXPOSE2DIS`
+    - `kpfmon.OUTLET_J1_OODIS`
+    - `kpfmon.OUTLET_J2_OODIS`
+    - `kpfmon.OUTLET_J5_OODIS`
+    - `kpfmon.OUTLET_K2_OODIS`
+    - `kpfmon.OUTLET_K3_OODIS`
+    - `kpf_hk.COOLING`
+    - `kpf_hk.COOLTARG`
     '''
     @classmethod
     def pre_condition(cls, args):

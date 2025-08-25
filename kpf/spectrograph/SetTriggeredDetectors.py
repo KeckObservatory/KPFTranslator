@@ -11,13 +11,20 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 class SetTriggeredDetectors(KPFFunction):
     '''Selects which cameras will be triggered by setting the
     `kpfexpose.TRIG_TARG` keyword value.
-    
-    ARGS:
-    =====
-    :TriggerRed: `bool` Trigger the Red detector? (default=False)
-    :TriggerGreen: `bool` Trigger the Green detector? (default=False)
-    :TriggerCaHK: `bool` Trigger the CaH&K detector? (default=False)
-    :TriggerExpMeter: `bool` Trigger the ExpMeter detector? (default=False)
+
+    Args:
+        TriggerRed (bool): Trigger the Red detector? (default=False)
+        TriggerGreen (bool): Trigger the Green detector? (default=False)
+        TriggerCaHK (bool): Trigger the CaH&K detector? (default=False)
+        TriggerExpMeter (bool): Trigger the ExpMeter detector? (default=False)
+
+    KTL Keywords Used:
+
+    - `kpfexpose.TRIG_TARG`
+    - `kpfconfig.RED_ENABLED`
+    - `kpfconfig.GREEN_ENABLED`
+    - `kpfconfig.CA_HK_ENABLED`
+    - `kpfconfig.EXPMETER_ENABLED`
     '''
     @classmethod
     def pre_condition(cls, args):

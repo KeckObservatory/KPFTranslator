@@ -73,7 +73,14 @@ def truncate_isoformat(ut, ndecimals=2):
 ##-------------------------------------------------------------------------
 def query_observatoryAPI(api, query, params, post=False):
     if api == 'proposal' and 'hash' not in params.keys():
-        params['hash'] = os.getenv('APIHASH', default='')
+        hashenv = os.getenv('APIHASH', default=None)
+        if hashenv is None:
+            log.error('Unable to read environment variable APIHASH, retrying.')
+            hashenv = os.getenv('APIHASH', default=None)
+            if hashenv is None:
+                log.error('Unable to read environment variable APIHASH')
+        else:
+            params['hash'] = hashenv
     url = cfg.get('ObservatoryAPIs', f'{api}_url')
     log.debug(f"Running {api} API query: {url}{query}")
     log.debug(f"  Input params: {params}")
@@ -85,6 +92,12 @@ def query_observatoryAPI(api, query, params, post=False):
     try:
         result = json.loads(r.text)
         log.debug(f"  Query result: {result}")
+        if type(result) == dict:
+            if result.get('status', '') == 'ERROR':
+                message = result.get('message', '')
+                details = result.get('details', '')
+                log.error(f'Query Failed: {message}')
+                log.error(f'  Details: {details}')
     except Exception as e:
         log.error(f'Failed to parse result:')
         log.error(r.text)
@@ -105,7 +118,6 @@ def getObserverInfo(observerID):
 
 
 def addObservingBlockHistory(history):
-    if 'comment' not in history.keys(): history['comment'] = ' ' # API needs this
     return query_observatoryAPI('proposal', 'addObservingBlockHistory', history, post=True)
 
 
@@ -129,36 +141,49 @@ def get_OBs_from_KPFCC_API(params):
     if result is None:
         return []
     OBs = []
+    failures = []
+    invalid = []
     n = len(result)
     for i,entry in enumerate(result):
         log.debug(f'Parsing entry {i+1} of {n}')
         if not isinstance(entry, dict):
-            OBs.append([f'{params}', 'Result is not dict'])
-        status = entry.get('status', None)
-        OBid = entry.get('id', None)
-        if status not in ['OB_FOUND']:
-            log.error(f"  ID {OBid}: {entry.get('status', 'No status returned')}")
-            OBs.append([OBid, status])
+            failures.append([f'{entry}', 'Entry is not dict'])
         else:
-            # Parse the result as an OB in dict form
-            try:
-                OB = ObservingBlock(entry)
-            except Exception as e:
-                log.error(f'Unable to parse entry {i+1} in to an ObservingBlock')
-                log.error(entry)
-                log.error(f'{e}')
+            status = entry.get('status', None)
+            OBid = entry.get('id', None)
+            if status not in ['OB_FOUND']:
+#                 log.error(f"  ID {OBid}: {entry.get('status', 'No status returned')}")
+                failures.append([OBid, status])
             else:
-                if OB.validate():
-                    log.debug(f'OB {i+1} is valid')
-                    OBs.append(OB)
+                # Parse the result as an OB in dict form
+                try:
+                    OB = ObservingBlock(entry)
+                except Exception as e:
+#                     log.error(f'Unable to parse entry {i+1} in to an ObservingBlock')
+#                     log.error(entry)
+#                     log.error(f'{e}')
+                    failures.append([OBid, f'{e}'])
                 else:
-                    log.warning(f'OB {i+1} is invalid')
-                    if OB.Target is not None:
-                        for line in OB.Target.to_lines(comment=True):
-                            if line.find('ERR') >= 0:
-                                log.warning(line)
-                    for obs in OB.Observations:
-                        for line in obs.to_lines(comment=True):
-                            if line.find('ERR') >= 0:
-                                log.warning(line)
+                    if OB.validate():
+#                         log.debug(f'OB {i+1} is valid')
+                        OBs.append(OB)
+                    else:
+#                         log.debug(f'OB {i+1} is invalid')
+                        invalid.append([OBid, entry, OB])
+#                         if OB.Target is not None:
+#                             for line in OB.Target.to_lines(comment=True):
+#                                 if line.find('ERR') >= 0:
+#                                     log.warning(line)
+#                         for obs in OB.Observations:
+#                             for line in obs.to_lines(comment=True):
+#                                 if line.find('ERR') >= 0:
+#                                     log.warning(line)
+    log.info(f'API returned {len(result)} entries')
+    log.info(f'  Parsed {len(OBs)} OBs from those entries')
+    for failure in failures:
+        log.error(f"  OB {failure[0]} failed: {failure[1]}")
+    for badOB in invalid:
+        log.error(f"  OB {badOB[0]} is invalid")
+        print(badOB[1])
+        print(badOB[2].validate(verbose=True))
     return OBs

@@ -16,14 +16,18 @@ class OBProperty(object):
         else:
             return self._value
 
-    def set(self, value):
-        if value in [None, 'None', 'none']:
+    def set(self, input_value):
+        if input_value is None:
             self._value = self.defaultvalue
-        else:
-            try:
-                self._value = self.valuetype(value)
-            except TypeError:
-                raise TypeError(f"Input {value} can not be cast as {self.valuetype}")
+            return
+        if type(input_value) == str:
+            if input_value.lower() in ['none', '', 'unknown']:
+                self._value = self.defaultvalue
+                return
+        try:
+            self._value = self.valuetype(input_value)
+        except TypeError:
+            raise TypeError(f"Input {input_value} can not be cast as {self.valuetype}")
 
     def __str__(self):
         if self.valuetype == float and self.precision is not None:
@@ -122,8 +126,16 @@ class BaseOBComponent(object):
     def add_comment(self, pname):
         return ''
 
-    def validate(self):
-        return True
+    def validate(self, verbose=False):
+        '''
+        '''
+        valid = True
+        for p in self.properties:
+            error, comment = self.check_property(p['name'])
+            if error == True:
+                if verbose: print(f"{p['name']} is INVALID: {comment}")
+                valid = False
+        return valid
 
     def __str__(self):
         output = ''

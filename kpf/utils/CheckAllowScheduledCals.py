@@ -3,13 +3,19 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+from kpf.utils.SendEmail import SendEmail
 
 
 ##-------------------------------------------------------------------------
 ## CheckAllowScheduledCals
 ##-------------------------------------------------------------------------
 class CheckAllowScheduledCals(KPFFunction):
-    '''
+    '''Script to check if ALLOWSCHEDULEDCALS is yes and to send an email
+    reminder if it is no.
+
+    KTL Keywords Used:
+
+    - `kpfconfig.ALLOWSCHEDULEDCALS`
     '''
     @classmethod
     def pre_condition(cls, args):

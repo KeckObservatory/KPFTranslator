@@ -1,11 +1,5 @@
-import os
-from pathlib import Path
 import traceback
-from logging import getLogger
-import configparser
 from argparse import Namespace, ArgumentTypeError
-
-import ktl
 
 from kpf import log
 from kpf.exceptions import *

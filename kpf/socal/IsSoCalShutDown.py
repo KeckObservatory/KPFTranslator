@@ -3,14 +3,16 @@ import ktl
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
+from kpf.utils.SendEmail import SendEmail
 
 
 class IsSoCalShutDown(KPFFunction):
     '''Returns True if SoCal enclosure is closed and tracker is parked.
 
-    ARGS:
-    =====
-    None
+    KTL Keywords Used:
+
+    - `kpfsocal.ENCSTA`
+    - `kpfsocal.EKOHOME`
     '''
     @classmethod
     def pre_condition(cls, args):

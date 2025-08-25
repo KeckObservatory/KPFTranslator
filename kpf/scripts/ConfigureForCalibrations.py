@@ -12,19 +12,26 @@ from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import check_scriptstop
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.calbench.IsCalSourceEnabled import IsCalSourceEnabled
-
 from kpf.calbench.CalLampPower import CalLampPower
 from kpf.fiu.ConfigureFIU import ConfigureFIU
-from kpf.spectrograph.SetTriggeredDetectors import SetTriggeredDetectors
-from kpf.spectrograph.WaitForReady import WaitForReady
+from kpf.fiu.StopTipTilt import StopTipTilt
 
 
 class ConfigureForCalibrations(KPFScript):
-    '''Script which configures the instrument for Cal OBs.
+    '''Script which configures the instrument for calibration exposures.
 
-    ARGS:
-    =====
-    * __OB__ - `ObservingBlock` or `dict` A valid observing block (OB).
+    - Powers on requested calibration lamps
+    - Configures FIU to calibration mode
+
+    Args:
+        OB (ObservingBlock): A valid observing block (OB).
+
+    Functions Called:
+
+    - `kpf.ObservingBlocks.ObservingBlock`
+    - `kpf.calbench.IsCalSourceEnabled`
+    - `kpf.calbench.CalLampPower`
+    - `kpf.fiu.ConfigureFIU`
     '''
     @classmethod
     def pre_condition(cls, args, OB=None):
@@ -63,6 +70,7 @@ class ConfigureForCalibrations(KPFScript):
         check_scriptstop()
 
         ConfigureFIU.execute({'mode': 'Calibration'})
+        StopTipTilt.execute({})
 
         check_scriptstop()
 

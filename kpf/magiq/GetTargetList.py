@@ -7,7 +7,7 @@ from kpf.magiq import magiq_server_command
 
 
 class GetTargetList(KPFFunction):
-    '''
+    '''Retrieve the OA star list.
 
     MAGIQ API documentation:
     http://suwebserver01.keck.hawaii.edu/magiqStatus/magiqServer.php

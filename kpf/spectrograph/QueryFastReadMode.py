@@ -10,9 +10,9 @@ from kpf.spectrograph.QueryReadMode import QueryReadMode
 class QueryFastReadMode(KPFFunction):
     '''Returns True if both ACF files are consistent with fast read mode.
 
-    ARGS:
-    =====
-    None
+    Functions Called:
+
+    - `kpf.spectrograph.QueryReadMode`
     '''
     @classmethod
     def pre_condition(cls, args):

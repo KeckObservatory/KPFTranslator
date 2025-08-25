@@ -12,6 +12,8 @@ import re
 import copy
 import subprocess
 
+from kpf import cfg
+
 import ktl                      # provided by kroot/ktl/keyword/python
 import kPyQt                    # provided by kroot/kui/kPyQt
 
@@ -48,6 +50,7 @@ from ginga.qtw.ImageViewQt import CanvasView
 
 from kpf.guider.PredictGuiderParameters import PredictGuiderParameters
 from kpf.guider.TakeGuiderCube import TakeGuiderCube
+from kpf.OB_GUI.Popups import ConfirmationPopup
 
 
 ##-------------------------------------------------------------------------
@@ -98,6 +101,9 @@ def create_GUI_log():
     return log
 
 
+##-------------------------------------------------------------------------
+## main
+##-------------------------------------------------------------------------
 def main(log):
     application = QApplication(sys.argv)
     if cmd_line_args.dark == True:
@@ -129,7 +135,12 @@ class MainWindow(QMainWindow):
         self.ginga_log = ginga_log.get_logger("example1", log_stderr=True, level=40)
         self.log.debug('Initializing MainWindow')
         # Keywords
+        dcsint = cfg.getint('telescope', 'telnr', fallback=1)
         self.log.debug('Cacheing keyword services')
+        self.dcs = ktl.cache(f'dcs{dcsint}')
+        self.INSTRUME = kPyQt.kFactory(self.dcs['INSTRUME'])
+        self.INSTRUME.stringCallback.connect(self.update_selected_instrument)
+        self.INSTRUME.primeCallback()
         kpfguide = ktl.cache('kpfguide')
         self.CONTINUOUS = kPyQt.kFactory(kpfguide['CONTINUOUS'])
         self.SAVE = kPyQt.kFactory(kpfguide['SAVE'])
@@ -678,6 +689,13 @@ class MainWindow(QMainWindow):
 
 
     ##----------------------------------------------------------
+    ## dcs.INSTRUME
+    def update_selected_instrument(self, value):
+        self.log.debug('update_selected_instrument')
+        KPF_is_selected = 'KPF' in value
+        self.ObtainSkyFrameBtn.setEnabled(self.enable_control and KPF_is_selected)
+
+    ##----------------------------------------------------------
     ## update Plots
     def update_plots(self):
         self.update_TipTiltErrorPlot()
@@ -762,13 +780,13 @@ class MainWindow(QMainWindow):
             self.ControlCheckBox.setEnabled(enabled)
             self.OffloadCheckBox.setEnabled(enabled)
         else:
-            log.debug('Monitor mode in use')
+            self.log.debug('Monitor mode in use')
 
 
     ##----------------------------------------------------------
     ## Quit
     def quit(self):
-        log.info(f"Quitting KPF TipTilt GUI")
+        self.log.info(f"Quitting KPF TipTilt GUI")
         sys.exit()
 
     ##----------------------------------------------------------
@@ -814,7 +832,7 @@ class MainWindow(QMainWindow):
                 self.RecommendedFPSValue.setText(f"{self.GuiderParameters['GuideFPS']:.1f}")
                 self.colorize_recommended_values()
             except Exception as e:
-                log.warning(f'PredictGuiderParameters failed')
+                self.log.warning(f'PredictGuiderParameters failed')
                 print(e)
 
     def colorize_recommended_values(self):
@@ -843,7 +861,13 @@ class MainWindow(QMainWindow):
     ## Camera FPS
     def update_CameraFPS(self, value):
         self.log.debug(f'update_CameraFPS: {value}')
-        self.CameraFPSValue.setText(f"{float(value):.1f}")
+        if float(value) >= 10:
+            fps_string = f"{float(value):.0f}"
+        elif float(value) > 1:
+            fps_string = f"{float(value):.1f}"
+        else:
+            fps_string = f"{float(value):.2f}"
+        self.CameraFPSValue.setText(fps_string)
         self.CameraFPSSelector.setCurrentText('')
         self.colorize_recommended_values()
 #         self.reset_sky_frame()
@@ -875,21 +899,38 @@ class MainWindow(QMainWindow):
         self.SUB_HIGH.ktl_keyword.write(self.default_sub_file)
 
     def en(self, e, n):
-        dcs = ktl.cache('dcs1')
+        
         self.log.info(f'RAOFF={float(e):.3f}')
-        dcs['RAOFF'].write(float(e))
+        self.dcs['RAOFF'].write(float(e))
         self.log.info(f'DECOFF={float(n):.3f}')
-        dcs['DECOFF'].write(float(n))
+        self.dcs['DECOFF'].write(float(n))
         self.log.info('REL2CURR=t')
-        dcs['REL2CURR'].write('t')
+        self.dcs['REL2CURR'].write('t')
         self.log.info('Sleep 2')
         time.sleep(2)
         self.log.info('WaitFor AXESTAT==tracking')
-        dcs['AXESTAT'].waitFor('==tracking')
+        self.dcs['AXESTAT'].waitFor('==tracking')
         self.log.info('Sleep 2')
         time.sleep(2)
 
     def obtain_sky_frame(self):
+        sky_multiplier = 4
+        duration = sky_multiplier*1/self.FPS.ktl_keyword.read(binary=True)
+        msg = [f"This script will:",
+               f"- Turn off tip tilt loops",
+               f"- Offset: en {self.SkyOffsetEastValue:.1f} {self.SkyOffsetNorthValue:.1f}",
+               f"- Expose for {duration:.1f} seconds of sky frame using the guider",
+               f"- Offset back to target",
+               f"",
+               f"Tip tilt loops will need to be (re)started once back on target."
+               ]
+        result = ConfirmationPopup('Offset and obtain guider sky frame?', msg).exec_()
+        if result == QMessageBox.Yes:
+            self.log.info('Confirmation is yes, obtaining sky frame')
+        else:
+            self.log.info('Confirmation is no, not obtaining sky frame')
+            return
+
         # Turn loops off while we go get a sky frame
         self.ALL_LOOPS.write('Inactive')
         # Offset to sky position
@@ -899,8 +940,6 @@ class MainWindow(QMainWindow):
         # Set SUB_HIGH to nothing to make sure bias remains in the resulting subtracted frame
         self.SUB_HIGH.ktl_keyword.write('')
         # Take Image Cube to get sky
-        sky_multiplier = 4
-        duration = sky_multiplier*1/self.FPS.ktl_keyword.read(binary=True)
         self.log.info(f'Taking sky frame: TakeGuiderImageCube {duration:.1f} seconds')
         trigger_file = TakeGuiderCube.execute({'duration': duration,
                                            'ImageCube': False})
@@ -993,7 +1032,7 @@ class MainWindow(QMainWindow):
         ax.clear()
         plt.title('Flux')
         if npoints <= 1:
-            log.debug('update_FluxPlot: clearing plot')
+            self.log.debug('update_FluxPlot: clearing plot')
             ax.set_ylim(0,1e6)
             plt.yticks([])
             plt.xticks([])
@@ -1003,7 +1042,7 @@ class MainWindow(QMainWindow):
             self.FluxPlotCanvas.draw()
         else:
             tick = datetime.datetime.utcnow()
-            log.debug('update_FluxPlot')
+            self.log.debug('update_FluxPlot')
             recent = np.where(np.array(self.ObjectFluxTimes) > self.ObjectFluxTimes[-1]-self.FluxPlotAgeThreshold)[0]
             flux_times = np.array(self.ObjectFluxTimes)[recent]
             flux = np.array(self.ObjectFluxValues)[recent]
@@ -1026,7 +1065,7 @@ class MainWindow(QMainWindow):
             self.FluxPlotCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Plotted {npoints} Flux points in {elapsed*1000:.0f} ms')
+            self.log.debug(f'  Plotted {npoints} Flux points in {elapsed*1000:.0f} ms')
 
 
 
@@ -1108,7 +1147,7 @@ class MainWindow(QMainWindow):
         ax.clear()
         plt.title('Tip Tilt Error')
         if npoints <= 1:
-            log.debug('update_TipTiltErrorPlot: clearing plot')
+            self.log.debug('update_TipTiltErrorPlot: clearing plot')
             ax.set_ylim(0,3)
             plt.yticks([0,1,2])
             plt.xticks([])
@@ -1118,7 +1157,7 @@ class MainWindow(QMainWindow):
             self.TipTiltErrorPlotCanvas.draw()
         else:
             tick = datetime.datetime.utcnow()
-            log.debug('update_TipTiltErrorPlot')
+            self.log.debug('update_TipTiltErrorPlot')
 
             recent = np.where(np.array(self.TipTiltErrorTimes) > self.TipTiltErrorTimes[-1]-self.TipTiltErrorPlotAgeThreshold)[0]
             tterr_times = np.array(self.TipTiltErrorTimes)[recent]
@@ -1153,7 +1192,7 @@ class MainWindow(QMainWindow):
             self.TipTiltErrorPlotCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
+            self.log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
 
 
     ##----------------------------------------------------------
@@ -1219,7 +1258,7 @@ class MainWindow(QMainWindow):
             self.MirrorPositionCanvas.draw()
             tock = datetime.datetime.utcnow()
             elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
+            self.log.debug(f'  Plotted {npoints} points in {elapsed*1000:.0f} ms')
 
 
     ##----------------------------------------------------------
@@ -1494,7 +1533,7 @@ class MainWindow(QMainWindow):
         try:
             filepath = Path(filepath)
         except:
-            log.warning(f'Unable to parse file: {filepath}')
+            self.log.warning(f'Unable to parse file: {filepath}')
             return
 
         roidim  = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
@@ -1519,35 +1558,41 @@ class MainWindow(QMainWindow):
             date_beg = hdul[0].header.get('DATE-BEG')
             ts = datetime.datetime.strptime(date_beg, '%Y-%m-%dT%H:%M:%S.%f')
             self.LastFileValue.setText(f"{filepath.name} ({date_beg} UT)")
-    
-            TipTiltCalc = self.TIPTILT_CALC.ktl_keyword.ascii
-            ObjectChoice = self.OBJECT_CHOICE.ktl_keyword.ascii
+#             TipTiltCalc = self.TIPTILT_CALC.ktl_keyword.ascii
+#             ObjectChoice = self.OBJECT_CHOICE.ktl_keyword.ascii
             image = AstroImage()
             image.load_nddata(cropped)
             self.ImageViewer.set_image(image)
-    
             self.overlay_objects()
-            tock = datetime.datetime.utcnow()
-            elapsed = (tock-tick).total_seconds()
-            log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
-
+#             tock = datetime.datetime.utcnow()
+#             elapsed = (tock-tick).total_seconds()
+#             self.log.debug(f'  Image loaded in {elapsed*1000:.0f} ms')
 
     def update_lastfile(self, value):
         p = Path(value)
         if p.exists() is False:
-            log.error(f'{p} not found')
+            self.log.error(f'{p} not found')
         else:
             self.load_file(f"{p}")
 
     def overlay_objects(self):
         roidim = int(self.TIPTILT_ROIDIM.ktl_keyword.binary/2) # Use half width
         pix_target = self.PIX_TARGET.ktl_keyword.binary
+        FIUmode = self.MODE.ktl_keyword.ascii
+        # If FIU is not in observing mode, put overlay warning text
+        if 'Observing' not in FIUmode:
+            label = f"FIU Mode is {FIUmode}"
+            color = 'red'
+        else:
+            label = False
+            color = 'green'
+        # Add crosshair for pixel target
         self.add_mark(pix_target[0]-self.xcent+roidim,
                       pix_target[1]-self.ycent+roidim,
                       'crosshair', tag='PIX_TARGET',
-                      label=False,
-                      color='red', alpha=0.5)
-
+                      label=label,
+                      color=color, alpha=0.5)
+        # Add circles for each detected object
         for obj in [1,2,3]:
             objectN_kfo = getattr(self, f'OBJECT{obj}')
             objectN = objectN_kfo.ktl_keyword.binary
@@ -1564,10 +1609,10 @@ class MainWindow(QMainWindow):
                 self.overlay_canvas.delete_objects_by_tag([f'OBJECT{obj}', f"OBJECT{obj}_TEXT", f"OBJECT{obj}_point"])
 
     def add_mark(self, x, y, marker,
-                 tag=None, label=True, dxtext=-10, dytext=3, **kwargs):
+                 tag=None, label=True, dxtext=-20, dytext=3, **kwargs):
         Marker = self.overlay_canvas.get_draw_class(marker)
         self.overlay_canvas.delete_objects_by_tag([tag, f"{tag}_TEXT", f"{tag}_point"])
-        if marker == 'crosshair' and label == False:
+        if marker == 'crosshair':
             self.overlay_canvas.add(Marker(x, y, text='', **kwargs), tag=tag)
         elif marker == 'circle':
             if 'radius' in kwargs.keys():
@@ -1625,20 +1670,14 @@ class MainWindow(QMainWindow):
         self.run_restart_kpfguide_popup(3)
 
     def run_restart_kpfguide_popup(self, num):
-        self.log.debug(f"run_restart_kpfguide_popup{num}")
-        restart_kpfguide_popup = QMessageBox()
-        restart_kpfguide_popup.setWindowTitle(f'Restart kpfguide{num} Confirmation')
-        restart_kpfguide_popup.setText(f"Do you really want to restart kpfguide{num}?")
-        restart_kpfguide_popup.setIcon(QMessageBox.Critical)
-        restart_kpfguide_popup.setStandardButtons(QMessageBox.No | QMessageBox.Yes) 
-        bttn = restart_kpfguide_popup.exec_()
-        if bttn == QMessageBox.Yes:
-            self.log.debug(f'restart_kpfguide{num} confirmed')
+        msg = f"Do you really want to restart kpfguide{num}?"
+        result = ConfirmationPopup(f'Restart kpfguide{num} Confirmation', msg).exec_()
+        if result == QtWidgets.QMessageBox.Yes:
+            self.log.info(f'Confirmation is yes, restarting kpfguide{num}')
             self.restart_kpfguide(num)
         else:
-            self.log.debug(f'restart_kpfguide{num} cancelled')
-            return False
-
+            self.log.info('Confirmation is no, not restarting dispacther')
+            return
 
     def restart_kpfguide(self, num):
         self.log.warning(f"Recieved request to restart kpfguide{num}")
@@ -1666,4 +1705,3 @@ if __name__ == '__main__':
         log.error(e)
         log.error(traceback.format_exc())
     log.info(f"Exiting KPF TipTilt GUI")
-
