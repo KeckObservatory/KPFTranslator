@@ -708,11 +708,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SiderealTimeValue.setText(value[:-3])
         self.update_counter += 1
         if self.update_counter > 180:
-            self.log.debug('Updating: SOB info, telescope_released, and history')
+            self.log.debug('Updating: SOB info, telescope_released')
             self.update_counter = 0
             self.update_SOB_display() # Updates alt, az
             self.telescope_released = GetTelescopeRelease.execute({})
-            self.refresh_history()
+            # Update execution history if we're vaguely near observing times
+            try:
+                UTh = int(self.UTValue.text().split(':')[0])
+            except:
+                UTh = 0
+            if UTh >= 3 and UTh <= 17:
+                self.log.debug('Updating: execution history')
+                self.refresh_history()
 
 
     ##-------------------------------------------
