@@ -270,7 +270,7 @@ class ExecuteCal(KPFFunction):
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(calibration)
         # Source Select Shutters
-        if calsource == 'dark':
+        if calsource.lower() == 'dark':
             SetSourceSelectShutters.execute({})
         else:
             if calsource in ['SoCal-SciSky']:
