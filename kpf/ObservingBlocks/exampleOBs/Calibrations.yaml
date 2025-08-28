@@ -9,14 +9,14 @@ Calibrations:
 - CalSource: 'Dark'
   Object: 'Dark'
   nExp: 1
-  ExpTime: 60
+  ExpTime: 1200
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
 - CalSource: 'EtalonFiber'
   Object: 'Etalon'
   nExp: 1
-  ExpTime: 60
+  ExpTime: 40
   TriggerCaHK: False
   TriggerGreen: True
   TriggerRed: True
@@ -97,19 +97,3 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: Blank
-# - CalSource: 'SoCal-SciSky'
-#   Object: 'SoCal'
-#   nExp: 1
-#   ExpTime: 12
-#   TriggerCaHK: False
-#   TriggerGreen: True
-#   TriggerRed: True
-#   IntensityMonitor: False
-#   CalND1: 'OD 0.1'
-#   CalND2: 'OD 0.1'
-#   OpenScienceShutter: True
-#   OpenSkyShutter: True
-#   TakeSimulCal: True
-#   WideFlatPos: 'Blank'
-# WideFlat?
-# SoCal-Cal
