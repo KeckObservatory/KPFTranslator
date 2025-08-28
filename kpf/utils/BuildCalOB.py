@@ -61,6 +61,9 @@ class BuildCalOB(KPFFunction):
             OB.write_to(args.get('save'), overwrite=args.get('overwrite', False))
 
         if args.get('estimate', False):
+            cal_strings = [str(cal) for cal in OB.Calibrations]
+            cal_string = ','.join(cal_strings)
+            print(f"# {cal_string}")
             duration = EstimateOBDuration.execute({'verbose': True}, OB=OB)
 
         return OB
@@ -73,7 +76,7 @@ class BuildCalOB(KPFFunction):
     def add_cmdline_args(cls, parser):
         parser.add_argument('calinputs', nargs='*',
                             help="Calibrations to take in the form ")
-        parser.add_argument("-t", "--time", "--estimate", dest="estimate",
+        parser.add_argument("-v", "-t", "--time", "--estimate", dest="estimate",
                             default=False, action="store_true",
                             help="Estimate the execution time for this OB?")
         parser.add_argument("-s", "--save", dest="save", type=str, default='',
