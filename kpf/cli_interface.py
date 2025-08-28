@@ -333,5 +333,5 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
             result = function.execute(parsed_func_args, OB=OB)
         else:
             result = function.execute(parsed_func_args)
-        if result is not None:
-            print(result)
+#         if result is not None:
+#             print(result)
