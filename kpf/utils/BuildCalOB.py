@@ -5,6 +5,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
 from kpf.scripts.EstimateOBDuration import EstimateOBDuration
+from kpf.scripts.RunOB import RunOB
 
 
 ##-------------------------------------------------------------------------
@@ -60,11 +61,13 @@ class BuildCalOB(KPFFunction):
         if args.get('save', '') != '':
             OB.write_to(args.get('save'), overwrite=args.get('overwrite', False))
 
-        if args.get('estimate', False):
+        if args.get('estimate', False) or args.get('execute', False):
             cal_strings = [str(cal) for cal in OB.Calibrations]
             cal_string = ','.join(cal_strings)
             print(f"# {cal_string}")
             duration = EstimateOBDuration.execute({'verbose': True}, OB=OB)
+        if args.get('execute', False):
+            RunOB.execute({}, OB=OB)
 
         return OB
 
@@ -84,4 +87,8 @@ class BuildCalOB(KPFFunction):
         parser.add_argument("-o", "--overwrite", dest="overwrite",
                             default=False, action="store_true",
                             help="Overwrite output file if it exists?")
+        parser.add_argument("--execute", dest="execute",
+                            default=False, action="store_true",
+                            help="Execute the resulting OB?")
+
         return super().add_cmdline_args(parser)
