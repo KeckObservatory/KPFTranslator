@@ -61,8 +61,8 @@ class Calibration(BaseOBComponent):
                 (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterMode', 'ExpMeterExpTime']),
                 (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
                 (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
-                (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
-                (self.get('WideFlatPos') != 'Blank', ['WideFlatPos'])
+                (self.get('CalSource') != 'WideFlat', ['WideFlatPos']),
+                (self.get('WideFlatPos') != 'Blank', ['WideFlatPos']),
                 ]
 
 
