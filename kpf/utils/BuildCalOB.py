@@ -57,11 +57,12 @@ class BuildCalOB(KPFFunction):
                             cal.set(key, value)
                 OB.Calibrations.append(cal)
 
-        if args.get('estimate', False):
-            EstimateOBDuration.execute({}, OB=OB)
-
         if args.get('save', '') != '':
             OB.write_to(args.get('save'), overwrite=args.get('overwrite', False))
+
+        if args.get('estimate', False):
+            duration = EstimateOBDuration.execute({}, OB=OB)
+            return duration
 
     @classmethod
     def post_condition(cls, argsKPFFunction):
