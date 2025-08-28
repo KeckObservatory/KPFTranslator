@@ -54,7 +54,7 @@ def estimate_calibration_time(calibrations, cfg, fast=False):
                                   fallback=1800)
             if duration < warm_up:
                 warm_up_wait = warm_up-duration
-                print(f"  {lamp} warm up {warm_up_wait/60:.0f} min")
+                print(f"# {lamp} warm up {warm_up_wait/60:.0f} min")
                 duration += warm_up_wait
             lamps_that_need_warmup.pop(lamps_that_need_warmup.index(lamp))
         duration += int(cal.get('nExp'))*(float(cal.get('ExpTime'))+readout)
@@ -76,7 +76,6 @@ def estimate_observation_time(observations, cfg, fast=False):
     # Execute Observations
     for obs in observations:
         duration += obs.get('nExp')*(obs.get('ExpTime')+readout)
-
     return duration
 
 
@@ -115,7 +114,11 @@ class EstimateOBDuration(KPFScript):
         if OB.Observations is not None:
             duration += estimate_observation_time(OB.Observations, cfg, fast=fast)
 
-#         print(f"{duration/60:.0f} min")
+        if args.get('verbose', False):
+            decimal_minutes = duration / 60
+            hours = int(np.floor(decimal_minutes / 60))
+            minutes = int(np.ceil(decimal_minutes % 60))
+            print(f"# Estimated Duration = {hours:02d}:{minutes:02d}")
         return duration/60
 
     @classmethod
@@ -128,6 +131,9 @@ class EstimateOBDuration(KPFScript):
                             dest="fast",
                             default=False, action="store_true",
                             help='Use fast readout mode times for estimate?')
+        parser.add_argument('-v', '--verbose', dest="verbose",
+            default=False, action="store_true",
+            help='Be verbose and print to screen?')
         return super().add_cmdline_args(parser)
 
 
