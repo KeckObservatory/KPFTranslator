@@ -58,7 +58,7 @@ class BuildCalOB(KPFFunction):
                             cal.set(key, value)
                 OB.Calibrations.append(cal)
 
-        if args.get('save', '') != '':
+        if args.get('save', '') not in ['', None]:
             OB.write_to(args.get('save'), overwrite=args.get('overwrite', False))
 
         if args.get('estimate', False) or args.get('execute', False):
@@ -72,7 +72,7 @@ class BuildCalOB(KPFFunction):
         return OB
 
     @classmethod
-    def post_condition(cls, argsKPFFunction):
+    def post_condition(cls, args):
         pass
 
     @classmethod
@@ -90,5 +90,4 @@ class BuildCalOB(KPFFunction):
         parser.add_argument("--execute", dest="execute",
                             default=False, action="store_true",
                             help="Execute the resulting OB?")
-
         return super().add_cmdline_args(parser)
