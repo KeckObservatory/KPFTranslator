@@ -61,8 +61,9 @@ class BuildCalOB(KPFFunction):
             OB.write_to(args.get('save'), overwrite=args.get('overwrite', False))
 
         if args.get('estimate', False):
-            duration = EstimateOBDuration.execute({}, OB=OB)
-            return duration
+            duration = EstimateOBDuration.execute({'verbose': True}, OB=OB)
+
+        return OB
 
     @classmethod
     def post_condition(cls, argsKPFFunction):
