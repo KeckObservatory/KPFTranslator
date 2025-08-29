@@ -554,6 +554,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../BuildCalOB/">BuildCalOB</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
@@ -681,7 +683,8 @@
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
-<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GuiderLastfile</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GuiderLastfile</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Print the value of the kpfguide.LASTFILE keyword to STDOUT</span>
 
 <span class="sd">    Args:</span>
@@ -705,6 +708,7 @@
             <span class="n">expr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;($kpfguide.LASTFILE != &#39;</span><span class="si">{</span><span class="n">initial_lastfile</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
             <span class="n">ktl</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">exptime</span><span class="o">+</span><span class="n">timeout</span><span class="p">)</span>
         <span class="n">lastfile</span> <span class="o">=</span> <span class="n">kpfguide</span><span class="p">[</span><span class="s1">&#39;LASTFILE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">lastfile</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lastfile</span>
 
     <span class="nd">@classmethod</span>

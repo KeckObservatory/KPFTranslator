@@ -554,6 +554,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../BuildCalOB/">BuildCalOB</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
@@ -640,7 +642,9 @@
 <span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span>
-<span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GuiderOutdir</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GuiderOutdir</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Print the value of the kpfguide.OUTDIR keyword to STDOUT</span>
 
 <span class="sd">    KTL Keywords Used:</span>
@@ -654,7 +658,9 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">OUTDIR</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfguide&#39;</span><span class="p">,</span> <span class="s1">&#39;OUTDIR&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">OUTDIR</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">OUTDIR</span><span class="o">.</span><span class="n">monitor</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">OUTDIR</span><span class="o">.</span><span class="n">ascii</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">OUTDIR</span><span class="o">.</span><span class="n">ascii</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

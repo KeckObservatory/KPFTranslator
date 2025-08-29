@@ -554,6 +554,8 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" >kpf.utils</a>
     <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../BuildCalOB/">BuildCalOB</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">EndOfNight</a>
@@ -847,7 +849,9 @@
 <span class="normal">195</span>
 <span class="normal">196</span>
 <span class="normal">197</span>
-<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Send KPF in to an end of night configuration.</span>
 
 <span class="sd">    - kpffiu.MODE = Stowed</span>
@@ -949,8 +953,10 @@
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;AO&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;confirm&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;--------------------------------------------------------------&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;Perform shutdown of AO? This will move the AO hatch and PCU.&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;The AO area should be clear of personnel before proceeding.&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;Perform shutdown of AO? This will:&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;  - Close the AO hatch&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;  - Send the PCU to home&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;These steps should not be run if OSIRIS is in use.&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;Do you wish to shutdown AO?&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;(y/n) [y]:&quot;</span><span class="p">,</span>
@@ -967,13 +973,13 @@
                     <span class="n">ControlAOHatch</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="s1">&#39;closed&#39;</span><span class="p">})</span>
                 <span class="k">except</span> <span class="n">FailedToReachDestination</span><span class="p">:</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AO hatch did not move successfully&quot;</span><span class="p">)</span>
-                <span class="k">except</span> <span class="n">Exceptions</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure controlling AO hatch&quot;</span><span class="p">)</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Sending PCU stage to Home position&#39;</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">SendPCUtoHome</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-                <span class="k">except</span> <span class="n">Exceptions</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure sending PCU to home&quot;</span><span class="p">)</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
     <span class="c1">#             log.info(&#39;Turning on AO HEPA Filter System&#39;)</span>

@@ -554,6 +554,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../BuildCalOB/">BuildCalOB</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
@@ -783,7 +785,7 @@ will slow down file write considerably.</p>
         <span class="c1"># Reset ALL_LOOPS to initial values</span>
 <span class="c1">#         if initial_all_loops == &#39;Active&#39; and collect_image_cube == True:</span>
 <span class="c1">#             kpfguide[&#39;ALL_LOOPS&#39;].write(initial_all_loops)</span>
-
+        <span class="nb">print</span><span class="p">(</span><span class="n">cube_file</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cube_file</span>
 
     <span class="nd">@classmethod</span>

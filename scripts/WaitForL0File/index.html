@@ -554,6 +554,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../BuildCalOB/">BuildCalOB</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
@@ -659,7 +661,8 @@ does, print a log line with that file name.</p>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
-<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForL0File</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">46</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForL0File</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Wait a short time to see if `kpfassemble` writes a new L0 file.  If it</span>
 <span class="sd">    does, print a log line with that file name.</span>
 
@@ -677,6 +680,7 @@ does, print a log line with that file name.</p>
         <span class="n">LOUTFILE</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfassemble&#39;</span><span class="p">,</span> <span class="s1">&#39;LOUTFILE&#39;</span><span class="p">)</span>
         <span class="n">initial_LOUTFILE</span> <span class="o">=</span> <span class="n">LOUTFILE</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;L0_file_creation&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="n">found_new_file</span> <span class="o">=</span> <span class="n">LOUTFILE</span><span class="o">.</span><span class="n">waitFor</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;!=&quot;</span><span class="si">{</span><span class="n">initial_LOUTFILE</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
                                           <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">found_new_file</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>

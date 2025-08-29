@@ -554,6 +554,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../BuildCalOB/">BuildCalOB</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
@@ -877,15 +879,15 @@
         <span class="n">USETHRESHOLD</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;No&#39;</span><span class="p">)</span>
 
         <span class="c1"># Set OBJECT back to empty string</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Waiting for readout to finish&#39;</span><span class="p">)</span>
-        <span class="n">WaitForReady</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-        <span class="n">SetObject</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Object&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+<span class="c1">#         log.info(&#39;Waiting for readout to finish&#39;)</span>
+<span class="c1">#         WaitForReady.execute({})</span>
+<span class="c1">#         SetObject.execute({&#39;Object&#39;: &#39;&#39;})</span>
 
         <span class="c1"># Clear target info</span>
         <span class="n">SetTargetInfo</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
 
         <span class="c1"># Write L0 file name to log if can</span>
-        <span class="n">WaitForL0File</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+<span class="c1">#         WaitForL0File.execute({})</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

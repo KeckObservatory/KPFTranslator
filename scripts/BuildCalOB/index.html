@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>SetAFStoNGS - KPF</title>
+    <title>BuildCalOB - KPF</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "SetAFStoNGS";
-        var mkdocs_page_input_path = "scripts/SetAFStoNGS.md";
+        var mkdocs_page_name = "BuildCalOB";
+        var mkdocs_page_input_path = "scripts/BuildCalOB.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -192,8 +192,8 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" >Instrument Scripts</a>
     <ul class="current">
-                <li class="toctree-l2 current"><a class="reference internal current" >kpf.ao</a>
-    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" >kpf.ao</a>
+    <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../ControlAOHatch/">ControlAOHatch</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SendPCUtoHome/">SendPCUtoHome</a>
@@ -202,7 +202,7 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetAFMtoMirror/">SetAFMtoMirror</a>
                 </li>
-                <li class="toctree-l3 current"><a class="reference internal current" href="#">SetAFStoNGS</a>
+                <li class="toctree-l3"><a class="reference internal" href="../SetAFStoNGS/">SetAFStoNGS</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetAODCStoSIM/">SetAODCStoSIM</a>
                 </li>
@@ -552,9 +552,9 @@
                 </li>
     </ul>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
-    <ul>
-                <li class="toctree-l3"><a class="reference internal" href="../BuildCalOB/">BuildCalOB</a>
+                <li class="toctree-l2 current"><a class="reference internal current" >kpf.utils</a>
+    <ul class="current">
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">BuildCalOB</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
                 </li>
@@ -593,8 +593,8 @@
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Technical Documentation</li>
           <li class="breadcrumb-item">Instrument Scripts</li>
-          <li class="breadcrumb-item">kpf.ao</li>
-      <li class="breadcrumb-item active">SetAFStoNGS</li>
+          <li class="breadcrumb-item">kpf.utils</li>
+      <li class="breadcrumb-item active">BuildCalOB</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -603,64 +603,268 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="setafstongs"><code>SetAFStoNGS</code></h1>
+                <h1 id="buildcalob"><code>BuildCalOB</code></h1>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<a id="kpf.ao.SetAFStoNGS.SetAFStoNGS"></a>
+<a id="kpf.utils.BuildCalOB.BuildCalOB"></a>
     <div class="doc doc-contents first">
             <p class="doc doc-class-bases">
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>ACAM should be set to NGS focus. LGS focus will not work for KPF.</p>
-<p>KTL Keywords Used:</p>
+      <p>From a set of standard prescriptions, build the described calibration OB.
+Given a list of input strings, parse them in to variations of the standard
+calibrations and create an OB for them.</p>
+<p>The input string format is <code>[CalSource],[Object],[nExp],[keywords]</code>. The
+first 3 entries are required while the keywords section is optional. Any
+unspecified values default to match the same CalSource entry in the example
+OB file in this repo at <code>kpf/ObservingBlocks/exampleOBs/Calibration.yaml</code>.</p>
+<p>For example, and input of <code>EtalonFiber,slewcal,5</code> will generate an OB which
+takes 5 etalon frames with the object name of "slewcal". No keywords are
+provided, so all other elements of the OB are the default values (e.g. the
+exposure time and ND filters).</p>
+<p>The keywords can be used to modify those default values in the OB. For
+example, if the input is:
+<code>[CalSource],[Object],[nExp],[keywords],IntensityMonitor=True</code>
+then the resulting OB will have the <code>IntensityMonitor</code> value set to True
+rather than the default of False and
+<code>[CalSource],[Object],[nExp],[keywords],ExpTime=30</code>
+will result in an OB with 30 second exposure times instead of the default
+of 40 seconds.</p>
+<p>Multiple inputs can be given to create multi-calibration OBs, either as a
+list in python or on the command line. For example:
+<code>kpfdo BuildCalOB Dark,autocal-dark,1,ExpTime=1200 EtalonFiber,autocal-etalon-all-midday,3,IntensityMonitor=True BrdbandFiber,autocal-flat-all,95,IntensityMonitor=True</code>
+will generate an OB with three calibrations: a 1200 second dark, 3 Etalon
+frames, and 95 flat field frames.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>calinputs</code></b>
+                  (<code>list of strings</code>)
+              –
+              <div class="doc-md-description">
+                <p>Input strings as described above.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>estimate</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Generate the OB, run the <code>EstimateOBDuration</code> tool,
+             and print the results to screen.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>save</code></b>
+                  (<code>string</code>)
+              –
+              <div class="doc-md-description">
+                <p>Save resulting OB to the specified file.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>overwrite</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Overwrite output file if it exists?</p>
+              </div>
+            </li>
+            <li>
+              <b><code>execute</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Execute the resulting OB?</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Functions Called:</p>
 <ul>
-<li><code>ao.OBASNAME</code></li>
-<li><code>ao.OBASSLEW</code></li>
-<li><code>ao.OBASSTST</code></li>
+<li><code>EstimateOBDuration</code></li>
+<li><code>RunOB</code></li>
 </ul>
 
               <details class="quote">
-                <summary>Source code in <code>kpf/ao/SetAFStoNGS.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetAFStoNGS</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;ACAM should be set to NGS focus. LGS focus will not work for KPF.</span>
+                <summary>Source code in <code>kpf/utils/BuildCalOB.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BuildCalOB</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;From a set of standard prescriptions, build the described calibration OB.</span>
+<span class="sd">    Given a list of input strings, parse them in to variations of the standard</span>
+<span class="sd">    calibrations and create an OB for them.</span>
 
-<span class="sd">    KTL Keywords Used:</span>
+<span class="sd">    The input string format is `[CalSource],[Object],[nExp],[keywords]`. The</span>
+<span class="sd">    first 3 entries are required while the keywords section is optional. Any</span>
+<span class="sd">    unspecified values default to match the same CalSource entry in the example</span>
+<span class="sd">    OB file in this repo at `kpf/ObservingBlocks/exampleOBs/Calibration.yaml`.</span>
 
-<span class="sd">    - `ao.OBASNAME`</span>
-<span class="sd">    - `ao.OBASSLEW`</span>
-<span class="sd">    - `ao.OBASSTST`</span>
+<span class="sd">    For example, and input of `EtalonFiber,slewcal,5` will generate an OB which</span>
+<span class="sd">    takes 5 etalon frames with the object name of &quot;slewcal&quot;. No keywords are</span>
+<span class="sd">    provided, so all other elements of the OB are the default values (e.g. the</span>
+<span class="sd">    exposure time and ND filters).</span>
+
+<span class="sd">    The keywords can be used to modify those default values in the OB. For</span>
+<span class="sd">    example, if the input is:</span>
+<span class="sd">    `[CalSource],[Object],[nExp],[keywords],IntensityMonitor=True`</span>
+<span class="sd">    then the resulting OB will have the `IntensityMonitor` value set to True</span>
+<span class="sd">    rather than the default of False and</span>
+<span class="sd">    `[CalSource],[Object],[nExp],[keywords],ExpTime=30`</span>
+<span class="sd">    will result in an OB with 30 second exposure times instead of the default</span>
+<span class="sd">    of 40 seconds.</span>
+
+<span class="sd">    Multiple inputs can be given to create multi-calibration OBs, either as a</span>
+<span class="sd">    list in python or on the command line. For example:</span>
+<span class="sd">    `kpfdo BuildCalOB Dark,autocal-dark,1,ExpTime=1200 EtalonFiber,autocal-etalon-all-midday,3,IntensityMonitor=True BrdbandFiber,autocal-flat-all,95,IntensityMonitor=True`</span>
+<span class="sd">    will generate an OB with three calibrations: a 1200 second dark, 3 Etalon</span>
+<span class="sd">    frames, and 95 flat field frames.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        calinputs (list of strings): Input strings as described above.</span>
+<span class="sd">        estimate (bool): Generate the OB, run the `EstimateOBDuration` tool,</span>
+<span class="sd">                         and print the results to screen.</span>
+<span class="sd">        save (string): Save resulting OB to the specified file.</span>
+<span class="sd">        overwrite (bool): Overwrite output file if it exists?</span>
+<span class="sd">        execute (bool): Execute the resulting OB?</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `EstimateOBDuration`</span>
+<span class="sd">    - `RunOB`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
@@ -668,19 +872,76 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="n">OBASNAME</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;ao&#39;</span><span class="p">,</span> <span class="s1">&#39;OBASNAME&#39;</span><span class="p">)</span>
-        <span class="n">OBASSLEW</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;ao&#39;</span><span class="p">,</span> <span class="s1">&#39;OBASSLEW&#39;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting AFS to NGS&quot;</span><span class="p">)</span>
-        <span class="n">OBASNAME</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;ngs&#39;</span><span class="p">)</span>
-        <span class="n">OBASSLEW</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+        <span class="c1"># Build dict of example calibrations</span>
+        <span class="n">example_cal_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;ObservingBlocks&#39;</span> <span class="o">/</span> <span class="s1">&#39;exampleOBs&#39;</span> <span class="o">/</span> <span class="s1">&#39;Calibrations.yaml&#39;</span>
+        <span class="k">if</span> <span class="n">example_cal_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="o">!=</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to open </span><span class="si">{</span><span class="n">example_cal_file</span><span class="si">:</span><span class="s1">s</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">example_OB</span> <span class="o">=</span> <span class="n">ObservingBlock</span><span class="p">(</span><span class="n">example_cal_file</span><span class="p">)</span>
+        <span class="n">example_cals</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">cal</span> <span class="ow">in</span> <span class="n">example_OB</span><span class="o">.</span><span class="n">Calibrations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cal</span><span class="o">.</span><span class="n">CalSource</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">example_cals</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">example_cals</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">CalSource</span><span class="p">)]</span> <span class="o">=</span> <span class="n">cal</span>
+
+        <span class="c1"># Build fresh OB</span>
+        <span class="n">OB</span> <span class="o">=</span> <span class="n">ObservingBlock</span><span class="p">({})</span>
+        <span class="k">for</span> <span class="n">calinput</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;calinputs&#39;</span><span class="p">):</span>
+            <span class="n">calspec</span> <span class="o">=</span> <span class="n">calinput</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="c1"># [CalSource],[Object],[nExp],**kwargs</span>
+            <span class="n">example</span> <span class="o">=</span> <span class="n">example_cals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">calspec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">example</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to find example calibrations for </span><span class="si">{</span><span class="n">calspec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cal</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+                <span class="n">cal</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Object&#39;</span><span class="p">,</span> <span class="n">calspec</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">cal</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;nExp&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">calspec</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">calspec</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">calspec</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                    <span class="k">for</span> <span class="n">kwarg</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                        <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="o">=</span> <span class="n">kwarg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Exptime&#39;</span><span class="p">]:</span>
+                            <span class="n">cal</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                        <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;TriggerCaHK&#39;</span><span class="p">,</span> <span class="s1">&#39;TriggerGreen&#39;</span><span class="p">,</span> <span class="s1">&#39;TriggerRed&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;IntensityMonitor&#39;</span><span class="p">,</span> <span class="s1">&#39;OpenScienceShutter&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;OpenSkyShutter&#39;</span><span class="p">,</span> <span class="s1">&#39;TakeSimulCal&#39;</span><span class="p">]:</span>
+                            <span class="n">cal</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">cal</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">OB</span><span class="o">.</span><span class="n">Calibrations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+            <span class="n">OB</span><span class="o">.</span><span class="n">write_to</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;save&#39;</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;overwrite&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;estimate&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;execute&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">cal_strings</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">cal</span><span class="p">)</span> <span class="k">for</span> <span class="n">cal</span> <span class="ow">in</span> <span class="n">OB</span><span class="o">.</span><span class="n">Calibrations</span><span class="p">]</span>
+            <span class="n">cal_string</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cal_strings</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="n">cal_string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">duration</span> <span class="o">=</span> <span class="n">EstimateOBDuration</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;execute&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">RunOB</span><span class="o">.</span><span class="n">execute</span><span class="p">({},</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">OB</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="n">expr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;($ao.OBASSTST == INPOS) and ($ao.OBASNAME == ngs)&#39;</span>
-        <span class="n">aoamstst_success</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">waitfor</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">aoamstst_success</span><span class="p">:</span>
-            <span class="n">OBASNAME</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;ao&#39;</span><span class="p">,</span> <span class="s1">&#39;OBASNAME&#39;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">FailedToReachDestination</span><span class="p">(</span><span class="n">OBASNAME</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s1">&#39;ngs&#39;</span><span class="p">)</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;calinputs&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Calibrations to take in the form &quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;--time&quot;</span><span class="p">,</span> <span class="s2">&quot;--estimate&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;estimate&quot;</span><span class="p">,</span>
+                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Estimate the execution time for this OB?&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--save&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;save&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Save resulting OB to the specified file.&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;--overwrite&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;overwrite&quot;</span><span class="p">,</span>
+                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Overwrite output file if it exists?&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--execute&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;execute&quot;</span><span class="p">,</span>
+                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Execute the resulting OB?&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -707,8 +968,8 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../SetAFMtoMirror/" class="btn btn-neutral float-left" title="SetAFMtoMirror"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../SetAODCStoSIM/" class="btn btn-neutral float-right" title="SetAODCStoSIM">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../EastNorth/" class="btn btn-neutral float-left" title="EastNorth"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../CheckAllowScheduledCals/" class="btn btn-neutral float-right" title="CheckAllowScheduledCals">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -735,10 +996,10 @@
         </span>
     
     
-      <span><a href="../SetAFMtoMirror/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../EastNorth/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../SetAODCStoSIM/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../CheckAllowScheduledCals/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
