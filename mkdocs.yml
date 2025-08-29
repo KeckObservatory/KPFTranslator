@@ -255,6 +255,7 @@ nav:
       - "kpf.telescope":
         - "EastNorth": scripts/EastNorth.md
       - "kpf.utils":
+        - "BuildCalOB": scripts/BuildCalOB.md
         - "CheckAllowScheduledCals": scripts/CheckAllowScheduledCals.md
         - "EndOfNight": scripts/EndOfNight.md
         - "SetObserverFromSchedule": scripts/SetObserverFromSchedule.md
