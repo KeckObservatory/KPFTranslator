@@ -37,7 +37,7 @@ class IsSoCalShutDown(KPFFunction):
         if not shutdown and args.get('email', False) is True:
             try:
                 url = 'http://192.168.78.70/camera/index.html#/video'
-                msg += '\n\nSoCal status can be viewed using this camera: {url}'
+                msg += f'\n\nSoCal status can be viewed using this camera: {url}'
                 SendEmail.execute({'Subject': f'KPF SoCal is not shut down properly',
                                    'Message': msg})
             except Exception as email_err:
