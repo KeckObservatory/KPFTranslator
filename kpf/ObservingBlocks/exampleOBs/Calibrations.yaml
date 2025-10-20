@@ -13,16 +13,17 @@ Calibrations:
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
+# Etalon: updated 2025-10-19
 - CalSource: 'EtalonFiber'
   Object: 'Etalon'
   nExp: 1
-  ExpTime: 40
+  ExpTime: 20
   TriggerCaHK: False
   TriggerGreen: True
   TriggerRed: True
   IntensityMonitor: False
-  CalND1: 'OD 1.0'
-  CalND2: 'OD 0.1'
+  CalND1: 'OD 0.1'
+  CalND2: 'OD 1.3'
   OpenScienceShutter: True
   OpenSkyShutter: True
   TakeSimulCal: True
