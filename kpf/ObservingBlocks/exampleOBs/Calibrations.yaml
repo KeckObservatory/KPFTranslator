@@ -1,4 +1,5 @@
 Calibrations:
+# Bias:
 - CalSource: 'Dark'
   Object: 'Bias'
   nExp: 1
@@ -6,6 +7,7 @@ Calibrations:
   TriggerCaHK: True
   TriggerGreen: True
   TriggerRed: True
+# Dark:
 - CalSource: 'Dark'
   Object: 'Dark'
   nExp: 1
@@ -28,10 +30,11 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: 'Blank'
+# LFC: updated 2025-10-20 (LFC flattener tuned this day as well)
 - CalSource: 'LFCFiber'
   Object: 'LFC'
   nExp: 1
-  ExpTime: 60
+  ExpTime: 10
   TriggerCaHK: False
   TriggerGreen: True
   TriggerRed: True
@@ -42,6 +45,7 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: 'Blank'
+# Th Daily: 
 - CalSource: 'Th_daily'
   Object: 'ThAr'
   nExp: 1
@@ -56,6 +60,7 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: 'Blank'
+# Th Daily (for CaHK): 
 - CalSource: 'Th_daily'
   Object: 'ThAr_forCaHK'
   nExp: 1
@@ -70,6 +75,7 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: 'Blank'
+# U Daily: 
 - CalSource: 'U_daily'
   Object: 'UNe'
   nExp: 1
@@ -84,16 +90,17 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: 'Blank'
+# Flat: updated 2025-10-20
 - CalSource: 'BrdbandFiber'
   Object: 'Flat'
   nExp: 1
-  ExpTime: 60
+  ExpTime: 240
   TriggerCaHK: False
   TriggerGreen: True
   TriggerRed: True
   IntensityMonitor: False
   CalND1: 'OD 0.1'
-  CalND2: 'OD 0.1'
+  CalND2: 'OD 1.0'
   OpenScienceShutter: True
   OpenSkyShutter: True
   TakeSimulCal: True
