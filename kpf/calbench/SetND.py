@@ -48,8 +48,8 @@ class SetND(KPFFunction):
                                      "OD 3.0", "OD 4.0"],
                             help='ND1 Filter to use.')
         parser.add_argument('CalND2', type=str,
-                            choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
-                                     "OD 1.0", "OD 4.0"],
+                            choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 1.0",
+                                     "OD 1.3", "OD 2.0"],
                             help='ND2 Filter to use.')
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",

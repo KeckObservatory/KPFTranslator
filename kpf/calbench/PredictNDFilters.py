@@ -42,7 +42,8 @@ def all_possible_sums_with_indices_sorted(arr1, arr2):
 ## ------------------------------
 # function to derive etalon OD setting
 def get_simulcal_od(vmag, teff, exp_time, cal_fits, ref_wave=None,
-                    od_values=[0.2,1.0,1.3,2.0,3.0,4.0],
+#                     od_values=[0.2,1.0,1.3,2.0,3.0,4.0],
+                    od_values=[0.1,0.3,0.5,1.0,1.3,2.0],
                     filter_configs=[(0,0),(0,1),(0,2),(0,3),(0,4),(0,5)],
                     plot=False):
     '''
