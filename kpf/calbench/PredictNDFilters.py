@@ -267,7 +267,7 @@ class PredictNDFilters(KPFFunction):
         # reference calibration file to scale up/down
         #cal_file = 'KP.20240529.80736.43_L1.fits' # reference etalon L1 file
         data_dir = Path(__file__).parent.parent.parent / 'data'
-        cal_file = data_dir / 'KP.20250802.80643.77_L1.fits'
+        cal_file = data_dir / 'KP.20251021.78007.91_L1.fits'
 
         # Filter wheel populations for both wheels
 #         od_arr_scical = [0.1, 0.3, 0.5, 0.8, 1.0, 4.0]
