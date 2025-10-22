@@ -126,8 +126,10 @@ class EndOfNight(KPFFunction):
         if args.get('AO', True) is True and args.get('confirm', False) is False:
             msg = ["",
                    "--------------------------------------------------------------",
-                   "Perform shutdown of AO? This will move the AO hatch and PCU.",
-                   "The AO area should be clear of personnel before proceeding.",
+                   "Perform shutdown of AO? This will:",
+                   "  - Close the AO hatch",
+                   "  - Send the PCU to home",
+                   "These steps should not be run if OSIRIS is in use.",
                    "",
                    "Do you wish to shutdown AO?",
                    "(y/n) [y]:",
