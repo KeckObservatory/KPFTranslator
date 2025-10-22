@@ -673,7 +673,9 @@
 <span class="normal">54</span>
 <span class="normal">55</span>
 <span class="normal">56</span>
-<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IsSoCalShutDown</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IsSoCalShutDown</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Returns True if SoCal enclosure is closed and tracker is parked.</span>
 
 <span class="sd">    KTL Keywords Used:</span>
@@ -697,12 +699,14 @@
 
         <span class="n">closedstr</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;NOT &#39;</span><span class="p">}[</span><span class="n">is_closed</span><span class="p">]</span>
         <span class="n">parkedstr</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;NOT &#39;</span><span class="p">}[</span><span class="n">is_home</span><span class="p">]</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;SoCal is </span><span class="si">{</span><span class="n">closedstr</span><span class="si">}</span><span class="s1">closed and </span><span class="si">{</span><span class="n">parkedstr</span><span class="si">}</span><span class="s1">parked&#39;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;SoCal is </span><span class="si">{</span><span class="n">closedstr</span><span class="si">}</span><span class="s1">closed and is </span><span class="si">{</span><span class="n">parkedstr</span><span class="si">}</span><span class="s1">parked&#39;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="n">shutdown</span> <span class="o">=</span> <span class="n">is_closed</span> <span class="ow">and</span> <span class="n">is_home</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">shutdown</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://192.168.78.70/camera/index.html#/video&#39;</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">SoCal status can be viewed using this camera: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;KPF SoCal is not shut down properly&#39;</span><span class="p">,</span>
                                    <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">})</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">email_err</span><span class="p">:</span>

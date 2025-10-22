@@ -639,7 +639,7 @@ octagon) via the <code>kpfcal.ND2POS</code> keyword.</p>
                 <p>The neutral density filter to put in the first filter
 wheel. This affects only the light injected in to the simultaneous
 calibration fiber. Allowed Values: <code>OD 0.1</code>, <code>OD 0.3</code>, <code>OD 0.5</code>,
-<code>OD 0.8</code>, <code>OD 1.0</code>, <code>OD 4.0</code></p>
+<code>OD 1.0</code>, <code>OD 1.3</code>, <code>OD 2.0</code></p>
               </div>
             </li>
         </ul>
@@ -709,7 +709,7 @@ calibration fiber. Allowed Values: <code>OD 0.1</code>, <code>OD 0.3</code>, <co
 <span class="sd">        CalND2 (str): The neutral density filter to put in the first filter</span>
 <span class="sd">            wheel. This affects only the light injected in to the simultaneous</span>
 <span class="sd">            calibration fiber. Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`,</span>
-<span class="sd">            `OD 0.8`, `OD 1.0`, `OD 4.0`</span>
+<span class="sd">            `OD 1.0`, `OD 1.3`, `OD 2.0`</span>
 
 <span class="sd">    KTL Keywords Used:</span>
 
@@ -744,8 +744,8 @@ calibration fiber. Allowed Values: <code>OD 0.1</code>, <code>OD 0.3</code>, <co
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;CalND2&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-                            <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;OD 0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 0.3&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 0.5&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 0.8&quot;</span><span class="p">,</span>
-                                     <span class="s2">&quot;OD 1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 4.0&quot;</span><span class="p">],</span>
+                            <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;OD 0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 0.3&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 0.5&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 1.0&quot;</span><span class="p">,</span>
+                                     <span class="s2">&quot;OD 1.3&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 2.0&quot;</span><span class="p">],</span>
                             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ND2 Filter to use.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
