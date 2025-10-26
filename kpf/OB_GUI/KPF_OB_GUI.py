@@ -190,7 +190,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.program_strings.append(f"{progID} on {', '.join(dates)}")
         # KPF-CC Settings and Values
         self.schedule_path = Path(f'/s/sdata1701/Schedules/')
-        self.KPFCC_weather_bands = ['band1', 'band2', 'band3', 'backups']
+        self.KPFCC_weather_bands = ['band1', 'band2', 'band3']
         self.KPFCC_weather_band = self.KPFCC_weather_bands[0]
         self.KPFCC_OBs = {}
         self.KPFCC_start_times = {}
@@ -265,6 +265,8 @@ class MainWindow(QtWidgets.QMainWindow):
         LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
         LoadOBsFromKPFCC = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_OBs')
         LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
+        LoadSchedule = self.findChild(QtWidgets.QAction, 'actionLoad_Schedule_for_non_CC_Night')
+        LoadSchedule.triggered.connect(self.load_OBs_from_schedule_nonCCnight)
 
         #-------------------------------------------------------------------
         # Menu Bar: FIU
@@ -993,7 +995,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.GUITaskLabel.setText(f'Retrieved {len(self.OBListModel.OBs)} OBs from all {len(progIDs)} KPF-CC programs.')
         self.set_SortOrWeather()
 
-    def load_OBs_from_schedule(self):
+    def load_OBs_from_schedule_nonCCnight(self, nonCCnight=False):
+        self.load_OBs_from_schedule(nonCCnight=True)
+
+    def load_OBs_from_schedule(self, nonCCnight=False):
         self.log.debug(f"load_OBs_from_schedule")
         if self.verify_overwrite_of_OB_list() == False:
             return
@@ -1012,8 +1017,12 @@ class MainWindow(QtWidgets.QMainWindow):
             utnow = datetime.datetime.utcnow()
             date = utnow-datetime.timedelta(hours=20) # Switch dates at 10am HST, 2000UT
             date_str = date.strftime('%Y-%m-%d').lower()
-        schedule_files = [self.schedule_path / semester / date_str / WB / 'output' / 'night_plan.csv'
-                          for WB in self.KPFCC_weather_bands]
+        if nonCCnight:
+            schedule_files = [self.schedule_path / semester / date_str / f'full-{WB}' / 'output' / 'night_plan.csv'
+                              for WB in self.KPFCC_weather_bands]
+        else:
+            schedule_files = [self.schedule_path / semester / date_str / WB / 'output' / 'night_plan.csv'
+                              for WB in self.KPFCC_weather_bands]
         # Count what we need to load ahead of time for the progress bar
         schedule_file_contents = {}
         Nsched = 0
@@ -1038,7 +1047,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if Nsched == 0:
             ConfirmationPopup('Found no OBs in schedule', '\n'.join(pbar_msg), info_only=True).exec_()
         # Column name for the database id changed in the schedule files, try to handle that
-        id_column_name = 'id' if 'id' in schedule_file_contents[self.KPFCC_weather_bands[0]].keys() else 'unique_id'
+#         id_column_name = 'id' if 'id' in schedule_file_contents[self.KPFCC_weather_bands[0]].keys() else 'unique_id'
+        id_column_name = 'unique_id'
         scheduledOBcount = 0
         retrievedOBcount = 0
         errs = []
