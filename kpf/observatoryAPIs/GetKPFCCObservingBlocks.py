@@ -34,7 +34,7 @@ class GetKPFCCObservingBlocks(KPFFunction):
         # Iterate of KPF-CC programIDs and retrieve their OBs from DB
         for i,progID in enumerate(progIDs):
             log.debug(f'Retrieving OBs for {progID}')
-            programOBs = GetObservingBlocksByProgram.execute({'program': progID})
+            programOBs, failures = GetObservingBlocksByProgram.execute({'program': progID})
             OBs.extend(programOBs)
         log.info(f'Retrieved {len(OBs)} OBs in KPF-CC programs')
         # Save to files if requested
