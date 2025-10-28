@@ -30,11 +30,11 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: 'Blank'
-# LFC: updated 2025-10-20 (LFC flattener tuned this day as well)
+# LFC: updated 2025-10-28
 - CalSource: 'LFCFiber'
   Object: 'LFC'
   nExp: 1
-  ExpTime: 10
+  ExpTime: 60
   TriggerCaHK: False
   TriggerGreen: True
   TriggerRed: True
@@ -90,11 +90,11 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: 'Blank'
-# Flat: updated 2025-10-20
+# Flat: updated 2025-10-28
 - CalSource: 'BrdbandFiber'
   Object: 'Flat'
   nExp: 1
-  ExpTime: 240
+  ExpTime: 50
   TriggerCaHK: False
   TriggerGreen: True
   TriggerRed: True
