@@ -1108,7 +1108,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.refresh_history()
         self.set_SortOrWeather()
         # Pop up for any errors
-        print(type(errs), errs)
         if len(errs) > 0:
             ConfirmationPopup('Errors retrieving OBs:', errs, info_only=True, warning=True).exec_()
 
