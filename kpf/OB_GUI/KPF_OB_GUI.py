@@ -874,6 +874,7 @@ class MainWindow(QtWidgets.QMainWindow):
         OBs_for_list = [self.OBcache[obid] for obid in self.KPFCC_OBs[WB]]
         self.OBListModel.set_list(OBs_for_list,
                                   start_times=self.KPFCC_start_times[WB])
+        self.refresh_history()
 
 
     ##-------------------------------------------
