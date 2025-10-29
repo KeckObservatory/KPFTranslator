@@ -26,6 +26,7 @@ from kpf.scripts.ExecuteSci import ExecuteSci
 from kpf.scripts.CleanupAfterScience import CleanupAfterScience
 from kpf.spectrograph.SetProgram import SetProgram
 from kpf.observatoryAPIs import addObservingBlockHistory
+from kpf.observatoryAPIs.GetCurrentScheduledProgram import GetCurrentScheduledProgram
 
 
 class RunOB(KPFScript):
@@ -254,7 +255,13 @@ class RunOB(KPFScript):
                     observation_dict = observation.to_dict()
                     observation_dict['Gmag'] = OB.Target.get('Gmag')
                     ConfigureForScience.execute(observation_dict)
-                    if OB.ProgramID != '':
+                    if OB.ProgramID in ['', 'None', None]:
+                        progname = GetCurrentScheduledProgram.execute({})
+                        if progname is not None:
+                            SetProgram.execute({'progname': progname})
+                        else:
+                            SetProgram.execute({'progname': 'ENG'})
+                    else:
                         SetProgram.execute({'progname': OB.ProgramID})
                     WaitForConfigureScience.execute(observation_dict)
                 except ScriptStopTriggered as scriptstop:

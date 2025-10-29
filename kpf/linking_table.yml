@@ -214,6 +214,8 @@ links:
     SetTargetList:
         cmd: magiq.SetTargetList.SetTargetList
     # Observatory APIs
+    GetCurrentScheduledProgram:
+        cmd: observatoryAPIs.GetCurrentScheduledProgram.GetCurrentScheduledProgram
     GetExecutionHistory:
         cmd: observatoryAPIs.GetExecutionHistory.GetExecutionHistory
     GetKPFCCObservingBlocks:
