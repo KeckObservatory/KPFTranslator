@@ -100,7 +100,7 @@ class OBListModel(QtCore.QAbstractListModel):
                 return QtGui.QImage(f'{self.icon_path}/status-away.png')
 
     def refresh_history(self, history):
-        self.log.debug(f'refresh_history')
+        self.log.debug(f'OBListModel refresh_history: {history}')
         OBIDs = [OB.OBID for OB in self.OBs]
         refreshed = 0
         # Clear History in OBs and replace with refreshed values
