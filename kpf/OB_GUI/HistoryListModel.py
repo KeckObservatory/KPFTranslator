@@ -45,7 +45,7 @@ class HistoryListModel(QtCore.QAbstractListModel):
             return QtGui.QImage(f'{self.icon_path}/tick.png')
 
     def refresh_history(self, history):
-        self.log.debug(f'refresh_history')
+        self.log.debug(f'HistoryListModel refresh_history: {history}')
         self.exposures = []
         self.exposure_start_times = []
         for i,h in enumerate(history):

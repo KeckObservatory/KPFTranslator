@@ -31,6 +31,7 @@ class GuiderLastfile(KPFFunction):
             expr = f"($kpfguide.LASTFILE != '{initial_lastfile}')"
             ktl.waitFor(expr, timeout=exptime+timeout)
         lastfile = kpfguide['LASTFILE'].read()
+        print(lastfile)
         return lastfile
 
     @classmethod

@@ -6,8 +6,7 @@ from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
-from kpf.observatoryAPIs import addObservingBlockHistory, getPI
-from kpf.observatoryAPIs.GetObservingBlocks import GetObservingBlocks
+from kpf.observatoryAPIs import addObservingBlockHistory, getPI, get_OBs_from_KPFCC_API
 from kpf.utils.SendEmail import SendEmail
 
 
@@ -49,29 +48,32 @@ class SubmitObserverComment(KPFFunction):
 #                     'This is a long soliloquy on the observing conditions during this observation which is here to make sure we do not have overly restrictive string length limits somewhere in the system.',
 #                     "For completeness, a check on various inconvienient characters:\nJohn O'Meara, Cecilia Payne-Gaposchkin, are question marks ok? (should I even ask?) [perhaps not] {right?}"]
 #         params["comment"] = '\n'.join(comments)
-        log.info('Submitting data to DB:')
-        log.info(params)
-        result = addObservingBlockHistory(params)
-        log.info(f"Response: {result}")
+#         log.info('Submitting data to DB:')
+#         log.info(params)
+#         result = addObservingBlockHistory(params)
+#         log.info(f"Response: {result}")
 
         # Email PI
         log.info(f"Collecting info to email the PI")
-        OB = GetObservingBlocks.execute({'OBid': args.get('OBid')})[0]
-        if not isinstance(OB, ObservingBlock):
-            log.error('Unable to retrieve OB from API')
-            log.error(OB)
-            return
-        result = getPI(OB.semid)
+
+        params = {'id': args.get('OBid', '')}
+        OBs, failure_messages = get_OBs_from_KPFCC_API(params)
+        if len(OBs) > 0:
+            semid = OB[0].semid
+        else:
+            semid = failure_messages[0].split()[1].strip(':').strip('(').strip(')')
+        result = getPI(semid)
         if result.get('success', False) == False:
             log.error('Unable to retrieve PIinfo from API')
         else:
             PIinfo = result.get('data', {})
             email = {'To': PIinfo.get('Email'),
                      'From': 'cc@keck.hawaii.edu',
-                     'Subject': f'KPF Observer Comment on {OB.summary()}',
+                     'Subject': f'KPF Observer Comment',
                      'Message': args.get('comment', ''),
                      }
-            SendEmail.execute(email)
+        print(email)
+#             SendEmail.execute(email)
 
 #         import json
 #         import logging

@@ -655,7 +655,7 @@
         <item row="8" column="0" colspan="2">
          <widget class="QLabel" name="SOB_Observation2">
           <property name="text">
-           <string> </string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -739,7 +739,7 @@
         <item row="7" column="0" colspan="2">
          <widget class="QLabel" name="SOB_Observation1">
           <property name="text">
-           <string> </string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -1743,6 +1743,7 @@
     <addaction name="action_LoadOBsFromFiles"/>
     <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="actionLoad_KPF_CC_OBs"/>
+    <addaction name="actionLoad_Schedule_for_non_CC_Night"/>
    </widget>
    <widget class="QMenu" name="menuFile_2">
     <property name="title">
@@ -1883,6 +1884,11 @@
   <action name="actionDisable_Magiq">
    <property name="text">
     <string>Disable Magiq Star List Integration</string>
+   </property>
+  </action>
+  <action name="actionLoad_Schedule_for_non_CC_Night">
+   <property name="text">
+    <string>Load KPF-CC Schedule for a non-CC Night</string>
    </property>
   </action>
  </widget>

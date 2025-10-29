@@ -97,6 +97,18 @@ class KPFScript(KPFFunction):
     addition to a dict of arguments.
     '''
     @classmethod
+    def pre_condition(cls, args, OB=None):
+        pass
+
+    @classmethod
+    def post_condition(cls, args, OB=None):
+        pass
+
+    @classmethod
+    def perform(cls, args, OB=None):
+        pass
+
+    @classmethod
     def execute(cls, args, OB=None):
         """Carries out this function in its entirety (pre and post conditions
            included)

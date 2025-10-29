@@ -214,6 +214,8 @@ links:
     SetTargetList:
         cmd: magiq.SetTargetList.SetTargetList
     # Observatory APIs
+    GetCurrentScheduledProgram:
+        cmd: observatoryAPIs.GetCurrentScheduledProgram.GetCurrentScheduledProgram
     GetExecutionHistory:
         cmd: observatoryAPIs.GetExecutionHistory.GetExecutionHistory
     GetKPFCCObservingBlocks:
@@ -323,6 +325,8 @@ links:
     EastNorth:
         cmd: telescope.EastNorth.EastNorth
     # Utils
+    BuildCalOB:
+        cmd: utils.BuildCalOB.BuildCalOB
     CheckAllowScheduledCals:
         cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     EndOfNight:

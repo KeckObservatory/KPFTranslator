@@ -13,7 +13,7 @@ class SetND2(KPFFunction):
         CalND2 (str): The neutral density filter to put in the second filter
             wheel. This affects only the light injected in to the simultaneous
             calibration fiber. Allowed Values: `OD 0.1`, `OD 0.3`, `OD 0.5`,
-            `OD 0.8`, `OD 1.0`, `OD 4.0`
+            `OD 1.0`, `OD 1.3`, `OD 2.0`
         wait (bool): Wait for move to complete before returning? default: True
 
     KTL Keywords Used:
@@ -46,8 +46,8 @@ class SetND2(KPFFunction):
     @classmethod
     def add_cmdline_args(cls, parser):
         parser.add_argument('CalND2', type=str,
-                            choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8",
-                                     "OD 1.0", "OD 4.0"],
+                            choices=["OD 0.1", "OD 0.3", "OD 0.5", "OD 1.0",
+                                     "OD 1.3", "OD 2.0"],
                             help='ND2 Filter to use.')
         parser.add_argument("--nowait", dest="wait",
                             default=True, action="store_false",

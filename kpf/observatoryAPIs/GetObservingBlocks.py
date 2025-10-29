@@ -19,7 +19,7 @@ class GetObservingBlocks(KPFFunction):
     @classmethod
     def perform(cls, args):
         params = {'id': args.get('OBid', '')}
-        OBs = get_OBs_from_KPFCC_API(params)
+        OBs, failure_messages = get_OBs_from_KPFCC_API(params)
         if args.get('show_history', False):
             print(f'# Observing History for {OBs[0].summary()}')
             for i,h in enumerate(OBs[0].History):
@@ -33,7 +33,10 @@ class GetObservingBlocks(KPFFunction):
                 comment = h.get('comment', '')
                 if len(comment) > 0:
                     print(f"  Observer comment: {comment}")
-        return OBs
+        if len(failure_messages) > 0:
+            for msg in failure_messages:
+                print(msg)
+        return OBs, failure_messages
 
     @classmethod
     def post_condition(cls, args):

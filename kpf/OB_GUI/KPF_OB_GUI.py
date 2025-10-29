@@ -190,8 +190,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.program_strings.append(f"{progID} on {', '.join(dates)}")
         # KPF-CC Settings and Values
         self.schedule_path = Path(f'/s/sdata1701/Schedules/')
-        self.KPFCC_weather_bands = ['band1', 'band2', 'band3', 'backups']
+        self.KPFCC_weather_bands = ['band1', 'band2', 'band3']
         self.KPFCC_weather_band = self.KPFCC_weather_bands[0]
+        self.OBcache = {}
         self.KPFCC_OBs = {}
         self.KPFCC_start_times = {}
         for WB in self.KPFCC_weather_bands:
@@ -209,22 +210,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.BuildCalibration = [Calibration({})]
         # Example Calibrations
         try:
-            self.slewcalOB = ObservingBlock(self.SLEWCALFILE.ascii)
+            self.OBcache['slewcal'] = ObservingBlock(self.SLEWCALFILE.ascii)
         except Exception as e:
             self.log.warning(f'Faied to load slewcal file: {self.SLEWCALFILE.ascii}')
             self.log.debug(e)
             try:
                 self.log.debug('Loading temporary slewcal OB')
-                self.slewcalOB = ObservingBlock('/s/sdata1701/OBs/jwalawender/Calibrations/SlewCal_EtalonFiber.yaml')
+                self.OBcache['slewcal'] = ObservingBlock('/s/sdata1701/OBs/jwalawender/Calibrations/SlewCal_EtalonFiber.yaml')
             except:
-                self.slewcalOB = None
-        if self.slewcalOB is not None:
+                self.OBcache['slewcal'] = None
+        if self.OBcache['slewcal'] is not None:
             comment = ['This is a pure calibration OB, so the FIU will be in ',
                        'calibration or stow mode when this finishes.\n\n',
                        'Run "FIU->Configure FIU for Observing" from the Menu ',
                        'bar to allow target acquisition once this OB has completed.']
-            self.slewcalOB.CommentToObserver = ''.join(comment)
-            self.example_calOB = copy.deepcopy(self.slewcalOB)
+            self.OBcache['slewcal'].CommentToObserver = ''.join(comment)
+            self.example_calOB = copy.deepcopy(self.OBcache['slewcal'])
         else:
             self.example_calOB = ObservingBlock({})
         # Load other example Cal OBs
@@ -265,6 +266,8 @@ class MainWindow(QtWidgets.QMainWindow):
         LoadOBsFromProgram.triggered.connect(self.load_OBs_from_program)
         LoadOBsFromKPFCC = self.findChild(QtWidgets.QAction, 'actionLoad_KPF_CC_OBs')
         LoadOBsFromKPFCC.triggered.connect(self.load_OBs_from_KPFCC)
+        LoadSchedule = self.findChild(QtWidgets.QAction, 'actionLoad_Schedule_for_non_CC_Night')
+        LoadSchedule.triggered.connect(self.load_OBs_from_schedule_nonCCnight)
 
         #-------------------------------------------------------------------
         # Menu Bar: FIU
@@ -708,11 +711,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SiderealTimeValue.setText(value[:-3])
         self.update_counter += 1
         if self.update_counter > 180:
-            self.log.debug('Updating: SOB info, telescope_released, and history')
+            self.log.debug('Updating: SOB info, telescope_released')
             self.update_counter = 0
             self.update_SOB_display() # Updates alt, az
             self.telescope_released = GetTelescopeRelease.execute({})
-            self.refresh_history()
+            # Update execution history if we're vaguely near observing times
+            try:
+                UTh = int(self.UTValue.text().split(':')[0])
+            except:
+                UTh = 0
+            if UTh >= 3 and UTh <= 17:
+                self.log.debug('Updating: execution history')
+                self.refresh_history()
 
 
     ##-------------------------------------------
@@ -861,8 +871,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.info(f"set_weather_band: {WB}")
         self.SortOrWeather.setCurrentText(WB)
         self.KPFCC_weather_band = WB
-        self.OBListModel.set_list(self.KPFCC_OBs[WB],
+        OBs_for_list = [self.OBcache[obid] for obid in self.KPFCC_OBs[WB]]
+        self.OBListModel.set_list(OBs_for_list,
                                   start_times=self.KPFCC_start_times[WB])
+        self.refresh_history()
 
 
     ##-------------------------------------------
@@ -948,7 +960,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.KPFCC = False
                 self.clear_OB_selection()
                 self.OBListHeader.setText(self.hdr)
-                OBs = GetObservingBlocksByProgram.execute({'program': progID})
+                OBs, failures = GetObservingBlocksByProgram.execute({'program': progID})
                 msg = f"Retrieved {len(OBs)} OBs for program {progID}"
                 self.GUITaskLabel.setText(msg)
                 self.log.debug(msg)
@@ -979,14 +991,17 @@ class MainWindow(QtWidgets.QMainWindow):
         # Iterate of KPF-CC programIDs and retrieve their OBs from DB
         for i,progID in enumerate(progIDs):
             self.log.debug(f'Retrieving OBs for {progID}')
-            programOBs = GetObservingBlocksByProgram.execute({'program': progID})
+            programOBs, failures = GetObservingBlocksByProgram.execute({'program': progID})
             self.OBListModel.extend(programOBs)
             self.log.debug(f'  Got {len(programOBs)} for {progID}, total KPF-CC OB count is now {len(self.OBListModel.OBs)}')
             self.ProgressBar.setValue(int((i+1)/len(progIDs)*100))
         self.GUITaskLabel.setText(f'Retrieved {len(self.OBListModel.OBs)} OBs from all {len(progIDs)} KPF-CC programs.')
         self.set_SortOrWeather()
 
-    def load_OBs_from_schedule(self):
+    def load_OBs_from_schedule_nonCCnight(self, nonCCnight=False):
+        self.load_OBs_from_schedule(nonCCnight=True)
+
+    def load_OBs_from_schedule(self, nonCCnight=False):
         self.log.debug(f"load_OBs_from_schedule")
         if self.verify_overwrite_of_OB_list() == False:
             return
@@ -1005,8 +1020,12 @@ class MainWindow(QtWidgets.QMainWindow):
             utnow = datetime.datetime.utcnow()
             date = utnow-datetime.timedelta(hours=20) # Switch dates at 10am HST, 2000UT
             date_str = date.strftime('%Y-%m-%d').lower()
-        schedule_files = [self.schedule_path / semester / date_str / WB / 'output' / 'night_plan.csv'
-                          for WB in self.KPFCC_weather_bands]
+        if nonCCnight:
+            schedule_files = [self.schedule_path / semester / date_str / f'full-{WB}' / 'output' / 'night_plan.csv'
+                              for WB in self.KPFCC_weather_bands]
+        else:
+            schedule_files = [self.schedule_path / semester / date_str / WB / 'output' / 'night_plan.csv'
+                              for WB in self.KPFCC_weather_bands]
         # Count what we need to load ahead of time for the progress bar
         schedule_file_contents = {}
         Nsched = 0
@@ -1031,7 +1050,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if Nsched == 0:
             ConfirmationPopup('Found no OBs in schedule', '\n'.join(pbar_msg), info_only=True).exec_()
         # Column name for the database id changed in the schedule files, try to handle that
-        id_column_name = 'id' if 'id' in schedule_file_contents[self.KPFCC_weather_bands[0]].keys() else 'unique_id'
+#         id_column_name = 'id' if 'id' in schedule_file_contents[self.KPFCC_weather_bands[0]].keys() else 'unique_id'
+        id_column_name = 'unique_id'
         scheduledOBcount = 0
         retrievedOBcount = 0
         errs = []
@@ -1039,51 +1059,58 @@ class MainWindow(QtWidgets.QMainWindow):
             nOBs_this_WB = len(schedule_file_contents[WB])
             self.log.debug(f'Getting {nOBs_this_WB} OBs for weather band {WB}')
             # Pre-load a slewcal OB for convienience
-            if self.slewcalOB is not None:
-                self.KPFCC_OBs[WB] = [self.slewcalOB]
+            if self.OBcache['slewcal'] is not None:
+                self.KPFCC_OBs[WB] = ['slewcal']
                 self.KPFCC_start_times[WB] = [0]
             else:
                 self.KPFCC_OBs[WB] = []
                 self.KPFCC_start_times[WB] = []
-            for entry in schedule_file_contents[WB]:
+            for schedind,entry in enumerate(schedule_file_contents[WB]):
                 scheduledOBcount += 1
+                obid = entry[id_column_name]
                 if id_column_name not in entry.keys():
-                    errmsg = f"{entry['Target']} Failed: no id column"
+                    errmsg = f"band {WB}, line={schedind}, {entry['Target']}: Failed no id column"
                     self.log.error(errmsg)
                     errs.append(errmsg)
-                    self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
-                elif entry[id_column_name] in ['', None, 'None']:
-                    errmsg = f"{entry['Target']} Failed: no id value"
+                    self.GUITaskLabel.setText('\n'.join(GUImsg))
+                elif obid in ['', None, 'None']:
+                    errmsg = f"{WB} line={schedind}, {entry['Target']}: Failed no id value"
                     self.log.error(errmsg)
                     errs.append(errmsg)
-                    self.GUITaskLabel.setText('\n'.join(GUImsg+errs))
+                    self.GUITaskLabel.setText('\n'.join(GUImsg))
                 else:
-                    result = GetObservingBlocks.execute({'OBid': entry[id_column_name]})
-                    if len(result) > 0:
-                        OB = result[0]
-                    else:
-                        OB = None
-                    if isinstance(OB, ObservingBlock):
-                        self.KPFCC_OBs[WB].append(OB)
-                        start = entry['StartExposure'].split(':')
-                        start_decimal = int(start[0]) + int(start[1])/60
+                    start = entry['StartExposure'].split(':')
+                    start_decimal = int(start[0]) + int(start[1])/60
+                    # See if we have downloaded this before
+                    if obid in self.OBcache.keys():
+                        self.log.info(f"{WB} line={schedind}, {entry['Target']}: Already downloaded")
+                        OB = self.OBcache[obid]
+                        self.KPFCC_OBs[WB].append(obid)
                         self.KPFCC_start_times[WB].append(start_decimal)
                         retrievedOBcount += 1
                     else:
-                        errmsg = f"{entry['Target']}: Failed to retrieve OB"
-                        self.log.error(errmsg)
-                        errs.append(errmsg)
+                        self.log.info(f"{WB} line={schedind}, {entry['Target']}: Downloading ...")
+                        result, failure_messages = GetObservingBlocks.execute({'OBid': obid})
+                        if len(result) > 0:
+                            self.OBcache[obid] = result[0]
+                            self.KPFCC_OBs[WB].append(obid)
+                            self.KPFCC_start_times[WB].append(start_decimal)
+                            retrievedOBcount += 1
+                        else:
+                            errs += failure_messages
                 self.ProgressBar.setValue(int(scheduledOBcount/Nsched*100))
             # Append a slewcal OB for convienience
-            if self.slewcalOB is not None:
-                self.KPFCC_OBs[WB].append(self.slewcalOB)
+            if self.OBcache['slewcal'] is not None:
+                self.KPFCC_OBs[WB].append('slewcal')
                 self.KPFCC_start_times[WB].append(24)
         msg = [f"Retrieved {retrievedOBcount} (out of {scheduledOBcount}) OBs for all weather bands"]
         self.GUITaskLabel.setText("".join(msg))
-        msg.extend(errs)
         self.set_weather_band(self.KPFCC_weather_band)
         self.refresh_history()
         self.set_SortOrWeather()
+        # Pop up for any errors
+        if len(errs) > 0:
+            ConfirmationPopup('Errors retrieving OBs:', errs, info_only=True, warning=True).exec_()
 
     def refresh_history(self):
         self.log.debug(f"refresh_history")

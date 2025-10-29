@@ -142,7 +142,6 @@ def get_OBs_from_KPFCC_API(params):
         return []
     OBs = []
     failures = []
-    invalid = []
     n = len(result)
     for i,entry in enumerate(result):
         log.debug(f'Parsing entry {i+1} of {n}')
@@ -162,14 +161,19 @@ def get_OBs_from_KPFCC_API(params):
 #                     log.error(f'Unable to parse entry {i+1} in to an ObservingBlock')
 #                     log.error(entry)
 #                     log.error(f'{e}')
-                    failures.append([OBid, f'{e}'])
+                    semid = entry.get('semid', '')
+                    failmsg = f"{OBid} ({semid}): {e}"
+                    failures.append(failmsg)
+                    print(entry)
                 else:
                     if OB.validate():
 #                         log.debug(f'OB {i+1} is valid')
                         OBs.append(OB)
                     else:
 #                         log.debug(f'OB {i+1} is invalid')
-                        invalid.append([OBid, entry, OB])
+                        semid = entry.get('semid', '')
+                        failmsg = f"{OBid} ({semid}): Failed validataion"
+                        failures.append(failmsg)
 #                         if OB.Target is not None:
 #                             for line in OB.Target.to_lines(comment=True):
 #                                 if line.find('ERR') >= 0:
@@ -178,12 +182,6 @@ def get_OBs_from_KPFCC_API(params):
 #                             for line in obs.to_lines(comment=True):
 #                                 if line.find('ERR') >= 0:
 #                                     log.warning(line)
-    log.info(f'API returned {len(result)} entries')
-    log.info(f'  Parsed {len(OBs)} OBs from those entries')
-    for failure in failures:
-        log.error(f"  OB {failure[0]} failed: {failure[1]}")
-    for badOB in invalid:
-        log.error(f"  OB {badOB[0]} is invalid")
-        print(badOB[1])
-        print(badOB[2].validate(verbose=True))
-    return OBs
+    log.debug(f'API returned {len(result)} entries')
+    log.debug(f'  Parsed {len(OBs)} OBs from those entries')
+    return OBs, failures

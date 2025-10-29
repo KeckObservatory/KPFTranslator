@@ -270,7 +270,7 @@ class ExecuteCal(KPFFunction):
         log.info(f"Set Detector List")
         SetTriggeredDetectors.execute(calibration)
         # Source Select Shutters
-        if calsource == 'dark':
+        if calsource.lower() == 'dark':
             SetSourceSelectShutters.execute({})
         else:
             if calsource in ['SoCal-SciSky']:
@@ -303,7 +303,7 @@ class ExecuteCal(KPFFunction):
         nexp = int(calibration.get('nExp', 1))
         exptime = float(calibration.get('ExpTime'))
         # If we are in fast read mode, turn on agitator once
-        if runagitator and fast_read_mode:
+        if runagitator and fast_read_mode and calsource.lower() != 'dark':
             StartAgitator.execute({})
         # Loop over exposures
         for j in range(nexp):
@@ -322,7 +322,7 @@ class ExecuteCal(KPFFunction):
                     SetLFCtoStandbyHigh.execute({})
                     return
             # Start agitator for each exposure if we are in normal read mode
-            if runagitator and not fast_read_mode:
+            if runagitator and not fast_read_mode and calsource.lower() != 'dark':
                 StartAgitator.execute({})
             # Set triggered detectors. This is here to force a check of the
             # ENABLED status for each detector.

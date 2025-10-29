@@ -64,7 +64,7 @@ class TakeGuiderCube(KPFFunction):
         # Reset ALL_LOOPS to initial values
 #         if initial_all_loops == 'Active' and collect_image_cube == True:
 #             kpfguide['ALL_LOOPS'].write(initial_all_loops)
-
+        print(cube_file)
         return cube_file
 
     @classmethod

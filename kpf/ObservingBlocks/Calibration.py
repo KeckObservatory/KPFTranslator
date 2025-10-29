@@ -58,10 +58,11 @@ class Calibration(BaseOBComponent):
 
     def get_pruning_guide(self):
         return [(self.get('CalSource').lower() in ['dark', 'home'], self.skip_if_dark),
-                (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterExpTime']),
+                (self.get('ExpMeterMode') in ['off', 'False', False], ['ExpMeterMode', 'ExpMeterExpTime']),
                 (self.get('ExpMeterMode') != 'control', ['ExpMeterBin', 'ExpMeterThreshold']),
                 (self.get('TakeSimulCal') == False, ['CalND1', 'CalND2']),
-                (self.get('CalSource') != 'WideFlat', ['WideFlatPos'])
+                (self.get('CalSource') != 'WideFlat', ['WideFlatPos']),
+                (self.get('WideFlatPos') != 'Blank', ['WideFlatPos']),
                 ]
 
 

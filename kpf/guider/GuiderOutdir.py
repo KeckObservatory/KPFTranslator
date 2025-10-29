@@ -21,7 +21,9 @@ class GuiderOutdir(KPFFunction):
     @classmethod
     def perform(cls, args):
         OUTDIR = ktl.cache('kpfguide', 'OUTDIR')
-        return OUTDIR.read()
+        OUTDIR.monitor()
+        print(OUTDIR.ascii)
+        return OUTDIR.ascii
 
     @classmethod
     def post_condition(cls, args):

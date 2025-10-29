@@ -33,7 +33,7 @@ class QueryReadMode(KPFFunction):
             elif filename == fast_file:
                 modes[side] = 'fast'
             else:
-                green_mode = 'unknown'
+                modes[side] = 'unknown'
 
         log.debug(f"Green read mode: {modes['green']}, Red read mode: {modes['red']}")
         print(f"Green read mode: {modes['green']}")

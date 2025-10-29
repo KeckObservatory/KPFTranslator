@@ -126,8 +126,10 @@ class EndOfNight(KPFFunction):
         if args.get('AO', True) is True and args.get('confirm', False) is False:
             msg = ["",
                    "--------------------------------------------------------------",
-                   "Perform shutdown of AO? This will move the AO hatch and PCU.",
-                   "The AO area should be clear of personnel before proceeding.",
+                   "Perform shutdown of AO? This will:",
+                   "  - Close the AO hatch",
+                   "  - Send the PCU to home",
+                   "These steps should not be run if OSIRIS is in use.",
                    "",
                    "Do you wish to shutdown AO?",
                    "(y/n) [y]:",
@@ -144,13 +146,13 @@ class EndOfNight(KPFFunction):
                     ControlAOHatch.execute({'destination': 'closed'})
                 except FailedToReachDestination:
                     log.error(f"AO hatch did not move successfully")
-                except Exceptions as e:
+                except Exception as e:
                     log.error(f"Failure controlling AO hatch")
                     log.error(e)
                 log.info('Sending PCU stage to Home position')
                 try:
                     SendPCUtoHome.execute({})
-                except Exceptions as e:
+                except Exception as e:
                     log.error(f"Failure sending PCU to home")
                     log.error(e)
     #             log.info('Turning on AO HEPA Filter System')

@@ -29,8 +29,8 @@ class GetObservingBlocksByProgram(KPFFunction):
         if program is None:
             return
         params = {'semid': f"{semester}_{program}"}
-        OBs = get_OBs_from_KPFCC_API(params)
-        return OBs
+        OBs, failure_messages = get_OBs_from_KPFCC_API(params)
+        return OBs, failure_messages
 
     @classmethod
     def post_condition(cls, args):

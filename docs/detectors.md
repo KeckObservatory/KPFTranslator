@@ -13,7 +13,7 @@ The Ca H&K spectrograph has its own, separate timed shutter as it is on a comple
 | Parameter | Green CCD | Red CCD | Ca H&K CCD |
 | --------- | --------- | ------- | ---------- |
 | Readout Time | 47 s | 47 s | 1 s |
-| Read Noise | AMP1: 4.0 e-<br>AMP2: 4.9 e- | AMP1: 4.1 e-<br>AMP2: 4.2 e- |  |
+| Read Noise | see [status page](status.md) | AMP1: 4.3 e-<br>AMP2: 4.3 e- |  |
 | Format | 4080x4080 | 4080x4080 | windowed to<br>1024x255 |
 | Gain | ~5 e-/ADU | ~5 e-/ADU | 5.26 e-/ADU |
 | Data Format | 32 bit | 32 bit | 16 bit |
