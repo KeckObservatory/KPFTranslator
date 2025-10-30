@@ -128,6 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
         self.KPFCC = False
+        
         # Keywords
         # DCS
         dcsint = cfg.getint('telescope', 'telnr', fallback=1)
@@ -236,7 +237,25 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setupUi(self):
         self.log.debug('setupUi')
-        self.setWindowTitle("KPF OB GUI")
+        # Determine git branch
+        try:
+            cmd = 'git branch --show-current'
+            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+            branch = result.stdout.decode().strip().strip('\n')
+            print(branch)
+        except:
+            branch = ''
+        # Get version from filesystem path
+        try:
+            path_version = Path(__file__).parent.parent.parent.parent.name
+            version = f"v{path_version.replace('-', '.')}"
+            if branch not in ['', 'main']:
+                version += f'-{branch}'
+            self.log.info(f'Parsed version {version}')
+            self.setWindowTitle(f"KPF OB GUI ({version})")
+        except:
+            self.log.info(f'Unable to parse version')
+            self.setWindowTitle(f"KPF OB GUI")
 
         #-------------------------------------------------------------------
         # Menu Bar: File
