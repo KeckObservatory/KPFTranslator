@@ -242,13 +242,12 @@ class MainWindow(QtWidgets.QMainWindow):
             cmd = 'git branch --show-current'
             result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
             branch = result.stdout.decode().strip().strip('\n')
-            print(branch)
         except:
             branch = ''
         # Get version from filesystem path
         try:
-            path_version = Path(__file__).absolute().parent.parent.parent.parent.name
-            version = f"v{path_version.replace('-', '.')}"
+            path_version = Path(__file__).resolve().parent.parent.parent.parent.name
+            version = f"v{path_version.replace('-', '.')}" if path_version != 'default' else '' 
             if branch not in ['', 'main']:
                 version += f'-{branch}'
             self.log.info(f'Parsed version {version}')
