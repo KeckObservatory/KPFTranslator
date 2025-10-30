@@ -247,7 +247,7 @@ class MainWindow(QtWidgets.QMainWindow):
             branch = ''
         # Get version from filesystem path
         try:
-            path_version = Path(__file__).parent.parent.parent.parent.name
+            path_version = Path(__file__).absolute().parent.parent.parent.parent.name
             version = f"v{path_version.replace('-', '.')}"
             if branch not in ['', 'main']:
                 version += f'-{branch}'
