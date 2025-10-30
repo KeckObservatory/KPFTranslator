@@ -15,9 +15,9 @@ def string_time_to_decimal(time_str):
 class GetCurrentScheduledProgram(KPFFunction):
     '''Return the program ID (e.g. E123) of the program that is currently
     scheduled. Note that this will only return a program if we are between the
-    start and end times on the schedule (the night starts and ends at 12 degree
-    twilight), so it is possible for observing to be happening before there is
-    an officially scheduled program.
+    start and end times on the schedule. Officially, the night starts and ends
+    at 12 degree twilight), so it is possible for observing to be happening
+    before there is an officially scheduled program.
     '''
     @classmethod
     def pre_condition(cls, args):
