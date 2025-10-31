@@ -255,6 +255,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setupUi(self):
         self.log.debug('setupUi')
+        self.setWindowTitle("KPF OB GUI")
 
         #-------------------------------------------------------------------
         # Menu Bar: File
