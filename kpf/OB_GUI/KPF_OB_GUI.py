@@ -128,7 +128,25 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_path = Path('/s/sdata1701/OBs')
         self.log.debug('Initializing MainWindow')
         self.KPFCC = False
-        
+
+        # Determine git branch
+        try:
+            cmd = 'git branch --show-current'
+            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+            self.branch = result.stdout.decode().strip().strip('\n')
+        except:
+            self.branch = ''
+        # Get version from filesystem path
+        if True:
+            path_version = Path(__file__).resolve().parent.parent.parent.parent.name
+            self.version = f"v{path_version.replace('-', '.')}" if path_version != 'default' else '' 
+            if self.branch not in ['', 'main']:
+                self.version += f'-{self.branch}'
+            self.log.info(f'Parsed version {self.version}')
+#         except:
+#             self.log.info(f'Unable to parse version')
+#             self.version = None
+
         # Keywords
         # DCS
         dcsint = cfg.getint('telescope', 'telnr', fallback=1)
@@ -237,24 +255,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setupUi(self):
         self.log.debug('setupUi')
-        # Determine git branch
-        try:
-            cmd = 'git branch --show-current'
-            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
-            branch = result.stdout.decode().strip().strip('\n')
-        except:
-            branch = ''
-        # Get version from filesystem path
-        try:
-            path_version = Path(__file__).resolve().parent.parent.parent.parent.name
-            version = f"v{path_version.replace('-', '.')}" if path_version != 'default' else '' 
-            if branch not in ['', 'main']:
-                version += f'-{branch}'
-            self.log.info(f'Parsed version {version}')
-            self.setWindowTitle(f"KPF OB GUI ({version})")
-        except:
-            self.log.info(f'Unable to parse version')
-            self.setWindowTitle(f"KPF OB GUI")
 
         #-------------------------------------------------------------------
         # Menu Bar: File
@@ -307,6 +307,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #-------------------------------------------------------------------
         # Main Window
+
+        # GUI Title
+        self.GUITitle = self.findChild(QtWidgets.QLabel, 'GUITitle')
+        if self.version is not None:
+            self.GUITitle.setText(f'KPF Observing Block GUI ({self.version})')
 
         # Program ID
         self.ProgID = self.findChild(QtWidgets.QLabel, 'ProgID')
