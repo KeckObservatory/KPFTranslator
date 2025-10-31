@@ -60,6 +60,9 @@ class WaitForReadout(KPFFunction):
             if 'Red' in detector_list:
                 nextfile = ktl.cache('kpfred', 'NEXTFILE')
                 log.debug(f"Red nextfile: {nextfile.read()}")
+            if 'Ca_HK' in detector_list:
+                nextfile = ktl.cache('kpf_hk', 'FILENAME')
+                log.debug(f"Ca HK filename: {nextfile.read()}")
         else:
             log.warning('WaitForReadout failed to reach expected state')
             log.debug(f'kpfexpose is {kpfexpose["EXPOSE"].read()}')
