@@ -1672,7 +1672,7 @@ class MainWindow(QMainWindow):
     def run_restart_kpfguide_popup(self, num):
         msg = f"Do you really want to restart kpfguide{num}?"
         result = ConfirmationPopup(f'Restart kpfguide{num} Confirmation', msg).exec_()
-        if result == QtWidgets.QMessageBox.Yes:
+        if result == QMessageBox.Yes:
             self.log.info(f'Confirmation is yes, restarting kpfguide{num}')
             self.restart_kpfguide(num)
         else:
@@ -1681,7 +1681,7 @@ class MainWindow(QMainWindow):
 
     def restart_kpfguide(self, num):
         self.log.warning(f"Recieved request to restart kpfguide{num}")
-        restart_kpfguide_cmd = f'kpf restart kpfguide{num} ; echo "Done!" ; sleep 5'
+        restart_kpfguide_cmd = f'kpf restart kpfguide{num} ; echo "Done!" ; sleep 60'
         # Pop up an xterm with the script running
         xterm_cmd = ['xterm',
                      '-title', f'restart kpfguide{num}',
