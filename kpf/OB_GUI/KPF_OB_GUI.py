@@ -134,6 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
             cmd = 'git branch --show-current'
             result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
             self.branch = result.stdout.decode().strip().strip('\n')
+            self.log.debug(f'Got git branch result: {self.branch}')
         except:
             self.branch = ''
         # Get version from filesystem path
