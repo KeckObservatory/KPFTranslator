@@ -112,13 +112,31 @@ class EndOfNight(KPFFunction):
                 time.sleep(2) # time shim
                 check_script_running()
 
-        # Stop tip tilt and agitator
-        StopTipTilt.execute({})
-        StopAgitator.execute({})
-
+        # Allow scheduled cals
+        log.info('Set ALLOWSCHEDULEDCALS to Yes')
+        kpfconfig['ALLOWSCHEDULEDCALS'].write('Yes')
         # Start FIU stow
         log.info('Setting FIU mode to Stowed')
         ConfigureFIU.execute({'mode': 'Stowed', 'wait': False})
+        # Stop tip tilt and agitator
+        StopTipTilt.execute({})
+        StopAgitator.execute({})
+        # Set PROGNAME
+        log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
+        WaitForReady.execute({})
+        SetProgram.execute({'progname': ''})
+        SetObserver.execute({'observer': ''})
+        SetObject.execute({'Object': ''})
+        # Power off FVCs
+        for camera in ['SCI', 'CAHK', 'CAL']:
+            FVCPower.execute({'camera': camera, 'power': 'off'})
+        # Power off LEDs
+        for LED in ['ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']:
+            CalLampPower.execute({'lamp': LED, 'power': 'off'})
+        # Power off Simulcal lamp
+        calsource = kpfconfig['SIMULCALSOURCE'].read()
+        if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
+            CalLampPower.execute({'lamp': calsource, 'power': 'off'})
 
         # ---------------------------------
         # AO Shutdown
@@ -163,27 +181,8 @@ class EndOfNight(KPFFunction):
         # ---------------------------------
         # Remaining non-AO Actions
         # ---------------------------------
-        # Power off FVCs
-        for camera in ['SCI', 'CAHK', 'CAL']:
-            FVCPower.execute({'camera': camera, 'power': 'off'})
-        # Power off LEDs
-        for LED in ['ExpMeterLED', 'CaHKLED', 'SciLED', 'SkyLED']:
-            CalLampPower.execute({'lamp': LED, 'power': 'off'})
         # Finish FIU shutdown
         WaitForConfigureFIU.execute({'mode': 'Stowed'})
-        # Set PROGNAME
-        log.info('Clearing values for PROGNAME, OBSERVER, OBJECT')
-        WaitForReady.execute({})
-        SetProgram.execute({'progname': ''})
-        SetObserver.execute({'observer': ''})
-        SetObject.execute({'Object': ''})
-        # Power off Simulcal lamp
-        calsource = kpfconfig['SIMULCALSOURCE'].read()
-        if calsource in ['U_gold', 'U_daily', 'Th_daily', 'Th_gold']:
-            CalLampPower.execute({'lamp': calsource, 'power': 'off'})
-        # Allow scheduled cals
-        log.info('Set ALLOWSCHEDULEDCALS to Yes')
-        kpfconfig['ALLOWSCHEDULEDCALS'].write('Yes')
 
     @classmethod
     def post_condition(cls, args):
