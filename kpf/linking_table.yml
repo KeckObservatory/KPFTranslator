@@ -38,6 +38,8 @@ links:
         cmd: calbench.CalLampPower.CalLampPower
     IsCalSourceEnabled:
         cmd: calbench.IsCalSourceEnabled.IsCalSourceEnabled
+    ListLFCRuns:
+        cmd: calbench.ListLFCRuns.ListLFCRuns
     PredictNDFilters:
         cmd: calbench.PredictNDFilters.PredictNDFilters
     SetCalSource:
