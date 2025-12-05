@@ -1695,11 +1695,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def load_SciOB_from_file(self):
         self.log.debug('load_SciOB_from_file')
         newOB = self.load_OB_from_file()
-        if newOB.validate() == True:
-            if newOB.ProgramID is not None:
-                self.SciOBProgramID.setText(newOB.ProgramID)
-            self.set_Target(newOB.Target)
-            self.set_Observations(newOB.Observations)
+        if newOB is not None:
+            if newOB.validate() == True:
+                if newOB.ProgramID is not None:
+                    self.SciOBProgramID.setText(newOB.ProgramID)
+                self.set_Target(newOB.Target)
+                self.set_Observations(newOB.Observations)
 
 
     ##-------------------------------------------
