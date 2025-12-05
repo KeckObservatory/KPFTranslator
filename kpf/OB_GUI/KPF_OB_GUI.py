@@ -1771,8 +1771,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def load_CalOB_from_file(self):
         self.log.debug('load_CalOB_from_file')
         newOB = self.load_OB_from_file()
-        if newOB.validate() == True:
-            self.set_Calibrations(newOB.Calibrations)
+        if newOB is not None:
+            if newOB.validate() == True:
+                self.set_Calibrations(newOB.Calibrations)
 
 
     ##-------------------------------------------
