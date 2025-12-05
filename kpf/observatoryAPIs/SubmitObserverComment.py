@@ -59,7 +59,7 @@ class SubmitObserverComment(KPFFunction):
         params = {'id': args.get('OBid', '')}
         OBs, failure_messages = get_OBs_from_KPFCC_API(params)
         if len(OBs) > 0:
-            semid = OB[0].semid
+            semid = OBs[0].semid
         else:
             semid = failure_messages[0].split()[1].strip(':').strip('(').strip(')')
         result = getPI(semid)

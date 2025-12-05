@@ -134,6 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
             cmd = 'git branch --show-current'
             result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
             self.branch = result.stdout.decode().strip().strip('\n')
+            self.log.debug(f'Got git branch result: {self.branch}')
         except:
             self.branch = ''
         # Get version from filesystem path
@@ -905,15 +906,16 @@ class MainWindow(QtWidgets.QMainWindow):
     ## Methods to interact with OB files on disk
     ##-------------------------------------------
     def load_OBs_from_files(self):
-        self.log.debug(f"load_OBs_from_files")
+        self.log.debug(f"Running load_OBs_from_files")
         files, filefilter = QtWidgets.QFileDialog.getOpenFileNames(self, 
                                        'Open Files', f"{self.file_path}",
                                        "OB Files (*yaml);;All Files (*)")
         if files:
-            for file in files:
+            self.log.debug(f"load_OBs_from_files selected {len(files)} files")
+            for i,file in enumerate(files):
                 file = Path(file)
                 if file.exists():
-                    self.log.debug(f"Opening: {str(file)}")
+                    self.log.debug(f"Opening {i+1}/{len(files)}: {str(file)}")
                     newOB = ObservingBlock(file)
                     if newOB.validate() == True:
                         self.OBListModel.appendOB(newOB)
@@ -1693,11 +1695,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def load_SciOB_from_file(self):
         self.log.debug('load_SciOB_from_file')
         newOB = self.load_OB_from_file()
-        if newOB.validate() == True:
-            if newOB.ProgramID is not None:
-                self.SciOBProgramID.setText(newOB.ProgramID)
-            self.set_Target(newOB.Target)
-            self.set_Observations(newOB.Observations)
+        if newOB is not None:
+            if newOB.validate() == True:
+                if newOB.ProgramID is not None:
+                    self.SciOBProgramID.setText(newOB.ProgramID)
+                self.set_Target(newOB.Target)
+                self.set_Observations(newOB.Observations)
 
 
     ##-------------------------------------------
@@ -1768,8 +1771,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def load_CalOB_from_file(self):
         self.log.debug('load_CalOB_from_file')
         newOB = self.load_OB_from_file()
-        if newOB.validate() == True:
-            self.set_Calibrations(newOB.Calibrations)
+        if newOB is not None:
+            if newOB.validate() == True:
+                self.set_Calibrations(newOB.Calibrations)
 
 
     ##-------------------------------------------

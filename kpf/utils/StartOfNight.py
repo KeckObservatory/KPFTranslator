@@ -99,7 +99,7 @@ class StartOfNight(KPFFunction):
 
         HKCOOLING = ktl.cache('kpf_hk', 'COOLING')
         if HKCOOLING.read() != 'On':
-            log.warning('HK Detector Cooling is not On')
+            log.error('HK Detector Cooling is not On')
 
         # Set Observer
         SetObserverFromSchedule.execute({})
@@ -121,7 +121,7 @@ class StartOfNight(KPFFunction):
             log.info(f"Setting dcs.ROTMODE = stationary")
             dcs['ROTMODE'].write('stationary')
         else:
-            log.warning(f"Instrument is {inst}, not configuring DCS")
+            log.error(f"Instrument is {inst}, not configuring DCS")
 
         # Report Agitator status
         runagitator = kpfconfig['USEAGITATOR'].read(binary=True)

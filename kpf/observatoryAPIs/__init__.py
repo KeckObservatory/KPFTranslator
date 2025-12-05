@@ -7,6 +7,7 @@ import urllib3
 urllib3.disable_warnings() # We're going to do verify=False, so ignore warnings
 
 import numpy as np
+from astropy.coordinates import Angle
 
 from kpf import log, cfg
 from kpf.ObservingBlocks.ObservingBlock import ObservingBlock
@@ -156,6 +157,23 @@ def get_OBs_from_KPFCC_API(params):
             else:
                 # Parse the result as an OB in dict form
                 try:
+                    # Convert proper motions from database units (mas/yr) to keck star list units
+                    try:
+                        if entry.get('Target', None) is not None:
+                            if entry.get('Target').get('PMRA', None) is not None:
+                                # Convert from mas/yr to seconds-of-RA/yr
+                                entry['Target']['PMRA'] /= 1000
+                                dec_str = entry.get('Target').get('Dec')
+                                dec = Angle(dec_str, unit='deg')
+                                entry['Target']['PMRA'] /= 15*np.cos(dec.radian)
+                            if entry.get('Target').get('PMDEC', None) is not None:
+                                # Convert from mas/yr to arcsec/yr
+                                entry['Target']['PMDEC'] /= 1000
+                    except Exception as e:
+                        log.error('Failed to convert proper motion units, setting PM to 0')
+                        log.error(e)
+                        entry['Target']['PMRA'] = 0
+                        entry['Target']['PMDEC'] = 0
                     OB = ObservingBlock(entry)
                 except Exception as e:
 #                     log.error(f'Unable to parse entry {i+1} in to an ObservingBlock')
