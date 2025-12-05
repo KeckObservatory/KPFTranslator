@@ -131,8 +131,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Determine git branch
         try:
-            cmd = 'git branch --show-current'
+            cmd = f'cd {Path(__file__).parent} ; git branch --show-current'
             result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+            self.log.debug('git branch --show-current')
+            self.log.debug(result.stdout.decode())
             self.branch = result.stdout.decode().strip().strip('\n')
             self.log.debug(f'Got git branch result: {self.branch}')
         except:
