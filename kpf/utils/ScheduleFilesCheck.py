@@ -13,10 +13,11 @@ from kpf.utils.SendEmail import SendEmail
 ## ScheduleFilesCheck
 ##-----------------------------------------------------------------------------
 class ScheduleFilesCheck(KPFFunction):
-    '''
+    '''Check whether all expected schedule files are present and count the
+    number of lines in each file and see if it is larger than 1.
 
     Args:
-        progname (str): The program name to set if a choice is needed.
+        email (bool): Send an email if a problem is detected?
 
     Functions Called:
 
