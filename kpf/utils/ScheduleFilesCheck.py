@@ -80,12 +80,17 @@ class ScheduleFilesCheck(KPFFunction):
                 log.error(err)
 
         # Results
-        result_str = 'Band        Line Count\n'
+        log.info(f'# KPF-CC Schedule File Check')
+        log.info(f'# {str(date_path)}')
+        result_str = 'Band        Line Count'
+        log.info(f'# {result_str}')
+        result_str += '\n'
         for band in sorted(line_counts.keys()):
+            newline = f'{band:11s} {line_counts[band]:d}'
             if line_counts[band] <= 1:
-                result_str += f'{band:11s} {line_counts[band]:d} <-- Low target count!\n'
-            else:
-                result_str += f'{band:11s} {line_counts[band]:d}\n'
+                newline += ' <-- Low target count!'
+            log.info(f'# {newline}')
+            result_str += f"{newline}\n"
         print(result_str)
 
         # Send Email
