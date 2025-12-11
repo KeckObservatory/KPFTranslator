@@ -723,11 +723,11 @@ they are using.</p>
 <span class="c1">#             except Exception as email_err:</span>
 <span class="c1">#                 log.error(f&#39;Sending email failed&#39;)</span>
 <span class="c1">#                 log.error(email_err)</span>
-<span class="c1">#             kpfgreen = ktl.cache(&#39;kpfgreen&#39;)</span>
-<span class="c1">#             green_fast_file = cfg.get(&#39;acf_files&#39;, &#39;green_fast&#39;)</span>
-<span class="c1">#             green_ACFFILE = Path(kpfgreen[&#39;ACFFILE&#39;].read()).stem</span>
-<span class="c1">#             if green_ACFFILE != green_fast_file:</span>
-<span class="c1">#                 kpfgreen[&#39;ACF&#39;].write(green_fast_file)</span>
+            <span class="n">kpfgreen</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfgreen&#39;</span><span class="p">)</span>
+            <span class="n">green_fast_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acf_files&#39;</span><span class="p">,</span> <span class="s1">&#39;green_fast&#39;</span><span class="p">)</span>
+            <span class="n">green_ACFFILE</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">kpfgreen</span><span class="p">[</span><span class="s1">&#39;ACFFILE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">stem</span>
+            <span class="k">if</span> <span class="n">green_ACFFILE</span> <span class="o">!=</span> <span class="n">green_fast_file</span><span class="p">:</span>
+                <span class="n">kpfgreen</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">green_fast_file</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">red_mode</span> <span class="o">!=</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Setting Red CCD read mode fast&#39;</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -737,11 +737,11 @@ they are using.</p>
 <span class="c1">#             except Exception as email_err:</span>
 <span class="c1">#                 log.error(f&#39;Sending email failed&#39;)</span>
 <span class="c1">#                 log.error(email_err)</span>
-<span class="c1">#             kpfred = ktl.cache(&#39;kpfred&#39;)</span>
-<span class="c1">#             red_fast_file = cfg.get(&#39;acf_files&#39;, &#39;red_fast&#39;)</span>
-<span class="c1">#             red_ACFFILE = Path(kpfred[&#39;ACFFILE&#39;].read()).stem</span>
-<span class="c1">#             if red_ACFFILE != red_fast_file:</span>
-<span class="c1">#                 kpfred[&#39;ACF&#39;].write(red_fast_file)</span>
+            <span class="n">kpfred</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfred&#39;</span><span class="p">)</span>
+            <span class="n">red_fast_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acf_files&#39;</span><span class="p">,</span> <span class="s1">&#39;red_fast&#39;</span><span class="p">)</span>
+            <span class="n">red_ACFFILE</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">kpfred</span><span class="p">[</span><span class="s1">&#39;ACFFILE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">stem</span>
+            <span class="k">if</span> <span class="n">red_ACFFILE</span> <span class="o">!=</span> <span class="n">red_fast_file</span><span class="p">:</span>
+                <span class="n">kpfred</span><span class="p">[</span><span class="s1">&#39;ACF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">red_fast_file</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

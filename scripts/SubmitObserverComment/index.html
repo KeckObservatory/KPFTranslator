@@ -666,7 +666,8 @@ the PI of the associated program immediately with the comment.</p>
 
               <details class="quote">
                 <summary>Source code in <code>kpf/observatoryAPIs/SubmitObserverComment.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 17</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 16</span>
+<span class="normal"> 17</span>
 <span class="normal"> 18</span>
 <span class="normal"> 19</span>
 <span class="normal"> 20</span>
@@ -768,7 +769,9 @@ the PI of the associated program immediately with the comment.</p>
 <span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
-<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SubmitObserverComment</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SubmitObserverComment</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Adds a comment to the specified OB in the KPF-CC database. Also emails</span>
 <span class="sd">    the PI of the associated program immediately with the comment.</span>
 
@@ -803,29 +806,32 @@ the PI of the associated program immediately with the comment.</p>
 <span class="c1">#                     &#39;This is a long soliloquy on the observing conditions during this observation which is here to make sure we do not have overly restrictive string length limits somewhere in the system.&#39;,</span>
 <span class="c1">#                     &quot;For completeness, a check on various inconvienient characters:\nJohn O&#39;Meara, Cecilia Payne-Gaposchkin, are question marks ok? (should I even ask?) [perhaps not] {right?}&quot;]</span>
 <span class="c1">#         params[&quot;comment&quot;] = &#39;\n&#39;.join(comments)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Submitting data to DB:&#39;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">addObservingBlockHistory</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1">#         log.info(&#39;Submitting data to DB:&#39;)</span>
+<span class="c1">#         log.info(params)</span>
+<span class="c1">#         result = addObservingBlockHistory(params)</span>
+<span class="c1">#         log.info(f&quot;Response: {result}&quot;)</span>
 
         <span class="c1"># Email PI</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collecting info to email the PI&quot;</span><span class="p">)</span>
-        <span class="n">OB</span> <span class="o">=</span> <span class="n">GetObservingBlocks</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;OBid&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OBid&#39;</span><span class="p">)})[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span> <span class="n">ObservingBlock</span><span class="p">):</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unable to retrieve OB from API&#39;</span><span class="p">)</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">OB</span><span class="p">)</span>
-            <span class="k">return</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">getPI</span><span class="p">(</span><span class="n">OB</span><span class="o">.</span><span class="n">semid</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OBid&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)}</span>
+        <span class="n">OBs</span><span class="p">,</span> <span class="n">failure_messages</span> <span class="o">=</span> <span class="n">get_OBs_from_KPFCC_API</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">OBs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">semid</span> <span class="o">=</span> <span class="n">OBs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">semid</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">semid</span> <span class="o">=</span> <span class="n">failure_messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">getPI</span><span class="p">(</span><span class="n">semid</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;success&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unable to retrieve PIinfo from API&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">PIinfo</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span>
             <span class="n">email</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;To&#39;</span><span class="p">:</span> <span class="n">PIinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">),</span>
                      <span class="s1">&#39;From&#39;</span><span class="p">:</span> <span class="s1">&#39;cc@keck.hawaii.edu&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;KPF Observer Comment on </span><span class="si">{</span><span class="n">OB</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;KPF Observer Comment&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
                      <span class="p">}</span>
-            <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+<span class="c1">#             SendEmail.execute(email)</span>
 
 <span class="c1">#         import json</span>
 <span class="c1">#         import logging</span>

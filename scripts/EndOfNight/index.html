@@ -850,8 +850,7 @@
 <span class="normal">196</span>
 <span class="normal">197</span>
 <span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Send KPF in to an end of night configuration.</span>
 
 <span class="sd">    - kpffiu.MODE = Stowed</span>
@@ -939,13 +938,31 @@
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># time shim</span>
                 <span class="n">check_script_running</span><span class="p">()</span>
 
-        <span class="c1"># Stop tip tilt and agitator</span>
-        <span class="n">StopTipTilt</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-        <span class="n">StopAgitator</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-
+        <span class="c1"># Allow scheduled cals</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Set ALLOWSCHEDULEDCALS to Yes&#39;</span><span class="p">)</span>
+        <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;ALLOWSCHEDULEDCALS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Yes&#39;</span><span class="p">)</span>
         <span class="c1"># Start FIU stow</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting FIU mode to Stowed&#39;</span><span class="p">)</span>
         <span class="n">ConfigureFIU</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Stowed&#39;</span><span class="p">,</span> <span class="s1">&#39;wait&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+        <span class="c1"># Stop tip tilt and agitator</span>
+        <span class="n">StopTipTilt</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+        <span class="n">StopAgitator</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+        <span class="c1"># Set PROGNAME</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Clearing values for PROGNAME, OBSERVER, OBJECT&#39;</span><span class="p">)</span>
+        <span class="n">WaitForReady</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+        <span class="n">SetProgram</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;progname&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+        <span class="n">SetObserver</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;observer&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+        <span class="n">SetObject</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Object&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+        <span class="c1"># Power off FVCs</span>
+        <span class="k">for</span> <span class="n">camera</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SCI&#39;</span><span class="p">,</span> <span class="s1">&#39;CAHK&#39;</span><span class="p">,</span> <span class="s1">&#39;CAL&#39;</span><span class="p">]:</span>
+            <span class="n">FVCPower</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;camera&#39;</span><span class="p">:</span> <span class="n">camera</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">:</span> <span class="s1">&#39;off&#39;</span><span class="p">})</span>
+        <span class="c1"># Power off LEDs</span>
+        <span class="k">for</span> <span class="n">LED</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ExpMeterLED&#39;</span><span class="p">,</span> <span class="s1">&#39;CaHKLED&#39;</span><span class="p">,</span> <span class="s1">&#39;SciLED&#39;</span><span class="p">,</span> <span class="s1">&#39;SkyLED&#39;</span><span class="p">]:</span>
+            <span class="n">CalLampPower</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;lamp&#39;</span><span class="p">:</span> <span class="n">LED</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">:</span> <span class="s1">&#39;off&#39;</span><span class="p">})</span>
+        <span class="c1"># Power off Simulcal lamp</span>
+        <span class="n">calsource</span> <span class="o">=</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SIMULCALSOURCE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">calsource</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;U_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;U_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_gold&#39;</span><span class="p">]:</span>
+            <span class="n">CalLampPower</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;lamp&#39;</span><span class="p">:</span> <span class="n">calsource</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">:</span> <span class="s1">&#39;off&#39;</span><span class="p">})</span>
 
         <span class="c1"># ---------------------------------</span>
         <span class="c1"># AO Shutdown</span>
@@ -990,27 +1007,8 @@
         <span class="c1"># ---------------------------------</span>
         <span class="c1"># Remaining non-AO Actions</span>
         <span class="c1"># ---------------------------------</span>
-        <span class="c1"># Power off FVCs</span>
-        <span class="k">for</span> <span class="n">camera</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SCI&#39;</span><span class="p">,</span> <span class="s1">&#39;CAHK&#39;</span><span class="p">,</span> <span class="s1">&#39;CAL&#39;</span><span class="p">]:</span>
-            <span class="n">FVCPower</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;camera&#39;</span><span class="p">:</span> <span class="n">camera</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">:</span> <span class="s1">&#39;off&#39;</span><span class="p">})</span>
-        <span class="c1"># Power off LEDs</span>
-        <span class="k">for</span> <span class="n">LED</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ExpMeterLED&#39;</span><span class="p">,</span> <span class="s1">&#39;CaHKLED&#39;</span><span class="p">,</span> <span class="s1">&#39;SciLED&#39;</span><span class="p">,</span> <span class="s1">&#39;SkyLED&#39;</span><span class="p">]:</span>
-            <span class="n">CalLampPower</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;lamp&#39;</span><span class="p">:</span> <span class="n">LED</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">:</span> <span class="s1">&#39;off&#39;</span><span class="p">})</span>
         <span class="c1"># Finish FIU shutdown</span>
         <span class="n">WaitForConfigureFIU</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Stowed&#39;</span><span class="p">})</span>
-        <span class="c1"># Set PROGNAME</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Clearing values for PROGNAME, OBSERVER, OBJECT&#39;</span><span class="p">)</span>
-        <span class="n">WaitForReady</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-        <span class="n">SetProgram</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;progname&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
-        <span class="n">SetObserver</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;observer&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
-        <span class="n">SetObject</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Object&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
-        <span class="c1"># Power off Simulcal lamp</span>
-        <span class="n">calsource</span> <span class="o">=</span> <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;SIMULCALSOURCE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">calsource</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;U_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;U_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_gold&#39;</span><span class="p">]:</span>
-            <span class="n">CalLampPower</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;lamp&#39;</span><span class="p">:</span> <span class="n">calsource</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">:</span> <span class="s1">&#39;off&#39;</span><span class="p">})</span>
-        <span class="c1"># Allow scheduled cals</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Set ALLOWSCHEDULEDCALS to Yes&#39;</span><span class="p">)</span>
-        <span class="n">kpfconfig</span><span class="p">[</span><span class="s1">&#39;ALLOWSCHEDULEDCALS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Yes&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

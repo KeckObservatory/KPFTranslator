@@ -692,8 +692,7 @@
 
               <details class="quote">
                 <summary>Source code in <code>kpf/scripts/RunOB.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 31</span>
-<span class="normal"> 32</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 32</span>
 <span class="normal"> 33</span>
 <span class="normal"> 34</span>
 <span class="normal"> 35</span>
@@ -980,7 +979,14 @@
 <span class="normal">316</span>
 <span class="normal">317</span>
 <span class="normal">318</span>
-<span class="normal">319</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunOB</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunOB</span><span class="p">(</span><span class="n">KPFScript</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script to run an OB.</span>
 
 <span class="sd">    Args:</span>
@@ -1206,7 +1212,13 @@
                     <span class="n">observation_dict</span> <span class="o">=</span> <span class="n">observation</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
                     <span class="n">observation_dict</span><span class="p">[</span><span class="s1">&#39;Gmag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OB</span><span class="o">.</span><span class="n">Target</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Gmag&#39;</span><span class="p">)</span>
                     <span class="n">ConfigureForScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">observation_dict</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">ProgramID</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">OB</span><span class="o">.</span><span class="n">ProgramID</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+                        <span class="n">progname</span> <span class="o">=</span> <span class="n">GetCurrentScheduledProgram</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+                        <span class="k">if</span> <span class="n">progname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">SetProgram</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;progname&#39;</span><span class="p">:</span> <span class="n">progname</span><span class="p">})</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">SetProgram</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;progname&#39;</span><span class="p">:</span> <span class="s1">&#39;ENG&#39;</span><span class="p">})</span>
+                    <span class="k">else</span><span class="p">:</span>
                         <span class="n">SetProgram</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;progname&#39;</span><span class="p">:</span> <span class="n">OB</span><span class="o">.</span><span class="n">ProgramID</span><span class="p">})</span>
                     <span class="n">WaitForConfigureScience</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">observation_dict</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">ScriptStopTriggered</span> <span class="k">as</span> <span class="n">scriptstop</span><span class="p">:</span>

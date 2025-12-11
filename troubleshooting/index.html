@@ -650,6 +650,7 @@
 <li>SoCal<ul>
 <li><a href="#enclosure-lid-does-not-move-1">Enclosure Lid Does not Move 1</a></li>
 <li><a href="#enclosure-lid-does-not-move-2">Enclosure Lid Does not Move 2</a></li>
+<li><a href="#eko-sun-tracker-is-not-on-sun">EKO Sun Tracker is not on Sun</a></li>
 </ul>
 </li>
 </ul>
@@ -954,6 +955,17 @@ modify -s kpffiu FOLDCAL=Homed
 <p>The <code>~/grep_for_dome_error</code> script will exclude many of the noisy, not useful lines in the dome.log file and help with examining the log.</p>
 <p><u>Solution</u>:</p>
 <p>Reboot the controller (raspberry pi): <code>sudo reboot</code> and restart the kpfsocal3 dispatcher: <code>kpf restart kpfsocal3</code>.  Multiple reboots may be required.</p>
+<h2 id="eko-sun-tracker-is-not-on-sun">EKO Sun Tracker is not on Sun</h2>
+<p><u>Symptom</u>:</p>
+<p>The EKO solar tracker is not pointed at the sun, it may be parked.</p>
+<p><u>Problem</u>:</p>
+<p>The tracker is not in the right mode.</p>
+<p><u>Solution</u>:</p>
+<ul>
+<li>Run <code>modify -s kpfsocal EKOCMD=2</code> which tells EKO to "guide" on the Sun.</li>
+<li>Run <code>modify -s kpfsocal EKOMODE=3</code> which sets the EKO in to "Sun-sensor with Learning" mode.</li>
+</ul>
+<p>If that fails, restart the EKO dispatcher: <code>kpf restart kpfsocal1</code> and run the commands again.</p>
               
             </div>
           </div><footer>

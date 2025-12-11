@@ -700,7 +700,10 @@ block until the camera enters the readout state.</p>
 <span class="normal">74</span>
 <span class="normal">75</span>
 <span class="normal">76</span>
-<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForReadout</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForReadout</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Waits for the `kpfexpose.EXPOSE` keyword to be &quot;Readout&quot;.  This will</span>
 <span class="sd">    block until the camera enters the readout state.</span>
 
@@ -752,6 +755,9 @@ block until the camera enters the readout state.</p>
             <span class="k">if</span> <span class="s1">&#39;Red&#39;</span> <span class="ow">in</span> <span class="n">detector_list</span><span class="p">:</span>
                 <span class="n">nextfile</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfred&#39;</span><span class="p">,</span> <span class="s1">&#39;NEXTFILE&#39;</span><span class="p">)</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Red nextfile: </span><span class="si">{</span><span class="n">nextfile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;Ca_HK&#39;</span> <span class="ow">in</span> <span class="n">detector_list</span><span class="p">:</span>
+                <span class="n">nextfile</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_hk&#39;</span><span class="p">,</span> <span class="s1">&#39;FILENAME&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ca HK filename: </span><span class="si">{</span><span class="n">nextfile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;WaitForReadout failed to reach expected state&#39;</span><span class="p">)</span>
             <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfexpose is </span><span class="si">{</span><span class="n">kpfexpose</span><span class="p">[</span><span class="s2">&quot;EXPOSE&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
