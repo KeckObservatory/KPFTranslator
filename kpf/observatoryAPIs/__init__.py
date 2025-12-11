@@ -137,7 +137,7 @@ def setKPFJunkValue(OBid, timestamp, junk=True):
     return query_observatoryAPI('proposal', 'setKPFJunkValue', params, post=True)
 
 
-def get_OBs_from_KPFCC_API(params):
+def get_OBs_from_KPFCC_API(params, verbose=False):
     result = query_observatoryAPI('proposal', 'getKPFObservingBlock', params)
     if result is None:
         return []
@@ -146,6 +146,28 @@ def get_OBs_from_KPFCC_API(params):
     n = len(result)
     for i,entry in enumerate(result):
         log.debug(f'Parsing entry {i+1} of {n}')
+        # Verbose Printing
+        if verbose:
+            print(f'# API Result {i+1} of {n}:')
+            OBentry = copy.deepcopy(entry)
+            target = OBentry.pop('Target', None)
+            if target is not None:
+                print(f'# Target:')
+                print(target)
+            observations = OBentry.pop('Observations', [])
+            for iobs,obs in enumerate(observations):
+                print(f'# Observation {iobs+1}:')
+                print(obs)
+            calibrations = OBentry.pop('Calibrations', [])
+            for ical,cal in enumerate(calibrations):
+                print(f'# Calibration {ical+1}:')
+                print(cal)
+            history = OBentry.pop('History', None)
+            for key in OBentry.keys():
+                print(f"# {key}: {OBentry[key]}")
+            if history is not None:
+                print(f'# History:')
+                print(history)
         if not isinstance(entry, dict):
             failures.append([f'{entry}', 'Entry is not dict'])
         else:
