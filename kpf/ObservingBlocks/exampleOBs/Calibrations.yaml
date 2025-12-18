@@ -34,12 +34,12 @@ Calibrations:
 - CalSource: 'LFCFiber'
   Object: 'LFC'
   nExp: 1
-  ExpTime: 60
+  ExpTime: 10
   TriggerCaHK: False
   TriggerGreen: True
   TriggerRed: True
   IntensityMonitor: False
-  CalND1: 'OD 1.0'
+  CalND1: 'OD 1.3'
   CalND2: 'OD 0.1'
   OpenScienceShutter: True
   OpenSkyShutter: True
