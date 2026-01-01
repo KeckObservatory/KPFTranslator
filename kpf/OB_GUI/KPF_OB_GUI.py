@@ -1126,6 +1126,11 @@ class MainWindow(QtWidgets.QMainWindow):
                             retrievedOBcount += 1
                         else:
                             errs += failure_messages
+                            try:
+                                if type(errs[-1]) == list:
+                                    errs[-1] = errs[-1] + [entry['Target']]
+                            except:
+                                self.log.warning(f'Unable to append Target info to error: {entry["Target"]}')
                 self.ProgressBar.setValue(int(scheduledOBcount/Nsched*100))
             # Append a slewcal OB for convienience
             if self.OBcache['slewcal'] is not None:
@@ -1138,7 +1143,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_SortOrWeather()
         # Pop up for any errors
         if len(errs) > 0:
-            ConfirmationPopup('Errors retrieving OBs:', errs, info_only=True, warning=True).exec_()
+            if type(errs) == list:
+                msg = ''
+                for err in errs:
+                    if type(err) == list:
+                        msg += " ".join(err) + "\n"
+                    else:
+                        msg += f"{str(err)}\n"
+            else:
+                msg = str(errs)
+            self.log.warning('Errors when retrieving OBs:\n'+msg)
+            ConfirmationPopup('Errors retrieving OBs:', msg, info_only=True, warning=True).exec_()
 
     def refresh_history(self):
         self.log.debug(f"refresh_history")
