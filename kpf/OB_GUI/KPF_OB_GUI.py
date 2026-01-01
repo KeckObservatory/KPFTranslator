@@ -1233,8 +1233,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.error(e)
             RA_str = SOB.Target.get('RA')
             Dec_str = SOB.Target.get('Dec')
-            self.SOB_TargetRALabel.setText('RA (Epoch=?):')
-            self.SOB_TargetDecLabel.setText('Dec (Epoch=?):')
+            RAlabel = 'RA (epoch=?):'
+            DecLabel = 'Dec (epoch=?):'
         # If proper motion values are set, try to propagate proper motions
 #         if abs(SOB.Target.PMRA.value) > 0.001 or abs(SOB.Target.PMDEC.value) > 0.001:
 #             try:
