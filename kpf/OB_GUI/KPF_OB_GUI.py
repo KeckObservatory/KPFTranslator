@@ -1233,6 +1233,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.error(e)
             RA_str = SOB.Target.get('RA')
             Dec_str = SOB.Target.get('Dec')
+        if SOB.Target.get('Epoch') is not None:
+            RAlabel = f"RA (epoch={SOB.Target.Epoch}):"
+            DecLabel = f"Dec (epoch={SOB.Target.Epoch}):"
+        else:
             RAlabel = 'RA (epoch=?):'
             DecLabel = 'Dec (epoch=?):'
         # If proper motion values are set, try to propagate proper motions
