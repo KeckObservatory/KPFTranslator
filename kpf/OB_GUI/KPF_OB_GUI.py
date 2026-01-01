@@ -82,7 +82,7 @@ def create_GUI_log(verbose=False):
         logdir.mkdir(mode=0o777, parents=True)
     LogFileName = logdir / 'OB_GUI_v2.log'
     LogFileHandler = RotatingFileHandler(LogFileName,
-                                         maxBytes=100*1024*1024, # 100 MB
+                                         maxBytes=20*1024*1024, # 20 MB
                                          backupCount=1000) # Keep old files
     LogFileHandler.setLevel(logging.DEBUG)
     LogFileHandler.setFormatter(LogFormat)
