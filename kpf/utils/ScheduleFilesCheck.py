@@ -4,8 +4,7 @@ import datetime
 from kpf import log, cfg
 from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
-from kpf.observatoryAPIs import get_semester_dates
-from kpf.observatoryAPIs.GetScheduledPrograms import GetScheduledPrograms
+from kpf.observatoryAPIs import get_semester_dates, query_observatoryAPI
 from kpf.utils.SendEmail import SendEmail
 
 
@@ -32,16 +31,27 @@ class ScheduleFilesCheck(KPFFunction):
     def perform(cls, args):
         errors = []
         utnow = datetime.datetime.utcnow()
+        date_string = utnow.strftime('%Y-%m-%d')
+        log.info(f"# Checking for schedule for the night of {date_string} HST")
         semester, s_start, s_end = get_semester_dates(utnow)
 
+        log.info(f'# KPF-CC Schedule File Check')
         band_names = ['full-band1', 'full-band2', 'full-band3']
-        classical, cadence = GetScheduledPrograms.execute({'semester': 'tonight'})
-        if len(cadence) > 0:
+
+        params = {'date': date_string, 'numdays': 1, 'telnr': 1, 'instrument': 'KPF'}
+        all_programs = query_observatoryAPI('schedule', 'getSchedule', params)
+        classical = [p for p in all_programs if p['Instrument'] == 'KPF']
+        cadence = [p for p in all_programs if p['Instrument'] == 'KPF-CC']
+        cadence_projects = [p['ProjCode'] for p in cadence]
+
+        if len(cadence_projects) > 0:
+            log.info(f"# Found cadence programs: {cadence_projects}")
             band_names.extend(['band1', 'band2', 'band3'])
 
+        log.info(f"# Checking for {len(band_names)} schedules: {band_names}")
         base_path = Path('/s/sdata1701/Schedules')
         semester_path = base_path / semester
-        date_string = (utnow - datetime.timedelta(hours=24)).strftime('%Y-%m-%d')
+        
         date_path = semester_path / date_string
         if date_path.exists() is False:
             err = f"{str(date_path)} does not exist"
@@ -80,7 +90,6 @@ class ScheduleFilesCheck(KPFFunction):
                 log.error(err)
 
         # Results
-        log.info(f'# KPF-CC Schedule File Check')
         log.info(f'# {str(date_path)}')
         result_str = 'Band        Line Count'
         log.info(f'# {result_str}')
@@ -91,7 +100,6 @@ class ScheduleFilesCheck(KPFFunction):
                 newline += ' <-- Low target count!'
             log.info(f'# {newline}')
             result_str += f"{newline}\n"
-        print(result_str)
 
         # Send Email
         if len(errors) > 0:
