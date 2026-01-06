@@ -1422,7 +1422,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.execution_history_file = logdir / f'KPFCC_executions_{semester}.csv'
         if self.execution_history_file.exists() is False:
             with open(self.execution_history_file, 'w') as f:
-                contents = ['# timestamp', 'decimalUT', 'executedID', 'OB summary',
+                contents = ['timestamp', 'decimalUT', 'executedID', 'OB summary',
                             'executed_line', 'scheduleUT',
                             'schedule_current_line', 'scheduleUT_current',
                             'schedule_next_line', 'scheduleUT_next',
