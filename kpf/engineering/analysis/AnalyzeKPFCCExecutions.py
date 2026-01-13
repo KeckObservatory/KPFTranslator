@@ -137,16 +137,22 @@ for key, UTnight_group in zip(UTnight_groups.groups.keys, UTnight_groups.groups)
 
 plt.figure(figsize=(10,6))
 plt.title('Fraction of On Schedule (green), Off Schedule (red), and Unscheduled (Magenta) OBs')
-plt.bar(range(1,len(UTnights)+1,1), frac_on, color='g')
-plt.bar(range(1,len(UTnights)+1,1), frac_off, color='r', bottom=frac_on)
-plt.bar(range(1,len(UTnights)+1,1), frac_un, color='m',
+plt.bar(range(1,len(UTnights)+1,1), frac_on, color='g', alpha=0.6)
+plt.bar(range(1,len(UTnights)+1,1), frac_off, color='r', alpha=0.6,
+        bottom=frac_on)
+plt.bar(range(1,len(UTnights)+1,1), frac_un, color='m', alpha=0.6,
         bottom=np.array(frac_on)+np.array(frac_off))
+
+plt.axhline(PctOnSched, color='g', label=f'On {PctOnSched:.1%}')
+plt.axhline(PctOffSched, color='r', label=f'Off {PctOffSched:.1%}')
+plt.axhline(PctUnSched, color='m', label=f'Un {PctUnSched:.1%}')
 
 for i,N in enumerate(Ntot):
     plt.text(i+0.60, 1.03, f"N={N}", rotation=90)
 
 plt.ylim(0,1.15)
-plt.xlim(0,len(UTnights)+1)
+plt.xlim(0,len(UTnights)+10)
+plt.legend(loc='best')
 plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(1.0))
 tick_labels = ['', ''] + [UTN[5:] for UTN in UTnights]
 plt.gca().set_xticklabels(tick_labels, rotation=90)
