@@ -24,7 +24,9 @@ plugins:
 
 nav:
   - "KPF Home": index.md
-  - "Instrument Status": status.md
+  - "Instrument Status":
+    - "Instrument Status": status.md
+    - "26A Stability Announcement": announcements/2026-02-01_26A-status.md
   - "Instrument Info":
     - "Instrument Subsystems":
       - "Spectrograph": spectrograph.md
@@ -107,6 +109,7 @@ nav:
       - "kpf.calbench":
         - "CalLampPower": scripts/CalLampPower.md
         - "IsCalSourceEnabled": scripts/IsCalSourceEnabled.md
+        - "ListLFCRuns": scripts/ListLFCRuns.md
         - "PredictNDFilters": scripts/PredictNDFilters.md
         - "SetCalSource": scripts/SetCalSource.md
         - "SetFlatFieldFiberPos": scripts/SetFlatFieldFiberPos.md
@@ -198,6 +201,7 @@ nav:
         - "SelectTarget": scripts/SelectTarget.md
         - "SetTargetList": scripts/SetTargetList.md
       - "kpf.observatoryAPIs":
+        - "GetCurrentScheduledProgram": scripts/GetCurrentScheduledProgram.md
         - "GetExecutionHistory": scripts/GetExecutionHistory.md
         - "GetKPFCCObservingBlocks": scripts/GetKPFCCObservingBlocks.md
         - "GetObservingBlocks": scripts/GetObservingBlocks.md
@@ -258,6 +262,7 @@ nav:
         - "BuildCalOB": scripts/BuildCalOB.md
         - "CheckAllowScheduledCals": scripts/CheckAllowScheduledCals.md
         - "EndOfNight": scripts/EndOfNight.md
+        - "ScheduleFilesCheck": scripts/ScheduleFilesCheck.md
         - "SetObserverFromSchedule": scripts/SetObserverFromSchedule.md
         - "SetOutdirs": scripts/SetOutdirs.md
         - "StartGUIs": scripts/StartGUIs.md
