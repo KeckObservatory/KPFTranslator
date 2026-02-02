@@ -120,34 +120,34 @@ When executing the start of night script, the script failed to read and set AO k
 
 <u>Problem</u>:
 
-There is some kind of AO gateway communicaiton problem, and so far we don't know what the root causee is. This happens intermittently. 
+There is some kind of AO gateway communicaiton problem, and so far we don't know what the root cause is. This happens intermittently. 
 
 <u>Solution</u>:
 
 Modify AO keywords as k1obsao in a k1aoserver-new terminal.
 
-* Open AO hatch and check status 
+Open AO hatch and check status:
 
 ```
 modify -s ao aohatchcmd=open
 show -s ao aohatchsts
 ```
 
-* Send PCU to KPF
+Send PCU to KPF:
 
 ```
 modify -s ao pcuname=KPF 
 show -s ao pcuname
 ```
 
-* Send AO rotator to 0 deg
+Send AO rotator to 0 deg:
 
 ```
 modify -s ao obrt=0 
 show -s ao obrt
 ```
 
-* Set rotator to stationary
+Set rotator to stationary:
 
 ```
 modify -s dcs rotmode=stationary
@@ -168,21 +168,14 @@ There is some kind of AO gateway communicaiton problem, and so far we don't know
 
 Modify AO keywords as k1obsao in a k1aoserver-new terminal.
 
-* Close AO hatch and check status 
+Close AO hatch and check status:
 
 ```
 modify -s ao aohatchcmd=close
 show -s ao aohatchsts
 ```
 
-* Send PCU to home
-
-```
-modify -s ao pcuname=home
-show -s ao pcuname
-```
-
-* Send AO rotator to 45 deg
+Send AO rotator to 45 deg:
 
 ```
 modify -s ao obrt=45 
