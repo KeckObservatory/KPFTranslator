@@ -1046,7 +1046,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             semester, start, end = get_semester_dates(datetime.datetime.now())
             utnow = datetime.datetime.utcnow()
-            date = utnow-datetime.timedelta(hours=20) # Switch dates at 10am HST, 2000UT
+            date = utnow-datetime.timedelta(hours=17) # Switch dates at 7am HST, 1700UT
             date_str = date.strftime('%Y-%m-%d').lower()
         if nonCCnight:
             schedule_files = [self.schedule_path / semester / date_str / f'full-{WB}' / 'output' / 'night_plan.csv'
