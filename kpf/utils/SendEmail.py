@@ -24,9 +24,10 @@ class SendEmail(KPFFunction):
 
     @classmethod
     def perform(cls, args):
+        default_to = cfg.get('operations', 'info_email', 'kpf_info')
         msg = MIMEText(args.get('Message', 'Test email. Please ignore.'))
         msg['To'] = args.get('To', 'kpf_info@keck.hawaii.edu')
-        msg['From'] = args.get('From', 'kpf_info@keck.hawaii.edu')
+        msg['From'] = args.get('From', f'{default_to}@keck.hawaii.edu')
         msg['Subject'] = args.get('Subject', 'KPF Alert')
         log.warning(f"Sending email, To {msg.get('To')}")
         log.warning(f"Sending email, Subject {msg.get('Subject')}")

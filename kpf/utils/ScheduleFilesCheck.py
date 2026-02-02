@@ -106,9 +106,10 @@ class ScheduleFilesCheck(KPFFunction):
             msg = 'KPF-CC Schedule May Be Bad\n\n'
             if args.get('email', False) == True:
                 try:
+                    to_value = cfg.get('operations', 'lead_sa', 'jwalawender')
                     SendEmail.execute({'Subject': f'KPF-CC Schedule May Be Bad',
                                        'Message': msg+result_str,
-                                       'To': 'jwalawender@keck.hawaii.edu'})
+                                       'To': f'{to_value}@keck.hawaii.edu'})
                 except Exception as email_err:
                     log.error(f'Sending email failed')
                     log.error(email_err)
