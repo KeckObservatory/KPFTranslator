@@ -1746,11 +1746,11 @@
     </property>
     <addaction name="action_ClearOBList"/>
     <addaction name="actionLoad_KPF_CC_Schedule"/>
+    <addaction name="actionLoad_Schedule_for_non_CC_Night"/>
     <addaction name="separator"/>
-    <addaction name="action_LoadOBsFromFiles"/>
     <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="actionLoad_KPF_CC_OBs"/>
-    <addaction name="actionLoad_Schedule_for_non_CC_Night"/>
+    <addaction name="action_LoadOBsFromFiles"/>
    </widget>
    <widget class="QMenu" name="menuFile_2">
     <property name="title">
