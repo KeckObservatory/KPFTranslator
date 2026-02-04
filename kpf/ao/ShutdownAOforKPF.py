@@ -38,7 +38,7 @@ class ShutdownAOforKPF(KPFFunction):
             ssh_cmd = "ssh k1obsao@k1aoserver-new 'modify -s ao aohatchcmd=1'"
             cmd = ['xterm', '-title', 'CloseAOHatch', '-name', 'CloseAOHatch',
                    '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-                   '-e', f'{ssh_cmd}']
+                   '-e', f'{ssh_cmd} ; echo Done ; sleep 60']
             proc = subprocess.Popen(cmd)
         log.info('Turning on AO HEPA Filter System')
         try:
@@ -51,7 +51,7 @@ class ShutdownAOforKPF(KPFFunction):
             ssh_cmd = "ssh -X k1obsao@k1aoserver-new 'modify -s ao obhpaon=1'"
             cmd = ['xterm', '-title', 'TurnHEPAOn', '-name', 'TurnHEPAOn',
                    '-fn', '10x20', '-bg', 'black', '-fg', 'white',
-                   '-e', f'{ssh_cmd}']
+                   '-e', f'{ssh_cmd} ; echo Done ; sleep 60']
             proc = subprocess.Popen(cmd)
 
     @classmethod
