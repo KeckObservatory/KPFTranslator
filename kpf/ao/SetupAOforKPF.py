@@ -72,7 +72,7 @@ class SetupAOforKPF(KPFFunction):
             log.warning('SetupAOforKPF failed.')
             log.warning(e)
             log.warning(f'SSHing to k1obsao@k1aoserver-new to run kpfStart.csh')
-            ssh_cmd = 'ssh k1obsao@k1aoserver-new kpfStart.csh'
+            ssh_cmd = 'ssh -X k1obsao@k1aoserver-new kpfStart.csh'
             cmd = ['xterm', '-title', 'SetupAOforKPF', '-name', 'SetupAOforKPF',
                    '-fn', '10x20', '-bg', 'black', '-fg', 'white',
                    '-e', f'{ssh_cmd}']
