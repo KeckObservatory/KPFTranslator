@@ -64,8 +64,6 @@ class SetupAOforKPF(KPFFunction):
     
             PCSstagekw = ktl.cache('ao', 'PCSFNAME')
             if PCSstagekw.read() != 'kpf':
-                log.info('Move PCU to Home')
-                SendPCUtoHome.execute({})
                 log.info('Move PCU to KPF')
                 SendPCUtoKPF.execute({})
         except Exception as e:
