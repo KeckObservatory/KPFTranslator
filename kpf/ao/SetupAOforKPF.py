@@ -48,7 +48,6 @@ class SetupAOforKPF(KPFFunction):
     def perform(cls, args):
 
         try:
-            assert 2 == 3
             log.info('Set AO rotator to Manual')
             SetAORotatorManual.execute({})
     
@@ -72,7 +71,10 @@ class SetupAOforKPF(KPFFunction):
             log.warning('SetupAOforKPF failed.')
             log.warning(e)
             log.warning(f'SSHing to k1obsao@k1aoserver-new to run kpfStart.csh')
-            ssh_cmd = 'ssh -X k1obsao@k1aoserver-new kpfStart.csh'
+            ssh_cmds = ['ssh -X k1obsao@k1aoserver-new kpfStart.csh',
+                        f'echo "Done!"',
+                        f'sleep 30']
+            ssh_cmd = ' ; '.join(ssh_cmds)
             cmd = ['xterm', '-title', 'SetupAOforKPF', '-name', 'SetupAOforKPF',
                    '-fn', '10x20', '-bg', 'black', '-fg', 'white',
                    '-e', f'{ssh_cmd}']
