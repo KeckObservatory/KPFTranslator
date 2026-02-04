@@ -1,3 +1,5 @@
+import subprocess
+
 import ktl
 import ktl.Exceptions
 
