@@ -10,26 +10,23 @@
 
 This is an attempt to summarize the status of various sub-systems of the instrument.  Each sub-system name is color coded to indicate the status at a glance: <font color="green">green</font> means functioning normally, <font color="orange">orange</font> means mostly normal, but with some caveats or minor issues, and <font color="red">red</font> means the sub-system is compromised in some way.
 
-Last Status Update: 2025-10-22
+Last Status Update: 2026-02-01
 
-- **<font color="orange">Detector Noise</font>**: Starting in November of 2024, additional pattern noise has been present on the detectors.  We have been working on eliminating the spurious nose, but we have been unable to completely remove it.  As of late-October 2025 the read noise on the Green side remains elevated (~10 electrons), while the red side is near our nominal target (~4.3 electrons).
-- **<font color="orange">LFC</font>**: We are evaluating the reliability of the LFC after recent service. Initial indications look prominsing on reliability, though the bluest flux (below ~490 nm) is not consistent.
+- **<font color="orange">Detector Noise</font>**: Starting in November of 2024, additional non-gaussian noise has been present on the detectors. As of late-October 2025 the read noise on the Green side remains elevated (~10 electrons), while the red side is at our target level (~4.3 electrons).
+- **<font color="orange">LFC</font>**: Initial evaluations of the reliability of the LFC after the recent service look promising, though the bluest flux (below ~490 nm) is not consistent.
+- **<font color="red">Detector Cooling Systems</font>**: The green side CCR has  very little overhead on maintaining temperature and has quasi-periodic deviations which affect the detector. Red side is performing well, but has shown evidence of a slow degradation of performance.
 - **<font color="green">Etalon</font>**: Operational.
-- **<font color="red">Detector Cooling Systems</font>**: Both detectors are now cooled with closed cycle refrigerators (CCRs). The green side CCR has  problems and has very little overhead on maintaining temperature and has quasi-periodic deviations which affect the detector.  Red side is performing well.
-- **<font color="green">Detector Errors</font>**: The red and green detectors suffer from occasional “start state errors” in which the affected detector remains in the start phase and does not produce a useful exposure. The observing scripts detect this, abort the current exposure (with read out) and start a fresh exposure on both cameras. **No action is necessary on the part of the observer.**  The occurrence rate is such that around one in every 180 exposures is affected by one of the two detectors experiencing this error.
+- **<font color="green">Detector Errors</font>**: The red and green detectors suffer from occasional “start state errors” in which the affected detector does not produce a useful exposure. The observing scripts detect this, abort the exposure (with read out) and start a fresh exposure on both cameras. **No action is necessary on the part of the observer.**  The occurrence rate is such that around one in every 180 exposures is affected by one of the two detectors experiencing this error.
 - **<font color="green">Ca H&K Detector</font>**: The CA H&K detector is operational.
 - **<font color="green">Exposure Meter Terminated Exposures</font>**: Operational.
 - **<font color="green">Tip Tilt Corrections</font>**: The tip tilt axis are currently correcting as expected.
 - **<font color="green">Double Star Observations</font>**: Operational.
 - **<font color="green">Simultaneous Calibration (SimulCal)</font>**: Simultaneous calibrations are supported.
-- **<font color="orange">Nod to Sky Observations</font>**: For observations which need a sky measurement other than the built in sky fibers, nodding away to a sky position can be accomplished manually by running separate OBs for the target and sky and asking the OA to offset the telescope as appropriate.  We plan to build a separate Nod To Sky observing mode which will accomplish this within a single OB, but that is not yet available.
 - **<font color="red">Off Target Guiding</font>**: Not yet commissioned.  Currently, the tip tilt system must be able to detect the science target in order to position it on the fiber.
 
-### KPF Era 4.0 Stability Summary
+### KPF Era 4.0 Temperature Stability Summary
 
-KPF Era 4.0 began in late-October 2025 after Servicing Mission 4.
-
-List of Temperature Excursion Events:
+KPF Era 4.0 began in late-October 2025 after Servicing Mission 4. We continue to have issues with the cooling systems for the detectors, especially the Green side.  We list below all temperature excursions in which one of the detectors deviated temperature by more than 5 mK from the set point.  Excursions of order 1 K (1000 mK) or more are expected to induce a radial velocity offset which is not calibratable.  We are providing this data as a guide, but users should not assume that past performance is a good indicator of future performance -- we have seen indications that the cooling systems are slowly degrading, so an increasing rate of these temperature excursions is a distinct possibility.
 
 | Side | Date & Time (HST)   | Delta T  |
 | ---- | ------------------- | -------- |
