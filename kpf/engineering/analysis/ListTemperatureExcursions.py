@@ -56,15 +56,12 @@ def find_excursions(side, threshold=0.005, min_duration=1*60*60, set_point=-100,
         not_peak = (in_window_inds != max_ind)
         remove_inds.extend(in_window_inds[not_peak])
 
-
-    print(f'{side} Final list')
     final_times = []
     final_values = []
     for i,peak in enumerate(peak_values):
         if i not in remove_inds:
             final_times.append(peak_times[i])
             final_values.append(peak_values[i])
-            print(f"{peak_times[i]}: {peak*1000:4.0f} mK")
 
     return det_time, det_temp, final_times, final_values
 
@@ -72,6 +69,22 @@ def find_excursions(side, threshold=0.005, min_duration=1*60*60, set_point=-100,
 if __name__ == '__main__':
     Gdet_time, Gdet_temp, Gfinal_times, Gfinal_values = find_excursions('Green')
     Rdet_time, Rdet_temp, Rfinal_times, Rfinal_values = find_excursions('Red')
+
+    Excursions = []
+    GreenExcursions = list(zip(Gfinal_times, Gfinal_values, ['G']*len(Gfinal_values)))
+    if GreenExcursions: Excursions.extend(GreenExcursions)
+    RedExcursions = list(zip(Rfinal_times, Rfinal_values, ['R']*len(Gfinal_values)))
+    if RedExcursions: Excursions.extend(RedExcursions)
+    Excursions = sorted(Excursions)
+
+    print()
+    print(f'List of Temperature Excursion Events')
+    print('| Side | Date & Time (HST)   | Delta T  |')
+    print('| ---- | ------------------- | -------- |')
+    for i,entry in enumerate(Excursions):
+        time_str = entry[0].strftime('%Y-%m-%d %H:%M:%S')
+        print(f"| {entry[2]:4s} | {time_str} | {entry[1]*1000:5.0f} mK |")
+
 
     # Plot the results to visualize
     plt.figure(figsize=(12, 5))
