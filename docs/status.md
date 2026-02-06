@@ -2,6 +2,7 @@
 
 ### Current and Past Announcements
 
+* 2026 February: [26A Status Announcement](announcements/2026-02-01_26A-status.md)
 * 2025 August: [26A Stability Announcement](KPF Stability Statement - August 15 2025.pdf)
 * 2023 September: [Keck Science Meeting presentation](Keck Science Meeting 2023 Breakout Session.pdf)
 
@@ -23,3 +24,26 @@ Last Status Update: 2025-10-22
 - **<font color="green">Simultaneous Calibration (SimulCal)</font>**: Simultaneous calibrations are supported.
 - **<font color="orange">Nod to Sky Observations</font>**: For observations which need a sky measurement other than the built in sky fibers, nodding away to a sky position can be accomplished manually by running separate OBs for the target and sky and asking the OA to offset the telescope as appropriate.  We plan to build a separate Nod To Sky observing mode which will accomplish this within a single OB, but that is not yet available.
 - **<font color="red">Off Target Guiding</font>**: Not yet commissioned.  Currently, the tip tilt system must be able to detect the science target in order to position it on the fiber.
+
+### KPF Era 4.0 Summary
+
+KPF Era 4.0 began in late-October 2025 after Servicing Mission 4.
+
+List of Temperature Excursion Events:
+
+| Side | Date & Time (HST)   | Delta T  |
+| ---- | ------------------- | -------- |
+| G    | 2025-11-09 21:22:50 |     7 mK |
+| G    | 2025-11-10 05:48:42 |   109 mK |
+| G    | 2025-11-10 13:15:18 |  2825 mK |
+| G    | 2025-11-15 11:50:50 |   250 mK |
+| G    | 2025-11-16 16:04:50 |  5779 mK |
+| G    | 2025-11-17 09:17:54 |  5564 mK |
+| G    | 2025-11-17 10:34:40 |  6147 mK |
+| G    | 2025-11-17 11:52:54 |    87 mK |
+| G    | 2025-11-18 05:06:38 |  4200 mK |
+| G    | 2025-11-19 01:01:22 |  5862 mK |
+| G    | 2025-11-19 02:15:06 |    90 mK |
+| G    | 2026-01-23 21:28:10 |    95 mK |
+| G    | 2026-01-25 16:15:50 |   712 mK |
+| G    | 2026-01-30 19:52:12 |   129 mK |

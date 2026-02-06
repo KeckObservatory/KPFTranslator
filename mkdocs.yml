@@ -101,6 +101,7 @@ nav:
         - "SetAORotatorManual": scripts/SetAORotatorManual.md
         - "SetupAOforACAM": scripts/SetupAOforACAM.md
         - "SetupAOforKPF": scripts/SetupAOforKPF.md
+        - "ShutdownAOforKPF": scripts/ShutdownAOforKPF.md
         - "TurnHepaOff": scripts/TurnHepaOff.md
         - "TurnHepaOn": scripts/TurnHepaOn.md
         - "TurnLightSourceOff": scripts/TurnLightSourceOff.md
@@ -134,8 +135,6 @@ nav:
         - "TakeADCGridData": scripts/TakeADCGridData.md
         - "TakeADCOffsetGridData": scripts/TakeADCOffsetGridData.md
         - "TakeGuiderSensitivityData": scripts/TakeGuiderSensitivityData.md
-        - "TriggerGreenMiniFill": scripts/TriggerGreenMiniFill.md
-        - "TriggerRedMiniFill": scripts/TriggerRedMiniFill.md
         - "AnalyzeGridSearch": scripts/AnalyzeGridSearch.md
         - "AnalyzeTipTiltPerformance": scripts/AnalyzeTipTiltPerformance.md
         - "Fit2DGridSearch": scripts/Fit2DGridSearch.md
