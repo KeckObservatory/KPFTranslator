@@ -24,6 +24,8 @@ links:
         cmd: ao.SetupAOforACAM.SetupAOforACAM
     SetupAOforKPF:
         cmd: ao.SetupAOforKPF.SetupAOforKPF
+    ShutdownAOforKPF:
+        cmd: ao.ShutdownAOforKPF.ShutdownAOforKPF
     TurnHepaOff:
         cmd: ao.TurnHepaOff.TurnHepaOff
     TurnHepaOn:
