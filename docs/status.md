@@ -25,7 +25,7 @@ Last Status Update: 2025-10-22
 - **<font color="orange">Nod to Sky Observations</font>**: For observations which need a sky measurement other than the built in sky fibers, nodding away to a sky position can be accomplished manually by running separate OBs for the target and sky and asking the OA to offset the telescope as appropriate.  We plan to build a separate Nod To Sky observing mode which will accomplish this within a single OB, but that is not yet available.
 - **<font color="red">Off Target Guiding</font>**: Not yet commissioned.  Currently, the tip tilt system must be able to detect the science target in order to position it on the fiber.
 
-### KPF Era 4.0 Summary
+### KPF Era 4.0 Stability Summary
 
 KPF Era 4.0 began in late-October 2025 after Servicing Mission 4.
 
