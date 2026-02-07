@@ -24,9 +24,7 @@ plugins:
 
 nav:
   - "KPF Home": index.md
-  - "Instrument Status":
-    - "Instrument Status": status.md
-    - "26A Stability Announcement": announcements/2026-02-01_26A-status.md
+  - "Instrument Status": status.md
   - "Instrument Info":
     - "Instrument Subsystems":
       - "Spectrograph": spectrograph.md
