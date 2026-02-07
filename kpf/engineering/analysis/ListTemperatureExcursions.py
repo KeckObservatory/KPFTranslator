@@ -83,7 +83,7 @@ if __name__ == '__main__':
     print('| ---- | ------------------- | -------- |')
     for i,entry in enumerate(Excursions):
         time_str = entry[0].strftime('%Y-%m-%d %H:%M:%S')
-        print(f"| {entry[2]:4s} | {time_str} | {entry[1]*1000:5.0f} mK |")
+        print(f"| {entry[2]:4s} | {time_str} | {entry[1]*1000:5,.0f} mK |")
 
 
     # Plot the results to visualize
