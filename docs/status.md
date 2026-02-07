@@ -1,16 +1,12 @@
 # Instrument Status
 
-### Current and Past Announcements
+### Current Announcements
 
 * 2026 February: [26A Status Announcement](announcements/2026-02-01_26A-status.md)
-* 2025 August: [26A Stability Announcement](KPF Stability Statement - August 15 2025.pdf)
-* 2023 September: [Keck Science Meeting presentation](Keck Science Meeting 2023 Breakout Session.pdf)
 
 ### Status Summary by Subsystem
 
 This is an attempt to summarize the status of various sub-systems of the instrument.  Each sub-system name is color coded to indicate the status at a glance: <font color="green">green</font> means functioning normally, <font color="orange">orange</font> means mostly normal, but with some caveats or minor issues, and <font color="red">red</font> means the sub-system is compromised in some way.
-
-Last Status Update: 2026-02-01
 
 - **<font color="orange">Detector Noise</font>**: Starting in November of 2024, additional non-gaussian noise has been present on the detectors. As of late-October 2025 the read noise on the Green side remains elevated (~10 electrons), while the red side is at our target level (~4.3 electrons).
 - **<font color="orange">LFC</font>**: Initial evaluations of the reliability of the LFC after the recent service look promising, though the bluest flux (below ~490 nm) is not consistent.
@@ -23,6 +19,8 @@ Last Status Update: 2026-02-01
 - **<font color="green">Double Star Observations</font>**: Operational.
 - **<font color="green">Simultaneous Calibration (SimulCal)</font>**: Simultaneous calibrations are supported.
 - **<font color="red">Off Target Guiding</font>**: Not yet commissioned.  Currently, the tip tilt system must be able to detect the science target in order to position it on the fiber.
+
+Last Updated: 2026-02-01
 
 ### KPF Era 4.0 Temperature Stability Summary
 
@@ -44,3 +42,8 @@ KPF Era 4.0 began in late-October 2025 after Servicing Mission 4. We continue to
 | G    | 2026-01-23 21:28:10 |    95 mK |
 | G    | 2026-01-25 16:15:50 |   712 mK |
 | G    | 2026-01-30 19:52:12 |   129 mK |
+
+### Past Announcements
+
+* 2025 August: [26A Stability Announcement](KPF Stability Statement - August 15 2025.pdf)
+* 2023 September: [Keck Science Meeting presentation](Keck Science Meeting 2023 Breakout Session.pdf)
