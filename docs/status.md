@@ -26,22 +26,20 @@ Last Updated: 2026-02-01
 
 KPF Era 4.0 began in late-October 2025 after Servicing Mission 4. We continue to have issues with the cooling systems for the detectors, especially the Green side.  We list below all temperature excursions in which one of the detectors deviated temperature by more than 5 mK from the set point.  Excursions of order 1 K (1000 mK) or more are expected to induce a radial velocity offset which is not calibratable.  We are providing this data as a guide, but users should not assume that past performance is a good indicator of future performance -- we have seen indications that the cooling systems are slowly degrading, so an increasing rate of these temperature excursions is a distinct possibility.
 
-| Side | Date & Time (HST)   | Delta T  |
-| ---- | ------------------- | -------- |
-| G    | 2025-11-09 21:22:50 |     7 mK |
-| G    | 2025-11-10 05:48:42 |   109 mK |
-| G    | 2025-11-10 13:15:18 | 2,825 mK |
-| G    | 2025-11-15 11:50:50 |   250 mK |
-| G    | 2025-11-16 16:04:50 | 5,779 mK |
-| G    | 2025-11-17 09:17:54 | 5,564 mK |
-| G    | 2025-11-17 10:34:40 | 6,147 mK |
-| G    | 2025-11-17 11:52:54 |    87 mK |
-| G    | 2025-11-18 05:06:38 | 4,200 mK |
-| G    | 2025-11-19 01:01:22 | 5,862 mK |
-| G    | 2025-11-19 02:15:06 |    90 mK |
-| G    | 2026-01-23 21:28:10 |    95 mK |
-| G    | 2026-01-25 16:15:50 |   712 mK |
-| G    | 2026-01-30 19:52:12 |   129 mK |
+| Side  | Duration     | Delta T   | Start (HST)         | End (HST)           |
+| ----- | ------------ | --------- | ------------------- | ------------------- |
+| Green |   0.05 hours |      7 mK | 2025-11-09 21:22:14 | 2025-11-09 21:25:06 |
+| Green |   0.36 hours |    109 mK | 2025-11-10 05:37:12 | 2025-11-10 05:58:50 |
+| Green |   2.78 hours |  2,825 mK | 2025-11-10 11:09:06 | 2025-11-10 13:55:54 |
+| Green |   0.63 hours |    250 mK | 2025-11-15 11:28:36 | 2025-11-15 12:06:32 |
+| Green |   2.54 hours |  5,779 mK | 2025-11-16 14:27:20 | 2025-11-16 16:59:54 |
+| Green |   4.04 hours |  6,147 mK | 2025-11-17 07:52:06 | 2025-11-17 11:54:40 |
+| Green |   2.31 hours |  4,200 mK | 2025-11-18 03:40:28 | 2025-11-18 05:59:16 |
+| Green |   3.14 hours |  5,862 mK | 2025-11-18 23:08:20 | 2025-11-19 02:16:52 |
+| Green |   0.56 hours |     95 mK | 2026-01-23 21:12:46 | 2026-01-23 21:46:16 |
+| Green |   1.20 hours |    712 mK | 2026-01-25 15:25:34 | 2026-01-25 16:37:48 |
+| Green |   0.46 hours |    129 mK | 2026-01-30 19:36:24 | 2026-01-30 20:03:54 |
+| Green |  13.82 hours | 53,527 mK | 2026-02-17 21:17:12 | 2026-02-18 11:06:40 |
 
 ### Past Announcements
 
