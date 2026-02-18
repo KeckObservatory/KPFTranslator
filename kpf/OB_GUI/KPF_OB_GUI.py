@@ -202,6 +202,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.fast = False
         # Tracked values
         self.disabled_detectors = []
+        self.disable_telescope_release_check = False
         self.telescope_released = GetTelescopeRelease.execute({})
         # Get KPF Programs on schedule
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
@@ -305,9 +306,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SendOBListToMagiq = self.findChild(QtWidgets.QAction, 'actionSend_Current_OBs_as_Star_List')
         self.SendOBListToMagiq.triggered.connect(self.OBListModel.update_star_list)
         self.SendOBListToMagiq.setEnabled(False)
-
         self.DisableMagiq = self.findChild(QtWidgets.QAction, 'actionDisable_Magiq')
         self.DisableMagiq.triggered.connect(self.toggle_magiq_enabled)
+        self.OverrideRelease = self.findChild(QtWidgets.QAction, 'actionOverride_Telescope_Release_Check')
+        self.OverrideRelease.triggered.connect(self.toggle_telescope_release_check)
 
         #-------------------------------------------------------------------
         # Main Window
@@ -741,7 +743,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug('Updating: SOB info, telescope_released')
             self.update_counter = 0
             self.update_SOB_display() # Updates alt, az
-            self.telescope_released = GetTelescopeRelease.execute({})
+            if self.disable_telescope_release_check is True:
+                self.telescope_released = True
+            else:
+                self.telescope_released = GetTelescopeRelease.execute({})
             # Update execution history if we're vaguely near observing times
             try:
                 UTh = int(self.UTValue.text().split(':')[0])
@@ -750,7 +755,6 @@ class MainWindow(QtWidgets.QMainWindow):
             if UTh >= 3 and UTh <= 17:
                 self.log.debug('Updating: execution history')
                 self.refresh_history()
-
 
     ##-------------------------------------------
     ## Methods for Observing Menu Actions
@@ -846,6 +850,18 @@ class MainWindow(QtWidgets.QMainWindow):
         action_text = f"{action} Magiq Star List Integration"
         self.DisableMagiq.setText(action_text)
         self.update_selected_instrument(self.SelectedInstrument.text())
+
+    def toggle_telescope_release_check(self):
+        self.log.info('Toggling telescope release check')
+        self.disable_telescope_release_check = not self.disable_telescope_release_check
+        self.log.debug(f"disable release check = {self.disable_telescope_release_check}")
+        action = {False: 'Disable', True: 'Enable'}[self.disable_telescope_release_check]
+        action_text = f"{action} Telescope Release Check"
+        self.OverrideRelease.setText(action_text)
+        if self.disable_telescope_release_check is True:
+            self.telescope_released = True
+        else:
+            self.telescope_released = GetTelescopeRelease.execute({})
 
 
     ##-------------------------------------------
