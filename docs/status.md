@@ -40,6 +40,7 @@ KPF Era 4.0 began in late-October 2025 after Servicing Mission 4. We continue to
 | Green |   1.20 hours |    712 mK | 2026-01-25 15:25:34 | 2026-01-25 16:37:48 |
 | Green |   0.46 hours |    129 mK | 2026-01-30 19:36:24 | 2026-01-30 20:03:54 |
 | Green |  13.82 hours | 53,527 mK | 2026-02-17 21:17:12 | 2026-02-18 11:06:40 |
+| Green |   4.48 hours | 11,585 mK | 2026-02-19 02:40:56 | 2026-02-19 07:09:32 |
 
 ### Past Announcements
 
