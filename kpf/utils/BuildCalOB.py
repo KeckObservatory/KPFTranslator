@@ -106,7 +106,9 @@ class BuildCalOB(KPFFunction):
             print(f"# {cal_string}")
             duration = EstimateOBDuration.execute({'verbose': True}, OB=OB)
         if args.get('execute', False):
-            RunOB.execute({}, OB=OB)
+            runOBargs = {'waitforscript': args.get('waitforscript', False),
+                         'scheduled': args.get('scheduled', False)}
+            RunOB.execute(runOBargs, OB=OB)
 
         return OB
 
@@ -117,16 +119,22 @@ class BuildCalOB(KPFFunction):
     @classmethod
     def add_cmdline_args(cls, parser):
         parser.add_argument('calinputs', nargs='*',
-                            help="Calibrations to take in the form ")
+            help="Calibrations to take in the form ")
         parser.add_argument("-v", "-t", "--time", "--estimate", dest="estimate",
-                            default=False, action="store_true",
-                            help="Estimate the execution time for this OB?")
+            default=False, action="store_true",
+            help="Estimate the execution time for this OB?")
         parser.add_argument("-s", "--save", dest="save", type=str, default='',
-                            help="Save resulting OB to the specified file.")
+            help="Save resulting OB to the specified file.")
         parser.add_argument("-o", "--overwrite", dest="overwrite",
-                            default=False, action="store_true",
-                            help="Overwrite output file if it exists?")
-        parser.add_argument("--execute", dest="execute",
-                            default=False, action="store_true",
-                            help="Execute the resulting OB?")
+            default=False, action="store_true",
+            help="Overwrite output file if it exists?")
+        parser.add_argument("-x", "--execute", dest="execute",
+            default=False, action="store_true",
+            help="Execute the resulting OB?")
+        parser.add_argument('-w', '--waitforscript', dest="waitforscript",
+            default=False, action="store_true",
+            help='Wait for running script to end before starting?')
+        parser.add_argument('-a', '--scheduled', dest="scheduled",
+            default=False, action="store_true",
+            help='Script is scheduled and should obey ALLOWSCHEDULEDCALS keyword')
         return super().add_cmdline_args(parser)
