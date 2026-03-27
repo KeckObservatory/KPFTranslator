@@ -60,21 +60,6 @@ Calibrations:
   OpenSkyShutter: True
   TakeSimulCal: True
   WideFlatPos: 'Blank'
-# Th Daily (for CaHK): 
-- CalSource: 'Th_daily'
-  Object: 'ThAr_forCaHK'
-  nExp: 1
-  ExpTime: 120
-  TriggerCaHK: False
-  TriggerGreen: True
-  TriggerRed: True
-  IntensityMonitor: False
-  CalND1: 'OD 0.1'
-  CalND2: 'OD 0.1'
-  OpenScienceShutter: True
-  OpenSkyShutter: True
-  TakeSimulCal: True
-  WideFlatPos: 'Blank'
 # U Daily: 
 - CalSource: 'U_daily'
   Object: 'UNe'
