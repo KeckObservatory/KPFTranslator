@@ -148,6 +148,7 @@ class RunSoCal(KPFScript):
             time.sleep(wait)
         elif now_decimal > end_time:
             log.info("End time for today's SoCal window has passed")
+            clear_script_keywords()
             return
 
         ConfigureFIU.execute({'mode': 'Calibration'})
