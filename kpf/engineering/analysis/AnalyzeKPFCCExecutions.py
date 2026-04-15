@@ -10,10 +10,11 @@ from matplotlib import pyplot as plt
 from matplotlib import ticker
 
 
-semester = '2025B'
+semester = '2026A'
 logdir = Path(f'/s/sdata1701/KPFTranslator_logs/')
 execution_history_file = logdir / f'KPFCC_executions_{semester}.csv'
 executions = Table.read(execution_history_file, format='ascii.csv')
+print(f'Loaded {len(executions)} executions in {semester}')
 
 remove_rows = []
 timestamps = []
@@ -30,16 +31,24 @@ for r,ex in enumerate(executions):
 #         print(f"Removing {ex['OB summary']} because scheduled time is {ex['scheduleUT']}")
 #         remove_rows.append(r)
     else:
-        # Add timestamps
-        timestamps.append(datetime.strptime(ex['timestamp'], '%Y-%m-%d %H:%M:%S UT'))
-        # Add line delta
-        line_deltas.append(ex['executed_line'] - ex['schedule_current_line'] - 0.5)
-        # Add time deltas
-        time_deltas.append(ex['decimalUT']-ex['scheduleUT'])
-        # Add night string
-        UTnight_strings.append(ex['timestamp'].split()[0])
-        # Check current, next lines are 1 apart
-        CNdelta.append(ex['schedule_next_line'] - ex['schedule_current_line'])
+        try:
+            # Add timestamps
+            timestamps.append(datetime.strptime(ex['timestamp'], '%Y-%m-%d %H:%M:%S UT'))
+            # Add line delta
+            line_deltas.append(ex['executed_line'] - ex['schedule_current_line'] - 0.5)
+            # Add time deltas
+            time_deltas.append(ex['decimalUT']-ex['scheduleUT'])
+            # Add night string
+            UTnight_strings.append(ex['timestamp'].split()[0])
+            # Check current, next lines are 1 apart
+            CNdelta.append(ex['schedule_next_line'] - ex['schedule_current_line'])
+        except Exception as e:
+            print('Failed to add supplementary metadata')
+            print(e)
+            print()
+            print(ex.keys())
+            print(ex)
+            raise e
 
 print(f"Removing {len(remove_rows)} entries")
 executions.remove_rows(remove_rows)
@@ -92,7 +101,7 @@ plt.legend(loc='best')
 plt.ylabel('N Executions')
 
 plt.xlabel('Time Delta (hours) [actual-scheduled]')
-plt.savefig('KPF-CC_TimeOffsetDistribution.png', bbox_inches='tight', pad_inches=0.1)
+plt.savefig(f'KPF-CC_TimeOffsetDistribution_{semester}.png', bbox_inches='tight', pad_inches=0.1)
 
 
 # Line Delta Plot
@@ -156,5 +165,5 @@ plt.legend(loc='best')
 plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(1.0))
 tick_labels = ['', ''] + [UTN[5:] for UTN in UTnights]
 plt.gca().set_xticklabels(tick_labels, rotation=90)
-plt.savefig('KPF-CC_OnScheduleRate.png', bbox_inches='tight', pad_inches=0.1)
+plt.savefig(f'KPF-CC_OnScheduleRate_{semester}.png', bbox_inches='tight', pad_inches=0.1)
 # plt.show()
