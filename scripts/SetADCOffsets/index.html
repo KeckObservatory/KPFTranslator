@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Quick and dirty code to manually set ADC angles to prescribed offsets
+
+        <p>Quick and dirty code to manually set ADC angles to prescribed offsets
 from nominal based on the telescope position.</p>
 
 
@@ -632,7 +637,7 @@ from nominal based on the telescope position.</p>
         <ul class="first simple">
             <li>
               <b><code>ADC1OFF</code></b>
-                  (<code>float</code>)
+                  (<code><span title="float">float</span></code>)
               –
               <div class="doc-md-description">
                 <p>Offset for ADC1 (in degrees).</p>
@@ -640,7 +645,7 @@ from nominal based on the telescope position.</p>
             </li>
             <li>
               <b><code>ADC2OFF</code></b>
-                  (<code>float</code>)
+                  (<code><span title="float">float</span></code>)
               –
               <div class="doc-md-description">
                 <p>Offset for ADC2 (in degrees).</p>
@@ -650,13 +655,19 @@ from nominal based on the telescope position.</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpffiu.ADC1VAL</code></li>
 <li><code>kpffiu.ADC2VAL</code></li>
 <li><code>kpffiu.ADCTRACK</code></li>
 <li><code>kpffiu.ADCPRISMS</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/fiu/SetADCOffsets.py</code></summary>
@@ -714,7 +725,7 @@ from nominal based on the telescope position.</p>
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetADCOffsets</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SetADCOffsets</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Quick and dirty code to manually set ADC angles to prescribed offsets</span>
 <span class="sd">    from nominal based on the telescope position.</span>
 
@@ -730,11 +741,11 @@ from nominal based on the telescope position.</p>
 <span class="sd">    - `kpffiu.ADCPRISMS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">kpffiu</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpffiu&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;ADCTRACK&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;On&#39;</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Setting ADCTRACK to Off&#39;</span><span class="p">)</span>
@@ -748,7 +759,7 @@ from nominal based on the telescope position.</p>
         <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;ADC2VAL&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ADC2</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">kpffiu</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpffiu&#39;</span><span class="p">)</span>
         <span class="n">tol</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="n">ADC1_nominal</span><span class="p">,</span> <span class="n">ADC2_nominal</span> <span class="o">=</span> <span class="n">kpffiu</span><span class="p">[</span><span class="s1">&#39;ADCPRISMS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -763,7 +774,7 @@ from nominal based on the telescope position.</p>
             <span class="k">raise</span> <span class="n">FailedPostCondition</span><span class="p">(</span><span class="s1">&#39;ADC Prisms did not reach destination angles&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ADC1OFF&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
                             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Offset for ADC1 (in degrees)&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ADC2OFF&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
@@ -774,7 +785,8 @@ from nominal based on the telescope position.</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -789,6 +801,7 @@ from nominal based on the telescope position.</p>
   </div>
 
     </div>
+
 
 </div>
               

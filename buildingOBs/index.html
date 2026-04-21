@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../scripts/TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scripts/ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../scripts/SetOutdirs/">SetOutdirs</a>
@@ -610,12 +614,12 @@
 <li>Building an OB "live" using the KPF OB GUI.</li>
 </ul>
 <p>The data in an OB can be divided in to three categories:</p>
-<p><strong>Target</strong>: The OB will contain information about the target beyond what is in a typical Keck Star List entry in order to flow that information to the FITS header and the data reduction pipeline (DRP).  The target section is only needed if the OB has observations (i.e. it is not purely a calibration OB). Here is a description of all <a href="../TargetProperties">Target Properties</a>.</p>
-<p><strong>Calibrations</strong>: An OB can contain calibrations, these are not typically used by the observer (slewcals are handled separately). Here is a description of all <a href="../CalibrationProperties">Calibration Properties</a>. The Calibrations section of an ON is a list of Calibration entries.</p>
-<p><strong>Observations</strong>: Finally, the OB will contain a list of observations to be made of the target. For typical KPF observers, this will only have one entry, but multiple entries are supported. Each entry describes a set of exposures on the target and contains the information on how those exposures should be executed. Here is a description of all <a href="../ObservationProperties">Observation Properties</a>. The Observations section of an ON is a list of Observation entries.</p>
+<p><strong>Target</strong>: The OB will contain information about the target beyond what is in a typical Keck Star List entry in order to flow that information to the FITS header and the data reduction pipeline (DRP).  The target section is only needed if the OB has observations (i.e. it is not purely a calibration OB). Here is a description of all <a href="../TargetProperties/">Target Properties</a>.</p>
+<p><strong>Calibrations</strong>: An OB can contain calibrations, these are not typically used by the observer (slewcals are handled separately). Here is a description of all <a href="../CalibrationProperties/">Calibration Properties</a>. The Calibrations section of an ON is a list of Calibration entries.</p>
+<p><strong>Observations</strong>: Finally, the OB will contain a list of observations to be made of the target. For typical KPF observers, this will only have one entry, but multiple entries are supported. Each entry describes a set of exposures on the target and contains the information on how those exposures should be executed. Here is a description of all <a href="../ObservationProperties/">Observation Properties</a>. The Observations section of an ON is a list of Observation entries.</p>
 <p>Note that not all properties are needed in every case. For example, an observation with <code>ExpMeterMode: 'monitor'</code> will not need values for <code>ExpMeterBin</code> and <code>ExpMeterThreshold</code>.</p>
 <h2 id="example-on-sky-science-ob">Example On Sky Science OB</h2>
-<p>This is an example of what the text file form of an OB might look like. The file is a  <code>yaml</code> format which resolves in to a python dict with keys for "Target", "Calibrations" and "Observations" (not all are required).  The "Target" entry is a dict with the various <a href="../TargetProperties">Target Properties</a>.  The "Calibrations" entry (if present) is a <strong>list</strong> of dictionaries, each with the various <a href="../CalibrationProperties">Calibration Properties</a>.  Similarly, the "Observations" entry is a <strong>list</strong> of dictionaries, each with the various <a href="../ObservationProperties">Observation Properties</a>.</p>
+<p>This is an example of what the text file form of an OB might look like. The file is a  <code>yaml</code> format which resolves in to a python dict with keys for "Target", "Calibrations" and "Observations" (not all are required).  The "Target" entry is a dict with the various <a href="../TargetProperties/">Target Properties</a>.  The "Calibrations" entry (if present) is a <strong>list</strong> of dictionaries, each with the various <a href="../CalibrationProperties/">Calibration Properties</a>.  Similarly, the "Observations" entry is a <strong>list</strong> of dictionaries, each with the various <a href="../ObservationProperties/">Observation Properties</a>.</p>
 <p>The example below has a Target, no Calibrations, and a single Observaton:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">Target</span><span class="o">:</span>
 <span class="w">  </span><span class="n">TargetName</span><span class="o">:</span><span class="w"> </span><span class="n">HR</span><span class="w"> </span><span class="mi">4710</span>

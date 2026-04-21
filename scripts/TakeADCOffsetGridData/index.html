@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,12 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/engineering/TakeADCOffsetGridData.py</code></summary>
@@ -695,17 +704,17 @@
 <span class="normal">90</span>
 <span class="normal">91</span>
 <span class="normal">92</span>
-<span class="normal">93</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeADCOffsetGridData</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">93</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TakeADCOffsetGridData</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@register_script</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
     <span class="nd">@add_script_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
@@ -759,11 +768,11 @@
 
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ADC1DELTA&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
                             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Maximum ADC1 offset from nominal&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ADC2DELTA&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
@@ -776,7 +785,8 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -791,6 +801,7 @@
   </div>
 
     </div>
+
 
 </div>
               

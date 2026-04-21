@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,9 +620,16 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Try to examine the state of all detectors an run the appropriate recovery</p>
+
+        <p>Try to examine the state of all detectors an run the appropriate recovery</p>
 <h2 id="kpf.spectrograph.ResetDetectors.RecoverDetectors--args">ARGS:</h2>
 <p>None</p>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/ResetDetectors.py</code></summary>
@@ -673,7 +684,7 @@
 <span class="normal">247</span>
 <span class="normal">248</span>
 <span class="normal">249</span>
-<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RecoverDetectors</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RecoverDetectors</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Try to examine the state of all detectors an run the appropriate recovery</span>
 
 <span class="sd">    ARGS:</span>
@@ -681,11 +692,11 @@
 <span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Attempting a detector recovery&#39;</span><span class="p">)</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose_reset_time&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="n">kpfmon</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfmon&#39;</span><span class="p">)</span>
@@ -710,7 +721,7 @@
             <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kpfmon.CAMSTATESTA=</span><span class="si">{</span><span class="n">camera_status</span><span class="si">}</span><span class="s1">. No action taken.&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose_reset_time&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Waiting </span><span class="si">{</span><span class="n">timeout</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> s for EXPOSE to be Readout or Ready&#39;</span><span class="p">)</span>
         <span class="n">expr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;($kpfexpose.EXPOSE == &#39;Ready&#39;) or ($kpfexpose.EXPOSE == &#39;Readout&#39;)&quot;</span>
@@ -730,7 +741,8 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -745,6 +757,7 @@
   </div>
 
     </div>
+
 
 </div>
               

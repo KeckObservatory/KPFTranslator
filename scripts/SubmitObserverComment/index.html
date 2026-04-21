@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" >kpf.observatoryAPIs</a>
     <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Adds a comment to the specified OB in the KPF-CC database. Also emails
+
+        <p>Adds a comment to the specified OB in the KPF-CC database. Also emails
 the PI of the associated program immediately with the comment.</p>
 
 
@@ -632,7 +637,7 @@ the PI of the associated program immediately with the comment.</p>
         <ul class="first simple">
             <li>
               <b><code>OBid</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The unique identifier for the OB to comment on.</p>
@@ -640,7 +645,7 @@ the PI of the associated program immediately with the comment.</p>
             </li>
             <li>
               <b><code>observer</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The commenter/observer's name</p>
@@ -648,7 +653,7 @@ the PI of the associated program immediately with the comment.</p>
             </li>
             <li>
               <b><code>comment</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The comment to submit.</p>
@@ -658,11 +663,17 @@ the PI of the associated program immediately with the comment.</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>Functions Called:</p>
+</table>        <p>Functions Called:</p>
 <ul>
 <li><code>kpf.observatoryAPIs.GetObservingBlocks</code></li>
 <li><code>kpf.utils.SendEmail</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/observatoryAPIs/SubmitObserverComment.py</code></summary>
@@ -771,7 +782,7 @@ the PI of the associated program immediately with the comment.</p>
 <span class="normal">118</span>
 <span class="normal">119</span>
 <span class="normal">120</span>
-<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SubmitObserverComment</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SubmitObserverComment</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Adds a comment to the specified OB in the KPF-CC database. Also emails</span>
 <span class="sd">    the PI of the associated program immediately with the comment.</span>
 
@@ -786,13 +797,13 @@ the PI of the associated program immediately with the comment.</p>
 <span class="sd">    - `kpf.utils.SendEmail`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">OBid</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OBid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">OBid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="s1">&#39;OBid must be provided&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OBid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No OB ID found, unable to submit comment&#39;</span><span class="p">)</span>
@@ -865,11 +876,11 @@ the PI of the associated program immediately with the comment.</p>
 
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;OBid&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The unique identifier for the OB.&#39;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;observer&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
@@ -882,7 +893,8 @@ the PI of the associated program immediately with the comment.</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -897,6 +909,7 @@ the PI of the associated program immediately with the comment.</p>
   </div>
 
     </div>
+
 
 </div>
               

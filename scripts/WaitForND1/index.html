@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Wait for the ND1 filter wheel (the one at the output of the 
+
+        <p>Wait for the ND1 filter wheel (the one at the output of the 
 octagon) via the <code>kpfcal.ND1POS</code> keyword.</p>
 
 
@@ -632,7 +637,7 @@ octagon) via the <code>kpfcal.ND1POS</code> keyword.</p>
         <ul class="first simple">
             <li>
               <b><code>CalND1</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The neutral density filter to put in the first filter
@@ -646,10 +651,16 @@ fibers. Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfcal.ND1POS</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/WaitForND1.py</code></summary>
@@ -699,7 +710,7 @@ fibers. Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</
 <span class="normal">51</span>
 <span class="normal">52</span>
 <span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForND1</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">WaitForND1</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Wait for the ND1 filter wheel (the one at the output of the </span>
 <span class="sd">    octagon) via the `kpfcal.ND1POS` keyword.</span>
 
@@ -715,7 +726,7 @@ fibers. Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</
 <span class="sd">    - `kpfcal.ND1POS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">ND1POS</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfcal&#39;</span><span class="p">,</span> <span class="s1">&#39;ND1POS&#39;</span><span class="p">)</span>
         <span class="n">allowed_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ND1POS</span><span class="o">.</span><span class="n">_getEnumerators</span><span class="p">())</span>
         <span class="k">if</span> <span class="s1">&#39;Unknown&#39;</span> <span class="ow">in</span> <span class="n">allowed_values</span><span class="p">:</span>
@@ -723,7 +734,7 @@ fibers. Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</
         <span class="n">check_input</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;CalND1&#39;</span><span class="p">,</span> <span class="n">allowed_values</span><span class="o">=</span><span class="n">allowed_values</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CalND1&#39;</span><span class="p">)</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;nd_move_time&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
         <span class="n">expr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;($kpfcal.ND1POS == &#39;</span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
@@ -732,7 +743,7 @@ fibers. Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timed out waiting for ND1 filter wheel&quot;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;nd_move_time&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
         <span class="n">ND1target</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CalND1&#39;</span><span class="p">)</span>
         <span class="n">ND1POS</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfcal&#39;</span><span class="p">,</span> <span class="s1">&#39;ND1POS&#39;</span><span class="p">)</span>
@@ -740,7 +751,7 @@ fibers. Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</
             <span class="k">raise</span> <span class="n">FailedToReachDestination</span><span class="p">(</span><span class="n">ND1POS</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">ND1target</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;CalND1&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                             <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;OD 0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 1.3&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 2.0&quot;</span><span class="p">,</span>
                                      <span class="s2">&quot;OD 3.0&quot;</span><span class="p">,</span> <span class="s2">&quot;OD 4.0&quot;</span><span class="p">],</span>
@@ -751,7 +762,8 @@ fibers. Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -766,6 +778,7 @@ fibers. Allowed Values: <code>OD 0.1</code>, <code>OD 1.0</code>, <code>OD 1.3</
   </div>
 
     </div>
+
 
 </div>
               

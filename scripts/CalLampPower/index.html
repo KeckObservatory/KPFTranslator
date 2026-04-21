@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Powers off one of the cal lamps via the <code>kpflamps</code> keyword service. Uses
+
+        <p>Powers off one of the cal lamps via the <code>kpflamps</code> keyword service. Uses
 the lamp names from the OCTAGON when appropriate.</p>
 
 
@@ -632,7 +637,7 @@ the lamp names from the OCTAGON when appropriate.</p>
         <ul class="first simple">
             <li>
               <b><code>lamp</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>Name of the lamp to control. Allowed Values: BrdbandFiber,
@@ -642,7 +647,7 @@ SciLED, SkyLED</p>
             </li>
             <li>
               <b><code>power</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>Destination state for lamp power. Allowed Values: "on" or
@@ -653,7 +658,7 @@ SciLED, SkyLED</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpflamps.BRDBANDFIBER</code></li>
 <li><code>kpflamps.U_GOLD</code></li>
@@ -666,6 +671,12 @@ SciLED, SkyLED</p>
 <li><code>kpflamps.SCILED</code></li>
 <li><code>kpflamps.SKYLED</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/CalLampPower.py</code></summary>
@@ -732,7 +743,7 @@ SciLED, SkyLED</p>
 <span class="normal">71</span>
 <span class="normal">72</span>
 <span class="normal">73</span>
-<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CalLampPower</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CalLampPower</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Powers off one of the cal lamps via the `kpflamps` keyword service. Uses</span>
 <span class="sd">    the lamp names from the OCTAGON when appropriate.</span>
 
@@ -757,7 +768,7 @@ SciLED, SkyLED</p>
 <span class="sd">    - `kpflamps.SKYLED`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="c1"># Check lamp name</span>
         <span class="n">lamp</span> <span class="o">=</span> <span class="n">standardize_lamp_name</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lamp&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">lamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -767,7 +778,7 @@ SciLED, SkyLED</p>
         <span class="n">check_input</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">,</span> <span class="n">allowed_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">])</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">lamp</span> <span class="o">=</span> <span class="n">standardize_lamp_name</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lamp&#39;</span><span class="p">))</span>
         <span class="n">pwr</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;power&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Turning </span><span class="si">{</span><span class="n">pwr</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">lamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -775,7 +786,7 @@ SciLED, SkyLED</p>
         <span class="n">kpflamps</span><span class="p">[</span><span class="n">lamp</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pwr</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">lamp</span> <span class="o">=</span> <span class="n">standardize_lamp_name</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lamp&#39;</span><span class="p">))</span>
         <span class="n">pwr</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;power&#39;</span><span class="p">)</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;lamp_timeout&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -785,7 +796,7 @@ SciLED, SkyLED</p>
             <span class="k">raise</span> <span class="n">FailedPostCondition</span><span class="p">(</span><span class="n">kpflamps</span><span class="p">[</span><span class="n">lamp</span><span class="p">],</span> <span class="n">pwr</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;lamp&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                             <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;BrdbandFiber&#39;</span><span class="p">,</span> <span class="s1">&#39;U_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;U_daily&#39;</span><span class="p">,</span>
                                      <span class="s1">&#39;Th_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;WideFlat&#39;</span><span class="p">,</span>
@@ -801,7 +812,8 @@ SciLED, SkyLED</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -816,6 +828,7 @@ SciLED, SkyLED</p>
   </div>
 
     </div>
+
 
 </div>
               

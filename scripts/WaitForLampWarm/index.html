@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Wait for the specified lamp to be warm.</p>
+
+        <p>Wait for the specified lamp to be warm.</p>
 
 
 <table class="field-list">
@@ -631,7 +636,7 @@
         <ul class="first simple">
             <li>
               <b><code>CalSource</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>Which lamp to wait for. Allowed Values: BrdbandFiber,
@@ -642,7 +647,7 @@ U_gold, U_daily, Th_daily, Th_gold, WideFlat</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpflamps.FF_FIBER_STATUS</code></li>
 <li><code>kpflamps.FF_FIBER_TIMEON</code></li>
@@ -667,6 +672,12 @@ U_gold, U_daily, Th_daily, Th_gold, WideFlat</p>
 <ul>
 <li><code>kpf.calbench.CalLampPower</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/WaitForLampWarm.py</code></summary>
@@ -762,7 +773,7 @@ U_gold, U_daily, Th_daily, Th_gold, WideFlat</p>
 <span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
-<span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForLampWarm</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">WaitForLampWarm</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Wait for the specified lamp to be warm.</span>
 
 <span class="sd">    Args:</span>
@@ -795,11 +806,11 @@ U_gold, U_daily, Th_daily, Th_gold, WideFlat</p>
 <span class="sd">    - `kpf.calbench.CalLampPower`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">check_input</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;CalSource&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">lamp</span> <span class="o">=</span> <span class="n">standardize_lamp_name</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CalSource&#39;</span><span class="p">))</span>
         <span class="n">lamps_that_need_warmup</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FF_FIBER&#39;</span><span class="p">,</span> <span class="s1">&#39;BRDBANDFIBER&#39;</span><span class="p">,</span> <span class="s1">&#39;TH_DAILY&#39;</span><span class="p">,</span>
                                   <span class="s1">&#39;TH_GOLD&#39;</span><span class="p">,</span> <span class="s1">&#39;U_DAILY&#39;</span><span class="p">,</span> <span class="s1">&#39;U_GOLD&#39;</span><span class="p">]</span>
@@ -838,7 +849,7 @@ U_gold, U_daily, Th_daily, Th_gold, WideFlat</p>
                         <span class="n">lamp_timeon</span> <span class="o">=</span> <span class="n">new_lamp_timeton</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">lamp</span> <span class="o">=</span> <span class="n">standardize_lamp_name</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CalSource&#39;</span><span class="p">))</span>
         <span class="n">lamps_that_need_warmup</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FF_FIBER&#39;</span><span class="p">,</span> <span class="s1">&#39;BRDBANDFIBER&#39;</span><span class="p">,</span> <span class="s1">&#39;TH_DAILY&#39;</span><span class="p">,</span>
                                   <span class="s1">&#39;TH_GOLD&#39;</span><span class="p">,</span> <span class="s1">&#39;U_DAILY&#39;</span><span class="p">,</span> <span class="s1">&#39;U_GOLD&#39;</span><span class="p">]</span>
@@ -849,7 +860,7 @@ U_gold, U_daily, Th_daily, Th_gold, WideFlat</p>
                 <span class="k">raise</span> <span class="n">FailedPostCondition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lamp </span><span class="si">{</span><span class="n">lamp</span><span class="si">}</span><span class="s2"> should be warm: </span><span class="si">{</span><span class="n">lamp_status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;lamp&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                             <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;BrdbandFiber&#39;</span><span class="p">,</span> <span class="s1">&#39;U_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;U_daily&#39;</span><span class="p">,</span>
                                      <span class="s1">&#39;Th_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;WideFlat&#39;</span><span class="p">],</span>
@@ -860,7 +871,8 @@ U_gold, U_daily, Th_daily, Th_gold, WideFlat</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -875,6 +887,7 @@ U_gold, U_daily, Th_daily, Th_gold, WideFlat</p>
   </div>
 
     </div>
+
 
 </div>
               

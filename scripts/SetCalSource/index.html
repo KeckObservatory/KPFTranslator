@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Selects which source is fed from the octagon in to the cal bench via the
+
+        <p>Selects which source is fed from the octagon in to the cal bench via the
 <code>kpfcal.OCTAGON</code> keyword.</p>
 
 
@@ -632,7 +637,7 @@
         <ul class="first simple">
             <li>
               <b><code>CalSource</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>Which lamp to select? Allowed Values: EtalonFiber,
@@ -644,10 +649,16 @@ LFCFiber</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfcal.OCTAGON</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/SetCalSource.py</code></summary>
@@ -697,7 +708,7 @@ LFCFiber</p>
 <span class="normal">53</span>
 <span class="normal">54</span>
 <span class="normal">55</span>
-<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetCalSource</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SetCalSource</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Selects which source is fed from the octagon in to the cal bench via the</span>
 <span class="sd">    `kpfcal.OCTAGON` keyword.</span>
 
@@ -711,7 +722,7 @@ LFCFiber</p>
 <span class="sd">    - `kpfcal.OCTAGON`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">keyword</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfcal&#39;</span><span class="p">,</span> <span class="s1">&#39;OCTAGON&#39;</span><span class="p">)</span>
         <span class="n">allowed_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">keyword</span><span class="o">.</span><span class="n">_getEnumerators</span><span class="p">())</span>
         <span class="k">if</span> <span class="s1">&#39;Unknown&#39;</span> <span class="ow">in</span> <span class="n">allowed_values</span><span class="p">:</span>
@@ -719,14 +730,14 @@ LFCFiber</p>
         <span class="n">check_input</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;CalSource&#39;</span><span class="p">,</span> <span class="n">allowed_values</span><span class="o">=</span><span class="n">allowed_values</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CalSource&#39;</span><span class="p">)</span>
         <span class="n">OCTAGON</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfcal&#39;</span><span class="p">,</span> <span class="s1">&#39;OCTAGON&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting Cal Source (Octagon) to </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">OCTAGON</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wait&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CalSource&#39;</span><span class="p">)</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;times&#39;</span><span class="p">,</span> <span class="s1">&#39;octagon_move_time&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
         <span class="n">OCTAGON</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfcal&#39;</span><span class="p">,</span> <span class="s1">&#39;OCTAGON&#39;</span><span class="p">)</span>
@@ -734,7 +745,7 @@ LFCFiber</p>
             <span class="k">raise</span> <span class="n">FailedToReachDestination</span><span class="p">(</span><span class="n">OCTAGON</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">target</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;CalSource&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                             <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Home&#39;</span><span class="p">,</span> <span class="s1">&#39;EtalonFiber&#39;</span><span class="p">,</span> <span class="s1">&#39;BrdbandFiber&#39;</span><span class="p">,</span>
                                      <span class="s1">&#39;U_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;U_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_gold&#39;</span><span class="p">,</span>
@@ -749,7 +760,8 @@ LFCFiber</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -764,6 +776,7 @@ LFCFiber</p>
   </div>
 
     </div>
+
 
 </div>
               

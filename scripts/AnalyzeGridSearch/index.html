@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,11 +620,18 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      <h2 id="kpf.engineering.analysis.AnalyzeGridSearch.AnalyzeGridSearch--description">Description</h2>
+
+        <h2 id="kpf.engineering.analysis.AnalyzeGridSearch.AnalyzeGridSearch--description">Description</h2>
 <p>Tool to analyze engineering data taken by the <code>engineering.GridSearch</code> or
 <code>engineering.Run2DGridSearch</code> scripts.</p>
 <h2 id="kpf.engineering.analysis.AnalyzeGridSearch.AnalyzeGridSearch--parameters">Parameters</h2>
 <p>None</p>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/engineering/analysis/AnalyzeGridSearch.py</code></summary>
@@ -673,7 +684,7 @@
 <span class="normal">739</span>
 <span class="normal">740</span>
 <span class="normal">741</span>
-<span class="normal">742</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AnalyzeGridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">742</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AnalyzeGridSearch</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;# Description</span>
 <span class="sd">    Tool to analyze engineering data taken by the `engineering.GridSearch` or</span>
 <span class="sd">    `engineering.Run2DGridSearch` scripts.</span>
@@ -682,11 +693,11 @@
 <span class="sd">    None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">logfile</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logfile&#39;</span><span class="p">):</span>
             <span class="n">analyze_grid_search</span><span class="p">(</span><span class="n">logfile</span><span class="p">,</span>
                                 <span class="n">fiber</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fiber&#39;</span><span class="p">),</span>
@@ -696,11 +707,11 @@
                                 <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;logfile&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The logfile or files of the grid search runs to analyze&quot;</span><span class="p">)</span>
         <span class="c1">## add flags</span>
@@ -728,7 +739,8 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -744,12 +756,13 @@
 
     </div>
 
+
 </div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../TriggerRedMiniFill/" class="btn btn-neutral float-left" title="TriggerRedMiniFill"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../TakeGuiderSensitivityData/" class="btn btn-neutral float-left" title="TakeGuiderSensitivityData"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../AnalyzeTipTiltPerformance/" class="btn btn-neutral float-right" title="AnalyzeTipTiltPerformance">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -777,7 +790,7 @@
         </span>
     
     
-      <span><a href="../TriggerRedMiniFill/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../TakeGuiderSensitivityData/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../AnalyzeTipTiltPerformance/" style="color: #fcfcfc">Next &raquo;</a></span>

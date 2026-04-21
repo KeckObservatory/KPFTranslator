@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Look up the telescope schedule and try to determine the observer names
+
+        <p>Look up the telescope schedule and try to determine the observer names
 based on the current date and the scheduled programs.</p>
 <p>If only one KPF program is on the schedule, the script will use that to set
 the observer names.  If multiple programs are on the schedule, it will use
@@ -635,7 +640,7 @@ the progname input (see below) or query the user if no progname is given.</p>
         <ul class="first simple">
             <li>
               <b><code>progname</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The program name to set if a choice is needed.</p>
@@ -645,12 +650,18 @@ the progname input (see below) or query the user if no progname is given.</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>Functions Called:</p>
+</table>        <p>Functions Called:</p>
 <ul>
 <li><code>kpf.spectrograph.SetObserver</code></li>
 <li><code>kpf.spectrograph.SetProgram</code></li>
 <li><code>kpf.observatoryAPIs.GetScheduledPrograms</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/utils/SetObserverFromSchedule.py</code></summary>
@@ -720,7 +731,7 @@ the progname input (see below) or query the user if no progname is given.</p>
 <span class="normal">78</span>
 <span class="normal">79</span>
 <span class="normal">80</span>
-<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetObserverFromSchedule</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SetObserverFromSchedule</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Look up the telescope schedule and try to determine the observer names</span>
 <span class="sd">    based on the current date and the scheduled programs.</span>
 
@@ -738,11 +749,11 @@ the progname input (see below) or query the user if no progname is given.</p>
 <span class="sd">    - `kpf.observatoryAPIs.GetScheduledPrograms`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">classical</span><span class="p">,</span> <span class="n">cadence</span> <span class="o">=</span> <span class="n">GetScheduledPrograms</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;semester&#39;</span><span class="p">:</span> <span class="s1">&#39;tonight&#39;</span><span class="p">})</span>
         <span class="n">KPF_programs</span> <span class="o">=</span> <span class="n">classical</span> <span class="o">+</span> <span class="n">cadence</span>
         <span class="n">nKPFprograms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">KPF_programs</span><span class="p">)</span>
@@ -785,14 +796,15 @@ the progname input (see below) or query the user if no progname is given.</p>
         <span class="n">SetObserver</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;observer&#39;</span><span class="p">:</span> <span class="n">observers</span><span class="p">})</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -808,12 +820,13 @@ the progname input (see below) or query the user if no progname is given.</p>
 
     </div>
 
+
 </div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../EndOfNight/" class="btn btn-neutral float-left" title="EndOfNight"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ScheduleFilesCheck/" class="btn btn-neutral float-left" title="ScheduleFilesCheck"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../SetOutdirs/" class="btn btn-neutral float-right" title="SetOutdirs">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -841,7 +854,7 @@ the progname input (see below) or query the user if no progname is given.</p>
         </span>
     
     
-      <span><a href="../EndOfNight/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../ScheduleFilesCheck/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../SetOutdirs/" style="color: #fcfcfc">Next &raquo;</a></span>

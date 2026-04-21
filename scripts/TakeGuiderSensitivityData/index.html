@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,12 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
 
 
-      
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/engineering/TakeGuiderSensitivityData.py</code></summary>
@@ -680,12 +689,12 @@
 <span class="normal">76</span>
 <span class="normal">77</span>
 <span class="normal">78</span>
-<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeGuiderSensitivityData</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
+<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TakeGuiderSensitivityData</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="nd">@obey_scriptrun</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="n">check_input</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span> <span class="s1">&#39;Template_Name&#39;</span><span class="p">,</span> <span class="n">allowed_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;kpf_eng_tgsd&#39;</span><span class="p">])</span>
         <span class="n">check_input</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span> <span class="s1">&#39;Template_Version&#39;</span><span class="p">,</span> <span class="n">version_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">value_min</span><span class="o">=</span><span class="s1">&#39;0.3&#39;</span><span class="p">)</span>
         <span class="n">check_input</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span> <span class="s1">&#39;FPSvalues&#39;</span><span class="p">)</span>
@@ -693,7 +702,7 @@
     <span class="nd">@classmethod</span>
     <span class="nd">@register_script</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
     <span class="nd">@add_script_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-------------------------&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">OB</span><span class="p">:</span>
@@ -739,14 +748,15 @@
             <span class="n">images</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">images_file</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.csv&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">OB</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
         <span class="k">pass</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -762,13 +772,14 @@
 
     </div>
 
+
 </div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../TakeADCOffsetGridData/" class="btn btn-neutral float-left" title="TakeADCOffsetGridData"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../TriggerGreenMiniFill/" class="btn btn-neutral float-right" title="TriggerGreenMiniFill">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../AnalyzeGridSearch/" class="btn btn-neutral float-right" title="AnalyzeGridSearch">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -798,7 +809,7 @@
       <span><a href="../TakeADCOffsetGridData/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../TriggerGreenMiniFill/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../AnalyzeGridSearch/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

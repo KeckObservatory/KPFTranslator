@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>TriggerRedMiniFill - KPF</title>
+    <title>ShutdownAOforKPF - KPF</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "TriggerRedMiniFill";
-        var mkdocs_page_input_path = "scripts/TriggerRedMiniFill.md";
+        var mkdocs_page_name = "ShutdownAOforKPF";
+        var mkdocs_page_input_path = "scripts/ShutdownAOforKPF.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -192,8 +192,8 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" >Instrument Scripts</a>
     <ul class="current">
-                <li class="toctree-l2"><a class="reference internal" >kpf.ao</a>
-    <ul>
+                <li class="toctree-l2 current"><a class="reference internal current" >kpf.ao</a>
+    <ul class="current">
                 <li class="toctree-l3"><a class="reference internal" href="../ControlAOHatch/">ControlAOHatch</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SendPCUtoHome/">SendPCUtoHome</a>
@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -270,8 +274,8 @@
                 </li>
     </ul>
                 </li>
-                <li class="toctree-l2 current"><a class="reference internal current" >kpf.engineering</a>
-    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" >kpf.engineering</a>
+    <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../GridSearch/">GridSearch</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../ImageBackIlluminatedFibers/">ImageBackIlluminatedFibers</a>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3 current"><a class="reference internal current" href="#">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -593,8 +597,8 @@
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Technical Documentation</li>
           <li class="breadcrumb-item">Instrument Scripts</li>
-          <li class="breadcrumb-item">kpf.engineering</li>
-      <li class="breadcrumb-item active">TriggerRedMiniFill</li>
+          <li class="breadcrumb-item">kpf.ao</li>
+      <li class="breadcrumb-item active">ShutdownAOforKPF</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -603,24 +607,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="triggerredminifill"><code>TriggerRedMiniFill</code></h1>
+                <h1 id="shutdownaoforkpf"><code>ShutdownAOforKPF</code></h1>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<a id="kpf.engineering.TriggerRedMiniFill.TriggerRedMiniFill"></a>
+<a id="kpf.ao.ShutdownAOforKPF.ShutdownAOforKPF"></a>
     <div class="doc doc-contents first">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
+              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>I really hope this is not necessary in the long term.</p>
+
+        <p>KTL Keywords Used:</p>
+<ul>
+<li>``</li>
+</ul>
+<p>Functions Called:</p>
+<ul>
+<li>``</li>
+</ul>
+
+
+
+
+
+
 
               <details class="quote">
-                <summary>Source code in <code>kpf/engineering/TriggerRedMiniFill.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
+                <summary>Source code in <code>kpf/ao/ShutdownAOforKPF.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
+<span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
@@ -663,56 +682,70 @@
 <span class="normal">54</span>
 <span class="normal">55</span>
 <span class="normal">56</span>
-<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TriggerRedMiniFill</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;I really hope this is not necessary in the long term.</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ShutdownAOforKPF</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    KTL Keywords Used:</span>
+
+<span class="sd">    - ``</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - ``</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">kpffill</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpffill&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;REDFILLIP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="s1">&#39;Red fill already in progress&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">kpffill</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpffill&#39;</span><span class="p">)</span>
-        <span class="c1"># Start fill</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting Red mini fill&#39;</span><span class="p">)</span>
-        <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;REDSTART&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="c1"># Wait</span>
-        <span class="n">sleep_time</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sleeping </span><span class="si">{</span><span class="n">sleep_time</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> s&#39;</span><span class="p">)</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span>
-        <span class="c1"># Stop fill</span>
-        <span class="k">if</span> <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;REDFILLIP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stopping Red mini fill&#39;</span><span class="p">)</span>
-            <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;REDSTOP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Expected Red mini fill to be in progress.&#39;</span>
-            <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="s1">&#39;TriggerRedMiniFill Failed&#39;</span><span class="p">,</span>
-                               <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
-            <span class="k">raise</span> <span class="n">KPFException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Closing AO Hatch&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ControlAOHatch</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="s1">&#39;closed&#39;</span><span class="p">})</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure controlling AO hatch&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SSHing to k1obsao@k1aoserver-new to run modify -s ao aohatchcmd=1&#39;</span><span class="p">)</span>
+            <span class="n">ssh_cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ssh k1obsao@k1aoserver-new &#39;modify -s ao aohatchcmd=1&#39;&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s1">&#39;echo &quot;Done!&quot;&#39;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s1">&#39;sleep 30&#39;</span><span class="p">]</span>
+            <span class="n">ssh_cmd</span> <span class="o">=</span> <span class="s1">&#39; ; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ssh_cmds</span><span class="p">)</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;xterm&#39;</span><span class="p">,</span> <span class="s1">&#39;-title&#39;</span><span class="p">,</span> <span class="s1">&#39;CloseAOHatch&#39;</span><span class="p">,</span> <span class="s1">&#39;-name&#39;</span><span class="p">,</span> <span class="s1">&#39;CloseAOHatch&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;-fn&#39;</span><span class="p">,</span> <span class="s1">&#39;10x20&#39;</span><span class="p">,</span> <span class="s1">&#39;-bg&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;-fg&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;-e&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ssh_cmd</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+            <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Turning on AO HEPA Filter System&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">TurnHepaOn</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure controlling AO HEPA Filter System&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SSHing to k1obsao@k1aoserver-new to run modify -s ao obhpaon=1&#39;</span><span class="p">)</span>
+            <span class="n">ssh_cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ssh k1obsao@k1aoserver-new &#39;modify -s ao obhpaon=1&#39;&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s1">&#39;echo &quot;Done!&quot;&#39;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s1">&#39;sleep 30&#39;</span><span class="p">]</span>
+            <span class="n">ssh_cmd</span> <span class="o">=</span> <span class="s1">&#39; ; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ssh_cmds</span><span class="p">)</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;xterm&#39;</span><span class="p">,</span> <span class="s1">&#39;-title&#39;</span><span class="p">,</span> <span class="s1">&#39;TurnHEPAOn&#39;</span><span class="p">,</span> <span class="s1">&#39;-name&#39;</span><span class="p">,</span> <span class="s1">&#39;TurnHEPAOn&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;-fn&#39;</span><span class="p">,</span> <span class="s1">&#39;10x20&#39;</span><span class="p">,</span> <span class="s1">&#39;-bg&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;-fg&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;-e&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ssh_cmd</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+            <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">kpffill</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpffill&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;RedFILLIP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Red still in progress, should be stopped!&#39;</span>
-            <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="s1">&#39;TriggerRedMiniFill Failed&#39;</span><span class="p">,</span>
-                               <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
-            <span class="k">raise</span> <span class="n">FailedPostCondition</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The duration of the fill in seconds (240 recommended)&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">pass</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -728,13 +761,14 @@
 
     </div>
 
+
 </div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../TriggerGreenMiniFill/" class="btn btn-neutral float-left" title="TriggerGreenMiniFill"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../AnalyzeGridSearch/" class="btn btn-neutral float-right" title="AnalyzeGridSearch">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../SetupAOforKPF/" class="btn btn-neutral float-left" title="SetupAOforKPF"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../TurnHepaOff/" class="btn btn-neutral float-right" title="TurnHepaOff">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -761,10 +795,10 @@
         </span>
     
     
-      <span><a href="../TriggerGreenMiniFill/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../SetupAOforKPF/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../AnalyzeGridSearch/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../TurnHepaOff/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

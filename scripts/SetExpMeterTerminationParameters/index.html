@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Sets the exposure meter exposure termination control parameters</p>
+
+        <p>Sets the exposure meter exposure termination control parameters</p>
 
 
 <table class="field-list">
@@ -631,7 +636,7 @@
         <ul class="first simple">
             <li>
               <b><code>Band</code></b>
-                  (<code>int</code>)
+                  (<code><span title="int">int</span></code>)
               –
               <div class="doc-md-description">
                 <p>Which of the 4 exposure meter bands to use? 0=All, 1=498nm,
@@ -640,7 +645,7 @@
             </li>
             <li>
               <b><code>Flux</code></b>
-                  (<code>float</code>)
+                  (<code><span title="float">float</span></code>)
               –
               <div class="doc-md-description">
                 <p>The target flux (e/nm) in the science spectrum.</p>
@@ -650,12 +655,18 @@
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpf_expmeter.THRESHOLDBIN</code></li>
 <li><code>kpf_expmeter.THRESHOLD</code></li>
 <li><code>kpf_expmeter.USETHRESHOLD</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/expmeter/SetExpMeterTerminationParameters.py</code></summary>
@@ -720,7 +731,7 @@
 <span class="normal">85</span>
 <span class="normal">86</span>
 <span class="normal">87</span>
-<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetExpMeterTerminationParameters</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SetExpMeterTerminationParameters</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Sets the exposure meter exposure termination control parameters</span>
 
 <span class="sd">    Args:</span>
@@ -735,7 +746,7 @@
 <span class="sd">    - `kpf_expmeter.USETHRESHOLD`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">check_input</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;ExpMeterThreshold&#39;</span><span class="p">,</span> <span class="n">allowed_types</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
                     <span class="n">value_min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="c1">#         check_input(args, &#39;ExpMeterBin&#39;, allowed_types=[int, float, str])</span>
@@ -750,7 +761,7 @@
 <span class="c1">#             raise FailedPreCondition(f&#39;Unable to parse ExpMeterBin: {args.get(&quot;ExpMeterBin&quot;)}&#39;)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">tbin</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_expmeter&#39;</span><span class="p">,</span> <span class="s1">&#39;THRESHOLDBIN&#39;</span><span class="p">)</span>
         <span class="n">allowed_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tbin</span><span class="o">.</span><span class="n">_getEnumerators</span><span class="p">())</span>
         <span class="n">allowed_values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">allowed_values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;All&#39;</span><span class="p">))</span>
@@ -771,11 +782,11 @@
         <span class="n">kpf_expmeter</span><span class="p">[</span><span class="s1">&#39;USETHRESHOLD&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Yes&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ExpMeterBin&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                             <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;498.125&#39;</span><span class="p">,</span><span class="s1">&#39;604.375&#39;</span><span class="p">,</span><span class="s1">&#39;710.625&#39;</span><span class="p">,</span><span class="s1">&#39;816.875&#39;</span><span class="p">],</span>
                             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Which exposure meter band to use&quot;</span><span class="p">)</span>
@@ -787,7 +798,8 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -802,6 +814,7 @@
   </div>
 
     </div>
+
 
 </div>
               

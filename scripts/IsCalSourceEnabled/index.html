@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Return a boolean indicating whether the input CalSource is enabled as
+
+        <p>Return a boolean indicating whether the input CalSource is enabled as
 reported by the kpfconfig.%_ENABLED keywords.</p>
 
 
@@ -632,7 +637,7 @@ reported by the kpfconfig.%_ENABLED keywords.</p>
         <ul class="first simple">
             <li>
               <b><code>CalSource</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>Which lamp to check? Allowed Values: EtalonFiber,
@@ -666,7 +671,7 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfcal.OCTAGON</code></li>
 <li><code>kpfconfig.BRDBANDFIBER_ENABLED</code></li>
@@ -680,6 +685,12 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
 <li><code>kpfconfig.SCILED_ENABLED</code></li>
 <li><code>kpfconfig.SKYLED_ENABLED</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/calbench/IsCalSourceEnabled.py</code></summary>
@@ -755,7 +766,7 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
 <span class="normal">78</span>
 <span class="normal">79</span>
 <span class="normal">80</span>
-<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IsCalSourceEnabled</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">IsCalSourceEnabled</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Return a boolean indicating whether the input CalSource is enabled as</span>
 <span class="sd">    reported by the kpfconfig.%_ENABLED keywords.</span>
 
@@ -782,7 +793,7 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
 <span class="sd">    - `kpfconfig.SKYLED_ENABLED`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">keyword</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfcal&#39;</span><span class="p">,</span> <span class="s1">&#39;OCTAGON&#39;</span><span class="p">)</span>
         <span class="n">allowed_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">keyword</span><span class="o">.</span><span class="n">_getEnumerators</span><span class="p">())</span>
         <span class="k">if</span> <span class="s1">&#39;Unknown&#39;</span> <span class="ow">in</span> <span class="n">allowed_values</span><span class="p">:</span>
@@ -793,7 +804,7 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
         <span class="n">check_input</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;CalSource&#39;</span><span class="p">,</span> <span class="n">allowed_values</span><span class="o">=</span><span class="n">allowed_values</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">calsource</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CalSource&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">calsource</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;BrdbandFiber&#39;</span><span class="p">,</span> <span class="s1">&#39;WideFlat&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;U_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;U_gold&#39;</span><span class="p">]:</span>
             <span class="n">lamp_name</span> <span class="o">=</span> <span class="n">standardize_lamp_name</span><span class="p">(</span><span class="n">calsource</span><span class="p">)</span>
@@ -816,11 +827,11 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
         <span class="k">return</span> <span class="n">lamp_enabled</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;CalSource&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                             <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;BrdbandFiber&#39;</span><span class="p">,</span> <span class="s1">&#39;WideFlat&#39;</span><span class="p">,</span> <span class="s1">&#39;Th_daily&#39;</span><span class="p">,</span>
                                      <span class="s1">&#39;Th_gold&#39;</span><span class="p">,</span> <span class="s1">&#39;U_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;U_gold&#39;</span><span class="p">,</span>
@@ -833,7 +844,8 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -849,13 +861,14 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
 
     </div>
 
+
 </div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../CalLampPower/" class="btn btn-neutral float-left" title="CalLampPower"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../PredictNDFilters/" class="btn btn-neutral float-right" title="PredictNDFilters">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../ListLFCRuns/" class="btn btn-neutral float-right" title="ListLFCRuns">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -885,7 +898,7 @@ LFCFiber, SoCal-SciSky, WideFlat</p>
       <span><a href="../CalLampPower/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../PredictNDFilters/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../ListLFCRuns/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

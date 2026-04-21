@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Script which will power cycle the Ca HK detector control system and
+
+        <p>Script which will power cycle the Ca HK detector control system and
 restart the services. Use as a last resort measure after other
 troubleshooting measures such as resetting the detector and restarting
 software have already failed.</p>
@@ -629,6 +634,12 @@ software have already failed.</p>
 <p>Scripts Called:</p>
 <p>-<code>kpf start/stop/status/restart kpfexpose2</code>
 -<code>kpf start/stop/status/restart kpf_hk</code></p>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/cahk/PowerCycleCaHK.py</code></summary>
@@ -755,7 +766,7 @@ software have already failed.</p>
 <span class="normal">132</span>
 <span class="normal">133</span>
 <span class="normal">134</span>
-<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PowerCycleCaHK</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PowerCycleCaHK</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Script which will power cycle the Ca HK detector control system and</span>
 <span class="sd">    restart the services. Use as a last resort measure after other</span>
 <span class="sd">    troubleshooting measures such as resetting the detector and restarting</span>
@@ -773,7 +784,7 @@ software have already failed.</p>
 <span class="sd">    -`kpf start/stop/status/restart kpf_hk`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">kpfpower</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfpower&#39;</span><span class="p">)</span>
         <span class="n">outlets</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;J1&#39;</span><span class="p">,</span> <span class="s1">&#39;Galil RIO (expose2)&#39;</span><span class="p">),</span>
                    <span class="p">(</span><span class="s1">&#39;J2&#39;</span><span class="p">,</span> <span class="s1">&#39;Galil Output Bank (expose2)&#39;</span><span class="p">),</span>
@@ -785,7 +796,7 @@ software have already failed.</p>
                 <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Outlet name: </span><span class="si">{</span><span class="n">outlet_id</span><span class="si">}</span><span class="s2"> != &#39;</span><span class="si">{</span><span class="n">outlet_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Stopping kpfexpose2 dispatcher&#39;</span><span class="p">)</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;kpf&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span> <span class="s1">&#39;kpfexpose2&#39;</span><span class="p">]</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
@@ -877,14 +888,15 @@ software have already failed.</p>
         <span class="n">ResetCaHKDetector</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -899,6 +911,7 @@ software have already failed.</p>
   </div>
 
     </div>
+
 
 </div>
               

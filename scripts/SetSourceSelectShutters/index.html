@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Opens and closes the source select shutters via the 
+
+        <p>Opens and closes the source select shutters via the 
 <code>kpfexpose.SRC_SHUTTERS</code> keyword.</p>
 
 
@@ -632,7 +637,7 @@
         <ul class="first simple">
             <li>
               <b><code>OpenScienceShutter</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Open the SciSelect shutter? (default=False)</p>
@@ -640,7 +645,7 @@
             </li>
             <li>
               <b><code>OpenSkyShutter</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Open the SkySelect shutter? (default=False)</p>
@@ -648,7 +653,7 @@
             </li>
             <li>
               <b><code>OpenCalSciSkyShutter</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Open the Cal_SciSky shutter? (default=False)</p>
@@ -656,7 +661,7 @@
             </li>
             <li>
               <b><code>OpenSoCalSciShutter</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Open the SoCalSci shutter? (default=False)</p>
@@ -664,7 +669,7 @@
             </li>
             <li>
               <b><code>OpenSoCalCalShutter</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Open the SoCalCal shutter? (default=False)</p>
@@ -674,10 +679,16 @@
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfexpose.SRC_SHUTTERS</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/spectrograph/SetSourceSelectShutters.py</code></summary>
@@ -760,7 +771,7 @@
 <span class="normal">87</span>
 <span class="normal">88</span>
 <span class="normal">89</span>
-<span class="normal">90</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetSourceSelectShutters</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">90</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SetSourceSelectShutters</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Opens and closes the source select shutters via the </span>
 <span class="sd">    `kpfexpose.SRC_SHUTTERS` keyword.</span>
 
@@ -776,11 +787,11 @@
 <span class="sd">    - `kpfexpose.SRC_SHUTTERS`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">shutter_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OpenScienceShutter&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">shutter_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;SciSelect&#39;</span><span class="p">)</span>
@@ -800,7 +811,7 @@
         <span class="n">sleep</span><span class="p">(</span><span class="n">shim_time</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">SRC_SHUTTERS</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfexpose&#39;</span><span class="p">,</span> <span class="s1">&#39;SRC_SHUTTERS&#39;</span><span class="p">)</span>
         <span class="n">SRC_SHUTTERS</span><span class="o">.</span><span class="n">monitor</span><span class="p">()</span>
         <span class="n">shutter_names</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;SciSelect&#39;</span><span class="p">,</span> <span class="s1">&#39;OpenScienceShutter&#39;</span><span class="p">),</span>
@@ -822,7 +833,7 @@
             <span class="k">raise</span> <span class="n">FailedToReachDestination</span><span class="p">(</span><span class="n">SRC_SHUTTERS</span><span class="o">.</span><span class="n">ascii</span><span class="p">,</span> <span class="s1">&#39;TBD&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--Science&quot;</span><span class="p">,</span> <span class="s2">&quot;--Sci&quot;</span><span class="p">,</span> <span class="s2">&quot;--science&quot;</span><span class="p">,</span> <span class="s2">&quot;--sci&quot;</span><span class="p">,</span>
                             <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;OpenScienceShutter&quot;</span><span class="p">,</span>
                             <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
@@ -845,7 +856,8 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -860,6 +872,7 @@
   </div>
 
     </div>
+
 
 </div>
               

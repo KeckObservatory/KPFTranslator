@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Take a set of bias frames for the exposure meter.</p>
+
+        <p>Take a set of bias frames for the exposure meter.</p>
 <p>Obeys kpfconfig.ALLOWSCHEDULEDCALS (will not run if that is set to No)</p>
 
 
@@ -632,7 +637,7 @@
         <ul class="first simple">
             <li>
               <b><code>nExp</code></b>
-                  (<code>int</code>)
+                  (<code><span title="int">int</span></code>)
               –
               <div class="doc-md-description">
                 <p>The number of frames to take.</p>
@@ -640,7 +645,7 @@
             </li>
             <li>
               <b><code>combine</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Combine the files in to a master bias?</p>
@@ -648,7 +653,7 @@
             </li>
             <li>
               <b><code>output</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The output combined bias file.</p>
@@ -656,7 +661,7 @@
             </li>
             <li>
               <b><code>update</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Update the bias file in use with the newly generated
@@ -667,7 +672,7 @@ file? (only used if combine is True).</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfconfig.EXPMETER_ENABLED</code></li>
 <li><code>kpfconfig.ALLOWSCHEDULEDCALS</code></li>
@@ -699,6 +704,12 @@ file? (only used if combine is True).</p>
 <li><code>kpf.expmeter.BuildMasterBias</code></li>
 <li><code>kpf.spectrograph.ResetDetectors.ResetExpMeterDetector</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/expmeter/TakeExpMeterBiases.py</code></summary>
@@ -884,7 +895,7 @@ file? (only used if combine is True).</p>
 <span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span>
-<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TakeExpMeterBiases</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TakeExpMeterBiases</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Take a set of bias frames for the exposure meter.</span>
 
 <span class="sd">    Obeys kpfconfig.ALLOWSCHEDULEDCALS (will not run if that is set to No)</span>
@@ -930,7 +941,7 @@ file? (only used if combine is True).</p>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="nd">@obey_scriptrun</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="c1"># If specified obey the ALLOWSCHEDULEDCALS keyword</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scheduled&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">ALLOWSCHEDULEDCALS</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;ALLOWSCHEDULEDCALS&#39;</span><span class="p">)</span>
@@ -958,7 +969,7 @@ file? (only used if combine is True).</p>
     <span class="nd">@classmethod</span>
     <span class="nd">@register_script</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
     <span class="nd">@add_script_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="c1"># Check if we&#39;re ok to take data</span>
         <span class="n">allowscheduledcals</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">,</span> <span class="s1">&#39;ALLOWSCHEDULEDCALS&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">allowscheduledcals</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
@@ -1040,7 +1051,7 @@ file? (only used if combine is True).</p>
         <span class="k">return</span> <span class="n">biases</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">expstate</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpf_expmeter&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPSTATE&#39;</span><span class="p">)</span>
         <span class="n">expstate</span><span class="o">.</span><span class="n">monitor</span><span class="p">()</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="mi">60</span>
@@ -1051,7 +1062,7 @@ file? (only used if combine is True).</p>
             <span class="n">ResetExpMeterDetector</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;nExp&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
                             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The number of frames to take&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;--combine&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;combine&quot;</span><span class="p">,</span>
@@ -1072,7 +1083,8 @@ file? (only used if combine is True).</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -1087,6 +1099,7 @@ file? (only used if combine is True).</p>
   </div>
 
     </div>
+
 
 </div>
               

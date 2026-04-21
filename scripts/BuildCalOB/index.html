@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>From a set of standard prescriptions, build the described calibration OB.
+
+        <p>From a set of standard prescriptions, build the described calibration OB.
 Given a list of input strings, parse them in to variations of the standard
 calibrations and create an OB for them.</p>
 <p>The input string format is <code>[CalSource],[Object],[nExp],[keywords]</code>. The
@@ -662,7 +667,7 @@ frames, and 95 flat field frames.</p>
             </li>
             <li>
               <b><code>estimate</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Generate the OB, run the <code>EstimateOBDuration</code> tool,
@@ -671,7 +676,7 @@ frames, and 95 flat field frames.</p>
             </li>
             <li>
               <b><code>save</code></b>
-                  (<code>string</code>)
+                  (<code><span title="string">string</span></code>)
               –
               <div class="doc-md-description">
                 <p>Save resulting OB to the specified file.</p>
@@ -679,7 +684,7 @@ frames, and 95 flat field frames.</p>
             </li>
             <li>
               <b><code>overwrite</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Overwrite output file if it exists?</p>
@@ -687,7 +692,7 @@ frames, and 95 flat field frames.</p>
             </li>
             <li>
               <b><code>execute</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Execute the resulting OB?</p>
@@ -697,11 +702,17 @@ frames, and 95 flat field frames.</p>
       </td>
     </tr>
   </tbody>
-</table>      <p>Functions Called:</p>
+</table>        <p>Functions Called:</p>
 <ul>
 <li><code>EstimateOBDuration</code></li>
 <li><code>RunOB</code></li>
 </ul>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>kpf/utils/BuildCalOB.py</code></summary>
@@ -823,7 +834,15 @@ frames, and 95 flat field frames.</p>
 <span class="normal">129</span>
 <span class="normal">130</span>
 <span class="normal">131</span>
-<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BuildCalOB</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BuildCalOB</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;From a set of standard prescriptions, build the described calibration OB.</span>
 <span class="sd">    Given a list of input strings, parse them in to variations of the standard</span>
 <span class="sd">    calibrations and create an OB for them.</span>
@@ -867,11 +886,11 @@ frames, and 95 flat field frames.</p>
 <span class="sd">    - `RunOB`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="c1"># Build dict of example calibrations</span>
         <span class="n">example_cal_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;ObservingBlocks&#39;</span> <span class="o">/</span> <span class="s1">&#39;exampleOBs&#39;</span> <span class="o">/</span> <span class="s1">&#39;Calibrations.yaml&#39;</span>
         <span class="k">if</span> <span class="n">example_cal_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="o">!=</span> <span class="kc">True</span><span class="p">:</span>
@@ -918,36 +937,45 @@ frames, and 95 flat field frames.</p>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="n">cal_string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">duration</span> <span class="o">=</span> <span class="n">EstimateOBDuration</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;execute&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="n">RunOB</span><span class="o">.</span><span class="n">execute</span><span class="p">({},</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
+            <span class="n">runOBargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;waitforscript&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;waitforscript&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                         <span class="s1">&#39;scheduled&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scheduled&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)}</span>
+            <span class="n">RunOB</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">runOBargs</span><span class="p">,</span> <span class="n">OB</span><span class="o">=</span><span class="n">OB</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">OB</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;calinputs&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Calibrations to take in the form &quot;</span><span class="p">)</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Calibrations to take in the form &quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;--time&quot;</span><span class="p">,</span> <span class="s2">&quot;--estimate&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;estimate&quot;</span><span class="p">,</span>
-                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Estimate the execution time for this OB?&quot;</span><span class="p">)</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Estimate the execution time for this OB?&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--save&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;save&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Save resulting OB to the specified file.&quot;</span><span class="p">)</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Save resulting OB to the specified file.&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;--overwrite&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;overwrite&quot;</span><span class="p">,</span>
-                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Overwrite output file if it exists?&quot;</span><span class="p">)</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--execute&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;execute&quot;</span><span class="p">,</span>
-                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Execute the resulting OB?&quot;</span><span class="p">)</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Overwrite output file if it exists?&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-x&quot;</span><span class="p">,</span> <span class="s2">&quot;--execute&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;execute&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Execute the resulting OB?&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-w&#39;</span><span class="p">,</span> <span class="s1">&#39;--waitforscript&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;waitforscript&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Wait for running script to end before starting?&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--scheduled&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;scheduled&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Script is scheduled and should obey ALLOWSCHEDULEDCALS keyword&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -962,6 +990,7 @@ frames, and 95 flat field frames.</p>
   </div>
 
     </div>
+
 
 </div>
               

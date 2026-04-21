@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>TriggerGreenMiniFill - KPF</title>
+    <title>ScheduleFilesCheck - KPF</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "TriggerGreenMiniFill";
-        var mkdocs_page_input_path = "scripts/TriggerGreenMiniFill.md";
+        var mkdocs_page_name = "ScheduleFilesCheck";
+        var mkdocs_page_input_path = "scripts/ScheduleFilesCheck.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -270,8 +274,8 @@
                 </li>
     </ul>
                 </li>
-                <li class="toctree-l2 current"><a class="reference internal current" >kpf.engineering</a>
-    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" >kpf.engineering</a>
+    <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../GridSearch/">GridSearch</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../ImageBackIlluminatedFibers/">ImageBackIlluminatedFibers</a>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3 current"><a class="reference internal current" href="#">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -552,13 +554,15 @@
                 </li>
     </ul>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
-    <ul>
+                <li class="toctree-l2 current"><a class="reference internal current" >kpf.utils</a>
+    <ul class="current">
                 <li class="toctree-l3"><a class="reference internal" href="../BuildCalOB/">BuildCalOB</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../EndOfNight/">EndOfNight</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">ScheduleFilesCheck</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
@@ -593,8 +597,8 @@
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Technical Documentation</li>
           <li class="breadcrumb-item">Instrument Scripts</li>
-          <li class="breadcrumb-item">kpf.engineering</li>
-      <li class="breadcrumb-item active">TriggerGreenMiniFill</li>
+          <li class="breadcrumb-item">kpf.utils</li>
+      <li class="breadcrumb-item active">ScheduleFilesCheck</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -603,116 +607,294 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="triggergreenminifill"><code>TriggerGreenMiniFill</code></h1>
+                <h1 id="schedulefilescheck"><code>ScheduleFilesCheck</code></h1>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<a id="kpf.engineering.TriggerGreenMiniFill.TriggerGreenMiniFill"></a>
+<a id="kpf.utils.ScheduleFilesCheck.ScheduleFilesCheck"></a>
     <div class="doc doc-contents first">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFTranslatorFunction">KPFTranslatorFunction</span></code></p>
+              Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>I really hope this is not necessary in the long term.</p>
+
+        <p>Check whether all expected schedule files are present and count the
+number of lines in each file and see if it is larger than 1.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>email</code></b>
+                  (<code><span title="bool">bool</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Send an email if a problem is detected?</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>        <p>Functions Called:</p>
+<ul>
+<li><code>kpf.observatoryAPIs.GetScheduledPrograms</code></li>
+<li><code>kpf.utils.SendEmail</code></li>
+</ul>
+
+
+
+
+
+
 
               <details class="quote">
-                <summary>Source code in <code>kpf/engineering/TriggerGreenMiniFill.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TriggerGreenMiniFill</span><span class="p">(</span><span class="n">KPFTranslatorFunction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;I really hope this is not necessary in the long term.</span>
+                <summary>Source code in <code>kpf/utils/ScheduleFilesCheck.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ScheduleFilesCheck</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Check whether all expected schedule files are present and count the</span>
+<span class="sd">    number of lines in each file and see if it is larger than 1.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        email (bool): Send an email if a problem is detected?</span>
+
+<span class="sd">    Functions Called:</span>
+
+<span class="sd">    - `kpf.observatoryAPIs.GetScheduledPrograms`</span>
+<span class="sd">    - `kpf.utils.SendEmail`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">kpffill</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpffill&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;GREENFILLIP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">FailedPreCondition</span><span class="p">(</span><span class="s1">&#39;Green fill already in progress&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">kpffill</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpffill&#39;</span><span class="p">)</span>
-        <span class="c1"># Start fill</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting green mini fill&#39;</span><span class="p">)</span>
-        <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;GREENSTART&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="c1"># Wait</span>
-        <span class="n">sleep_time</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sleeping </span><span class="si">{</span><span class="n">sleep_time</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> s&#39;</span><span class="p">)</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span>
-        <span class="c1"># Stop fill</span>
-        <span class="k">if</span> <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;GREENFILLIP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stopping green mini fill&#39;</span><span class="p">)</span>
-            <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;GREENSTOP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Expected green mini fill to be in progress.&#39;</span>
-            <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="s1">&#39;TriggerGreenMiniFill Failed&#39;</span><span class="p">,</span>
-                               <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
-            <span class="k">raise</span> <span class="n">KPFException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">utnow</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+        <span class="n">date_string</span> <span class="o">=</span> <span class="n">utnow</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Checking for schedule for the night of </span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s2"> HST&quot;</span><span class="p">)</span>
+        <span class="n">semester</span><span class="p">,</span> <span class="n">s_start</span><span class="p">,</span> <span class="n">s_end</span> <span class="o">=</span> <span class="n">get_semester_dates</span><span class="p">(</span><span class="n">utnow</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;# KPF-CC Schedule File Check&#39;</span><span class="p">)</span>
+        <span class="n">band_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;full-band1&#39;</span><span class="p">,</span> <span class="s1">&#39;full-band2&#39;</span><span class="p">,</span> <span class="s1">&#39;full-band3&#39;</span><span class="p">]</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">date_string</span><span class="p">,</span> <span class="s1">&#39;numdays&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;telnr&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;instrument&#39;</span><span class="p">:</span> <span class="s1">&#39;KPF&#39;</span><span class="p">}</span>
+        <span class="n">all_programs</span> <span class="o">=</span> <span class="n">query_observatoryAPI</span><span class="p">(</span><span class="s1">&#39;schedule&#39;</span><span class="p">,</span> <span class="s1">&#39;getSchedule&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">classical</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">all_programs</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;Instrument&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;KPF&#39;</span><span class="p">]</span>
+        <span class="n">cadence</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">all_programs</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;Instrument&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;KPF-CC&#39;</span><span class="p">]</span>
+        <span class="n">cadence_projects</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;ProjCode&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">cadence</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cadence_projects</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Found cadence programs: </span><span class="si">{</span><span class="n">cadence_projects</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">band_names</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;band1&#39;</span><span class="p">,</span> <span class="s1">&#39;band2&#39;</span><span class="p">,</span> <span class="s1">&#39;band3&#39;</span><span class="p">])</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Checking for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">band_names</span><span class="p">)</span><span class="si">}</span><span class="s2"> schedules: </span><span class="si">{</span><span class="n">band_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">base_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/s/sdata1701/Schedules&#39;</span><span class="p">)</span>
+        <span class="n">semester_path</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">/</span> <span class="n">semester</span>
+
+        <span class="n">date_path</span> <span class="o">=</span> <span class="n">semester_path</span> <span class="o">/</span> <span class="n">date_string</span>
+        <span class="k">if</span> <span class="n">date_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">date_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="n">band_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">date_path</span> <span class="o">/</span> <span class="n">band</span> <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">band_names</span><span class="p">]</span>
+        <span class="n">line_counts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">band_path</span> <span class="ow">in</span> <span class="n">band_paths</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">band_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">band_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="n">output_path</span> <span class="o">=</span> <span class="n">band_path</span> <span class="o">/</span> <span class="s1">&#39;output&#39;</span>
+            <span class="k">if</span> <span class="n">output_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="n">output_file</span> <span class="o">=</span> <span class="n">output_path</span> <span class="o">/</span> <span class="s1">&#39;night_plan.csv&#39;</span>
+            <span class="k">if</span> <span class="n">output_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                <span class="n">nlines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+                <span class="n">line_counts</span><span class="p">[</span><span class="n">band_path</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">nlines</span>
+                <span class="k">if</span> <span class="n">nlines</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span><span class="si">}</span><span class="s2"> has only </span><span class="si">{</span><span class="n">nlines</span><span class="si">}</span><span class="s2"> lines&quot;</span>
+                    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Failed to read </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="c1"># Results</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;# </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">date_path</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">result_str</span> <span class="o">=</span> <span class="s1">&#39;Band        Line Count&#39;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;# </span><span class="si">{</span><span class="n">result_str</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">result_str</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">line_counts</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">newline</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">band</span><span class="si">:</span><span class="s1">11s</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">line_counts</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">if</span> <span class="n">line_counts</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">newline</span> <span class="o">+=</span> <span class="s1">&#39; &lt;-- Low target count!&#39;</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;# </span><span class="si">{</span><span class="n">newline</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">result_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">newline</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Send Email</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;KPF-CC Schedule May Be Bad</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">to_value</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;operations&#39;</span><span class="p">,</span> <span class="s1">&#39;lead_sa&#39;</span><span class="p">,</span> <span class="s1">&#39;jwalawender&#39;</span><span class="p">)</span>
+                    <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;KPF-CC Schedule May Be Bad&#39;</span><span class="p">,</span>
+                                       <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="o">+</span><span class="n">result_str</span><span class="p">,</span>
+                                       <span class="s1">&#39;To&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">to_value</span><span class="si">}</span><span class="s1">@keck.hawaii.edu&#39;</span><span class="p">})</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">email_err</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending email failed&#39;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">email_err</span><span class="p">)</span>
+
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-        <span class="n">kpffill</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpffill&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">kpffill</span><span class="p">[</span><span class="s1">&#39;GREENFILLIP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Green still in progress, should be stopped!&#39;</span>
-            <span class="n">SendEmail</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;Subject&#39;</span><span class="p">:</span> <span class="s1">&#39;TriggerGreenMiniFill Failed&#39;</span><span class="p">,</span>
-                               <span class="s1">&#39;Message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
-            <span class="k">raise</span> <span class="n">FailedPostCondition</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The duration of the fill in seconds (240 recommended)&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--email&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;email&quot;</span><span class="p">,</span>
+                            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Send email if SoCal is not shut down?&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_cmdline_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -728,13 +910,14 @@
 
     </div>
 
+
 </div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../TakeGuiderSensitivityData/" class="btn btn-neutral float-left" title="TakeGuiderSensitivityData"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../TriggerRedMiniFill/" class="btn btn-neutral float-right" title="TriggerRedMiniFill">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../EndOfNight/" class="btn btn-neutral float-left" title="EndOfNight"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../SetObserverFromSchedule/" class="btn btn-neutral float-right" title="SetObserverFromSchedule">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -761,10 +944,10 @@
         </span>
     
     
-      <span><a href="../TakeGuiderSensitivityData/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../EndOfNight/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../TriggerRedMiniFill/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../SetObserverFromSchedule/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

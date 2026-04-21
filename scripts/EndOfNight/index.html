@@ -214,6 +214,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetupAOforKPF/">SetupAOforKPF</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOff/">TurnHepaOff</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TurnHepaOn/">TurnHepaOn</a>
@@ -233,6 +235,8 @@
                 <li class="toctree-l3"><a class="reference internal" href="../CalLampPower/">CalLampPower</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ListLFCRuns/">ListLFCRuns</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../PredictNDFilters/">PredictNDFilters</a>
                 </li>
@@ -283,10 +287,6 @@
                 <li class="toctree-l3"><a class="reference internal" href="../TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerGreenMiniFill/">TriggerGreenMiniFill</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../TriggerRedMiniFill/">TriggerRedMiniFill</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../AnalyzeGridSearch/">AnalyzeGridSearch</a>
                 </li>
@@ -430,6 +430,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
     <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetExecutionHistory/">GetExecutionHistory</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
@@ -560,6 +562,8 @@
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">EndOfNight</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetObserverFromSchedule/">SetObserverFromSchedule</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../SetOutdirs/">SetOutdirs</a>
@@ -616,7 +620,8 @@
               Bases: <code><span title="kpf.KPFTranslatorFunction.KPFFunction">KPFFunction</span></code></p>
 
 
-      <p>Send KPF in to an end of night configuration.</p>
+
+        <p>Send KPF in to an end of night configuration.</p>
 <ul>
 <li>kpffiu.MODE = Stowed</li>
 <li>Power off FVCs</li>
@@ -639,7 +644,7 @@
         <ul class="first simple">
             <li>
               <b><code>AO</code></b>
-                  (<code>bool</code>)
+                  (<code><span title="bool">bool</span></code>)
               –
               <div class="doc-md-description">
                 <p>Close AO hatch, home PCU, and turn on HEPA? (default=True)</p>
@@ -649,7 +654,7 @@
       </td>
     </tr>
   </tbody>
-</table>      <p>KTL Keywords Used:</p>
+</table>        <p>KTL Keywords Used:</p>
 <ul>
 <li><code>kpfexpose.EXPOSE</code></li>
 <li><code>kpfconfig.SCRIPTNAME</code></li>
@@ -676,9 +681,17 @@
 <li><code>kpf.fiu.StopTipTilt</code></li>
 </ul>
 
+
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>kpf/utils/EndOfNight.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 27</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
 <span class="normal"> 28</span>
 <span class="normal"> 29</span>
 <span class="normal"> 30</span>
@@ -833,24 +846,7 @@
 <span class="normal">179</span>
 <span class="normal">180</span>
 <span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EndOfNight</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Send KPF in to an end of night configuration.</span>
 
 <span class="sd">    - kpffiu.MODE = Stowed</span>
@@ -891,12 +887,12 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nd">@classmethod</span>
     <span class="nd">@obey_scriptrun</span>
-    <span class="k">def</span> <span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@add_script_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="c1"># Check Scripts</span>
         <span class="n">kpfconfig</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfconfig&#39;</span><span class="p">)</span>
         <span class="n">expose</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfexpose&#39;</span><span class="p">,</span> <span class="s1">&#39;EXPOSE&#39;</span><span class="p">)</span>
@@ -985,22 +981,7 @@
             <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;User chose to shut down AO&#39;</span><span class="p">)</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Closing AO Hatch&#39;</span><span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">ControlAOHatch</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="s1">&#39;closed&#39;</span><span class="p">})</span>
-                <span class="k">except</span> <span class="n">FailedToReachDestination</span><span class="p">:</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AO hatch did not move successfully&quot;</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure controlling AO hatch&quot;</span><span class="p">)</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Sending PCU stage to Home position&#39;</span><span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">SendPCUtoHome</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure sending PCU to home&quot;</span><span class="p">)</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-    <span class="c1">#             log.info(&#39;Turning on AO HEPA Filter System&#39;)</span>
-    <span class="c1">#             TurnHepaOn.execute({})</span>
+                <span class="n">ShutdownAOforKPF</span><span class="o">.</span><span class="n">execute</span><span class="p">({})</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;User chose to skip AO shutdown&#39;</span><span class="p">)</span>
 
@@ -1011,11 +992,11 @@
         <span class="n">WaitForConfigureFIU</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Stowed&#39;</span><span class="p">})</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cmdline_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--noAO&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;AO&quot;</span><span class="p">,</span>
                             <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_false&quot;</span><span class="p">,</span>
                             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Skip configuring AO?&quot;</span><span class="p">)</span>
@@ -1028,7 +1009,8 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
+
 
 
 
@@ -1044,13 +1026,14 @@
 
     </div>
 
+
 </div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../CheckAllowScheduledCals/" class="btn btn-neutral float-left" title="CheckAllowScheduledCals"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../SetObserverFromSchedule/" class="btn btn-neutral float-right" title="SetObserverFromSchedule">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../ScheduleFilesCheck/" class="btn btn-neutral float-right" title="ScheduleFilesCheck">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -1080,7 +1063,7 @@
       <span><a href="../CheckAllowScheduledCals/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../SetObserverFromSchedule/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../ScheduleFilesCheck/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
