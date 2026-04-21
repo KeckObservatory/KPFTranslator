@@ -1,0 +1,3 @@
+# April 2026 Turbo Pump Failure
+
+In early April, a serious incident with the Keck Planet Finder (KPF).  A vacuum turbo pump that maintains KPF chamber vacuum catastrophically failed, injecting dust and some debris into the chamber housing all of the optical elements.  While an initial examination indicates no obvious significant damage to the optical components, a much more rigorous inspection must be made before determining how to clean the surfaces, many of which are extremely delicate.  Additionally, a full failure review analysis must be performed before KPF can be repaired and go back into science operations.  At this time, we cannot provide an estimate for the return to operations of KPF, but it is a recovery likely to take several months.

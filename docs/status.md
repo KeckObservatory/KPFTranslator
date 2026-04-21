@@ -2,6 +2,7 @@
 
 ### Current Announcements
 
+* 2026 April: [Turbo Pump Failure](announcements/2026-04-06_tubo_failure.md)
 * 2026 February: [26A Status Announcement](announcements/2026-02-01_26A-status.md)
 
 ### Status Summary by Subsystem
