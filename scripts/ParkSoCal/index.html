@@ -677,7 +677,9 @@ enclosure, and parking the solar tracker.</p>
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
-<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ParkSoCal</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ParkSoCal</span><span class="p">(</span><span class="n">KPFFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Parks SoCal. This includes setting AUTONOMOUS to &quot;Manual&quot;, closing the</span>
 <span class="sd">    enclosure, and parking the solar tracker.</span>
 
@@ -700,10 +702,12 @@ enclosure, and parking the solar tracker.</p>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Parking SoCal&#39;</span><span class="p">)</span>
         <span class="n">kpfsocal</span> <span class="o">=</span> <span class="n">ktl</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="s1">&#39;kpfsocal&#39;</span><span class="p">)</span>
         <span class="n">kpfsocal</span><span class="p">[</span><span class="s1">&#39;ENCCMD&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">)</span>
+        <span class="n">kpfsocal</span><span class="p">[</span><span class="s1">&#39;EKOSLEW&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">kpfsocal</span><span class="p">[</span><span class="s1">&#39;EKOTARGALT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">kpfsocal</span><span class="p">[</span><span class="s1">&#39;EKOTARGAZ&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">kpfsocal</span><span class="p">[</span><span class="s1">&#39;EKOMODE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">kpfsocal</span><span class="p">[</span><span class="s1">&#39;EKOSLEW&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">kpfsocal</span><span class="p">[</span><span class="s1">&#39;EKOSLEW&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">post_condition</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

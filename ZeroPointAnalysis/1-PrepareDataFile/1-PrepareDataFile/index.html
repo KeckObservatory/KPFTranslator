@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Josh Walawender" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Examine Properties of Data Set - KPF</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Examine Properties of Data Set";
+        var mkdocs_page_input_path = "ZeroPointAnalysis/1-PrepareDataFile/1-PrepareDataFile.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> KPF
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">KPF Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../status/">Instrument Status</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Instrument Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Subsystems</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../spectrograph/">Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../fiu/">FIU</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../tiptilt/">Tip Tilt Sysyem</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guider/">Guider</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../cahk/">Ca H&K Spectrograph</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../exposuremeter/">Exposure Meter</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../calbench/">Calibration Bench</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../socal/">Solar Calibrator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../agitator/">Agitator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../computers/">Computers</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Specifications</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../detectors/">Detectors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../sensitivity/">Sensitivity</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dataflow/">Data Flow</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../KPFvsHIRES/">KPF vs. HIRES</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Observing with KPF</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../communitycadence/">Community Cadence (KPF-CC)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../afternoonsetup/">Afternoon Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../calibrations/">Daytime Calibrations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../observingprocedures/">Observing Procedures</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../nighttimecalibrations/">Nighttime Calibrations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../expmetertermination/">Exposure Meter Termination</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../buildingOBs/">Observing Blocks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../fastreadmode/">Fast Read Mode</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../kpfdrp/">Data Reduction</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">General Observing Info</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Weather</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="http://mkwc.ifa.hawaii.edu/forecast/mko/index.cgi">MK Weather Center</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/skycams/CloudCamTimelapse.html">Keck Cloud Cameras</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Useful Keck Pages</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/observing/keckSchedule/keckSchedule.php">Telescope Schedule</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/common/starlist.html">Target List Format</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/">Keck Instruments</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www3.keck.hawaii.edu/login/">Observer Login Page</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/software/obsplan/obsplan.php">Planning Tool</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://ucolick.org/calendar/keckcal2021-30/index.html">Twilight, Moon rise, etc.</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/offset.php">Offset & PA Calculator</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keckobservatory.org/observing/">General Keck Observing Info</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.keck.hawaii.edu/realpublic/inst/kpf/pre-observing_checklist.html">Pre-observing Checklist</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/TelLimits.html">Telescope Limits</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/kecktelgde/ktelinstupdate.pdf">Telescope Info</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Keck Policies</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://www2.keck.hawaii.edu/inst/common/too_policies.html">ToO Interrupts</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/SplitNights.html">Split Nights</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/inst/common/mainland_observing.html">Remote Observing</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/observing/policies.html">Other Policies</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">After Your Observing Run</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">Post-observing Comment Form</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Retrieve Your Data</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/rti-gui/login">Retrieving Data in Real Time</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/">Retrieve Data from KOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://koa.ipac.caltech.edu/UserGuide/PyKOA/TAPClients.html#pykoa">Retrieve Data using PyKOA</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="http://www2.keck.hawaii.edu/realpublic/koa/public/KOA_data_policy.pdf">Data Proprietary Period</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www2.keck.hawaii.edu/observing/keck_authors.html">Acknowledging Keck</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../references/">Acknowledging KPF</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Technical Documentation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting/">Troubleshooting</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../tiptiltinstructions/">Tip Tilt Instructions for OAs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../KPFTranslator/">Instrument Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Instrument Scripts</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" >kpf.ao</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ControlAOHatch/">ControlAOHatch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SendPCUtoHome/">SendPCUtoHome</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SendPCUtoKPF/">SendPCUtoKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetAFMtoMirror/">SetAFMtoMirror</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetAFStoNGS/">SetAFStoNGS</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetAODCStoSIM/">SetAODCStoSIM</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetAORotator/">SetAORotator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetAORotatorManual/">SetAORotatorManual</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetupAOforACAM/">SetupAOforACAM</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetupAOforKPF/">SetupAOforKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ShutdownAOforKPF/">ShutdownAOforKPF</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TurnHepaOff/">TurnHepaOff</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TurnHepaOn/">TurnHepaOn</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TurnLightSourceOff/">TurnLightSourceOff</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.cahk</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/PowerCycleCaHK/">PowerCycleCaHK</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.calbench</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/CalLampPower/">CalLampPower</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/IsCalSourceEnabled/">IsCalSourceEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ListLFCRuns/">ListLFCRuns</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/PredictNDFilters/">PredictNDFilters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetCalSource/">SetCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetFlatFieldFiberPos/">SetFlatFieldFiberPos</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetLFCtoAstroComb/">SetLFCtoAstroComb</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetLFCtoStandbyHigh/">SetLFCtoStandbyHigh</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetND/">SetND</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetND1/">SetND1</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetND2/">SetND2</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetSimulCalSource/">SetSimulCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeIntensityReading/">TakeIntensityReading</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForCalSource/">WaitForCalSource</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForFlatFieldFiberPos/">WaitForFlatFieldFiberPos</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForLampWarm/">WaitForLampWarm</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForLFCReady/">WaitForLFCReady</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForND/">WaitForND</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForND1/">WaitForND1</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForND2/">WaitForND2</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.engineering</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GridSearch/">GridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ImageBackIlluminatedFibers/">ImageBackIlluminatedFibers</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/Run2DGridSearch/">Run2DGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeADCGridData/">TakeADCGridData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeADCOffsetGridData/">TakeADCOffsetGridData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeGuiderSensitivityData/">TakeGuiderSensitivityData</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/AnalyzeGridSearch/">AnalyzeGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/AnalyzeTipTiltPerformance/">AnalyzeTipTiltPerformance</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/Fit2DGridSearch/">Fit2DGridSearch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/CountCameraErrors/">CountCameraErrors</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.expmeter</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/BuildMasterBias/">BuildMasterBias</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetExpMeterExpTime/">SetExpMeterExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetExpMeterTerminationParameters/">SetExpMeterTerminationParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/PredictExpMeterParameters/">PredictExpMeterParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetMasterBiasToDefault/">SetMasterBiasToDefault</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetupExpMeter/">SetupExpMeter</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeExpMeterBiases/">TakeExpMeterBiases</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.fiu</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ConfigureFIU/">ConfigureFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ControlFoldMirror/">ControlFoldMirror</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ControlHatch/">ControlHatch</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/InitializeTipTilt/">InitializeTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/LockFIU/">LockFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/UnlockFIU/">UnlockFIU</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/MeasureTipTiltMirrorRange/">MeasureTipTiltMirrorRange</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetADCAngles/">SetADCAngles</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetADCOffsets/">SetADCOffsets</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetTipTiltCalculations/">SetTipTiltCalculations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetTipTiltControl/">SetTipTiltControl</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetTipTiltGain/">SetTipTiltGain</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetTipTiltPosition/">SetTipTiltPosition</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetTipTiltTargetPixel/">SetTipTiltTargetPixel</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ShutdownTipTilt/">ShutdownTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StartTipTilt/">StartTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StopTipTilt/">StopTipTilt</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TestTipTiltMirrorRange/">TestTipTiltMirrorRange</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/VerifyCurrentBase/">VerifyCurrentBase</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForConfigureFIU/">WaitForConfigureFIU</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.fvc</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/FVCPower/">FVCPower</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/PredictFVCParameters/">PredictFVCParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeFVCContinuous/">TakeFVCContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeFVCExposure/">TakeFVCExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetFVCExpTime/">SetFVCExpTime</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.guider</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/CollectGuiderDarkCubes/">CollectGuiderDarkCubes</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/DisplayGuiderContinuous/">DisplayGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetGaiaStars/">GetGaiaStars</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GuiderLastfile/">GuiderLastfile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GuiderOutdir/">GuiderOutdir</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/PredictGuiderParameters/">PredictGuiderParameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetGuiderExpTime/">SetGuiderExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetGuiderFPS/">SetGuiderFPS</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetGuiderGain/">SetGuiderGain</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetGuiderOutdir/">SetGuiderOutdir</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StartGuiderContinuous/">StartGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StartTriggerFile/">StartTriggerFile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StopGuiderContinuous/">StopGuiderContinuous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StopTriggerFile/">StopTriggerFile</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeGuiderCube/">TakeGuiderCube</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/TakeGuiderExposure/">TakeGuiderExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForTriggerFile/">WaitForTriggerFile</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.magiq</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/AddTarget/">AddTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetTargetList/">GetTargetList</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/RemoveTarget/">RemoveTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/RemoveAllTargets/">RemoveAllTargets</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SelectTarget/">SelectTarget</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetTargetList/">SetTargetList</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.observatoryAPIs</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetCurrentScheduledProgram/">GetCurrentScheduledProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetExecutionHistory/">GetExecutionHistory</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetKPFCCObservingBlocks/">GetKPFCCObservingBlocks</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetObservingBlocks/">GetObservingBlocks</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetObservingBlocksByProgram/">GetObservingBlocksByProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetScheduledPrograms/">GetScheduledPrograms</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/GetTelescopeRelease/">GetTelescopeRelease</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetJunkStatus/">SetJunkStatus</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SubmitObserverComment/">SubmitObserverComment</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.scripts</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/CleanupAfterCalibrations/">CleanupAfterCalibrations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/CleanupAfterScience/">CleanupAfterScience</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ConfigureForAcquisition/">ConfigureForAcquisition</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ConfigureForCalibrations/">ConfigureForCalibrations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ConfigureForScience/">ConfigureForScience</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/EnterLowPowerMode/">EnterLowPowerMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/EstimateOBDuration/">EstimateOBDuration</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/RecoverFromLowPowerMode/">RecoverFromLowPowerMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/RunOB/">RunOB</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/RunSoCal/">RunSoCal</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.socal</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/CheckSoCalEnabled/">CheckSoCalEnabled</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/DisableSoCal/">DisableSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/EnableSoCal/">EnableSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/IsSoCalClosed/">IsSoCalClosed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/IsSoCalOpen/">IsSoCalOpen</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/IsSoCalShutDown/">IsSoCalShutDown</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ParkSoCal/">ParkSoCal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SoCalStartAutonomous/">SoCalStartAutonomous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SoCalStopAutonomous/">SoCalStopAutonomous</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForSoCalOnTarget/">WaitForSoCalOnTarget</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.spectrograph</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/QueryFastReadMode/">QueryFastReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/QueryReadMode/">QueryReadMode</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/RecoverDetectors/">RecoverDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ResetCaHKDetector/">ResetCaHKDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ResetExpMeterDetector/">ResetExpMeterDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ResetGreenDetector/">ResetGreenDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ResetRedDetector/">ResetRedDetector</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ResetDetectors/">ResetDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetExpTime/">SetExpTime</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetObject/">SetObject</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetObserver/">SetObserver</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetProgram/">SetProgram</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetReadModeFast/">SetReadModeFast</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetReadModeNormal/">SetReadModeNormal</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetSourceSelectShutters/">SetSourceSelectShutters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetTimedShutters/">SetTimedShutters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetTriggeredDetectors/">SetTriggeredDetectors</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StartAgitator/">StartAgitator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StartExposure/">StartExposure</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StopAgitator/">StopAgitator</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForL0File/">WaitForL0File</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForReadout/">WaitForReadout</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/WaitForReady/">WaitForReady</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.telescope</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/EastNorth/">EastNorth</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >kpf.utils</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/BuildCalOB/">BuildCalOB</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/CheckAllowScheduledCals/">CheckAllowScheduledCals</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/EndOfNight/">EndOfNight</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ScheduleFilesCheck/">ScheduleFilesCheck</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetObserverFromSchedule/">SetObserverFromSchedule</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/SetOutdirs/">SetOutdirs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StartGUIs/">StartGUIs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StartOfNight/">StartOfNight</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/StopGUIs/">StopGUIs</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../scripts/ZeroOutSlewCalTime/">ZeroOutSlewCalTime</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">KPF</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Examine Properties of Data Set</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="examine-properties-of-data-set">Examine Properties of Data Set</h1>
+<p>This data set includes (anonymized) results of the first few years of KPF observations.  This contains select FITS header keyworsds from the DRP's L1 output file.  We're primarily interested in the DRP's estimate of the signal to noise at various wavelengths (the <code>SNRSCnnn</code> values).  These are the typical signal to noise for one order around the speecified wavelength value in nm.</p>
+<p>In this notebook, we anonymize the data then filter out data with certain known issues.  After filtering we have over 12,000 individual observations (FITS files).  Finally, we examine the properties of the targets (effective temperature and Gaia G magnituide), of the observations (time of observation), and of the DRP reductions (DRP version used).</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span><span class="p">,</span> <span class="n">MaskedColumn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># Read raw data</span>
+<span class="n">raw_data_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;data/Feb2026.csv&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="n">raw_data_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">raw_data_file</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.csv&#39;</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">remove_columns</span><span class="p">([</span><span class="s1">&#39;ObsID&#39;</span><span class="p">,</span> <span class="s1">&#39;OBJECT&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGNAME&#39;</span><span class="p">,</span> <span class="s1">&#39;TOTCNTS&#39;</span><span class="p">,</span> <span class="s1">&#39;CCFRV_MPS&#39;</span><span class="p">,</span> <span class="s1">&#39;CCD1RV_MPS&#39;</span><span class="p">,</span> <span class="s1">&#39;CCD2RV_MPS&#39;</span><span class="p">,</span> <span class="s1">&#39;CCFERV_MPS&#39;</span><span class="p">,</span> <span class="s1">&#39;CCFBJD&#39;</span><span class="p">,</span> <span class="s1">&#39;CCFERV&#39;</span><span class="p">])</span>
+    <span class="c1"># Separate out TOTCORR values to separate columns</span>
+    <span class="n">TOTCORR_1</span> <span class="o">=</span> <span class="n">MaskedColumn</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TOTCORR_1&#39;</span><span class="p">)</span>
+    <span class="n">TOTCORR_2</span> <span class="o">=</span> <span class="n">MaskedColumn</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TOTCORR_2&#39;</span><span class="p">)</span>
+    <span class="n">TOTCORR_3</span> <span class="o">=</span> <span class="n">MaskedColumn</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TOTCORR_3&#39;</span><span class="p">)</span>
+    <span class="n">TOTCORR_4</span> <span class="o">=</span> <span class="n">MaskedColumn</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TOTCORR_4&#39;</span><span class="p">)</span>
+    <span class="n">TOTCORR_SUM</span> <span class="o">=</span> <span class="n">MaskedColumn</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TOTCORR_SUM&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+        <span class="n">masked</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">masked</span><span class="p">:</span>
+            <span class="n">TOTCORR_1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">TOTCORR_2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">TOTCORR_3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">TOTCORR_4</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">TOTCORR_SUM</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
+    <span class="n">TOTCORR_1</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span>
+    <span class="n">TOTCORR_2</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span>
+    <span class="n">TOTCORR_3</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span>
+    <span class="n">TOTCORR_4</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span>
+    <span class="n">TOTCORR_SUM</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;TOTCORR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">add_columns</span><span class="p">([</span><span class="n">TOTCORR_1</span><span class="p">,</span> <span class="n">TOTCORR_2</span><span class="p">,</span> <span class="n">TOTCORR_3</span><span class="p">,</span> <span class="n">TOTCORR_4</span><span class="p">,</span> <span class="n">TOTCORR_SUM</span><span class="p">])</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># Remove data with known bad parameters</span>
+<span class="k">if</span> <span class="n">raw_data_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="c1"># Remove Data with MJD-OBS Before KPF was Installed</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;MJD-OBS&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">59200</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="c1"># Remove Data with Gmag&lt;=0</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;GAIAMAG&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="c1">#because of missing labeling in OBs, this was a default value, so remove all stars with this value as the data is not usable.</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;GAIAMAG&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">9.2</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;GAIAMAG&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">9.5</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="c1"># Remove very short exposures (removes start state errors)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;ELAPSED&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">7</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="mf">13547</span>
+<span class="mf">12700</span>
+<span class="mf">12118</span>
+<span class="mf">12058</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">anonymized_data_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;data/Feb2026_anonymized.csv&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">raw_data_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">anonymized_data_file</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">anonymized_data_file</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.csv&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<h1 id="examine-properties-of-data-set_1">Examine Properties of Data Set</h1>
+<div class="codehilite"><pre><span></span><code><span class="c1"># KPFERA 1.0 is before SM1</span>
+<span class="n">SM1start</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2024-02-03&#39;</span><span class="p">)</span>
+<span class="n">SM1end</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2024-02-23&#39;</span><span class="p">)</span>
+<span class="c1"># KPFERA 2.0 is between SM1 and SM2</span>
+<span class="n">SM2start</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2024-10-31&#39;</span><span class="p">)</span>
+<span class="n">SM2end</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2024-11-20&#39;</span><span class="p">)</span>
+<span class="c1"># KPFERA 2.5/2.6 is between SM2 and SM3</span>
+<span class="n">SM3start</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2025-03-28&#39;</span><span class="p">)</span>
+<span class="n">SM3end</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2025-04-23&#39;</span><span class="p">)</span>
+<span class="c1"># KPFERA 3.0 is between SM3 and SM4</span>
+<span class="n">SM4start</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2025-08-31&#39;</span><span class="p">)</span>
+<span class="n">SM4end</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2025-10-27&#39;</span><span class="p">)</span>
+<span class="c1"># KPFERA 4.0 is after SM4</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Histogram of Teff and Gmag Values in the Data Set&#39;</span><span class="p">)</span>
+<span class="n">bins</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2700</span><span class="p">,</span><span class="mi">10000</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;TARGTEFF&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">2700</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;KPF-etc Limits&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">6600</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Teff&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;GAIAMAG&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;KPF-etc Limits&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Gmag&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">nd</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;MJD-OBS&#39;</span><span class="p">])</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;MJD-OBS&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;MJD-OBS&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">nd</span><span class="o">/</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">SM1start</span><span class="o">.</span><span class="n">mjd</span><span class="p">,</span> <span class="n">SM1end</span><span class="o">.</span><span class="n">mjd</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Servicing Mission&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">SM2start</span><span class="o">.</span><span class="n">mjd</span><span class="p">,</span> <span class="n">SM2end</span><span class="o">.</span><span class="n">mjd</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">SM3start</span><span class="o">.</span><span class="n">mjd</span><span class="p">,</span> <span class="n">SM3end</span><span class="o">.</span><span class="n">mjd</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">SM4start</span><span class="o">.</span><span class="n">mjd</span><span class="p">,</span> <span class="n">SM4end</span><span class="o">.</span><span class="n">mjd</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;MJD&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<p><img alt="png" src="../output_8_0.png" /></p>
+<div class="codehilite"><pre><span></span><code><span class="n">drpvs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;DRPTAGL2&#39;</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DRPTAGL2   : N Files&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;____________________&quot;</span><span class="p">)</span>
+<span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">drpvs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s1">&#39;--&#39;</span><span class="p">:</span>
+        <span class="n">Nv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;DRPTAGL2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tv</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;DRPTAGL2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">]</span>
+        <span class="n">Nv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tv</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">+=</span> <span class="n">Nv</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">11s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">Nv</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TOTAL = </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">DRPTAGL2</span><span class="w">   </span><span class="o">:</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="n">Files</span>
+<span class="n">____________________</span>
+<span class="o">--</span><span class="w">         </span><span class="o">:</span><span class="w"> </span><span class="mi">38</span>
+<span class="n">v2</span><span class="o">.</span><span class="mf">10.3</span><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="mi">3216</span>
+<span class="n">v2</span><span class="o">.</span><span class="mf">11.1</span><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="mi">23</span>
+<span class="n">v2</span><span class="o">.</span><span class="mf">12.0</span><span class="n">rc1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">4369</span>
+<span class="n">v2</span><span class="o">.</span><span class="mf">5.3</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="mi">35</span>
+<span class="n">v2</span><span class="o">.</span><span class="mf">8.2</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="mi">2030</span>
+<span class="n">v2</span><span class="o">.</span><span class="mf">9.1</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="mi">2347</span>
+<span class="n">TOTAL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12058</span><span class="w"> </span><span class="o">(</span><span class="mi">12058</span><span class="o">)</span>
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/KeckObservatory/KPFTranslator/" class="fa fa-code-fork" style="color: #fcfcfc"> KPFTranslator</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
