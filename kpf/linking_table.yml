@@ -98,6 +98,11 @@ links:
         cmd: engineering.analysis.Fit2DGridSearch.Fit2DGridSearch
     CountCameraErrors:
         cmd: engineering.analysis.CountCameraErrors.CountCameraErrors
+    # ETC
+    ZPETC:
+        cmd: etc.etc.ZPETC
+    EMADU:
+        cmd: etc.etc.EMADU
     # ExpMeter
     BuildMasterBias:
         cmd: expmeter.BuildMasterBias.BuildMasterBias
