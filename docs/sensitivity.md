@@ -12,6 +12,8 @@ If you need to acquire very faint targets (J > 16), please reach out to your SA 
 
 # Zero Point Analysis
 
+From a collection of anonymized DRP products from the first few years of observations, we have used the DRP's reported signal to noise as a probe of KPF's sensitivity.  Specifically, we have measured the photometric zero point of the instrument at various wavelengths. The 5 notebooks below explore different aspects of the instrument and operations.
+
 - [Examine Properties of Data Set](ZeroPointAnalysis/1-PrepareDataFile/1-PrepareDataFile.md)
 - [Find Zero Point of Exposure Meter](ZeroPointAnalysis/2-ExpMeterZeroPoint/2-ExpMeterZeroPoint.md)
 - [Find Zero Point of Instrument](ZeroPointAnalysis/3-InstrumentZeroPoint/3-InstrumentZeroPoint.md)
