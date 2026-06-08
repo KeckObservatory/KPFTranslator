@@ -5,7 +5,11 @@
 * 2026 April: [Turbo Pump Failure](announcements/2026-04-06_tubo_failure.md)
 * 2026 February: [26A Status Announcement](announcements/2026-02-01_26A-status.md)
 
+<font color="red">KPF is OFFLINE until further notice due to the vacuum pump failure described in the 2026 April announcement above.</font> A Failure Review Board is investigating the root cause of the pump failure and will advise the Observatory on a path forward.  Until that report comes out, the schedule for KPF's return to service is uncertain.
+
+
 ### Status Summary by Subsystem
+
 
 This is an attempt to summarize the status of various sub-systems of the instrument.  Each sub-system name is color coded to indicate the status at a glance: <font color="green">green</font> means functioning normally, <font color="orange">orange</font> means mostly normal, but with some caveats or minor issues, and <font color="red">red</font> means the sub-system is compromised in some way.
 
