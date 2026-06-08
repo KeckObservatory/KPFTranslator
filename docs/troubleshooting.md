@@ -7,6 +7,8 @@
 * Scripts
     * [Existing Script is Running](#existing-script-is-running)
     * [Agitator Use is Disabled](#agitator-use-is-disabled)
+    * [Start of Night Script Failed](#start-of-night-script-failed)
+    * [End of Night Script Failed](#end-of-night-script-failed)
 * Calibrations
     * [Calibration Source is Not Working](#calibration-source-is-not-working)
     * [SlewCal or Simultaneous Calibration Source is Wrong](#slewcal-or-simultaneous-calibration-source-is-wrong)
@@ -32,6 +34,7 @@
 * SoCal
     * [Enclosure Lid Does not Move 1](#enclosure-lid-does-not-move-1)
     * [Enclosure Lid Does not Move 2](#enclosure-lid-does-not-move-2)
+    * [EKO Sun Tracker is not on Sun](#eko-sun-tracker-is-not-on-sun)
 
 
 # General Principles
@@ -109,6 +112,75 @@ This means that the `kpfconfig.USEAGITATOR` keyword is set to “No”.  This ke
 
 The agitator can be reenabled by simply setting the keyword to “Yes”.  **This should only be done by WMKO staff** and should only be done if the agitator is fully functional.  A broken or misbehaving agitator mechanism presents a significant danger to the science fibers.
 
+## Start of Night Script Failed
+
+<u>Symptom</u>:
+
+When executing the start of night script, the script failed to read and set AO keywords.
+
+<u>Problem</u>:
+
+There is some kind of AO gateway communicaiton problem, and so far we don't know what the root cause is. This happens intermittently. 
+
+<u>Solution</u>:
+
+Modify AO keywords as k1obsao in a k1aoserver-new terminal.
+
+Open AO hatch and check status:
+
+```
+modify -s ao aohatchcmd=open
+show -s ao aohatchsts
+```
+
+Send PCU to KPF:
+
+```
+modify -s ao pcuname=KPF 
+show -s ao pcuname
+```
+
+Send AO rotator to 0 deg:
+
+```
+modify -s ao obrt=0 
+show -s ao obrt
+```
+
+Set rotator to stationary:
+
+```
+modify -s dcs rotmode=stationary
+show -s dcs rotmode
+```
+
+## End of Night Script Failed
+
+<u>Symptom</u>:
+
+When executing the end of night script, the script failed to read and set AO keywords.
+
+<u>Problem</u>:
+
+There is some kind of AO gateway communicaiton problem, and so far we don't know what the root causee is. This happens intermittently. 
+
+<u>Solution</u>:
+
+Modify AO keywords as k1obsao in a k1aoserver-new terminal.
+
+Close AO hatch and check status:
+
+```
+modify -s ao aohatchcmd=close
+show -s ao aohatchsts
+```
+
+Send AO rotator to 45 deg:
+
+```
+modify -s ao obrt=45 
+show -s ao obrt
+```
 
 # Calibrations
 
@@ -557,3 +629,20 @@ The `~/grep_for_dome_error` script will exclude many of the noisy, not useful li
 <u>Solution</u>:
 
 Reboot the controller (raspberry pi): `sudo reboot` and restart the kpfsocal3 dispatcher: `kpf restart kpfsocal3`.  Multiple reboots may be required.
+
+## EKO Sun Tracker is not on Sun
+
+<u>Symptom</u>:
+
+The EKO solar tracker is not pointed at the sun, it may be parked.
+
+<u>Problem</u>:
+
+The tracker is not in the right mode.
+
+<u>Solution</u>:
+
+* Run `modify -s kpfsocal EKOCMD=2` which tells EKO to "guide" on the Sun.
+* Run `modify -s kpfsocal EKOMODE=3` which sets the EKO in to "Sun-sensor with Learning" mode.
+
+If that fails, restart the EKO dispatcher: `kpf restart kpfsocal1` and run the commands again.

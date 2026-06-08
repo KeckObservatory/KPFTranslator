@@ -1,4 +1,7 @@
+import subprocess
+
 import ktl
+import ktl.Exceptions
 
 from kpf import log, cfg
 from kpf.exceptions import *
@@ -43,27 +46,39 @@ class SetupAOforKPF(KPFFunction):
 
     @classmethod
     def perform(cls, args):
-        log.info('Set AO rotator to Manual')
-        SetAORotatorManual.execute({})
 
-        log.info('Set AO rotator to 0 deg')
-        SetAORotator.execute({'dest': 0})
-
-        log.info('Turn off HEPA')
-        TurnHepaOff.execute({})
-
-        log.info('Set AO in DCS sim mode')
-        SetAODCStoSIM.execute({})
-
-        log.info('Turn K1 AO light source off')
-        TurnLightSourceOff.execute({})
-
-        PCSstagekw = ktl.cache('ao', 'PCSFNAME')
-        if PCSstagekw.read() != 'kpf':
-            log.info('Move PCU to Home')
-            SendPCUtoHome.execute({})
-            log.info('Move PCU to KPF')
-            SendPCUtoKPF.execute({})
+        try:
+            log.info('Set AO rotator to Manual')
+            SetAORotatorManual.execute({})
+    
+            log.info('Set AO rotator to 0 deg')
+            SetAORotator.execute({'dest': 0})
+    
+            log.info('Turn off HEPA')
+            TurnHepaOff.execute({})
+    
+            log.info('Set AO in DCS sim mode')
+            SetAODCStoSIM.execute({})
+    
+            log.info('Turn K1 AO light source off')
+            TurnLightSourceOff.execute({})
+    
+            PCSstagekw = ktl.cache('ao', 'PCSFNAME')
+            if PCSstagekw.read() != 'kpf':
+                log.info('Move PCU to KPF')
+                SendPCUtoKPF.execute({})
+        except Exception as e:
+            log.warning('SetupAOforKPF failed.')
+            log.warning(e)
+            log.warning(f'SSHing to k1obsao@k1aoserver-new to run kpfStart.csh')
+            ssh_cmds = ['ssh -X k1obsao@k1aoserver-new kpfStart.csh',
+                        f'echo "Done!"',
+                        f'sleep 30']
+            ssh_cmd = ' ; '.join(ssh_cmds)
+            cmd = ['xterm', '-title', 'SetupAOforKPF', '-name', 'SetupAOforKPF',
+                   '-fn', '10x20', '-bg', 'black', '-fg', 'white',
+                   '-e', f'{ssh_cmd}']
+            proc = subprocess.Popen(cmd)
 
     @classmethod
     def post_condition(cls, args):

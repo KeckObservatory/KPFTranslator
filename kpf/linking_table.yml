@@ -24,6 +24,8 @@ links:
         cmd: ao.SetupAOforACAM.SetupAOforACAM
     SetupAOforKPF:
         cmd: ao.SetupAOforKPF.SetupAOforKPF
+    ShutdownAOforKPF:
+        cmd: ao.ShutdownAOforKPF.ShutdownAOforKPF
     TurnHepaOff:
         cmd: ao.TurnHepaOff.TurnHepaOff
     TurnHepaOn:
@@ -87,10 +89,6 @@ links:
         cmd: engineering.TakeADCOffsetGridData.TakeADCOffsetGridData
     TakeGuiderSensitivityData:
         cmd: engineering.TakeGuiderSensitivityData.TakeGuiderSensitivityData
-    TriggerGreenMiniFill:
-        cmd: engineering.TriggerGreenMiniFill.TriggerGreenMiniFill
-    TriggerRedMiniFill:
-        cmd: engineering.TriggerRedMiniFill.TriggerRedMiniFill
     # Engineering/Analysis
     AnalyzeGridSearch:
         cmd: engineering.analysis.AnalyzeGridSearch.AnalyzeGridSearch
@@ -100,6 +98,11 @@ links:
         cmd: engineering.analysis.Fit2DGridSearch.Fit2DGridSearch
     CountCameraErrors:
         cmd: engineering.analysis.CountCameraErrors.CountCameraErrors
+    # ETC
+    ZPETC:
+        cmd: etc.etc.ZPETC
+    EMADU:
+        cmd: etc.etc.EMADU
     # ExpMeter
     BuildMasterBias:
         cmd: expmeter.BuildMasterBias.BuildMasterBias
@@ -333,6 +336,8 @@ links:
         cmd: utils.CheckAllowScheduledCals.CheckAllowScheduledCals
     EndOfNight:
         cmd: utils.EndOfNight.EndOfNight
+    ScheduleFilesCheck:
+        cmd: utils.ScheduleFilesCheck.ScheduleFilesCheck
     SetObserverFromSchedule:
         cmd: utils.SetObserverFromSchedule.SetObserverFromSchedule
     SetOutdirs:

@@ -85,30 +85,31 @@ def main():
                  rotation='vertical')
     plt.ylabel('Read Noise (e-)')
 #     plt.ylim(min(G_RN)*0.98, max(G_RN)*1.05)
-    plt.ylim(3.5, max(G_RN)+3)
+    plt.ylim(min(G_RN)-1, min([15, max(G_RN)+3]))
     plt.xticks(range(len(G_frameno)), G_frameno)
     plt.grid()
 
-    print('# Red Noise Measurements')
-    R_offset = 0.1
-    plt.subplot(2,1,2)
-    R_RN = [fileinfo[file]['rn_e'] for file in redfiles]
-    R_RNos = [fileinfo[file]['rn_oscan'] for file in redfiles]
-    R_timestamp = [fileinfo[file]['timestamp'] for file in redfiles]
-    R_label = [fileinfo[file]['label'] for file in redfiles]
-    R_frameno = [fileinfo[file]['frameno'] for file in redfiles]
-    plt.plot(R_RN, 'ro')
-    plt.plot(R_RNos, 'ro', alpha=0.5)
-    for i,file in enumerate(redfiles):
-        print(f"{fileinfo[file]['timestr']} {file:50s}: {fileinfo[file]['rn_e']:5.2f} {fileinfo[file]['rn_oscan']:5.2f}")
-        plt.text(i, fileinfo[file]['rn_e']+R_offset, R_label[i],
-                 rotation='vertical')
-    plt.ylabel('Read Noise (e-)')
-#     plt.ylim(min(R_RN)*0.98, max(R_RN)*1.05)
-    plt.ylim(1.5, max(R_RN)+1)
-    plt.xlabel('Frame Number')
-    plt.xticks(range(len(R_frameno)), R_frameno)
-    plt.grid()
+    if len(redfiles) > 0:
+        print('# Red Noise Measurements')
+        R_offset = 0.1
+        plt.subplot(2,1,2)
+        R_RN = [fileinfo[file]['rn_e'] for file in redfiles]
+        R_RNos = [fileinfo[file]['rn_oscan'] for file in redfiles]
+        R_timestamp = [fileinfo[file]['timestamp'] for file in redfiles]
+        R_label = [fileinfo[file]['label'] for file in redfiles]
+        R_frameno = [fileinfo[file]['frameno'] for file in redfiles]
+        plt.plot(R_RN, 'ro')
+        plt.plot(R_RNos, 'ro', alpha=0.5)
+        for i,file in enumerate(redfiles):
+            print(f"{fileinfo[file]['timestr']} {file:50s}: {fileinfo[file]['rn_e']:5.2f} {fileinfo[file]['rn_oscan']:5.2f}")
+            plt.text(i, fileinfo[file]['rn_e']+R_offset, R_label[i],
+                     rotation='vertical')
+        plt.ylabel('Read Noise (e-)')
+    #     plt.ylim(min(R_RN)*0.98, max(R_RN)*1.05)
+        plt.ylim(min(R_RN)-0.5, min([9, max(R_RN)+1]))
+        plt.xlabel('Frame Number')
+        plt.xticks(range(len(R_frameno)), R_frameno)
+        plt.grid()
 
     plt.savefig('ReadNoise.png', bbox_inches='tight', pad_inches=0.1)
     plt.show()

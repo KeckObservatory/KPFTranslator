@@ -36,14 +36,15 @@ class ListLFCRuns(KPFFunction):
     @classmethod
     def perform(cls, args):
         ndays = args.get('ndays', 1)
-        now = datetime.datetime.now()
         if args.get('date', '') in ['', 'now']:
-            start = now - datetime.timedelta(days=ndays)
+            start = datetime.datetime.now() - datetime.timedelta(days=ndays)
+            end = datetime.datetime.now()
         else:
             start = datetime.datetime.strptime(args.get('date'), '%Y-%m-%d') - datetime.timedelta(days=ndays)
+            end = datetime.datetime.strptime(args.get('date'), '%Y-%m-%d')
         LFC_history = keygrabber.retrieve({'kpfcal': ['OPERATIONMODE']},
                                           begin=start.timestamp(),
-                                          end=now.timestamp())
+                                          end=end.timestamp())
         astrocomb = [x for x in LFC_history if x['ascvalue'] == 'AstroComb']
 
 #         kws = {'kpfcal': ['OPERATIONMODE', 'POS_INTENSITY', 'SPECFLATIR',
