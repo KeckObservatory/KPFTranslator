@@ -605,7 +605,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="examine-properties-of-data-set">Examine Properties of Data Set</h1>
-<p>This data set includes (anonymized) results of the first few years of KPF observations.  This contains select FITS header keyworsds from the DRP's L1 output file.  We're primarily interested in the DRP's estimate of the signal to noise at various wavelengths (the <code>SNRSCnnn</code> values).  These are the typical signal to noise for one order around the speecified wavelength value in nm.</p>
+<p>This data set includes (anonymized) results of the first few years of KPF observations.  This contains select FITS header keyworsds from the DRP's L1 output file.  We're primarily interested in the DRP's estimate of the signal to noise at various wavelengths (the <code>SNRSCnnn</code> values).  These are the typical signal to noise for one order around the specified wavelength value in nm.</p>
 <p>In this notebook, we anonymize the data then filter out data with certain known issues.  After filtering we have over 12,000 individual observations (FITS files).  Finally, we examine the properties of the targets (effective temperature and Gaia G magnituide), of the observations (time of observation), and of the DRP reductions (DRP version used).</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>

@@ -771,7 +771,7 @@
 <p><img alt="png" src="../output_13_1.png" /></p>
 <h3 id="discussion_1">Discussion</h3>
 <p>There are hints of a time evolution here.  Specifically there appears to be a drop in zero points after the second servicing mission.</p>
-<p>Note that data from before the first servicing mission is not shown as the reformatter was realigned during that servicing mission.  Prior to that realignment, the fraction of light sent to the exposure meter flux was higher.</p>
+<p>Note that data from before the first servicing mission is not shown as the reformatter was realigned during that servicing mission.  Prior to that realignment, the fraction of light sent to the exposure meter was higher.</p>
 <h1 id="save-results-to-disk">Save Results to Disk</h1>
 <div class="codehilite"><pre><span></span><code><span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;data/Feb2026_withEMZPs.csv&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
@@ -780,9 +780,6 @@
 <span class="k">if</span> <span class="n">EMZPfile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span> <span class="n">EMZPfile</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">EMZPfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">EMZeroPoint</span><span class="p">))</span>
-</code></pre></div>
-
-<div class="codehilite"><pre><span></span><code>
 </code></pre></div>
               
             </div>
