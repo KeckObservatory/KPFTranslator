@@ -3,7 +3,6 @@
 ### Current Announcements
 
 * 2026 April: [Turbo Pump Failure](announcements/2026-04-06_tubo_failure.md)
-* 2026 February: [26A Status Announcement](announcements/2026-02-01_26A-status.md)
 
 <font color="red">KPF is OFFLINE until further notice due to the vacuum pump failure described in the 2026 April announcement above.</font> A Failure Review Board is investigating the root cause of the pump failure and will advise the Observatory on a path forward.  Until that report comes out, the schedule for KPF's return to service is uncertain.
 
@@ -13,19 +12,19 @@
 
 This is an attempt to summarize the status of various sub-systems of the instrument.  Each sub-system name is color coded to indicate the status at a glance: <font color="green">green</font> means functioning normally, <font color="orange">orange</font> means mostly normal, but with some caveats or minor issues, and <font color="red">red</font> means the sub-system is compromised in some way.
 
-- **<font color="orange">Detector Noise</font>**: Starting in November of 2024, additional non-gaussian noise has been present on the detectors. As of late-October 2025 the read noise on the Green side remains elevated (~10 electrons), while the red side is at our target level (~4.3 electrons).
-- **<font color="orange">LFC</font>**: Initial evaluations of the reliability of the LFC after the recent service look promising, though the bluest flux (below ~490 nm) is not consistent.
-- **<font color="red">Detector Cooling Systems</font>**: The green side CCR has  very little overhead on maintaining temperature and has quasi-periodic deviations which affect the detector. Red side is performing well, but has shown evidence of a slow degradation of performance.
-- **<font color="green">Etalon</font>**: Operational.
-- **<font color="green">Detector Errors</font>**: The red and green detectors suffer from occasional “start state errors” in which the affected detector does not produce a useful exposure. The observing scripts detect this, abort the exposure (with read out) and start a fresh exposure on both cameras. **No action is necessary on the part of the observer.**  The occurrence rate is such that around one in every 180 exposures is affected by one of the two detectors experiencing this error.
-- **<font color="green">Ca H&K Detector</font>**: The CA H&K detector is operational.
-- **<font color="green">Exposure Meter Terminated Exposures</font>**: Operational.
-- **<font color="green">Tip Tilt Corrections</font>**: The tip tilt axis are currently correcting as expected.
-- **<font color="green">Double Star Observations</font>**: Operational.
-- **<font color="green">Simultaneous Calibration (SimulCal)</font>**: Simultaneous calibrations are supported.
-- **<font color="red">Off Target Guiding</font>**: Not yet commissioned.  Currently, the tip tilt system must be able to detect the science target in order to position it on the fiber.
+- **<font color="red">Detector Noise</font>**: 
+- **<font color="red">LFC</font>**: 
+- **<font color="red">Detector Cooling Systems</font>**: 
+- **<font color="red">Etalon</font>**: 
+- **<font color="red">Detector Errors</font>**: 
+- **<font color="red">Ca H&K Detector</font>**: 
+- **<font color="red">Exposure Meter Terminated Exposures</font>**: 
+- **<font color="red">Tip Tilt Corrections</font>**: 
+- **<font color="red">Double Star Observations</font>**: 
+- **<font color="red">Simultaneous Calibration (SimulCal)</font>**: 
+- **<font color="red">Off Target Guiding</font>**: 
 
-Last Updated: 2026-02-01
+Last Updated: 2026-04-10
 
 ### KPF Era 4.0 Temperature Stability Summary
 
@@ -49,5 +48,6 @@ KPF Era 4.0 began in late-October 2025 after Servicing Mission 4. We continue to
 
 ### Past Announcements
 
+* 2026 February: [26A Status Announcement](announcements/2026-02-01_26A-status.md)
 * 2025 August: [26A Stability Announcement](KPF Stability Statement - August 15 2025.pdf)
 * 2023 September: [Keck Science Meeting presentation](Keck Science Meeting 2023 Breakout Session.pdf)
