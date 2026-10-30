@@ -110,7 +110,11 @@ class Target(BaseOBComponent):
         except:
             rastr = str(self.RA).replace(':', ' ')
             decstr = str(self.Dec).replace(':', ' ')
-        out = f"{self.TargetName.value:15s} {rastr} {decstr}"
+        if len(self.TargetName.value) > 15:
+            short_name = self.TargetName.value[:15]
+        else:
+            short_name = self.TargetName.value
+        out = f"{short_name:15s} {rastr} {decstr}"
         if str(self.Equinox) == 'J2000':
             out += f" 2000"
         else:

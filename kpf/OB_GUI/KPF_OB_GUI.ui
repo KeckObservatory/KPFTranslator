@@ -1745,12 +1745,13 @@
      <string>OB List</string>
     </property>
     <addaction name="action_ClearOBList"/>
-    <addaction name="actionLoad_KPF_CC_Schedule"/>
     <addaction name="separator"/>
-    <addaction name="action_LoadOBsFromFiles"/>
+    <addaction name="actionLoad_KPF_CC_Schedule"/>
+    <addaction name="actionLoad_Schedule_for_non_CC_Night"/>
+    <addaction name="separator"/>
     <addaction name="action_LoadOBsFromProgram"/>
     <addaction name="actionLoad_KPF_CC_OBs"/>
-    <addaction name="actionLoad_Schedule_for_non_CC_Night"/>
+    <addaction name="action_LoadOBsFromFiles"/>
    </widget>
    <widget class="QMenu" name="menuFile_2">
     <property name="title">
@@ -1781,6 +1782,7 @@
     </property>
     <addaction name="actionSend_Current_OBs_as_Star_List"/>
     <addaction name="actionDisable_Magiq"/>
+    <addaction name="actionOverride_Telescope_Release_Check"/>
    </widget>
    <addaction name="menuFile_2"/>
    <addaction name="menuFile"/>
@@ -1896,6 +1898,11 @@
   <action name="actionLoad_Schedule_for_non_CC_Night">
    <property name="text">
     <string>Load KPF-CC Schedule for a non-CC Night</string>
+   </property>
+  </action>
+  <action name="actionOverride_Telescope_Release_Check">
+   <property name="text">
+    <string>Disable Telescope Release Check</string>
    </property>
   </action>
  </widget>

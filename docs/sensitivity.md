@@ -9,3 +9,13 @@ We use J-band magnitude as a rough guide for the guider sensitivity, but it is i
 We believe this performance can be improved substantially by using sky subtraction.  This is possible currently, but is a slow manual process to configure.  On the second test target above (J=16.7, V=17.6), we got reasonable signal using 0.25 FPS (4 second exposures) while using sky subtraction.  We are planning to script this process to make it easier and to integrate sky subtraction in to the OA's GUI for controlling the tip tilt, but the timeline for that is still TBD.
 
 If you need to acquire very faint targets (J > 16), please reach out to your SA ahead of time to discuss strategies.
+
+# Zero Point Analysis
+
+From a collection of anonymized DRP products from the first few years of observations, we have used the DRP's reported signal to noise as a probe of KPF's sensitivity.  Specifically, we have measured the photometric zero point of the instrument at various wavelengths. The 5 notebooks below explore different aspects of the instrument and operations.
+
+- [Examine Properties of Data Set](ZeroPointAnalysis/1-PrepareDataFile/1-PrepareDataFile.md)
+- [Find Zero Point of Exposure Meter](ZeroPointAnalysis/2-ExpMeterZeroPoint/2-ExpMeterZeroPoint.md)
+- [Find Zero Point of Instrument](ZeroPointAnalysis/3-InstrumentZeroPoint/3-InstrumentZeroPoint.md)
+- [Find the Best Exposure Meter Bin](ZeroPointAnalysis/4-BestExpMeterBin/4-BestExpMeterBin.md)
+- [Examine the Distribution of Slowdown Factors](ZeroPointAnalysis/5-ETCs/5-ETCs.md)

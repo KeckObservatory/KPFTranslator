@@ -82,7 +82,7 @@ def create_GUI_log(verbose=False):
         logdir.mkdir(mode=0o777, parents=True)
     LogFileName = logdir / 'OB_GUI_v2.log'
     LogFileHandler = RotatingFileHandler(LogFileName,
-                                         maxBytes=100*1024*1024, # 100 MB
+                                         maxBytes=20*1024*1024, # 20 MB
                                          backupCount=1000) # Keep old files
     LogFileHandler.setLevel(logging.DEBUG)
     LogFileHandler.setFormatter(LogFormat)
@@ -131,8 +131,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Determine git branch
         try:
-            cmd = 'git branch --show-current'
+            cmd = f'cd {Path(__file__).parent} ; git branch --show-current'
             result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+            self.log.debug('git branch --show-current')
+            self.log.debug(result.stdout.decode())
             self.branch = result.stdout.decode().strip().strip('\n')
             self.log.debug(f'Got git branch result: {self.branch}')
         except:
@@ -200,6 +202,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.fast = False
         # Tracked values
         self.disabled_detectors = []
+        self.disable_telescope_release_check = False
         self.telescope_released = GetTelescopeRelease.execute({})
         # Get KPF Programs on schedule
         classical, cadence = GetScheduledPrograms.execute({'semester': 'current'})
@@ -303,9 +306,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SendOBListToMagiq = self.findChild(QtWidgets.QAction, 'actionSend_Current_OBs_as_Star_List')
         self.SendOBListToMagiq.triggered.connect(self.OBListModel.update_star_list)
         self.SendOBListToMagiq.setEnabled(False)
-
         self.DisableMagiq = self.findChild(QtWidgets.QAction, 'actionDisable_Magiq')
         self.DisableMagiq.triggered.connect(self.toggle_magiq_enabled)
+        self.OverrideRelease = self.findChild(QtWidgets.QAction, 'actionOverride_Telescope_Release_Check')
+        self.OverrideRelease.triggered.connect(self.toggle_telescope_release_check)
 
         #-------------------------------------------------------------------
         # Main Window
@@ -739,7 +743,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.debug('Updating: SOB info, telescope_released')
             self.update_counter = 0
             self.update_SOB_display() # Updates alt, az
-            self.telescope_released = GetTelescopeRelease.execute({})
+            if self.disable_telescope_release_check is True:
+                self.telescope_released = True
+            else:
+                self.telescope_released = GetTelescopeRelease.execute({})
             # Update execution history if we're vaguely near observing times
             try:
                 UTh = int(self.UTValue.text().split(':')[0])
@@ -748,7 +755,6 @@ class MainWindow(QtWidgets.QMainWindow):
             if UTh >= 3 and UTh <= 17:
                 self.log.debug('Updating: execution history')
                 self.refresh_history()
-
 
     ##-------------------------------------------
     ## Methods for Observing Menu Actions
@@ -844,6 +850,18 @@ class MainWindow(QtWidgets.QMainWindow):
         action_text = f"{action} Magiq Star List Integration"
         self.DisableMagiq.setText(action_text)
         self.update_selected_instrument(self.SelectedInstrument.text())
+
+    def toggle_telescope_release_check(self):
+        self.log.info('Toggling telescope release check')
+        self.disable_telescope_release_check = not self.disable_telescope_release_check
+        self.log.debug(f"disable release check = {self.disable_telescope_release_check}")
+        action = {False: 'Disable', True: 'Enable'}[self.disable_telescope_release_check]
+        action_text = f"{action} Telescope Release Check"
+        self.OverrideRelease.setText(action_text)
+        if self.disable_telescope_release_check is True:
+            self.telescope_released = True
+        else:
+            self.telescope_released = GetTelescopeRelease.execute({})
 
 
     ##-------------------------------------------
@@ -1044,7 +1062,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             semester, start, end = get_semester_dates(datetime.datetime.now())
             utnow = datetime.datetime.utcnow()
-            date = utnow-datetime.timedelta(hours=20) # Switch dates at 10am HST, 2000UT
+            date = utnow-datetime.timedelta(hours=17) # Switch dates at 7am HST, 1700UT
             date_str = date.strftime('%Y-%m-%d').lower()
         if nonCCnight:
             schedule_files = [self.schedule_path / semester / date_str / f'full-{WB}' / 'output' / 'night_plan.csv'
@@ -1124,6 +1142,11 @@ class MainWindow(QtWidgets.QMainWindow):
                             retrievedOBcount += 1
                         else:
                             errs += failure_messages
+                            try:
+                                if type(errs[-1]) == list:
+                                    errs[-1] = errs[-1] + [entry['Target']]
+                            except:
+                                self.log.warning(f'Unable to append Target info to error: {entry["Target"]}')
                 self.ProgressBar.setValue(int(scheduledOBcount/Nsched*100))
             # Append a slewcal OB for convienience
             if self.OBcache['slewcal'] is not None:
@@ -1136,7 +1159,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_SortOrWeather()
         # Pop up for any errors
         if len(errs) > 0:
-            ConfirmationPopup('Errors retrieving OBs:', errs, info_only=True, warning=True).exec_()
+            if type(errs) == list:
+                msg = ''
+                for err in errs:
+                    if type(err) == list:
+                        msg += " ".join(err) + "\n"
+                    else:
+                        msg += f"{str(err)}\n"
+            else:
+                msg = str(errs)
+            self.log.warning('Errors when retrieving OBs:\n'+msg)
+            ConfirmationPopup('Errors retrieving OBs:', msg, info_only=True, warning=True).exec_()
 
     def refresh_history(self):
         self.log.debug(f"refresh_history")
@@ -1231,8 +1264,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log.error(e)
             RA_str = SOB.Target.get('RA')
             Dec_str = SOB.Target.get('Dec')
-            self.SOB_TargetRALabel.setText('RA (Epoch=?):')
-            self.SOB_TargetDecLabel.setText('Dec (Epoch=?):')
+        if SOB.Target.get('Epoch') is not None:
+            RAlabel = f"RA (epoch={SOB.Target.Epoch}):"
+            DecLabel = f"Dec (epoch={SOB.Target.Epoch}):"
+        else:
+            RAlabel = 'RA (epoch=?):'
+            DecLabel = 'Dec (epoch=?):'
         # If proper motion values are set, try to propagate proper motions
 #         if abs(SOB.Target.PMRA.value) > 0.001 or abs(SOB.Target.PMDEC.value) > 0.001:
 #             try:
@@ -1401,7 +1438,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.execution_history_file = logdir / f'KPFCC_executions_{semester}.csv'
         if self.execution_history_file.exists() is False:
             with open(self.execution_history_file, 'w') as f:
-                contents = ['# timestamp', 'decimalUT', 'executedID', 'OB summary',
+                contents = ['timestamp', 'decimalUT', 'executedID', 'OB summary',
                             'executed_line', 'scheduleUT',
                             'schedule_current_line', 'scheduleUT_current',
                             'schedule_next_line', 'scheduleUT_next',

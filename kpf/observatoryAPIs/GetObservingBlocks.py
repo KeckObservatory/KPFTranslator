@@ -18,8 +18,9 @@ class GetObservingBlocks(KPFFunction):
 
     @classmethod
     def perform(cls, args):
+        verbose = args.get('verbose', False)
         params = {'id': args.get('OBid', '')}
-        OBs, failure_messages = get_OBs_from_KPFCC_API(params)
+        OBs, failure_messages = get_OBs_from_KPFCC_API(params, verbose=verbose)
         if args.get('show_history', False):
             print(f'# Observing History for {OBs[0].summary()}')
             for i,h in enumerate(OBs[0].History):
@@ -36,6 +37,16 @@ class GetObservingBlocks(KPFFunction):
         if len(failure_messages) > 0:
             for msg in failure_messages:
                 print(msg)
+
+        # Print if verbose
+        if verbose:
+            print(f"# Failure Messages:")
+            print(failure_messages)
+            for i,OB in enumerate(OBs):
+                print(f"# Parsed OB {i+1}:")
+                print(OB.__repr__())
+
+
         return OBs, failure_messages
 
     @classmethod
@@ -49,6 +60,9 @@ class GetObservingBlocks(KPFFunction):
         parser.add_argument('--history', '--show_history', dest="show_history",
             default=False, action="store_true",
             help='Print history to screen?')
+        parser.add_argument('-v', '--verbose', dest="verbose",
+            default=False, action="store_true",
+            help='Show verbose OB information?')
         return super().add_cmdline_args(parser)
 
 

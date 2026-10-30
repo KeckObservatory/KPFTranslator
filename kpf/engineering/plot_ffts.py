@@ -1,6 +1,7 @@
 #!python3
 
 ## Import General Tools
+import sys
 from pathlib import Path
 import argparse
 import datetime
@@ -97,6 +98,8 @@ def main():
     fileinfo = {}
     for file in args.files:
         fnmatch = re.match('([GR])[a-zA-Z]*_(.*)_4188x4110_(\d+)\.(\w+)', Path(file).name)
+        if not fnmatch:
+            fnmatch = re.match('([GR])[a-zA-Z]*_(.*)_(\d+)\.(\w+)', Path(file).name)
         if fnmatch:
             timestamp = datetime.datetime.fromtimestamp(Path(file).stat().st_mtime)
             fileinfo[file] = {'det': fnmatch.group(1),
@@ -117,8 +120,9 @@ def main():
     txtfiles = [file for file in fileinfo.keys() if fileinfo[file]['ext'] == 'txt']
 
     num_colors = len(txtfiles)
-    colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
-
+#     colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+    colors = {'R': ['r', 'm', 'y'],
+              'G': ['b', 'c', 'g']}
     plt.figure(figsize=(12,8))
     for i,file in enumerate(txtfiles):
         print(f'Getting FFT of {file}')
@@ -127,11 +131,13 @@ def main():
         allnoise = np.std(alldata[200:1153])#[14:146]) # exclude the spike from parallel read out
         xf, yfft  =  do_fft(xs[100000:]*1e-9, ys[100000:])
         label = f"{fileinfo[file]['det']} {fileinfo[file]['frameno']}: {fileinfo[file]['label']}"
+        color = colors[fileinfo[file].get('det')].pop(0)
+        print(color)
         multiplier = 1#e3**i
-        plt.loglog(xf, yfft*multiplier, f'{colors[i]}-', alpha=0.25)
+#         plt.loglog(xf, yfft*multiplier, f'{colors[i]}-', alpha=0.25)
         # Bin data and plot mean in each bin
         means, bins, binnumber = scipy.stats.binned_statistic(xf, yfft, statistic='mean', bins=10000)
-        plt.loglog(bins[1:], means*multiplier, f'{colors[i]}-', alpha=0.75,
+        plt.loglog(bins[1:], means*multiplier, f'{color}-', alpha=0.75,
                    drawstyle='steps-pre', label=label)
     if args.marker:
         freq = args.marker*1e3
@@ -142,6 +148,7 @@ def main():
     plt.legend()
     plt.xlabel("Freq (Hz)")
     plt.xlim(1e4,5e7)
+    plt.ylim(3e2,3e5)
     plt.ylabel('Amplitude')
     plt.grid()
     plt.savefig(args.outfile, bbox_inches='tight', pad_inches=0.1)

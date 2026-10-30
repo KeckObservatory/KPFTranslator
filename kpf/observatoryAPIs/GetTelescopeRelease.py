@@ -25,7 +25,7 @@ class GetTelescopeRelease(KPFFunction):
         params = {'telnr': args.get('telnr', 1)}
         result = query_observatoryAPI('schedule', 'getTelescopeReadyState', params)
         log.debug(f'getTelescopeReadyState returned {result}')
-        return result.get('State', '') == 'Ready'
+        return result.get('State', '') in ['Ready', 'Foul Weather']
 
     @classmethod
     def post_condition(cls, args):

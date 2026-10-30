@@ -258,14 +258,17 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
             help="The OB file to run.")
         parser.add_argument("-d", "--obid", "--id", dest="obid", type=str,
             help="The unique database ID of the OB to run.")
+        logger.debug('Added script -f and -d to parser')
 
     if parsed_args.help is True:
+        logger.debug('Printing help to screen')
         print('    '+function.__doc__)
         help_str = parser.format_help()
         help_str = help_str.replace('usage: kpfdo', f'usage: kpfdo {function_args[0]}')
         print(help_str)
         return
 
+    logger.debug('Parsing final set of arguments')
     try:
         # Append these parsed args onto whatever was (or wasn't)
         # found in the input file (i.e. if -f was used)
@@ -276,8 +279,14 @@ def main(table_loc, parsed_args, function_args, kpfdo_parser):
         logger.error(e)
         logger.error(traceback.format_exc())
         sys.exit(1)
+    except Exception as e:
+        logger.error('Failed to parse arguments')
+        logger.error(e)
+        logger.error(traceback.format_exc())
+        sys.exit(1)
 
     if script is True:
+        logger.debug(f'Checking for OB input')
         OB = None
         input_file_string = parsed_func_args.get('file', None)
         if input_file_string is not None:

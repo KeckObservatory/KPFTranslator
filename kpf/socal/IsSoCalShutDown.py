@@ -55,5 +55,4 @@ class IsSoCalShutDown(KPFFunction):
         parser.add_argument('--email', dest="email",
                             default=False, action="store_true",
                             help='Send email if SoCal is not shut down?')
-
         return super().add_cmdline_args(parser)

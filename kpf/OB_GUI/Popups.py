@@ -23,7 +23,7 @@ class ConfirmationPopup(QtWidgets.QMessageBox):
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
         self.setWindowTitle(window_title)
         if type(msg) == list:
-            msg = "\n".join(msg)
+            msg = ' '.join(msg)
         self.setText(msg)
         if info_only == True:
             self.setIcon(QtWidgets.QMessageBox.Information)

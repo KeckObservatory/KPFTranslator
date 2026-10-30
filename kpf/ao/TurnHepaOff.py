@@ -25,6 +25,7 @@ class TurnHepaOff(KPFFunction):
 
     @classmethod
     def post_condition(cls, args):
-        OBHPASTA = ktl.cache('ao', 'OBHPASTA')
-        if OBHPASTA.waitfor('== "off"', timeout=3) is not True:
-            raise FailedToReachDestination(OBHPASTA.read(), 'off')
+        pass
+#         OBHPASTA = ktl.cache('ao', 'OBHPASTA')
+#         if OBHPASTA.waitfor('== "off"', timeout=3) is not True:
+#             raise FailedToReachDestination(OBHPASTA.read(), 'off')

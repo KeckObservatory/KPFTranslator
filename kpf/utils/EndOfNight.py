@@ -8,9 +8,7 @@ from kpf.exceptions import *
 from kpf.KPFTranslatorFunction import KPFFunction, KPFScript
 from kpf.scripts import (register_script, obey_scriptrun, check_scriptstop,
                          add_script_log)
-from kpf.ao.ControlAOHatch import ControlAOHatch
-from kpf.ao.TurnHepaOn import TurnHepaOn
-from kpf.ao.SendPCUtoHome import SendPCUtoHome
+from kpf.ao.ShutdownAOforKPF import ShutdownAOforKPF
 from kpf.fiu.ShutdownTipTilt import ShutdownTipTilt
 from kpf.fiu.ConfigureFIU import ConfigureFIU
 from kpf.fiu.WaitForConfigureFIU import WaitForConfigureFIU
@@ -159,22 +157,7 @@ class EndOfNight(KPFFunction):
             user_input = input()
             if user_input.lower() in ['y', 'yes', '']:
                 log.debug('User chose to shut down AO')
-                log.info('Closing AO Hatch')
-                try:
-                    ControlAOHatch.execute({'destination': 'closed'})
-                except FailedToReachDestination:
-                    log.error(f"AO hatch did not move successfully")
-                except Exception as e:
-                    log.error(f"Failure controlling AO hatch")
-                    log.error(e)
-                log.info('Sending PCU stage to Home position')
-                try:
-                    SendPCUtoHome.execute({})
-                except Exception as e:
-                    log.error(f"Failure sending PCU to home")
-                    log.error(e)
-    #             log.info('Turning on AO HEPA Filter System')
-    #             TurnHepaOn.execute({})
+                ShutdownAOforKPF.execute({})
             else:
                 log.warning(f'User chose to skip AO shutdown')
 
